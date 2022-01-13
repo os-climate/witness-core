@@ -1,0 +1,5 @@
+Region,resource_type,production_year_start,unity,production_file_name,price_file_name,year_start_file
+World,uranium_resource,47731,tU,uranium_production_data.csv,uranium_price_data.csv,uranium_year_start_data.csv
+World,coal_resource,7575,Mt,coal_production_data.csv,coal_price_data.csv,coal_year_start_data.csv
+World,oil_resource,4165,Mt,oil_production_data.csv,oil_price_data.csv,oil_year_start_data.csv
+World,natural_gas_resource,3853.7,bcm,gas_production_data.csv,gas_price_data.csv,gas_year_start_data.csv
