@@ -1,0 +1,10 @@
+Region,Accessibility,Price,Price_unit,Reserve,Reserve_unit
+World,recoverable,40,USD/k,744500,tonnes
+World,recoverable,80,USD/k,1243900,tonnes
+World,recoverable,130,USD/k,3791700,tonnes
+World,recoverable,260,USD/k,4723700,tonnes
+World,in_situs,40,USD/k,882900,tonnes
+World,in_situs,80,USD/k,1528100,tonnes
+World,in_situs,130,USD/k,4971400,tonnes
+World,in_situs,260,USD/k,6176700,tonnes
+

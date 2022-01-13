@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
+
+\begin{document}
+
+WITNESS Coarse 14-12-21
+
+\begin{equation}
+\begin{aligned}
+minimize \quad  obj =~
+&\alpha\,\frac{discounted\_utility_{ref}*n_{years}}{\sum_{y}discounted\_utility[y]}+(1-\alpha)*\frac{\sum_{y}CO2[y]}{CO2_{ref}*n_{years}} \\
+%
+% ppm objective deactivated
+% + (1-\beta) \frac{\sum_{y}CO2^{ppm}[y]}{CO2^{ppm}_{ref}*n_{years}}
+%
+\\
+\textrm{w.r.t} \quad & invest_{mix} \in [0,100]\\                     
+\textrm{s.t.} \quad 
+  & Total\_energy\_prod \geq min\_energy \\
+  & energy\_net\_prod \geq energy\_demand ~(\forall~ energies) \\
+  & land\_use \geq land\_demand \textrm{~~(for forest and agriculture)}
+\end{aligned}
+\end{equation}
+
+\end{document}

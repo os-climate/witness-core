@@ -1,0 +1,10 @@
+__pycache__
+.project
+.pydevproject
+.settings
+nosetests.xml
+.coverage
+coverage.xml
+build/
+dist/
+climateeconomics.egg-info/

@@ -1,0 +1,20 @@
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+
+WITNESS Simple
+
+\begin{equation}
+\begin{aligned}
+minimize \quad  obj =~
+& \alpha\,\Bigg[\gamma \frac{discounted\_utility_{ref}*n_{years}}{\sum_{y}discounted\_utility[y]}
++ (1 - \gamma) \frac{min\_utility_{ref}*n_{years}}{\sum_{y}min\_utility_{ref}[y]} \Bigg] \\
+& +(1-\alpha)*\Bigg[\frac{\sum_{y}CO2[y]}{CO2_{ref}*n_{years}} + \frac{\sum_{y}CO2^{ppm}[y]}{CO2^{ppm}_{ref}*n_{years}} \Bigg]
+\\
+\textrm{w.r.t} \quad & invest_{mix} \\               
+\textrm{s.t.} \quad & (Total\_energy\_prod - min\_energy)/energy_{ref} \geq 0\\
+\\
+\end{aligned}
+\end{equation}\\
+
+\end{document}

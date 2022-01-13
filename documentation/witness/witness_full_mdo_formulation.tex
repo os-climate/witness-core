@@ -1,0 +1,35 @@
+\documentclass{article}
+\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
+
+\begin{document}
+
+WITNESS Full 09-11-21
+
+\begin{equation}
+\begin{aligned}
+minimize \quad  obj =~
+& \alpha\,\Bigg[\gamma \frac{discounted\_utility_{ref}*n_{years}}{\sum_{y}discounted\_utility[y]}
++ (1 - \gamma) \frac{min\_utility_{ref}*n_{years}}{\sum_{y}min\_utility_{ref}[y]} \Bigg] \\
+& +(1-\alpha)*\Bigg[\frac{\sum_{y}CO2[y]}{CO2_{ref}*n_{years}} \Bigg] \\
+%
+% ppm objective deactivated
+% + (1-\beta) \frac{\sum_{y}CO2^{ppm}[y]}{CO2^{ppm}_{ref}*n_{years}}
+%
+&  + \frac{syngas\_prod}{syngas\_prod_{ref}}
+\\
+\textrm{w.r.t} \quad & invest_{mix} \in [0,100]\\                     
+\textrm{s.t.} \quad 
+  & Total\_energy\_prod \geq min\_energy \\
+  & energy\_net\_prod \geq energy\_demand ~(\forall~ energies) \\
+  & liquid\_fuel\_prod + H2\_prod + H2\_liquid\_prod \geq \%total\_prod \\
+  & solid\_carbon\_consumption \geq solid\_carbon\_stored \\
+  & hydropower_{2020} \geq hydropower\_prod \\
+  & solid\_fuel\_prod + elec\_prod + biomass\_prod \geq \%total\_prod \\
+  & H2\_liquid\_prod \geq \% H2\_total\_prod \\
+  & land\_use \geq land\_demand \textrm{~~(for forest and agriculture)}
+\end{aligned}
+\end{equation}
+
+\end{document}
