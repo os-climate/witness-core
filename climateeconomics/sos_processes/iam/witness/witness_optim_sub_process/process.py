@@ -16,9 +16,9 @@ limitations under the License.
 # -*- coding: utf-8 -*-
 
 
-
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -32,9 +32,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness',
-            techno_dict=self.techno_dict, one_invest_discipline=self.one_invest_discipline)
+            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
         # design variables builder
-        if self.one_invest_discipline:
+        if self.invest_discipline in INVEST_DISCIPLINE_OPTIONS[1:3]:
             design_var_path = 'climateeconomics.core.design_variables_translation.witness_bspline_invest_distrib.design_var_disc.Design_Var_Discipline'
 
         else:

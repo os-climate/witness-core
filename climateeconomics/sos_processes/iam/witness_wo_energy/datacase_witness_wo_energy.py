@@ -106,6 +106,15 @@ class DataStudy():
                                                             'energy_investment_before_year_start': [1924, 1927, 1935]},
                                                            index=[2017, 2018, 2019])
 
+        CO2_emitted_forest = pd.DataFrame()
+        emission_forest = np.linspace(40, 40, len(years))
+        cum_emission = np.cumsum(emission_forest) + 2850
+        CO2_emitted_forest['years'] = years
+        CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
+        CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
+        witness_input[self.study_name +
+                      '.CO2_emitted_forest_df'] = CO2_emitted_forest
+
         self.CO2_tax = np.asarray([50.] * len(years))
 
         witness_input[self.study_name +
@@ -190,6 +199,14 @@ class DataStudy():
 #         list_ftype.extend([INEQ_CONSTRAINT])
 #         list_weight.extend([-1.0])
 #         list_aggr_type.extend([AGGR_TYPE_SUM])
+        list_var.extend(
+            ['rockstrom_limit_constraint'])
+        list_parent.extend([''])
+        list_ns.extend(['ns_functions'])
+        list_ftype.extend([OBJECTIVE])
+        list_weight.extend([0.0])
+        list_aggr_type.extend(
+            [AGGR_TYPE_SUM])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent

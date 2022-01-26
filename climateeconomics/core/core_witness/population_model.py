@@ -369,9 +369,7 @@ class Population:
         Compute all
         """
         self.create_dataframe()
-        year_start = self.year_start
         year_range = self.years_range
-        time_step = self.time_step
         self.economics_df = in_dict['economics_df']
         self.economics_df.index = self.economics_df['years'].values
         self.temperature_df = in_dict['temperature_df']
@@ -391,17 +389,12 @@ class Population:
         # Calculation of cumulative deaths
         for effect in self.death_dict:
             self.death_dict[effect]['total'] = self.death_dict[effect].iloc[:, 1:-1].sum(axis=1, skipna=True)
-#            self.death_dict[effect]['cum_total'] = self.death_dict[effect]['total']
-#             for year in year_range:
-#                 if year != year_start:
-#                     self.death_dict[effect].loc[year, 'cum_total'] = self.death_dict[effect].loc[
-#                                                                          year - time_step, 'cum_total'] + \
-#                                                                      self.death_dict[effect].loc[year, 'total']
             self.death_dict[effect]['cum_total'] = self.death_dict[effect]['total'].cumsum()                                                    
 
         for effect in self.death_dict:
             self.death_dict[effect].fillna(0.0)
             self.death_rate_dict[effect].fillna(0.0)
+        
         return self.population_df.fillna(0.0), self.birth_rate.fillna(0.0), self.death_rate_dict, \
                self.birth_df.fillna(0.0), self.death_dict, self.life_expectancy_df.fillna(0.0)
 
@@ -514,8 +507,6 @@ class Population:
         pop = self.population_df.loc[year, 'total']
         gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
         d_pop = d_pop_tot_d_output[iyear]
-        climate_death_rate = self.climate_death_rate_df.iloc[iyear, 1:]
-        death_rate = self.base_death_rate_df.iloc[iyear, 1:]
 
         for age_range in param['param'].values:
             # Param of death rate equation
@@ -549,7 +540,6 @@ class Population:
         param.index = param['param'].values
 
         d_climate_deathrate_d_output = {}
-        base_death_rate = self.base_death_rate_df.iloc[iyear, 1:]
         climate_death_rate = self.climate_death_rate_df.iloc[iyear, 1:]
         temp = self.temperature_df.loc[year, 'temp_atmo']
         add_death = self.climate_mortality_param_df

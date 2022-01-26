@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import climateeconomics.tests as jacobian_target
+import climateeconomics.tests.utility_tests as jacobian_target
 
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 

@@ -17,6 +17,7 @@ limitations under the License.
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT_ccs
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -31,7 +32,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         coupling_builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',
-            techno_dict=techno_dict, one_invest_discipline=True)
+            techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
 
         # modify namespaces defined in the child process
         for ns in self.ee.ns_manager.ns_list:

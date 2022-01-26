@@ -250,7 +250,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'pc_consumption'), ('total_investment_share_of_gdp', 'share_investment'), dconsumption_pc / 100.0)
-        
+
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'output_net_of_d'), ('total_investment_share_of_gdp', 'share_investment'), doutput_net_of_d / 100.0)
 
@@ -298,7 +298,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('energy_investment', 'energy_investment'), ('CO2_taxes', 'CO2_tax'), denergy_investment / scaling_factor_energy_investment * 1e3 / 100.0)  # Invest from T$ to G$
-        
+
         # compute gradient for coupling variable population
         dgross_output, dinvestment, denergy_investment, dnet_output = self.macro_model.compute_dgross_output_dpopulation()
         dconsumption = self.macro_model.compute_dconsumption(
@@ -315,11 +315,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('economics_df', 'pc_consumption'), ('population_df', 'population'), dconsumption_pc)
 
         self.set_partial_derivative_for_other_types(
-            ('economics_df', 'output_net_of_d'), ('population_df', 'population'), doutput_net_of_d )
+            ('economics_df', 'output_net_of_d'), ('population_df', 'population'), doutput_net_of_d)
 
         self.set_partial_derivative_for_other_types(
             ('energy_investment', 'energy_investment'), ('population_df', 'population'), denergy_investment / scaling_factor_energy_investment * 1e3)
-    
+
     def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
@@ -375,7 +375,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             min_value = min(min_values.values())
             max_value = max(max_values.values())
 
-            chart_name = 'economics output'
+            chart_name = 'Economics output'
 
             new_chart = TwoAxesInstanciatedChart('years', 'world output (trill $)',
                                                  [year_start - 5, year_end + 5],
@@ -416,7 +416,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             min_value = min(min_values.values())
             max_value = max(max_values.values())
 
-            chart_name = 'total investment capacities and energy investment capacities'
+            chart_name = 'Total investment capacities and energy investment capacities'
 
             new_chart = TwoAxesInstanciatedChart('years', 'investment (trill $)',
                                                  [year_start - 5, year_end + 5],
@@ -502,7 +502,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             min_value, max_value = self.get_greataxisrange(
                 population_df['population'])
 
-            chart_name = 'population evolution over the years'
+            chart_name = 'Population evolution over the years'
 
             new_chart = TwoAxesInstanciatedChart('years', ' population (million)',
                                                  [year_start - 5, year_end + 5],
@@ -594,7 +594,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             min_value, max_value = self.get_greataxisrange(
                 economics_df[to_plot])
 
-            chart_name = 'global consumption over the years'
+            chart_name = 'Global consumption over the years'
 
             new_chart = TwoAxesInstanciatedChart('years', ' global consumption (trill $)',
                                                  [year_start - 5, year_end + 5],

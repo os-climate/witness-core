@@ -10,6 +10,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from climateeconomics.core.design_variables_translation.witness_bspline.design_var_disc import Design_Var_Discipline
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT_ccs_3
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -24,7 +25,7 @@ WRITE_XVECT = Design_Var_Discipline.WRITE_XVECT
 class Study(StudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 one_invest_discipline=True, techno_dict=DEFAULT_COARSE_TECHNO_DICT_ccs_3):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], techno_dict=DEFAULT_COARSE_TECHNO_DICT_ccs_3):
 
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -34,12 +35,12 @@ class Study(StudyManager):
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
         self.bspline = bspline
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline
         self.techno_dict = techno_dict
 
         self.witness_uc = witness_optim_sub_usecase(
             self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
-            one_invest_discipline=self.one_invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
     def setup_process(self):
@@ -89,11 +90,11 @@ class Study(StudyManager):
                                                                       "max_iter": 500,
                                                                       "disp": 110},
                              # f'{ns}.{self.optim_name}.{witness_uc.coupling_name}.linear_solver_MDO':
-                             # 'gmres',
+                             # 'GMRES',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-10,
                                                                                                                    'max_iter': 10000},
                              # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA':
-                             # 'gmres',
+                             # 'GMRES',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {'tol': 1.0e-10,
                                                                                                                    'max_iter': 50000},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.epsilon0': 1.0,
@@ -102,7 +103,7 @@ class Study(StudyManager):
                                                                           "n_processes": 32,
                                                                           "use_threading": False,
                                                                           "wait_time_between_fork": 0},
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSNewtonMDA',
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSorNewtonMDA',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50, }
 # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
 # True}

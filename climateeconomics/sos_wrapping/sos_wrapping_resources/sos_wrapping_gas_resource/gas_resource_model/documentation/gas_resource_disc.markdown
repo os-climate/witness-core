@@ -78,7 +78,7 @@ Data implemented in the gas demand csv.
 ### References 
 
 [^1]: Jon Claerbout and Francis Muir - "Hubbert math" (2020) - Retrieved from: 'http://sepwww.stanford.edu/sep/jon/hubbert.pdf'
-[^2]: IEA – “Tables for Scenario Projections” - Retrieved from: https://www.iea.org/data-and-statistics/data-product/world-energy-outlook-2021-free-dataset#tables-for-scenario-projections
+[^2]: https://www.iea.org/data-and-statistics/data-product/world-energy-outlook-2021-free-dataset#tables-for-scenario-projections
 [^3]: Wang, Jianliang & Bentley, Yongmei - "Modelling world natural gas production." (2020) Energy. Vol. 1363-1372. 10.1016/j.egyr.2020.05.018. - Retrieved from: 'https://www.researchgate.net/publication/341598129_Modelling_world_natural_gas_production'
 [^4]: BP - Statistical Review of World Energy (2021) - Retrieved from: 'https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2021-full-report.pdf'
 [^5]: International Energy Agency - "World Energy Balances" (2020) - Retrieved from: 'https://www.iea.org/data-and-statistics/charts/world-coal-final-consumption-by-sector-2018'

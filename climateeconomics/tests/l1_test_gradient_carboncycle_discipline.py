@@ -76,7 +76,7 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline1.pkl', discipline=disc_techno, step=1e-15,
                             inputs=[f'{self.name}.emissions_df'],
                             outputs=[f'{self.name}.carboncycle_df',
-                                     f'{self.name}.ppm_objective'], derr_approx='complex_step')
+                                     f'{self.name}.ppm_objective', f'{self.name}.rockstrom_limit_constraint'], derr_approx='complex_step')
 
     def test_execute_2(self):
         # test limit for max for lower_ocean_conc / upper_ocean_conc /
@@ -117,4 +117,4 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline2.pkl', discipline=disc_techno, step=1e-15,
                             inputs=[f'{self.name}.emissions_df'],
                             outputs=[f'{self.name}.carboncycle_df',
-                                     f'{self.name}.ppm_objective'], derr_approx='complex_step')
+                                     f'{self.name}.ppm_objective', f'{self.name}.rockstrom_limit_constraint'], derr_approx='complex_step')

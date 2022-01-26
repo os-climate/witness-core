@@ -10,6 +10,7 @@ from sos_trades_core.execution_engine.func_manager.func_manager_disc import Func
 import pandas as pd
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -24,7 +25,7 @@ EXTRA_NAME = "WITNESS"
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 one_invest_discipline=False, techno_dict=DEFAULT_TECHNO_DICT):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], techno_dict=DEFAULT_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -37,11 +38,11 @@ class Study(ClimateEconomicsStudyManager):
         self.energy_mix_name = 'EnergyMix'
         self.ccs_mix_name = 'CCUS'
         self.bspline = bspline
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline
         self.techno_dict = techno_dict
         self.witness_uc = witness_usecase(
             self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
-            one_invest_discipline=self.one_invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
     def setup_usecase(self):
@@ -67,7 +68,7 @@ class Study(ClimateEconomicsStudyManager):
 
         for energy in self.witness_uc.energy_list:
             energy_wo_dot = energy.replace('.', '_')
-            if not self.one_invest_discipline:
+            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = dspace_df[f'{energy_wo_dot}_array_mix']['value']
             for technology in self.witness_uc.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
@@ -75,20 +76,20 @@ class Study(ClimateEconomicsStudyManager):
 
         for ccs in self.witness_uc.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
-            if not self.one_invest_discipline:
+            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_array_mix']['value']
             for technology in self.witness_uc.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
 
-        if not self.one_invest_discipline:
+        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             dv_arrays_dict[f'{self.witness_uc.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array']['value']
         dv_arrays_dict[f'{self.witness_uc.study_name}.livestock_usage_factor_array'] = dspace_df[f'livestock_usage_factor_array']['value']
 
         self.func_df = self.witness_uc.func_df
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df
 
-        values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSorNewtonMDA'
         #values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'

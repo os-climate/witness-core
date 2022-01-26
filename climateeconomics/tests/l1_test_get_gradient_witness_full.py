@@ -59,8 +59,10 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict[f'{self.name}.epsilon0'] = 1.0e-6
         values_dict[f'{self.name}.tolerance_linear_solver_MDO'] = 1.0e-12
-        values_dict[f'{self.name}.linear_solver_MDA'] = 'gasm_gmres_petsc'
-        values_dict[f'{self.name}.linear_solver_MDO'] = 'gasm_gmres_petsc'
+        values_dict[f'{self.name}.linear_solver_MDA'] = 'GMRES_PETSC'
+        values_dict[f'{self.name}.linear_solver_MDA_preconditioner'] = 'gasm'
+        values_dict[f'{self.name}.linear_solver_MDO'] = 'GMRES_PETSC'
+        values_dict[f'{self.name}.linear_solver_MDO_preconditioner'] = 'gasm'
         values_dict[f'{self.name}.max_mda_iter'] = 200
         values_dict[f'{self.name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.name}.tolerance'] = 1.0e-10
@@ -95,8 +97,8 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.livestock_usage_factor_array']
         for energy in values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.energy_list']:
             energy_wo_dot = energy.replace('.', '_')
-            input_full_names.append(
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix')
+#             input_full_names.append(
+#                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix')
 
             for technology in values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
                 technology_wo_dot = technology.replace('.', '_')
@@ -123,4 +125,4 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
 if '__main__' == __name__:
     cls = WitnessFullJacobianDiscTest()
-    cls._test_03_gradient_objective_lagrangian_wrt_design_var_fromxvect()
+    cls.test_01_gradient_objective_lagrangian_wrt_design_var_on_witness_full()

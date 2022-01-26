@@ -25,7 +25,9 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # np.set_printoptions(threshold=np.inf)
+
     def setUp(self):
 
         self.name = 'Test'
@@ -33,7 +35,8 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return [
-            self.test_carbon_emissions_analytic_grad
+            self.test_carbon_emissions_analytic_grad,
+            self.test_co2_objective_limit_grad
         ]
 
     def test_carbon_emissions_analytic_grad(self):
@@ -59,27 +62,33 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'economics_data_onestep.csv'))
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
-
-        economics_df_y = economics_df_all[economics_df_all['years'] >= 2020][[
+        year_start = 2020
+        economics_df_y = economics_df_all[economics_df_all['years'] >= year_start][[
             'years', 'gross_output']]
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020][[
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= year_start][[
             'years', 'total_CO2_emitted']]
         energy_supply_df_y["years"] = energy_supply_df_all['years']
         energy_supply_df_y = energy_supply_df_y.rename(
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
 
         # put manually the index
-        years = np.arange(2020, 2101)
+        years = np.arange(year_start, 2101)
         economics_df_y.index = years
         energy_supply_df_y.index = years
 
+        CO2_emitted_forest = pd.DataFrame()
+        emission_forest = np.linspace(10, 100, len(years))
+        cum_emission = np.cumsum(emission_forest) + 2850
+        CO2_emitted_forest['years'] = years
+        CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
+
         values_dict = {f'{self.name}.economics_df': economics_df_y,
-                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y}
+                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+                       f'{self.name}.CO2_emitted_forest_df': CO2_emitted_forest, }
 
         self.ee.load_study_from_input_dict(values_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_emission_discipline.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.economics_df', f'{self.name}.co2_emissions_Gt'],
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_emission_discipline.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.economics_df', f'{self.name}.co2_emissions_Gt', f'{self.name}.CO2_emitted_forest_df'],
                             outputs=[f'{self.name}.emissions_df', f'{self.name}.CO2_objective'], derr_approx='complex_step')
 
     def test_co2_objective_limit_grad(self):
@@ -120,11 +129,21 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         energy_supply_df_y.index = years
         energy_supply_df_y['Total CO2 emissions'] = np.linspace(
             0, -3000, len(years))
+
+        CO2_emitted_forest = pd.DataFrame()
+        emission_forest = np.linspace(40, 40, len(years))
+        cum_emission = np.cumsum(emission_forest) + 2850
+        CO2_emitted_forest['years'] = years
+        CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
+
         values_dict = {f'{self.name}.economics_df': economics_df_y,
-                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y}
+                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+                       f'{self.name}.CO2_emitted_forest_df': CO2_emitted_forest, }
 
         self.ee.load_study_from_input_dict(values_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_co2_objective_limit.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.economics_df', f'{self.name}.co2_emissions_Gt'],
-                            outputs=[f'{self.name}.emissions_df', f'{self.name}.CO2_objective'], derr_approx='complex_step')
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_co2_objective_limit.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.economics_df', f'{self.name}.co2_emissions_Gt', f'{self.name}.CO2_emitted_forest_df'],
+                            outputs=[f'{self.name}.emissions_df',
+                                     f'{self.name}.CO2_objective'],
+                            derr_approx='complex_step')

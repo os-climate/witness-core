@@ -60,13 +60,21 @@ setup(
     description='Python library to evaluate climate change impact',
     long_description=readme,
     author='Airbus SAS',
-    url='https://idlvsrv284.eu.airbus.corp/sostrade/climateeconomics.git',
+    url='https://idas661.eu.airbus.corp/sostrades/climateeconomics',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
     include_package_data=True,
     python_requires='>=3.7',
     install_requires=[
         'nose2>=0.9.1',
-        'sos-trades-core'
+        'sos-trades-core',
+        'nose2==0.9.1',
+        'scikit-learn>=0.24.2',
+        'numpy==1.20.3',
+        'pandas==1.3.0',
+        'plotly==5.3.0',
+        'scipy==1.7.1',
+        'seaborn==0.9.0',
+        'matplotlib==3.4.3'
     ]
 )

@@ -150,7 +150,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             min_value, max_value = self.get_greataxisrange(damage)
 
-            chart_name = 'environmental damage'
+            chart_name = 'Environmental damage'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Damage (trill $)',
                                                  [year_start - 5, year_end + 5],

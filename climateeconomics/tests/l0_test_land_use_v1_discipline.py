@@ -53,20 +53,19 @@ class LandUseV1TestCase(unittest.TestCase):
                      'total surface (Gha)'])
         self.total_food_land_surface['years'] = years
         self.total_food_land_surface['total surface (Gha)'] = np.linspace(5, 4, year_range)
-
-        global_data_dir = join(Path(__file__).parents[1],'data')
-        self.population_df = pd.read_csv(
-            join(global_data_dir, 'population_df.csv'))
-        self.population_df = self.population_df.loc[self.population_df['years']
-                                            >= self.year_start]
-        self.population_df = self.population_df.loc[self.population_df['years']
-                                            <= self.year_end]
-        self.population_df.index = years
+        self.deforested_surface_df = pd.DataFrame(
+            index=years,
+            columns=['years',
+                     'forest_surface_evol'])
+        self.deforested_surface_df['years'] = years
+        ###Gha
+        self.deforested_surface_df['forest_surface_evol'] = np.linspace(-0.01, 0, year_range)
 
         self.param = {'land_demand_df': self.energy_land_demand_df,
                       'year_start': self.year_start,
                       'year_end': self.year_end,
                       'total_food_land_surface': self.total_food_land_surface,
+                      'deforested_surface_df': self.deforested_surface_df
                       }
 
     def test_land_use_v1_model(self):
@@ -77,7 +76,7 @@ class LandUseV1TestCase(unittest.TestCase):
 
         land_use = LandUseV1(self.param)
 
-        land_use.compute(self.total_food_land_surface, self.energy_land_demand_df)
+        land_use.compute(self.energy_land_demand_df, self.total_food_land_surface, self.deforested_surface_df)
 
     def test_land_use_v1_discipline(self):
         ''' 
@@ -105,6 +104,7 @@ class LandUseV1TestCase(unittest.TestCase):
                        f'{name}.year_end': self.year_end,
                        f'{name}.{model_name}.{LandUseV1.TOTAL_FOOD_LAND_SURFACE}': self.total_food_land_surface,
                        f'{name}.{model_name}.{LandUseV1.LAND_DEMAND_DF}': self.energy_land_demand_df,
+                       f'{name}.{model_name}.{LandUseV1.DEFORESTED_SURFACE_DF}': self.deforested_surface_df,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)

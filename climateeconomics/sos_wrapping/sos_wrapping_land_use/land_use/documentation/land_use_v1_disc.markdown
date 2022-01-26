@@ -1,44 +1,43 @@
-The Earth offers a finite amount of different type of lands which can be used to build city, to grow forest... or can not be used at all (ocean or glacier for example).
-The land use model focuses on agricultural and forest land, which is shared between different activities: 
-* Land usage for food from crop
-* Land usage for food from livestock
-* Energy linked technologies land for crop
-* Energy linked technologies forest land
+About 71 % of the Earth's surface is covered with water, and the remaining lands are composed of 71 % of what we call habitable lands (i.e. usable for human activities), 10 % glacier and 19 % barren land.
 
+The land use model focuses on habitable lands, which are shared between different activities:
+
+* Land usage for food from crop and livestock
+* Energy linked technologies land
+
+The initial land distribution for habitable lands (50% for agriculture and 37% for forest in 2019), may vary with deforestation and reforestation.
+
+The model's inputs are therefore:
+
+* Food land surface coming from agriculture discipline
+* Energy linked technologies and reforestation surface (for CCS purpose) coming from the energy mix discipline
+* Deforestation surface coming from forest discipline
+
+For each year, the available forest and agricultural surface is computed with deforestation and reforestation inputs, and a constraint is calculated for each such as:
+
+$$Agriculture\_demand\_constraint = available\_agriculture\_surface + deforested\_surface \\ - reforested\_surface\_for\_CCUS - surface\_used\_for\_food - surface\_for\_energy$$
+$$Forest\_demand\_constraint = available\_forest\_surface - deforested\_surface \\ + reforested\_surface\_for\_CCUS - surface\_for\_energy$$
+
+So that the optimizer will try to minimize the absolute value of the constraint to solve the optimization problem.
 
 ### Model's data
 
-The following data (taken from 'Our World in Data'[^1]) are integrated into the model:
+The following data (taken from 'Our World in Data'[^1]) are integrated into the model (for the 2019 year):
 
 |Category|Name|Surface|Magnitude|Unit|
 | ------ | -- |:-----:|:-------:|:--:|
 |Earth|Land|149|M|km2|
 |Earth|Ocean|361|M|km2|
-|Land|Habitable|105.79|M|km2|
-|Land|Glacier| 4.9|M|km2|
-|Land|Barren|28.31|M|km2|
-|Habitable|Agriculture|52.89|M|km2|
-|Habitable|Forest|39.14|M|km2|
-|Habitable|Shrub|11.64|M|km2|
-|Habitable|Urban|1.06|M|km2|
-|Habitable|Water|1.06|M|km2|
-|Agriculture|Livestock|40.73|M|km2|
-|Agriculture|Crops|12.17|M|km2|
-
-These data give the share of Earth land.
-
-This Available\_Land\_Agriculture can be used by energy linked technologies.
-
-Technologies taking surface of agriculture land are:
-* Crop energy
-* Solar photovoltaic
-
-Technologies taking surface of forest land are:
-* Managed wood
-* Unmanaged wood
-
-A particular case for the Reforestation Technology: this technology changes constraints on available lands surface.
-It adds surface on forest available land and removes surface from agriculture available land.
+|Land|Habitable|104|M|km2|
+|Land|Glacier|15|M|km2|
+|Land|Barren|28|M|km2|
+|Habitable|Agriculture|51|M|km2|
+|Habitable|Forest|39|M|km2|
+|Habitable|Shrub|12|M|km2|
+|Habitable|Urban|1.5|M|km2|
+|Habitable|Water|1.5|M|km2|
+|Agriculture|Livestock|40|M|km2|
+|Agriculture|Crops|11|M|km2|
 
 ### References 
 

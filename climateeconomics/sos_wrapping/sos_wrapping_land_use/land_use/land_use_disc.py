@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from climateeconomics.core.core_land_use.land_use import LandUse,\
-    OrderOfMagnitude
+from climateeconomics.core.core_land_use.land_use import LandUse
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart

@@ -64,8 +64,16 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         economics_df_y.index = years
         energy_supply_df_y.index = years
 
+        CO2_emitted_forest = pd.DataFrame()
+        emission_forest = np.linspace(10, 40, len(years))
+        cum_emission = np.cumsum(emission_forest) + 2850
+        CO2_emitted_forest['years'] = years
+        CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
+        CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
+
         values_dict = {f'{self.name}.economics_df': economics_df_y,
-                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y}
+                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+                       f'{self.name}.CO2_emitted_forest_df': CO2_emitted_forest}
 
         self.ee.dm.set_values_from_dict(values_dict)
 
@@ -76,6 +84,8 @@ class CarbonEmissionDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
+#         for graph in graph_list:
+#             graph.to_plotly().show()
 
     def test_limit_co2_objective(self):
         # the limit is commented in th emodel we deaxctivate the test
@@ -113,8 +123,17 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         energy_supply_df_y.index = years
         energy_supply_df_y['Total CO2 emissions'] = np.linspace(
             0, -100000, len(years))
+
+        CO2_emitted_forest = pd.DataFrame()
+        emission_forest = np.linspace(40, 40, len(years))
+        cum_emission = np.cumsum(emission_forest) + 2850
+        CO2_emitted_forest['years'] = years
+        CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
+        CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
+
         values_dict = {f'{self.name}.economics_df': economics_df_y,
                        f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+                       f'{self.name}.CO2_emitted_forest_df': CO2_emitted_forest,
                        f'{self.name}.{self.model_name}.min_co2_objective': min_co2_objective}
 
         self.ee.dm.set_values_from_dict(values_dict)
