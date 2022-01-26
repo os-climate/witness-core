@@ -17,6 +17,7 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 from climateeconomics.core.core_witness.carbon_emissions_model import CarbonEmissions
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from climateeconomics.core.core_forest.forest import Forest
 from copy import deepcopy
 import pandas as pd
 import numpy as np
@@ -25,14 +26,19 @@ import numpy as np
 class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     "carbonemissions discipline for DICE"
     years = np.arange(2020, 2101)
+#
+#     CO2_emitted_forest = pd.DataFrame()
+#     emission_forest = np.linspace(40, 40, len(years))
+#     cum_emission = np.cumsum(emission_forest) + 2850
+#     CO2_emitted_forest['years'] = years
+#     CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
+#     CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
+
     _maturity = 'Research'
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 2020, 'possible_values': years, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'time_step': {'type': 'int', 'default': 1, 'unit': 'years per period', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'init_land_emissions': {'type': 'float', 'default': 2.85, 'unit': 'GtCO2 per year', 'user_level': 2},
-        'decline_rate_land_emissions': {'type': 'float', 'default': 0.115, 'user_level': 2},
-        'init_cum_land_emisisons': {'type': 'float', 'default': 117.13, 'unit': 'GtCO2', 'user_level': 2},
         'init_gr_sigma': {'type': 'float', 'default': -0.0152, 'user_level': 2},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001, 'user_level': 2},
         'init_indus_emissions': {'type': 'float', 'default': 34, 'unit': 'GtCO2 per year', 'user_level': 2},
@@ -51,6 +57,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'Gt', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         # Ref in 2020 is around 34 Gt, the objective is normalized with this
         # reference
+        Forest.CO2_EMITTED_FOREST_DF: {'type': 'dataframe', 'unit': 'MtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
 
     }
     DESC_OUT = {
@@ -103,10 +110,12 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         years = np.arange(
             inputs_dict['year_start'], inputs_dict['year_end'] + 1, inputs_dict['time_step'])
+        nb_years = len(years)
 
         d_indus_emissions_d_gross_output, d_cum_indus_emissions_d_gross_output, d_cum_indus_emissions_d_total_CO2_emitted = self.emissions_model.compute_d_indus_emissions()
         d_CO2_obj_d_total_emission = self.emissions_model.compute_d_CO2_objective()
         dobjective_exp_min = self.emissions_model.compute_dobjective_with_exp_min()
+        d_total_emissions_C02_emitted_forest = self.emissions_model.compute_d_land_emissions()
         # fill jacobians
         self.set_partial_derivative_for_other_types(
             ('emissions_df', 'total_emissions'), ('economics_df', 'gross_output'),  d_indus_emissions_d_gross_output)
@@ -125,6 +134,15 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('CO2_objective',), ('economics_df', 'gross_output'), dobjective_exp_min * d_CO2_obj_d_total_emission.dot(d_indus_emissions_d_gross_output))
+
+        self.set_partial_derivative_for_other_types(
+            ('emissions_df', 'total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  np.identity(len(years)) / 3.666 / 1000)
+
+        self.set_partial_derivative_for_other_types(
+            ('emissions_df', 'cum_total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  d_total_emissions_C02_emitted_forest)
+
+        self.set_partial_derivative_for_other_types(
+            ('CO2_objective',), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), dobjective_exp_min * d_CO2_obj_d_total_emission / 3.666 / 1000)
 
     def get_chart_filter_list(self):
 
@@ -176,7 +194,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             min_value = min(min_value_e, min_value_l, min_value_i)
             max_value = max(max_value_e, max_value_l, max_value_i)
 
-            chart_name = 'total carbon emissions'
+            chart_name = 'Total carbon emissions'
 
             new_chart = TwoAxesInstanciatedChart('years', 'carbon emissions (Gtc)',
                                                  [year_start - 5, year_end + 5],

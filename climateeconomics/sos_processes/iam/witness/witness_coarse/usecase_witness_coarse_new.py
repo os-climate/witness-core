@@ -24,6 +24,7 @@ from sos_trades_core.execution_engine.func_manager.func_manager import FunctionM
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -43,18 +44,18 @@ DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False, execution_engine=None,
-                 one_invest_discipline=True, techno_dict=DEFAULT_COARSE_TECHNO_DICT):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], techno_dict=DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
         self.bspline = bspline
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline
         self.energy_list = DEFAULT_ENERGY_LIST
         self.ccs_list = DEFAULT_CCS_LIST
         self.dc_energy = datacase_energy(
             self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
-            one_invest_discipline=self.one_invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_process(self):
@@ -188,5 +189,5 @@ if '__main__' == __name__:
             graph_list = ppf.get_post_processing_by_discipline(
                 disc, filters, as_json=False)
 
-            for graph in graph_list:
-                graph.to_plotly().show()
+#             for graph in graph_list:
+#                 graph.to_plotly().show()

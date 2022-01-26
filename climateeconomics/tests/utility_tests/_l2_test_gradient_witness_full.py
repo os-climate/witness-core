@@ -20,6 +20,8 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_COARSE_TECHNO_DICT_ccs_2, DEFAULT_COARSE_TECHNO_DICT_ccs_3
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
@@ -41,7 +43,9 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         return [
             #             self.test_02_gradient_objective_constraint_wrt_design_var_on_witness_full_subprocess_wofuncmanager,
             #             self.test_03_gradient_lagrangian_objective_wrt_design_var_on_witness_full_subprocess,
-            self.test_05_gradient_lagrangian_objective_wrt_csv_design_var_on_witness_full_subprocess_each_step
+            #             self.test_05_gradient_lagrangian_objective_wrt_csv_design_var_on_witness_full_subprocess_each_step,
+            self.test_06_gradient_lagrangian_objective_wrt_csv_design_var_on_crashed_x,
+            self.test_07_gradient_all_disciplines_on_crashed_x,
         ]
 
     def _test_01_gradient_objective_wrt_state_var_on_witness_full_mda(self):
@@ -482,13 +486,13 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                                             inputs=inputs,
-                                            outputs=outputs)#, filepath=filepath)
+                                            outputs=outputs)  # , filepath=filepath)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                                             inputs=inputs,
-                                            outputs=outputs)#, filepath=filepath)
+                                            outputs=outputs)  # , filepath=filepath)
             i += 1
 
     def test_06_gradient_each_discipline_on_dm_pkl(self):
@@ -545,19 +549,196 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                                             inputs=inputs,
-                                            outputs=outputs)#, filepath=filepath)
+                                            outputs=outputs)  # , filepath=filepath)
                     else:
 
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                             step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                                             inputs=inputs,
-                                            outputs=outputs)#, filepath=filepath)
+                                            outputs=outputs)  # , filepath=filepath)
             i += 1
+
+    def test_06_gradient_lagrangian_objective_wrt_csv_design_var_on_crashed_x(self):
+        '''
+        Test on the witness full MDA + design var to get bspline with func manager 
+
+        we can test only lagrangian objective vs design var
+
+        Need to checkout to gems_without_cache in gems repository 
+        '''
+        self.name = 'Test'
+        self.ee = ExecutionEngine(self.name)
+        techno_dict = DEFAULT_COARSE_TECHNO_DICT_ccs_3
+
+        builder = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.ee.configure()
+
+        usecase = witness_sub_proc_usecase(
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], execution_engine=self.ee, techno_dict=techno_dict, bspline=True)
+        usecase.study_name = self.name
+        values_dict = usecase.setup_usecase()
+
+        full_values_dict = {}
+        for dict_v in values_dict:
+            full_values_dict.update(dict_v)
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance_linear_solver_MDO'] = 1.0e-12
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.linearization_mode'] = 'adjoint'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.warm_start'] = False
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.chain_linearize'] = False
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 200
+        self.ee.load_study_from_input_dict(full_values_dict)
+        # self.ee.execute()
+        disc = self.ee.root_process.sos_disciplines[0]
+
+        values_dict_design_var = {}
+        df_xvect = pd.read_csv(
+            join(dirname(__file__), 'data', 'design_space_last_ite_coarse_fail.csv'))
+        for i, row in df_xvect.iterrows():
+            try:
+                ns_var = self.ee.dm.get_all_namespaces_from_var_name(
+                    row['variable'])[0]
+                values_dict_design_var[ns_var] = np.asarray(
+                    row['value'][1:-1].split(', '), dtype=float)
+            except:
+                pass
+
+        self.ee.load_study_from_input_dict(values_dict_design_var)
+        self.ee.set_debug_mode('min_max_grad')
+        self.ee.execute()
+        #--------------------#
+        #---    ADJOINT   ---#
+        #--------------------#
+
+        output_full_names = [
+            f'{self.name}.objective_lagrangian']
+        input_full_names = [
+            f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.livestock_usage_factor_array']
+
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.energy_list']:
+            energy_wo_dot = energy.replace('.', '_')
+            for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
+                technology_wo_dot = technology.replace('.', '_')
+                input_full_names.append(
+                    f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
+
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_list']:
+            energy_wo_dot = energy.replace('.', '_')
+            for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
+                technology_wo_dot = technology.replace('.', '_')
+                input_full_names.append(
+                    f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
+
+        pkl_name = f'jacobian_lagrangian_objective_wrt_design_var_on_witness_full_invest_distrib_x.pkl'
+        self.ee.display_treeview_nodes(display_variables=True)
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
+                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8,
+                            inputs=input_full_names, outputs=output_full_names)
+
+    def test_07_gradient_all_disciplines_on_crashed_x(self):
+        self.name = 'Test'
+        self.ee = ExecutionEngine(self.name)
+        techno_dict = DEFAULT_COARSE_TECHNO_DICT_ccs_3
+
+        builder = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.ee.configure()
+
+        usecase = witness_sub_proc_usecase(
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], execution_engine=self.ee, techno_dict=techno_dict, bspline=True)
+        usecase.study_name = self.name
+        values_dict = usecase.setup_usecase()
+
+        full_values_dict = {}
+        for dict_v in values_dict:
+            full_values_dict.update(dict_v)
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance_linear_solver_MDO'] = 1.0e-12
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.linearization_mode'] = 'adjoint'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.warm_start'] = False
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.chain_linearize'] = False
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 200
+        self.ee.load_study_from_input_dict(full_values_dict)
+        # self.ee.execute()
+        disc = self.ee.root_process.sos_disciplines[0]
+
+        values_dict_design_var = {}
+        df_xvect = pd.read_csv(
+            join(dirname(__file__), 'data', 'design_space_last_ite_coarse_fail.csv'))
+        for i, row in df_xvect.iterrows():
+            try:
+                ns_var = self.ee.dm.get_all_namespaces_from_var_name(
+                    row['variable'])[0]
+                values_dict_design_var[ns_var] = np.asarray(
+                    row['value'][1:-1].split(', '), dtype=float)
+            except:
+                pass
+        dspace_df = df_xvect
+        self.ee.load_study_from_input_dict(values_dict_design_var)
+        self.ee.set_debug_mode('min_max_grad')
+        self.ee.execute()
+
+        #-------------------------#
+        #---    disc by disc   ---#
+        #-------------------------#
+
+        for disc in self.ee.root_process.sos_disciplines[0].sos_disciplines:
+            if disc.name != 'WITNESS.EnergyMix.liquid_fuel.Refinery':
+                continue
+            #         disc = self.ee.dm.get_disciplines_with_name(
+            #             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix')[0]
+            outputs = disc.get_output_data_names()
+            outputs = [output for output in outputs if self.ee.dm.get_data(
+                output, 'coupling')]
+
+            if disc.name == 'FunctionsManager':
+                outputs.append(self.ee.dm.get_all_namespaces_from_var_name(
+                    'objective_lagrangian')[0])
+            inputs = disc.get_input_data_names()
+            inputs = [input for input in inputs if self.ee.dm.get_data(
+                input, 'coupling') and not input.endswith('ressources_price') and not input.endswith('ressources_CO2_emissions') and not input.endswith('energy_demand')]
+            print(disc.name)
+            print(i)
+            pkl_name = f'pickle_discilpine.pkl'
+            filepath = join(dirname(__file__), AbstractJacobianUnittest.PICKLE_DIRECTORY, 'l2_witness_full',
+                            pkl_name)
+
+            print('--------------------------------------------------------------------')
+            print('First check the whole df')
+            print('--------------------------------------------------------------------')
+            np.set_printoptions(threshold=100000000)
+            if len(inputs) != 0:
+                self.ee.dm.delete_complex_in_df_and_arrays()
+                self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
+                                    step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                    inputs=[
+                                        'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.invest_level'],
+                                    outputs=['Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.techno_production'])
+
+            print('--------------------------------------------------------------------')
+            print('Then check col by col')
+            print('--------------------------------------------------------------------')
+            for output_column in disc.get_sosdisc_outputs('techno_production').columns[1:]:
+                for input_column in disc.get_sosdisc_inputs('invest_level').columns[1:]:
+                    self.ee.dm.delete_complex_in_df_and_arrays()
+                    print('input_column : ', input_column)
+                    print('output_columns : ', output_column)
+                    self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
+                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                        inputs=[
+                                            'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.invest_level'], input_column=input_column,
+                                        outputs=['Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.techno_production'], output_column=output_column)
 
 
 if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = WitnessFullJacobianDiscTest()
-    cls.test_05_gradient_lagrangian_objective_wrt_csv_design_var_on_witness_full_subprocess_each_step()
-    # cls.test_06_gradient_each_discipline_on_dm_pkl()
+    cls.test_06_gradient_lagrangian_objective_wrt_csv_design_var_on_crashed_x()
+    cls.test_07_gradient_all_disciplines_on_crashed_x()

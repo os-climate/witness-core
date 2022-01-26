@@ -24,6 +24,7 @@ from sos_trades_core.execution_engine.func_manager.func_manager import FunctionM
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -35,18 +36,18 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False, execution_engine=None,
-                 one_invest_discipline=True, techno_dict=DEFAULT_TECHNO_DICT):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], techno_dict=DEFAULT_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
         self.bspline = bspline
-        self.one_invest_discipline = one_invest_discipline
+        self.invest_discipline = invest_discipline
         self.techno_dict = techno_dict
 
         self.dc_energy = datacase_energy(
             self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
-            one_invest_discipline=self.one_invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_constraint_land_use(self):
@@ -88,7 +89,7 @@ class Study(ClimateEconomicsStudyManager):
             self.year_start, self.year_end, self.time_step)
         dc_witness.study_name = self.study_name
 
-        #-- oad data from lad use
+        #-- load data from land use
         dc_landuse = datacase_landuse(
             self.year_start, self.year_end, self.time_step, execution_engine=self.execution_engine)
         dc_landuse.study_name = self.study_name
@@ -115,8 +116,6 @@ class Study(ClimateEconomicsStudyManager):
         dspace_energy = self.dc_energy.dspace
 
         dspace_land_use = dc_landuse.dspace
-
-        #dspace_land_use = dc_landuse.dspace
 
         self.merge_design_spaces([dspace_energy, dspace_land_use])
         """

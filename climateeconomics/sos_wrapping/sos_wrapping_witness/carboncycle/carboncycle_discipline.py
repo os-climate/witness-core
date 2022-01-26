@@ -45,6 +45,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         'lo_ml': {'type': 'float', 'default': 1000, 'user_level': 2},
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'ppm_ref': {'type': 'float', 'default': 280, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'rockstrom_constraint_ref': {'type': 'float', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                   'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
@@ -56,7 +57,8 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'carboncycle_detail_df': {'type': 'dataframe'},
-        'ppm_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'ppm_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
     def init_execution(self):
@@ -68,11 +70,13 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         param_in = self.get_sosdisc_inputs()
 
         # compute output
-        carboncycle_df, ppm_objective = self.carboncycle.compute(param_in)
+        carboncycle_df, ppm_objective = self.carboncycle.compute(
+            param_in)
         dict_values = {
             'carboncycle_detail_df': carboncycle_df,
             'carboncycle_df': carboncycle_df[['years', 'atmo_conc']],
-            'ppm_objective': ppm_objective}
+            'ppm_objective': ppm_objective,
+            'rockstrom_limit_constraint': self.carboncycle.rockstrom_limit_constraint}
 
         # store data
         self.store_sos_outputs_values(dict_values)
@@ -109,6 +113,9 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             d_ppm_d_totalemissions)
         self.set_partial_derivative_for_other_types(
             ('ppm_objective', ), ('emissions_df', 'total_emissions'),  d_ppm_objective_d_totalemissions)
+
+        self.set_partial_derivative_for_other_types(
+            ('rockstrom_limit_constraint', ), ('emissions_df', 'total_emissions'),  -d_ppm_d_totalemissions / self.carboncycle.rockstrom_constraint_ref)
 
     def get_chart_filter_list(self):
 
@@ -152,7 +159,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             year_end = years[len(years) - 1]
             min_value, max_value = self.get_greataxisrange(atmo_conc)
 
-            chart_name = 'atmosphere concentration of carbon'
+            chart_name = 'Atmosphere concentration of carbon'
 
             new_chart = TwoAxesInstanciatedChart('years', 'carbon concentration (Gtc)',
                                                  [year_start - 5, year_end + 5],

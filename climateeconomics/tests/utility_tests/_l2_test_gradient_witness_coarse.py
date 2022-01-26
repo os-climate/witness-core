@@ -23,6 +23,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as witness_coarse_usecase
 import unittest
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
@@ -58,7 +59,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         extra_name = 'WITNESS'
         # retrieve energy process
         chain_builders = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=False)
+            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
@@ -91,7 +92,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.factory.set_builders_to_coupling_builder(coupling_builder)
         self.ee.configure()
         usecase = witness_sub_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=False)
+            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -150,12 +151,12 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=False)
+            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_sub_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=False)
+            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -220,12 +221,12 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=False)
+            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_coarse_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=False)
+            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -347,7 +348,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
 
         usecase = witness_sub_proc_usecase(
-            execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=False)
+            execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 

@@ -53,7 +53,7 @@ class OilModelTestCase(unittest.TestCase):
         Mainly check the overal run without value checks (will be done in another test)
         '''
         Oil_use = ResourceModel(self.param)
-        Oil_use.compute(self.energy_oil_demand_df,'oil_resource',1990)
+        Oil_use.compute(self.energy_oil_demand_df,'oil_resource',2012)
 
     def test_oil_discipline(self):
         ''' 
@@ -90,5 +90,5 @@ class OilModelTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()

@@ -21,6 +21,7 @@ class CarbonCycle():
     """
     Carbon cycle 
     """
+    rockstrom_limit = 450
 
     def __init__(self, param):
         '''
@@ -61,6 +62,7 @@ class CarbonCycle():
         # conversion factor 1ppm= 2.13 Gtc
         self.gtc_to_ppm = 2.13
         self.scale_factor_carbon_cycle = self.param['scale_factor_atmo_conc']
+        self.rockstrom_constraint_ref = self.param['rockstrom_constraint_ref']
 
     def create_dataframe(self):
         '''
@@ -308,6 +310,13 @@ class CarbonCycle():
         self.ppm_obj = np.asarray([(1 - self.alpha) * (1 - self.beta) * self.carboncycle_df['ppm'].sum()
                                    / (self.ppm_ref * delta_years)])
 
+    def compute_rockstrom_limit_constraint(self):
+        """
+        Compute Rockstrom limit constraint
+        """
+        self.rockstrom_limit_constraint = - (self.carboncycle_df['ppm'].values -
+                                             1.1 * self.rockstrom_limit) / self.rockstrom_constraint_ref
+
     def compute(self, inputs_models):
         """
         Compute results of the model
@@ -327,7 +336,7 @@ class CarbonCycle():
         self.carboncycle_df = self.carboncycle_df.replace(
             [np.inf, -np.inf], np.nan)
         self.compute_objective()
-
+        self.compute_rockstrom_limit_constraint()
         # Rescale atmo_conc of carbon_cycle_df
         self.carboncycle_df['atmo_conc'] = self.carboncycle_df['atmo_conc'] * \
             self.scale_factor_carbon_cycle

@@ -21,6 +21,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
@@ -58,12 +59,12 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         techno_dict = DEFAULT_TECHNO_DICT
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict, one_invest_discipline=True)
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_sub_proc_usecase(
-            one_invest_discipline=True, execution_engine=self.ee)
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], execution_engine=self.ee)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 

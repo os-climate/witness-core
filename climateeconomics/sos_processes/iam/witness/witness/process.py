@@ -16,12 +16,13 @@ limitations under the License.
 
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
     def __init__(self, ee):
         WITNESSSubProcessBuilder.__init__(self, ee)
-        self.one_invest_discipline = True
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[1]
 
     def get_builders(self):
 
@@ -37,7 +38,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=self.techno_dict, one_invest_discipline=self.one_invest_discipline)
+            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
 
         chain_builders.extend(chain_builders_energy)
 
@@ -52,5 +53,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
                    'ns_ref': f'{self.ee.study_name}.NormalizationReferences'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
+
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+            'ns_witness',
+            'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_optim.post_processing_witness_full')
 
         return chain_builders

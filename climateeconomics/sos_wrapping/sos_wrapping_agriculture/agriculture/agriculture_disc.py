@@ -68,8 +68,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                'meat_to_vegetables': {'type': 'array', 'default': default_meat_to_vegetables, 'unit': '%', 'namespace': 'ns_agriculture'},
                'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_agriculture'},
                'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-               'param_a': {'type': 'float', 'default': - 0.00833 , 'user_level': 3}, 
-               'param_b': {'type': 'float', 'default':  - 0.04167, 'user_level': 3}
+               'param_a': {'type': 'float', 'default': - 0.00833, 'user_level': 3},
+               'param_b': {'type': 'float', 'default': - 0.04167, 'user_level': 3}
                }
 
     DESC_OUT = {
@@ -109,7 +109,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             'total_food_land_surface': self.agriculture_model.total_food_land_surface,
             'food_land_surface_percentage_df': self.agriculture_model.food_land_surface_percentage_df,
             'updated_diet_df': self.agriculture_model.updated_diet_df,
-            'agriculture_productivity_evolution': self.agriculture_model.productivity_evolution, 
+            'agriculture_productivity_evolution': self.agriculture_model.productivity_evolution,
             #'percentage_diet_df': self.agriculture_model.percentage_diet_df,
         }
 
@@ -145,7 +145,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('population_df', 'population'), summ,)
-        d_total_d_temperature = model.d_food_land_surface_d_temperature(temperature_df, 'total surface (Gha)')
+        d_total_d_temperature = model.d_food_land_surface_d_temperature(
+            temperature_df, 'total surface (Gha)')
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature,)
 
@@ -203,7 +204,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart('years', 'surface (Gha)',
-                                                 chart_name='surface taken to produce food over time', stacked_bar=True)
+                                                 chart_name='Surface taken to produce food over time', stacked_bar=True)
             new_chart.add_series(agriculture_surface_series)
 
             for serie in series_to_add:
@@ -230,7 +231,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart('years', 'surface (%)',
-                                                 chart_name='share of the surface used to produce food over time', stacked_bar=True)
+                                                 chart_name='Share of the surface used to produce food over time', stacked_bar=True)
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
             fake_serie = InstanciatedSeries(
@@ -262,7 +263,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart('years', 'food quantity (kg / person / year)',
-                                                 chart_name='evolution of the diet over time', stacked_bar=True)
+                                                 chart_name='Evolution of the diet over time', stacked_bar=True)
 
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
@@ -275,19 +276,20 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 new_chart.add_series(serie)
 
             instanciated_charts.append(new_chart)
-            
+
         if 'Agriculture Productivity Evolution' in chart_list:
-            
-            prod_df = self.get_sosdisc_outputs('agriculture_productivity_evolution')
+
+            prod_df = self.get_sosdisc_outputs(
+                'agriculture_productivity_evolution')
             years = list(prod_df.index)
-            
+
             chart_name = 'Agriculture productivity evolution'
 
             new_chart = TwoAxesInstanciatedChart('years', ' productivity evolution (%)',
-                                                 chart_name = chart_name)
+                                                 chart_name=chart_name)
 
             visible_line = True
-            ordonate_data = list(prod_df['productivity_evolution']*100)
+            ordonate_data = list(prod_df['productivity_evolution'] * 100)
 
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'productivity_evolution', 'lines', visible_line)

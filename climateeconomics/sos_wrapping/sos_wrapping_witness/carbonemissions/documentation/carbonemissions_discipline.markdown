@@ -18,8 +18,7 @@ where $$\sigma_{g\, t-1} = \sigma_{g\, t-2}(1+ \sigma_{d1})^{time\,step}$$ and $
 #### Energy Emissions
 Energy Emissions is an input coming from the energy model. 
 ### Land emissions
-Emissions from land-use are for example emissions from deforestation. It is exogenous in the model and evolves over time $t$ according to: 
-$$E_{t\,Land} = E_{0\,Land}(1-de\_land)^{t-1}$$ with $de\_land$ the decline rate of land emissions. This is also the same equation as the one used in DICE[^1]. 
+Land emissions are from deforestation. Trees absorb a certain quantity of CO2. When trees are cut, CO2 is not absorbed anymore. This emission comes from forest model.
 ### CO2 objective
 
 A "CO2 objective" is calculated and set as an output of the model, based on the CO2 emissions:

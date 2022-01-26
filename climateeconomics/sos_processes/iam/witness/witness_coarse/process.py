@@ -13,15 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import DEFAULT_COARSE_TECHNO_DICT
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
     def __init__(self, ee):
         WITNESSSubProcessBuilder.__init__(self, ee)
-        self.one_invest_discipline = True
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[1]
 
     def get_builders(self):
 
@@ -37,7 +38,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=techno_dict, one_invest_discipline=self.one_invest_discipline)
+            techno_dict=techno_dict, invest_discipline=self.invest_discipline)
 
         chain_builders.extend(chain_builders_energy)
 

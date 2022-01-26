@@ -166,7 +166,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             min_value = min(min_values.values())
             max_value = max(max_values.values())
 
-            chart_name = 'temperature evolution over the years'
+            chart_name = 'Temperature evolution over the years'
 
             new_chart = TwoAxesInstanciatedChart('years', 'temperature evolution (degrees Celsius above preindustrial)',
                                                  [year_start - 5, year_end + 5], [
