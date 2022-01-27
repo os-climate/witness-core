@@ -24,6 +24,7 @@ from plotly import graph_objects as go
 from plotly.subplots import make_subplots
 
 import pandas as pd
+from plotly.express.colors import qualitative
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -32,17 +33,19 @@ def post_processing_filters(execution_engine, namespace):
     '''
     filters = []
 
-    chart_list = ['Breakdown price energies',
-                  'Global CO2 breakdown sankey', 'Energies CO2 intensity']
+    chart_list = ['Breakdown price energies', 'Energies CO2 intensity',
+                  'Global CO2 breakdown sankey', 'Global CO2 breakdown bar']
     energy_list = execution_engine.dm.get_disciplines_with_name(
         f'{namespace}.EnergyMix')[0].get_sosdisc_inputs('energy_list')
     for energy in energy_list:
         chart_list += [f'{energy} CO2 intensity']
         chart_list += [f'{energy} CO2 breakdown sankey']
+        chart_list += [f'{energy} CO2 breakdown bar']
     # The filters are set to False by default since the graphs are not yet
     # mature
     filters.append(ChartFilter('Charts', chart_list,
-                               ['Global CO2 breakdown sankey', 'Energies CO2 intensity'], 'Charts'))
+                               ['Breakdown price energies', 'Energies CO2 intensity',
+                                'Global CO2 breakdown sankey', 'Global CO2 breakdown bar'], 'Charts'))
 
     return filters
 
@@ -116,6 +119,24 @@ def post_processings(execution_engine, namespace, filters):
                 execution_engine, namespace, energy_name=energy, chart_name=chart_name, summary=False)
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
+
+    #---
+    if 'Global CO2 breakdown bar' in graphs_list:
+
+        chart_name = f'Global CO2 breakdown bar by years'
+        new_chart = get_chart_Global_CO2_breakdown_bar(
+            execution_engine, namespace, chart_name=chart_name)
+        if new_chart is not None:
+            instanciated_charts.append(new_chart)
+    #---
+    for energy in energy_list:
+        if f'{energy} CO2 breakdown bar' in graphs_list:
+            chart_name = f'{energy} CO2 breakdown bar by years'
+            new_chart = get_chart_Energy_CO2_breakdown_bar(
+                execution_engine, namespace, energy_name=energy, chart_name=chart_name)
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
     # #---
     # if 'Breakdown price energies' in graphs_list:
         # chart_name = f'Breakdown price energies'
@@ -737,6 +758,107 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     return new_chart
 
 
+def get_chart_Global_CO2_breakdown_bar(execution_engine, namespace, chart_name):
+    '''! Function to create the CO2 breakdown sunburst diagram
+    @param execution_engine: Execution engine object from which the data is gathered
+    @param namespace: String containing the namespace to access the data
+    @param chart_name:String, title of the post_proc
+
+    @return new_chart: InstantiatedPlotlyNativeChart a Sankey Diagram
+    '''
+
+    # Prepare data
+    df = get_CO2_breakdown_df(
+        execution_engine, namespace)
+
+    # Create Figure
+    chart_name = f'{chart_name}'
+
+    energy_list, technology_list = list(
+        set(df['energy'])), list(set(df['techno']))
+    CO2_emissions_type = [col for col in df.columns if col not in [
+        'year', 'energy', 'techno', 'production', 'CO2 after use']]
+    CO2_emissions_colors = dict(
+        zip(CO2_emissions_type, [qualitative.Dark24[i] for i, emission in enumerate(CO2_emissions_type)]))
+
+    #----Emission Type Breakdown
+    fig = go.Figure()
+
+    for year in sorted(set(df['year'])):
+        df_year = df.loc[df['year'] == year]
+        for emission in CO2_emissions_type:
+            xlabel_list, emission_list, emission_per_kWh_list = [], [], []
+            for energy in energy_list:
+                df_energy = df_year.loc[df_year['energy'] == energy]
+                production = df_energy['production'].sum()
+                xlabel_list += [f'{energy}<br>{production: .2f} kWh']
+                emission_list += [(df_energy[emission] *
+                                   df_energy['production']).sum()]
+                if df_energy['production'].sum() == 0.0:
+                    emission_per_kWh = 0.0
+                else:
+                    emission_per_kWh = (df_energy[emission] *
+                                        df_energy['production']).sum() / df_energy['production'].sum()
+                emission_per_kWh_list += [
+                    f'{energy}<br>{emission}<br>{emission_per_kWh: .2f} kg/kWh']
+            production = df_year['production'].sum()
+            xlabel_list += [f'Total<br>{production: .2f} kWh']
+            emission_list += [(df_year[emission] *
+                               df_year['production']).sum()]
+            if df_year['production'].sum() == 0.0:
+                emission_per_kWh = 0.0
+            else:
+                emission_per_kWh = (df_year[emission] *
+                                    df_year['production']).sum() / df_year['production'].sum()
+            emission_per_kWh_list += [
+                f'Total<br>{emission}<br>{emission_per_kWh: .2f} kg/kWh']
+            emission_bar = go.Bar(x=xlabel_list, y=emission_list,
+                                  name=emission, text=emission_per_kWh_list,
+                                  marker={
+                                      'color': CO2_emissions_colors[emission]},
+                                  customdata=[year], visible=False)
+            fig.add_trace(emission_bar)
+        total_energy_emissions = []
+        for energy in energy_list:
+            df_energy = df_year.loc[df_year['energy'] == energy]
+            total_energy_emissions += [(df_energy['CO2 after use']
+                                        * df_energy['production']).sum()]
+        total_energy_emissions += [(df_year['CO2 after use']
+                                    * df_year['production']).sum()]
+        fig.add_trace(go.Scatter(x=xlabel_list, y=total_energy_emissions,
+                                 name='Total CO2 emissions',
+                                 customdata=[year], visible=False))
+    # Prepare year slider and layout updates
+    steps = []
+    for year in sorted(set(df['year'])):
+        step = dict(
+            method="update",
+            args=[{"visible": [False] * len(fig.data)}, ],
+            label=str(year)
+        )
+        for i in range(len(fig.data)):
+            if fig.data[i].customdata[0] == year:
+                step["args"][0]["visible"][i] = True
+        steps.append(step)
+    sliders = [dict(
+        active=0,
+        currentvalue={"prefix": "Year: "},
+        steps=steps), ]
+
+    for i in range(len(fig.data)):
+        if fig.data[i].customdata[0] == sorted(set(df['year']))[0]:
+            fig.data[i].visible = True
+
+    fig.update_layout(
+        sliders=sliders,
+        yaxis_title="CO2 emissions [kg]", barmode='relative'
+    )
+
+    new_chart = InstantiatedPlotlyNativeChart(
+        fig, chart_name=chart_name, default_title=True)
+    return new_chart
+
+
 def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_name, energy_name, summary=True):
     '''! Function to create the CO2 breakdown Sankey diagram
     @param execution_engine: Execution engine object from which the data is gathered
@@ -986,6 +1108,109 @@ def get_chart_Energy_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     return new_chart
 
 
+def get_chart_Energy_CO2_breakdown_bar(execution_engine, namespace, chart_name, energy_name):
+    '''! Function to create the CO2 breakdown sunburst diagram
+    @param execution_engine: Execution engine object from which the data is gathered
+    @param namespace: String containing the namespace to access the data
+    @param chart_name:String, title of the post_proc
+
+    @return new_chart: InstantiatedPlotlyNativeChart a Sankey Diagram
+    '''
+
+    # Prepare data
+    df = get_CO2_breakdown_df(
+        execution_engine, namespace)
+
+    # Create Figure
+    chart_name = f'{chart_name}'
+
+    energy_list, technology_list = list(
+        set(df['energy'])), list(set(df['techno']))
+    CO2_emissions_type = [col for col in df.columns if col not in [
+        'year', 'energy', 'techno', 'production', 'CO2 after use']]
+    CO2_emissions_colors = dict(
+        zip(CO2_emissions_type, [qualitative.Dark24[i] for i, emission in enumerate(CO2_emissions_type)]))
+
+    #----Per Energy technology breakdown
+    fig2 = go.Figure()
+
+    for year in sorted(set(df['year'])):
+        df_year = df.loc[df['year'] == year]
+        df_energy = df_year.loc[df_year['energy'] == energy_name]
+        for emission in CO2_emissions_type:
+            xlabel_list, emission_list, emission_per_kWh_list = [], [], []
+            for techno in set(df_energy['techno']):
+                df_techno = df_energy.loc[df_energy['techno'] == techno]
+                production = df_techno['production'].sum()
+                xlabel_list += [f'{techno}<br>{production: .2e} kWh']
+                emission_list += [(df_techno[emission] *
+                                   df_techno['production']).sum()]
+                if df_techno['production'].sum() == 0.0:
+                    emission_per_kWh = 0.0
+                else:
+                    emission_per_kWh = (df_techno[emission] *
+                                        df_techno['production']).sum() / df_techno['production'].sum()
+                emission_per_kWh_list += [
+                    f'{techno}<br>{emission}<br>{emission_per_kWh: .2e} kg/kWh']
+            production = df_energy['production'].sum()
+            xlabel_list += [f'Total<br>{production: .2e} kWh']
+            emission_list += [(df_energy[emission] *
+                               df_energy['production']).sum()]
+            if df_energy['production'].sum() == 0.0:
+                emission_per_kWh = 0.0
+            else:
+                emission_per_kWh = (df_energy[emission] *
+                                    df_energy['production']).sum() / df_energy['production'].sum()
+            emission_per_kWh_list += [
+                f'Total<br>{emission}<br>{emission_per_kWh: .2e} kg/kWh']
+            emission_bar = go.Bar(x=xlabel_list, y=emission_list,
+                                  name=emission, text=emission_per_kWh_list,
+                                  marker={
+                                      'color': CO2_emissions_colors[emission]},
+                                  customdata=[year], visible=False)
+            fig2.add_trace(emission_bar)
+        total_energy_emissions = []
+        for techno in set(df_energy['techno']):
+            df_techno = df_energy.loc[df_energy['techno'] == techno]
+            total_energy_emissions += [(df_techno['CO2 after use']
+                                        * df_techno['production']).sum()]
+        total_energy_emissions += [(df_energy['CO2 after use']
+                                    * df_energy['production']).sum()]
+
+        fig2.add_trace(go.Scatter(x=xlabel_list, y=total_energy_emissions,
+                                  name='Total CO2 emissions',
+                                  customdata=[year], visible=False))
+    # Prepare year slider and layout updates
+    steps = []
+    for year in sorted(set(df['year'])):
+        step = dict(
+            method="update",
+            args=[{"visible": [False] * len(fig2.data)}, ],
+            label=str(year)
+        )
+        for i in range(len(fig2.data)):
+            if fig2.data[i].customdata[0] == year:
+                step["args"][0]["visible"][i] = True
+        steps.append(step)
+    sliders = [dict(
+        active=0,
+        currentvalue={"prefix": "Year: "},
+        steps=steps), ]
+
+    for i in range(len(fig2.data)):
+        if fig2.data[i].customdata[0] == sorted(set(df['year']))[0]:
+            fig2.data[i].visible = True
+
+    fig2.update_layout(
+        sliders=sliders,
+        yaxis_title="CO2 emissions [kg]", barmode='relative'
+    )
+
+    new_chart = InstantiatedPlotlyNativeChart(
+        fig2, chart_name=chart_name, default_title=True)
+    return new_chart
+
+
 def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     '''! Function to create the dataframe with all the data necessary for the CO2 breakdown graphs in a multilevel [energy, technologies]
     @param execution_engine: Current execution engine object, from which the data is extracted
@@ -1052,6 +1277,63 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
             multilevel_df = multilevel_df.append(techno_df)
 
     return multilevel_df, years
+
+
+def get_CO2_breakdown_df(execution_engine, namespace):
+    '''! Function to create the dataframe with all the data necessary for the CO2 breakdown graphs in a multilevel [energy, technologies]
+    @param execution_engine: Current execution engine object, from which the data is extracted
+    @param namespace: Namespace at which the data can be accessed
+
+    @return multilevel_df: Dataframe
+    '''
+    EnergyMix = execution_engine.dm.get_disciplines_with_name(
+        f'{namespace}.EnergyMix')[0]
+    energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
+    years = np.arange(EnergyMix.get_sosdisc_inputs(
+        'year_start'), EnergyMix.get_sosdisc_inputs('year_end') + 1, 1)
+    df = pd.DataFrame()
+    for energy in energy_list:
+        energy_disc = execution_engine.dm.get_disciplines_with_name(
+            f'{namespace}.EnergyMix.{energy}')[0]
+        techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        for techno in techno_list:
+            techno_disc = execution_engine.dm.get_disciplines_with_name(
+                f'{namespace}.EnergyMix.{energy}.{techno}')[0]
+            production_techno = techno_disc.get_sosdisc_outputs(
+                'techno_production')[f'{energy} (TWh)'].values *\
+                techno_disc.get_sosdisc_inputs(
+                    'scaling_factor_techno_production')
+            df_techno = pd.DataFrame(
+                {'year': years, 'energy': energy, 'techno': techno, 'production': production_techno})
+            # Calculate total CO2 emissions
+            data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
+            carbon_emissions = techno_disc.get_sosdisc_outputs(
+                'CO2_emissions_detailed')
+            CO2_per_use = np.zeros(
+                len(carbon_emissions['years']))
+            if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
+                if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
+                    CO2_per_use = np.ones(
+                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict['high_calorific_value']
+                elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
+                    CO2_per_use = np.ones(
+                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use']
+            df_techno['CO2 per use'] = CO2_per_use
+            CO2_from_consumption = np.zeros(len(years))
+            for emission_type in carbon_emissions:
+                if emission_type == 'years':
+                    continue
+                elif emission_type == 'production':
+                    df_techno['CO2 from production'] = carbon_emissions[emission_type].values
+                elif emission_type == techno:
+                    df_techno['CO2 after use'] = CO2_per_use + \
+                        carbon_emissions[techno].values
+                else:
+                    CO2_from_consumption += carbon_emissions[emission_type].values
+            df_techno[f'CO2 from consumption'] = CO2_from_consumption
+            df = pd.concat([df, df_techno], ignore_index=True)
+    df.fillna(0.0, inplace=True)
+    return df
 
 
 # def get_chart_breakdown_price_energies(execution_engine, namespace, chart_name):
