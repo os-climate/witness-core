@@ -22,7 +22,7 @@ from shutil import rmtree
 from pathlib import Path
 from os.path import dirname, join
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
 import cProfile
 import pstats
 from io import StringIO
@@ -65,7 +65,7 @@ class TestScatter(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         repo = 'climateeconomics.sos_processes.iam.witness'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'witness_coarse')
+            repo, 'witness')
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
@@ -80,7 +80,7 @@ class TestScatter(unittest.TestCase):
 
         input_dict_to_load[f'{self.name}.n_processes'] = 1
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'MDANewtonRaphson'
+        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
         self.ee.load_study_from_input_dict(input_dict_to_load)
         profil = cProfile.Profile()
         profil.enable()
@@ -138,9 +138,9 @@ class TestScatter(unittest.TestCase):
         # Equal aspect ratio ensures that pie is drawn as a circle.
         ax1.axis('equal')
         ax1.set_title(
-            f"WITNESS {mda_class} with {n_processes} procs, Total time : {total_time} s")
+            f"WITNESS {mda_class} cache with {n_processes} procs, Total time : {total_time} s")
 
-        fig_name = f'WITNESS_coarse_{mda_class}_{n_processes}_proc.png'
+        fig_name = f'WITNESS_full_{mda_class}_{n_processes}_proc.png'
         plt.savefig(
             join(dirname(__file__), fig_name))
         if platform.system() == 'Windows':
