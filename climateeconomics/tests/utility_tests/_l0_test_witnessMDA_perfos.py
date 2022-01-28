@@ -80,7 +80,7 @@ class TestScatter(unittest.TestCase):
 
         input_dict_to_load[f'{self.name}.n_processes'] = 1
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSNewtonMDA'
         self.ee.load_study_from_input_dict(input_dict_to_load)
         profil = cProfile.Profile()
         profil.enable()
