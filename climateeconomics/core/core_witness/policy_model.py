@@ -15,8 +15,8 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum,\
-    get_dsmooth_dvariable
+from sos_trades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect,\
+    get_dsmooth_dvariable_vect
 
 
 class PolicyModel():
@@ -41,13 +41,8 @@ class PolicyModel():
         self.CO2_tax['years'] = self.CO2_damage_price['years']
         CO2_damage_price_array = self.CO2_damage_price['CO2_damage_price'].values
         CCS_price_array = self.CCS_price['ccs_price_per_tCO2'].values
-        l = []
-
-        for elem in range(0, len(CO2_damage_price_array)):
-            l.append(smooth_maximum(
-                np.array([CO2_damage_price_array[elem], CCS_price_array[elem], 0.0])))
-
-        self.CO2_tax['CO2_tax'] = l
+        self.CO2_tax['CO2_tax'] = smooth_maximum_vect(
+            np.array([CO2_damage_price_array, CCS_price_array, 0.0 * CCS_price_array]).T)
 
     def compute_CO2_tax_dCCS_dCO2_damage_smooth(self):
         """
@@ -56,13 +51,7 @@ class PolicyModel():
         self.CO2_tax['years'] = self.CO2_damage_price['years']
         CO2_damage_price_array = self.CO2_damage_price['CO2_damage_price'].values
         CCS_price_array = self.CCS_price['ccs_price_per_tCO2'].values
-        l_CO2 = []
-        l_CCS = []
-
-        for elem in range(0, len(CO2_damage_price_array)):
-            dsmooth = get_dsmooth_dvariable(
-                np.array([CO2_damage_price_array[elem], CCS_price_array[elem], 0.0]))
-            l_CO2.append(dsmooth[0])
-            l_CCS.append(dsmooth[1])
-
+        dsmooth = get_dsmooth_dvariable_vect(
+            np.array([CO2_damage_price_array, CCS_price_array, 0.0 * CCS_price_array]).T)
+        l_CO2, l_CCS = dsmooth.T[0], dsmooth.T[1]
         return l_CO2, l_CCS
