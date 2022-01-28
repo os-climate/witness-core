@@ -242,7 +242,7 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
         fig.update_layout(
             sliders=sliders
         )
-    fig.update_xaxes(title_text='Price per MWh [$/MWh]')
+    fig.update_xaxes(title_text='Price per MWh [$/MWh] (before CO2 taxes)')
     fig.update_yaxes(title_text='CO2 per kWh [kgCO2/kWh]')
     fig.data[0].visible = True
 
