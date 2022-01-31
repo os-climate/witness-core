@@ -203,10 +203,10 @@ class DataStudy():
             ['rockstrom_limit_constraint'])
         list_parent.extend([''])
         list_ns.extend(['ns_functions'])
-        list_ftype.extend([OBJECTIVE])
+        list_ftype.extend([INEQ_CONSTRAINT])
         list_weight.extend([0.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
+            [AGGR_TYPE_SMAX])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
