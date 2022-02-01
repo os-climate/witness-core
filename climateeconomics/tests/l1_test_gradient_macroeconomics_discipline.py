@@ -30,60 +30,67 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-
-        self.data_dir = join(dirname(__file__), 'data')
-        energy_supply_df_all = read_csv(
-            join(self.data_dir, 'energy_supply_data_onestep.csv'))
-        damage_df_all = read_csv(
-            join(self.data_dir, 'damage_data_onestep.csv'))
-
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020]
-        self.energy_supply_df = energy_supply_df_y[['years',
-                                                    'cumulative_total_energy_supply']]
-
-        self.energy_supply_df = self.energy_supply_df.rename(
-            columns={'cumulative_total_energy_supply': 'Total production'})
-        damage_df_y = damage_df_all[damage_df_all['years'] >= 2020]
-        self.damage_df = damage_df_y[['years', 'damage_frac_output']]
-
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
-        self.population_df = read_csv(
-            join(global_data_dir, 'population_df.csv'))
-
-        # put manually the index
-        self.years = np.arange(2020, 2101, 1)
-        self.energy_supply_df.index = self.years
-        self.damage_df.index = self.years
-        self.population_df.index = self.years
-
         self.year_start = 2020
         self.year_end = 2100
         self.time_step = 1
+        self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.nb_per = round(
             (self.year_end - self.year_start) / self.time_step + 1)
+        # -------------------------
+        # csv data
+        # energy production
+        self.data_dir = join(dirname(__file__), 'data')
+        energy_supply_csv = read_csv(join(self.data_dir, 'energy_supply_data_onestep.csv'))
+        # adapt lenght to the year range
+        energy_supply_start = energy_supply_csv.loc[energy_supply_csv['years'] >= self.year_start]
+        energy_supply_end = energy_supply_csv.loc[energy_supply_csv['years'] <= self.year_end]
+        energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
+        # energy production divided by 1e3 (scaling factor production)
+        energy_supply_csv['cumulative_total_energy_supply'] = energy_supply_csv['cumulative_total_energy_supply'] / 1e3
+        self.energy_supply_df = energy_supply_df[['years', 'cumulative_total_energy_supply']]
+        self.energy_supply_df = self.energy_supply_df.rename(
+            columns={'cumulative_total_energy_supply': 'Total production'})
+        self.energy_supply_df.index = self.years
+        # -------------------------
+        # csv data
+        # co2 emissions
+        self.co2_emissions_gt = energy_supply_df.rename(
+            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+        self.co2_emissions_gt.index = self.years
+        self.default_co2_efficiency = pd.DataFrame(
+            {'years': self.years, 'CO2_tax_efficiency': 40.0}, index=self.years)
+        # -------------------------
+        # csv data
+        # damage
+        damage_csv = read_csv(join(self.data_dir, 'damage_data_onestep.csv'))
+        # adapt lenght to the year range
+        damage_df_start = damage_csv.loc[damage_csv['years'] >= self.year_start]
+        damage_df_end = damage_csv.loc[damage_csv['years'] <= self.year_end]
+        damage_df = pd.merge(damage_df_start, damage_df_end)
+        self.damage_df = damage_df[['years', 'damage_frac_output']]
+        self.damage_df.index = self.years
+        # -------------------------
+        # csv data
+        # population
+        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        population_csv = read_csv(
+            join(global_data_dir, 'population_df.csv'))
+        population_df_start = population_csv.loc[population_csv['years'] >= self.year_start]
+        population_df_end = population_csv.loc[population_csv['years'] <= self.year_end]
+        self.population_df = pd.merge(population_df_start, population_df_end)
+        self.population_df.index = self.years
 
-        energy_invest = np.asarray([2.6] * self.nb_per)
+        # energy invest divided by 1e2 (scaling factor invest)
+        energy_invest = np.asarray([0.026] * self.nb_per)
         self.total_invest = np.asarray([25.0] * self.nb_per)
         self.total_invest = DataFrame(
             {'years': self.years, 'share_investment': self.total_invest})
         self.share_energy_investment = DataFrame(
             {'years': self.years, 'share_investment': energy_invest})
 
-        #- default CO2 tax
+        # default CO2 tax
         self.default_CO2_tax = pd.DataFrame(
-            {'years': self.years, 'CO2_tax': 50.0}, index=self.years)
-
-        #- retrieve co2_emissions_gt input
-        energy_supply_df_all = read_csv(
-            join(self.data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020][[
-            'years', 'total_CO2_emitted']]
-        energy_supply_df_y["years"] = energy_supply_df_all['years']
-        self.co2_emissions_gt = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
-        self.co2_emissions_gt.index = self.years
-        self.default_co2_efficiency = pd.DataFrame(
-            {'years': self.years, 'CO2_tax_efficiency': 40.0}, index=self.years)
+            {'years': self.years, 'CO2_tax': 50.0}, index = self.years)
 
     def analytic_grad_entry(self):
         return [
@@ -132,16 +139,18 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline.pkl', discipline=disc_techno, inputs=[
-                            f'{self.name}.energy_production', f'{self.name}.damage_df', f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
-                            f'{self.name}.co2_emissions_Gt',  f'{self.name}.CO2_taxes', f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.economics_df', f'{self.name}.energy_investment'], step=1e-15, derr_approx='complex_step')
-
-        # self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_temp1.pkl',
-        #                    discipline=disc_techno, inputs=[f'{self.name}.damage_df'],
-        #                                                     outputs=[f'{self.name}.economics_df'],
-        #                                                     step=1e-15, derr_approx='complex_step',
-        #                                                     )
+        # np.set_printoptions(threshold=1000000)
+        self.check_jacobian(location=dirname(__file__), step=1e-15, derr_approx='complex_step', 
+                            filename=f'jacobian_macroeconomics_discipline.pkl', discipline=disc_techno, 
+                            inputs=[f'{self.name}.energy_production', 
+                                    f'{self.name}.damage_df', 
+                                    f'{self.name}.share_energy_investment', 
+                                    f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.co2_emissions_Gt',  
+                                    f'{self.name}.CO2_taxes', 
+                                    f'{self.name}.population_df'],
+                            outputs=[f'{self.name}.economics_df', 
+                                     f'{self.name}.energy_investment'])
 
     def test_macro_economics_energy_supply_negative_damageproductivity(self):
 
@@ -362,12 +371,14 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         #- retrieve co2_emissions_gt input
-        energy_supply_df_all = read_csv(
+        energy_supply_csv = read_csv(
             join(self.data_dir, 'energy_supply_data_onestep_high_CO2.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020][[
-            'years', 'total_CO2_emitted']]
-        energy_supply_df_y["years"] = energy_supply_df_all['years']
-        co2_emissions_gt = energy_supply_df_y.rename(
+        # adapt lenght to the year range
+        energy_supply_start = energy_supply_csv.loc[energy_supply_csv['years'] >= self.year_start]
+        energy_supply_end = energy_supply_csv.loc[energy_supply_csv['years'] <= self.year_end]
+        energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
+        energy_supply_df["years"] = energy_supply_df['years']
+        co2_emissions_gt = energy_supply_df.rename(
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
         co2_emissions_gt.index = self.years
         inputs_dict = {f'{self.name}.year_start': self.year_start,
@@ -391,7 +402,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_very_high_emissions.pkl',
                             discipline=disc_techno, inputs=[f'{self.name}.energy_production', f'{self.name}.damage_df',
                                                             f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
@@ -418,17 +429,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         #- retrieve co2_emissions_gt input
-        energy_supply_df_all = read_csv(
-            join(self.data_dir, 'energy_supply_data_onestep_high_CO2.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020][[
-            'years', 'total_CO2_emitted']]
-        energy_supply_df_y["years"] = energy_supply_df_all['years']
-        co2_emissions_gt = energy_supply_df_y.rename(
+        energy_supply_csv = read_csv(
+            join(self.data_dir, 'energy_supply_data_onestep_negative_CO2.csv'))
+        # adapt lenght to the year range
+        energy_supply_start = energy_supply_csv.loc[energy_supply_csv['years'] >= self.year_start]
+        energy_supply_end = energy_supply_csv.loc[energy_supply_csv['years'] <= self.year_end]
+        energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
+        energy_supply_df["years"] = energy_supply_df['years']
+        co2_emissions_gt = energy_supply_df.rename(
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
         co2_emissions_gt.index = self.years
-
-        co2_emissions_gt['Total CO2 emissions'] = [45.143527103270934, 50.42228659644606, 55.779659824483375, 56.41547837017959, 56.53784255467195, 56.43900544088292, 56.42533522117556, 56.46554778468026, 56.35804371384892, 56.11296510902577, 55.57946600291536, 54.96618807135573, 54.19580090328581, 52.92583405530353, 52.15743204279378, 51.32390362690408, 50.24118420614764, 48.89743826258721, 47.939851830263045, 46.43457938505807, 43.87127445423289, 41.746434584109956, 39.44846265515009, 36.0498788838304, 32.56621522334439, 30.041083140219786, 28.766286011420252, 26.3007071618495, 24.195099055884093, 23.373231504420716, 22.142688692652005, 21.26819920547946, 20.399276689891234, 19.46727578343429, 18.226517347776273, 13.595565011635488, 9.302786417948244, 5.709786437524023, 4.536494014265404, 3.556123644938279, 2.7456697070217224,
-                                                   1.9793394190218219, 1.3390435521141348, 0.8035357151520224, 0.3833734375504325, 0.04081942984597913, -0.22163341759622449, -0.42412091679832215, -0.5815715311786763, -0.739517766011626, -0.8500944291138354, -0.8540443811445986, -0.8532941419675569, -0.8503259690387479, -0.8463610093221002, -0.8416809286282907, -0.8363833302600822, -0.8305585805441522, -0.8242899327300016, -0.8176534736662388, -0.8107185827839539, -0.8035477213519983, -0.7961961542703018, -0.7887118701170115, -0.7811216451531053, -0.7734832247683551, -0.765818912961112, -0.7581487271033238, -0.7504930108277099, -0.742873191681412, -0.7353118090766286, -0.7278323101366646, -0.7204589158636198, -0.7132164529855264, -0.7061301850411289, -0.6992255105343219, -0.6925272678358535, -0.6860595352682831, -0.6798455881466655, -0.6739078597930552, -0.6682679062364281]
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
@@ -451,7 +461,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_negative_emissions.pkl',
                             discipline=disc_techno, inputs=[f'{self.name}.energy_production', f'{self.name}.damage_df',
                                                             f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
