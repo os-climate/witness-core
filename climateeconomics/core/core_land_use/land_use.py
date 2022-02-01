@@ -118,7 +118,7 @@ class LandUse():
         # set index for population df
         population_df.index = population_df['years'].values
 
-        # Initialize demand objective  dataframe
+        # Initialize demand constraint dataframe
         self.land_demand_constraint_df = pd.DataFrame(
             {'years': self.land_demand_df['years']})
 

@@ -35,7 +35,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'default': 130.187,
                               'namespace': 'ns_witness', 'user_level': 2},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 355.9210491, 'user_level': 2},
-        'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'population_df': {'type': 'dataframe', 'unit': 'billions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'productivity_gr_start': {'type': 'float', 'default': 0.042925, 'user_level': 2},
         'decline_rate_tfp': {'type': 'float', 'default': 0.02351234, 'user_level': 3},
         'depreciation_capital': {'type': 'float', 'default': 0.08, 'user_level': 2},
@@ -100,6 +100,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         co2_tax_efficiency = param.pop('CO2_tax_efficiency')
         co2_invest_limit = param.pop('co2_invest_limit')
         population_df = param.pop('population_df')
+        # rescaling from billion to million
+        cols = [col for col in population_df.columns if col != 'years']
+        population_df[cols] = population_df[cols] * 1e3
 
         macro_inputs = {'damage_frac_output': damage_df[['years', 'damage_frac_output']],
                         'energy_production': energy_production,

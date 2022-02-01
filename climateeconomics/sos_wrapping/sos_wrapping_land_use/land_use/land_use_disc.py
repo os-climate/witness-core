@@ -41,7 +41,7 @@ class LandUseDiscipline(SoSDiscipline):
                'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'crop_land_use_per_capita': {'type': 'float', 'default': 0.21, 'unit': 'ha/capita'},
                'livestock_land_use_per_capita': {'type': 'float', 'default': 0.42, 'unit': 'ha/capita'},
-               'population_df': {'type': 'dataframe', 'unit': 'millions of people',
+               'population_df': {'type': 'dataframe', 'unit': 'billions of people',
                                  'dataframe_descriptor': {'years': ('float', None, False),
                                                           'population': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
@@ -82,12 +82,13 @@ class LandUseDiscipline(SoSDiscipline):
 
         #-- compute
         population_df = inp_dict.pop('population_df')
+        # rescaling from billion to million
+        cols = [col for col in population_df.columns if col != 'years']
+        population_df[cols] = population_df[cols] * 1e3
         land_demand_df = inp_dict.pop('land_demand_df')
         livestock_usage_factor_df = inp_dict.pop('livestock_usage_factor_df')
         self.land_use_model.compute(
             population_df, land_demand_df, livestock_usage_factor_df)
-
-        years = np.arange(inp_dict['year_start'], inp_dict['year_end'] + 1)
 
         outputs_dict = {
             LandUse.LAND_DEMAND_CONSTRAINT_DF: self.land_use_model.land_demand_constraint_df,
@@ -107,6 +108,9 @@ class LandUseDiscipline(SoSDiscipline):
         """
         inputs_dict = self.get_sosdisc_inputs()
         population = inputs_dict.pop('population_df')
+        # rescaling from billion to million
+        cols = [col for col in population.columns if col != 'years']
+        population[cols] = population[cols] * 1e3
         land_demand_df = inputs_dict.pop('land_demand_df')
         livestock_usage_factor_df = inputs_dict.pop(
             'livestock_usage_factor_df')
