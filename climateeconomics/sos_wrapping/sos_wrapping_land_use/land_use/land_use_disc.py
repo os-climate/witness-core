@@ -87,8 +87,6 @@ class LandUseDiscipline(SoSDiscipline):
         self.land_use_model.compute(
             population_df, land_demand_df, livestock_usage_factor_df)
 
-        years = np.arange(inp_dict['year_start'], inp_dict['year_end'] + 1)
-
         outputs_dict = {
             LandUse.LAND_DEMAND_CONSTRAINT_DF: self.land_use_model.land_demand_constraint_df,
             LandUse.LAND_SURFACE_DETAIL_DF: self.land_use_model.land_surface_df,
