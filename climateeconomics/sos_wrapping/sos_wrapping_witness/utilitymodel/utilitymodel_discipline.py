@@ -64,9 +64,6 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         economics_df = inp_dict.pop('economics_df')
         energy_mean_price = inp_dict['energy_mean_price']
         population_df = inp_dict.pop('population_df')
-        # rescaling from billion to million
-        cols = [col for col in population_df.columns if col != 'years']
-        population_df[cols] = population_df[cols] * 1e3
 
         utility_df = self.utility_m.compute(
             economics_df, energy_mean_price, population_df)
