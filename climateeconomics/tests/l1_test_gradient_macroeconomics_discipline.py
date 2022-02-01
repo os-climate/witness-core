@@ -34,8 +34,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.data_dir = join(dirname(__file__), 'data')
         energy_supply_df_all = read_csv(
             join(self.data_dir, 'energy_supply_data_onestep.csv'))
-        # Energy production divided by 1e3 (scaling factor production)
-        energy_supply_df_all['cumulative_total_energy_supply'] = energy_supply_df_all['cumulative_total_energy_supply'] / 1e3
         damage_df_all = read_csv(
             join(self.data_dir, 'damage_data_onestep.csv'))
 
@@ -64,8 +62,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.nb_per = round(
             (self.year_end - self.year_start) / self.time_step + 1)
 
-        # Energy invest divided by 1e2 (scaling factor invest)
-        energy_invest = np.asarray([0.026] * self.nb_per)
+        energy_invest = np.asarray([2.6] * self.nb_per)
         self.total_invest = np.asarray([25.0] * self.nb_per)
         self.total_invest = DataFrame(
             {'years': self.years, 'share_investment': self.total_invest})
