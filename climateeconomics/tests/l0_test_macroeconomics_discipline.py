@@ -62,8 +62,8 @@ class MacroDiscTest(unittest.TestCase):
         nb_per = round(
             (year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
-
-        energy_invest = np.asarray([2.6] * nb_per)
+        # Energy invest divided by 1e2 (scaling factor invest)
+        energy_invest = np.asarray([0.026] * nb_per)
 
         total_invest = np.asarray([25.0] * nb_per)
         total_invest = DataFrame(
@@ -74,10 +74,11 @@ class MacroDiscTest(unittest.TestCase):
         # Our world in data Direct primary energy conso data until 2019, then for 2020 drop in 6% according to IEA
         # then IEA data*0.91 (WEO 2020 stated) until 2040 then invented. 0.91 =
         # ratio net brut in 2020
+        # Energy production divided by 1e3 (scaling factor production)
         energy_outlook = pd.DataFrame({
             'years': [2010, 2017, 2018, 2019, 2020, 2025, 2030, 2040, 2050, 2060, 2100],
-            'energy_demand': [141057, 153513, 157366, 158839, 158839 * 0.94, 174058 * 0.91, 183234.136 * 0.91,
-                              198699.708 * 0.91, 220000 * 0.91, 250000 * 0.91, 300000 * 0.91]})
+            'energy_demand': [141.057, 153.513, 157.366, 158.839, 158.839 * 0.94, 174.058 * 0.91, 183.234136 * 0.91,
+                              198.699708 * 0.91, 220.000 * 0.91, 250.000 * 0.91, 300.000 * 0.91]})
         f2 = interp1d(energy_outlook['years'], energy_outlook['energy_demand'])
         energy_supply = f2(self.years)
         energy_supply_df = pd.DataFrame(
@@ -132,8 +133,6 @@ class MacroDiscTest(unittest.TestCase):
 
         self.ee.dm.set_values_from_dict(values_dict)
         self.ee.execute()
-
-        rc = self.ee.dm.get_value(f'{self.name}.economics_df')
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

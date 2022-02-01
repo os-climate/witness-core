@@ -312,16 +312,16 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             dgross_output)
 
         self.set_partial_derivative_for_other_types(
-            ('economics_df', 'gross_output'), ('population_df', 'population'), dgross_output)
+            ('economics_df', 'gross_output'), ('population_df', 'population'), dgross_output * 1e3)
 
         self.set_partial_derivative_for_other_types(
-            ('economics_df', 'pc_consumption'), ('population_df', 'population'), dconsumption_pc)
+            ('economics_df', 'pc_consumption'), ('population_df', 'population'), dconsumption_pc * 1e3)
 
         self.set_partial_derivative_for_other_types(
-            ('economics_df', 'output_net_of_d'), ('population_df', 'population'), doutput_net_of_d)
+            ('economics_df', 'output_net_of_d'), ('population_df', 'population'), doutput_net_of_d * 1e3)
 
         self.set_partial_derivative_for_other_types(
-            ('energy_investment', 'energy_investment'), ('population_df', 'population'), denergy_investment / scaling_factor_energy_investment * 1e3)
+            ('energy_investment', 'energy_investment'), ('population_df', 'population'), denergy_investment / scaling_factor_energy_investment * 1e6)
 
     def get_chart_filter_list(self):
 
@@ -507,7 +507,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Population evolution over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' population (million)',
+            new_chart = TwoAxesInstanciatedChart('years', ' population (billion)',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
