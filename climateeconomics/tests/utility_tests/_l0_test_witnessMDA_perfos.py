@@ -22,7 +22,7 @@ from shutil import rmtree
 from pathlib import Path
 from os.path import dirname, join
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study
 import cProfile
 import pstats
 from io import StringIO
@@ -65,7 +65,7 @@ class TestScatter(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         repo = 'climateeconomics.sos_processes.iam.witness'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'witness')
+            repo, 'witness_coarse')
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
@@ -80,7 +80,7 @@ class TestScatter(unittest.TestCase):
 
         input_dict_to_load[f'{self.name}.n_processes'] = 1
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
-        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSNewtonMDA'
+        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
         self.ee.load_study_from_input_dict(input_dict_to_load)
         profil = cProfile.Profile()
         profil.enable()
@@ -106,7 +106,7 @@ class TestScatter(unittest.TestCase):
 
         lines = result.split('\n')
         total_time = float(lines[1].split(',')[3])
-        print(total_time)
+        print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
             3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
@@ -117,13 +117,15 @@ class TestScatter(unittest.TestCase):
             3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
             3])
+        gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
+            3])
 
         _convert_array_into_new_type = float([line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
             3])
-
-        labels = 'Linearize', 'Pre-run', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
-        sizes = [linearize_time, pre_run_mda_time, execute_time, inversion_time, dres_dvar_time,
-                 total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time]
+        print('_convert_array_into_new_type : ', _convert_array_into_new_type)
+        labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
+        sizes = [linearize_time, pre_run_mda_time, gauss_seidel_time, execute_time, inversion_time, dres_dvar_time,
+                 total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time - gauss_seidel_time]
 
         def make_autopct(values):
             def my_autopct(pct):
@@ -140,7 +142,7 @@ class TestScatter(unittest.TestCase):
         ax1.set_title(
             f"WITNESS {mda_class} cache with {n_processes} procs, Total time : {total_time} s")
 
-        fig_name = f'WITNESS_full_{mda_class}_{n_processes}_proc.png'
+        fig_name = f'WITNESS_coarse{mda_class}_{n_processes}_proc.png'
         plt.savefig(
             join(dirname(__file__), fig_name))
         if platform.system() == 'Windows':
