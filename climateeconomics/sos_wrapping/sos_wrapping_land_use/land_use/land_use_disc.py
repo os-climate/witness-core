@@ -105,9 +105,6 @@ class LandUseDiscipline(SoSDiscipline):
         """
         inputs_dict = self.get_sosdisc_inputs()
         population = inputs_dict.pop('population_df')
-        # rescaling from billion to million
-        cols = [col for col in population.columns if col != 'years']
-        population[cols] = population[cols] * 1e3
         land_demand_df = inputs_dict.pop('land_demand_df')
         livestock_usage_factor_df = inputs_dict.pop(
             'livestock_usage_factor_df')
