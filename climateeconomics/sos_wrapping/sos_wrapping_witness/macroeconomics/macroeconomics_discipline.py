@@ -227,12 +227,17 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             dnet_output, dinvestment)
         dconsumption_pc = self.macro_model.compute_dconsumption_pc(
             dconsumption)
+        doutput_net_of_d = self.macro_model.compute_doutput_net_of_d(
+            dgross_output)
 
         self.set_partial_derivative_for_other_types(
             ('energy_investment', 'energy_investment'), ('share_energy_investment', 'share_investment'), denergy_investment / scaling_factor_energy_investment * 1e3 / 100.0)  # Invest from T$ to G$
 
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'gross_output'), ('share_energy_investment', 'share_investment'), dgross_output / 100)
+        
+        self.set_partial_derivative_for_other_types(
+            ('economics_df', 'output_net_of_d'), ('share_energy_investment', 'share_investment'), doutput_net_of_d / scaling_factor_energy_investment )
 
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'pc_consumption'), ('share_energy_investment', 'share_investment'), dconsumption_pc / 100)
