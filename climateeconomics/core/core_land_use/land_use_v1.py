@@ -103,9 +103,6 @@ class LandUseV1():
         ''' 
         Computation methods, comput land demands and constraints
 
-        @param population_df: population from input
-        @type population_df: dataframe
-
         @param land_demand_df:  land demands from all techno in inputs
         @type land_demand_df: dataframe
 

@@ -34,6 +34,7 @@ class Population:
         self.death_rate_df = None
         self.set_data(inputs)
         self.trillion = 1e12
+        self.billion = 1e9
         self.million = 1e6
 
     def set_data(self, inputs):
@@ -88,7 +89,7 @@ class Population:
             population_df[key] = 0
         population_df.loc[self.year_start,
                           'total'] = self.pop_init_df['population'].sum()
-        ## POPULATION
+        # POPULATION
         # select all age except 100+
         pop_init = self.pop_init_df.iloc[:-1, 1]
         # Divide by 5
@@ -104,7 +105,7 @@ class Population:
         column_list = self.age_list.copy()
         column_list.insert(0, 'years')
 
-        ## BIRTH RATE
+        # BIRTH RATE
         # BASE => calculated from GDB and knowledge level
         self.birth_rate = DataFrame(index=years_range,
                                     columns=['years', 'knowledge', 'birth_rate'])
@@ -112,7 +113,7 @@ class Population:
             self.birth_rate[key] = 0
         self.birth_rate['years'] = years_range
 
-        ## BIRTH NUMBER
+        # BIRTH NUMBER
         # BASE => calculated from GDB and knowledge level
         self.birth_df = DataFrame(index=years_range,
                                   columns=['years', 'knowledge', 'birth_rate'])
@@ -120,7 +121,7 @@ class Population:
             self.birth_df[key] = 0
         self.birth_df['years'] = years_range
 
-        ## DEATH RATE - slices of 4 years age in column
+        # DEATH RATE - slices of 4 years age in column
         # BASE => calculated from GDP
         self.base_death_rate_df = DataFrame(index=years_range,
                                             columns=column_list)
@@ -146,7 +147,7 @@ class Population:
         self.death_rate_dict = {'base': self.base_death_rate_df, 'climate': self.climate_death_rate_df,
                                 'total': self.death_rate_df}
 
-        ## DEATH NUMBER - one column per age
+        # DEATH NUMBER - one column per age
         # BASE => calculated from GDP
         self.base_death_df = DataFrame(index=years_range,
                                        columns=pop_df_column)
@@ -169,9 +170,10 @@ class Population:
         self.death_df['years'] = years_range
 
         # CONTAINER => dictionnary containing death number
-        self.death_dict = {'base': self.base_death_df, 'climate': self.climate_death_df, 'total': self.death_df}
+        self.death_dict = {'base': self.base_death_df,
+                           'climate': self.climate_death_df, 'total': self.death_df}
 
-        ##LIFE EXPECTANCY
+        # LIFE EXPECTANCY
         self.life_expectancy_df = DataFrame(index=years_range,
                                             columns=['years', 'life_expectancy'])
         for key in self.life_expectancy_df.keys():
@@ -186,7 +188,7 @@ class Population:
         """
         x = self.years_range - self.year_reg_know
         knowledge = self.lower_know + (self.upper_know - self.lower_know) \
-                    * (1 / (1 + np.exp(-self.delta_know * (x - self.phi_know))) ** self.nu_know)
+            * (1 / (1 + np.exp(-self.delta_know * (x - self.phi_know))) ** self.nu_know)
         self.birth_rate['knowledge'] = knowledge
 
         return knowledge
@@ -203,7 +205,7 @@ class Population:
         gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
         pop = self.population_df.loc[year, 'total']
         birth_rate = self.br_upper + (self.br_lower - self.br_upper) / (
-                    1 + np.exp(-self.br_delta * (gdp / pop - self.br_phi))) ** (1 / self.br_nu)
+            1 + np.exp(-self.br_delta * (gdp / pop - self.br_phi))) ** (1 / self.br_nu)
         self.birth_rate.loc[year, 'birth_rate'] = birth_rate
 
         return birth_rate
@@ -218,10 +220,12 @@ class Population:
         pop = self.population_df.loc[year, 'total']
         knowledge = self.birth_rate.loc[year, 'knowledge']
         # Compute in two steps
-        f_knowledge = self.cst_br_k + self.alpha_br_k * (1 - knowledge / 100) ** self.beta_br_k
+        f_knowledge = self.cst_br_k + self.alpha_br_k * \
+            (1 - knowledge / 100) ** self.beta_br_k
         f_gdp = self.br_upper + (self.br_lower - self.br_upper) / (
-                    1 + np.exp(-self.br_delta * (gdp / pop - self.br_phi))) ** (1 / self.br_nu)
-        birth_rate = self.share_know * f_knowledge + (1 - self.share_know) * f_gdp
+            1 + np.exp(-self.br_delta * (gdp / pop - self.br_phi))) ** (1 / self.br_nu)
+        birth_rate = self.share_know * f_knowledge + \
+            (1 - self.share_know) * f_gdp
 
         self.birth_rate.loc[year, 'birth_rate'] = birth_rate
 
@@ -241,8 +245,8 @@ class Population:
         param = self.dr_param_df
         # For all age range compute death rate
         death_rate = param['death_rate_upper'] + (param['death_rate_lower'] - param['death_rate_upper']) / (
-                    1 + np.exp(-param['death_rate_delta'] *
-                               (gdp / pop - param['death_rate_phi']))) ** (1 / param['death_rate_nu'])
+            1 + np.exp(-param['death_rate_delta'] *
+                       (gdp / pop - param['death_rate_phi']))) ** (1 / param['death_rate_nu'])
         # Fill the year row in death rate df
         self.death_rate_df.iloc[year - self.year_start, 1:] = death_rate
 
@@ -267,15 +271,18 @@ class Population:
         theta = self.theta
         # For all age range compute death rate
         death_rate = param['death_rate_upper'] + (param['death_rate_lower'] - param['death_rate_upper']) / (
-                    1 + np.exp(-param['death_rate_delta'] *
-                               (gdp / pop - param['death_rate_phi']))) ** (1 / param['death_rate_nu'])
+            1 + np.exp(-param['death_rate_delta'] *
+                       (gdp / pop - param['death_rate_phi']))) ** (1 / param['death_rate_nu'])
         # Add climate impact on death rate
-        climate_death_rate = add_death['beta'] * (temp / cal_temp_increase) ** theta
+        climate_death_rate = add_death['beta'] * \
+            (temp / cal_temp_increase) ** theta
 
         # Fill the year row in death rate df
         self.base_death_rate_df.iloc[year - self.year_start, 1:] = death_rate
-        self.climate_death_rate_df.iloc[year - self.year_start, 1:] = climate_death_rate * death_rate
-        self.death_rate_df.iloc[year - self.year_start, 1:] = death_rate * (1 + climate_death_rate)
+        self.climate_death_rate_df.iloc[year - self.year_start,
+                                        1:] = climate_death_rate * death_rate
+        self.death_rate_df.iloc[year - self.year_start,
+                                1:] = death_rate * (1 + climate_death_rate)
 
         return self.death_rate_dict
 
@@ -293,16 +300,22 @@ class Population:
 
         for effect in self.death_rate_dict:
             if effect != 'total':
-                dr_year = self.death_rate_dict[effect].iloc[year - self.year_start, 1:-1]
-                # Duplicate each element of the list 5 times so that we have a death rate per age
-                full_dr_death = list(chain(*zip(*[list(dr_year) for _ in range(5)])))
-                full_dr_death.append(self.death_rate_dict[effect].loc[year, '100+'])
+                dr_year = self.death_rate_dict[effect].iloc[year -
+                                                            self.year_start, 1:-1]
+                # Duplicate each element of the list 5 times so that we have a
+                # death rate per age
+                full_dr_death = list(
+                    chain(*zip(*[list(dr_year) for _ in range(5)])))
+                full_dr_death.append(
+                    self.death_rate_dict[effect].loc[year, '100+'])
                 nb_death = pop_year.multiply(full_dr_death)
 
                 total_deaths += nb_death
-                self.death_dict[effect].iloc[year - self.year_start, 1:-1] = list(nb_death)
+                self.death_dict[effect].iloc[year -
+                                             self.year_start, 1:-1] = list(nb_death)
             else:
-                self.death_dict[effect].iloc[year - self.year_start, 1:-1] = total_deaths
+                self.death_dict[effect].iloc[year -
+                                             self.year_start, 1:-1] = total_deaths
 
         return total_deaths
 
@@ -335,7 +348,8 @@ class Population:
             # Add not dead people over 100+
             old_not_dead = pop_before[-1]
             self.population_df.loc[year, '100+'] += old_not_dead
-            self.population_df.loc[year, 'total'] = self.population_df.iloc[year - year_start, 1:-1].sum()
+            self.population_df.loc[year,
+                                   'total'] = self.population_df.iloc[year - year_start, 1:-1].sum()
 
         return self.population_df
 
@@ -347,23 +361,24 @@ class Population:
         pop_i = pop_i-1(1- death_rate_i) 
         """
         dr_year = self.death_rate_df.iloc[year - self.year_start, 1:-1]
-        # Duplicate each element of the list 5 times so that we have a death rate per age
+        # Duplicate each element of the list 5 times so that we have a death
+        # rate per age
         full_dr_death = list(chain(*zip(*[list(dr_year) for _ in range(5)])))
         full_dr_death.append(self.death_rate_df.loc[year, '100+'])
-        
+
         nb_age = len(self.full_age_list)
         pop = [0] * nb_age
-        #Start with a pop = 1 and iterate over ages 
+        # Start with a pop = 1 and iterate over ages
         pop[0] = 1
-        #COmpute surviving people
-        for i in range(0,nb_age-1):
-                pop[i+1] = pop[i] * (1- full_dr_death[i])     
-        #Sum all surviving people and divide by the initial pop = 1            
-        life_expectancy = np.sum(pop) 
+        # COmpute surviving people
+        for i in range(0, nb_age - 1):
+            pop[i + 1] = pop[i] * (1 - full_dr_death[i])
+        # Sum all surviving people and divide by the initial pop = 1
+        life_expectancy = np.sum(pop)
         self.life_expectancy_df.loc[year, 'life_expectancy'] = life_expectancy
-        
+
         return self.life_expectancy_df
-    
+
     def compute(self, in_dict):
         """
         Compute all
@@ -388,17 +403,20 @@ class Population:
 
         # Calculation of cumulative deaths
         for effect in self.death_dict:
-            self.death_dict[effect]['total'] = self.death_dict[effect].iloc[:, 1:-1].sum(axis=1, skipna=True)
-            self.death_dict[effect]['cum_total'] = self.death_dict[effect]['total'].cumsum()                                                    
+            self.death_dict[effect]['total'] = self.death_dict[effect].iloc[:,
+                                                                            1:-1].sum(axis=1, skipna=True)
+            self.death_dict[effect]['cum_total'] = self.death_dict[effect]['total'].cumsum(
+            )
 
         for effect in self.death_dict:
             self.death_dict[effect].fillna(0.0)
             self.death_rate_dict[effect].fillna(0.0)
-        
-        return self.population_df.fillna(0.0), self.birth_rate.fillna(0.0), self.death_rate_dict, \
-               self.birth_df.fillna(0.0), self.death_dict, self.life_expectancy_df.fillna(0.0)
 
-    ## GRADIENTS OF POPULATION WTR GDP
+        return self.population_df.fillna(0.0), self.birth_rate.fillna(0.0), self.death_rate_dict, \
+            self.birth_df.fillna(
+                0.0), self.death_dict, self.life_expectancy_df.fillna(0.0)
+
+    # GRADIENTS OF POPULATION WTR GDP
     def compute_d_pop_d_output(self):
         """ Compute the derivative of population wrt output
         """
@@ -418,11 +436,15 @@ class Population:
             if year == self.year_end:
                 pass
             else:
-                d_birthrate_d_output += self.d_birthrate_d_output(year, d_pop_tot_d_output)
-                d_birth_d_output += self.d_birth_d_generic(year, d_birthrate_d_output, d_pop_1549_d_output)
+                d_birthrate_d_output += self.d_birthrate_d_output(
+                    year, d_pop_tot_d_output)
+                d_birth_d_output += self.d_birth_d_generic(
+                    year, d_birthrate_d_output, d_pop_1549_d_output)
 
-                d_base_deathrate_d_output[year] = self.d_base_death_rate_d_output(year, d_pop_tot_d_output)
-                d_death_rate_climate_d_output[year] = self.d_climate_death_rate_d_output(year, d_base_deathrate_d_output)
+                d_base_deathrate_d_output[year] = self.d_base_death_rate_d_output(
+                    year, d_pop_tot_d_output)
+                d_death_rate_climate_d_output[year] = self.d_climate_death_rate_d_output(
+                    year, d_base_deathrate_d_output)
 
                 d_death_d_output[year] = self.d_death_d_generic(year, d_base_deathrate_d_output,
                                                                 d_death_rate_climate_d_output, d_pop_d_output)
@@ -459,8 +481,10 @@ class Population:
         # f gdp = br_upper + (self.br_lower - self.br_upper)/ u
         # -> fprime = (self.br_lower - self.br_upper)*u_prime/u_squared
         u_squared = ((1 + np.exp(-delta * (gdp / pop - phi))) ** (1 / nu)) ** 2
-        # u = g(f(x))  #u = g(f(x)) with g = f**(1:nu) and f = 1+ exp(-delta(gdp/pop-phi))
-        g_prime_f = (1 / nu) * (1 + np.exp(-delta * (gdp / pop - phi))) ** (1 / nu - 1)
+        # u = g(f(x))  #u = g(f(x)) with g = f**(1:nu) and f = 1+
+        # exp(-delta(gdp/pop-phi))
+        g_prime_f = (1 / nu) * (1 + np.exp(-delta *
+                                           (gdp / pop - phi))) ** (1 / nu - 1)
         f_prime = -delta * (pop * idty * self.trillion - d_pop * gdp) / (pop ** 2) * (
             np.exp(-delta * (gdp / pop - phi)))
 
@@ -487,7 +511,8 @@ class Population:
         br = self.birth_rate.at[year, 'birth_rate']
 
         # nb_birth = pop_1549 * birth_rate => d_nb_birth = u'v + v'u
-        d_birth_d_output[iyear] = d_birthrate_d_output[iyear] * pop_1549 + d_pop_1549 * br
+        d_birth_d_output[iyear] = d_birthrate_d_output[iyear] * \
+            pop_1549 + d_pop_1549 * br
 
         return d_birth_d_output
 
@@ -517,14 +542,18 @@ class Population:
             nu = param.loc[age_range, 'death_rate_nu']
             # Value on the diagonal. death rate t depends on output t
             # derivative = (lower-upper)*u'/u^2
-            u_squared = ((1 + np.exp(-delta * (gdp / pop - phi))) ** (1 / nu)) ** 2
-            # u = g(f(x)) with g = f**(1:nu) and f = (1+ exp(-delta(gdp/pop-phi))
-            g_prime_f = (1 / nu) * (1 + np.exp(-delta * (gdp / pop - phi))) ** (1 / nu - 1)
+            u_squared = ((1 + np.exp(-delta * (gdp / pop - phi)))
+                         ** (1 / nu)) ** 2
+            # u = g(f(x)) with g = f**(1:nu) and f = (1+
+            # exp(-delta(gdp/pop-phi))
+            g_prime_f = (1 / nu) * (1 + np.exp(-delta *
+                                               (gdp / pop - phi))) ** (1 / nu - 1)
             f_prime = -delta * (pop * idty * self.trillion - d_pop * gdp) / (pop ** 2) * np.exp(
                 -delta * (gdp / pop - phi))
             u_prime = g_prime_f * f_prime
 
-            d_death_rate_d_output_age = - (br_lower - br_upper) * u_prime / u_squared
+            d_death_rate_d_output_age = - \
+                (br_lower - br_upper) * u_prime / u_squared
             d_deathrate_d_output[age_range] = d_death_rate_d_output_age
         return d_deathrate_d_output
 
@@ -550,14 +579,15 @@ class Population:
         for age_range in param['param'].values:
             # (uv)' = u_prime_v * v_prime_u with u = base_deathrate v = climate_deathrate
             # v_prime_u = 0 because d_climate_death_rate = 0
-            climate_death_rate = add_death['beta'][age_range] * (temp / cal_temp_increase) ** theta
+            climate_death_rate = add_death['beta'][age_range] * \
+                (temp / cal_temp_increase) ** theta
             u_prime_v = d_base_death_rate[year][age_range] * climate_death_rate
             d_climate_deathrate_d_output[age_range] = u_prime_v
 
         return d_climate_deathrate_d_output
 
     def d_death_d_generic(self, year, dict_d_base_death_rate_d_temp, dict_d_climate_death_rate_d_temp,
-                       dict_d_population_d_output):
+                          dict_d_population_d_output):
         """
         Compute derivative of each column of death df wrt output and returns a dictionary
 
@@ -572,8 +602,10 @@ class Population:
         ages = self.population_df.columns[1:-1]
 
         # step one get values from dictionaries
-        list_d_base_dr_d_out = list(dict_d_base_death_rate_d_temp[year].values())
-        list_d_climate_dr_d_out = list(dict_d_climate_death_rate_d_temp[year].values())
+        list_d_base_dr_d_out = list(
+            dict_d_base_death_rate_d_temp[year].values())
+        list_d_climate_dr_d_out = list(
+            dict_d_climate_death_rate_d_temp[year].values())
 
         list_d_pop_d_out = {}
         if year in dict_d_population_d_output.keys():
@@ -581,7 +613,8 @@ class Population:
 
         # get death rate by age
         dr_year = self.death_rate_dict['total'].iloc[iyear, 1:-1]
-        # Duplicate each element of the list 5 times so that we have a death rate per age
+        # Duplicate each element of the list 5 times so that we have a death
+        # rate per age
         full_dr_death = list(chain(*zip(*[list(dr_year) for _ in range(5)])))
         full_dr_death.append(self.death_rate_dict['total'].loc[year, '100+'])
 
@@ -589,7 +622,8 @@ class Population:
         base_value_hundred = list_d_base_dr_d_out[-1]
         base_list_d_dr_d_out_t = list_d_base_dr_d_out[:-1]
         # Duplicate to get one per age
-        base_list_d_dr_d_out = list(chain(*zip(*[base_list_d_dr_d_out_t for _ in range(5)])))
+        base_list_d_dr_d_out = list(
+            chain(*zip(*[base_list_d_dr_d_out_t for _ in range(5)])))
         # and add value of last year
         base_list_d_dr_d_out.append(base_value_hundred)
 
@@ -597,7 +631,8 @@ class Population:
         climate_value_hundred = list_d_climate_dr_d_out[-1]
         climate_list_d_dr_d_out_t = list_d_climate_dr_d_out[:-1]
         # Duplicate to get one per age
-        climate_list_d_dr_d_out = list(chain(*zip(*[climate_list_d_dr_d_out_t for _ in range(5)])))
+        climate_list_d_dr_d_out = list(
+            chain(*zip(*[climate_list_d_dr_d_out_t for _ in range(5)])))
         # and add value of last year
         climate_list_d_dr_d_out.append(climate_value_hundred)
         # Compute derivative for each column of dataframe
@@ -606,7 +641,8 @@ class Population:
             if ages[i] not in list_d_pop_d_out.keys():
                 list_d_pop_d_out[ages[i]] = np.zeros(number_of_values)
             d_death[ages[i]] = list_d_pop_d_out[ages[i]] * full_dr_death[i] + \
-                                        (climate_list_d_dr_d_out[i] + base_list_d_dr_d_out[i]) * pop_year[i]
+                (climate_list_d_dr_d_out[i] +
+                 base_list_d_dr_d_out[i]) * pop_year[i]
 
         return d_death
 
@@ -632,7 +668,8 @@ class Population:
             sum_pop_1549 = np.zeros(number_of_values)
 
             for i in range(0, len(age_list)):
-                # compute population of previous year: population - nb_death => derivative = d_pop - d_nb_death
+                # compute population of previous year: population - nb_death =>
+                # derivative = d_pop - d_nb_death
                 if year in d_pop.keys():
                     d_pop_d_age_prev[age_list[i]] = d_pop[year][age_list[i]] - d_death[year][
                         age_list[i]]
@@ -645,7 +682,8 @@ class Population:
                     # at age = 0 pop = nb_birth => d_pop = d_nb_birth
                     d_pop_d_y[age_list[i]] = d_birth[iyear]
                 else:
-                    # at year age between 1 and 100+: = pop_before => derivative = d_pop_before
+                    # at year age between 1 and 100+: = pop_before =>
+                    # derivative = d_pop_before
                     d_pop_d_y[age_list[i]] = d_pop_d_age_prev[age_list[i - 1]]
                 sum_tot_pop += d_pop_d_y[age_list[i]]
                 if i in range_age_1549:
@@ -662,7 +700,7 @@ class Population:
 
         return d_pop, d_pop_1549, d_total_pop
 
-    ## WRT TEMPERATURE
+    # WRT TEMPERATURE
     def compute_d_pop_d_temp(self):
         """ Compute the derivative of population wrt temp
         """
@@ -682,13 +720,18 @@ class Population:
             if year == self.year_end:
                 pass
             else:
-                d_birthrate_d_temp += self.d_birthrate_d_temp(year, d_pop_tot_d_temp)
-                d_birth_d_temp += self.d_birth_d_generic(year, d_birthrate_d_temp, d_pop_1549_d_temp)
+                d_birthrate_d_temp += self.d_birthrate_d_temp(
+                    year, d_pop_tot_d_temp)
+                d_birth_d_temp += self.d_birth_d_generic(
+                    year, d_birthrate_d_temp, d_pop_1549_d_temp)
 
-                d_base_death_rate[year] = self.d_base_death_rate_d_temp(year, d_pop_tot_d_temp)
-                d_climate_death_rate[year] = self.d_climate_death_rate_d_temp(year, d_base_death_rate)
+                d_base_death_rate[year] = self.d_base_death_rate_d_temp(
+                    year, d_pop_tot_d_temp)
+                d_climate_death_rate[year] = self.d_climate_death_rate_d_temp(
+                    year, d_base_death_rate)
 
-                d_death_d_temp[year] = self.d_death_d_generic(year, d_base_death_rate, d_climate_death_rate, d_pop_d_temp)
+                d_death_d_temp[year] = self.d_death_d_generic(
+                    year, d_base_death_rate, d_climate_death_rate, d_pop_d_temp)
                 d_pop_d_temp, d_pop_1549_d_temp, d_pop_tot_d_temp = self.d_poptotal_generic(year, d_pop_d_temp,
                                                                                             d_death_d_temp,
                                                                                             d_birth_d_temp,
@@ -718,10 +761,14 @@ class Population:
         idty[iyear] = 1
         # f gdp = br_upper + (self.br_lower - self.br_upper)/ u
         # -> fprime = (self.br_lower - self.br_upper)*u_prime/u_squared
-        u_squared = ((1 + np.exp(- delta * (gdp / pop - phi))) ** (1 / nu)) ** 2
-        # u = g(f(x))  #u = g(f(x)) with g = f**(1/nu) and f = 1+ exp(-delta(gdp/pop-phi))
-        g_prime_f = (1 / nu) * (1 + np.exp(- delta * (gdp / pop - phi))) ** (1 / nu - 1)
-        f_prime = -delta * (- gdp * d_pop) / (pop ** 2) * np.exp(-delta * (gdp / pop - phi))
+        u_squared = ((1 + np.exp(- delta * (gdp / pop - phi)))
+                     ** (1 / nu)) ** 2
+        # u = g(f(x))  #u = g(f(x)) with g = f**(1/nu) and f = 1+
+        # exp(-delta(gdp/pop-phi))
+        g_prime_f = (1 / nu) * (1 + np.exp(- delta *
+                                           (gdp / pop - phi))) ** (1 / nu - 1)
+        f_prime = -delta * (- gdp * d_pop) / (pop ** 2) * \
+            np.exp(-delta * (gdp / pop - phi))
         u_prime = g_prime_f * f_prime
         d_f_gdp_d_temp = - (br_lower - br_upper) * u_prime / u_squared
 
@@ -764,11 +811,16 @@ class Population:
             # v = beta * (temp / cal_temp_increase) ** theta
             # u' = (lower-upper)*w'/w^2
             # w = g(f(x)) with g = f**(1:nu) and f = (1+ exp(-delta(gdp/pop-phi))
-            # v' = beta * tetha / cal_temp_increase * (temp / cal_temp_increase) ** (theta - 1)
-            w_squared = ((1 + np.exp(-delta * (gdp / pop - phi))) ** (1 / nu)) ** 2
-            # w = g(f(x)) with g = f**(1:nu) and f = (1+ exp(-delta(gdp/pop-phi))
-            g_prime_f = (1 / nu) * (1 + np.exp(-delta * (gdp / pop - phi))) ** (1 / nu - 1)
-            f_prime = - delta * (- d_pop * gdp) / (pop ** 2) * np.exp(- delta * (gdp / pop - phi))
+            # v' = beta * tetha / cal_temp_increase * (temp /
+            # cal_temp_increase) ** (theta - 1)
+            w_squared = ((1 + np.exp(-delta * (gdp / pop - phi)))
+                         ** (1 / nu)) ** 2
+            # w = g(f(x)) with g = f**(1:nu) and f = (1+
+            # exp(-delta(gdp/pop-phi))
+            g_prime_f = (1 / nu) * (1 + np.exp(-delta *
+                                               (gdp / pop - phi))) ** (1 / nu - 1)
+            f_prime = - delta * (- d_pop * gdp) / (pop ** 2) * \
+                np.exp(- delta * (gdp / pop - phi))
             w_prime = g_prime_f * f_prime
             # dr' = u'v + uv'
             d_base_death_rate = (- (dr_lower - dr_upper) * w_prime / w_squared)
@@ -800,12 +852,12 @@ class Population:
         for age_range in param['param'].values:
             # Param of death rate equation
             beta = add_death.loc[age_range, 'beta']
-            d_climate_death_rate = beta * theta * idty / cal_temp_increase * (temp / cal_temp_increase) ** (theta - 1)
+            d_climate_death_rate = beta * theta * idty / \
+                cal_temp_increase * (temp / cal_temp_increase) ** (theta - 1)
             # (uv)' = u_prime_v * v_prime_u with u = base_deathrate v = climate_deathrate
-            u_prime_v = d_base_death_rate[year][age_range] * climate_death_rate[age_range] / base_death_rate[age_range]
+            u_prime_v = d_base_death_rate[year][age_range] * \
+                climate_death_rate[age_range] / base_death_rate[age_range]
             v_prime_u = d_climate_death_rate * base_death_rate[age_range]
             d_climate_deathrate_d_temp[age_range] = u_prime_v + v_prime_u
 
         return d_climate_deathrate_d_temp
-
-
