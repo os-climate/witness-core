@@ -52,7 +52,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     DESC_IN = {'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
-               'population_df': {'type': 'dataframe', 'unit': 'billions of people',
+               'population_df': {'type': 'dataframe', 'unit': 'millions of people',
                                  'dataframe_descriptor': {'years': ('float', None, False),
                                                           'population': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
@@ -99,9 +99,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         #-- compute
         population_df = inp_dict.pop('population_df')
-        # rescaling from billion to million
-        cols = [col for col in population_df.columns if col != 'years']
-        population_df[cols] = population_df[cols] * 1e3
         temperature_df = inp_dict['temperature_df']
         self.agriculture_model.compute(population_df, temperature_df)
 
@@ -125,9 +122,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         """
         inputs_dict = self.get_sosdisc_inputs()
         population_df = inputs_dict.pop('population_df')
-        # rescaling from billion to million
-        cols = [col for col in population_df.columns if col != 'years']
-        population_df[cols] = population_df[cols] * 1e3
         temperature_df = inputs_dict['temperature_df']
         model = self.agriculture_model
         model.compute(population_df, temperature_df)

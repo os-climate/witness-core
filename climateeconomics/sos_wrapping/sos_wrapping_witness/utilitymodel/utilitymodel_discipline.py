@@ -37,7 +37,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
         'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'population_df': {'type': 'dataframe', 'unit': 'billions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'energy_mean_price': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_energy_mix', 'unit': '$/MWh'},
         'initial_raw_energy_price': {'type': 'float', 'unit': '$/MWh', 'default': 110, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
         'init_discounted_utility': {'type': 'float', 'unit': '-', 'default': 3400, 'visibility': 'Shared', 'namespace': 'ns_ref', 'user_level': 2},

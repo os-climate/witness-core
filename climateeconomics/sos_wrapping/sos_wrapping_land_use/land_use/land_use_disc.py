@@ -41,7 +41,7 @@ class LandUseDiscipline(SoSDiscipline):
                'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'crop_land_use_per_capita': {'type': 'float', 'default': 0.21, 'unit': 'ha/capita'},
                'livestock_land_use_per_capita': {'type': 'float', 'default': 0.42, 'unit': 'ha/capita'},
-               'population_df': {'type': 'dataframe', 'unit': 'billions of people',
+               'population_df': {'type': 'dataframe', 'unit': 'millions of people',
                                  'dataframe_descriptor': {'years': ('float', None, False),
                                                           'population': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},

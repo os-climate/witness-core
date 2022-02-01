@@ -72,7 +72,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'population_df': {'type': 'dataframe', 'unit': 'billions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'population_detail_df': {'type': 'dataframe'},
         'birth_rate_df': {'type': 'dataframe'},
         'death_rate_dict': {'type': 'dict'},
@@ -101,7 +101,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         # Convert population in billion of people
         population_df['population'] = population_df['population'] / \
-            self.model.billion
+            self.model.million
 
         # store output data
         out_dict = {"population_df": population_df,
