@@ -82,9 +82,6 @@ class LandUseDiscipline(SoSDiscipline):
 
         #-- compute
         population_df = inp_dict.pop('population_df')
-        # rescaling from billion to million
-        cols = [col for col in population_df.columns if col != 'years']
-        population_df[cols] = population_df[cols] * 1e3
         land_demand_df = inp_dict.pop('land_demand_df')
         livestock_usage_factor_df = inp_dict.pop('livestock_usage_factor_df')
         self.land_use_model.compute(
