@@ -80,7 +80,7 @@ class LandUseV1Discipline(SoSDiscipline):
 
         outputs_dict = {
             LandUseV1.LAND_DEMAND_CONSTRAINT_DF: self.land_use_model.land_demand_constraint_df,
-            LandUseV1.LAND_SURFACE_DETAIL_DF: deepcopy(self.land_use_model.land_surface_df),
+            LandUseV1.LAND_SURFACE_DETAIL_DF: self.land_use_model.land_surface_df,
             LandUseV1.LAND_SURFACE_DF: self.land_use_model.land_surface_df[[
                 'Agriculture (Gha)', 'Forest (Gha)']],
             LandUseV1.LAND_SURFACE_FOR_FOOD_DF: self.land_use_model.land_surface_for_food_df
@@ -100,8 +100,6 @@ class LandUseV1Discipline(SoSDiscipline):
         total_food_land_surface = inputs_dict.pop('total_food_land_surface')
         deforested_surface_df = inputs_dict.pop('deforested_surface_df')
         model = self.land_use_model
-        model.compute(land_demand_df, total_food_land_surface,
-                      deforested_surface_df)
 
         # Retrieve variables
         land_demand_df = model.land_demand_df
