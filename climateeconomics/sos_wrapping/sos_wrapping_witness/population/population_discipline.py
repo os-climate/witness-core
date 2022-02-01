@@ -122,11 +122,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         d_pop_d_output = self.model.compute_d_pop_d_output()
         self.set_partial_derivative_for_other_types(
-            ('population_df', 'population'), ('economics_df', 'output_net_of_d'), d_pop_d_output / self.model.billion)
+            ('population_df', 'population'), ('economics_df', 'output_net_of_d'), d_pop_d_output / self.model.million)
 
         d_pop_d_temp = self.model.compute_d_pop_d_temp()
         self.set_partial_derivative_for_other_types(
-            ('population_df', 'population'), ('temperature_df', 'temp_atmo'), d_pop_d_temp / self.model.billion)
+            ('population_df', 'population'), ('temperature_df', 'temp_atmo'), d_pop_d_temp / self.model.million)
 
     def get_chart_filter_list(self):
 
