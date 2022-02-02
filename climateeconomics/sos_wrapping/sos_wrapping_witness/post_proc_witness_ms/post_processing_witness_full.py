@@ -23,6 +23,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
+from energy_models.core import scenario
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -33,22 +34,13 @@ def post_processing_filters(execution_engine, namespace):
                   'CO2 Emissions vs Welfare', 'CO2 Emissions vs min(Utility)',
                   'CO2 tax per scenario', 'Temperature per scenario', 'Welfare per scenario',
                   'Utility per scenario', 'CO2 emissions per scenario', 'ppm(mean) vs Welfare',
-                  'Total production per scenario', 'ppm per scenario']
+                  'Total production per scenario', 'ppm per scenario', 'invest per scenario']
 
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     scenario_key = execution_engine.dm.get_data_id(
         f'{namespace_w}.scenario_list')
     scenario_list = execution_engine.dm.data_dict[scenario_key][DataManager.VALUE]
-    try:
-        # In case of flattened invest distribution, the two graphs in except
-        # are not working
-        invest_mix = execution_engine.dm.get_value(
-            f'{namespace_w}.{scenario_list[0]}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.InvestmentDistribution.all_invest_df')
-        list_technos = list(invest_mix.columns)[:-1]
-        chart_list += list_technos
-    except:
-        execution_engine.logger.warning('all invest df not in dm')
     filters.append(ChartFilter('Charts', chart_list, chart_list, 'Charts'))
     filters.append(ChartFilter('Scenarios', scenario_list,
                                scenario_list, 'Scenarios'))
@@ -65,15 +57,6 @@ def post_processings(execution_engine, namespace, filters):
     scenario_key = execution_engine.dm.get_data_id(
         f'{namespace_w}.scenario_list')
     scenario_list = execution_engine.dm.data_dict[scenario_key][DataManager.VALUE]
-    try:
-        # In case of flattened invest distribution, the two graphs in
-        # except are not working
-        is_flattened_invest_distrib = True
-        invest_mix = execution_engine.dm.get_value(
-            f'{namespace_w}.{scenario_list[0]}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.InvestmentDistribution.all_invest_df')
-        list_technos = list(invest_mix.columns)[:-1]
-    except:
-        is_flattened_invest_distrib = False
 
     # Overload default value with chart filter
     if filters is not None:
@@ -87,54 +70,17 @@ def post_processings(execution_engine, namespace, filters):
                        'CO2 Emissions vs Welfare', 'CO2 Emissions vs min(Utility)'
                        'CO2 tax per scenario', 'Temperature per scenario', 'Welfare per scenario',
                        'Utility per scenario', 'CO2 emissions per scenario', 'ppm(mean) vs Welfare',
-                       'Total production per scenario', 'ppm per scenario']
-        if is_flattened_invest_distrib:
-            graphs_list += list_technos
+                       'Total production per scenario', 'ppm per scenario', 'invest per scenario']
 
         selected_scenarios = scenario_list
 
-    temperature_df_dict, utility_df_dict, co2_emissions_df_dict, co2_ppm_df_dict, CO2_taxes_df_dict, energy_production_detailed_df_dict, energy_investment_df_dict, ccs_investment_df_dict, scenario_list, year_start, year_end, namespace_w, energy_list = get_df(
-        execution_engine, is_flattened_invest_distrib)
-
-    # prepare data
-    temperature_dict = {}
-    last_temperature_dict = {}
-    welfare_dict = {}
-    co2_emisions_dict = {}
-    summed_co2_emissions_dict = {}
-    co2_ppm_dict = {}
-    mean_co2_ppm_dict = {}
-    utility_dict = {}
-    min_utility_dict = {}
-    co2_tax_dict = {}
-    energy_production_detailed_dict = {}
-    energy_investment_dict = {}
-    ccs_investment_dict = {}
-    years = list(np.arange(year_start, year_end + 1))
-
-    for techno in list_technos:
-        energy_investment_dict[techno] = {}
-
-    for scenario in scenario_list:
-        temperature_dict[scenario] = temperature_df_dict[scenario]['temp_atmo'].values.tolist(
-        )
-        last_temperature_dict[scenario] = temperature_df_dict[scenario]['temp_atmo'][year_end]
-        welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
-        co2_emisions_dict[scenario] = co2_emissions_df_dict[scenario]['total_emissions'].values.tolist()
-        summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario]['total_emissions'].sum(
-        )
-        co2_ppm_dict[scenario] = co2_ppm_df_dict[scenario]['ppm'].values.tolist()
-        mean_co2_ppm_dict[scenario] = co2_ppm_df_dict[scenario]['ppm'].mean()
-        utility_dict[scenario] = utility_df_dict[scenario]['discounted_utility'].values.tolist()
-        min_utility_dict[scenario] = min(
-            utility_df_dict[scenario]['discounted_utility'])
-
-        co2_tax_dict[scenario] = CO2_taxes_df_dict[scenario]['CO2_tax'].values.tolist()
-        energy_production_detailed_dict[scenario] = energy_production_detailed_df_dict[
-            scenario]['Total production (uncut)'].values.tolist()
-        for techno in list_technos:
-            energy_investment_dict[techno][scenario] = energy_investment_df_dict[scenario][techno].values.tolist(
-            )
+    df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.year_start',
+                f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.year_end', ]
+    year_start_dict, year_end_dict = get_df_per_scenario_dict(
+        execution_engine, df_paths, scenario_list)
+    year_start, year_end = year_start_dict[scenario_list[0]
+                                           ], year_end_dict[scenario_list[0]]
+    years = np.arange(year_start, year_end).tolist()
 
     """
         -------------
@@ -150,6 +96,18 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = f'Temperature increase since industrial revolution in degree Celsius'
         y_axis_name = 'Welfare'
 
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df',
+                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df'
+                    ]
+        (temperature_df_dict, utility_df_dict) = get_df_per_scenario_dict(
+            execution_engine, df_paths, scenario_list)
+
+        last_temperature_dict, welfare_dict = {}, {}
+        for scenario in scenario_list:
+            last_temperature_dict[scenario] = temperature_df_dict[scenario]['temp_atmo'][year_end]
+            welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
+        namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
+
         new_pareto_chart = get_chart_pareto_front(last_temperature_dict, welfare_dict, scenario_list,
                                                   namespace_w, chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name)
@@ -161,6 +119,19 @@ def post_processings(execution_engine, namespace, filters):
         chart_name = f'Sum of CO2 emissions vs Welfare'
         x_axis_name = f'Summed CO2 emissions'
         y_axis_name = f'Welfare in {year_end}'
+
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.emissions_detail_df',
+                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
+                    ]
+        (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+
+        summed_co2_emissions_dict, welfare_dict = {}, {}
+        for scenario in scenario_list:
+            summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario]['total_emissions'].sum(
+            )
+            welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
+        namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
 
         new_pareto_chart = get_chart_pareto_front(summed_co2_emissions_dict, welfare_dict, scenario_list,
                                                   namespace_w, chart_name=chart_name,
@@ -174,6 +145,20 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = f'Summed CO2 emissions'
         y_axis_name = 'min( Utility )'
 
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.emissions_detail_df',
+                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
+                    ]
+        (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+
+        summed_co2_emissions_dict, min_utility_dict = {}, {}
+        for scenario in scenario_list:
+            summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario]['total_emissions'].sum(
+            )
+            min_utility_dict[scenario] = min(
+                utility_df_dict[scenario]['discounted_utility'])
+        namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
+
         new_pareto_chart = get_chart_pareto_front(summed_co2_emissions_dict, min_utility_dict, scenario_list,
                                                   namespace_w, chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name)
@@ -185,6 +170,19 @@ def post_processings(execution_engine, namespace, filters):
         chart_name = f'mean ppm vs Welfare'
         x_axis_name = f'Mean ppm'
         y_axis_name = f'Welfare in {year_end}'
+
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carboncycle.carboncycle_detail_df',
+                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
+                    ]
+        (carboncycle_detail_df_dict, utility_df_dict) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+
+        mean_co2_ppm_dict, welfare_dict = {}, {}
+        for scenario in scenario_list:
+            mean_co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario]['ppm'].mean(
+            )
+            welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
+        namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
 
         new_pareto_chart = get_chart_pareto_front(mean_co2_ppm_dict, welfare_dict, scenario_list,
                                                   namespace_w, chart_name=chart_name,
@@ -206,6 +204,14 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Price ($/tCO2)'
 
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.CO2_taxes', ]
+        (co2_taxes_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+        co2_tax_dict = {}
+        for scenario in scenario_list:
+            co2_tax_dict[scenario] = co2_taxes_df_dict[scenario]['CO2_tax'].values.tolist(
+            )
+
         new_chart = get_scenario_comparison_chart(years, co2_tax_dict,
                                                   chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
@@ -218,6 +224,15 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Temperature (degrees Celsius above preindustrial)'
 
+        df_paths = [
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df', ]
+        (temperature_detail_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+        temperature_dict = {}
+        for scenario in scenario_list:
+            temperature_dict[scenario] = temperature_detail_df_dict[scenario]['temp_atmo'].values.tolist(
+            )
+
         new_chart = get_scenario_comparison_chart(years, temperature_dict,
                                                   chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
@@ -228,6 +243,14 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Welfare per scenario'
         y_axis_name = f'Welfare in {year_end}'
+
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
+                    ]
+        (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+
+        welfare_dict = {}
+        for scenario in scenario_list:
+            welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
 
         min_y = min(list(welfare_dict.values()))
         max_y = max(list(welfare_dict.values()))
@@ -253,6 +276,14 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Discounted Utility (trill $)'
 
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df', ]
+        (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+
+        utility_dict = {}
+        for scenario in scenario_list:
+            utility_dict[scenario] = utility_df_dict[scenario]['discounted_utility'].values.tolist(
+            )
+
         new_chart = get_scenario_comparison_chart(years, utility_dict,
                                                   chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
@@ -265,7 +296,17 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Carbon emissions (Gtc)'
 
-        new_chart = get_scenario_comparison_chart(years, co2_emisions_dict,
+        df_paths = [
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.emissions_detail_df']
+        (co2_emissions_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+
+        co2_emissions_dict = {}
+        for scenario in scenario_list:
+            co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario]['total_emissions'].values.tolist(
+            )
+
+        new_chart = get_scenario_comparison_chart(years, co2_emissions_dict,
                                                   chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
 
@@ -276,6 +317,16 @@ def post_processings(execution_engine, namespace, filters):
         chart_name = 'Atmospheric concentrations parts per million per scenario'
         x_axis_name = 'Years'
         y_axis_name = 'Atmospheric concentrations parts per million'
+
+        df_paths = [
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carboncycle.carboncycle_detail_df']
+        (carboncycle_detail_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+
+        co2_ppm_dict, welfare_dict = {}, {}
+        for scenario in scenario_list:
+            co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario]['ppm'].values.tolist(
+            )
 
         new_chart = get_scenario_comparison_chart(years, co2_ppm_dict,
                                                   chart_name=chart_name,
@@ -301,23 +352,44 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Total production'
 
+        df_paths = [
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.EnergyMix.energy_production_detailed']
+        (energy_production_detailed_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+
+        energy_production_detailed_dict = {}
+        for scenario in scenario_list:
+            energy_production_detailed_dict[scenario] = energy_production_detailed_df_dict[
+                scenario]['Total production (uncut)'].values.tolist()
+
         new_chart = get_scenario_comparison_chart(years, energy_production_detailed_dict,
                                                   chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
 
         instanciated_charts.append(new_chart)
 
-    for techno in list_technos:
-        if techno in graphs_list:
-            chart_name = f'{techno} investment per scenario'
-            x_axis_name = 'Years'
-            y_axis_name = f'{techno} investment'
+    if 'invest per scenario' in graphs_list:
+        chart_name = f'investments per scenario'
+        x_axis_name = 'Years'
+        y_axis_name = f'total energy investment'
 
-            new_chart = get_scenario_comparison_chart(years, energy_investment_dict[techno],
-                                                      chart_name=chart_name,
-                                                      x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+        # Get the total energy investment
 
-            instanciated_charts.append(new_chart)
+        df_paths = [
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.energy_investment']
+        (energy_investment_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+
+        energy_investment_dict = {}
+        for scenario in scenario_list:
+            energy_investment_dict[scenario] = energy_investment_df_dict[
+                scenario]['energy_investment'].values.tolist()
+
+        new_chart = get_scenario_comparison_chart(years, energy_investment_dict,
+                                                  chart_name=chart_name,
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+
+        instanciated_charts.append(new_chart)
 
     return instanciated_charts
 
@@ -411,52 +483,22 @@ def get_chart_pareto_front(x_dict, y_dict, scenario_list, namespace_w, chart_nam
     return new_pareto_chart
 
 
-def get_df(execution_engine, is_flattened_invest_distrib=False):
+def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
+    '''! Function to retrieve dataframes from all the scenarios given a specified path
+    @param execution_engine: Execution_engine, object from which the data is gathered
+    @param df_paths: list of string, containing the paths to access the df
 
-    temperature_df_dict = {}
-    co2_emissions_df_dict = {}
-    utility_df_dict = {}
-    co2_ppm_df_dict = {}
-    CO2_taxes_df_dict = {}
-    energy_production_detailed_df_dict = {}
-    energy_investment_df_dict = {}
-    ccs_investment_df_dict = {}
+    @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe} 
+    '''
+    df_per_scenario_dicts = [{} for _ in df_paths]
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
-
-    scenario_key = execution_engine.dm.get_data_id(
-        f'{namespace_w}.scenario_list')
-    scenario_list = execution_engine.dm.data_dict[scenario_key][DataManager.VALUE]
-
+    if not scenario_list:
+        scenario_key = execution_engine.dm.get_data_id(
+            f'{namespace_w}.scenario_list')
+        scenario_list = execution_engine.dm.data_dict[scenario_key][DataManager.VALUE]
     for scenario in scenario_list:
-        temperature_df_namespace = f'{namespace_w}.{scenario}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df'
-        utility_df_namespace = f'{namespace_w}.{scenario}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df'
-        co2_emissions_df_namespace = f'{namespace_w}.{scenario}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.emissions_detail_df'
-        co2_ppm_df_namespace = f'{namespace_w}.{scenario}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carboncycle.carboncycle_detail_df'
-        CO2_taxes_df_namespace = f'{namespace_w}.{scenario}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.CO2_taxes'
-        energy_list_namespace = f'{namespace_w}.{scenario}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.energy_list'
-        energy_production_detailed_df_namespace = f'{namespace_w}.{scenario}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.EnergyMix.energy_production_detailed'
-        invest_mix_namespace = f'{namespace_w}.{scenario}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.InvestmentDistribution.all_invest_df'
-        temperature_df_dict[scenario] = execution_engine.dm.get_value(
-            temperature_df_namespace)
-        utility_df_dict[scenario] = execution_engine.dm.get_value(
-            utility_df_namespace)
-        co2_emissions_df_dict[scenario] = execution_engine.dm.get_value(
-            co2_emissions_df_namespace)
-        co2_ppm_df_dict[scenario] = execution_engine.dm.get_value(
-            co2_ppm_df_namespace)
-        CO2_taxes_df_dict[scenario] = execution_engine.dm.get_value(
-            CO2_taxes_df_namespace)
-        energy_production_detailed_df_dict[scenario] = execution_engine.dm.get_value(
-            energy_production_detailed_df_namespace)
-
-        energy_list = execution_engine.dm.get_value(energy_list_namespace)
-        energy_investment_df_dict[scenario] = execution_engine.dm.get_value(
-            invest_mix_namespace)
-
-    year_start_namespace = f'{namespace_w}.{scenario_list[0]}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.year_start'
-    year_start = execution_engine.dm.get_value(year_start_namespace)
-    year_end_namespace = f'{namespace_w}.{scenario_list[0]}.{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.year_end'
-    year_end = execution_engine.dm.get_value(year_end_namespace)
-
-    return temperature_df_dict, utility_df_dict, co2_emissions_df_dict, co2_ppm_df_dict, CO2_taxes_df_dict, energy_production_detailed_df_dict, energy_investment_df_dict, ccs_investment_df_dict, scenario_list, year_start, year_end, namespace_w, energy_list
+        for i, df_path in enumerate(df_paths):
+            df_per_scenario_dicts[i][scenario] = execution_engine.dm.get_value(
+                f'{namespace_w}.{scenario}.{df_path}')
+    return df_per_scenario_dicts
