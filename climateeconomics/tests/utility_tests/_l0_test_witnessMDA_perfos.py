@@ -22,7 +22,7 @@ from shutil import rmtree
 from pathlib import Path
 from os.path import dirname, join
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
 import cProfile
 import pstats
 from io import StringIO
