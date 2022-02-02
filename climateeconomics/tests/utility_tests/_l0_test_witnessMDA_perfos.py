@@ -22,6 +22,7 @@ from shutil import rmtree
 from pathlib import Path
 from os.path import dirname, join
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as Studycoarse
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
 import cProfile
 import pstats
@@ -65,7 +66,7 @@ class TestScatter(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         repo = 'climateeconomics.sos_processes.iam.witness'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'witness')
+            repo, 'witness_coarse')
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
@@ -99,7 +100,7 @@ class TestScatter(unittest.TestCase):
         result = '\n'.join([','.join(line.rstrip().split(None, 5))
                             for line in result.split('\n')])
 #
-        with open(join(dirname(__file__), 'witness_perfos.csv'), 'w+') as f:
+        with open(join(dirname(__file__), f'witness_coarse_perfos{n_processes}.csv'), 'w+') as f:
             #f = open(result.rsplit('.')[0] + '.csv', 'w')
             f.write(result)
             f.close()
@@ -371,9 +372,235 @@ class TestScatter(unittest.TestCase):
             os.system('git pull')
             os.system('git push')
 
+    def test_04_witness_coarseperfos_multiproc(self):
+
+        linearize_time_list = []
+        execute_time_list = []
+        total_time_list = []
+        n_proc_list = [1, 2, 4, 8, 16]
+        for n_proc in n_proc_list:
+            self.name = 'Test'
+            self.ee = ExecutionEngine(self.name)
+            repo = 'climateeconomics.sos_processes.iam.witness'
+            builder = self.ee.factory.get_builder_from_process(
+                repo, 'witness_coarse')
+
+            self.ee.factory.set_builders_to_coupling_builder(builder)
+            self.ee.configure()
+            usecase = Studycoarse(execution_engine=self.ee)
+            usecase.study_name = self.name
+            values_dict = usecase.setup_usecase()
+
+            input_dict_to_load = {}
+
+            for uc_d in values_dict:
+                input_dict_to_load.update(uc_d)
+
+            input_dict_to_load[f'{self.name}.n_processes'] = n_proc
+            input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
+            input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+            self.ee.load_study_from_input_dict(input_dict_to_load)
+            profil = cProfile.Profile()
+            profil.enable()
+            self.ee.execute()
+            mda_class = self.ee.dm.get_value(f'{self.name}.sub_mda_class')
+            n_processes = self.ee.dm.get_value(f'{self.name}.n_processes')
+            profil.disable()
+            result = StringIO()
+
+            ps = pstats.Stats(profil, stream=result)
+            ps.sort_stats('cumulative')
+            ps.print_stats(1000)
+            result = result.getvalue()
+            # chop the string into a csv-like buffer
+            result = 'ncalls' + result.split('ncalls')[-1]
+            result = '\n'.join([','.join(line.rstrip().split(None, 5))
+                                for line in result.split('\n')])
+    #
+            with open(join(dirname(__file__), f'witness_coarse_perfos{n_processes}.csv'), 'w+') as f:
+                #f = open(result.rsplit('.')[0] + '.csv', 'w')
+                f.write(result)
+                f.close()
+
+            lines = result.split('\n')
+            total_time = float(lines[1].split(',')[3])
+            print('total_time : ', total_time)
+            linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
+                3])
+            execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
+                3])
+            inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
+                3])
+            pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
+                3])
+            dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
+                3])
+            gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
+                3])
+
+            _convert_array_into_new_type = float([line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
+                3])
+            print('_convert_array_into_new_type : ',
+                  _convert_array_into_new_type)
+            labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
+            sizes = [linearize_time, pre_run_mda_time, gauss_seidel_time, execute_time, inversion_time, dres_dvar_time,
+                     total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time - gauss_seidel_time]
+
+            def make_autopct(values):
+                def my_autopct(pct):
+                    total = sum(values)
+                    val = pct * total / 100.0
+                    return '{p:.2f}%  ({v:.1f}s)'.format(p=pct, v=val)
+                return my_autopct
+
+            fig1, ax1 = plt.subplots()
+            ax1.pie(sizes,  labels=labels, autopct=make_autopct(sizes),
+                    shadow=True, startangle=90)
+            # Equal aspect ratio ensures that pie is drawn as a circle.
+            ax1.axis('equal')
+            ax1.set_title(
+                f"WITNESS {mda_class} cache with {n_processes} procs, Total time : {total_time} s")
+
+            fig_name = f'WITNESScoarse_{mda_class}_{n_processes}_proc.png'
+            plt.savefig(
+                join(dirname(__file__), fig_name))
+
+            linearize_time_list.append(linearize_time)
+            execute_time_list.append(execute_time)
+            total_time_list.append(total_time)
+
+        fig = plt.figure()
+        plt.plot(n_proc_list, total_time_list, label='Total time')
+        plt.plot(n_proc_list, execute_time_list, label='Execute time')
+        plt.plot(n_proc_list, linearize_time_list, label='Linearize time')
+        plt.legend()
+        fig_name = f'WITNESScoarse_{mda_class}_allprocs.png'
+        plt.savefig(
+            join(dirname(__file__), fig_name))
+
+    def test_05_witness_perfos_multiproc(self):
+
+        linearize_time_list = []
+        execute_time_list = []
+        total_time_list = []
+        n_proc_list = [1, 2, 4, 8, 16, 32, 64]
+        for n_proc in n_proc_list:
+            self.name = 'Test'
+            self.ee = ExecutionEngine(self.name)
+            repo = 'climateeconomics.sos_processes.iam.witness'
+            builder = self.ee.factory.get_builder_from_process(
+                repo, 'witness')
+
+            self.ee.factory.set_builders_to_coupling_builder(builder)
+            self.ee.configure()
+            usecase = Study(execution_engine=self.ee)
+            usecase.study_name = self.name
+            values_dict = usecase.setup_usecase()
+
+            input_dict_to_load = {}
+
+            for uc_d in values_dict:
+                input_dict_to_load.update(uc_d)
+
+            input_dict_to_load[f'{self.name}.n_processes'] = n_proc
+            input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
+            input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+            self.ee.load_study_from_input_dict(input_dict_to_load)
+            profil = cProfile.Profile()
+            profil.enable()
+            self.ee.execute()
+            mda_class = self.ee.dm.get_value(f'{self.name}.sub_mda_class')
+            n_processes = self.ee.dm.get_value(f'{self.name}.n_processes')
+            profil.disable()
+            result = StringIO()
+
+            ps = pstats.Stats(profil, stream=result)
+            ps.sort_stats('cumulative')
+            ps.print_stats(1000)
+            result = result.getvalue()
+            # chop the string into a csv-like buffer
+            result = 'ncalls' + result.split('ncalls')[-1]
+            result = '\n'.join([','.join(line.rstrip().split(None, 5))
+                                for line in result.split('\n')])
+    #
+            with open(join(dirname(__file__), f'witness_coarse_perfos{n_processes}.csv'), 'w+') as f:
+                #f = open(result.rsplit('.')[0] + '.csv', 'w')
+                f.write(result)
+                f.close()
+
+            lines = result.split('\n')
+            total_time = float(lines[1].split(',')[3])
+            print('total_time : ', total_time)
+            linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
+                3])
+            execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
+                3])
+            inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
+                3])
+            pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
+                3])
+            dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
+                3])
+            gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
+                3])
+
+            _convert_array_into_new_type = float([line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
+                3])
+            print('_convert_array_into_new_type : ',
+                  _convert_array_into_new_type)
+            labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
+            sizes = [linearize_time, pre_run_mda_time, gauss_seidel_time, execute_time, inversion_time, dres_dvar_time,
+                     total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time - gauss_seidel_time]
+
+            def make_autopct(values):
+                def my_autopct(pct):
+                    total = sum(values)
+                    val = pct * total / 100.0
+                    return '{p:.2f}%  ({v:.1f}s)'.format(p=pct, v=val)
+                return my_autopct
+
+            fig1, ax1 = plt.subplots()
+            ax1.pie(sizes,  labels=labels, autopct=make_autopct(sizes),
+                    shadow=True, startangle=90)
+            # Equal aspect ratio ensures that pie is drawn as a circle.
+            ax1.axis('equal')
+            ax1.set_title(
+                f"WITNESS {mda_class} cache with {n_processes} procs, Total time : {total_time} s")
+
+            fig_name = f'WITNESS_{mda_class}_{n_processes}_proc.png'
+            plt.savefig(
+                join(dirname(__file__), fig_name))
+
+            linearize_time_list.append(linearize_time)
+            execute_time_list.append(execute_time)
+            total_time_list.append(total_time)
+            if not platform.system() == 'Windows':
+                os.system(
+                    f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
+
+        fig = plt.figure()
+        plt.plot(n_proc_list, total_time_list, label='Total time')
+        plt.plot(n_proc_list, execute_time_list, label='Execute time')
+        plt.plot(n_proc_list, linearize_time_list, label='Linearize time')
+        plt.legend()
+        fig_name = f'WITNESS_{mda_class}_allprocs.png'
+        plt.savefig(
+            join(dirname(__file__), fig_name))
+
+        if platform.system() == 'Windows':
+            plt.show()
+        else:
+
+            os.system(
+                f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
+            os.system(
+                f'git commit -m "Add {fig_name}"')
+            os.system('git pull')
+            os.system('git push')
+
 
 if '__main__' == __name__:
     cls = TestScatter()
-    cls.test_01_witness_perfos_execute()
-    cls.test_02_witness_perfos_execute_GSNR()
-    cls.test_03_witness_perfos_execute_PureParallel()
+    cls.test_05_witness_perfos_multiproc()
+#     cls.test_02_witness_perfos_execute_GSNR()
+#     cls.test_03_witness_perfos_execute_PureParallel()
