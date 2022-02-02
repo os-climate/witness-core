@@ -65,7 +65,7 @@ class TestScatter(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         repo = 'climateeconomics.sos_processes.iam.witness'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'witness_coarse')
+            repo, 'witness')
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
@@ -99,7 +99,7 @@ class TestScatter(unittest.TestCase):
         result = '\n'.join([','.join(line.rstrip().split(None, 5))
                             for line in result.split('\n')])
 #
-        with open(join(dirname(__file__), 'witness_coarse_perfos.csv'), 'w+') as f:
+        with open(join(dirname(__file__), 'witness_perfos.csv'), 'w+') as f:
             #f = open(result.rsplit('.')[0] + '.csv', 'w')
             f.write(result)
             f.close()
@@ -142,7 +142,7 @@ class TestScatter(unittest.TestCase):
         ax1.set_title(
             f"WITNESS {mda_class} cache with {n_processes} procs, Total time : {total_time} s")
 
-        fig_name = f'WITNESS_coarse{mda_class}_{n_processes}_proc.png'
+        fig_name = f'WITNESS_{mda_class}_{n_processes}_proc.png'
         plt.savefig(
             join(dirname(__file__), fig_name))
         if platform.system() == 'Windows':
