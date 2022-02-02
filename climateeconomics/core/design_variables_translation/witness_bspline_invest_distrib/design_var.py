@@ -35,7 +35,7 @@ class Design_var(object):
 
         self.energy_list = inputs_dict['energy_list']
         self.ccs_list = inputs_dict['ccs_list']
-
+        self.livestock_usage = inputs_dict['livestock_usage']
         self.technology_dict = {
             energy: inputs_dict[f'{energy}.technologies_list'] for energy in self.energy_list + self.ccs_list}
         self.output_dict = {}
@@ -48,8 +48,10 @@ class Design_var(object):
         Configure with inputs_dict from the discipline
         '''
         self.output_dict = {}
-
-        list_ctrl = ['livestock_usage_factor_array']
+        if self.livestock_usage:
+            list_ctrl = ['livestock_usage_factor_array']
+        else:
+            list_ctrl = []
 
         list_ctrl.extend(
             [key for key in inputs_dict if key.endswith('_array_mix')])
@@ -85,8 +87,10 @@ class Design_var(object):
                     'bspline': bspline, 'eval_t': eval_t, 'b_array': b_array}
         #######
 
-        livestock_usage_factor_df = DataFrame(
-            {'years': years, 'percentage': self.bspline_dict['livestock_usage_factor_array']['eval_t']}, index=years)
+        if self.livestock_usage:
+            livestock_usage_factor_df = DataFrame(
+                {'years': years, 'percentage': self.bspline_dict['livestock_usage_factor_array']['eval_t']}, index=years)
+            self.output_dict['livestock_usage_factor_df'] = livestock_usage_factor_df
 
         dict_mix = {'years': years}
 
@@ -97,5 +101,3 @@ class Design_var(object):
 
         self.output_dict['invest_mix'] = DataFrame(
             dict_mix, index=years)
-
-        self.output_dict['livestock_usage_factor_df'] = livestock_usage_factor_df
