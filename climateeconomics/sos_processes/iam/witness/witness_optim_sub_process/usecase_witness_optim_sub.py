@@ -25,7 +25,7 @@ EXTRA_NAME = "WITNESS"
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], techno_dict=DEFAULT_TECHNO_DICT):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], techno_dict=DEFAULT_TECHNO_DICT, process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -40,9 +40,10 @@ class Study(ClimateEconomicsStudyManager):
         self.bspline = bspline
         self.invest_discipline = invest_discipline
         self.techno_dict = techno_dict
+        self.process_level = process_level
         self.witness_uc = witness_usecase(
             self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
     def setup_usecase(self):
@@ -84,7 +85,9 @@ class Study(ClimateEconomicsStudyManager):
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             dv_arrays_dict[f'{self.witness_uc.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array']['value']
-        dv_arrays_dict[f'{self.witness_uc.study_name}.livestock_usage_factor_array'] = dspace_df[f'livestock_usage_factor_array']['value']
+
+        if self.process_level == 'val':
+            dv_arrays_dict[f'{self.witness_uc.study_name}.livestock_usage_factor_array'] = dspace_df[f'livestock_usage_factor_array']['value']
 
         self.func_df = self.witness_uc.func_df
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df
