@@ -142,7 +142,7 @@ class DataStudy():
 
         #-- load data from land use
         dc_landuse = datacase_landuse(
-            self.year_start, self.year_end, self.time_step, name='.Land.Land_Use_V1')
+            self.year_start, self.year_end, self.time_step, name='.Land.Land_Use_V1', extra_name='.EnergyMix')
         dc_landuse.study_name = self.study_name
 
         #-- load data from agriculture
