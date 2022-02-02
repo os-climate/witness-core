@@ -34,13 +34,14 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Land_Use_V1', execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Land_Use_V1', execution_engine=None, extra_name=''):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.landuse_name = name
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
+        self.extra_name = extra_name
 
     def setup_usecase(self):
 
@@ -74,10 +75,11 @@ class Study(StudyManager):
             columns=['years',
                      'forest_surface_evol'])
         self.deforested_surface_df['years'] = years
-        self.deforested_surface_df['forest_surface_evol'] = np.linspace(-10, 0, year_range)
+        self.deforested_surface_df['forest_surface_evol'] = np.linspace(
+            -10, 0, year_range)
 
         landuse_input[self.study_name +
-                      '.land_demand_df'] = land_demand_df
+                      self.extra_name + '.land_demand_df'] = land_demand_df
         landuse_input[self.study_name +
                       '.total_food_land_surface'] = self.total_food_land_surface
         landuse_input[self.study_name +

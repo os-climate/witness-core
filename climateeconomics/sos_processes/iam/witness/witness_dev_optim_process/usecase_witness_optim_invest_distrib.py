@@ -22,7 +22,6 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from climateeconomics.core.design_variables_translation.witness_bspline.design_var_disc import Design_Var_Discipline
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_MIN_TECH_DICT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
@@ -39,7 +38,7 @@ WRITE_XVECT = Design_Var_Discipline.WRITE_XVECT
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_MIN_TECH_DICT, process_level='dev'):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, process_level='dev'):
 
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start

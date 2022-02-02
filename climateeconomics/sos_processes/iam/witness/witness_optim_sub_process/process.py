@@ -32,7 +32,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness',
-            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
+            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, process_level=self.process_level)
         # design variables builder
         if self.invest_discipline in INVEST_DISCIPLINE_OPTIONS[1:3]:
             design_var_path = 'climateeconomics.core.design_variables_translation.witness_bspline_invest_distrib.design_var_disc.Design_Var_Discipline'
