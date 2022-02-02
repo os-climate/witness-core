@@ -106,7 +106,9 @@ class Study(ClimateEconomicsStudyManager):
 
             land_use_list = dc_landuse.setup_usecase()
             setup_data_list = setup_data_list + land_use_list
-
+            dspace_land_use = dc_landuse.dspace
+            dspace_energy = self.dc_energy.dspace
+            self.merge_design_spaces([dspace_energy, dspace_land_use])
         else:
             dc_witness = datacase_witness_dev(
                 self.year_start, self.year_end, self.time_step)
@@ -122,6 +124,10 @@ class Study(ClimateEconomicsStudyManager):
 
             energy_input_list = self.dc_energy.setup_usecase()
             setup_data_list = setup_data_list + energy_input_list
+
+            dspace_energy = self.dc_energy.dspace
+
+            self.merge_design_spaces([dspace_energy])
 #             land_use_list = dc_landuse.setup_usecase()
 #             setup_data_list = setup_data_list + land_use_list
         # constraint land use
@@ -135,11 +141,8 @@ class Study(ClimateEconomicsStudyManager):
         # setup design space
         # remove CO2_energy_production_intensity_array design space
 
-        dspace_energy = self.dc_energy.dspace
+        #
 
-        #dspace_land_use = dc_landuse.dspace
-
-        self.merge_design_spaces([dspace_energy])
         """
         dspace_df.drop(dspace_df.loc[dspace_df["variable"] ==
                                      "CO2_energy_production_intensity_array"].index, inplace=True)
