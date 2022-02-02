@@ -23,6 +23,7 @@ class MacroEconomics():
     '''
     Economic model that compute the evolution of capital, consumption, output...
     '''
+    PC_CONSUMPTION_CONSTRAINT_DF = 'pc_consumption_constraint_df'
 
     def __init__(self, param):
         '''
@@ -31,6 +32,7 @@ class MacroEconomics():
         self.param = param
         self.inputs = None
         self.economics_df = None
+        self.pc_consumption_constraint_df = None
         self.set_data()
         self.create_dataframe()
 
@@ -52,6 +54,8 @@ class MacroEconomics():
         self.lo_capital = self.param['lo_capital']
         self.lo_conso = self.param['lo_conso']
         self.lo_per_capita_conso = self.param['lo_per_capita_conso']
+        self.hi_per_capita_conso = self.param['hi_per_capita_conso']
+        self.ref_pc_consumption_constraint = self.param['ref_pc_consumption_constraint']
         self.nb_per = round(
             (self.param['year_end'] -
              self.param['year_start']) /
@@ -154,7 +158,19 @@ class MacroEconomics():
         self.energy_investment = energy_investment
         self.energy_investment = self.energy_investment.replace(
             [np.inf, -np.inf], np.nan)
-        return economics_df.fillna(0.0), energy_investment.fillna(0.0)
+        
+        pc_consumption_constraint_df = pd.DataFrame(
+            index=default_index,
+            columns=['years',
+                     'pc_consumption_constraint'])
+        for key in pc_consumption_constraint_df.keys():
+            pc_consumption_constraint_df[key] = 0
+        pc_consumption_constraint_df['years'] = self.years_range
+        self.pc_consumption_constraint_df = pc_consumption_constraint_df
+        self.pc_consumption_constraint_df = self.pc_consumption_constraint_df.replace(
+            [np.inf, -np.inf], np.nan)
+
+        return economics_df.fillna(0.0), energy_investment.fillna(0.0), 
 
     def compute_productivity_growthrate(self, year):
         '''
@@ -468,6 +484,16 @@ class MacroEconomics():
         self.economics_df.loc[year, 'pc_consumption'] = max(
             consumption_pc, self.lo_per_capita_conso)
         return consumption_pc
+
+    def compute_comsumption_pc_constraint(self, year):
+        """Equation for consumption per capita constraint
+        c, Per capita consumption constraint
+        """
+        pc_consumption = self.economics_df.at[year, 'pc_consumption']
+        pc_consumption_constraint = (self.hi_per_capita_conso - pc_consumption) \
+            / self.ref_pc_consumption_constraint
+        self.pc_consumption_constraint_df.loc[year, 'pc_consumption_constraint'] = pc_consumption_constraint
+        return pc_consumption_constraint
 
     def compute_interest_rate(self, year):
         """Equation for interest rate
@@ -1589,6 +1615,7 @@ class MacroEconomics():
         self.compute_investment(self.year_start)
         self.compute_consumption(self.year_start)
         self.compute_consumption_pc(self.year_start)
+        self.compute_comsumption_pc_constraint(self.year_start)
         # for year 0 compute capital +1
         self.compute_capital(self.year_start)
         # Then iterate over years from year_start + tstep:
@@ -1606,6 +1633,7 @@ class MacroEconomics():
             self.compute_investment(year)
             self.compute_consumption(year)
             self.compute_consumption_pc(year)
+            self.compute_comsumption_pc_constraint(year)
             # capital t+1 :
             self.compute_capital(year)
         # Then interest rate
@@ -1623,4 +1651,5 @@ class MacroEconomics():
             self.share_n_energy_investment.values - \
             self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0
 
-        return self.economics_df.fillna(0.0), self.energy_investment.fillna(0.0), self.global_investment_constraint, self.energy_investment_wo_renewable.fillna(0.0)
+        return self.economics_df.fillna(0.0), self.energy_investment.fillna(0.0), self.global_investment_constraint, \
+            self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint_df.fillna(0.0)

@@ -43,7 +43,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'conso_elasticity': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
         'lo_capital': {'type': 'float', 'unit': 'trillions $', 'default': 1.0, 'user_level': 3},
         'lo_conso': {'type': 'float', 'unit': 'trillions $', 'default': 2.0, 'user_level': 3},
-        'lo_per_capita_conso': {'type': 'float', 'unit': 'trillions $', 'default': 0.01, 'user_level': 3},
+        'lo_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 0.01, 'user_level': 3},
+        'hi_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 50, 'user_level': 3},
+        'ref_pc_consumption_constraint': {'type': 'float', 'unit': 'k$', 'default': 1, 'user_level': 3},
         'damage_to_productivity': {'type': 'bool'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2},
         'total_investment_share_of_gdp': {'type': 'dataframe', 'unit': '%', 'dataframe_descriptor': {'years': ('float', None, False),
@@ -79,6 +81,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'energy_investment': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'G$', 'namespace': 'ns_witness'},
         'energy_investment_wo_renewable': {'type': 'dataframe', 'unit': 'G$'},
         'global_investment_constraint': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'pc_consumption_constraint_df': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
 
     def init_execution(self):
@@ -121,15 +124,17 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             print(
                 'For at least one year, the share of energy investment is above 100% of total investment')
         # Model execution
-        economics_df, energy_investment, global_investment_constraint, energy_investment_wo_renewable = self.macro_model.compute(
-            macro_inputs)
+        economics_df, energy_investment, global_investment_constraint, energy_investment_wo_renewable, pc_consumption_constraint_df = \
+            self.macro_model.compute(macro_inputs)
 
         # Store output data
         dict_values = {'economics_detail_df': economics_df,
                        'economics_df': economics_df[['years', 'gross_output', 'pc_consumption', 'output_net_of_d']],
                        'energy_investment': energy_investment,
                        'global_investment_constraint': global_investment_constraint,
-                       'energy_investment_wo_renewable': energy_investment_wo_renewable}
+                       'energy_investment_wo_renewable': energy_investment_wo_renewable,
+                       'pc_consumption_constraint_df': pc_consumption_constraint_df}
+                       
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
