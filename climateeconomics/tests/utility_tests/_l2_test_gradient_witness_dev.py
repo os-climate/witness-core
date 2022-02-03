@@ -17,7 +17,7 @@ from os.path import join, dirname, exists
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
-from climateeconomics.sos_processes.iam.witness.witness_v1.usecase_witness import Study as witness_usecase
+from climateeconomics.sos_processes.iam.witness.witness_dev_optim_process.usecase_witness_optim_invest_distrib import Study as witness_usecase
 
 
 class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
