@@ -23,6 +23,7 @@ from os.path import join, dirname
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pickle
+from climateeconomics.tests.data.mda_coarse_data_generator import launch_data_pickle_generation
 
 
 class CoarseJacobianTestCase(AbstractJacobianUnittest):
@@ -41,6 +42,12 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             self.test_06_coarse_renewable_stream_discipline_jacobian,
             self.test_07_coarse_fossil_stream_discipline_jacobian,
         ]
+
+    def launch_data_pickle_generation(self):
+        '''
+        If the witness_coarse usecase changed, launch this function to update the data pickle
+        '''
+        launch_data_pickle_generation()
 
     def setUp(self):
         '''
@@ -591,4 +598,5 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = CoarseJacobianTestCase()
     cls.setUp()
+    # cls.launch_data_pickle_generation()
     cls.test_07_coarse_fossil_stream_discipline_jacobian()
