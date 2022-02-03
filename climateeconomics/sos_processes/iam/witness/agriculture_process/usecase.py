@@ -63,7 +63,7 @@ class Study(StudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
-        self.nb_poles = 5
+        self.nb_poles = 7
 
     def setup_usecase(self):
 
@@ -165,7 +165,7 @@ class Study(StudyManager):
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
-
+        self.dspace = self.setup_design_space_ctrl_new()
         return setup_data_list
 
     def setup_initial_design_variable(self):
@@ -200,9 +200,9 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'red_to_white_meat_ctrl',
-                                self.design_space_ctrl['red_to_white_meat_ctrl'], 1.0, 100.0, activated_elem=[False, True, True, True, True, True, True])
+                                self.design_space_ctrl['red_to_white_meat_ctrl'].values, [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
         update_dspace_dict_with(ddict, 'meat_to_vegetables_ctrl',
-                                self.design_space_ctrl['meat_to_vegetables_ctrl'], 1.0, 100.0, activated_elem=[False, True, True, True, True, True, True])
+                                self.design_space_ctrl['meat_to_vegetables_ctrl'].values, [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
 
         return ddict
 

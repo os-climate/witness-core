@@ -88,27 +88,27 @@ class Study(StudyManager):
         forest_input[self.study_name + '.year_end'] = self.year_end
 
         forest_input[self.study_name + self.forest_name +
-                       '.limit_deforestation_surface'] = deforestation_limit
+                     '.limit_deforestation_surface'] = deforestation_limit
 
         forest_input[self.study_name + self.forest_name +
-                       '.CO2_per_ha'] = CO2_per_ha
+                     '.CO2_per_ha'] = CO2_per_ha
 
         forest_input[self.study_name + self.forest_name +
-                       '.initial_emissions'] = initial_emissions
+                     '.initial_emissions'] = initial_emissions
 
         forest_input[self.study_name +
-                       '.deforestation_surface'] = deforestation_surface_df
+                     '.deforestation_surface'] = deforestation_surface_df
 
         setup_data_list.append(forest_input)
 
         deforestation_surface_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
 
         design_space_ctrl_dict = {}
-        design_space_ctrl_dict['deforestation_surface_ctrl'] = deforestation_surface_ctrl
+        design_space_ctrl_dict['deforested_surface_ctrl'] = deforestation_surface_ctrl
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
-
+        self.dspace = self.setup_design_space_ctrl_new()
         return setup_data_list
 
     def setup_initial_design_variable(self):
@@ -140,7 +140,7 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
-                                self.design_space_ctrl['deforested_surface_ctrl'], 1.0, 100.0, activated_elem=[False, True, True, True, True, True, True, True])
+                                self.design_space_ctrl['deforested_surface_ctrl'].values, [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
 
         return ddict
 
