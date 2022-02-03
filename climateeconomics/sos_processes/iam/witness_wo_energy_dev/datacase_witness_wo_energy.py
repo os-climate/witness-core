@@ -27,6 +27,7 @@ from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase impo
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import Study as datacase_agriculture
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from climateeconomics.sos_processes.iam.witness.forest_process.usecase import Study as datacase_forest
+from sos_trades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
@@ -41,6 +42,8 @@ class DataStudy():
         self.year_end = year_end
         self.time_step = time_step
         self.study_name_wo_extra_name = self.study_name
+        self.dspace = {}
+        self.dspace['dspace_size'] = 0
 
     def setup_usecase(self):
         setup_data_list = []
@@ -167,7 +170,8 @@ class DataStudy():
 
         forest_list = dc_forest.setup_usecase()
         setup_data_list = setup_data_list + forest_list
-
+        StudyManager.merge_design_spaces(
+            self, [dc_forest.dspace, dc_agriculture.dspace])
         # constraint land use
 
         # WITNESS
