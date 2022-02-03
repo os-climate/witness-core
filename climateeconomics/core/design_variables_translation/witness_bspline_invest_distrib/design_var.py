@@ -35,7 +35,7 @@ class Design_var(object):
 
         self.energy_list = inputs_dict['energy_list']
         self.ccs_list = inputs_dict['ccs_list']
-        self.livestock_usage = inputs_dict['livestock_usage']
+        self.is_val_level = inputs_dict['is_val_level']
         self.technology_dict = {
             energy: inputs_dict[f'{energy}.technologies_list'] for energy in self.energy_list + self.ccs_list}
         self.output_dict = {}
@@ -48,10 +48,10 @@ class Design_var(object):
         Configure with inputs_dict from the discipline
         '''
         self.output_dict = {}
-        if self.livestock_usage:
+        if self.is_val_level:
             list_ctrl = ['livestock_usage_factor_array']
         else:
-            list_ctrl = []
+            list_ctrl = ['deforested_surface_ctrl']
 
         list_ctrl.extend(
             [key for key in inputs_dict if key.endswith('_array_mix')])
@@ -87,10 +87,15 @@ class Design_var(object):
                     'bspline': bspline, 'eval_t': eval_t, 'b_array': b_array}
         #######
 
-        if self.livestock_usage:
+        if self.is_val_level:
             livestock_usage_factor_df = DataFrame(
                 {'years': years, 'percentage': self.bspline_dict['livestock_usage_factor_array']['eval_t']}, index=years)
             self.output_dict['livestock_usage_factor_df'] = livestock_usage_factor_df
+
+        else:
+            deforestation_surface = DataFrame(
+                {'years': years, 'deforested_surface': self.bspline_dict['deforested_surface_ctrl']['eval_t']})
+            self.output_dict['deforestation_surface'] = deforestation_surface
 
         dict_mix = {'years': years}
 
