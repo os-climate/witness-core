@@ -127,7 +127,7 @@ class Study(ClimateEconomicsStudyManager):
 
             dspace_energy = self.dc_energy.dspace
 
-            self.merge_design_spaces([dspace_energy])
+            self.merge_design_spaces([dspace_energy, dc_witness.dspace])
 #             land_use_list = dc_landuse.setup_usecase()
 #             setup_data_list = setup_data_list + land_use_list
         # constraint land use
