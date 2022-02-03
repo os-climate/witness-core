@@ -44,7 +44,7 @@ class Design_Var_Discipline(SoSDiscipline):
         'design_space': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_optim'},
         WRITE_XVECT: {'type': 'bool', 'default': False, 'user_level': 3},
         LOG_DVAR: {'type': 'bool', 'default': True, 'user_level': 3},
-        'livestock_usage': {'type': 'bool', 'default': False, 'user_level': 3}
+        'livestock_usage': {'type': 'bool', 'default': True, 'user_level': 3}
     }
 
     DESC_OUT = {
@@ -181,8 +181,9 @@ class Design_Var_Discipline(SoSDiscipline):
                         f'{ccs}.{techno}.{ccs_wo_dot}_{techno_wo_dot}_array_mix',),
                     self.design.bspline_dict[f'{ccs}.{techno}.{ccs_wo_dot}_{techno_wo_dot}_array_mix']['b_array'])
 
-        self.set_partial_derivative_for_other_types(
-            (f'livestock_usage_factor_df', 'percentage'), (f'livestock_usage_factor_array',),  self.design.bspline_dict['livestock_usage_factor_array']['b_array'])
+        if inputs_dict['livestock_usage']:
+            self.set_partial_derivative_for_other_types(
+                (f'livestock_usage_factor_df', 'percentage'), (f'livestock_usage_factor_array',),  self.design.bspline_dict['livestock_usage_factor_array']['b_array'])
 
     def get_chart_filter_list(self):
 
