@@ -9,8 +9,8 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_c
 import pickle
 
 
-if '__main__' == __name__:
-    # Run MDA Energy
+def launch_data_pickle_generation():
+    # Run MDA WITNESS Coarse
     name = 'Data_Generator'
     ee = ExecutionEngine(name)
     model_name = 'EnergyMix'
@@ -232,3 +232,7 @@ if '__main__' == __name__:
     output = open('mda_coarse_data_technologies_output_dict.pkl', 'wb')
     pickle.dump(mda_coarse_data_technologies_output_dict, output)
     output.close()
+
+
+if '__main__' == __name__:
+    launch_data_pickle_generation()

@@ -31,8 +31,8 @@ By default, the values are:
 |2566|1860|550|1500|1150|670|624|kcal/kg|
 
 These data are extracted from [^3].
-* **red to white meat percentage**, gives the percentage of red meat that will be converted into white meat in order to change the diet. The unit is percentage.
-* **meat to vegetables percentage**, gives the percentage of white meat that will be converted into vegetables and fruits. The unit is percentage.
+* **red to white meat percentage**, gives the percentage of red meat that will be converted into white meat.
+* **meat to vegetables percentage**, gives the percentage of white meat that will be converted into vegetables and fruits.
 * **other_use_agriculture**, gives the average ha per person for the use of agriculture in other way that the 7 food types. It mainly takes into account :
 cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) - tobacco - yams - natural rubber - millet - textile fiber (cotton and other)... 
 By default, it is set to 0.102ha/person to represent around of 800 millions of ha for a population of 7.8billions of people. [^4]

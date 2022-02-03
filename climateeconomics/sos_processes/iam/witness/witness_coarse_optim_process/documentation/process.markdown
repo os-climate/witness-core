@@ -1,19 +1,14 @@
 # WITNESS Optimisation problem documentation
 
+This process is a converged version of the simplest Witness problem made with electricity models, a fossil energy model and CCUS models. It is used to refine optimization problem coefficients and demonstration.
+
 ## Definition[^1]
 
 Multi-disciplinary design optimization (MDO) is a field of engineering that uses optimization methods to solve design problems incorporating a number of disciplines. It is also known as multidisciplinary system design optimization (MSDO). MDO allows designers to incorporate all relevant disciplines simultaneously in an optimization process. The optimum of the simultaneous problem is more efficient than the design found by optimizing each discipline sequentially, since it can exploit the interactions between the disciplines. However, including all disciplines simultaneously significantly increases the complexity of the problem.
 
-
 ## Problem formulation
 
 The problem is given with an objective to minimize, respecting a certain number of constraints. As a result, the optimized solution will attend the lowest objective, following the given constraints.
-
-The problem is defined as follow : 
-
-![](witness_formulation.PNG)
-
-
 
 ## Objectives
 
@@ -22,7 +17,6 @@ $$Objective = utility\_objective + min\_utility\_objective + carbon\_objective$$
  The weight of each component of the objective is defined by $\alpha$ and $\gamma$ .
 $\alpha$ represents if the effort is put on utility (global wealth) or low CO2 emission.
 $\gamma$ represents if we prefer maximum average utility or do not fall to low at the minimum.
-
 
 ### Utility
 
@@ -43,8 +37,6 @@ As utility is the wealth of the population, it is important it remains likely st
 Last min_utility objective, formula:
 
 $$min\_utility\_objective =(1 - α)\frac{initial\_min\_utility}{last\_min\_utility}$$  
-
-
 
 ### Carbon Emission
 

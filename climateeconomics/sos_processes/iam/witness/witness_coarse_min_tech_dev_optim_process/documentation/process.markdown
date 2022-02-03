@@ -1,6 +1,6 @@
-# WITNESS Optimisation problem documentation
+# WITNESS Coarse Min Tech development optimization problem documentation
 
-This process is a converged version of the full Witness problem made with validated models. It is used to refine optimization problem coefficients and demonstration.
+This process is a development version of the Witness problem made with a minimum of energy models (some beeing still under development) to reduce computational time but with all constraints and objectives. Problem formulation is still investigated.
 
 ## Definition[^1]
 
@@ -91,20 +91,25 @@ Witness model computes land use by technologies and agriculture. This constraint
 that the land used is available, and does not exceed forest and crops land limits.
 
 ## Design variables
-Design variables are variables that the optimizer is able to change in order to find the best solution to the given problem. they are degrees of freedom of the problem.
+Design variables are variables that the optimizer is able to change in order to find the best solution to the given problem.
 The following parts describes the different design variables of the problem.
 
 ### Investment in the energy mix
-The optimizer is able to change the investment in the energy mix, thus, the investment in each energy and each technology. This allows to explore all the energy production scenario, regarding the constraints describes previously.
+The optimizer is able to change the investments in the energy mix, thus, the investment in each energy and each technology. This allows to explore all the energy production scenarios, regarding the constraints described previously.
 
 ### Investment in CCS
-Following the same idea than the investment in the energy mix, the optimizer is able to change the investment in carbon capture and storage technologies.
+Following the same idea than the investments in the energy mix, the optimizer is able to change the investment in carbon capture and storage technologies.
 
 ### Percentage of CCS
 This design variable permits to split the global investment into energy production and CO2 capture and storage.
 
-### Livestock usage
-This design variable represent the percentage of utilisation of the agriculture surface dedicated to livestock. This permits to mimic a reduction of meet production and so to reduce the land surface used by agriculture.
+### Diet change
+Two design variables are used to modify the diet:
+* red to white meat percentage, gives the percentage of red meat that will be converted into white meat.
+* meat to vegetables percentage, gives the percentage of white meat that will be converted into vegetables and fruits.
+
+### Deforestation surface
+Forest surface may be turned into agricultural ones with the variable deforestation_surface which is expressed in Mha.
 
 
-[^1]: Wikipedia - Multidisciplinary design optimization - Retrieved from: 'https://en.wikipedia.org/wiki/Multidisciplinary_design_optimization'
+[^1]: Multidisciplinary design optimization, https://en.wikipedia.org/wiki/Multidisciplinary_design_optimization
