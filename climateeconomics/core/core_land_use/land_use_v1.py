@@ -395,5 +395,8 @@ class LandUseV1():
 
         # a surface added or removed one year is also added or removed the
         # following years
-        surfaces_final = result.cumsum().values
+        if isinstance(result, list):
+            surfaces_final = result
+        else:
+            surfaces_final = result.cumsum().values
         return surfaces_final
