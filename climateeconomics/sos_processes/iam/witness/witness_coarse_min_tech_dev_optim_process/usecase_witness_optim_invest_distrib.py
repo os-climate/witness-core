@@ -119,7 +119,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "wait_time_between_fork": 0},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
-                             f'{self.witness_uc.witness_uc.study_name}.DesignVariables.livestock_usage': False}
+                             f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False}
 # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
 # True}
 
