@@ -44,12 +44,12 @@ class Design_Var_Discipline(SoSDiscipline):
         'design_space': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_optim'},
         WRITE_XVECT: {'type': 'bool', 'default': False, 'user_level': 3},
         LOG_DVAR: {'type': 'bool', 'default': True, 'user_level': 3},
-        'livestock_usage': {'type': 'bool', 'default': True, 'user_level': 3}
+        'is_val_level': {'type': 'bool', 'default': True, 'user_level': 3}
     }
 
     DESC_OUT = {
         'invest_mix': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
-        'livestock_usage_factor_df': {'type': 'dataframe', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+
         'design_space_last_ite': {'type': 'dataframe', 'user_level': 3}
     }
 
@@ -93,12 +93,24 @@ class Design_Var_Discipline(SoSDiscipline):
                                 techno_wo_dot = techno.replace('.', '_')
                                 dynamic_inputs[f'{ccs_name}.{techno}.{ccs_name_wo_dot}_{techno_wo_dot}_array_mix'] = {
                                     'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
-        if 'livestock_usage' in self._data_in:
-            livestock_usage = self.get_sosdisc_inputs('livestock_usage')
-            if livestock_usage is not None:
-                if livestock_usage:
+        if 'is_val_level' in self._data_in:
+            val_level = self.get_sosdisc_inputs('is_val_level')
+            if val_level is not None:
+                if val_level:
                     dynamic_inputs['livestock_usage_factor_array'] = {
                         'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+                    dynamic_outputs['livestock_usage_factor_df'] = {
+                        'type': 'dataframe', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+
+                else:
+                    dynamic_inputs['deforested_surface_ctrl'] = {
+                        'type': 'array', 'unit': 'Mha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+                    dynamic_inputs['red_to_white_meat_ctrl'] = {
+                        'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+                    dynamic_inputs['meat_to_vegetables_ctrl'] = {
+                        'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+                    dynamic_outputs['deforestation_surface'] = {
+                        'type': 'dataframe', 'unit': 'Mha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -181,9 +193,12 @@ class Design_Var_Discipline(SoSDiscipline):
                         f'{ccs}.{techno}.{ccs_wo_dot}_{techno_wo_dot}_array_mix',),
                     self.design.bspline_dict[f'{ccs}.{techno}.{ccs_wo_dot}_{techno_wo_dot}_array_mix']['b_array'])
 
-        if inputs_dict['livestock_usage']:
+        if inputs_dict['is_val_level']:
             self.set_partial_derivative_for_other_types(
                 (f'livestock_usage_factor_df', 'percentage'), (f'livestock_usage_factor_array',),  self.design.bspline_dict['livestock_usage_factor_array']['b_array'])
+        else:
+            self.set_partial_derivative_for_other_types(
+                (f'deforestation_surface', 'deforested_surface'), (f'deforested_surface_ctrl',),  self.design.bspline_dict['deforested_surface_ctrl']['b_array'])
 
     def get_chart_filter_list(self):
 
