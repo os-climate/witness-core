@@ -101,7 +101,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "maxcor": dspace_size,
                                                                       "pg_tol": 1.e-8,
                                                                       "max_iter": 500,
-                                                                      "disp": 110},
+                                                                      "disp": 30},
 
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-10,
                                                                                                                    'max_iter': 10000},
@@ -114,7 +114,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "n_processes": 32,
                                                                           "use_threading": False,
                                                                           "wait_time_between_fork": 0},
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSorNewtonMDA',
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50, }
 # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
 # True}

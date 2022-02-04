@@ -80,7 +80,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'food_land_surface_percentage_df': {'type': 'dataframe', 'unit': '%'},
         'updated_diet_df': {'type': 'dataframe', 'unit': 'kg/person/year'},
         'agriculture_productivity_evolution': {'type': 'dataframe'}
-        #'percentage_diet_df': {'type': 'dataframe', 'unit': '%'},
     }
 
     AGRICULTURE_CHARTS = 'agriculture and diet charts'
@@ -96,13 +95,12 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
-
+        self.agriculture_model.red_to_white_meat = inp_dict[Agriculture.RED_TO_WHITE_MEAT]
+        self.agriculture_model.meat_to_vegetables = inp_dict[Agriculture.MEAT_TO_VEGETABLES]
         #-- compute
         population_df = inp_dict.pop('population_df')
         temperature_df = inp_dict['temperature_df']
         self.agriculture_model.compute(population_df, temperature_df)
-
-        #years = np.arange(inp_dict['year_start'], inp_dict['year_end'] + 1)
 
         outputs_dict = {
             'food_land_surface_df': self.agriculture_model.food_land_surface_df,
@@ -110,7 +108,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             'food_land_surface_percentage_df': self.agriculture_model.food_land_surface_percentage_df,
             'updated_diet_df': self.agriculture_model.updated_diet_df,
             'agriculture_productivity_evolution': self.agriculture_model.productivity_evolution,
-            #'percentage_diet_df': self.agriculture_model.percentage_diet_df,
         }
 
         #-- store outputs
