@@ -45,7 +45,7 @@ class Design_Var_Discipline(SoSDiscipline):
         'livestock_usage_factor_array': {'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'design_space': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_optim'},
         WRITE_XVECT: {'type': 'bool', 'default': False, 'user_level': 3},
-        LOG_DVAR: {'type': 'bool', 'default': True, 'user_level': 3}
+        LOG_DVAR: {'type': 'bool', 'default': False, 'user_level': 3}
     }
 
     DESC_OUT = {
