@@ -20,7 +20,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
-    def __init__(self, ee, process_level='val'):
+    def __init__(self, ee, process_level='dev'):
         WITNESSSubProcessBuilder.__init__(
             self, ee)
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[1]
