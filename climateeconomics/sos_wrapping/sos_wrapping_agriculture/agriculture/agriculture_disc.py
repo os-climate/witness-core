@@ -96,7 +96,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
-
+        self.agriculture_model.red_to_white_meat = inp_dict[Agriculture.RED_TO_WHITE_MEAT]
+        self.agriculture_model.meat_to_vegetables = inp_dict[Agriculture.MEAT_TO_VEGETABLES]
         #-- compute
         population_df = inp_dict.pop('population_df')
         temperature_df = inp_dict['temperature_df']
