@@ -101,7 +101,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "maxcor": dspace_size,
                                                                       "pg_tol": 1.e-8,
                                                                       "max_iter": 500,
-                                                                      "disp": 110},
+                                                                      "disp": 30},
                              # f'{ns}.{self.optim_name}.{witness_uc.coupling_name}.linear_solver_MDO':
                              # 'GMRES',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-10,
