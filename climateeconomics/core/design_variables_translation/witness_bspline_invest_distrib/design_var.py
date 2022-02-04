@@ -97,6 +97,8 @@ class Design_var(object):
             deforestation_surface = DataFrame(
                 {'years': years, 'deforested_surface': self.bspline_dict['deforested_surface_ctrl']['eval_t']})
             self.output_dict['deforestation_surface'] = deforestation_surface
+            self.output_dict['red_to_white_meat'] = self.bspline_dict['red_to_white_meat_ctrl']['eval_t']
+            self.output_dict['meat_to_vegetables'] = self.bspline_dict['meat_to_vegetables_ctrl']['eval_t']
 
         dict_mix = {'years': years}
 
