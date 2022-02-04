@@ -43,7 +43,7 @@ class Design_Var_Discipline(SoSDiscipline):
                      'default': [CarbonCapture.name, CarbonStorage.name], 'editable': False, 'structuring': True},
         'design_space': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_optim'},
         WRITE_XVECT: {'type': 'bool', 'default': False, 'user_level': 3},
-        LOG_DVAR: {'type': 'bool', 'default': True, 'user_level': 3},
+        LOG_DVAR: {'type': 'bool', 'default': False, 'user_level': 3},
         'is_val_level': {'type': 'bool', 'default': True, 'user_level': 3}
     }
 
