@@ -66,8 +66,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         self.population_df = pd.DataFrame(
             {"years": years, 'population': population})
         self.population_df.index = years
-        
-        temperature = np.array(np.linspace(1.05, 5, year_range))      
+
+        temperature = np.array(np.linspace(1.05, 5, year_range))
         self.temperature_df = pd.DataFrame(
             {"years": years, "temp_atmo": temperature})
         self.temperature_df.index = years
@@ -120,8 +120,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.kg_to_m2_dict': self.default_kg_to_m2,
                        f'{self.name}.population_df': self.population_df,
                        f'{self.name}.temperature_df': self.temperature_df,
-                       f'{self.name}.{self.model_name}.red_to_white_meat': self.red_to_white_meat,
-                       f'{self.name}.{self.model_name}.meat_to_vegetables': self.meat_to_vegetables,
+                       f'{self.name}.red_to_white_meat': self.red_to_white_meat,
+                       f'{self.name}.meat_to_vegetables': self.meat_to_vegetables,
                        f'{self.name}.{self.model_name}.other_use_agriculture': self.other,
                        }
         self.ee.dm.set_values_from_dict(values_dict)
@@ -130,5 +130,5 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_discipline.pkl', discipline=disc_techno, inputs=[f'{self.name}.population_df', f'{self.name}.temperature_df'], 
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_discipline.pkl', discipline=disc_techno, inputs=[f'{self.name}.population_df', f'{self.name}.temperature_df'],
                             outputs=[f'{self.name}.total_food_land_surface'], step=1e-15, derr_approx='complex_step')
