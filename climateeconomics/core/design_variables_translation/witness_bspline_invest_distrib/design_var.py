@@ -51,7 +51,8 @@ class Design_var(object):
         if self.is_val_level:
             list_ctrl = ['livestock_usage_factor_array']
         else:
-            list_ctrl = ['deforested_surface_ctrl']
+            list_ctrl = ['deforested_surface_ctrl',
+                         'meat_to_vegetables_ctrl', 'red_to_white_meat_ctrl']
 
         list_ctrl.extend(
             [key for key in inputs_dict if key.endswith('_array_mix')])
