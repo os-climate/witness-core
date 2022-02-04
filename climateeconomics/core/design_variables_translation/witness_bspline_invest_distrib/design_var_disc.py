@@ -111,7 +111,10 @@ class Design_Var_Discipline(SoSDiscipline):
                         'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
                     dynamic_outputs['deforestation_surface'] = {
                         'type': 'dataframe', 'unit': 'Mha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
-
+                    dynamic_outputs['red_to_white_meat'] = {
+                        'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_agriculture'}
+                    dynamic_outputs['meat_to_vegetables'] = {
+                        'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_agriculture'}
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
         self.iter = 0
@@ -199,6 +202,10 @@ class Design_Var_Discipline(SoSDiscipline):
         else:
             self.set_partial_derivative_for_other_types(
                 (f'deforestation_surface', 'deforested_surface'), (f'deforested_surface_ctrl',),  self.design.bspline_dict['deforested_surface_ctrl']['b_array'])
+            self.set_partial_derivative('red_to_white_meat', 'red_to_white_meat_ctrl',
+                                        self.design.bspline_dict['red_to_white_meat_ctrl']['b_array'])
+            self.set_partial_derivative('meat_to_vegetables', 'meat_to_vegetables_ctrl',
+                                        self.design.bspline_dict['meat_to_vegetables_ctrl']['b_array'])
 
     def get_chart_filter_list(self):
 
