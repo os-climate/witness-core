@@ -32,7 +32,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         coupling_builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',
-            techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], process_level='dev')
+            techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], process_level='val')
 
         # modify namespaces defined in the child process
         for ns in self.ee.ns_manager.ns_list:
