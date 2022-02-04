@@ -200,9 +200,9 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'red_to_white_meat_ctrl',
-                                self.design_space_ctrl['red_to_white_meat_ctrl'].values, [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
+                                list(self.design_space_ctrl['red_to_white_meat_ctrl'].values), [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
         update_dspace_dict_with(ddict, 'meat_to_vegetables_ctrl',
-                                self.design_space_ctrl['meat_to_vegetables_ctrl'].values, [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
+                                list(self.design_space_ctrl['meat_to_vegetables_ctrl'].values), [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
 
         return ddict
 
