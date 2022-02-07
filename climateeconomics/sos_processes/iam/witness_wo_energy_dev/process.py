@@ -44,25 +44,22 @@ class ProcessBuilder(BaseProcessBuilder):
             'climateeconomics.sos_processes.iam.witness', 'resources_process')
         builder_list.extend(chain_builders_resource)
 
-        land_use_path = 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_v1_disc.LandUseV1Discipline'
-        chain_builders_land_use = self.ee.factory.get_builder_from_module(
-            'Land.Land_Use', land_use_path)
-        builder_list.append(chain_builders_land_use)
+        chain_builders_landuse = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'land_use_v1_process')
+        builder_list.extend(chain_builders_landuse)
 
-        agriculture_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_disc.AgricultureDiscipline'
-        chain_builders_agriculture = self.ee.factory.get_builder_from_module(
-            'Land.Agriculture', agriculture_path)
-        builder_list.append(chain_builders_agriculture)
+        chain_builders_agriculture = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'agriculture_process')
+        builder_list.extend(chain_builders_agriculture)
 
-        population_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline'
-        chain_builders_pop = self.ee.factory.get_builder_from_module(
-            'Population', population_path)
-        builder_list.append(chain_builders_pop)
+        chain_builders_population = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'population_process')
+        builder_list.extend(chain_builders_population)
 
-        forest_path = 'climateeconomics.sos_wrapping.sos_wrapping_forest.forest.forest_disc.ForestDiscipline'
-        chain_builders_forest = self.ee.factory.get_builder_from_module(
-            'Land.Forest', forest_path)
-        builder_list.append(chain_builders_forest)
+        chain_builders_forest = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'forest_process')
+        builder_list.extend(chain_builders_forest)
+
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    'ns_functions': f'{self.ee.study_name}.EnergyMix',
                    'ns_resource ': f'{self.ee.study_name}.EnergyMix',
