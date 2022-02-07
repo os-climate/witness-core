@@ -135,7 +135,7 @@ class Study(StudyManager):
         agriculture_input[self.study_name + '.year_start'] = self.year_start
         agriculture_input[self.study_name + '.year_end'] = self.year_end
 
-        agriculture_input[self.study_name + '.Land' + self.agriculture_name +
+        agriculture_input[self.study_name + self.agriculture_name +
                           '.diet_df'] = diet_df
         agriculture_input[self.study_name + self.agriculture_name +
                           '.kg_to_kcal_dict'] = default_kg_to_kcal
@@ -145,7 +145,7 @@ class Study(StudyManager):
                           '.red_to_white_meat'] = red_to_white_meat
         agriculture_input[self.study_name +
                           '.meat_to_vegetables'] = meat_to_vegetables
-        agriculture_input[self.study_name + '.Land' + self.agriculture_name +
+        agriculture_input[self.study_name + self.agriculture_name +
                           '.other_use_agriculture'] = other
 
         agriculture_input[self.study_name +
