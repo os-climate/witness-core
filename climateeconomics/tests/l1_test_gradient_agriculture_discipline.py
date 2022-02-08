@@ -129,6 +129,11 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_discipline.pkl', discipline=disc_techno, inputs=[f'{self.name}.population_df', f'{self.name}.temperature_df'],
-                            outputs=[f'{self.name}.total_food_land_surface'], step=1e-15, derr_approx='complex_step')
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_discipline.pkl', discipline=disc_techno,
+                            step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.population_df', 
+                                    f'{self.name}.temperature_df',
+                                    f'{self.name}.red_to_white_meat',
+                                    f'{self.name}.meat_to_vegetables',
+                                    ],
+                            outputs=[f'{self.name}.total_food_land_surface'])
