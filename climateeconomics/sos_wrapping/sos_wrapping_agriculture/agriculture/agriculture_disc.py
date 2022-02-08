@@ -88,7 +88,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
 
-        self.agriculture_model = Agriculture(param)
+        self.agriculture_model = Agriculture(param )
 
     def run(self):
 
@@ -141,11 +141,19 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             summ += result
 
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('population_df', 'population'), summ,)
+            ('total_food_land_surface', 'total surface (Gha)'), ('population_df', 'population'), summ)
         d_total_d_temperature = model.d_food_land_surface_d_temperature(
             temperature_df, 'total surface (Gha)')
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature,)
+            ('total_food_land_surface', 'total surface (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
+
+        d_surface_d_red_to_white = model.d_surface_d_red_to_white(population_df)
+        d_surface_d_meat_to_vegetable = model.d_surface_d_meat_to_vegetable(population_df)
+
+        self.set_partial_derivative_for_other_types(
+            ('total_food_land_surface', 'total surface (Gha)'), ('red_to_white_meat', 'red_to_white_meat'), d_surface_d_red_to_white)
+        self.set_partial_derivative_for_other_types(
+            ('total_food_land_surface', 'total surface (Gha)'), ('meat_to_vegetables', 'meat_to_vegetables'), d_surface_d_meat_to_vegetable)
 
     def get_chart_filter_list(self):
 
