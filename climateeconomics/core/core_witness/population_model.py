@@ -405,8 +405,6 @@ class Population:
         for effect in self.death_dict:
             self.death_dict[effect]['total'] = self.death_dict[effect].iloc[:,
                                                                             1:-1].sum(axis=1, skipna=True)
-            self.death_dict[effect]['cum_total'] = self.death_dict[effect]['total'].cumsum(
-            )
 
         for effect in self.death_dict:
             self.death_dict[effect].fillna(0.0)
