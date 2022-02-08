@@ -56,7 +56,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Agriculture', execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Land.Agriculture', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.agriculture_name = name
@@ -137,10 +137,7 @@ class Study(StudyManager):
 
         agriculture_input[self.study_name + self.agriculture_name +
                           '.diet_df'] = diet_df
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.kg_to_kcal_dict'] = default_kg_to_kcal
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.kg_to_m2_dict'] = default_kg_to_m2
+
         agriculture_input[self.study_name +
                           '.red_to_white_meat'] = red_to_white_meat
         agriculture_input[self.study_name +
