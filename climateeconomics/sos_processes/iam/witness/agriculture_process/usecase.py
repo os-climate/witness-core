@@ -56,7 +56,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Agriculture', execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Land.Agriculture', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.agriculture_name = name
@@ -93,22 +93,6 @@ class Study(StudyManager):
             {"years": years, "population": population})
         population_df.index = years
 
-        default_kg_to_m2 = {'red meat': 345,
-                            'white meat': 16,
-                            'milk': 8.95,
-                            'eggs': 6.3,
-                            'rice and maize': 2.9,
-                            'potatoes': 0.88,
-                            'fruits and vegetables': 0.8,
-                            }
-        default_kg_to_kcal = {'red meat': 2566,
-                              'white meat': 1860,
-                              'milk': 550,
-                              'eggs': 1500,
-                              'rice and maize': 1150,
-                              'potatoes': 670,
-                              'fruits and vegetables': 624,
-                              }
         red_to_white_meat = np.linspace(0, 50, year_range)
         meat_to_vegetables = np.linspace(0, 50, year_range)
         red_to_white_meat_df = pd.DataFrame(
@@ -137,10 +121,7 @@ class Study(StudyManager):
 
         agriculture_input[self.study_name + self.agriculture_name +
                           '.diet_df'] = diet_df
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.kg_to_kcal_dict'] = default_kg_to_kcal
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.kg_to_m2_dict'] = default_kg_to_m2
+
         agriculture_input[self.study_name +
                           '.red_to_white_meat'] = red_to_white_meat
         agriculture_input[self.study_name +
