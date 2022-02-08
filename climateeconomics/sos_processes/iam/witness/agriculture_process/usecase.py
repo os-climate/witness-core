@@ -93,22 +93,6 @@ class Study(StudyManager):
             {"years": years, "population": population})
         population_df.index = years
 
-        default_kg_to_m2 = {'red meat': 345,
-                            'white meat': 16,
-                            'milk': 8.95,
-                            'eggs': 6.3,
-                            'rice and maize': 2.9,
-                            'potatoes': 0.88,
-                            'fruits and vegetables': 0.8,
-                            }
-        default_kg_to_kcal = {'red meat': 2566,
-                              'white meat': 1860,
-                              'milk': 550,
-                              'eggs': 1500,
-                              'rice and maize': 1150,
-                              'potatoes': 670,
-                              'fruits and vegetables': 624,
-                              }
         red_to_white_meat = np.linspace(0, 50, year_range)
         meat_to_vegetables = np.linspace(0, 50, year_range)
         red_to_white_meat_df = pd.DataFrame(
