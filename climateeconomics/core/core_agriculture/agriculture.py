@@ -212,7 +212,7 @@ class Agriculture():
                 result[key + ' (Gha)'] = kg_food_to_surface[key] * \
                     quantity_of_food_df[key]
                 sum = sum + result[key + ' (Gha)']
-        # add other contribution. 1e6 is for million of poeple,
+        # add other contribution. 1e6 is for million of people,
         # /hatom2 for future conversion
         result['other (Gha)'] = self.other_use_agriculture * \
             population_df['population'].values * 1e6 / self.hatom2
@@ -273,7 +273,7 @@ class Agriculture():
         # compute the number of kcal of white meat to transfert to vegetables
         # /100 because meat_to_vegetables is in %
         removed_white_meat = changed_diet_df['white meat'].values * \
-            meat_to_vegetables / 100
+            meat_to_vegetables / 100 
 
         # compute the kg of fruit and vegetables needed to fill the kcal
         added_fruit = removed_white_meat * self.kg_to_kcal_dict['white meat'] / \
@@ -347,68 +347,6 @@ class Agriculture():
         
         return surface_df
 
-    ####### Gradient #########
-
-    def d_land_surface_d_population(self, column_name):
-        """
-        Compute the derivate of food_land_surface_df wts population, for a specific column.
-        derivate_step1 = diet_expression(kg/person/year) * kg_to_m2 / 1e7
-        derivative = derivative_step1 * (1- productivity reduction due to temperature increase)
-        diet_expression is computed in a separated method
-
-        need self.column_dict because input column get '(Gha)' at the end
-        / 1e7 comes from the unit : *1e6 (population in million) /1e4 (m2 to ha) /1e9 (ha to Gha)
-        """
-        updated_diet_food = self.updated_diet_expression(
-            self.column_dict[column_name])
-        number_of_values = (self.year_end - self.year_start + 1)
-        d_land_surface_d_pop_before = np.identity(
-            number_of_values) * updated_diet_food * self.kg_to_m2_dict[self.column_dict[column_name]] / 1e7
-        #Add climate change impact 
-        d_land_surface_d_pop = d_land_surface_d_pop_before * (1 - self.prod_reduction.values)
-        
-        return(d_land_surface_d_pop)
-
-    def d_other_surface_d_population(self):
-        """
-        Compute derivate of land_surface[other] column wts population_df[population]
-        """
-        number_of_values = (self.year_end - self.year_start + 1)
-        result_without_climate = np.identity(
-            number_of_values) * self.other_use_agriculture / 1e3
-        #Add climate change impact
-        result = result_without_climate * (1 - self.prod_reduction.values)
-        
-        return(result)
-    
-    def d_food_land_surface_d_temperature(self, temperature_df, column_name):
-        """
-        Compute the derivative of land surface wrt to temperature
-        Final land surface = food_land_surface_step_one * (1 - productivity)
-        productivity = f(temperature)
-        d_food_land_surface_d_temperature =  d_land_d_productivity * d_productivity_d_temperature
-        """
-        number_of_values = (self.year_end - self.year_start + 1)
-        idty = np.identity(number_of_values)
-        temp_zero = temperature_df.at[self.year_start, 'temp_atmo']
-        temp = temperature_df['temp_atmo'].values
-        a = self.param_a
-        b = self.param_b
-        land_before = self.food_surface_df_without_climate_change[column_name].values
-        #Step 1: Productivity reduction
-        #temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
-        #pdctivity_reduction = self.param_a * temp**2 + self.param_b * temp
-        #=at**2 + at0**2 - 2att0 + bt - bt0
-        #Derivative wrt t each year:  2at-2at0 +b
-        d_productivity_d_temperature = idty * (2*a*temp - 2*a*temp_zero + b)
-        #Add derivative wrt t0: 2at0 -2at -b
-        d_productivity_d_temperature[:, 0] += 2*a*temp_zero - 2*a*temp - b
-        #Step 2:d_climate_d_productivity for each t: land = land_before * (1 - productivity) 
-        d_land_d_productivity = - idty * land_before
-        d_food_land_surface_d_temperature = d_land_d_productivity.dot(d_productivity_d_temperature)
-        
-        return d_food_land_surface_d_temperature
-
     def updated_diet_expression(self, column_name):
         """
         gives the expression of the updated diet for each column.
@@ -417,7 +355,7 @@ class Agriculture():
          updated_white_meat = diet_df[white_meat] + added_WM - removed_WM
 
 
-        @param column_name: anem of the column
+        @param column_name: name of the column
         @type column_name: string
         @unit column_name: none
 
@@ -458,3 +396,115 @@ class Agriculture():
             result = self.diet_df[column_name
                                   ].values[0] * unity_array
         return(result)
+
+    ####### Gradient #########
+
+    def d_land_surface_d_population(self, column_name):
+        """
+        Compute the derivate of food_land_surface_df wrt population, for a specific column.
+        derivate_step1 = diet_expression(kg/person/year) * kg_to_m2 / 1e7
+        derivative = derivative_step1 * (1- productivity reduction due to temperature increase)
+        diet_expression is computed in a separated method
+
+        need self.column_dict because input column get '(Gha)' at the end
+        / 1e7 comes from the unit : *1e6 (population in million) /1e4 (m2 to ha) /1e9 (ha to Gha)
+        """
+        updated_diet_food = self.updated_diet_expression(
+            self.column_dict[column_name])
+        number_of_values = (self.year_end - self.year_start + 1)
+        d_land_surface_d_pop_before = np.identity(
+            number_of_values) * updated_diet_food * self.kg_to_m2_dict[self.column_dict[column_name]] / 1e7
+        #Add climate change impact 
+        d_land_surface_d_pop = d_land_surface_d_pop_before * (1 - self.prod_reduction.values)
+        
+        return(d_land_surface_d_pop)
+
+    def d_other_surface_d_population(self):
+        """
+        Compute derivate of land_surface[other] column wrt population_df[population]
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        result_without_climate = np.identity(
+            number_of_values) * self.other_use_agriculture / 1e3
+        #Add climate change impact
+        result = result_without_climate * (1 - self.prod_reduction.values)
+        
+        return(result)
+    
+    def d_food_land_surface_d_temperature(self, temperature_df, column_name):
+        """
+        Compute the derivative of land surface wrt temperature
+        Final land surface = food_land_surface_step_one * (1 - productivity)
+        productivity = f(temperature)
+        d_food_land_surface_d_temperature =  d_land_d_productivity * d_productivity_d_temperature
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        idty = np.identity(number_of_values)
+        temp_zero = temperature_df.at[self.year_start, 'temp_atmo']
+        temp = temperature_df['temp_atmo'].values
+        a = self.param_a
+        b = self.param_b
+        land_before = self.food_surface_df_without_climate_change[column_name].values
+        #Step 1: Productivity reduction
+        #temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
+        #pdctivity_reduction = self.param_a * temp**2 + self.param_b * temp
+        #=at**2 + at0**2 - 2att0 + bt - bt0
+        #Derivative wrt t each year:  2at-2at0 +b
+        d_productivity_d_temperature = idty * (2*a*temp - 2*a*temp_zero + b)
+        #Add derivative wrt t0: 2at0 -2at -b
+        d_productivity_d_temperature[:, 0] += 2*a*temp_zero - 2*a*temp - b
+        #Step 2:d_climate_d_productivity for each t: land = land_before * (1 - productivity) 
+        d_land_d_productivity = - idty * land_before
+        d_food_land_surface_d_temperature = d_land_d_productivity.dot(d_productivity_d_temperature)
+        
+        return d_food_land_surface_d_temperature
+
+    def d_surface_d_red_to_white(self, population_df):
+        """
+        Compute the derivative of total food land surface wrt red to white percentage design variable
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        idty = np.identity(number_of_values)
+        kg_food_to_surface = self.kg_to_m2_dict
+        #red to white meat value influences red meat, white meat, and vegetable surface
+        red_meat_diet_grad = - self.diet_df['red meat'].values[0] / 100 
+        white_meat_diet_grad = self.diet_df['red meat'].values[0] / 100 * self.kg_to_kcal_dict['red meat'] / self.kg_to_kcal_dict['white meat'] \
+            * (1 - self.meat_to_vegetables / 100)
+        fruits_diet_grad = self.diet_df['red meat'].values[0] / 100 * self.kg_to_kcal_dict['red meat'] / self.kg_to_kcal_dict['white meat'] \
+            * self.meat_to_vegetables / 100 * self.kg_to_kcal_dict['white meat'] / self.kg_to_kcal_dict['fruits and vegetables']
+        
+        red_meat_quantity_grad = red_meat_diet_grad * population_df['population'] * 1e6
+        white_meat_quantity_grad = white_meat_diet_grad * population_df['population'] * 1e6
+        fruits_quantity_grad = fruits_diet_grad * population_df['population'] * 1e6
+
+        red_meat_surface_grad = red_meat_quantity_grad * kg_food_to_surface['red meat'] * self.hatom2 / 1e9
+        white_meat_surface_grad = white_meat_quantity_grad * kg_food_to_surface['white meat'] * self.hatom2 / 1e9
+        fruits_meat_quantity_grad = fruits_quantity_grad * kg_food_to_surface['fruits and vegetables'] * self.hatom2 / 1e9
+
+        total_surface_grad = red_meat_surface_grad + white_meat_surface_grad + fruits_meat_quantity_grad
+        total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
+
+        return total_surface_climate_grad.values * idty
+
+    def d_surface_d_meat_to_vegetable(self, population_df):
+        """
+        Compute the derivative of total food land surface wrt meat to vegetable percentage design variable
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        idty = np.identity(number_of_values)
+        kg_food_to_surface = self.kg_to_m2_dict
+        #meat to vegetables value influences white meat and vegetable surface 
+        white_meat_diet_grad = - (self.diet_df['white meat'].values[0] + self.diet_df['red meat'].values[0] * \
+            self.red_to_white_meat / 100 * self.kg_to_kcal_dict['red meat'] / self.kg_to_kcal_dict['white meat']) / 100
+        fruits_diet_grad = - white_meat_diet_grad * self.kg_to_kcal_dict['white meat'] / self.kg_to_kcal_dict['fruits and vegetables']
+        
+        white_meat_quantity_grad = white_meat_diet_grad * population_df['population'] * 1e6
+        fruits_quantity_grad = fruits_diet_grad * population_df['population'] * 1e6
+
+        white_meat_surface_grad = white_meat_quantity_grad * kg_food_to_surface['white meat'] * self.hatom2 / 1e9
+        fruits_meat_quantity_grad = fruits_quantity_grad * kg_food_to_surface['fruits and vegetables'] * self.hatom2 / 1e9
+
+        total_surface_grad = white_meat_surface_grad + fruits_meat_quantity_grad
+        total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
+
+        return total_surface_climate_grad.values * idty
