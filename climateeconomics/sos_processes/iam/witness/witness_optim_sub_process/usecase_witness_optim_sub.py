@@ -95,9 +95,9 @@ class Study(ClimateEconomicsStudyManager):
         self.func_df = self.witness_uc.func_df
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df
 
-        values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSorNewtonMDA'
+        values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSPureNewtonMDA'
         #values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
-        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
+        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 200
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
         # design space

@@ -240,12 +240,6 @@ class DataStudy():
         list_weight = []
         list_aggr_type = []
         list_ns = []
-#         list_var.extend(
-#             ['CO2_tax_minus_CO2_damage_constraint_df'])
-#         list_parent.extend(['CO2_tax_constraint'])
-#         list_ftype.extend([INEQ_CONSTRAINT])
-#         list_weight.extend([-1.0])
-#         list_aggr_type.extend([AGGR_TYPE_SUM])
         list_var.extend(
             ['rockstrom_limit_constraint'])
         list_parent.extend([''])
