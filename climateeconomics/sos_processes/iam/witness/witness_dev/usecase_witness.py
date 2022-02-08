@@ -35,7 +35,7 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=True, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], techno_dict=DEFAULT_TECHNO_DICT, process_level='dev'):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, process_level='dev'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -112,7 +112,7 @@ class Study(ClimateEconomicsStudyManager):
 
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 50,
+            f'{self.study_name}.max_mda_iter': 200,
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
@@ -137,10 +137,10 @@ if '__main__' == __name__:
 #         "reduced.pdf")
 
     # DEBUG MIN MAX COUPLINGS
-    uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
-    pd.set_option('display.max_rows', None)
-    pd.set_option('display.max_columns', None)
-    pd.set_option('display.width', None)
+    # uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
+    # pd.set_option('display.max_rows', None)
+    # pd.set_option('display.max_columns', None)
+    # pd.set_option('display.width', None)
 
     uc_cls.run()
 

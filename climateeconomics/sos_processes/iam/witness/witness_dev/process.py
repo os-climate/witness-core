@@ -23,7 +23,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
     def __init__(self, ee, process_level='dev'):
         WITNESSSubProcessBuilder.__init__(
             self, ee)
-        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[1]
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
         self.process_level = process_level
 
     def get_builders(self):
