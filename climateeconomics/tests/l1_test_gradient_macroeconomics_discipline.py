@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
-    AbstractJacobianUnittest.DUMP_JACOBIAN = False
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -138,10 +138,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        # np.set_printoptions(threshold=1000000)
-        self.check_jacobian(location=dirname(__file__), step=1e-15, derr_approx='complex_step', 
-                            filename=f'jacobian_macroeconomics_discipline.pkl', discipline=disc_techno, 
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.energy_production', 
                                     f'{self.name}.damage_df', 
                                     f'{self.name}.share_energy_investment', 
@@ -150,7 +148,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CO2_taxes', 
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
-                                     f'{self.name}.energy_investment'])
+                                     f'{self.name}.energy_investment',
+                                     f'{self.name}.pc_consumption_constraint_df'])
 
     def test_macro_economics_energy_supply_negative_damageproductivity(self):
 
@@ -193,15 +192,18 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # np.set_printoptions(threshold=1000000)
-        # AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_energy_supply_negative_damageproductivity.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.energy_production', f'{self.name}.damage_df',
-                                                            f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
-                                                            f'{self.name}.co2_emissions_Gt',  f'{self.name}.CO2_taxes', f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.economics_df',
-                                     f'{self.name}.energy_investment'],
-                            step=1e-15, derr_approx='complex_step')
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.energy_production', 
+                                    f'{self.name}.damage_df', 
+                                    f'{self.name}.share_energy_investment', 
+                                    f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.co2_emissions_Gt',  
+                                    f'{self.name}.CO2_taxes', 
+                                    f'{self.name}.population_df'],
+                            outputs=[f'{self.name}.economics_df', 
+                                     f'{self.name}.energy_investment',
+                                     f'{self.name}.pc_consumption_constraint_df'])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
 
@@ -241,14 +243,19 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_macroeconomics_discipline_grad_damageproductivity.pkl',
-                            discipline=disc_techno,
-                            inputs=[f'{self.name}.energy_production', f'{self.name}.damage_df',
-                                    f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
-                                    f'{self.name}.co2_emissions_Gt',  f'{self.name}.CO2_taxes', f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.economics_df', f'{self.name}.energy_investment'], step=1e-15, derr_approx='complex_step')
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.energy_production', 
+                                    f'{self.name}.damage_df', 
+                                    f'{self.name}.share_energy_investment', 
+                                    f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.co2_emissions_Gt',  
+                                    f'{self.name}.CO2_taxes', 
+                                    f'{self.name}.population_df'],
+                            outputs=[f'{self.name}.economics_df', 
+                                     f'{self.name}.energy_investment',
+                                     f'{self.name}.pc_consumption_constraint_df'])
 
     def test_macro_economics_analytic_grad_max_damage(self):
 
@@ -290,14 +297,19 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_macroeconomics_discipline_grad_max_damage.pkl',
-                            discipline=disc_techno,
-                            inputs=[f'{self.name}.energy_production', f'{self.name}.damage_df',
-                                    f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
-                                    f'{self.name}.co2_emissions_Gt',  f'{self.name}.CO2_taxes', f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.economics_df', f'{self.name}.energy_investment'], step=1e-15, derr_approx='complex_step')
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.energy_production', 
+                                    f'{self.name}.damage_df', 
+                                    f'{self.name}.share_energy_investment', 
+                                    f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.co2_emissions_Gt',  
+                                    f'{self.name}.CO2_taxes', 
+                                    f'{self.name}.population_df'],
+                            outputs=[f'{self.name}.economics_df', 
+                                     f'{self.name}.energy_investment',
+                                     f'{self.name}.pc_consumption_constraint_df'])
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
 
@@ -344,14 +356,19 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN=True
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_macroeconomics_discipline_grad_gigantic_invest.pkl',
-                            discipline=disc_techno,
-                            inputs=[f'{self.name}.energy_production', f'{self.name}.damage_df',
-                                    f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
-                                    f'{self.name}.co2_emissions_Gt',  f'{self.name}.CO2_taxes', f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.economics_df', f'{self.name}.energy_investment'], step=1e-15, derr_approx='complex_step')
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.energy_production', 
+                                    f'{self.name}.damage_df', 
+                                    f'{self.name}.share_energy_investment', 
+                                    f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.co2_emissions_Gt',  
+                                    f'{self.name}.CO2_taxes', 
+                                    f'{self.name}.population_df'],
+                            outputs=[f'{self.name}.economics_df', 
+                                     f'{self.name}.energy_investment',
+                                     f'{self.name}.pc_consumption_constraint_df'])
 
     def test_macro_economics_very_high_emissions(self):
 
@@ -402,14 +419,18 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_very_high_emissions.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.energy_production', f'{self.name}.damage_df',
-                                                            f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
-                                                            f'{self.name}.co2_emissions_Gt',  f'{self.name}.CO2_taxes', f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.economics_df',
-                                     f'{self.name}.energy_investment'],
-                            step=1e-15, derr_approx='complex_step')
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.energy_production', 
+                                    f'{self.name}.damage_df', 
+                                    f'{self.name}.share_energy_investment', 
+                                    f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.co2_emissions_Gt',  
+                                    f'{self.name}.CO2_taxes', 
+                                    f'{self.name}.population_df'],
+                            outputs=[f'{self.name}.economics_df', 
+                                     f'{self.name}.energy_investment',
+                                     f'{self.name}.pc_consumption_constraint_df'])
 
     def test_macro_economics_negativeco2_emissions(self):
 
@@ -461,14 +482,18 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_negative_emissions.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.energy_production', f'{self.name}.damage_df',
-                                                            f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
-                                                            f'{self.name}.co2_emissions_Gt',  f'{self.name}.CO2_taxes', f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.economics_df',
-                                     f'{self.name}.energy_investment'],
-                            step=1e-15, derr_approx='complex_step')
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.energy_production', 
+                                    f'{self.name}.damage_df', 
+                                    f'{self.name}.share_energy_investment', 
+                                    f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.co2_emissions_Gt',  
+                                    f'{self.name}.CO2_taxes', 
+                                    f'{self.name}.population_df'],
+                            outputs=[f'{self.name}.economics_df', 
+                                     f'{self.name}.energy_investment',
+                                     f'{self.name}.pc_consumption_constraint_df'])
 
     def _test_macro_economics_negativeco2_tax(self):
 
@@ -510,14 +535,18 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_negative_co2_tax.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.energy_production', f'{self.name}.damage_df',
-                                                            f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp',
-                                                            f'{self.name}.co2_emissions_Gt',  f'{self.name}.CO2_taxes', f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.economics_df',
-                                     f'{self.name}.energy_investment'],
-                            step=1e-15, derr_approx='complex_step')
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.energy_production', 
+                                    f'{self.name}.damage_df', 
+                                    f'{self.name}.share_energy_investment', 
+                                    f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.co2_emissions_Gt',  
+                                    f'{self.name}.CO2_taxes', 
+                                    f'{self.name}.population_df'],
+                            outputs=[f'{self.name}.economics_df', 
+                                     f'{self.name}.energy_investment',
+                                     f'{self.name}.pc_consumption_constraint_df'])
 
 
 if '__main__' == __name__:

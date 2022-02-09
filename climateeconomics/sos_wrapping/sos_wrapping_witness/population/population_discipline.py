@@ -363,7 +363,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         if 'Cumulative climate deaths' in chart_list:
 
-            years = list(death_dict['climate']['cum_total'].index)
+            cum_death_climate = death_dict['climate']['total'].cumsum()
+            years = list(cum_death_climate.index)
             headers = list(death_dict['climate'].columns.values)
             to_plot = headers[1:]
 
@@ -372,9 +373,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             min_values = {}
             max_values = {}
-            for key in to_plot:
-                min_values[key], max_values[key] = self.get_greataxisrange(
-                    death_dict['climate'][key])
+            min_values[key], max_values[key] = self.get_greataxisrange(
+                cum_death_climate)
 
             min_value = min(min_values.values())
             max_value = max(max_values.values())
@@ -387,10 +387,10 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                                  chart_name)
 
             visible_line = True
-            ordonate_data = list(death_dict['climate']['cum_total'])
+            ordonate_data = list(cum_death_climate)
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, f'cumulative cliamtic deaths', 'bar')
+                years, ordonate_data, f'cumulative climatic deaths', 'bar')
 
             new_chart.series.append(new_series)
 
