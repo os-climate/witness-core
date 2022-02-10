@@ -32,7 +32,7 @@ The cumulative value is the sum of all the forest surface evolution from the fir
 
 ## Evolution of CO2 captured
 The evolution of CO2 captured by forest is directly linked to the surface of forest. This evolution of CO2 captured is given by:
-$$CO2\_captured\_evolution = Deforested\_surface\_evolution * CO2\_per\_ha$$
+$$CO2\_captured\_evolution = Forest\_surface\_evolution * CO2\_per\_ha$$
 
 ## Model limitations
 In this model, the quantity of CO2 captured by ha of forest is assumed to be the same all over the world.  However, the CO2 captured change with the climate condition. Forest in tropical regions are more effective than forest in cold regions. As a result, cutting trees of the Amazon forest does not have the same impact than cutting trees in cold region, in term of captured CO2.
