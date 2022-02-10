@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from itertools import chain
-from pandas.core.frame import DataFrame
+from pandas import DataFrame, concat
 import numpy as np
 from copy import deepcopy
 
@@ -403,9 +403,12 @@ class Population:
 
         # Calculation of cumulative deaths
         for effect in self.death_dict:
+            cumulative_death = DataFrame()
             self.death_dict[effect]['total'] = self.death_dict[effect].iloc[:,
                                                                             1:-1].sum(axis=1, skipna=True)
-
+            cumulative_death['cum_total'] = self.death_dict[effect]['total'].cumsum()
+            self.death_dict[effect] = concat([self.death_dict[effect],cumulative_death], axis=1)
+        
         for effect in self.death_dict:
             self.death_dict[effect].fillna(0.0)
             self.death_rate_dict[effect].fillna(0.0)
