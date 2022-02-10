@@ -20,6 +20,9 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 from climateeconomics.core.core_forest.forest_v1 import Forest
 import numpy as np
 import pandas as pd
+import plotly.graph_objects as go
+from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 
 
 class ForestDiscipline(ClimateEcoDiscipline):
@@ -33,7 +36,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
     deforestation_surface_df = pd.DataFrame(
         {"years": years, "deforested_surface": deforestation_surface})
     deforestation_limit = 1000
-    initial_emissions = 2850
+    initial_emissions = 3210
 
     DESC_IN = {Forest.YEAR_START: {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                Forest.YEAR_END: {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -53,7 +56,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                                           'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                }
-    # cost per ha 12000 $/ha (buy the lan + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
+    # cost per ha 12000 $/ha (buy the land + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
     # 1USD = 0,7360 euro in 2019
 
     DESC_OUT = {
@@ -185,7 +188,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         if ForestDiscipline.FOREST_CHARTS in chart_list:
 
             forest_surface_df = self.get_sosdisc_outputs(
-                Forest.forest_surface_df)
+                Forest.FOREST_DETAIL_SURFACE_DF)
             years = forest_surface_df['years'].values.tolist()
             # values are *1000 to convert from Gha to Mha
             surface_evol_by_year = forest_surface_df['forest_surface_evol'].values * 1000

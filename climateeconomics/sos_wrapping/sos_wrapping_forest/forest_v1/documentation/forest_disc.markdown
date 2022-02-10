@@ -12,9 +12,10 @@ The forest model takes the following data as inputs:
 - **deforestation_surface**, forest surface removed by year. Unit is Mha. Default is set to 10Mha per year (2020 value).
 - **CO2_per_ha**, the quantity of CO2 captured by 1 hectare of forest during one year. Unit is kgCO2/ha/year. Default value is 4000kgC02/ha/year [^1].
 As forest captures 16 Gt of CO2 per year, reducing forest by 1% results in a deficit of CO2 captured of 160 Mt. The value of 4000kgCO2/year/ha is coherent with these data.
-
-- **Initial CO2 emissions**, the CO2 emissions at due to deforestation at the first year of the stidy. Unit is MtCO2. Default value is 2850MtCO2 at 2020, which is the value given by DICE [^2]. 
-
+- **Initial CO2 emissions**, the CO2 emissions at due to deforestation at the first year of the stidy. Unit is MtCO2. Default value is 3210MtCO2 at 2020, which is the value found at [^2].
+- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 3800$/ha [^3].
+- ** reforestation_investment**, the quantity of money dedicated to reforestation each year. Unit is billions of $.
+ 
 The outputs of the model are:
 
 - **deforested_surface_df**, giving the evolution of forest surface year by year, and cumulative. Unit is Gha.
@@ -22,7 +23,11 @@ The outputs of the model are:
 
 ## Evolution of forest surface
 
-The forest evolution is directly the deforestation_surface of the inputs.
+The forest evolution is the sum of deforestation and reforestation contribution.
+Deforestation is directly the **deforestation_surface** from the inputs.
+Reforestation is calculated by
+$$ Reforestation\_surface = Reforestation\_investment / cost\_per\_ha$$
+
 The cumulative value is the sum of all the forest surface evolution from the first year of the study to the given year of the data.
 
 ## Evolution of CO2 captured
@@ -35,4 +40,5 @@ In this model, the quantity of CO2 captured by ha of forest is assumed to be the
 ## References
 
 [^1]: World Resources Institute, Forests Absorb Twice As Much Carbon As They Emit Each Year, January 21, 2021 By Nancy Harris and David Gibbs, found online at https://www.wri.org/insights/forests-absorb-twice-much-carbon-they-emit-each-year
-[^2]: Nordhaus, W. D. (2017). Revisiting the social cost of carbon. Proceedings of the National Academy of Sciences, 114(7), 1518-1523.
+[^2]: Our World In Data, Global CO2 emissions from fossil fuels and land use change, found online at https://ourworldindata.org/co2-emissions
+[^3]: Agriculture and Food Development Authority, Reforestation, found online at https://www.teagasc.ie/crops/forestry/advice/establishment/reforestation/
