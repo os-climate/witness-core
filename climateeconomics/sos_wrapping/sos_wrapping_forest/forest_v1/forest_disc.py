@@ -204,13 +204,14 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             deforested_series = InstanciatedSeries(
                 years, deforested_surface_by_year.tolist(), 'Deforested surface', 'bar')
-            new_chart.add_series(deforested_series)
             forested_series = InstanciatedSeries(
                 years, forested_surface_by_year.tolist(), 'Forested surface', 'bar')
-            new_chart.add_series(forested_series)
             total_series = InstanciatedSeries(
                 years, surface_evol_by_year.tolist(), 'Surface evolution', InstanciatedSeries.LINES_DISPLAY)
+
+            new_chart.add_series(deforested_series)
             new_chart.add_series(total_series)
+            new_chart.add_series(forested_series)
 
             instanciated_charts.append(new_chart)
 
@@ -220,13 +221,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             deforested_series = InstanciatedSeries(
                 years, deforested_surface_cum.tolist(), 'Deforested surface', 'bar')
-            new_chart.add_series(deforested_series)
             forested_series = InstanciatedSeries(
                 years, forested_surface_cum.tolist(), 'Forested surface', 'bar')
-            new_chart.add_series(forested_series)
             total_series = InstanciatedSeries(
                 years, surface_evol_cum.tolist(), 'Surface evolution', InstanciatedSeries.LINES_DISPLAY)
+            new_chart.add_series(deforested_series)
             new_chart.add_series(total_series)
+            new_chart.add_series(forested_series)
 
             instanciated_charts.append(new_chart)
 
@@ -254,8 +255,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 years, CO2_total_year_by_year.tolist(), 'Delta of CO2 quantity', InstanciatedSeries.LINES_DISPLAY)
 
             new_chart.add_series(CO2_emitted_series)
-            new_chart.add_series(CO2_captured_series)
             new_chart.add_series(CO2_total_series)
+            new_chart.add_series(CO2_captured_series)
 
             instanciated_charts.append(new_chart)
 
@@ -272,8 +273,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 years, CO2_total_cum.tolist(), 'CO2 quantity', InstanciatedSeries.LINES_DISPLAY, custom_data=['width'])
 
             new_chart.add_series(CO2_emitted_series)
-            new_chart.add_series(CO2_captured_series)
             new_chart.add_series(CO2_total_series)
+            new_chart.add_series(CO2_captured_series)
 
             instanciated_charts.append(new_chart)
 
