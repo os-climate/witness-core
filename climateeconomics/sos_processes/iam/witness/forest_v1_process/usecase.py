@@ -74,7 +74,7 @@ class Study(StudyManager):
 
         deforestation_limit = 1000
 
-        initial_emissions = 3210
+        initial_emissions = 3.21
 
         CO2_per_ha = 4000
 

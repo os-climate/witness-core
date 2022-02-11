@@ -26,13 +26,6 @@ import numpy as np
 class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     "carbonemissions discipline for DICE"
     years = np.arange(2020, 2101)
-#
-#     CO2_emitted_forest = pd.DataFrame()
-#     emission_forest = np.linspace(40, 40, len(years))
-#     cum_emission = np.cumsum(emission_forest) + 2850
-#     CO2_emitted_forest['years'] = years
-#     CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
-#     CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
     _maturity = 'Research'
     DESC_IN = {
@@ -53,11 +46,11 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                   'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'min_co2_objective': {'type': 'float', 'default': -1000., 'unit': 'Gt', 'user_level': 2},
-        'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'Gt', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'min_co2_objective': {'type': 'float', 'default': -1000., 'unit': 'GtCO2', 'user_level': 2},
+        'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'GtCO2', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         # Ref in 2020 is around 34 Gt, the objective is normalized with this
         # reference
-        Forest.CO2_EMITTED_FOREST_DF: {'type': 'dataframe', 'unit': 'MtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        Forest.CO2_EMITTED_FOREST_DF: {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
 
     }
     DESC_OUT = {
@@ -136,13 +129,13 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             ('CO2_objective',), ('economics_df', 'gross_output'), dobjective_exp_min * d_CO2_obj_d_total_emission.dot(d_indus_emissions_d_gross_output))
 
         self.set_partial_derivative_for_other_types(
-            ('emissions_df', 'total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  np.identity(len(years)) / 1000)
+            ('emissions_df', 'total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  np.identity(len(years)))
 
         self.set_partial_derivative_for_other_types(
             ('emissions_df', 'cum_total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  d_total_emissions_C02_emitted_forest)
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_objective',), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), dobjective_exp_min * d_CO2_obj_d_total_emission / 1000)
+            ('CO2_objective',), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), dobjective_exp_min * d_CO2_obj_d_total_emission)
 
     def get_chart_filter_list(self):
 

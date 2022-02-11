@@ -73,8 +73,8 @@ class Study(StudyManager):
         year_range = self.year_end - self.year_start + 1
 
         deforestation_limit = 1000
-
-        initial_emissions = 2850
+        #GtCO2
+        initial_emissions = 3.21
 
         CO2_per_ha = 4000
 

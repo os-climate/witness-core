@@ -122,7 +122,7 @@ class CarbonEmissions():
             p_gr_sigma = self.emissions_df.at[year -
                                               time_step, 'gr_sigma']
             gr_sigma = p_gr_sigma * \
-                ((1.0 + decline_rate_decarbo)**time_step)
+                ((1.0 + decline_rate_decarbo) ** time_step)
             self.emissions_df.loc[year, 'gr_sigma'] = gr_sigma
             return gr_sigma
 
@@ -130,7 +130,7 @@ class CarbonEmissions():
         '''
         Compute emissions from land for t
         '''
-        land_emissions = self.CO2_emitted_forest_df['emitted_CO2_evol_cumulative'][year] / 1000
+        land_emissions = self.CO2_emitted_forest_df['emitted_CO2_evol_cumulative'][year]
         self.emissions_df.loc[year, 'land_emissions'] = land_emissions
         return land_emissions
 
@@ -270,7 +270,7 @@ class CarbonEmissions():
             for line in range(nb_years):
                 if i >= 0 and i <= line:  # fill triangular descendant
                     d_cum_land_emissions_d_total_CO2_emitted[line,
-                                                             i] = 1 / 3.666 / 1000
+                                                             i] = 1 / 3.666
 
         return d_cum_land_emissions_d_total_CO2_emitted
 
