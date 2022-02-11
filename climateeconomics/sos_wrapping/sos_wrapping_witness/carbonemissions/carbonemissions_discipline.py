@@ -177,7 +177,6 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         if 'carbon emission' in chart_list:
 
             to_plot = ['total_emissions', 'land_emissions', 'indus_emissions']
-            #emissions_df = discipline.get_sosdisc_outputs('emissions_df')
 
             total_emission = emissions_df['total_emissions']
             land_emissions = emissions_df['land_emissions']
@@ -196,7 +195,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Total carbon emissions'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'carbon emissions (Gtc)',
+            new_chart = TwoAxesInstanciatedChart('years', 'carbon emissions (GtCO2)',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
