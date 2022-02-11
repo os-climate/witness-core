@@ -48,6 +48,9 @@ class CarbonEmissions():
         self.total_emissions_ref = self.param['total_emissions_ref']
         self.min_co2_objective = self.param['min_co2_objective']
         self.CO2_emitted_forest_df = self.param[Forest.CO2_EMITTED_FOREST_DF]
+        # Conversion factor 1Gtc = 44/12 GT of CO2
+        # Molar masses C02 (12+2*16=44) / C (12)
+        self.gtco2_to_gtc = 44/12
 
     def create_dataframe(self):
         '''
@@ -143,13 +146,13 @@ class CarbonEmissions():
         time_step = self.time_step
 
         if year == year_start:
-            cum_land_emissions = self.emissions_df.at[year_start, 'land_emissions'] / 3.666
+            cum_land_emissions = self.emissions_df.at[year_start, 'land_emissions'] / self.gtco2_to_gtc
         else:
             p_cum_land_emissions = self.emissions_df.at[year -
                                                         time_step, 'cum_land_emissions']
             p_land_emissions = self.emissions_df.at[year, 'land_emissions']
             cum_land_emissions = p_cum_land_emissions + \
-                p_land_emissions * np.float(time_step) / 3.666
+                p_land_emissions * np.float(time_step) / self.gtco2_to_gtc
         self.emissions_df.loc[year,
                 'cum_land_emissions'] = cum_land_emissions
         return cum_land_emissions
@@ -188,12 +191,11 @@ class CarbonEmissions():
         if year == year_start:
             pass
         else:
-            # / 3.666 : 1g of carbon is 3.666g CO2
             p_cum_indus_emissions = self.emissions_df.at[year -
                                                          time_step, 'cum_indus_emissions']
             indus_emissions = self.emissions_df.at[year, 'indus_emissions']
             cum_indus_emissions = p_cum_indus_emissions + \
-                indus_emissions * np.float(time_step) / 3.666
+                indus_emissions * np.float(time_step) / self.gtco2_to_gtc
             self.emissions_df.loc[year,
                                   'cum_indus_emissions'] = cum_indus_emissions
             return cum_indus_emissions
@@ -244,9 +246,9 @@ class CarbonEmissions():
             for line in range(nb_years):
                 if i > 0 and i <= line:  # fill triangular descendant
                     d_cum_indus_emissions_d_total_CO2_emitted[line, i] = np.float(
-                        self.time_step) / 3.666
+                        self.time_step) / self.gtco2_to_gtc
 
-                    d_cum_indus_emissions_d_gross_output[line, i] = np.float(self.time_step) / 3.666 *\
+                    d_cum_indus_emissions_d_gross_output[line, i] = np.float(self.time_step) / self.gtco2_to_gtc *\
                         self.emissions_df.at[years[i], 'sigma'] *\
                         (1.0 - self.energy_emis_share - self.land_emis_share)
                 if i == line:  # fill diagonal
@@ -270,7 +272,7 @@ class CarbonEmissions():
             for line in range(nb_years):
                 if i >= 0 and i <= line:  # fill triangular descendant
                     d_cum_land_emissions_d_total_CO2_emitted[line,
-                                                             i] = 1 / 3.666
+                                                             i] = 1 / self.gtco2_to_gtc
 
         return d_cum_land_emissions_d_total_CO2_emitted
 
