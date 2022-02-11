@@ -62,7 +62,7 @@ class ProcessBuilder(BaseProcessBuilder):
             'scenario_list', scenario_map)
 
         builder_cdf_list = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_optim_process')
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_process_independent_invest')
 
         scatter_scenario_name = 'optimization scenarios'
         # modify namespaces defined in the child process
