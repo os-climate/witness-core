@@ -136,13 +136,13 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             ('CO2_objective',), ('economics_df', 'gross_output'), dobjective_exp_min * d_CO2_obj_d_total_emission.dot(d_indus_emissions_d_gross_output))
 
         self.set_partial_derivative_for_other_types(
-            ('emissions_df', 'total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  np.identity(len(years)) / 3.666 / 1000)
+            ('emissions_df', 'total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  np.identity(len(years)) / 1000)
 
         self.set_partial_derivative_for_other_types(
             ('emissions_df', 'cum_total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  d_total_emissions_C02_emitted_forest)
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_objective',), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), dobjective_exp_min * d_CO2_obj_d_total_emission / 3.666 / 1000)
+            ('CO2_objective',), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), dobjective_exp_min * d_CO2_obj_d_total_emission / 1000)
 
     def get_chart_filter_list(self):
 
