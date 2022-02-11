@@ -57,8 +57,9 @@ class CarbonCycle():
         self.beta = self.param['beta']
         self.ppm_ref = self.param['ppm_ref']
         self.ppm_obj = 0.
-        # Conversion factor 1Gtc = 3.666 GT of co2
-        self.gtco2_to_gtc = 3.666
+        # Conversion factor 1Gtc = 44/12 GT of CO2
+        # Molar masses C02 (12+2*16=44) / C (12)
+        self.gtco2_to_gtc = 44/12
         # conversion factor 1ppm= 2.13 Gtc
         self.gtc_to_ppm = 2.13
         self.scale_factor_carbon_cycle = self.param['scale_factor_atmo_conc']
