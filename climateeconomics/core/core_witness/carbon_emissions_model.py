@@ -75,11 +75,6 @@ class CarbonEmissions():
         emissions_df.loc[year_start, 'gr_sigma'] = init_gr_sigma
         emissions_df.loc[year_start,
                          'indus_emissions'] = init_indus_emissions
-
-        # land emission is forest emissio_df /1000 for unit : Mt to Gt
-#         emissions_df['land_emissions'] = self.CO2_emitted_forest_df['emitted_CO2_evol_cumulative'].values / 1000
-#         emissions_df['cum_land_emissions'] = self.CO2_emitted_forest_df['emitted_CO2_evol_cumulative'].values / 1000
-
         emissions_df.loc[year_start,
                          'cum_indus_emissions'] = init_cum_indus_emissions
         self.emissions_df = emissions_df
@@ -131,6 +126,14 @@ class CarbonEmissions():
             self.emissions_df.loc[year, 'gr_sigma'] = gr_sigma
             return gr_sigma
 
+    def compute_land_emissions(self, year):
+        '''
+        Compute emissions from land for t
+        '''
+        land_emissions = self.CO2_emitted_forest_df['emitted_CO2_evol_cumulative'][year] / 1000
+        self.emissions_df.loc[year, 'land_emissions'] = land_emissions
+        return land_emissions
+
     def compute_cum_land_emissions(self, year):
         '''
         compute cumulative emissions from land for t
@@ -140,24 +143,16 @@ class CarbonEmissions():
         time_step = self.time_step
 
         if year == year_start:
-            pass
+            cum_land_emissions = self.emissions_df.at[year_start, 'land_emissions'] / 3.666
         else:
             p_cum_land_emissions = self.emissions_df.at[year -
                                                         time_step, 'cum_land_emissions']
             p_land_emissions = self.emissions_df.at[year, 'land_emissions']
             cum_land_emissions = p_cum_land_emissions + \
-                p_land_emissions * np.float(time_step)
-            self.emissions_df.loc[year,
-                                  'cum_land_emissions'] = cum_land_emissions
-            return cum_land_emissions
-
-    def compute_land_emissions(self, year):
-        '''
-        Compute emissions from land for t
-        '''
-        land_emissions = self.CO2_emitted_forest_df['emitted_CO2_evol_cumulative'][year] / 1000
-        self.emissions_df.loc[year, 'land_emissions'] = land_emissions / 3.666
-        return land_emissions
+                p_land_emissions * np.float(time_step) / 3.666
+        self.emissions_df.loc[year,
+                'cum_land_emissions'] = cum_land_emissions
+        return cum_land_emissions
 
     def compute_indus_emissions(self, year):
         """
@@ -273,7 +268,7 @@ class CarbonEmissions():
         line = 0
         for i in range(nb_years):
             for line in range(nb_years):
-                if i > 0 and i <= line:  # fill triangular descendant
+                if i >= 0 and i <= line:  # fill triangular descendant
                     d_cum_land_emissions_d_total_CO2_emitted[line,
                                                              i] = 1 / 3.666 / 1000
 
