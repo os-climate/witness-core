@@ -65,8 +65,8 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         energy_supply_df_y.index = years
 
         CO2_emitted_forest = pd.DataFrame()
-        emission_forest = np.linspace(10, 40, len(years))
-        cum_emission = np.cumsum(emission_forest) + 2850
+        emission_forest = np.linspace(0.04, 0.04, len(years))
+        cum_emission = np.cumsum(emission_forest) + 3.21
         CO2_emitted_forest['years'] = years
         CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
@@ -125,8 +125,8 @@ class CarbonEmissionDiscTest(unittest.TestCase):
             0, -100000, len(years))
 
         CO2_emitted_forest = pd.DataFrame()
-        emission_forest = np.linspace(40, 40, len(years))
-        cum_emission = np.cumsum(emission_forest) + 2850
+        emission_forest = np.linspace(0.04, 0.04, len(years))
+        cum_emission = np.cumsum(emission_forest) + 3.21
         CO2_emitted_forest['years'] = years
         CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
