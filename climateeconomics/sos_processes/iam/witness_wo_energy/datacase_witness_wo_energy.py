@@ -205,7 +205,7 @@ class DataStudy():
         list_aggr_type.extend(
             [AGGR_TYPE_SMAX])
         # -------------------------------------------------
-        # rockstrom_limit_constraint
+        # pc_consumption_constraint
         list_var.append('pc_consumption_constraint')
         list_parent.append('')
         list_ns.extend(['ns_functions'])
@@ -220,4 +220,5 @@ class DataStudy():
         func_df['weight'] = list_weight
         func_df[AGGR_TYPE] = list_aggr_type
         func_df['namespace'] = list_ns
+
         return func_df
