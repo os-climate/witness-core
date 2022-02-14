@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
@@ -94,7 +94,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.economics_df', 
                                     f'{self.name}.co2_emissions_Gt', 
                                     f'{self.name}.CO2_emitted_forest_df'],
-                            outputs=[f'{self.name}.emissions_df', 
+                            outputs=[f'{self.name}.CO2_emissions_df', 
                                     f'{self.name}.CO2_objective'])
 
     def test_co2_objective_limit_grad(self):
@@ -154,5 +154,5 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.economics_df', 
                                     f'{self.name}.co2_emissions_Gt', 
                                     f'{self.name}.CO2_emitted_forest_df'],
-                            outputs=[f'{self.name}.emissions_df',
+                            outputs=[f'{self.name}.CO2_emissions_df',
                                     f'{self.name}.CO2_objective'])

@@ -197,7 +197,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         input_full_names = [
             f'{self.name}.economics_df', f'{self.name}.co2_emissions_Gt']
         output_full_names = [
-            f'{self.name}.emissions_df', f'{self.name}.CO2_objective']
+            f'{self.name}.CO2_emissions_df', f'{self.name}.CO2_objective']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_emissions_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)
@@ -226,7 +226,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         disc_macro = self.ee2.dm.get_disciplines_with_name(f'{self.name}.Carboncycle')[
             0]
 
-        input_full_names = [f'{self.name}.emissions_df']
+        input_full_names = [f'{self.name}.CO2_emissions_df']
         output_full_names = [f'{self.name}.carboncycle_df']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carboncycle_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,

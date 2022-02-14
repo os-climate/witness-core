@@ -43,7 +43,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         'lo_mat': {'type': 'float', 'default': 10, 'user_level': 2},
         'lo_mu': {'type': 'float', 'default': 100, 'user_level': 2},
         'lo_ml': {'type': 'float', 'default': 1000, 'user_level': 2},
-        'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'ppm_ref': {'type': 'float', 'default': 280, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'rockstrom_constraint_ref': {'type': 'float', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
@@ -87,35 +87,35 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         gradient of coupling variable to compute: 
         carboncycle_df
           - 'atmo_conc':
-                - emissions_df, 'total_emissions'
+                - CO2_emissions_df, 'total_emissions'
           - 'lower_ocean_conc':
-                - emissions_df, 'total_emissions'
+                - CO2_emissions_df, 'total_emissions'
           - 'shallow_ocean_conc':
-                - emissions_df, 'total_emissions'
+                - CO2_emissions_df, 'total_emissions'
           - 'ppm':
-                - emissions_df, 'total_emissions'
+                - CO2_emissions_df, 'total_emissions'
           - 'atmo_share_since1850':
-                - emissions_df, 'total_emissions'
-                - emissions_df, 'cum_total_emissions'
+                - CO2_emissions_df, 'total_emissions'
+                - CO2_emissions_df, 'cum_total_emissions'
           - 'atmo_share_sinceystart':
-                - emissions_df, 'total_emissions'
-                - emissions_df, 'cum_total_emissions'
+                - CO2_emissions_df, 'total_emissions'
+                - CO2_emissions_df, 'cum_total_emissions'
         """
         d_atmoconc_d_totalemissions, d_lower_d_totalemissions, d_swallow_d_totalemissions, \
             d_atmo1850_dtotalemission, d_atmotoday_dtotalemission = self.carboncycle.compute_d_total_emissions()
 
         self.set_partial_derivative_for_other_types(
-            ('carboncycle_df', 'atmo_conc'), ('emissions_df', 'total_emissions'),  d_atmoconc_d_totalemissions)
+            ('carboncycle_df', 'atmo_conc'), ('CO2_emissions_df', 'total_emissions'),  d_atmoconc_d_totalemissions)
 
         d_ppm_d_totalemissions = self.carboncycle.compute_d_ppm(
             d_atmoconc_d_totalemissions)
         d_ppm_objective_d_totalemissions = self.carboncycle.compute_d_objective(
             d_ppm_d_totalemissions)
         self.set_partial_derivative_for_other_types(
-            ('ppm_objective', ), ('emissions_df', 'total_emissions'),  d_ppm_objective_d_totalemissions)
+            ('ppm_objective', ), ('CO2_emissions_df', 'total_emissions'),  d_ppm_objective_d_totalemissions)
 
         self.set_partial_derivative_for_other_types(
-            ('rockstrom_limit_constraint', ), ('emissions_df', 'total_emissions'),  -d_ppm_d_totalemissions / self.carboncycle.rockstrom_constraint_ref)
+            ('rockstrom_limit_constraint', ), ('CO2_emissions_df', 'total_emissions'),  -d_ppm_d_totalemissions / self.carboncycle.rockstrom_constraint_ref)
 
     def get_chart_filter_list(self):
 

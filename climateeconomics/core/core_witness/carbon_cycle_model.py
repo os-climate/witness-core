@@ -95,7 +95,7 @@ class CarbonCycle():
                                              self.time_step, 'atmo_conc']
         p_shallow_ocean_conc = self.carboncycle_df.at[year -
                                                       self.time_step, 'shallow_ocean_conc']
-        p_emissions = self.emissions_df.at[year -
+        p_emissions = self.CO2_emissions_df.at[year -
                                            self.time_step, 'total_emissions']
         atmo_conc = p_atmo_conc * self.b_eleven + p_shallow_ocean_conc * \
             self.b_twentyone + p_emissions * self.time_step / self.gtco2_to_gtc
@@ -150,9 +150,9 @@ class CarbonCycle():
         """
         atmo_conc = self.carboncycle_df.at[year, 'atmo_conc']
         init_atmo_conc = self.carboncycle_df.at[self.year_start, 'atmo_conc']
-        init_cum_total_emissions = self.emissions_df.at[self.year_start,
+        init_cum_total_emissions = self.CO2_emissions_df.at[self.year_start,
                                                         'cum_total_emissions']
-        cum_total_emissions = self.emissions_df.at[year,
+        cum_total_emissions = self.CO2_emissions_df.at[year,
                                                    'cum_total_emissions']
 
         atmo_share1850 = ((atmo_conc - 588.0) /
@@ -230,7 +230,7 @@ class CarbonCycle():
                 d_atmoconc_d_totalemissions[i, 0] = 0
 
         #-----------
-        cum_total_emissions = self.emissions_df['cum_total_emissions']
+        cum_total_emissions = self.CO2_emissions_df['cum_total_emissions']
         d_atmo1850_dtotalemission = np.zeros((len(years), len(years)))
 
         for i in range(0, len(years)):
@@ -242,7 +242,7 @@ class CarbonCycle():
                                           i] = d_atmoconc_d_totalemissions[j, i] / Cte
 
         #-----------
-        init_cum_total_emissions = self.emissions_df.at[self.year_start,
+        init_cum_total_emissions = self.CO2_emissions_df.at[self.year_start,
                                                         'cum_total_emissions']
 
         d_atmotoday_dtotalemission = np.zeros((len(years), len(years)))
@@ -264,9 +264,9 @@ class CarbonCycle():
                           self.year_end + 1, self.time_step)
 
         init_atmo_conc = self.init_conc_atmo
-        init_cum_total_emissions = self.emissions_df.at[self.year_start,
+        init_cum_total_emissions = self.CO2_emissions_df.at[self.year_start,
                                                         'cum_total_emissions']
-        cum_total_emissions = self.emissions_df['cum_total_emissions']
+        cum_total_emissions = self.CO2_emissions_df['cum_total_emissions']
 
         atmo_conc = self.carboncycle_df['atmo_conc']
         d_atmo1850_dcumemission = np.zeros((len(years), len(years)))
@@ -324,8 +324,8 @@ class CarbonCycle():
         """
         self.create_dataframe()
         self.inputs_models = inputs_models
-        self.emissions_df = self.inputs_models['emissions_df']
-        self.emissions_df.index = self.emissions_df['years'].values
+        self.CO2_emissions_df = self.inputs_models['CO2_emissions_df']
+        self.CO2_emissions_df.index = self.CO2_emissions_df['years'].values
         self.compute_ppm(self.year_start)
 
         for year in self.years_range[1:]:
