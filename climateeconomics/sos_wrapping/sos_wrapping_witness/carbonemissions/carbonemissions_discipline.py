@@ -55,7 +55,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'emissions_detail_df': {'type': 'dataframe'},
+        'CO2_emissions_detail_df': {'type': 'dataframe'},
         'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
@@ -70,7 +70,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         # Compute de emissions_model
         CO2_emissions_df, CO2_objective = self.emissions_model.compute(in_dict)
         # Store output data
-        dict_values = {'emissions_detail_df': CO2_emissions_df,
+        dict_values = {'CO2_emissions_detail_df': CO2_emissions_df,
                        'CO2_emissions_df': CO2_emissions_df[['years', 'total_emissions', 'cum_total_emissions']],
                        'CO2_objective': CO2_objective}
         self.store_sos_outputs_values(dict_values)
@@ -165,7 +165,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
         CO2_emissions_df = deepcopy(
-            self.get_sosdisc_outputs('emissions_detail_df'))
+            self.get_sosdisc_outputs('CO2_emissions_detail_df'))
 
         if 'carbon emission' in chart_list:
 
