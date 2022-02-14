@@ -407,7 +407,7 @@ def get_df(execution_engine):
     for scenario in scenario_list:
         temperature_df_namespace = f'{namespace_w}.{scenario}.WitnessOptimization.WitnessModelEval.Temperature_change.temperature_detail_df'
         utility_df_namespace = f'{namespace_w}.{scenario}.WitnessOptimization.WitnessModelEval.utility_df'
-        co2_emissions_df_namespace = f'{namespace_w}.{scenario}.WitnessOptimization.WitnessModelEval.Carbon_emissions.emissions_detail_df'
+        co2_emissions_df_namespace = f'{namespace_w}.{scenario}.WitnessOptimization.WitnessModelEval.Carbon_emissions.CO2_emissions_detail_df'
         co2_ppm_df_namespace = f'{namespace_w}.{scenario}.WitnessOptimization.WitnessModelEval.Carboncycle.carboncycle_detail_df'
         invest_mix_df_namespace = f'{namespace_w}.{scenario}.WitnessOptimization.WitnessModelEval.invest_mix'
         CO2_taxes_df_namespace = f'{namespace_w}.{scenario}.WitnessOptimization.WitnessModelEval.CO2_taxes'
