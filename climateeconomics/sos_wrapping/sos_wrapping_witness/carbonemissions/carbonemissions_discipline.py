@@ -26,13 +26,6 @@ import numpy as np
 class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     "carbonemissions discipline for DICE"
     years = np.arange(2020, 2101)
-#
-#     CO2_emitted_forest = pd.DataFrame()
-#     emission_forest = np.linspace(40, 40, len(years))
-#     cum_emission = np.cumsum(emission_forest) + 2850
-#     CO2_emitted_forest['years'] = years
-#     CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
-#     CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
     _maturity = 'Research'
     DESC_IN = {
@@ -53,16 +46,16 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                   'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'min_co2_objective': {'type': 'float', 'default': -1000., 'unit': 'Gt', 'user_level': 2},
-        'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'Gt', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'min_co2_objective': {'type': 'float', 'default': -1000., 'unit': 'GtCO2', 'user_level': 2},
+        'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'GtCO2', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         # Ref in 2020 is around 34 Gt, the objective is normalized with this
         # reference
-        Forest.CO2_EMITTED_FOREST_DF: {'type': 'dataframe', 'unit': 'MtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        Forest.CO2_EMITTED_FOREST_DF: {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
 
     }
     DESC_OUT = {
-        'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'emissions_detail_df': {'type': 'dataframe'},
+        'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'CO2_emissions_detail_df': {'type': 'dataframe'},
         'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
@@ -75,10 +68,10 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
 
         # Compute de emissions_model
-        emissions_df, CO2_objective = self.emissions_model.compute(in_dict)
+        CO2_emissions_df, CO2_objective = self.emissions_model.compute(in_dict)
         # Store output data
-        dict_values = {'emissions_detail_df': emissions_df,
-                       'emissions_df': emissions_df[['years', 'total_emissions', 'cum_total_emissions']],
+        dict_values = {'CO2_emissions_detail_df': CO2_emissions_df,
+                       'CO2_emissions_df': CO2_emissions_df[['years', 'total_emissions', 'cum_total_emissions']],
                        'CO2_objective': CO2_objective}
         self.store_sos_outputs_values(dict_values)
 
@@ -86,7 +79,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         """ 
         Compute jacobian for each coupling variable 
         gradient of coupling variable to compute: 
-        emissions_df
+        CO2_emissions_df
           - 'indus_emissions':
                 - economics_df, 'gross_output'
                 - co2_emissions_Gt, 'Total CO2 emissions'
@@ -94,16 +87,16 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                 - economics_df, 'gross_output'
                 - co2_emissions_Gt, 'Total CO2 emissions'
           - 'total_emissions',
-                - emissions_df, land_emissions
+                - CO2_emissions_df, land_emissions
                 - economics_df, 'gross_output'
                 - co2_emissions_Gt, Total CO2 emissions
           - 'cum_total_emissions'
-                - emissions_df, land_emissions
+                - CO2_emissions_df, land_emissions
                 - economics_df, 'gross_output'
                 - co2_emissions_Gt, Total CO2 emissions
           - 'CO2_objective'
                 - total_emissions:
-                    - emissions_df, land_emissions
+                    - CO2_emissions_df, land_emissions
                     - economics_df, 'gross_output'
                     - co2_emissions_Gt, Total CO2 emissions
         """
@@ -118,16 +111,16 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         d_total_emissions_C02_emitted_forest = self.emissions_model.compute_d_land_emissions()
         # fill jacobians
         self.set_partial_derivative_for_other_types(
-            ('emissions_df', 'total_emissions'), ('economics_df', 'gross_output'),  d_indus_emissions_d_gross_output)
+            ('CO2_emissions_df', 'total_emissions'), ('economics_df', 'gross_output'),  d_indus_emissions_d_gross_output)
 
         self.set_partial_derivative_for_other_types(
-            ('emissions_df', 'cum_total_emissions'), ('economics_df', 'gross_output'),  d_cum_indus_emissions_d_gross_output)
+            ('CO2_emissions_df', 'cum_total_emissions'), ('economics_df', 'gross_output'),  d_cum_indus_emissions_d_gross_output)
 
         self.set_partial_derivative_for_other_types(
-            ('emissions_df', 'total_emissions'), ('co2_emissions_Gt', 'Total CO2 emissions'),  np.identity(len(years)))
+            ('CO2_emissions_df', 'total_emissions'), ('co2_emissions_Gt', 'Total CO2 emissions'),  np.identity(len(years)))
 
         self.set_partial_derivative_for_other_types(
-            ('emissions_df', 'cum_total_emissions'), ('co2_emissions_Gt', 'Total CO2 emissions'), d_cum_indus_emissions_d_total_CO2_emitted)
+            ('CO2_emissions_df', 'cum_total_emissions'), ('co2_emissions_Gt', 'Total CO2 emissions'), d_cum_indus_emissions_d_total_CO2_emitted)
 
         self.set_partial_derivative_for_other_types(
             ('CO2_objective',), ('co2_emissions_Gt', 'Total CO2 emissions'),  d_CO2_obj_d_total_emission * dobjective_exp_min)
@@ -136,13 +129,13 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             ('CO2_objective',), ('economics_df', 'gross_output'), dobjective_exp_min * d_CO2_obj_d_total_emission.dot(d_indus_emissions_d_gross_output))
 
         self.set_partial_derivative_for_other_types(
-            ('emissions_df', 'total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  np.identity(len(years)) / 1000)
+            ('CO2_emissions_df', 'total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  np.identity(len(years)))
 
         self.set_partial_derivative_for_other_types(
-            ('emissions_df', 'cum_total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  d_total_emissions_C02_emitted_forest)
+            ('CO2_emissions_df', 'cum_total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  d_total_emissions_C02_emitted_forest)
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_objective',), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), dobjective_exp_min * d_CO2_obj_d_total_emission / 1000)
+            ('CO2_objective',), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), dobjective_exp_min * d_CO2_obj_d_total_emission)
 
     def get_chart_filter_list(self):
 
@@ -171,18 +164,18 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-        emissions_df = deepcopy(
-            self.get_sosdisc_outputs('emissions_detail_df'))
+        CO2_emissions_df = deepcopy(
+            self.get_sosdisc_outputs('CO2_emissions_detail_df'))
 
         if 'carbon emission' in chart_list:
 
             to_plot = ['total_emissions', 'land_emissions', 'indus_emissions']
 
-            total_emission = emissions_df['total_emissions']
-            land_emissions = emissions_df['land_emissions']
-            indus_emissions = emissions_df['indus_emissions']
+            total_emission = CO2_emissions_df['total_emissions']
+            land_emissions = CO2_emissions_df['land_emissions']
+            indus_emissions = CO2_emissions_df['indus_emissions']
 
-            years = list(emissions_df.index)
+            years = list(CO2_emissions_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -203,7 +196,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             for key in to_plot:
                 visible_line = True
 
-                c_emission = list(emissions_df[key])
+                c_emission = list(CO2_emissions_df[key])
 
                 new_series = InstanciatedSeries(
                     years, c_emission, key, 'lines', visible_line)

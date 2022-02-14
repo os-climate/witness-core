@@ -121,20 +121,20 @@ class Forest():
                                            'forest_surface_evol_cumulative'] = -self.limit_deforestation_surface / 1000
 
         self.CO2_emitted_df['years'] = self.years
-        # in Mt of CO2
+        # in Gt of CO2
         self.CO2_emitted_df['emitted_CO2_evol'] = -self.forest_surface_df['forest_surface_evol'] * \
-            self.CO2_per_ha
+            self.CO2_per_ha / 1000
         self.CO2_emitted_df['emitted_CO2'] = -self.forest_surface_df['deforested_surface'] * \
-            self.CO2_per_ha
+            self.CO2_per_ha / 1000
         self.CO2_emitted_df['captured_CO2'] = -self.forest_surface_df['forested_surface'] * \
-            self.CO2_per_ha
+            self.CO2_per_ha / 1000
 
         self.CO2_emitted_df['emitted_CO2_evol_cumulative'] = -self.forest_surface_df['forest_surface_evol_cumulative'] * \
-            self.CO2_per_ha + self.initial_emissions
+            self.CO2_per_ha / 1000 + self.initial_emissions
         self.CO2_emitted_df['emitted_CO2_cumulative'] = -self.forest_surface_df['deforested_surface_cumulative'] * \
-            self.CO2_per_ha + self.initial_emissions
+            self.CO2_per_ha / 1000 + self.initial_emissions
         self.CO2_emitted_df['captured_CO2_cumulative'] = -self.forest_surface_df['forested_surface_cumulative'] * \
-            self.CO2_per_ha
+            self.CO2_per_ha / 1000
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
@@ -184,6 +184,6 @@ class Forest():
         :param: d_deforestation_surface, derivative of deforestation surface
         """
 
-        d_CO2_emitted = - d_deforestation_surface * self.CO2_per_ha
+        d_CO2_emitted = - d_deforestation_surface * self.CO2_per_ha / 1000
 
         return d_CO2_emitted

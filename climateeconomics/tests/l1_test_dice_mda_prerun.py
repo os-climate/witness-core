@@ -97,7 +97,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
         residual_history_2 = ee2.root_process.sub_mda_list[0].residual_history
         # print(residual_history_2)
 
-        emissions_df = DataFrame({
+        CO2_emissions_df = DataFrame({
             'year': years,
             'gr_sigma': data,
             'sigma': data,
@@ -138,7 +138,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
             values_dict.update(dict_item)
 
         dice_input = {}
-        dice_input[usecase.study_name + '.emissions_df'] = emissions_df
+        dice_input[usecase.study_name + '.CO2_emissions_df'] = CO2_emissions_df
         dice_input[usecase.study_name + '.carboncycle_df'] = carboncycle_df
         dice_input[usecase.study_name + '.temperature_df'] = temperature_df
         dice_input[usecase.study_name + '.damage_df'] = df

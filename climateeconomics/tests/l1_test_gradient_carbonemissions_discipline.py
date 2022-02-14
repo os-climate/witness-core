@@ -77,8 +77,8 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         energy_supply_df_y.index = years
 
         CO2_emitted_forest = pd.DataFrame()
-        emission_forest = np.linspace(10, 100, len(years))
-        cum_emission = np.cumsum(emission_forest) + 2850
+        emission_forest = np.linspace(0.01, 0.10, len(years))
+        cum_emission = np.cumsum(emission_forest) + 3.21
         CO2_emitted_forest['years'] = years
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
@@ -94,7 +94,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.economics_df', 
                                     f'{self.name}.co2_emissions_Gt', 
                                     f'{self.name}.CO2_emitted_forest_df'],
-                            outputs=[f'{self.name}.emissions_df', 
+                            outputs=[f'{self.name}.CO2_emissions_df', 
                                     f'{self.name}.CO2_objective'])
 
     def test_co2_objective_limit_grad(self):
@@ -137,8 +137,8 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             0, -3000, len(years))
 
         CO2_emitted_forest = pd.DataFrame()
-        emission_forest = np.linspace(40, 40, len(years))
-        cum_emission = np.cumsum(emission_forest) + 2850
+        emission_forest = np.linspace(0.04, 0.04, len(years))
+        cum_emission = np.cumsum(emission_forest) + 3.21
         CO2_emitted_forest['years'] = years
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
@@ -154,5 +154,5 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.economics_df', 
                                     f'{self.name}.co2_emissions_Gt', 
                                     f'{self.name}.CO2_emitted_forest_df'],
-                            outputs=[f'{self.name}.emissions_df',
+                            outputs=[f'{self.name}.CO2_emissions_df',
                                     f'{self.name}.CO2_objective'])

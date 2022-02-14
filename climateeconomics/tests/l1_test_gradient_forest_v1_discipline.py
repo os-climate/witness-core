@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -62,7 +62,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {"years": years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
         self.limit_deforestation_surface = 1000
-        self.initial_emissions = 2850
+        #GtCO2
+        self.initial_emissions = 3.21
         forest_invest = np.linspace(20, 40, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})

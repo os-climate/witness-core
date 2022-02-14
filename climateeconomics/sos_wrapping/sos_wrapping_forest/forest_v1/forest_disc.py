@@ -30,13 +30,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
     '''
     default_year_start = 2020
     default_year_end = 2050
-    years = np.arange(default_year_start, default_year_end + 1, 1)
-    year_range = default_year_end - default_year_start + 1
-    deforestation_surface = np.array(np.linspace(10, 10, year_range))
-    deforestation_surface_df = pd.DataFrame(
-        {"years": years, "deforested_surface": deforestation_surface})
+
     deforestation_limit = 1000
-    initial_emissions = 3210
+    initial_emissions = 3.21
 
     DESC_IN = {Forest.YEAR_START: {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                Forest.YEAR_END: {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -47,7 +43,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                Forest.LIMIT_DEFORESTATION_SURFACE: {'type': 'float', 'unit': 'Mha', 'default': deforestation_limit,
                                                     'namespace': 'ns_forest', },
-               Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'MtCO2', 'default': initial_emissions,
+               Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': initial_emissions,
                                               'namespace': 'ns_forest', },
                Forest.CO2_PER_HA: {'type': 'float', 'default': 4000, 'unit': 'kgCO2/ha/year', 'namespace': 'ns_forest'},
                Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'default': 15200, 'unit': '$/ha', 'namespace': 'ns_forest'},
@@ -67,7 +63,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         Forest.FOREST_DETAIL_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha'},
         Forest.CO2_EMITTED_FOREST_DF: {
-            'type': 'dataframe', 'unit': 'MtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
     }
 
     FOREST_CHARTS = 'Forest chart'
@@ -199,13 +195,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
             forested_surface_cum = forest_surface_df['forested_surface_cumulative'].values * 1000
 
             # forest evolution year by year chart
-            new_chart = TwoAxesInstanciatedChart('years', 'Forest surface evolution [Mha]',
-                                                 chart_name='Forest surface evolution year by year [Mha]', stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart('years', 'Forest surface evolution [Mha / year]',
+                                                 chart_name='Forest surface evolution', stacked_bar=True)
 
             deforested_series = InstanciatedSeries(
-                years, deforested_surface_by_year.tolist(), 'Deforested surface', 'bar')
+                years, deforested_surface_by_year.tolist(), 'Deforestation', 'bar')
             forested_series = InstanciatedSeries(
-                years, forested_surface_by_year.tolist(), 'Forested surface', 'bar')
+                years, forested_surface_by_year.tolist(), 'Reforestation', 'bar')
             total_series = InstanciatedSeries(
                 years, surface_evol_by_year.tolist(), 'Surface evolution', InstanciatedSeries.LINES_DISPLAY)
 
@@ -216,8 +212,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             # forest cumulative evolution chart
-            new_chart = TwoAxesInstanciatedChart('years', 'Forest surface evolution [Mha]',
-                                                 chart_name='Cumulative forest surface evolution [Mha]', stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart('years', 'Cumulative forest surface evolution [Mha]',
+                                                 chart_name='Cumulative forest surface evolution', stacked_bar=True)
 
             deforested_series = InstanciatedSeries(
                 years, deforested_surface_cum.tolist(), 'Deforested surface', 'bar')
@@ -242,40 +238,34 @@ class ForestDiscipline(ClimateEcoDiscipline):
             CO2_captured_cum = CO2_emissions_df['captured_CO2_cumulative']
             CO2_total_cum = CO2_emissions_df['emitted_CO2_evol_cumulative']
 
-            # in Mt
 
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 emitted [Mt]',
-                                                 chart_name='Delta of CO2 emitted due to yearly forest activities', stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2 / year]',
+                                                 chart_name='Forest CO2 outcome', stacked_bar=True)
 
             CO2_emitted_series = InstanciatedSeries(
-                years, CO2_emitted_year_by_year.tolist(), 'Delta of emitted CO2', InstanciatedSeries.BAR_DISPLAY)
+                years, CO2_emitted_year_by_year.tolist(), 'CO2 emissions', InstanciatedSeries.BAR_DISPLAY)
             CO2_captured_series = InstanciatedSeries(
-                years, CO2_captured_year_by_year.tolist(), 'Delta of captured CO2', InstanciatedSeries.BAR_DISPLAY)
+                years, CO2_captured_year_by_year.tolist(), 'CO2 capture', InstanciatedSeries.BAR_DISPLAY)
             CO2_total_series = InstanciatedSeries(
-                years, CO2_total_year_by_year.tolist(), 'Delta of CO2 quantity', InstanciatedSeries.LINES_DISPLAY)
+                years, CO2_total_year_by_year.tolist(), 'CO2 evolution', InstanciatedSeries.LINES_DISPLAY)
 
             new_chart.add_series(CO2_emitted_series)
             new_chart.add_series(CO2_total_series)
             new_chart.add_series(CO2_captured_series)
-
             instanciated_charts.append(new_chart)
 
-            # CO2 graph
-
-            # in Mt
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 emitted evolution [Mt]',
-                                                 chart_name='Yearly CO2 emmitted due to forest activities', stacked_bar=True)
+            # in Gt
+            new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2]',
+                                                 chart_name='Cumulative forest CO2 outcome', stacked_bar=True)
             CO2_emitted_series = InstanciatedSeries(
-                years, CO2_emitted_cum.tolist(), 'Emitted CO2', InstanciatedSeries.BAR_DISPLAY)
+                years, CO2_emitted_cum.tolist(), 'CO2 emissions', InstanciatedSeries.BAR_DISPLAY)
             CO2_captured_series = InstanciatedSeries(
-                years, CO2_captured_cum.tolist(), 'Captured CO2', InstanciatedSeries.BAR_DISPLAY)
+                years, CO2_captured_cum.tolist(), 'CO2 capture', InstanciatedSeries.BAR_DISPLAY)
             CO2_total_series = InstanciatedSeries(
-                years, CO2_total_cum.tolist(), 'CO2 quantity', InstanciatedSeries.LINES_DISPLAY, custom_data=['width'])
+                years, CO2_total_cum.tolist(), 'CO2 evolution', InstanciatedSeries.LINES_DISPLAY, custom_data=['width'])
 
             new_chart.add_series(CO2_emitted_series)
             new_chart.add_series(CO2_total_series)
             new_chart.add_series(CO2_captured_series)
-
             instanciated_charts.append(new_chart)
-
         return instanciated_charts

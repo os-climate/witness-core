@@ -42,7 +42,7 @@ class ForestTestCase(unittest.TestCase):
             {"years": years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
         self.limit_deforestation_surface = 1000
-        self.initial_emissions = 2850
+        self.initial_emissions = 3.21
 
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
@@ -102,5 +102,5 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
