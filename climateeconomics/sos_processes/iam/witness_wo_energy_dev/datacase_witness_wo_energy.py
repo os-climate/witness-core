@@ -241,6 +241,8 @@ class DataStudy():
         list_weight = []
         list_aggr_type = []
         list_ns = []
+        # -------------------------------------------------
+        # rockstrom_limit_constraint
         list_var.extend(
             ['rockstrom_limit_constraint'])
         list_parent.extend([''])
@@ -249,6 +251,15 @@ class DataStudy():
         list_weight.extend([0.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SMAX])
+        # -------------------------------------------------
+        # rockstrom_limit_constraint
+        list_var.append('pc_consumption_constraint')
+        list_parent.append('')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(0.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
