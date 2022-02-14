@@ -205,8 +205,8 @@ class DataStudy():
         list_aggr_type.extend(
             [AGGR_TYPE_SMAX])
         # -------------------------------------------------
-        # pc_consumption_constraint
-        list_var.append('pc_consumption_constraint')
+        # pc_consumption_constraint_df
+        list_var.append('pc_consumption_constraint_df')
         list_parent.append('')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)
