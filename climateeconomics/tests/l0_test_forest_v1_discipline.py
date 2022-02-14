@@ -41,9 +41,11 @@ class ForestTestCase(unittest.TestCase):
         self.deforestation_surface_df = pd.DataFrame(
             {"years": years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
+        #Mha
         self.limit_deforestation_surface = 1000
-        self.initial_emissions = 3210
-        forest_invest = np.linspace(20, 40, year_range)
+        #GtCO2
+        self.initial_emissions = 3.21
+        forest_invest = np.linspace(0, 20, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
         self.reforestation_cost_per_ha = 3800
@@ -110,5 +112,5 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
