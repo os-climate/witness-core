@@ -26,6 +26,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_land_use': ns_scatter,
                    'ns_public': ns_scatter,
                    'ns_functions': ns_scatter,
+                   'ns_ref': ns_scatter
                    }
 
         mods_dict = {'Land.Land_Use': 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_v1_disc.LandUseV1Discipline'
