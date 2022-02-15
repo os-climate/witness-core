@@ -73,12 +73,13 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline1.pkl', 
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline1.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.CO2_emissions_df'],
                             outputs=[f'{self.name}.carboncycle_df',
-                                     f'{self.name}.ppm_objective', 
-                                     f'{self.name}.rockstrom_limit_constraint'])
+                                     f'{self.name}.ppm_objective',
+                                     f'{self.name}.rockstrom_limit_constraint',
+                                     f'{self.name}.minimum_ppm_constraint'])
 
     def test_execute_2(self):
         # test limit for max for lower_ocean_conc / upper_ocean_conc /
@@ -116,9 +117,10 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline2.pkl', 
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.CO2_emissions_df'],
                             outputs=[f'{self.name}.carboncycle_df',
-                                     f'{self.name}.ppm_objective', 
-                                     f'{self.name}.rockstrom_limit_constraint'])
+                                     f'{self.name}.ppm_objective',
+                                     f'{self.name}.rockstrom_limit_constraint',
+                                     f'{self.name}.minimum_ppm_constraint'])

@@ -59,11 +59,13 @@ class CarbonCycle():
         self.ppm_obj = 0.
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
-        self.gtco2_to_gtc = 44/12
+        self.gtco2_to_gtc = 44 / 12
         # conversion factor 1ppm= 2.13 Gtc
         self.gtc_to_ppm = 2.13
         self.scale_factor_carbon_cycle = self.param['scale_factor_atmo_conc']
         self.rockstrom_constraint_ref = self.param['rockstrom_constraint_ref']
+        self.minimum_ppm_constraint_ref = self.param['minimum_ppm_constraint_ref']
+        self.minimum_ppm_limit = self.param['minimum_ppm_limit']
 
     def create_dataframe(self):
         '''
@@ -96,7 +98,7 @@ class CarbonCycle():
         p_shallow_ocean_conc = self.carboncycle_df.at[year -
                                                       self.time_step, 'shallow_ocean_conc']
         p_emissions = self.CO2_emissions_df.at[year -
-                                           self.time_step, 'total_emissions']
+                                               self.time_step, 'total_emissions']
         atmo_conc = p_atmo_conc * self.b_eleven + p_shallow_ocean_conc * \
             self.b_twentyone + p_emissions * self.time_step / self.gtco2_to_gtc
         # Lower bound
@@ -151,9 +153,9 @@ class CarbonCycle():
         atmo_conc = self.carboncycle_df.at[year, 'atmo_conc']
         init_atmo_conc = self.carboncycle_df.at[self.year_start, 'atmo_conc']
         init_cum_total_emissions = self.CO2_emissions_df.at[self.year_start,
-                                                        'cum_total_emissions']
+                                                            'cum_total_emissions']
         cum_total_emissions = self.CO2_emissions_df.at[year,
-                                                   'cum_total_emissions']
+                                                       'cum_total_emissions']
 
         atmo_share1850 = ((atmo_conc - 588.0) /
                           (cum_total_emissions + .000001))
@@ -243,7 +245,7 @@ class CarbonCycle():
 
         #-----------
         init_cum_total_emissions = self.CO2_emissions_df.at[self.year_start,
-                                                        'cum_total_emissions']
+                                                            'cum_total_emissions']
 
         d_atmotoday_dtotalemission = np.zeros((len(years), len(years)))
         for i in range(0, len(years)):
@@ -265,7 +267,7 @@ class CarbonCycle():
 
         init_atmo_conc = self.init_conc_atmo
         init_cum_total_emissions = self.CO2_emissions_df.at[self.year_start,
-                                                        'cum_total_emissions']
+                                                            'cum_total_emissions']
         cum_total_emissions = self.CO2_emissions_df['cum_total_emissions']
 
         atmo_conc = self.carboncycle_df['atmo_conc']
@@ -318,6 +320,14 @@ class CarbonCycle():
         self.rockstrom_limit_constraint = - (self.carboncycle_df['ppm'].values -
                                              1.1 * self.rockstrom_limit) / self.rockstrom_constraint_ref
 
+    def compute_minimum_ppm_limit_constraint(self):
+        """
+        Compute minimum ppm limit constraint
+        """
+        self.minimum_ppm_constraint = - \
+            (self.minimum_ppm_limit -
+             self.carboncycle_df['ppm'].values) / self.minimum_ppm_constraint_ref
+
     def compute(self, inputs_models):
         """
         Compute results of the model
@@ -338,6 +348,7 @@ class CarbonCycle():
             [np.inf, -np.inf], np.nan)
         self.compute_objective()
         self.compute_rockstrom_limit_constraint()
+        self.compute_minimum_ppm_limit_constraint()
         # Rescale atmo_conc of carbon_cycle_df
         self.carboncycle_df['atmo_conc'] = self.carboncycle_df['atmo_conc'] * \
             self.scale_factor_carbon_cycle
