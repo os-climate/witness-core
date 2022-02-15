@@ -165,7 +165,7 @@ class Study(StudyManager):
         dim_a = len(
             self.red_to_white_meat_df['red_to_white_meat_percentage'].values)
         lbnd1 = [0.0] * dim_a
-        ubnd1 = [100.0] * dim_a
+        ubnd1 = [70.0] * dim_a
 
         # Design variables:
         self.update_dspace_dict_with(
@@ -181,9 +181,9 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'red_to_white_meat_ctrl',
-                                list(self.design_space_ctrl['red_to_white_meat_ctrl'].values), [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
+                                list(self.design_space_ctrl['red_to_white_meat_ctrl'].values), [0.0] * self.nb_poles, [70.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
         update_dspace_dict_with(ddict, 'meat_to_vegetables_ctrl',
-                                list(self.design_space_ctrl['meat_to_vegetables_ctrl'].values), [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
+                                list(self.design_space_ctrl['meat_to_vegetables_ctrl'].values), [0.0] * self.nb_poles, [70.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
 
         return ddict
 
