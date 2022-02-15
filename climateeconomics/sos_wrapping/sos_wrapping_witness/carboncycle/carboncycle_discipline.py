@@ -52,13 +52,17 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'scale_factor_atmo_conc': {'type': 'float', 'default': 0.01, 'user_level': 2, 'visibility': 'Shared',
                                    'namespace': 'ns_witness'},
+        'minimum_ppm_limit': {'type': 'float', 'default': 250, 'user_level': 2},
+        'minimum_ppm_constraint_ref': {'type': 'float', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+
     }
 
     DESC_OUT = {
         'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'carboncycle_detail_df': {'type': 'dataframe'},
         'ppm_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
     def init_execution(self):
@@ -76,7 +80,8 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             'carboncycle_detail_df': carboncycle_df,
             'carboncycle_df': carboncycle_df[['years', 'atmo_conc']],
             'ppm_objective': ppm_objective,
-            'rockstrom_limit_constraint': self.carboncycle.rockstrom_limit_constraint}
+            'rockstrom_limit_constraint': self.carboncycle.rockstrom_limit_constraint,
+            'minimum_ppm_constraint': self.carboncycle.minimum_ppm_constraint}
 
         # store data
         self.store_sos_outputs_values(dict_values)
@@ -116,6 +121,8 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             ('rockstrom_limit_constraint', ), ('CO2_emissions_df', 'total_emissions'),  -d_ppm_d_totalemissions / self.carboncycle.rockstrom_constraint_ref)
+        self.set_partial_derivative_for_other_types(
+            ('minimum_ppm_constraint', ), ('CO2_emissions_df', 'total_emissions'),  d_ppm_d_totalemissions / self.carboncycle.minimum_ppm_constraint_ref)
 
     def get_chart_filter_list(self):
 
@@ -213,6 +220,19 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
                 abscisse_data.tolist(), ordonate_data, 'Rockstrom limit', 'scatter')
 
             note = {'Rockstrom limit': 'Scientifical limit of the Earth'}
+
+            new_chart.series.append(new_series)
+
+            # Minimum PPM constraint
+
+            ordonate_data = [self.get_sosdisc_inputs(
+                'minimum_ppm_limit')] * int(len(years) / 5)
+            abscisse_data = np.linspace(
+                year_start, year_end, int(len(years) / 5))
+            new_series = InstanciatedSeries(
+                abscisse_data.tolist(), ordonate_data, 'Minimum ppm limit', 'scatter')
+
+            note['Minimum ppm limit'] = 'used in constraint calculation'
             new_chart.annotation_upper_left = note
 
             new_chart.series.append(new_series)
