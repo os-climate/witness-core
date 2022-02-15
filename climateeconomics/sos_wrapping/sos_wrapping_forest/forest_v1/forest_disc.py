@@ -240,7 +240,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
 
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2 / year]',
-                                                 chart_name='Forest CO2 outcome', stacked_bar=True)
+                                                 chart_name='Yearly forest delta CO2 emissions', stacked_bar=True)
 
             CO2_emitted_series = InstanciatedSeries(
                 years, CO2_emitted_year_by_year.tolist(), 'CO2 emissions', InstanciatedSeries.BAR_DISPLAY)
@@ -256,7 +256,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             # in Gt
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2]',
-                                                 chart_name='Cumulative forest CO2 outcome', stacked_bar=True)
+                                                 chart_name='Forest CO2 emissions', stacked_bar=True)
             CO2_emitted_series = InstanciatedSeries(
                 years, CO2_emitted_cum.tolist(), 'CO2 emissions', InstanciatedSeries.BAR_DISPLAY)
             CO2_captured_series = InstanciatedSeries(
