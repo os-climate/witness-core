@@ -44,7 +44,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'lo_capital': {'type': 'float', 'unit': 'trillions $', 'default': 1.0, 'user_level': 3},
         'lo_conso': {'type': 'float', 'unit': 'trillions $', 'default': 2.0, 'user_level': 3},
         'lo_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 0.01, 'user_level': 3},
-        'hi_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 50, 'user_level': 3},
+        'hi_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 70, 'user_level': 3},
         'ref_pc_consumption_constraint': {'type': 'float', 'unit': 'k$', 'default': 1, 'user_level': 3},
         'damage_to_productivity': {'type': 'bool'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2},
@@ -81,7 +81,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'energy_investment': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'G$', 'namespace': 'ns_witness'},
         'energy_investment_wo_renewable': {'type': 'dataframe', 'unit': 'G$'},
         'global_investment_constraint': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'pc_consumption_constraint_df': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+        'pc_consumption_constraint': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
 
     def init_execution(self):
@@ -124,7 +124,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             print(
                 'For at least one year, the share of energy investment is above 100% of total investment')
         # Model execution
-        economics_df, energy_investment, global_investment_constraint, energy_investment_wo_renewable, pc_consumption_constraint_df = \
+        economics_df, energy_investment, global_investment_constraint, energy_investment_wo_renewable, pc_consumption_constraint = \
             self.macro_model.compute(macro_inputs)
 
         # Store output data
@@ -133,7 +133,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        'energy_investment': energy_investment,
                        'global_investment_constraint': global_investment_constraint,
                        'energy_investment_wo_renewable': energy_investment_wo_renewable,
-                       'pc_consumption_constraint_df': pc_consumption_constraint_df}
+                       'pc_consumption_constraint': pc_consumption_constraint}
                        
         self.store_sos_outputs_values(dict_values)
 
@@ -204,7 +204,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('economics_df', 'pc_consumption'), ('damage_df', 'damage_frac_output'), dconsumption_pc)
         
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint_df', 'pc_consumption_constraint'), ('damage_df', 'damage_frac_output'), - dconsumption_pc / ref_pc_consumption_constraint)
+            ('pc_consumption_constraint',), ('damage_df', 'damage_frac_output'), - dconsumption_pc / ref_pc_consumption_constraint)
 
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'output_net_of_d'), ('damage_df', 'damage_frac_output'), doutput_net_of_d)
@@ -226,7 +226,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'pc_consumption'), ('energy_production', 'Total production'), scaling_factor_energy_production * dconsumption_pc)
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint_df', 'pc_consumption_constraint'), ('energy_production', 'Total production'), - scaling_factor_energy_production \
+            ('pc_consumption_constraint',), ('energy_production', 'Total production'), - scaling_factor_energy_production \
                 * dconsumption_pc / ref_pc_consumption_constraint)
 
         self.set_partial_derivative_for_other_types(
@@ -256,7 +256,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('economics_df', 'pc_consumption'), ('share_energy_investment', 'share_investment'), dconsumption_pc / 100)
 
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint_df', 'pc_consumption_constraint'), ('share_energy_investment', 'share_investment'), - dconsumption_pc \
+            ('pc_consumption_constraint',), ('share_energy_investment', 'share_investment'), - dconsumption_pc \
                 / (ref_pc_consumption_constraint * 100))
 
         # compute gradient for design variable total_investment_share_of_gdp
@@ -275,7 +275,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('economics_df', 'pc_consumption'), ('total_investment_share_of_gdp', 'share_investment'), dconsumption_pc / 100.0)
         
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint_df', 'pc_consumption_constraint'), ('total_investment_share_of_gdp', 'share_investment'), - dconsumption_pc \
+            ('pc_consumption_constraint',), ('total_investment_share_of_gdp', 'share_investment'), - dconsumption_pc \
                 / (ref_pc_consumption_constraint * 100))
 
         self.set_partial_derivative_for_other_types(
@@ -300,7 +300,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('economics_df', 'pc_consumption'), ('co2_emissions_Gt', 'Total CO2 emissions'), dconsumption_pc / 100.0)
         
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint_df', 'pc_consumption_constraint'), ('co2_emissions_Gt', 'Total CO2 emissions'), - dconsumption_pc \
+            ('pc_consumption_constraint',), ('co2_emissions_Gt', 'Total CO2 emissions'), - dconsumption_pc \
                 / (ref_pc_consumption_constraint * 100))
 
         self.set_partial_derivative_for_other_types(
@@ -325,7 +325,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('economics_df', 'pc_consumption'), ('CO2_taxes', 'CO2_tax'), dconsumption_pc / 100.0)
         
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint_df', 'pc_consumption_constraint'), ('CO2_taxes', 'CO2_tax'), - dconsumption_pc \
+            ('pc_consumption_constraint',), ('CO2_taxes', 'CO2_tax'), - dconsumption_pc \
                 / (ref_pc_consumption_constraint * 100))
 
         self.set_partial_derivative_for_other_types(
@@ -350,7 +350,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('economics_df', 'pc_consumption'), ('population_df', 'population'), dconsumption_pc)
 
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint_df', 'pc_consumption_constraint'), ('population_df', 'population'), - dconsumption_pc / ref_pc_consumption_constraint)
+            ('pc_consumption_constraint',), ('population_df', 'population'), - dconsumption_pc / ref_pc_consumption_constraint)
 
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'output_net_of_d'), ('population_df', 'population'), doutput_net_of_d)
