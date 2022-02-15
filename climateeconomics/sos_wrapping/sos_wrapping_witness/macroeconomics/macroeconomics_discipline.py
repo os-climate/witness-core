@@ -45,7 +45,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'lo_conso': {'type': 'float', 'unit': 'trillions $', 'default': 2.0, 'user_level': 3},
         'lo_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 0.01, 'user_level': 3},
         'hi_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 70, 'user_level': 3},
-        'ref_pc_consumption_constraint': {'type': 'float', 'unit': 'k$', 'default': 1, 'user_level': 3},
+        'ref_pc_consumption_constraint': {'type': 'float', 'unit': 'k$', 'default': 1, 'user_level': 3, 'namespace': 'ns_ref'},
         'damage_to_productivity': {'type': 'bool'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2},
         'total_investment_share_of_gdp': {'type': 'dataframe', 'unit': '%', 'dataframe_descriptor': {'years': ('float', None, False),
