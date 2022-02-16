@@ -65,7 +65,8 @@ class LandUseV1TestCase(unittest.TestCase):
                       'year_start': self.year_start,
                       'year_end': self.year_end,
                       'total_food_land_surface': self.total_food_land_surface,
-                      'deforested_surface_df': self.deforested_surface_df
+                      'deforested_surface_df': self.deforested_surface_df,
+                      'land_use_constraint_ref': 0.01
                       }
 
     def test_land_use_v1_model(self):
@@ -89,7 +90,8 @@ class LandUseV1TestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
-                   'ns_land_use': f'{name}.{model_name}'}
+                   'ns_land_use': f'{name}.{model_name}',
+                   'ns_ref': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_v1_disc.LandUseV1Discipline'

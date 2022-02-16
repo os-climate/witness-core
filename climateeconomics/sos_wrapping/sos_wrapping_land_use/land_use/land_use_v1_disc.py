@@ -39,7 +39,9 @@ class LandUseV1Discipline(SoSDiscipline):
                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
                LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV1.DEFORESTED_SURFACE_DF: {
-                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+               LandUseV1.LAND_USE_CONSTRAINT_REF: {
+                   'type': 'float', 'default': 0.01,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
                }
 
     DESC_OUT = {
