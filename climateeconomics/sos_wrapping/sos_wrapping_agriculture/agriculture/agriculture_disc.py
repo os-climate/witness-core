@@ -26,6 +26,20 @@ import pandas as pd
 class AgricultureDiscipline(ClimateEcoDiscipline):
     ''' Disscipline intended to host agricluture model
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Agriculture Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-seedling fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
     default_years = np.arange(default_year_start, default_year_end + 1, 1)

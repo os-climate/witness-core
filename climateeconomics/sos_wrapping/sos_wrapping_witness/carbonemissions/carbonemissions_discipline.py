@@ -25,6 +25,20 @@ import numpy as np
 
 class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     "carbonemissions discipline for DICE"
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Carbon Emission WITNESS Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-smog fa-fw',
+        'version': '',
+    }
     years = np.arange(2020, 2101)
 
     _maturity = 'Research'

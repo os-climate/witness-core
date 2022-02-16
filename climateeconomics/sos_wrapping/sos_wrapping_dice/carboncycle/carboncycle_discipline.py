@@ -22,6 +22,20 @@ import pandas as pd
 
 
 class CarbonCycleDiscipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Carbon Cycle DICE Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-recycle fa-fw',
+        'version': '',
+    }
     _maturity = 'Research'
 
     DESC_IN = {

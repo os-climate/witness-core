@@ -30,6 +30,20 @@ from copy import deepcopy
 class LandUseV1Discipline(SoSDiscipline):
     ''' Discipline intended to host land use model with land use for food input from agriculture model
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Land Use V1 Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-globe-europe fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
 

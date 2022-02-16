@@ -23,6 +23,14 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'WITNESS Optimization Sub-Process',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
+
     def get_builders(self):
 
         coupling_name = "WITNESS_Eval"

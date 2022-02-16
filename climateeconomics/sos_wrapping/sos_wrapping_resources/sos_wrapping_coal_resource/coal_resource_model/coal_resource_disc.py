@@ -27,6 +27,20 @@ import pandas as pd
 class CoalDiscipline(SoSDiscipline):
     ''' Discipline intended to get coal parameters
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Coal Resource Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-cloud-meatball fa_fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
     default_production_start = 2001
