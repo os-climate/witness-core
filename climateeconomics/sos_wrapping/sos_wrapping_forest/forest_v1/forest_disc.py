@@ -28,6 +28,20 @@ from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plo
 class ForestDiscipline(ClimateEcoDiscipline):
     ''' Forest discipline
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v1.forest_disc',
+        'type': '',
+        'source': '',
+        'validated': '',
+        'validated_by': '',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tree fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
 

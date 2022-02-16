@@ -26,6 +26,20 @@ from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 
 
 class PolicyDiscipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Policy Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-balance-scale fa-fw',
+        'version': '',
+    }
     _maturity = 'Research'
 
     years = np.arange(2020, 2101)

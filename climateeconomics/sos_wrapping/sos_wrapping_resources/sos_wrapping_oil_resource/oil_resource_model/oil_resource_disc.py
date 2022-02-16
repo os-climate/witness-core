@@ -25,6 +25,20 @@ import pandas as pd
 class OilDiscipline(SoSDiscipline):
     ''' Discipline intended to get oil parameters
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Oil Resource Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-oil-can fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
     default_production_start = 1990

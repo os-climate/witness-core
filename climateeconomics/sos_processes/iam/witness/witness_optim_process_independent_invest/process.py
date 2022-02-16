@@ -23,6 +23,14 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'climateeconomics.sos_processes.iam.witness.witness_optim_process_independent_invest',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
+
     def get_builders(self):
 
         optim_name = OPTIM_NAME
