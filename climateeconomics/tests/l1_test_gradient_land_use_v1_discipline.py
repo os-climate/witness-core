@@ -23,7 +23,7 @@ import numpy as np
 
 
 class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
-
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     def setUp(self):
 
         self.name = 'Test'
@@ -40,7 +40,8 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_land_use': f'{self.name}'
+                   'ns_land_use': f'{self.name}',
+                   'ns_ref': f'{self.name}'
                    }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
