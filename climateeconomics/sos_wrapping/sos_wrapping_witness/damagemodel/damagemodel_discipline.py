@@ -25,6 +25,20 @@ import numpy as np
 
 class DamageDiscipline(ClimateEcoDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Damage WITNESS Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-exclamation-triangle fa-fw',
+        'version': '',
+    }
+
     years = np.arange(2020, 2101)
     CO2_tax = np.asarray([500.] * len(years))
     default_CO2_tax = pd.DataFrame(

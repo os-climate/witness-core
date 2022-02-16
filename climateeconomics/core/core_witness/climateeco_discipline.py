@@ -19,6 +19,20 @@ class ClimateEcoDiscipline(SoSDiscipline):
     """
     Climate Economics Discipline
     """
+
+    # ontology information
+    _ontology_data = {
+        'label': 'WITNESS Climate Economics Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': '',
+        'version': '',
+    }
     def get_greataxisrange(self, serie):
         """
         Get the lower and upper bound of axis for graphs 

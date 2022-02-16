@@ -30,6 +30,20 @@ color_list.extend(plt_color.qualitative.Alphabet)
 
 
 class Design_Var_Discipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'climateeconomics.core.design_variables_translation.witness_dev_bspline.design_var_disc',
+        'type': '',
+        'source': '',
+        'validated': '',
+        'validated_by': '',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-drafting-compass fa-fw',
+        'version': '',
+    }
     WRITE_XVECT = 'write_xvect'
     LOG_DVAR = 'log_designvar'
 

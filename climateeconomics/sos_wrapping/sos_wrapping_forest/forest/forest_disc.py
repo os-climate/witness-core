@@ -25,6 +25,20 @@ import pandas as pd
 class ForestDiscipline(ClimateEcoDiscipline):
     ''' Forest discipline
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Forest Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tree fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
     years = np.arange(default_year_start, default_year_end + 1, 1)

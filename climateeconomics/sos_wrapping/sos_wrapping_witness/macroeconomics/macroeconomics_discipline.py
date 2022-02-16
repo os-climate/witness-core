@@ -24,6 +24,20 @@ from copy import deepcopy
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     "Macroeconomics discipline for WITNESS"
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Macroeconomics WITNESS Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-industry fa-fw',
+        'version': '',
+    }
     _maturity = 'Research'
     years = np.arange(2020, 2101)
     DESC_IN = {
