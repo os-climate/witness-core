@@ -201,7 +201,7 @@ class DataStudy():
         list_parent.extend(['CO2 ppm', 'CO2 ppm'])
         list_ns.extend(['ns_functions', 'ns_functions'])
         list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        list_weight.extend([0.0, 0.0])
+        list_weight.extend([0.0, -1.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
         # -------------------------------------------------
