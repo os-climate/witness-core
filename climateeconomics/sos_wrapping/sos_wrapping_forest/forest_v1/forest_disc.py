@@ -59,8 +59,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                     'namespace': 'ns_forest', },
                Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': initial_emissions,
                                               'namespace': 'ns_forest', },
-               Forest.CO2_PER_HA: {'type': 'float', 'default': 4000, 'unit': 'kgCO2/ha/year', 'namespace': 'ns_forest'},
-               Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'default': 15200, 'unit': '$/ha', 'namespace': 'ns_forest'},
+               Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'namespace': 'ns_forest'},
+               Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'namespace': 'ns_forest'},
                Forest.REFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                                  'dataframe_descriptor': {'years': ('float', None, False),
                                                                           'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
@@ -251,7 +251,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             CO2_emitted_cum = CO2_emissions_df['emitted_CO2_cumulative']
             CO2_captured_cum = CO2_emissions_df['captured_CO2_cumulative']
             CO2_total_cum = CO2_emissions_df['emitted_CO2_evol_cumulative']
-
 
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2 / year]',
                                                  chart_name='Yearly forest delta CO2 emissions', stacked_bar=True)
