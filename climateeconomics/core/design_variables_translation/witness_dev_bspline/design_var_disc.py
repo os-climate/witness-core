@@ -58,6 +58,7 @@ class Design_Var_Discipline(SoSDiscipline):
         'ccs_percentage_array': {'type': 'array', 'unit': '$/t', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'livestock_usage_factor_array': {'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'deforestation_surface_array': {'type': 'array', 'unit': 'Mha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'forest_investment_array': {'type': 'array', 'unit': 'G$', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'design_space': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_optim'},
         WRITE_XVECT: {'type': 'bool', 'default': False, 'user_level': 3},
         LOG_DVAR: {'type': 'bool', 'default': False, 'user_level': 3}
@@ -69,6 +70,7 @@ class Design_Var_Discipline(SoSDiscipline):
         'ccs_percentage': {'type': 'dataframe', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
         'livestock_usage_factor_df': {'type': 'dataframe', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'deforestation_surface': {'type': 'dataframe', 'unit': 'Mha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'forest_investment': {'type': 'dataframe', 'unit': 'G$', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'design_space_last_ite': {'type': 'dataframe', 'user_level': 3}
     }
 
@@ -225,6 +227,9 @@ class Design_Var_Discipline(SoSDiscipline):
 
         self.set_partial_derivative_for_other_types(
             (f'deforestation_surface', 'deforested_surface'), (f'deforestation_surface_array',),  self.design.bspline_dict['deforestation_surface_array']['b_array'])
+
+        self.set_partial_derivative_for_other_types(
+            (f'forest_investment', 'forest_investment'), (f'forest_invest_array',),  self.design.bspline_dict['deforestation_surface_array']['b_array'])
 
     def get_chart_filter_list(self):
 

@@ -83,7 +83,7 @@ class Study(StudyManager):
             {"years": years, "deforested_surface": self.deforestation_surface})
 
         forest_invest = np.linspace(5, 8, year_range)
-        forest_invest_df = pd.DataFrame(
+        self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
         reforestation_cost_per_ha = 3800
 
@@ -106,14 +106,16 @@ class Study(StudyManager):
         forest_input[self.study_name +
                      '.deforestation_surface'] = deforestation_surface_df
         forest_input[self.study_name +
-                     '.reforestation_investment'] = forest_invest_df
+                     '.forest_investment'] = self.forest_invest_df
 
         setup_data_list.append(forest_input)
 
         deforestation_surface_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
+        forest_investment_ctrl = np.linspace(5.0, 8.0, self.nb_poles)
 
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['deforested_surface_ctrl'] = deforestation_surface_ctrl
+        design_space_ctrl_dict['forest_investment_ctrl'] = forest_investment_ctrl
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
@@ -123,9 +125,10 @@ class Study(StudyManager):
     def setup_initial_design_variable(self):
 
         init_design_var_df = pd.DataFrame(
-            columns=['deforested_surface'], index=arange(self.year_start, self.year_end + 1, self.time_step))
+            columns=['deforested_surface', 'forest_investment'], index=arange(self.year_start, self.year_end + 1, self.time_step))
 
         init_design_var_df['deforested_surface'] = self.deforestation_surface['deforested_surface']
+        init_design_var_df['forest_investment'] = self.forest_invest_df['forest_investment']
 
         return init_design_var_df
 
@@ -140,6 +143,8 @@ class Study(StudyManager):
         # Design variables:
         self.update_dspace_dict_with(
             'deforested_surface_array', self.deforestation_surface['deforested_surface'].values, lbnd1, ubnd1)
+        self.update_dspace_dict_with(
+            'forest_investment_array', self.forest_invest_df['forest_investment'].values, lbnd1, ubnd1)
 
     def setup_design_space_ctrl_new(self):
         # Design Space
@@ -151,6 +156,8 @@ class Study(StudyManager):
         update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
                                 list(self.design_space_ctrl['deforested_surface_ctrl'].values), [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
 
+        update_dspace_dict_with(ddict, 'forest_investment_ctrl',
+                                list(self.design_space_ctrl['forest_investment_ctrl'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
         return ddict
 
 

@@ -26,7 +26,7 @@ from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import
 from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import Study as datacase_agriculture
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
-from climateeconomics.sos_processes.iam.witness.forest_process.usecase import Study as datacase_forest
+from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
 from sos_trades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT

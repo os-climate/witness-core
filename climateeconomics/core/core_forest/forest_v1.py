@@ -32,7 +32,7 @@ class Forest():
     DEFORESTATION_SURFACE = 'deforestation_surface'
     CO2_PER_HA = 'CO2_per_ha'
     INITIAL_CO2_EMISSIONS = 'initial_emissions'
-    REFORESTATION_INVESTMENT = 'reforestation_investment'
+    REFORESTATION_INVESTMENT = 'forest_investment'
     REFORESTATION_COST_PER_HA = 'reforestation_cost_per_ha'
 
     FOREST_SURFACE_DF = 'forest_surface_df'
