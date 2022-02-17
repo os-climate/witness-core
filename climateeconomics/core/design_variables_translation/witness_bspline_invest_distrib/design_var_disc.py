@@ -119,12 +119,16 @@ class Design_Var_Discipline(SoSDiscipline):
                 else:
                     dynamic_inputs['deforested_surface_ctrl'] = {
                         'type': 'array', 'unit': 'Mha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+                    dynamic_inputs['forest_investment_ctrl'] = {
+                        'type': 'array', 'unit': 'G$', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
                     dynamic_inputs['red_to_white_meat_ctrl'] = {
                         'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
                     dynamic_inputs['meat_to_vegetables_ctrl'] = {
                         'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
                     dynamic_outputs['deforestation_surface'] = {
                         'type': 'dataframe', 'unit': 'Mha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+                    dynamic_outputs['forest_investment'] = {
+                        'type': 'dataframe', 'unit': 'G$', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
                     dynamic_outputs['red_to_white_meat'] = {
                         'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_agriculture'}
                     dynamic_outputs['meat_to_vegetables'] = {
@@ -216,6 +220,8 @@ class Design_Var_Discipline(SoSDiscipline):
         else:
             self.set_partial_derivative_for_other_types(
                 (f'deforestation_surface', 'deforested_surface'), (f'deforested_surface_ctrl',),  self.design.bspline_dict['deforested_surface_ctrl']['b_array'])
+            self.set_partial_derivative_for_other_types(
+                (f'forest_investment', 'forest_investment'), (f'forest_investment_ctrl',),  self.design.bspline_dict['forest_investment_ctrl']['b_array'])
             self.set_partial_derivative('red_to_white_meat', 'red_to_white_meat_ctrl',
                                         self.design.bspline_dict['red_to_white_meat_ctrl']['b_array'])
             self.set_partial_derivative('meat_to_vegetables', 'meat_to_vegetables_ctrl',
