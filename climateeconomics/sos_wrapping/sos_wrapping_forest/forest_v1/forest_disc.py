@@ -59,7 +59,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                     'namespace': 'ns_forest', },
                Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': initial_emissions,
                                               'namespace': 'ns_forest', },
-               Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000,'namespace': 'ns_forest'},
+               Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000, 'namespace': 'ns_forest'},
                Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 3800, 'namespace': 'ns_forest'},
                Forest.REFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                                  'dataframe_descriptor': {'years': ('float', None, False),
@@ -101,7 +101,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         outputs_dict = {
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
-            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'forest_surface_evol', 'forest_surface_evol_cumulative']],
+            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'forest_surface_evol']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
         }
 
@@ -128,22 +128,22 @@ class ForestDiscipline(ClimateEcoDiscipline):
             (Forest.FOREST_SURFACE_DF, 'forest_surface_evol'), (
                 Forest.DEFORESTATION_SURFACE, 'deforested_surface'),
             d_deforestation_surface_d_deforestation_surface)
-        self.set_partial_derivative_for_other_types(
-            (Forest.FOREST_SURFACE_DF,
-             'forest_surface_evol_cumulative'),
-            (Forest.DEFORESTATION_SURFACE, 'deforested_surface'),
-            d_cum_deforestation_d_deforestation_surface)
+#         self.set_partial_derivative_for_other_types(
+#             (Forest.FOREST_SURFACE_DF,
+#              'forest_surface_evol_cumulative'),
+#             (Forest.DEFORESTATION_SURFACE, 'deforested_surface'),
+#             d_cum_deforestation_d_deforestation_surface)
 
         # forest surface vs forest invest
         self.set_partial_derivative_for_other_types(
             (Forest.FOREST_SURFACE_DF, 'forest_surface_evol'), (
                 Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
             d_forest_surface_d_invest)
-        self.set_partial_derivative_for_other_types(
-            (Forest.FOREST_SURFACE_DF,
-             'forest_surface_evol_cumulative'),
-            (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
-            d_cun_forest_surface_d_invest)
+#         self.set_partial_derivative_for_other_types(
+#             (Forest.FOREST_SURFACE_DF,
+#              'forest_surface_evol_cumulative'),
+#             (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+#             d_cun_forest_surface_d_invest)
 
         # d_CO2 d deforestation
         d_CO2_emitted_d_deforestation_surface = self.forest_model.d_CO2_emitted(
