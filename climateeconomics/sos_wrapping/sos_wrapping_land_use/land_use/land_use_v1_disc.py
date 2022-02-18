@@ -89,7 +89,7 @@ class LandUseV1Discipline(SoSDiscipline):
         #-- compute
         land_demand_df = inputs_dict['land_demand_df']
         total_food_land_surface = inputs_dict.pop('total_food_land_surface')
-        deforested_surface_df = inputs_dict.pop('deforested_surface_df')
+        deforested_surface_df = inputs_dict.pop('forest_surface_df')
         deforested_surface_df.index = land_demand_df['years']
         self.land_use_model.compute(
             land_demand_df, total_food_land_surface, deforested_surface_df)
@@ -114,7 +114,7 @@ class LandUseV1Discipline(SoSDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         land_demand_df = inputs_dict['land_demand_df']
         total_food_land_surface = inputs_dict['total_food_land_surface']
-        deforested_surface_df = inputs_dict['deforested_surface_df']
+        deforested_surface_df = inputs_dict['forest_surface_df']
         model = self.land_use_model
 
         # Retrieve variables
