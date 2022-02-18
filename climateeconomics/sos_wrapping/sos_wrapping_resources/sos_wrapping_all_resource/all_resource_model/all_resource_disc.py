@@ -31,7 +31,7 @@ class AllResourceDiscipline(SoSDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'All Ressources Model',
+        'label': 'All Resources Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -50,7 +50,7 @@ class AllResourceDiscipline(SoSDiscipline):
         {'years': np.arange(2020, 2050 + 1)})
     for resource in AllResourceModel.RESOURCE_LIST:
         ratio_available_resource_default[resource] = np.linspace(
-            1.0,1.0, len(ratio_available_resource_default.index))
+            1.0, 1.0, len(ratio_available_resource_default.index))
 
     DESC_IN = {'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
