@@ -21,7 +21,7 @@ from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_w
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
