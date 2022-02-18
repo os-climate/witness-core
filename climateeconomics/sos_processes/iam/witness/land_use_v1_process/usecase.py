@@ -83,7 +83,7 @@ class Study(StudyManager):
         landuse_input[self.study_name +
                       '.total_food_land_surface'] = self.total_food_land_surface
         landuse_input[self.study_name +
-                      '.deforested_surface_df'] = self.deforested_surface_df
+                      '.forest_surface_df'] = self.deforested_surface_df
 
         setup_data_list.append(landuse_input)
 
