@@ -259,7 +259,8 @@ class Design_Var_Discipline(SoSDiscipline):
         else:
             init_xvect = False
         if 'Others' in charts:
-            list_dv = ['livestock_usage_factor_array']
+            list_dv = ['livestock_usage_factor_array','deforested_surface_ctrl','forest_investment_ctrl', \
+                        'red_to_white_meat_ctrl', 'meat_to_vegetables_ctrl']
             for parameter in list_dv:
                 new_chart = self.get_chart_BSpline(
                     parameter, init_xvect)
@@ -301,11 +302,16 @@ class Design_Var_Discipline(SoSDiscipline):
                                                     == parameter, 'value'].to_list()[0][i])
         eval_pts = None
         for key in self.get_sosdisc_outputs().keys():
-            if key in parameter or parameter[:-6] in key:
-                for column in self.get_sosdisc_outputs(key).columns:
-                    if column not in ['years', ]:
-                        eval_pts = self.get_sosdisc_outputs(key)[column].values
-                        years = self.get_sosdisc_outputs(key)['years'].values
+            if key in parameter or parameter[:-6] in key or parameter[:-15] in key:
+                ## output design var may be a dataframe or array
+                if isinstance(self.get_sosdisc_outputs(key), pd.DataFrame):
+                    for column in self.get_sosdisc_outputs(key).columns:
+                        if column not in ['years', ]:
+                            eval_pts = self.get_sosdisc_outputs(key)[column].values
+                            years = self.get_sosdisc_outputs(key)['years'].values
+                else:
+                    eval_pts = self.get_sosdisc_outputs(key)
+                    years = np.arange(self.get_sosdisc_inputs('year_start'), self.get_sosdisc_inputs('year_end') + 1, 1)
         if eval_pts is None:
             print('eval pts not found in sos_disc_outputs')
             return None
