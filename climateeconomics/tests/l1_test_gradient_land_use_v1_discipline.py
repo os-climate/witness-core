@@ -23,7 +23,8 @@ import numpy as np
 
 
 class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
     def setUp(self):
 
         self.name = 'Test'
@@ -74,21 +75,23 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
             columns=['years',
                      'total surface (Gha)'])
         self.total_food_land_surface['years'] = years
-        self.total_food_land_surface['total surface (Gha)'] = np.linspace(5, 4, year_range)
+        self.total_food_land_surface['total surface (Gha)'] = np.linspace(
+            5, 4, year_range)
 
         self.deforested_surface_df = pd.DataFrame(
             index=years,
             columns=['years',
                      'forest_surface_evol'])
         self.deforested_surface_df['years'] = years
-        ##Gha
-        self.deforested_surface_df['forest_surface_evol'] = np.linspace(-0.01, 0, year_range)
+        # Gha
+        self.deforested_surface_df['forest_surface_evol'] = np.linspace(
+            -0.01, 0, year_range)
 
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
                        f'{self.name}.land_demand_df': land_demand_df,
-                       f'{self.name}.total_food_land_surface' : self.total_food_land_surface,
-                       f'{self.name}.deforested_surface_df': self.deforested_surface_df
+                       f'{self.name}.total_food_land_surface': self.total_food_land_surface,
+                       f'{self.name}.forest_surface_df': self.deforested_surface_df
                        }
         self.ee.dm.set_values_from_dict(values_dict)
 
@@ -97,11 +100,11 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_land_use_v1_discipline.pkl', 
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_land_use_v1_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            inputs=[f'{self.name}.land_demand_df', 
+                            inputs=[f'{self.name}.land_demand_df',
                                     f'{self.name}.total_food_land_surface',
-                                    f'{self.name}.deforested_surface_df'], 
-                            outputs=[f'{self.name}.land_demand_constraint_df', 
-                                     f'{self.name}.land_surface_df', 
+                                    f'{self.name}.forest_surface_df'],
+                            outputs=[f'{self.name}.land_demand_constraint_df',
+                                     f'{self.name}.land_surface_df',
                                      f'{self.name}.land_surface_for_food_df'])

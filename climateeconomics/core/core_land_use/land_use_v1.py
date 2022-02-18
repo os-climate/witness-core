@@ -51,7 +51,7 @@ class LandUseV1():
     YEAR_END = 'year_end'
 
     TOTAL_FOOD_LAND_SURFACE = 'total_food_land_surface'
-    DEFORESTED_SURFACE_DF = 'deforested_surface_df'
+    DEFORESTED_SURFACE_DF = 'forest_surface_df'
 
     LAND_DEMAND_CONSTRAINT_DF = 'land_demand_constraint_df'
     LAND_DEMAND_CONSTRAINT_AGRICULTURE = 'Agriculture demand constraint (Gha)'
@@ -294,7 +294,8 @@ class LandUseV1():
 
         elif objective_column == self.LAND_DEMAND_CONSTRAINT_FOREST:
             d_land_demand_constraint_d_deforestation_surface = \
-                np.tril(np.ones((number_of_values, number_of_values))) * 1.0 / self.ref_land_use_constraint
+                np.tril(np.ones((number_of_values, number_of_values))
+                        ) * 1.0 / self.ref_land_use_constraint
         else:
             d_land_demand_constraint_d_deforestation_surface = \
                 np.identity(number_of_values) * 0.0

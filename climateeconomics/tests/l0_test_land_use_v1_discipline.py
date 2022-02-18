@@ -52,20 +52,22 @@ class LandUseV1TestCase(unittest.TestCase):
             columns=['years',
                      'total surface (Gha)'])
         self.total_food_land_surface['years'] = years
-        self.total_food_land_surface['total surface (Gha)'] = np.linspace(5, 4, year_range)
+        self.total_food_land_surface['total surface (Gha)'] = np.linspace(
+            5, 4, year_range)
         self.deforested_surface_df = pd.DataFrame(
             index=years,
             columns=['years',
                      'forest_surface_evol'])
         self.deforested_surface_df['years'] = years
-        ###Gha
-        self.deforested_surface_df['forest_surface_evol'] = np.linspace(-0.01, 0, year_range)
+        # Gha
+        self.deforested_surface_df['forest_surface_evol'] = np.linspace(
+            -0.01, 0, year_range)
 
         self.param = {'land_demand_df': self.energy_land_demand_df,
                       'year_start': self.year_start,
                       'year_end': self.year_end,
                       'total_food_land_surface': self.total_food_land_surface,
-                      'deforested_surface_df': self.deforested_surface_df,
+                      'forest_surface_df': self.deforested_surface_df,
                       'land_use_constraint_ref': 0.01
                       }
 
@@ -77,7 +79,8 @@ class LandUseV1TestCase(unittest.TestCase):
 
         land_use = LandUseV1(self.param)
 
-        land_use.compute(self.energy_land_demand_df, self.total_food_land_surface, self.deforested_surface_df)
+        land_use.compute(self.energy_land_demand_df,
+                         self.total_food_land_surface, self.deforested_surface_df)
 
     def test_land_use_v1_discipline(self):
         ''' 
