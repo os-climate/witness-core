@@ -154,7 +154,7 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
-                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
+                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
 
         update_dspace_dict_with(ddict, 'forest_investment_ctrl',
                                 list(self.design_space_ctrl['forest_investment_ctrl'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
