@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
@@ -28,6 +28,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def __init__(self, ee, process_level='dev'):
         WITNESSSubProcessBuilder.__init__(
             self, ee)
@@ -44,11 +45,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        techno_dict = DEFAULT_TECHNO_DICT
+        techno_dict = DEFAULT_TECHNO_DICT_DEV
 
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
+            techno_dict=techno_dict, invest_discipline=self.invest_discipline)
 
         chain_builders.extend(chain_builders_energy)
 
