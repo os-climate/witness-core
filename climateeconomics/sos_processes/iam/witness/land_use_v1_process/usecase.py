@@ -76,14 +76,14 @@ class Study(StudyManager):
                      'forest_surface_evol'])
         self.deforested_surface_df['years'] = years
         self.deforested_surface_df['forest_surface_evol'] = np.linspace(
-            -10, 0, year_range)
+            -0.001, 0, year_range)
 
         landuse_input[self.study_name +
                       self.extra_name + '.land_demand_df'] = land_demand_df
         landuse_input[self.study_name +
                       '.total_food_land_surface'] = self.total_food_land_surface
         landuse_input[self.study_name +
-                      '.deforested_surface_df'] = self.deforested_surface_df
+                      '.forest_surface_df'] = self.deforested_surface_df
 
         setup_data_list.append(landuse_input)
 

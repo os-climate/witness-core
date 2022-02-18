@@ -26,7 +26,7 @@ from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import
 from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import Study as datacase_agriculture
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
-from climateeconomics.sos_processes.iam.witness.forest_process.usecase import Study as datacase_forest
+from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
 from sos_trades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -114,8 +114,9 @@ class DataStudy():
                                                            index=[2017, 2018, 2019])
 
         CO2_emitted_forest = pd.DataFrame()
-        emission_forest = np.linspace(40, 40, len(years))
-        cum_emission = np.cumsum(emission_forest) + 2850
+        # GtCO2
+        emission_forest = np.linspace(0.04, 0.04, len(years))
+        cum_emission = np.cumsum(emission_forest) + 3.21
         CO2_emitted_forest['years'] = years
         CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
@@ -240,20 +241,25 @@ class DataStudy():
         list_weight = []
         list_aggr_type = []
         list_ns = []
-#         list_var.extend(
-#             ['CO2_tax_minus_CO2_damage_constraint_df'])
-#         list_parent.extend(['CO2_tax_constraint'])
-#         list_ftype.extend([INEQ_CONSTRAINT])
-#         list_weight.extend([-1.0])
-#         list_aggr_type.extend([AGGR_TYPE_SUM])
+        # -------------------------------------------------
+        # CO2 ppm constraints
         list_var.extend(
-            ['rockstrom_limit_constraint'])
-        list_parent.extend([''])
-        list_ns.extend(['ns_functions'])
-        list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([0.0])
+            ['rockstrom_limit_constraint', 'minimum_ppm_constraint'])
+        list_parent.extend(['CO2 ppm', 'CO2 ppm'])
+        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+        list_weight.extend([0.0, -1.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SMAX])
+            [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
+        # -------------------------------------------------
+        # pc_consumption_constraint
+        list_var.append('pc_consumption_constraint')
+        list_parent.append('')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(-1.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -261,4 +267,5 @@ class DataStudy():
         func_df['weight'] = list_weight
         func_df[AGGR_TYPE] = list_aggr_type
         func_df['namespace'] = list_ns
+
         return func_df

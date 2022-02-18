@@ -20,10 +20,18 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'WITNESS Process',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
     def __init__(self, ee, process_level='val'):
         WITNESSSubProcessBuilder.__init__(
             self, ee)
-        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[1]
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
         self.process_level = process_level
 
     def get_builders(self):

@@ -25,6 +25,20 @@ import pandas as pd
 class GasDiscipline(SoSDiscipline):
     ''' Discipline intended to get natural gas parameters
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Gas Resource Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-gas-pump fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
     default_production_start = 2010

@@ -18,7 +18,7 @@ import pandas as pd
 from os.path import join, dirname
 
 from sos_trades_core.study_manager.study_manager import StudyManager
-from climateeconomics.sos_processes.iam.witness.witness_optim_process.usecase_witness_optim import Study as witness_optim_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_process_independent_invest.usecase_witness_optim import Study as witness_optim_usecase
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 

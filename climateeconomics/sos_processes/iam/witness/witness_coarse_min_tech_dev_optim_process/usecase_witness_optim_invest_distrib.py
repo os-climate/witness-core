@@ -13,15 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
-from sos_trades_core.study_manager.study_manager import StudyManager
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from climateeconomics.core.design_variables_translation.witness_bspline.design_var_disc import Design_Var_Discipline
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_MIN_TECH_DICT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS

@@ -22,6 +22,14 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'climateeconomics.sos_processes.iam.witness.witness_coarse_process_one_distrib_1',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
+
     def get_builders(self):
 
         optim_name = OPTIM_NAME
@@ -32,7 +40,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         coupling_builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',
-            techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
+            techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2])
 
         # modify namespaces defined in the child process
         for ns in self.ee.ns_manager.ns_list:

@@ -23,6 +23,20 @@ import pandas as pd
 class MacroeconomicsDiscipline(SoSDiscipline):
     "Macroeconomics discipline for DICE"
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'MacroEconomics DICE Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-industry fa-fw',
+        'version': '',
+    }
     _maturity = 'Research'
     DESC_IN = {
         'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},

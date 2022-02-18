@@ -73,8 +73,8 @@ class Study(StudyManager):
         year_range = self.year_end - self.year_start + 1
 
         deforestation_limit = 1000
-
-        initial_emissions = 2850
+        #GtCO2
+        initial_emissions = 3.21
 
         CO2_per_ha = 4000
 
@@ -140,7 +140,7 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
-                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [1.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
+                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
 
         return ddict
 

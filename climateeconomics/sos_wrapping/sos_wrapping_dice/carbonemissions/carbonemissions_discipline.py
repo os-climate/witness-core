@@ -24,6 +24,20 @@ import pandas as pd
 class CarbonemissionsDiscipline(SoSDiscipline):
     "carbonemissions discipline for DICE"
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Carbon Emissions DICE Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-smog fa-fw',
+        'version': '',
+    }
     _maturity = 'Research'
     DESC_IN = {
         'year_start': {'type': 'int', 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},

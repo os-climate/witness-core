@@ -24,6 +24,20 @@ import plotly.graph_objects as go
 
 class OilDiscipline(SoSDiscipline):
 
+    # ontology information
+    _ontology_data = {
+        'label': 'Oil price and avaibility model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-oil-can fa-fw',
+        'version': '',
+    }
+
     default_year_start = 2020
     default_year_end = 2100
     

@@ -26,6 +26,20 @@ import numpy as np
 
 class TempChangeDiscipline(ClimateEcoDiscipline):
     "     Temperature evolution"
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Temperature Change WITNESS Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-thermometer-three-quarters fa-fw',
+        'version': '',
+    }
     years = np.arange(2020, 2101)
     DESC_IN = {
         'year_start': {'type': 'int', 'visibility': 'Shared', 'possible_values': years, 'namespace': 'ns_witness'},

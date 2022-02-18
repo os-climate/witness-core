@@ -63,10 +63,10 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         values_dict[f'{self.name}.linear_solver_MDA_preconditioner'] = 'gasm'
         values_dict[f'{self.name}.linear_solver_MDO'] = 'GMRES_PETSC'
         values_dict[f'{self.name}.linear_solver_MDO_preconditioner'] = 'gasm'
-        values_dict[f'{self.name}.max_mda_iter'] = 200
+        values_dict[f'{self.name}.max_mda_iter'] = 50
         values_dict[f'{self.name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.name}.tolerance'] = 1.0e-10
-        values_dict[f'{self.name}.sub_mda_class'] = 'MDANewtonRaphson'
+        values_dict[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
 
         func_df = values_dict[f'{self.name}.{usecase.coupling_name}.FunctionsManager.function_df']
         constraints = ['CO2_tax_minus_CO2_damage_constraint_df',

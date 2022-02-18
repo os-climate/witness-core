@@ -48,16 +48,16 @@ class CarbonCycleDiscTest(unittest.TestCase):
 
         data_dir = join(dirname(__file__), 'data')
 
-        emission_df_all = read_csv(
+        CO2_emissions_df_all = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
 
-        emission_df_y = emission_df_all[emission_df_all['years'] >= 2020]
+        CO2_emissions_df_y = CO2_emissions_df_all[CO2_emissions_df_all['years'] >= 2020]
 
         # put manually the index
         years = np.arange(2020, 2101)
-        emission_df_y.index = years
+        CO2_emissions_df_y.index = years
 
-        values_dict = {f'{self.name}.emissions_df': emission_df_y}
+        values_dict = {f'{self.name}.CO2_emissions_df': CO2_emissions_df_y}
 
         self.ee.dm.set_values_from_dict(values_dict)
 
