@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -67,16 +67,19 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101)
         emission_df_y.index = years
 
-        values_dict = {f'{self.name}.emissions_df': emission_df_y}
+        values_dict = {f'{self.name}.CO2_emissions_df': emission_df_y}
 
         self.ee.dm.set_values_from_dict(values_dict)
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline1.pkl', discipline=disc_techno, step=1e-15,
-                            inputs=[f'{self.name}.emissions_df'],
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline1.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.CO2_emissions_df'],
                             outputs=[f'{self.name}.carboncycle_df',
-                                     f'{self.name}.ppm_objective', f'{self.name}.rockstrom_limit_constraint'], derr_approx='complex_step')
+                                     f'{self.name}.ppm_objective',
+                                     f'{self.name}.rockstrom_limit_constraint',
+                                     f'{self.name}.minimum_ppm_constraint'])
 
     def test_execute_2(self):
         # test limit for max for lower_ocean_conc / upper_ocean_conc /
@@ -108,13 +111,16 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101)
         emission_df_y.index = years
 
-        values_dict = {f'{self.name}.emissions_df': emission_df_y}
+        values_dict = {f'{self.name}.CO2_emissions_df': emission_df_y}
 
         self.ee.dm.set_values_from_dict(values_dict)
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline2.pkl', discipline=disc_techno, step=1e-15,
-                            inputs=[f'{self.name}.emissions_df'],
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline2.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.CO2_emissions_df'],
                             outputs=[f'{self.name}.carboncycle_df',
-                                     f'{self.name}.ppm_objective', f'{self.name}.rockstrom_limit_constraint'], derr_approx='complex_step')
+                                     f'{self.name}.ppm_objective',
+                                     f'{self.name}.rockstrom_limit_constraint',
+                                     f'{self.name}.minimum_ppm_constraint'])

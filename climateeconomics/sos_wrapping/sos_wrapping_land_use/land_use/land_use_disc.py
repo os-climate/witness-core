@@ -25,6 +25,20 @@ import pandas as pd
 class LandUseDiscipline(SoSDiscipline):
     ''' Disscipline intended to host land use model
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Land Use Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-globe-europe fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
     default_years = np.arange(default_year_start, default_year_end + 1, 1)

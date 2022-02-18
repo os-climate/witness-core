@@ -27,6 +27,20 @@ import numpy as np
 
 class PopulationDiscipline(ClimateEcoDiscipline):
     "     Temperature evolution"
+
+    # ontology information
+    _ontology_data = {
+        'label': 'WITNESS Population Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-users fa-fw',
+        'version': '',
+    }
     years = np.arange(1960, 2101)
     list_years = years.tolist()
     global_data_dir = join(Path(__file__).parents[3], 'data')
@@ -390,7 +404,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             ordonate_data = list(death_dict['climate']['cum_total'])
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, f'cumulative cliamtic deaths', 'bar')
+                years, ordonate_data, f'cumulative climatic deaths', 'bar')
 
             new_chart.series.append(new_series)
 

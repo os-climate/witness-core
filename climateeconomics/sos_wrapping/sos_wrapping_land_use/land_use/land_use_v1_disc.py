@@ -30,6 +30,20 @@ from copy import deepcopy
 class LandUseV1Discipline(SoSDiscipline):
     ''' Discipline intended to host land use model with land use for food input from agriculture model
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Land Use V1 Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-globe-europe fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
 
@@ -39,7 +53,9 @@ class LandUseV1Discipline(SoSDiscipline):
                                           'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
                LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV1.DEFORESTED_SURFACE_DF: {
-                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+               LandUseV1.LAND_USE_CONSTRAINT_REF: {
+                   'type': 'float', 'default': 0.01,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
                }
 
     DESC_OUT = {
@@ -73,7 +89,7 @@ class LandUseV1Discipline(SoSDiscipline):
         #-- compute
         land_demand_df = inputs_dict['land_demand_df']
         total_food_land_surface = inputs_dict.pop('total_food_land_surface')
-        deforested_surface_df = inputs_dict.pop('deforested_surface_df')
+        deforested_surface_df = inputs_dict.pop('forest_surface_df')
         deforested_surface_df.index = land_demand_df['years']
         self.land_use_model.compute(
             land_demand_df, total_food_land_surface, deforested_surface_df)
@@ -98,7 +114,7 @@ class LandUseV1Discipline(SoSDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         land_demand_df = inputs_dict['land_demand_df']
         total_food_land_surface = inputs_dict['total_food_land_surface']
-        deforested_surface_df = inputs_dict['deforested_surface_df']
+        deforested_surface_df = inputs_dict['forest_surface_df']
         model = self.land_use_model
 
         # Retrieve variables

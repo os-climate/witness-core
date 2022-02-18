@@ -120,7 +120,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = f'Summed CO2 emissions'
         y_axis_name = f'Welfare in {year_end}'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.emissions_detail_df',
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.CO2_emissions_detail_df',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
                     ]
         (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
@@ -145,7 +145,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = f'Summed CO2 emissions'
         y_axis_name = 'min( Utility )'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.emissions_detail_df',
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.CO2_emissions_detail_df',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
                     ]
         (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
@@ -297,7 +297,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Carbon emissions (Gtc)'
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.emissions_detail_df']
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Carbon_emissions.CO2_emissions_detail_df']
         (co2_emissions_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 

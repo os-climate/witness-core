@@ -26,6 +26,20 @@ import pandas as pd
 class TempChangeDiscipline(SoSDiscipline):
     "     Temperature evolution"
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Temperature Change DICE Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-thermometer-three-quarters fa-fw',
+        'version': '',
+    }
     DESC_IN = {
         'year_start': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'year_end': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},

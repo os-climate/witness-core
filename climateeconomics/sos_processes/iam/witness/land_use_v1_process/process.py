@@ -18,6 +18,14 @@ from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilde
 
 
 class ProcessBuilder(BaseProcessBuilder):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'WITNESS Land Use v1 Process',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
     def get_builders(self):
 
         ns_scatter = self.ee.study_name
@@ -26,6 +34,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_land_use': ns_scatter,
                    'ns_public': ns_scatter,
                    'ns_functions': ns_scatter,
+                   'ns_ref': ns_scatter
                    }
 
         mods_dict = {'Land.Land_Use': 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_v1_disc.LandUseV1Discipline'

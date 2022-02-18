@@ -21,6 +21,14 @@ from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilde
 
 
 class ProcessBuilder(BaseProcessBuilder):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'WITNESS Process Dev without Energy',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
     def get_builders(self):
 
         ns_scatter = self.ee.study_name
@@ -28,7 +36,8 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_dict = {'ns_witness': ns_scatter,
                    'ns_energy_mix': ns_scatter,
                    'ns_ref': f'{ns_scatter}.NormalizationReferences',
-                   'ns_agriculture': ns_scatter}
+                   'ns_agriculture': ns_scatter,
+                   'ns_forest': ns_scatter}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
@@ -57,7 +66,7 @@ class ProcessBuilder(BaseProcessBuilder):
         builder_list.extend(chain_builders_population)
 
         chain_builders_forest = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'forest_process')
+            'climateeconomics.sos_processes.iam.witness', 'forest_v1_process')
         builder_list.extend(chain_builders_forest)
 
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',

@@ -17,6 +17,14 @@ from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilde
 
 
 class ProcessBuilder(BaseProcessBuilder):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'WITNESS Multiscenario Optimization Process',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
     def get_builders(self):
 
         # scenario build map
@@ -62,7 +70,7 @@ class ProcessBuilder(BaseProcessBuilder):
             'scenario_list', scenario_map)
 
         builder_cdf_list = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_optim_process')
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_process_independent_invest')
 
         scatter_scenario_name = 'optimization scenarios'
         # modify namespaces defined in the child process
