@@ -77,31 +77,36 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                         "disp": 110}
 
         full_values_dict['Test.WITNESS_MDO.algo_options'] = algo_options
-        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 2
         full_values_dict['Test.WITNESS_MDO.max_iter'] = 2
-        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
-#         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAJacobi'
-#         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDANewtonRaphson'
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        sub_mda_class_list = ['MDAJacobi', 'MDAGaussSeidel', 'MDANewtonRaphson', 'GSNewtonMDA',
+                              'GSPureNewtonMDA', 'GSorNewtonMDA']
 
-        self.ee.display_treeview_nodes()
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        for sub_mda_class in sub_mda_class_list:
 
-        self.ee.execute()
+            dict_values = {}
+            dict_values['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = sub_mda_class
 
-        print(self.ee.dm.get_value(
-            'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.temperature_df')['temp_atmo'].sum())
-        print(self.ee.dm.get_value(
-            'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.Temperature_change.temperature_detail_df')['temp_atmo'].sum())
+            if sub_mda_class == 'MDAJacobi':
+                dict_values['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 20
+            else:
+                dict_values['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 5
 
-#         df_coupled = self.ee.dm.get_value(
-#             'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.temperature_df')
-#         df_ncoupled = self.ee.dm.get_value(
-#             'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.Temperature_change.temperature_detail_df')
-#         self.assertListEqual(list(df_ncoupled['temp_atmo'].values), list(
-# df_coupled['temp_atmo'].values), msg="desynchro of dataframes detected")
+            self.ee.load_study_from_input_dict(dict_values)
+
+            # execute process with sub_mda_class
+            self.ee.execute()
+
+            df_coupled = self.ee.dm.get_value(
+                'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.temperature_df')
+            df_ncoupled = self.ee.dm.get_value(
+                'Test.WITNESS_MDO.WITNESS_Eval.WITNESS.Temperature_change.temperature_detail_df')
+
+            # test synchronisation of coupled variable temperature_df and
+            # non-coupled output temperature_detail_df
+            self.assertListEqual(list(df_ncoupled['temp_atmo'].values), list(
+                df_coupled['temp_atmo'].values), msg="desynchro of dataframes detected")
 
 
 if '__main__' == __name__:
