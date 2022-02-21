@@ -55,13 +55,18 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2},
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2},
-        'co2_emissions_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': 'Shared', 'namespace': 'ns_energy_mix'},
+        #'co2_emissions_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': 'Shared', 'namespace': 'ns_energy_mix'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                   'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'min_co2_objective': {'type': 'float', 'default': -1000., 'unit': 'GtCO2', 'user_level': 2},
         'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'GtCO2', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
+        'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
+        'CO2_emissions_by_use_sinks':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'},
+        'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy'},
+
         # Ref in 2020 is around 34 Gt, the objective is normalized with this
         # reference
         Forest.CO2_EMITTED_FOREST_DF: {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
@@ -70,7 +75,9 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'CO2_emissions_detail_df': {'type': 'dataframe'},
-        'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'co2_emissions_Gt': {'type': 'dataframe', 'visibility': 'Shared',
+                             'namespace': 'ns_energy_mix', 'unit': 'Gt'}
     }
 
     def init_execution(self):
@@ -83,10 +90,12 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         # Compute de emissions_model
         CO2_emissions_df, CO2_objective = self.emissions_model.compute(in_dict)
+        self.emissions_model.compute_total_CO2_emissions()
         # Store output data
         dict_values = {'CO2_emissions_detail_df': CO2_emissions_df,
                        'CO2_emissions_df': CO2_emissions_df[['years', 'total_emissions', 'cum_total_emissions']],
-                       'CO2_objective': CO2_objective}
+                       'CO2_objective': CO2_objective,
+                       'co2_emissions_Gt': self.emissions_model.co2_emissions[['years', 'Total CO2 emissions']]}
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
@@ -123,6 +132,8 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         d_CO2_obj_d_total_emission = self.emissions_model.compute_d_CO2_objective()
         dobjective_exp_min = self.emissions_model.compute_dobjective_with_exp_min()
         d_total_emissions_C02_emitted_forest = self.emissions_model.compute_d_land_emissions()
+        columns_sources = self.get_sosdisc_inputs(
+            'CO2_emissions_by_use_sources').columns
         # fill jacobians
         self.set_partial_derivative_for_other_types(
             ('CO2_emissions_df', 'total_emissions'), ('economics_df', 'gross_output'),  d_indus_emissions_d_gross_output)
@@ -130,14 +141,35 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('CO2_emissions_df', 'cum_total_emissions'), ('economics_df', 'gross_output'),  d_cum_indus_emissions_d_gross_output)
 
-        self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'total_emissions'), ('co2_emissions_Gt', 'Total CO2 emissions'),  np.identity(len(years)))
+        for column_sources in columns_sources:
+            if column_sources != 'years':
+                self.set_partial_derivative_for_other_types(
+                    ('CO2_emissions_df', 'total_emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
+                self.set_partial_derivative_for_other_types(
+                    ('co2_emissions_Gt', 'Total CO2 emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
 
-        self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'cum_total_emissions'), ('co2_emissions_Gt', 'Total CO2 emissions'), d_cum_indus_emissions_d_total_CO2_emitted)
+                self.set_partial_derivative_for_other_types(
+                    ('CO2_emissions_df', 'cum_total_emissions'), ('CO2_emissions_by_use_sources', column_sources), d_cum_indus_emissions_d_total_CO2_emitted)
 
-        self.set_partial_derivative_for_other_types(
-            ('CO2_objective',), ('co2_emissions_Gt', 'Total CO2 emissions'),  d_CO2_obj_d_total_emission * dobjective_exp_min)
+                self.set_partial_derivative_for_other_types(
+                    ('CO2_objective',), ('CO2_emissions_by_use_sources', column_sources),  d_CO2_obj_d_total_emission * dobjective_exp_min)
+                self.set_partial_derivative_for_other_types(
+                    ('co2_emissions_Gt', 'Total CO2 emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
+
+        sinks_dict = {'CO2_emissions_by_use_sinks': 'CO2 removed by energy mix (Gt)', 'co2_emissions_needed_by_energy_mix':
+                      'carbon_capture needed by energy mix (Gt)', 'co2_emissions_ccus_Gt': 'carbon_storage Limited by capture (Gt)'}
+
+        for df_name, col_name in sinks_dict.items():
+            self.set_partial_derivative_for_other_types(
+                ('CO2_emissions_df', 'total_emissions'), (df_name, col_name),  - np.identity(len(years)))
+            self.set_partial_derivative_for_other_types(
+                ('co2_emissions_Gt', 'Total CO2 emissions'), (df_name, col_name),  - np.identity(len(years)))
+
+            self.set_partial_derivative_for_other_types(
+                ('CO2_emissions_df', 'cum_total_emissions'), (df_name, col_name), - d_cum_indus_emissions_d_total_CO2_emitted)
+
+            self.set_partial_derivative_for_other_types(
+                ('CO2_objective',), (df_name, col_name),  - d_CO2_obj_d_total_emission * dobjective_exp_min)
 
         self.set_partial_derivative_for_other_types(
             ('CO2_objective',), ('economics_df', 'gross_output'), dobjective_exp_min * d_CO2_obj_d_total_emission.dot(d_indus_emissions_d_gross_output))
