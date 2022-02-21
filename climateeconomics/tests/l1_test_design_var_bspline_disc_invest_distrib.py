@@ -91,14 +91,14 @@ class DesignVarDisc(AbstractJacobianUnittest):
                 self.input_names.append(invest_mix_name)
 
         ddict['forest_investment_ctrl'] = {'value': forest_investment_ctrl,
-                                                 'lower_bnd': 0.0, 'upper_bnd': 100.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
+                                           'lower_bnd': 0.0, 'upper_bnd': 100.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
         ddict['deforested_surface_ctrl'] = {'value': deforested_surface_ctrl,
-                                                 'lower_bnd': 0.0, 'upper_bnd': 20.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
+                                            'lower_bnd': 0.0, 'upper_bnd': 20.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
         ddict['red_to_white_meat_ctrl'] = {'value': red_to_white_meat_ctrl,
-                                                 'lower_bnd': 0.0, 'upper_bnd': 50.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
+                                           'lower_bnd': 0.0, 'upper_bnd': 50.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
         ddict['meat_to_vegetables_ctrl'] = {'value': meat_to_vegetables_ctrl,
-                                                 'lower_bnd': 0.0, 'upper_bnd': 50.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
-        
+                                            'lower_bnd': 0.0, 'upper_bnd': 50.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
+
         dspace_df_columns = ['variable', 'value', 'lower_bnd',
                              'upper_bnd', 'enable_variable', 'activated_elem']
         dspace_df = pd.DataFrame(columns=dspace_df_columns)
@@ -120,8 +120,8 @@ class DesignVarDisc(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #    graph.to_plotly().show()
 
     def test_derivative(self):
         disc_techno = self.ee.root_process.sos_disciplines[0]
