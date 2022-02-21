@@ -31,7 +31,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v1.forest_disc',
+        'label': 'Forest',
         'type': '',
         'source': '',
         'validated': '',
