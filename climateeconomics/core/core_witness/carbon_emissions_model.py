@@ -388,7 +388,7 @@ class CarbonEmissions():
             self.compute_cum_indus_emissions(year)
             self.compute_cum_total_emissions(year)
 
-        #-- Compute CO2 objetive with alpha trade and beta weight with temperature objective
+        #-- Compute CO2 objective with alpha trade and beta weight with temperature objective
 
         delta_years = len(self.years_range)
         self.CO2_objective = np.asarray([self.beta * (1 - self.alpha) * self.CO2_emissions_df['total_emissions'].sum()
