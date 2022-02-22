@@ -117,8 +117,12 @@ class Forest():
             if self.forest_surface_df.loc[element, 'forest_surface_evol_cumulative'] < -self.limit_deforestation_surface / 1000:
                 self.forest_surface_df.loc[element,
                                            'forest_surface_evol'] = 0
+                self.forest_surface_df.loc[element, 'deforested_surface'] = - \
+                    self.forest_surface_df.loc[element, 'forested_surface']
                 self.forest_surface_df.loc[element,
                                            'forest_surface_evol_cumulative'] = -self.limit_deforestation_surface / 1000
+                self.forest_surface_df.loc[element,
+                                           'deforested_surface_cumulative'] = -self.forest_surface_df.loc[element, 'forested_surface_cumulative'] - self.limit_deforestation_surface / 1000
 
         self.CO2_emitted_df['years'] = self.years
         # in Gt of CO2
