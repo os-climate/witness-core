@@ -50,7 +50,7 @@ class CarbonEmissions():
         self.CO2_emitted_forest_df = self.param[Forest.CO2_EMITTED_FOREST_DF]
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
-        self.gtco2_to_gtc = 44/12
+        self.gtco2_to_gtc = 44 / 12
 
     def create_dataframe(self):
         '''
@@ -66,22 +66,53 @@ class CarbonEmissions():
         years_range = np.arange(
             year_start, year_end + 1, self.time_step)
         self.years_range = years_range
-        emissions_df = pd.DataFrame(index=years_range, columns=['years',
-                                                                'gr_sigma', 'sigma', 'land_emissions',
-                                                                'cum_land_emissions', 'indus_emissions',
-                                                                'cum_indus_emissions', 'total_emissions',
-                                                                'cum_total_emissions'])
+        CO2_emissions_df = pd.DataFrame(index=years_range, columns=['years',
+                                                                    'gr_sigma', 'sigma', 'land_emissions',
+                                                                    'cum_land_emissions', 'indus_emissions',
+                                                                    'cum_indus_emissions', 'total_emissions',
+                                                                    'cum_total_emissions'])
 
-        for key in emissions_df.keys():
-            emissions_df[key] = 0
-        emissions_df['years'] = years_range
-        emissions_df.loc[year_start, 'gr_sigma'] = init_gr_sigma
-        emissions_df.loc[year_start,
-                         'indus_emissions'] = init_indus_emissions
-        emissions_df.loc[year_start,
-                         'cum_indus_emissions'] = init_cum_indus_emissions
-        self.emissions_df = emissions_df
-        return emissions_df
+        for key in CO2_emissions_df.keys():
+            CO2_emissions_df[key] = 0
+        CO2_emissions_df['years'] = years_range
+        CO2_emissions_df.loc[year_start, 'gr_sigma'] = init_gr_sigma
+        CO2_emissions_df.loc[year_start,
+                             'indus_emissions'] = init_indus_emissions
+        CO2_emissions_df.loc[year_start,
+                             'cum_indus_emissions'] = init_cum_indus_emissions
+        self.CO2_emissions_df = CO2_emissions_df
+        return CO2_emissions_df
+
+    def compute_total_CO2_emissions(self):
+        """
+        Compute total CO2 emissions
+        """
+
+        self.co2_emissions_Gt = pd.DataFrame(
+            {'years': self.CO2_emissions_by_use_sources['years']})
+        self.co2_emissions_Gt.index = self.co2_emissions_Gt['years'].values
+
+        # drop years column in new dataframe
+        co2_emissions_by_use_wo_years = self.CO2_emissions_by_use_sources.drop(
+            'years', axis=1)
+
+        # sum all co2 sources using the wo years dataframe
+        sum_sources = co2_emissions_by_use_wo_years.sum(axis=1)
+
+        # get unique column in serie format
+        limited_by_capture_wo_years = self.co2_emissions_ccus_Gt.drop(
+            'years', axis=1).iloc[:, 0]
+        needed_by_energy_mix_wo_years = self.co2_emissions_needed_by_energy_mix.drop(
+            'years', axis=1).iloc[:, 0]
+        sinks_df = self.CO2_emissions_by_use_sinks.drop(
+            'years', axis=1).iloc[:, 0]
+
+        sum_sinks = limited_by_capture_wo_years + \
+            needed_by_energy_mix_wo_years + sinks_df
+
+        total_CO2_emissions = sum_sources - sum_sinks
+
+        self.co2_emissions['Total CO2 emissions'] = total_CO2_emissions
 
     def compute_sigma(self, year):
         '''
@@ -102,11 +133,11 @@ class CarbonEmissions():
 #                 (self.init_gross_output *
 #                  (1 - self.emissions_control_rate[self.year_start]))
         else:
-            p_gr_sigma = self.emissions_df.at[year -
-                                              time_step, 'gr_sigma']
-            p_sigma = self.emissions_df.at[year - time_step, 'sigma']
+            p_gr_sigma = self.CO2_emissions_df.at[year -
+                                                  time_step, 'gr_sigma']
+            p_sigma = self.CO2_emissions_df.at[year - time_step, 'sigma']
             sigma = p_sigma * np.exp(p_gr_sigma * time_step)
-        self.emissions_df.loc[year, 'sigma'] = sigma
+        self.CO2_emissions_df.loc[year, 'sigma'] = sigma
         return sigma
 
     def compute_change_sigma(self, year):
@@ -122,11 +153,11 @@ class CarbonEmissions():
         if year == year_start:
             pass
         else:
-            p_gr_sigma = self.emissions_df.at[year -
-                                              time_step, 'gr_sigma']
+            p_gr_sigma = self.CO2_emissions_df.at[year -
+                                                  time_step, 'gr_sigma']
             gr_sigma = p_gr_sigma * \
                 ((1.0 + decline_rate_decarbo) ** time_step)
-            self.emissions_df.loc[year, 'gr_sigma'] = gr_sigma
+            self.CO2_emissions_df.loc[year, 'gr_sigma'] = gr_sigma
             return gr_sigma
 
     def compute_land_emissions(self, year):
@@ -134,7 +165,7 @@ class CarbonEmissions():
         Compute emissions from land for t
         '''
         land_emissions = self.CO2_emitted_forest_df['emitted_CO2_evol_cumulative'][year]
-        self.emissions_df.loc[year, 'land_emissions'] = land_emissions
+        self.CO2_emissions_df.loc[year, 'land_emissions'] = land_emissions
         return land_emissions
 
     def compute_cum_land_emissions(self, year):
@@ -146,15 +177,16 @@ class CarbonEmissions():
         time_step = self.time_step
 
         if year == year_start:
-            cum_land_emissions = self.emissions_df.at[year_start, 'land_emissions'] / self.gtco2_to_gtc
+            cum_land_emissions = self.CO2_emissions_df.at[year_start,
+                                                          'land_emissions'] / self.gtco2_to_gtc
         else:
-            p_cum_land_emissions = self.emissions_df.at[year -
-                                                        time_step, 'cum_land_emissions']
-            p_land_emissions = self.emissions_df.at[year, 'land_emissions']
+            p_cum_land_emissions = self.CO2_emissions_df.at[year -
+                                                            time_step, 'cum_land_emissions']
+            p_land_emissions = self.CO2_emissions_df.at[year, 'land_emissions']
             cum_land_emissions = p_cum_land_emissions + \
                 p_land_emissions * np.float(time_step) / self.gtco2_to_gtc
-        self.emissions_df.loc[year,
-                'cum_land_emissions'] = cum_land_emissions
+        self.CO2_emissions_df.loc[year,
+                                  'cum_land_emissions'] = cum_land_emissions
         return cum_land_emissions
 
     def compute_indus_emissions(self, year):
@@ -164,7 +196,7 @@ class CarbonEmissions():
         emissions control rate (t)
         emissions not coming from land change or energy 
         """
-        sigma = self.emissions_df.at[year, 'sigma']
+        sigma = self.CO2_emissions_df.at[year, 'sigma']
         gross_output_ter = self.economics_df.at[year, 'gross_output']
         energy_emis_share = self.energy_emis_share
         share_land_emis = self.land_emis_share
@@ -175,7 +207,7 @@ class CarbonEmissions():
 #             (1.0 - emissions_control_rate)
         indus_emissions = sigma * gross_output_ter * (1 - energy_emis_share - share_land_emis) +\
             energy_emissions
-        self.emissions_df.loc[year, 'indus_emissions'] = indus_emissions
+        self.CO2_emissions_df.loc[year, 'indus_emissions'] = indus_emissions
         return indus_emissions
 
     def compute_cum_indus_emissions(self, year):
@@ -191,23 +223,23 @@ class CarbonEmissions():
         if year == year_start:
             pass
         else:
-            p_cum_indus_emissions = self.emissions_df.at[year -
-                                                         time_step, 'cum_indus_emissions']
-            indus_emissions = self.emissions_df.at[year, 'indus_emissions']
+            p_cum_indus_emissions = self.CO2_emissions_df.at[year -
+                                                             time_step, 'cum_indus_emissions']
+            indus_emissions = self.CO2_emissions_df.at[year, 'indus_emissions']
             cum_indus_emissions = p_cum_indus_emissions + \
                 indus_emissions * np.float(time_step) / self.gtco2_to_gtc
-            self.emissions_df.loc[year,
-                                  'cum_indus_emissions'] = cum_indus_emissions
+            self.CO2_emissions_df.loc[year,
+                                      'cum_indus_emissions'] = cum_indus_emissions
             return cum_indus_emissions
 
     def compute_total_emissions(self, year):
         '''
         Total emissions taking energy emissions as inputs
         '''
-        land_emissions = self.emissions_df.at[year, 'land_emissions']
-        indus_emissions = self.emissions_df.at[year, 'indus_emissions']
+        land_emissions = self.CO2_emissions_df.at[year, 'land_emissions']
+        indus_emissions = self.CO2_emissions_df.at[year, 'indus_emissions']
         total_emissions = indus_emissions + land_emissions
-        self.emissions_df.loc[year, 'total_emissions'] = total_emissions
+        self.CO2_emissions_df.loc[year, 'total_emissions'] = total_emissions
         return total_emissions
 
     def compute_cum_total_emissions(self, year):
@@ -215,12 +247,13 @@ class CarbonEmissions():
         Compute cumulative total emissions at t :
             cum_indus emissions (t) + cum deforetation emissions (t)
         """
-        cum_land_emissions = self.emissions_df.at[year, 'cum_land_emissions']
-        cum_indus_emissions = self.emissions_df.at[year,
-                                                   'cum_indus_emissions']
+        cum_land_emissions = self.CO2_emissions_df.at[year,
+                                                      'cum_land_emissions']
+        cum_indus_emissions = self.CO2_emissions_df.at[year,
+                                                       'cum_indus_emissions']
         cum_total_emissions = cum_land_emissions + cum_indus_emissions
-        self.emissions_df.loc[year,
-                              'cum_total_emissions'] = cum_total_emissions
+        self.CO2_emissions_df.loc[year,
+                                  'cum_total_emissions'] = cum_total_emissions
         return cum_total_emissions
 
     ######### GRADIENTS ########
@@ -249,10 +282,10 @@ class CarbonEmissions():
                         self.time_step) / self.gtco2_to_gtc
 
                     d_cum_indus_emissions_d_gross_output[line, i] = np.float(self.time_step) / self.gtco2_to_gtc *\
-                        self.emissions_df.at[years[i], 'sigma'] *\
+                        self.CO2_emissions_df.at[years[i], 'sigma'] *\
                         (1.0 - self.energy_emis_share - self.land_emis_share)
                 if i == line:  # fill diagonal
-                    d_indus_emissions_d_gross_output[line, i] = self.emissions_df.at[years[line], 'sigma'] \
+                    d_indus_emissions_d_gross_output[line, i] = self.CO2_emissions_df.at[years[line], 'sigma'] \
                         * (1 - self.energy_emis_share - self.land_emis_share)
 
         return d_indus_emissions_d_gross_output, d_cum_indus_emissions_d_gross_output, d_cum_indus_emissions_d_total_CO2_emitted
@@ -290,11 +323,11 @@ class CarbonEmissions():
         return d_cum
 
     def compute_d_CO2_objective(self):
-        total_emissions_values = self.emissions_df['total_emissions'].values
+        total_emissions_values = self.CO2_emissions_df['total_emissions'].values
         delta_years = len(total_emissions_values)
         result = np.zeros(len(total_emissions_values))
 
-#         dn1 = -1.0 * (self.beta * (1 - self.alpha) * (self.emissions_df['total_emissions'].sum() - total_emissions_values[0])) / (
+#         dn1 = -1.0 * (self.beta * (1 - self.alpha) * (self.CO2_emissions_df['total_emissions'].sum() - total_emissions_values[0])) / (
 #             (total_emissions_values[0] ** 2) * delta_years)
 
         dnn = self.beta * (1 - self.alpha) / \
@@ -315,12 +348,35 @@ class CarbonEmissions():
         self.inputs_models = inputs_models
         self.economics_df = self.inputs_models['economics_df']
         self.economics_df.index = self.economics_df['years'].values
-        self.co2_emissions = self.inputs_models['co2_emissions_Gt'].copy(
-            deep=True)
+        self.co2_emissions = pd.DataFrame(
+            {'years': self.economics_df['years']})
         self.co2_emissions.index = self.co2_emissions['years'].values
+
+        self.co2_emissions_ccus = self.inputs_models['co2_emissions_ccus_Gt'].copy(
+            deep=True)
+        self.co2_emissions_ccus.index = self.co2_emissions_ccus['years'].values
+
+        self.CO2_emissions_by_use_sources = self.inputs_models['CO2_emissions_by_use_sources'].copy(
+            deep=True)
+        self.CO2_emissions_by_use_sources.index = self.CO2_emissions_by_use_sources[
+            'years'].values
+        self.CO2_emissions_by_use_sinks = self.inputs_models['CO2_emissions_by_use_sinks'].copy(
+            deep=True)
+        self.CO2_emissions_by_use_sinks.index = self.CO2_emissions_by_use_sinks['years'].values
+
+        self.co2_emissions_needed_by_energy_mix = self.inputs_models['co2_emissions_needed_by_energy_mix'].copy(
+            deep=True)
+        self.co2_emissions_needed_by_energy_mix.index = self.CO2_emissions_by_use_sinks[
+            'years'].values
+
+        self.co2_emissions_ccus_Gt = self.inputs_models['co2_emissions_ccus_Gt'].copy(
+            deep=True)
+        self.co2_emissions_ccus_Gt.index = self.co2_emissions_ccus_Gt[
+            'years'].values
+
         self.CO2_emitted_forest_df = self.inputs_models['CO2_emitted_forest_df']
         self.CO2_emitted_forest_df.index = self.CO2_emitted_forest_df['years'].values
-
+        self.compute_total_CO2_emissions()
         # Iterate over years
         for year in self.years_range:
             self.compute_change_sigma(year)
@@ -332,15 +388,15 @@ class CarbonEmissions():
             self.compute_cum_indus_emissions(year)
             self.compute_cum_total_emissions(year)
 
-        #-- Compute CO2 objetive with alpha trade and beta weight with temperature objective
+        #-- Compute CO2 objective with alpha trade and beta weight with temperature objective
 
         delta_years = len(self.years_range)
-        self.CO2_objective = np.asarray([self.beta * (1 - self.alpha) * self.emissions_df['total_emissions'].sum()
+        self.CO2_objective = np.asarray([self.beta * (1 - self.alpha) * self.CO2_emissions_df['total_emissions'].sum()
                                          / (self.total_emissions_ref * delta_years)])
 
         self.compute_objective_with_exp_min()
 
-        return self.emissions_df, self.CO2_objective
+        return self.CO2_emissions_df, self.CO2_objective
 
     def compute_objective_with_exp_min(self):
         '''

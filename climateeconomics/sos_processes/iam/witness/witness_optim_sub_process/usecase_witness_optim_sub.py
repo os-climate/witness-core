@@ -89,6 +89,7 @@ class Study(ClimateEconomicsStudyManager):
         if self.process_level == 'val':
             dv_arrays_dict[f'{self.witness_uc.study_name}.livestock_usage_factor_array'] = dspace_df[f'livestock_usage_factor_array']['value']
         else:
+            dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_ctrl'] = dspace_df[f'forest_investment_ctrl']['value']
             dv_arrays_dict[f'{self.witness_uc.study_name}.deforested_surface_ctrl'] = dspace_df[f'deforested_surface_ctrl']['value']
             dv_arrays_dict[f'{self.witness_uc.study_name}.red_to_white_meat_ctrl'] = dspace_df[f'red_to_white_meat_ctrl']['value']
             dv_arrays_dict[f'{self.witness_uc.study_name}.meat_to_vegetables_ctrl'] = dspace_df[f'meat_to_vegetables_ctrl']['value']
@@ -97,7 +98,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSPureNewtonMDA'
         #values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
-        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 200
+        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
         # design space

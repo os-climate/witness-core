@@ -149,7 +149,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
     def test_macro_economics_energy_supply_negative_damageproductivity(self):
 
@@ -203,7 +203,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
 
@@ -255,7 +255,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
     def test_macro_economics_analytic_grad_max_damage(self):
 
@@ -309,7 +309,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
 
@@ -368,7 +368,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
     def test_macro_economics_very_high_emissions(self):
 
@@ -430,7 +430,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
     def test_macro_economics_negativeco2_emissions(self):
 
@@ -493,7 +493,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
     def _test_macro_economics_negativeco2_tax(self):
 
@@ -546,7 +546,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
 
 if '__main__' == __name__:

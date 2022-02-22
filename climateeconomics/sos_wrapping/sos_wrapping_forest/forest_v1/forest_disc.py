@@ -28,6 +28,20 @@ from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plo
 class ForestDiscipline(ClimateEcoDiscipline):
     ''' Forest discipline
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Forest',
+        'type': '',
+        'source': '',
+        'validated': '',
+        'validated_by': '',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tree fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
 
@@ -45,8 +59,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                     'namespace': 'ns_forest', },
                Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': initial_emissions,
                                               'namespace': 'ns_forest', },
-               Forest.CO2_PER_HA: {'type': 'float', 'default': 4000, 'unit': 'kgCO2/ha/year', 'namespace': 'ns_forest'},
-               Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'default': 15200, 'unit': '$/ha', 'namespace': 'ns_forest'},
+               Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000, 'namespace': 'ns_forest'},
+               Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 3800, 'namespace': 'ns_forest'},
                Forest.REFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                                  'dataframe_descriptor': {'years': ('float', None, False),
                                                                           'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
@@ -87,7 +101,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         outputs_dict = {
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
-            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'forest_surface_evol', 'forest_surface_evol_cumulative']],
+            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'forest_surface_evol']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
         }
 
@@ -114,22 +128,22 @@ class ForestDiscipline(ClimateEcoDiscipline):
             (Forest.FOREST_SURFACE_DF, 'forest_surface_evol'), (
                 Forest.DEFORESTATION_SURFACE, 'deforested_surface'),
             d_deforestation_surface_d_deforestation_surface)
-        self.set_partial_derivative_for_other_types(
-            (Forest.FOREST_SURFACE_DF,
-             'forest_surface_evol_cumulative'),
-            (Forest.DEFORESTATION_SURFACE, 'deforested_surface'),
-            d_cum_deforestation_d_deforestation_surface)
+#         self.set_partial_derivative_for_other_types(
+#             (Forest.FOREST_SURFACE_DF,
+#              'forest_surface_evol_cumulative'),
+#             (Forest.DEFORESTATION_SURFACE, 'deforested_surface'),
+#             d_cum_deforestation_d_deforestation_surface)
 
         # forest surface vs forest invest
         self.set_partial_derivative_for_other_types(
             (Forest.FOREST_SURFACE_DF, 'forest_surface_evol'), (
                 Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
             d_forest_surface_d_invest)
-        self.set_partial_derivative_for_other_types(
-            (Forest.FOREST_SURFACE_DF,
-             'forest_surface_evol_cumulative'),
-            (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
-            d_cun_forest_surface_d_invest)
+#         self.set_partial_derivative_for_other_types(
+#             (Forest.FOREST_SURFACE_DF,
+#              'forest_surface_evol_cumulative'),
+#             (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+#             d_cun_forest_surface_d_invest)
 
         # d_CO2 d deforestation
         d_CO2_emitted_d_deforestation_surface = self.forest_model.d_CO2_emitted(
@@ -238,9 +252,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
             CO2_captured_cum = CO2_emissions_df['captured_CO2_cumulative']
             CO2_total_cum = CO2_emissions_df['emitted_CO2_evol_cumulative']
 
-
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2 / year]',
-                                                 chart_name='Forest CO2 outcome', stacked_bar=True)
+                                                 chart_name='Yearly forest delta CO2 emissions', stacked_bar=True)
 
             CO2_emitted_series = InstanciatedSeries(
                 years, CO2_emitted_year_by_year.tolist(), 'CO2 emissions', InstanciatedSeries.BAR_DISPLAY)
@@ -256,7 +269,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             # in Gt
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2]',
-                                                 chart_name='Cumulative forest CO2 outcome', stacked_bar=True)
+                                                 chart_name='Forest CO2 emissions', stacked_bar=True)
             CO2_emitted_series = InstanciatedSeries(
                 years, CO2_emitted_cum.tolist(), 'CO2 emissions', InstanciatedSeries.BAR_DISPLAY)
             CO2_captured_series = InstanciatedSeries(

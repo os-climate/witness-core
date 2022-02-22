@@ -32,7 +32,7 @@ class Forest():
     DEFORESTATION_SURFACE = 'deforestation_surface'
     CO2_PER_HA = 'CO2_per_ha'
     INITIAL_CO2_EMISSIONS = 'initial_emissions'
-    REFORESTATION_INVESTMENT = 'reforestation_investment'
+    REFORESTATION_INVESTMENT = 'forest_investment'
     REFORESTATION_COST_PER_HA = 'reforestation_cost_per_ha'
 
     FOREST_SURFACE_DF = 'forest_surface_df'
@@ -117,8 +117,12 @@ class Forest():
             if self.forest_surface_df.loc[element, 'forest_surface_evol_cumulative'] < -self.limit_deforestation_surface / 1000:
                 self.forest_surface_df.loc[element,
                                            'forest_surface_evol'] = 0
+                self.forest_surface_df.loc[element, 'deforested_surface'] = - \
+                    self.forest_surface_df.loc[element, 'forested_surface']
                 self.forest_surface_df.loc[element,
                                            'forest_surface_evol_cumulative'] = -self.limit_deforestation_surface / 1000
+                self.forest_surface_df.loc[element,
+                                           'deforested_surface_cumulative'] = -self.forest_surface_df.loc[element, 'forested_surface_cumulative'] - self.limit_deforestation_surface / 1000
 
         self.CO2_emitted_df['years'] = self.years
         # in Gt of CO2

@@ -25,6 +25,20 @@ import pandas as pd
 class UtilityModelDiscipline(SoSDiscipline):
     "UtilityModel discipline for DICE"
 
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Utility DICE Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-child fa-fw',
+        'version': '',
+    }
     _maturity = 'Research'
     DESC_IN = {
         'year_start': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},

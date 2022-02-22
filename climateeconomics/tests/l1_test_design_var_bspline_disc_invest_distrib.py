@@ -26,7 +26,7 @@ from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonSt
 
 
 class DesignVarDisc(AbstractJacobianUnittest):
-
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     def analytic_grad_entry(self):
         return [
             self.test_derivative
@@ -42,7 +42,8 @@ class DesignVarDisc(AbstractJacobianUnittest):
                    'ns_energy_study': f'{self.name}',
                    'ns_optim': f'{self.name}',
                    'ns_ccs': f'{self.name}',
-                   'ns_invest': f'{self.name}'}
+                   'ns_invest': f'{self.name}',
+                   'ns_agriculture': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -55,14 +56,21 @@ class DesignVarDisc(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         energy_mix_array = list(np.linspace(0.0, 100.0, 8))
-        livestock_usage_factor_array = list(np.linspace(0.0, 100.0, 8))
+        forest_investment_ctrl = list(np.linspace(0.0, 100.0, 8))
+        deforested_surface_ctrl = list(np.linspace(0.0, 20.0, 8))
+        red_to_white_meat_ctrl = list(np.linspace(0.0, 50.0, 8))
+        meat_to_vegetables_ctrl = list(np.linspace(0.0, 60.0, 8))
         years = np.arange(2020, 2101, 1)
         self.energy_list = ['methane', 'liquid_fuel', 'electricity']
         self.ccs_list = [CarbonCapture.name, CarbonStorage.name]
 
-        values_dict = {f'{self.name}.livestock_usage_factor_array': livestock_usage_factor_array,
+        values_dict = {f'{self.name}.forest_investment_ctrl': forest_investment_ctrl,
+                       f'{self.name}.deforested_surface_ctrl': deforested_surface_ctrl,
+                       f'{self.name}.red_to_white_meat_ctrl': red_to_white_meat_ctrl,
+                       f'{self.name}.meat_to_vegetables_ctrl': meat_to_vegetables_ctrl,
                        f'{self.name}.energy_list': self.energy_list,
                        f'{self.name}.ccs_list': self.ccs_list,
+                       f'{self.name}.DesignVar.is_val_level': False,
                        f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBioGas'],
                        f'{self.name}.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
                        f'{self.name}.carbon_capture.technologies_list': ['Capture1', 'Capture2'],
@@ -82,8 +90,14 @@ class DesignVarDisc(AbstractJacobianUnittest):
                 values_dict[invest_mix_name] = energy_mix_array
                 self.input_names.append(invest_mix_name)
 
-        ddict['livestock_usage_factor_array'] = {'value': livestock_usage_factor_array,
-                                                 'lower_bnd': 50.0, 'upper_bnd': 100.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
+        ddict['forest_investment_ctrl'] = {'value': forest_investment_ctrl,
+                                           'lower_bnd': 0.0, 'upper_bnd': 100.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
+        ddict['deforested_surface_ctrl'] = {'value': deforested_surface_ctrl,
+                                            'lower_bnd': 0.0, 'upper_bnd': 20.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
+        ddict['red_to_white_meat_ctrl'] = {'value': red_to_white_meat_ctrl,
+                                           'lower_bnd': 0.0, 'upper_bnd': 50.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
+        ddict['meat_to_vegetables_ctrl'] = {'value': meat_to_vegetables_ctrl,
+                                            'lower_bnd': 0.0, 'upper_bnd': 50.0, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}
 
         dspace_df_columns = ['variable', 'value', 'lower_bnd',
                              'upper_bnd', 'enable_variable', 'activated_elem']
@@ -104,16 +118,19 @@ class DesignVarDisc(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
-#         filterr = disc.get_chart_filter_list()
-#         graph_list = disc.get_post_processing_list(filterr)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        filterr = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filterr)
+        # for graph in graph_list:
+        #    graph.to_plotly().show()
 
     def test_derivative(self):
         disc_techno = self.ee.root_process.sos_disciplines[0]
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         output_names = [f'{self.name}.invest_mix',
-                        f'{self.name}.livestock_usage_factor_df']
+                        f'{self.name}.deforestation_surface',
+                        f'{self.name}.forest_investment',
+                        f'{self.name}.red_to_white_meat',
+                        f'{self.name}.meat_to_vegetables']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_design_var_bspline_invest_distrib_full.pkl', discipline=disc_techno, step=1e-15, inputs=self.input_names,
                             outputs=output_names, derr_approx='complex_step')
