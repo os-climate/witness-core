@@ -25,6 +25,20 @@ import pandas as pd
 class ForestDiscipline(ClimateEcoDiscipline):
     ''' Forest discipline
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Forest Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-tree fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
     years = np.arange(default_year_start, default_year_end + 1, 1)
@@ -176,9 +190,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
             non_captured_CO2 = CO2_emissions_df['emitted_CO2_evol'].values
 
             graph_series = InstanciatedSeries(
-                years, non_captured_CO2.tolist(), 'Forest CO2 outcome', InstanciatedSeries.LINES_DISPLAY)
+                years, non_captured_CO2.tolist(), 'Yearly forest delta CO2 emissions', InstanciatedSeries.LINES_DISPLAY)
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 [Gt / year]',
-                                                 chart_name='Forest CO2 outcome')
+                                                 chart_name='Yearly forest delta CO2 emissions')
             new_chart.add_series(graph_series)
 
             instanciated_charts.append(new_chart)
@@ -186,9 +200,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
             non_captured_CO2_cum = CO2_emissions_df['emitted_CO2_evol_cumulative'].values
 
             graph_series = InstanciatedSeries(
-                years, non_captured_CO2_cum.tolist(), 'Cumulative forest CO2 outcome', InstanciatedSeries.LINES_DISPLAY)
+                years, non_captured_CO2_cum.tolist(), 'Forest CO2 emissions', InstanciatedSeries.LINES_DISPLAY)
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 [Gt]',
-                                                 chart_name='Cumulative forest CO2 outcome')
+                                                 chart_name='Forest CO2 emissions')
             new_chart.add_series(graph_series)
 
             instanciated_charts.append(new_chart)

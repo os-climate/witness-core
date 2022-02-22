@@ -52,7 +52,7 @@ class Design_var(object):
             list_ctrl = ['livestock_usage_factor_array']
         else:
             list_ctrl = ['deforested_surface_ctrl',
-                         'meat_to_vegetables_ctrl', 'red_to_white_meat_ctrl']
+                         'meat_to_vegetables_ctrl', 'red_to_white_meat_ctrl', 'forest_investment_ctrl']
 
         list_ctrl.extend(
             [key for key in inputs_dict if key.endswith('_array_mix')])
@@ -96,9 +96,13 @@ class Design_var(object):
         else:
             deforestation_surface = DataFrame(
                 {'years': years, 'deforested_surface': self.bspline_dict['deforested_surface_ctrl']['eval_t']})
+            forest_investment = DataFrame(
+                {'years': years, 'forest_investment': self.bspline_dict['forest_investment_ctrl']['eval_t']})
+
             self.output_dict['deforestation_surface'] = deforestation_surface
             self.output_dict['red_to_white_meat'] = self.bspline_dict['red_to_white_meat_ctrl']['eval_t']
             self.output_dict['meat_to_vegetables'] = self.bspline_dict['meat_to_vegetables_ctrl']['eval_t']
+            self.output_dict['forest_investment'] = forest_investment
 
         dict_mix = {'years': years}
 

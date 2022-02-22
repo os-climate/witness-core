@@ -52,20 +52,23 @@ class LandUseV1TestCase(unittest.TestCase):
             columns=['years',
                      'total surface (Gha)'])
         self.total_food_land_surface['years'] = years
-        self.total_food_land_surface['total surface (Gha)'] = np.linspace(5, 4, year_range)
+        self.total_food_land_surface['total surface (Gha)'] = np.linspace(
+            5, 4, year_range)
         self.deforested_surface_df = pd.DataFrame(
             index=years,
             columns=['years',
                      'forest_surface_evol'])
         self.deforested_surface_df['years'] = years
-        ###Gha
-        self.deforested_surface_df['forest_surface_evol'] = np.linspace(-0.01, 0, year_range)
+        # Gha
+        self.deforested_surface_df['forest_surface_evol'] = np.linspace(
+            -0.01, 0, year_range)
 
         self.param = {'land_demand_df': self.energy_land_demand_df,
                       'year_start': self.year_start,
                       'year_end': self.year_end,
                       'total_food_land_surface': self.total_food_land_surface,
-                      'deforested_surface_df': self.deforested_surface_df
+                      'forest_surface_df': self.deforested_surface_df,
+                      'land_use_constraint_ref': 0.01
                       }
 
     def test_land_use_v1_model(self):
@@ -76,7 +79,8 @@ class LandUseV1TestCase(unittest.TestCase):
 
         land_use = LandUseV1(self.param)
 
-        land_use.compute(self.energy_land_demand_df, self.total_food_land_surface, self.deforested_surface_df)
+        land_use.compute(self.energy_land_demand_df,
+                         self.total_food_land_surface, self.deforested_surface_df)
 
     def test_land_use_v1_discipline(self):
         ''' 
@@ -89,7 +93,8 @@ class LandUseV1TestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
-                   'ns_land_use': f'{name}.{model_name}'}
+                   'ns_land_use': f'{name}.{model_name}',
+                   'ns_ref': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_v1_disc.LandUseV1Discipline'

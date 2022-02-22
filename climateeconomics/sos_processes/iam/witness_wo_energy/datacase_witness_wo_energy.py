@@ -107,7 +107,7 @@ class DataStudy():
                                                            index=[2017, 2018, 2019])
 
         CO2_emitted_forest = pd.DataFrame()
-        #GtCO2
+        # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest) + 3.21
         CO2_emitted_forest['years'] = years
@@ -194,14 +194,25 @@ class DataStudy():
         list_weight = []
         list_aggr_type = []
         list_ns = []
+        # -------------------------------------------------
+        # CO2 ppm constraints
         list_var.extend(
-            ['rockstrom_limit_constraint'])
-        list_parent.extend([''])
-        list_ns.extend(['ns_functions'])
-        list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([0.0])
+            ['rockstrom_limit_constraint', 'minimum_ppm_constraint'])
+        list_parent.extend(['CO2 ppm', 'CO2 ppm'])
+        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+        list_weight.extend([0.0, -1.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SMAX])
+            [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
+        # -------------------------------------------------
+        # pc_consumption_constraint
+        list_var.append('pc_consumption_constraint')
+        list_parent.append('')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(-1.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -209,4 +220,5 @@ class DataStudy():
         func_df['weight'] = list_weight
         func_df[AGGR_TYPE] = list_aggr_type
         func_df['namespace'] = list_ns
+
         return func_df

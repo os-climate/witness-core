@@ -30,6 +30,20 @@ color_list.extend(plt_color.qualitative.Alphabet)
 
 
 class Design_Var_Discipline(SoSDiscipline):
+
+    # ontology information
+    _ontology_data = {
+        'label': 'WITNESS BSpline Design Variable Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-drafting-compass fa-fw',
+        'version': '',
+    }
     WRITE_XVECT = 'write_xvect'
     LOG_DVAR = 'log_designvar'
 

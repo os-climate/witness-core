@@ -28,6 +28,20 @@ import pandas as pd
 class UraniumDiscipline(SoSDiscipline):
     ''' Discipline intended to get uranium parameters
     '''
+
+    # ontology information
+    _ontology_data = {
+        'label': 'Uranium Resource Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-radiation fa-fw',
+        'version': '',
+    }
     default_year_start = 2020
     default_year_end = 2050
     default_production_start = 1970

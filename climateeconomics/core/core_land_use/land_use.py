@@ -47,6 +47,7 @@ class LandUse():
     HECTARE = 'ha'
 
     LAND_DEMAND_DF = 'land_demand_df'
+    LAND_DEMAND_CCUS_DF = 'land_demand_ccus_df'
     YEAR_START = 'year_start'
     YEAR_END = 'year_end'
     CROP_LAND_USE_PER_CAPITA = 'crop_land_use_per_capita'
