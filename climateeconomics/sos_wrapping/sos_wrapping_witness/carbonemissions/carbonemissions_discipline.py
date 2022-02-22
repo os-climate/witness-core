@@ -106,7 +106,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
           - 'indus_emissions':
                 - economics_df, 'gross_output'
                 - co2_emissions_Gt, 'Total CO2 emissions'
-          -'cum_indus_emissions'
+          - 'cum_indus_emissions'
                 - economics_df, 'gross_output'
                 - co2_emissions_Gt, 'Total CO2 emissions'
           - 'total_emissions',
@@ -190,7 +190,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['carbon emission']
+        chart_list = ['carbon emission', 'sources and sinks']
         #chart_list = ['sectoral energy carbon emissions cumulated']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -251,4 +251,115 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
+        if 'sources and sinks' in chart_list:
+            new_chart = self.get_chart_sources_and_sinks()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
+            new_chart = self.get_chart_sources_and_sinks(detailed=True)
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
         return instanciated_charts
+
+    def get_chart_sources_and_sinks(self, detailed=False):
+
+        CO2_emissions_df = deepcopy(
+            self.get_sosdisc_outputs('CO2_emissions_detail_df'))
+        years = list(CO2_emissions_df.index)
+
+        CO2_emissions_breakdown = pd.DataFrame({'years': years})
+        # Energy emissions
+        #----------------
+        cols_to_sum = []
+        # Get all the sources and put them as columns in df
+        CO2_emissions_by_use_sources = self.get_sosdisc_inputs(
+            'CO2_emissions_by_use_sources')
+        for col in CO2_emissions_by_use_sources.columns:
+            if col != 'years':
+                CO2_emissions_breakdown[col] = CO2_emissions_by_use_sources[col].values
+                cols_to_sum += [col, ]
+        # Sum all the sources columns
+        CO2_emissions_breakdown['category energy sources (Gt)'] = CO2_emissions_breakdown[cols_to_sum].sum(
+            axis=1)
+
+        cols_to_sum = []
+        # Get all the sinks and put them as columns in df
+        CO2_emissions_by_use_sinks = self.get_sosdisc_inputs(
+            'CO2_emissions_by_use_sinks')
+        for col in CO2_emissions_by_use_sinks.columns:
+            if col != 'years':
+                CO2_emissions_breakdown[col] = - \
+                    CO2_emissions_by_use_sinks[col].values
+                cols_to_sum += [col, ]
+        co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs(
+            'co2_emissions_needed_by_energy_mix')
+        for col in co2_emissions_needed_by_energy_mix.columns:
+            if col != 'years':
+                CO2_emissions_breakdown[col] = - \
+                    co2_emissions_needed_by_energy_mix[col].values
+                cols_to_sum += [col, ]
+        co2_emissions_ccus_Gt = self.get_sosdisc_inputs(
+            'co2_emissions_ccus_Gt')
+        for col in co2_emissions_ccus_Gt.columns:
+            if col != 'years':
+                CO2_emissions_breakdown[col] = - \
+                    co2_emissions_ccus_Gt[col].values
+                cols_to_sum += [col, ]
+        # Sum all the sources columns
+        CO2_emissions_breakdown['category energy sinks (Gt)'] = CO2_emissions_breakdown[cols_to_sum].sum(
+            axis=1)
+
+        # Industrial emissions
+        #---------------------
+        # To be replaced by sources and sinks from model
+        cols_to_sum = []
+        # Get all the sources and put them as columns in df
+        sigma = CO2_emissions_df['sigma'].values
+        gross_output_ter = self.get_sosdisc_inputs(
+            'economics_df')['gross_output'].values
+        energy_emis_share = self.get_sosdisc_inputs('energy_emis_share')
+        share_land_emis = self.get_sosdisc_inputs('land_emis_share')
+        indus_emissions = sigma * gross_output_ter * \
+            (1 - energy_emis_share - share_land_emis)
+        CO2_emissions_breakdown['industrial emissions (Gt)'] = indus_emissions
+        # Sum all the sources columns
+        CO2_emissions_breakdown['category industrial sources (Gt)'] = indus_emissions
+
+        # Land use emissions
+        #-----------------
+        # To be replaced by sources and sinks from models (Forest,
+        # Agriculture,...)
+        cols_to_sum = []
+        # Get all the sources and put them as columns in df
+        CO2_emissions_breakdown['land_emissions (Gt)'] = CO2_emissions_df['land_emissions'].values
+        # Sum all the sources columns
+        CO2_emissions_breakdown['category land_use sources (Gt)'] = CO2_emissions_df[
+            'land_emissions'].values
+
+        chart_name = 'CO2 emissions breakdown'
+        if detailed:
+            chart_name = 'CO2 emissions breakdown detailed'
+        new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions [Gt]',
+                                             chart_name=chart_name, stacked_bar=True)
+
+        if detailed:
+            for col in CO2_emissions_breakdown.columns:
+                if 'category' not in col and col != 'years':
+                    legend_title = f'{col}'.replace(
+                        " (Gt)", "")
+                    serie = InstanciatedSeries(
+                        CO2_emissions_breakdown['years'].values.tolist(),
+                        CO2_emissions_breakdown[col].values.tolist(), legend_title, 'bar')
+                    new_chart.series.append(serie)
+        else:
+            for col in CO2_emissions_breakdown.columns:
+                if 'category' in col and col != 'years':
+                    legend_title = f'{col}'.replace(
+                        " (Gt)", "")
+                    serie = InstanciatedSeries(
+                        CO2_emissions_breakdown['years'].values.tolist(),
+                        CO2_emissions_breakdown[col].values.tolist(), legend_title, 'bar')
+                    new_chart.series.append(serie)
+
+        return new_chart
