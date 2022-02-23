@@ -13,23 +13,27 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import csv
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
 '''
-import unittest
-from time import sleep
-from shutil import rmtree
-from pathlib import Path
-from os.path import dirname, join
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as Studycoarse
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
 import cProfile
-import pstats
-from io import StringIO
-import matplotlib.pyplot as plt
 import os
 import platform
+import pstats
+import unittest
+from io import StringIO
+from os.path import dirname, join
+from pathlib import Path
+from shutil import rmtree
+from time import sleep
+
+import matplotlib.pyplot as plt
+
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as Studycoarse
+from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestScatter(unittest.TestCase):
@@ -99,9 +103,9 @@ class TestScatter(unittest.TestCase):
         result = 'ncalls' + result.split('ncalls')[-1]
         result = '\n'.join([','.join(line.rstrip().split(None, 5))
                             for line in result.split('\n')])
-#
+        #
         with open(join(dirname(__file__), f'witness_coarse_perfos{n_processes}.csv'), 'w+') as f:
-            #f = open(result.rsplit('.')[0] + '.csv', 'w')
+            # f = open(result.rsplit('.')[0] + '.csv', 'w')
             f.write(result)
             f.close()
 
@@ -109,22 +113,23 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-            3])
+                                   3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-            3])
+                                 3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-            3])
+                                   3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-            3])
+                                     3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-            3])
+                                   3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-            3])
+                                      3])
 
-        _convert_array_into_new_type = float([line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
-            3])
+        _convert_array_into_new_type = float(
+            [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
+                3])
         print('_convert_array_into_new_type : ', _convert_array_into_new_type)
-        labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
+        labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build', 'Others'
         sizes = [linearize_time, pre_run_mda_time, gauss_seidel_time, execute_time, inversion_time, dres_dvar_time,
                  total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time - gauss_seidel_time]
 
@@ -133,10 +138,11 @@ class TestScatter(unittest.TestCase):
                 total = sum(values)
                 val = pct * total / 100.0
                 return '{p:.2f}%  ({v:.1f}s)'.format(p=pct, v=val)
+
             return my_autopct
 
         fig1, ax1 = plt.subplots()
-        ax1.pie(sizes,  labels=labels, autopct=make_autopct(sizes),
+        ax1.pie(sizes, labels=labels, autopct=make_autopct(sizes),
                 shadow=True, startangle=90)
         # Equal aspect ratio ensures that pie is drawn as a circle.
         ax1.axis('equal')
@@ -153,12 +159,13 @@ class TestScatter(unittest.TestCase):
             #
             os.system(
                 f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
-#             os.system(
-# f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
+            #             os.system(
+            # f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
             os.system(
                 f'git commit -m "Add {fig_name}"')
-#             os.system('git pull')
-#             os.system('git push')
+
+    #             os.system('git pull')
+    #             os.system('git push')
 
     def test_02_witness_perfos_execute_GSNR(self):
 
@@ -206,9 +213,9 @@ class TestScatter(unittest.TestCase):
         result = 'ncalls' + result.split('ncalls')[-1]
         result = '\n'.join([','.join(line.rstrip().split(None, 5))
                             for line in result.split('\n')])
-#
+        #
         with open(join(dirname(__file__), 'witness_perfos.csv'), 'w+') as f:
-            #f = open(result.rsplit('.')[0] + '.csv', 'w')
+            # f = open(result.rsplit('.')[0] + '.csv', 'w')
             f.write(result)
             f.close()
 
@@ -216,22 +223,23 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-            3])
+                                   3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-            3])
+                                 3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-            3])
+                                   3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-            3])
+                                     3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-            3])
+                                   3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-            3])
+                                      3])
 
-        _convert_array_into_new_type = float([line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
-            3])
+        _convert_array_into_new_type = float(
+            [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
+                3])
         print('_convert_array_into_new_type : ', _convert_array_into_new_type)
-        labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
+        labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build', 'Others'
         sizes = [linearize_time, pre_run_mda_time, gauss_seidel_time, execute_time, inversion_time, dres_dvar_time,
                  total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time - gauss_seidel_time]
 
@@ -240,10 +248,11 @@ class TestScatter(unittest.TestCase):
                 total = sum(values)
                 val = pct * total / 100.0
                 return '{p:.2f}%  ({v:.1f}s)'.format(p=pct, v=val)
+
             return my_autopct
 
         fig1, ax1 = plt.subplots()
-        ax1.pie(sizes,  labels=labels, autopct=make_autopct(sizes),
+        ax1.pie(sizes, labels=labels, autopct=make_autopct(sizes),
                 shadow=True, startangle=90)
         # Equal aspect ratio ensures that pie is drawn as a circle.
         ax1.axis('equal')
@@ -259,12 +268,13 @@ class TestScatter(unittest.TestCase):
 
             os.system(
                 f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
-#             os.system(
-# f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
+            #             os.system(
+            # f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
             os.system(
                 f'git commit -m "Add {fig_name}"')
-#             os.system('git pull')
-#             os.system('git push')
+
+    #             os.system('git pull')
+    #             os.system('git push')
 
     def test_03_witness_perfos_execute_PureParallel(self):
 
@@ -292,7 +302,7 @@ class TestScatter(unittest.TestCase):
         for uc_d in values_dict:
             input_dict_to_load.update(uc_d)
 
-        input_dict_to_load[f'{self.name}.n_processes'] = 16
+        input_dict_to_load[f'{self.name}.n_processes'] = 1
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
         input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
         self.ee.load_study_from_input_dict(input_dict_to_load)
@@ -312,9 +322,9 @@ class TestScatter(unittest.TestCase):
         result = 'ncalls' + result.split('ncalls')[-1]
         result = '\n'.join([','.join(line.rstrip().split(None, 5))
                             for line in result.split('\n')])
-#
+        #
         with open(join(dirname(__file__), 'witness_perfos.csv'), 'w+') as f:
-            #f = open(result.rsplit('.')[0] + '.csv', 'w')
+            # f = open(result.rsplit('.')[0] + '.csv', 'w')
             f.write(result)
             f.close()
 
@@ -322,22 +332,23 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-            3])
+                                   3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-            3])
+                                 3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-            3])
+                                   3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-            3])
+                                     3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-            3])
+                                   3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-            3])
+                                      3])
 
-        _convert_array_into_new_type = float([line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
-            3])
+        _convert_array_into_new_type = float(
+            [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
+                3])
         print('_convert_array_into_new_type : ', _convert_array_into_new_type)
-        labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
+        labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build', 'Others'
         sizes = [linearize_time, pre_run_mda_time, gauss_seidel_time, execute_time, inversion_time, dres_dvar_time,
                  total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time - gauss_seidel_time]
 
@@ -346,10 +357,11 @@ class TestScatter(unittest.TestCase):
                 total = sum(values)
                 val = pct * total / 100.0
                 return '{p:.2f}%  ({v:.1f}s)'.format(p=pct, v=val)
+
             return my_autopct
 
         fig1, ax1 = plt.subplots()
-        ax1.pie(sizes,  labels=labels, autopct=make_autopct(sizes),
+        ax1.pie(sizes, labels=labels, autopct=make_autopct(sizes),
                 shadow=True, startangle=90)
         # Equal aspect ratio ensures that pie is drawn as a circle.
         ax1.axis('equal')
@@ -416,9 +428,9 @@ class TestScatter(unittest.TestCase):
             result = 'ncalls' + result.split('ncalls')[-1]
             result = '\n'.join([','.join(line.rstrip().split(None, 5))
                                 for line in result.split('\n')])
-    #
+            #
             with open(join(dirname(__file__), f'witness_coarse_perfos{n_processes}.csv'), 'w+') as f:
-                #f = open(result.rsplit('.')[0] + '.csv', 'w')
+                # f = open(result.rsplit('.')[0] + '.csv', 'w')
                 f.write(result)
                 f.close()
 
@@ -426,23 +438,24 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                3])
+                                       3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                3])
+                                     3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                3])
+                                       3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                3])
+                                         3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                3])
+                                       3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                3])
+                                          3])
 
-            _convert_array_into_new_type = float([line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
-                3])
+            _convert_array_into_new_type = float(
+                [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
+                    3])
             print('_convert_array_into_new_type : ',
                   _convert_array_into_new_type)
-            labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
+            labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build', 'Others'
             sizes = [linearize_time, pre_run_mda_time, gauss_seidel_time, execute_time, inversion_time, dres_dvar_time,
                      total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time - gauss_seidel_time]
 
@@ -451,10 +464,11 @@ class TestScatter(unittest.TestCase):
                     total = sum(values)
                     val = pct * total / 100.0
                     return '{p:.2f}%  ({v:.1f}s)'.format(p=pct, v=val)
+
                 return my_autopct
 
             fig1, ax1 = plt.subplots()
-            ax1.pie(sizes,  labels=labels, autopct=make_autopct(sizes),
+            ax1.pie(sizes, labels=labels, autopct=make_autopct(sizes),
                     shadow=True, startangle=90)
             # Equal aspect ratio ensures that pie is drawn as a circle.
             ax1.axis('equal')
@@ -522,9 +536,9 @@ class TestScatter(unittest.TestCase):
             result = 'ncalls' + result.split('ncalls')[-1]
             result = '\n'.join([','.join(line.rstrip().split(None, 5))
                                 for line in result.split('\n')])
-    #
+            #
             with open(join(dirname(__file__), f'witness_coarse_perfos{n_processes}.csv'), 'w+') as f:
-                #f = open(result.rsplit('.')[0] + '.csv', 'w')
+                # f = open(result.rsplit('.')[0] + '.csv', 'w')
                 f.write(result)
                 f.close()
 
@@ -532,23 +546,24 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                3])
+                                       3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                3])
+                                     3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                3])
+                                       3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                3])
+                                         3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                3])
+                                       3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                3])
+                                          3])
 
-            _convert_array_into_new_type = float([line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
-                3])
+            _convert_array_into_new_type = float(
+                [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
+                    3])
             print('_convert_array_into_new_type : ',
                   _convert_array_into_new_type)
-            labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',  'Others'
+            labels = 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build', 'Others'
             sizes = [linearize_time, pre_run_mda_time, gauss_seidel_time, execute_time, inversion_time, dres_dvar_time,
                      total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time - gauss_seidel_time]
 
@@ -557,10 +572,11 @@ class TestScatter(unittest.TestCase):
                     total = sum(values)
                     val = pct * total / 100.0
                     return '{p:.2f}%  ({v:.1f}s)'.format(p=pct, v=val)
+
                 return my_autopct
 
             fig1, ax1 = plt.subplots()
-            ax1.pie(sizes,  labels=labels, autopct=make_autopct(sizes),
+            ax1.pie(sizes, labels=labels, autopct=make_autopct(sizes),
                     shadow=True, startangle=90)
             # Equal aspect ratio ensures that pie is drawn as a circle.
             ax1.axis('equal')
@@ -598,9 +614,132 @@ class TestScatter(unittest.TestCase):
             os.system('git pull')
             os.system('git push')
 
+    def test_06_witness_perfos_parallel_comparison(self):
+
+        def execute_full_usecase(n_processes):
+
+            self.name = 'Test'
+            self.ee = ExecutionEngine(self.name)
+            repo = 'climateeconomics.sos_processes.iam.witness'
+            builder = self.ee.factory.get_builder_from_process(
+                repo, 'witness')
+
+            self.ee.factory.set_builders_to_coupling_builder(builder)
+            self.ee.configure()
+            usecase = Study(execution_engine=self.ee)
+            usecase.study_name = self.name
+            values_dict = usecase.setup_usecase()
+
+            input_dict_to_load = {}
+
+            for uc_d in values_dict:
+                input_dict_to_load.update(uc_d)
+
+            input_dict_to_load[f'{self.name}.n_processes'] = n_processes
+            input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
+            input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+            self.ee.load_study_from_input_dict(input_dict_to_load)
+            profil = cProfile.Profile()
+            profil.enable()
+            self.ee.execute()
+            profil.disable()
+            result = StringIO()
+            ps = pstats.Stats(profil, stream=result)
+            ps.sort_stats('cumulative')
+            ps.print_stats(1000)
+            result = result.getvalue()
+            # chop the string into a csv-like buffer
+            result = 'ncalls' + result.split('ncalls')[-1]
+            result = '\n'.join([','.join(line.rstrip().split(None, 5))
+                                for line in result.split('\n')])
+
+            lines = result.split('\n')
+            total_time = float(lines[1].split(',')[3])
+            print('total_time : ', total_time)
+            linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
+                                       3])
+            execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
+                                     3])
+            inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
+                                       3])
+            pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
+                                         3])
+            dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
+                                       3])
+            gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
+                                          3])
+
+            _convert_array_into_new_type = float(
+                [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
+                    3])
+            sizes = [linearize_time, pre_run_mda_time, gauss_seidel_time, execute_time, inversion_time, dres_dvar_time,
+                     _convert_array_into_new_type,
+                     total_time - linearize_time - execute_time - inversion_time - dres_dvar_time - pre_run_mda_time - gauss_seidel_time]
+
+            return sizes
+
+        labels = ['', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',
+                  'convert_array_into_new_types', 'Others']
+        n_processes_list = [1, 10, 20]
+        dict_perfo = {}
+
+        for n_core in n_processes_list:
+            performances_list = []
+            for i in range(0, 5):
+                performances_list.append(execute_full_usecase(n_core))
+            dict_perfo[n_core] = [sum(x) / 5 for x in zip(*performances_list)]
+
+            with open(join(dirname(__file__), 'witness_parallel_perfos.csv'), 'w+') as f:
+                writer = csv.writer(f)
+                writer.writerow(labels)
+                for n_core in n_processes_list:
+                    data = [f'with_{n_core}_cores']
+                    data.extend(dict_perfo[n_core])
+                    writer.writerow(data)
+
+        if platform.system() != 'Windows':
+            file_name = 'witness_parallel_perfos.csv'
+            os.system(
+                f'git add ./climateeconomics/tests/utility_tests/{file_name}')
+            os.system(
+                f'git commit -m "Add {file_name}"')
+            os.system('git pull')
+            os.system('git push')
+        print("done")
+
+        # def make_autopct(values):
+        #     def my_autopct(pct):
+        #         total = sum(values)
+        #         val = pct * total / 100.0
+        #         return '{p:.2f}%  ({v:.1f}s)'.format(p=pct, v=val)
+        #
+        #     return my_autopct
+        #
+        # fig1, ax1 = plt.subplots()
+        # ax1.pie(sizes, labels=labels, autopct=make_autopct(sizes),
+        #         shadow=True, startangle=90)
+        # # Equal aspect ratio ensures that pie is drawn as a circle.
+        # ax1.axis('equal')
+        # ax1.set_title(
+        #     f"WITNESS {mda_class} cache with {n_processes} procs, Total time : {total_time} s")
+        #
+        # fig_name = f'WITNESS_{mda_class}_{n_processes}_proc.png'
+        # plt.savefig(
+        #     join(dirname(__file__), fig_name))
+        # if platform.system() == 'Windows':
+        #     plt.show()
+        # else:
+        #
+        #     os.system(
+        #         f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
+        #     os.system(
+        #         f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
+        #     os.system(
+        #         f'git commit -m "Add {fig_name}"')
+        #     os.system('git pull')
+        #     os.system('git push')
+
 
 if '__main__' == __name__:
     cls = TestScatter()
-    cls.test_05_witness_perfos_multiproc()
-#     cls.test_02_witness_perfos_execute_GSNR()
-#     cls.test_03_witness_perfos_execute_PureParallel()
+    cls.test_06_witness_perfos_parallel_comparison()
