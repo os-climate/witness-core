@@ -680,7 +680,7 @@ class TestScatter(unittest.TestCase):
 
         labels = ['', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',
                   'convert_array_into_new_types', 'Others']
-        n_processes_list = [1, 10, 20]
+        n_processes_list = [1, 10, 20, 30]
         dict_perfo = {}
 
         for n_core in n_processes_list:
@@ -689,13 +689,13 @@ class TestScatter(unittest.TestCase):
                 performances_list.append(execute_full_usecase(n_core))
             dict_perfo[n_core] = [sum(x) / 5 for x in zip(*performances_list)]
 
-            with open(join(dirname(__file__), 'witness_parallel_perfos.csv'), 'w+') as f:
-                writer = csv.writer(f)
-                writer.writerow(labels)
-                for n_core in n_processes_list:
-                    data = [f'with_{n_core}_cores']
-                    data.extend(dict_perfo[n_core])
-                    writer.writerow(data)
+        with open(join(dirname(__file__), 'witness_parallel_perfos.csv'), 'w+') as f:
+            writer = csv.writer(f)
+            writer.writerow(labels)
+            for n_core in n_processes_list:
+                data = [f'with_{n_core}_cores']
+                data.extend(dict_perfo[n_core])
+                writer.writerow(data)
 
         if platform.system() != 'Windows':
             file_name = 'witness_parallel_perfos.csv'
