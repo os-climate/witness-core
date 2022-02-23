@@ -67,7 +67,6 @@ class PolicyDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline.pkl', discipline=disc, inputs=[f'{self.name}.CCS_price', f'{self.name}.CO2_damage_price'],
                             outputs=[f'{self.name}.CO2_taxes'], step=1e-15, derr_approx='complex_step')
-        assert 1 == 2
 
     def test_policy_analytic_grad_2(self):
 
