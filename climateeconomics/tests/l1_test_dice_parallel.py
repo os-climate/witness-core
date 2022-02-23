@@ -79,12 +79,42 @@ class DICEParallelTest(unittest.TestCase):
         energy_mean_price = pd.DataFrame(
             {'years': years, 'energy_price': energy_price})
 
+        co2_emissions_ccus_Gt = pd.DataFrame()
+        co2_emissions_ccus_Gt['years'] = energy_supply_df_y["years"]
+        co2_emissions_ccus_Gt['carbon_storage Limited by capture (Gt)'] = 0.02
+
+        CO2_emissions_by_use_sources = pd.DataFrame()
+        CO2_emissions_by_use_sources['years'] = energy_supply_df_y["years"]
+        CO2_emissions_by_use_sources['CO2 from energy mix (Gt)'] = 0.0
+        CO2_emissions_by_use_sources['carbon_capture from energy mix (Gt)'] = 0.0
+        CO2_emissions_by_use_sources['Total CO2 by use (Gt)'] = 20.0
+        CO2_emissions_by_use_sources['Total CO2 from Flue Gas (Gt)'] = 3.2
+
+        CO2_emissions_by_use_sinks = pd.DataFrame()
+        CO2_emissions_by_use_sinks['years'] = energy_supply_df_y["years"]
+        CO2_emissions_by_use_sinks['CO2 removed by energy mix (Gt)'] = 0.0
+
+        co2_emissions_needed_by_energy_mix = pd.DataFrame()
+        co2_emissions_needed_by_energy_mix['years'] = energy_supply_df_y["years"]
+        co2_emissions_needed_by_energy_mix[
+            'carbon_capture needed by energy mix (Gt)'] = 0.0
+        # put manually the index
+        years = np.arange(2020, 2101)
+        co2_emissions_ccus_Gt.index = years
+        CO2_emissions_by_use_sources.index = years
+        CO2_emissions_by_use_sinks.index = years
+        co2_emissions_needed_by_energy_mix.index = years
+
         values_dict[f'{self.name}.energy_production'] = energy_supply_df
         values_dict[f'{self.name}.co2_emissions_Gt'] = co2_emissions_gt
         values_dict[f'{self.name}.energy_mean_price'] = energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
         values_dict[f'{self.name}.sub_mda_class'] = "MDANewtonRaphson"
         values_dict[f'{self.name}.n_processes'] = n_proc
+        values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = co2_emissions_ccus_Gt
+        values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = CO2_emissions_by_use_sources
+        values_dict[f'{self.name}.CO2_emissions_by_use_sinks'] = CO2_emissions_by_use_sinks
+        values_dict[f'{self.name}.co2_emissions_needed_by_energy_mix'] = co2_emissions_needed_by_energy_mix
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -114,6 +144,10 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.CCS_price'] = CCS_price
         values_dict[f'{self.name}.sub_mda_class'] = "MDANewtonRaphson"
         values_dict[f'{self.name}.n_processes'] = n_proc
+        values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = co2_emissions_ccus_Gt
+        values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = CO2_emissions_by_use_sources
+        values_dict[f'{self.name}.CO2_emissions_by_use_sinks'] = CO2_emissions_by_use_sinks
+        values_dict[f'{self.name}.co2_emissions_needed_by_energy_mix'] = co2_emissions_needed_by_energy_mix
 
         self.ee8.load_study_from_input_dict(values_dict)
 
