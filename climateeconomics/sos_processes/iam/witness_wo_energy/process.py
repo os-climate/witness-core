@@ -29,13 +29,16 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def get_builders(self):
 
         ns_scatter = self.ee.study_name
 
         ns_dict = {'ns_witness': ns_scatter,
                    'ns_energy_mix': ns_scatter,
-                   'ns_ref': f'{ns_scatter}.NormalizationReferences'}
+                   'ns_ref': f'{ns_scatter}.NormalizationReferences',
+                   'ns_ccs': ns_scatter,
+                   'ns_energy': ns_scatter}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
