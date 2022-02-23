@@ -57,6 +57,32 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
 
+        years = np.arange(2020, 2101)
+        co2_emissions_ccus_Gt = pd.DataFrame()
+        co2_emissions_ccus_Gt['years'] = years
+        co2_emissions_ccus_Gt['carbon_storage Limited by capture (Gt)'] = 0.02
+
+        CO2_emissions_by_use_sources = pd.DataFrame()
+        CO2_emissions_by_use_sources['years'] = years
+        CO2_emissions_by_use_sources['CO2 from energy mix (Gt)'] = 0.0
+        CO2_emissions_by_use_sources['carbon_capture from energy mix (Gt)'] = 0.0
+        CO2_emissions_by_use_sources['Total CO2 by use (Gt)'] = 20.0
+        CO2_emissions_by_use_sources['Total CO2 from Flue Gas (Gt)'] = 3.2
+
+        CO2_emissions_by_use_sinks = pd.DataFrame()
+        CO2_emissions_by_use_sinks['years'] = years
+        CO2_emissions_by_use_sinks['CO2 removed by energy mix (Gt)'] = 0.0
+
+        co2_emissions_needed_by_energy_mix = pd.DataFrame()
+        co2_emissions_needed_by_energy_mix['years'] = years
+        co2_emissions_needed_by_energy_mix[
+            'carbon_capture needed by energy mix (Gt)'] = 0.0
+        # put manually the index
+        co2_emissions_ccus_Gt.index = years
+        CO2_emissions_by_use_sources.index = years
+        CO2_emissions_by_use_sinks.index = years
+        co2_emissions_needed_by_energy_mix.index = years
+
         values_dict[f'{self.name}.epsilon0'] = 1.0e-6
         values_dict[f'{self.name}.tolerance_linear_solver_MDO'] = 1.0e-12
         values_dict[f'{self.name}.linear_solver_MDA'] = 'GMRES_PETSC'
@@ -67,7 +93,12 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         values_dict[f'{self.name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.name}.tolerance'] = 1.0e-10
         values_dict[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
-
+        values_dict[f'{self.name}.WITNESS_Eval.WITNESS.CCUS.co2_emissions_ccus_Gt'] = co2_emissions_ccus_Gt
+        values_dict[f'{self.name}.WITNESS_Eval.WITNESS.CCUS.CO2_emissions_by_use_sources'] = CO2_emissions_by_use_sources
+        values_dict[f'{self.name}.WITNESS_Eval.WITNESS.CCUS.CO2_emissions_by_use_sinks'] = CO2_emissions_by_use_sinks
+        values_dict[f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.co2_emissions_needed_by_energy_mix'] = co2_emissions_needed_by_energy_mix
+        values_dict[f'{self.name}.WITNESS_Eval.NormalizationReferences.liquid_hydrogen_percentage'] = np.ones(
+            len(years)) / 3
         func_df = values_dict[f'{self.name}.{usecase.coupling_name}.FunctionsManager.function_df']
         constraints = ['CO2_tax_minus_CO2_damage_constraint_df',
                        'methane.demand_violation',
