@@ -8,22 +8,22 @@ The forest model takes the following data as inputs:
 - **year_start**, the first year of the study. Default is 2020.
 - **year_end**, the final year of the study. Default is 2100.
 - **time_step**, the number of year between two data computation. Default is 1.
-- **limit_deforestation_surface**, the maximum surface that can be deforested during the study. Unit is Mha.
-- **deforestation_surface**, forest surface removed by year. Unit is Mha. Default is set to 10Mha per year (2020 value).
+- **limit_deforestation_surface**, the maximum surface in Mha which can be deforested during the study.
+- **deforestation_surface**, forest surface removed by year in Mha. Default is set to 10Mha per year (2020 value).
 - **CO2_per_ha**, the quantity of CO2 captured by 1 hectare of forest during one year. Unit is kgCO2/ha/year. Default value is 4000kgC02/ha/year [^1].
 As forest captures 16 Gt of CO2 per year, reducing forest by 1% results in a deficit of CO2 captured of 160 Mt. The value of 4000kgCO2/year/ha is coherent with these data.
-- **Initial CO2 emissions**, the CO2 emissions at due to deforestation at the first year of the stidy. Unit is MtCO2. Default value is 3210MtCO2 at 2020, which is the value found at [^2].
-- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 3800 $ /ha [^3].
-- **reforestation_investment**, the quantity of money dedicated to reforestation each year. Unit is billions of $.
+- **Initial CO2 emissions**, CO2 emissions in GtCO2 due to deforestation at the first year of the study. Default value is 3.21 GtCO2 at 2020, which is the value found at [^2].
+- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 3800 $/ha [^3].
+- **reforestation_investment**, the quantity of money dedicated to reforestation each year in billions of $.
  
 The outputs of the model are:
 
-- **deforested_surface_df**, giving the evolution of forest surface year by year, and cumulative. Unit is Gha.
-- **CO2_emitted_df**, gives evolution of CO2 captured by forest. Unit is Mt.
+- **forest_surface_df**, giving the evolution of forest surface year by year, and cumulative in Gha.
+- **CO2_emitted_df**, gives evolution of CO2 captured by forest in GtCO2.
 
 ## Evolution of forest surface
 
-The forest evolution is the sum of deforestation and reforestation contribution.
+Forest evolution is the sum of deforestation and reforestation contributions.
 Deforestation is directly the **deforestation_surface** from the inputs.
 Reforestation is calculated by
 $$Reforestation\_surface = Reforestation\_investment / cost\_per\_ha$$
