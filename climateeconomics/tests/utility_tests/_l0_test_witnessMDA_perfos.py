@@ -33,6 +33,7 @@ import matplotlib.pyplot as plt
 
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as Studycoarse
+from climateeconomics.sos_processes.iam.witness.witness_optim_process_independent_invest.usecase_witness_optim import Study as StudyMDO
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -707,11 +708,13 @@ class TestScatter(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         repo = 'climateeconomics.sos_processes.iam.witness'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'witness_coarse')
+            repo, 'witness')
+        # repo, 'witness_optim_process_independent_invest')
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
-        usecase = Studycoarse(execution_engine=self.ee)
+        #usecase = StudyMDO(execution_engine=self.ee)
+        usecase = Study(execution_engine=self.ee)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -720,7 +723,9 @@ class TestScatter(unittest.TestCase):
         for uc_d in values_dict:
             input_dict_to_load.update(uc_d)
 
-        input_dict_to_load[f'{self.name}.n_processes'] = 1
+        input_dict_to_load[f'{self.name}.WITNESS_MDO.max_iter'] = 5
+        input_dict_to_load[f'{self.name}.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 5
+
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
         input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
         self.ee.load_study_from_input_dict(input_dict_to_load)
