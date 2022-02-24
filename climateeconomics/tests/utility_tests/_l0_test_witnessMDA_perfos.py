@@ -680,7 +680,7 @@ class TestScatter(unittest.TestCase):
 
         labels = ['', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',
                   'convert_array_into_new_types', 'Others']
-        n_processes_list = [1, 10, 20]
+        n_processes_list = [1, 10, 20, 30]
         dict_perfo = {}
 
         for n_core in n_processes_list:
@@ -697,47 +697,7 @@ class TestScatter(unittest.TestCase):
                 data.extend(dict_perfo[n_core])
                 writer.writerow(data)
 
-        if platform.system() != 'Windows':
-            file_name = 'witness_parallel_perfos.csv'
-            os.system(
-                f'git add ./climateeconomics/tests/utility_tests/{file_name}')
-            os.system(
-                f'git commit -m "Add {file_name}"')
-            os.system('git pull')
-            os.system('git push')
         print("done")
-
-        # def make_autopct(values):
-        #     def my_autopct(pct):
-        #         total = sum(values)
-        #         val = pct * total / 100.0
-        #         return '{p:.2f}%  ({v:.1f}s)'.format(p=pct, v=val)
-        #
-        #     return my_autopct
-        #
-        # fig1, ax1 = plt.subplots()
-        # ax1.pie(sizes, labels=labels, autopct=make_autopct(sizes),
-        #         shadow=True, startangle=90)
-        # # Equal aspect ratio ensures that pie is drawn as a circle.
-        # ax1.axis('equal')
-        # ax1.set_title(
-        #     f"WITNESS {mda_class} cache with {n_processes} procs, Total time : {total_time} s")
-        #
-        # fig_name = f'WITNESS_{mda_class}_{n_processes}_proc.png'
-        # plt.savefig(
-        #     join(dirname(__file__), fig_name))
-        # if platform.system() == 'Windows':
-        #     plt.show()
-        # else:
-        #
-        #     os.system(
-        #         f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
-        #     os.system(
-        #         f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
-        #     os.system(
-        #         f'git commit -m "Add {fig_name}"')
-        #     os.system('git pull')
-        #     os.system('git push')
 
 
 if '__main__' == __name__:
