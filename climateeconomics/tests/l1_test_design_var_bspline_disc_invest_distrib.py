@@ -61,26 +61,63 @@ class DesignVarDisc(AbstractJacobianUnittest):
         red_to_white_meat_ctrl = list(np.linspace(0.0, 50.0, 8))
         meat_to_vegetables_ctrl = list(np.linspace(0.0, 60.0, 8))
         years = np.arange(2020, 2101, 1)
+
         self.energy_list = ['methane', 'liquid_fuel', 'electricity']
         self.ccs_list = [CarbonCapture.name, CarbonStorage.name]
+        self.dict_technos = {}
+        self.dict_technos['methane'] = ['FossilGas', 'UpgradingBioGas']
+        self.dict_technos['liquid_fuel'] = ['Refinery', 'FischerTropsch']
+        self.dict_technos[CarbonCapture.name] = ['Capture1', 'Capture2']
+        self.dict_technos[CarbonStorage.name] = ['Storage1', 'Storage2']
+        self.dict_technos['electricity'] = ['CoalGen', 'Nuclear', 'SolarPV']
+
+        self.output_descriptor = {}
+
+        self.output_descriptor['forest_investment_ctrl'] = {'out_name': 'forest_investment', 'type': 'dataframe',
+                                                       'key': 'forest_investment', 'namespace_in': 'ns_witness',
+                                                       'namespace_out': 'ns_witness'}
+
+        self.output_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforested_surface', 'type': 'dataframe',
+                                                        'key': 'deforested_surface', 'namespace_in': 'ns_witness',
+                                                        'namespace_out': 'ns_witness'}
+
+        self.output_descriptor['red_to_white_meat_ctrl'] = {'out_name': 'red_to_white_meat', 'type': 'array',
+                                                       'namespace_in': 'ns_witness', 'namespace_out': 'ns_witness'}
+
+        self.output_descriptor['meat_to_vegetables_ctrl'] = {'out_name': 'meat_to_vegetables', 'type': 'array',
+                                                        'namespace_in': 'ns_witness', 'namespace_out': 'ns_witness'}
+
+        for energy in self.energy_list:
+            energy_wo_dot = energy.replace('.', '_')
+            for technology in self.dict_technos[energy]:
+                technology_wo_dot = technology.replace('.', '_')
+                self.output_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix', 'type': 'dataframe', 'key': f'{energy}.{technology}', 'namespace_in': 'ns_energy_mix', 'namespace_out': 'ns_invest'}
+
+        for ccs in self.ccs_list:
+            ccs_wo_dot = ccs.replace('.', '_')
+            for technology in self.dict_technos[ccs]:
+                technology_wo_dot = technology.replace('.', '_')
+                self.output_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix', 'type': 'dataframe', 'key': f'{ccs}.{technology}', 'namespace_in': 'ns_ccs', 'namespace_out': 'ns_invest'}
 
         values_dict = {f'{self.name}.forest_investment_ctrl': forest_investment_ctrl,
                        f'{self.name}.deforested_surface_ctrl': deforested_surface_ctrl,
                        f'{self.name}.red_to_white_meat_ctrl': red_to_white_meat_ctrl,
                        f'{self.name}.meat_to_vegetables_ctrl': meat_to_vegetables_ctrl,
-                       f'{self.name}.energy_list': self.energy_list,
-                       f'{self.name}.ccs_list': self.ccs_list,
-                       f'{self.name}.DesignVar.is_val_level': False,
-                       f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBioGas'],
-                       f'{self.name}.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
-                       f'{self.name}.carbon_capture.technologies_list': ['Capture1', 'Capture2'],
-                       f'{self.name}.carbon_storage.technologies_list': ['Storage1', 'Storage2'],
-                       f'{self.name}.electricity.technologies_list': ['CoalGen', 'Nuclear', 'SolarPV']}
+                       # f'{self.name}.energy_list': self.energy_list,
+                       # f'{self.name}.ccs_list': self.ccs_list,
+                       f'{self.name}.DesignVar.output_descriptor': self.output_descriptor,
+                       # f'{self.name}.DesignVar.is_val_level': False,
+                       # f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBioGas'],
+                       # f'{self.name}.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
+                       # f'{self.name}.carbon_capture.technologies_list': ['Capture1', 'Capture2'],
+                       # f'{self.name}.carbon_storage.technologies_list': ['Storage1', 'Storage2'],
+                       # f'{self.name}.electricity.technologies_list': ['CoalGen', 'Nuclear', 'SolarPV']
+                       }
         self.input_names = []
         ddict = {}
         for energy in self.energy_list + self.ccs_list:
             energy_wo_dot = energy.replace('.', '_')
-            for techno in values_dict[f'{self.name}.{energy}.technologies_list']:
+            for techno in self.dict_technos[energy]:
                 techno_wo_dot = techno.replace('.', '_')
                 invest_mix_name = f'{self.name}.{energy}.{techno}.{energy_wo_dot}_{techno_wo_dot}_array_mix'
                 invest_mix_name_wo = f'{energy_wo_dot}_{techno_wo_dot}_array_mix'

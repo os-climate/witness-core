@@ -51,19 +51,13 @@ class Design_Var_Discipline(SoSDiscipline):
         'year_start': {'type': 'int', 'default': 2020, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'year_end': {'type': 'int', 'default': 2100, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
-        'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study', 'editable': False, 'structuring': True},
-        'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_study',
-                     'possible_values': [CarbonCapture.name, CarbonStorage.name],
-                     'default': [CarbonCapture.name, CarbonStorage.name], 'editable': False, 'structuring': True},
+        'output_descriptor': {'type': 'dict', 'editable': False, 'structuring': True},
         'design_space': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_optim'},
         WRITE_XVECT: {'type': 'bool', 'default': False, 'user_level': 3},
         LOG_DVAR: {'type': 'bool', 'default': False, 'user_level': 3},
-        'is_val_level': {'type': 'bool', 'default': True, 'user_level': 3}
     }
 
     DESC_OUT = {
-        'invest_mix': {'type': 'dataframe', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
-
         'design_space_last_ite': {'type': 'dataframe', 'user_level': 3}
     }
 
@@ -72,67 +66,13 @@ class Design_Var_Discipline(SoSDiscipline):
         dynamic_inputs = {}
         dynamic_outputs = {}
 
-        if 'energy_list' in self._data_in:
-            energy_list = self.get_sosdisc_inputs('energy_list')
-            if energy_list is not None:
-                for energy in energy_list:
-                    energy_wo_dot = energy.replace('.', '_')
+        if 'output_descriptor' in self._data_in:
+            output_descriptor = self.get_sosdisc_inputs('output_descriptor')
+            if output_descriptor:
+                for key in output_descriptor.keys():
+                    dynamic_inputs[key] = {'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': output_descriptor[key]['namespace_in']}
+                    dynamic_outputs[output_descriptor[key]['out_name']] = {'type': output_descriptor[key]['type'], 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': output_descriptor[key]['namespace_out']}
 
-                    dynamic_inputs[f'{energy}.technologies_list'] = {'type': 'string_list',
-                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix', 'structuring': True}
-
-                    if f'{energy}.technologies_list' in self._data_in:
-                        technology_list = self.get_sosdisc_inputs(
-                            f'{energy}.technologies_list')
-
-                        if technology_list is not None:
-                            for techno in technology_list:
-                                techno_wo_dot = techno.replace('.', '_')
-                                dynamic_inputs[f'{energy}.{techno}.{energy_wo_dot}_{techno_wo_dot}_array_mix'] = {
-                                    'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy_mix'}
-        if 'ccs_list' in self._data_in:
-            ccs_list = self.get_sosdisc_inputs('ccs_list')
-            if ccs_list is not None:
-                for ccs_name in ccs_list:
-                    ccs_name_wo_dot = ccs_name.replace('.', '_')
-                    dynamic_inputs[f'{ccs_name}.technologies_list'] = {'type': 'string_list',
-                                                                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs', 'structuring': True}
-
-                    if f'{ccs_name}.technologies_list' in self._data_in:
-                        technology_list = self.get_sosdisc_inputs(
-                            f'{ccs_name}.technologies_list')
-
-                        if technology_list is not None:
-                            for techno in technology_list:
-                                techno_wo_dot = techno.replace('.', '_')
-                                dynamic_inputs[f'{ccs_name}.{techno}.{ccs_name_wo_dot}_{techno_wo_dot}_array_mix'] = {
-                                    'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs'}
-        if 'is_val_level' in self._data_in:
-            val_level = self.get_sosdisc_inputs('is_val_level')
-            if val_level is not None:
-                if val_level:
-                    dynamic_inputs['livestock_usage_factor_array'] = {
-                        'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
-                    dynamic_outputs['livestock_usage_factor_df'] = {
-                        'type': 'dataframe', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
-
-                else:
-                    dynamic_inputs['deforested_surface_ctrl'] = {
-                        'type': 'array', 'unit': 'Mha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
-                    dynamic_inputs['forest_investment_ctrl'] = {
-                        'type': 'array', 'unit': 'G$', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
-                    dynamic_inputs['red_to_white_meat_ctrl'] = {
-                        'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
-                    dynamic_inputs['meat_to_vegetables_ctrl'] = {
-                        'type': 'array', 'unit': '%', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
-                    dynamic_outputs['deforestation_surface'] = {
-                        'type': 'dataframe', 'unit': 'Mha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
-                    dynamic_outputs['forest_investment'] = {
-                        'type': 'dataframe', 'unit': 'G$', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
-                    dynamic_outputs['red_to_white_meat'] = {
-                        'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_agriculture'}
-                    dynamic_outputs['meat_to_vegetables'] = {
-                        'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_agriculture'}
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
         self.iter = 0
@@ -194,38 +134,18 @@ class Design_Var_Discipline(SoSDiscipline):
 
     def compute_sos_jacobian(self):
 
-        inputs_dict = self.get_sosdisc_inputs()
+        output_descriptor = self.get_sosdisc_inputs('output_descriptor')
 
-        for energy in inputs_dict['energy_list']:
-            energy_wo_dot = energy.replace('.', '_')
-            for techno in inputs_dict[f'{energy}.technologies_list']:
-                techno_wo_dot = techno.replace('.', '_')
-                self.set_partial_derivative_for_other_types(
-                    (f'invest_mix', f'{energy}.{techno}'), (
-                        f'{energy}.{techno}.{energy_wo_dot}_{techno_wo_dot}_array_mix',),
-                    self.design.bspline_dict[f'{energy}.{techno}.{energy_wo_dot}_{techno_wo_dot}_array_mix']['b_array'])
-
-        for ccs in inputs_dict['ccs_list']:
-            ccs_wo_dot = ccs.replace('.', '_')
-            for techno in inputs_dict[f'{ccs}.technologies_list']:
-                techno_wo_dot = techno.replace('.', '_')
-                self.set_partial_derivative_for_other_types(
-                    (f'invest_mix',  f'{ccs}.{techno}'), (
-                        f'{ccs}.{techno}.{ccs_wo_dot}_{techno_wo_dot}_array_mix',),
-                    self.design.bspline_dict[f'{ccs}.{techno}.{ccs_wo_dot}_{techno_wo_dot}_array_mix']['b_array'])
-
-        if inputs_dict['is_val_level']:
-            self.set_partial_derivative_for_other_types(
-                (f'livestock_usage_factor_df', 'percentage'), (f'livestock_usage_factor_array',),  self.design.bspline_dict['livestock_usage_factor_array']['b_array'])
-        else:
-            self.set_partial_derivative_for_other_types(
-                (f'deforestation_surface', 'deforested_surface'), (f'deforested_surface_ctrl',),  self.design.bspline_dict['deforested_surface_ctrl']['b_array'])
-            self.set_partial_derivative_for_other_types(
-                (f'forest_investment', 'forest_investment'), (f'forest_investment_ctrl',),  self.design.bspline_dict['forest_investment_ctrl']['b_array'])
-            self.set_partial_derivative('red_to_white_meat', 'red_to_white_meat_ctrl',
-                                        self.design.bspline_dict['red_to_white_meat_ctrl']['b_array'])
-            self.set_partial_derivative('meat_to_vegetables', 'meat_to_vegetables_ctrl',
-                                        self.design.bspline_dict['meat_to_vegetables_ctrl']['b_array'])
+        for key in output_descriptor.keys():
+            out_type = output_descriptor[key]['type']
+            out_name = output_descriptor[key]['out_name']
+            if out_type == 'array':
+                self.set_partial_derivative(out_name, key, self.design.bspline_dict[key]['b_array'])
+            elif out_type == 'dataframe':
+                col_name = output_descriptor[key]['key']
+                self.set_partial_derivative_for_other_types((out_name, col_name), (key,), self.design.bspline_dict[key]['b_array'])
+            else:
+                raise(ValueError('Output type not yet supported'))
 
     def get_chart_filter_list(self):
 
