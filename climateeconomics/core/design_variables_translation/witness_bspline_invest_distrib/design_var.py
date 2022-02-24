@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from numpy import arange
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from sos_trades_core.tools.bspline.bspline import BSpline
 
 import numpy as np
@@ -32,14 +32,8 @@ class Design_var(object):
         self.year_start = inputs_dict['year_start']
         self.year_end = inputs_dict['year_end']
         self.time_step = inputs_dict['time_step']
-
-        self.energy_list = inputs_dict['energy_list']
-        self.ccs_list = inputs_dict['ccs_list']
-        self.is_val_level = inputs_dict['is_val_level']
-        self.technology_dict = {
-            energy: inputs_dict[f'{energy}.technologies_list'] for energy in self.energy_list + self.ccs_list}
+        self.output_descriptor = inputs_dict['output_descriptor']
         self.output_dict = {}
-
         self.bspline_dict = {}
         self.dspace = inputs_dict['design_space']
 
@@ -47,18 +41,10 @@ class Design_var(object):
         '''
         Configure with inputs_dict from the discipline
         '''
+
         self.output_dict = {}
-        if self.is_val_level:
-            list_ctrl = ['livestock_usage_factor_array']
-        else:
-            list_ctrl = ['deforested_surface_ctrl',
-                         'meat_to_vegetables_ctrl', 'red_to_white_meat_ctrl', 'forest_investment_ctrl']
-
-        list_ctrl.extend(
-            [key for key in inputs_dict if key.endswith('_array_mix')])
-
+        list_ctrl = self.output_descriptor.keys()
         years = arange(self.year_start, self.year_end + 1, self.time_step)
-
         list_t_years = np.linspace(0.0, 1.0, len(years))
 
         for full_elem in list_ctrl:
@@ -88,28 +74,24 @@ class Design_var(object):
                     'bspline': bspline, 'eval_t': eval_t, 'b_array': b_array}
         #######
 
-        if self.is_val_level:
-            livestock_usage_factor_df = DataFrame(
-                {'years': years, 'percentage': self.bspline_dict['livestock_usage_factor_array']['eval_t']}, index=years)
-            self.output_dict['livestock_usage_factor_df'] = livestock_usage_factor_df
+        output_dataframes = {}
 
-        else:
-            deforestation_surface = DataFrame(
-                {'years': years, 'deforested_surface': self.bspline_dict['deforested_surface_ctrl']['eval_t']})
-            forest_investment = DataFrame(
-                {'years': years, 'forest_investment': self.bspline_dict['forest_investment_ctrl']['eval_t']})
+        # loop over output_descriptor to build output
+        for key in self.output_descriptor.keys():
+            out_name = self.output_descriptor[key]['out_name']
+            out_type = self.output_descriptor[key]['type']
 
-            self.output_dict['deforestation_surface'] = deforestation_surface
-            self.output_dict['red_to_white_meat'] = self.bspline_dict['red_to_white_meat_ctrl']['eval_t']
-            self.output_dict['meat_to_vegetables'] = self.bspline_dict['meat_to_vegetables_ctrl']['eval_t']
-            self.output_dict['forest_investment'] = forest_investment
+            if out_type == 'array':
+                self.output_dict[out_name] = self.bspline_dict[key]['eval_t']
+            elif out_type == 'dataframe':
+                if self.output_descriptor[key]['out_name'] not in output_dataframes.keys():
+                    # init output dataframes with 'years' index
+                    output_dataframes[out_name] = DataFrame({'years': years}, index=years)
+                col_name = self.output_descriptor[key]['key']
+                output_dataframes[out_name][col_name] = self.bspline_dict[key]['eval_t']
+            else:
+                raise(ValueError('Output type not yet supported'))
 
-        dict_mix = {'years': years}
-
-        for energy in self.energy_list + self.ccs_list:
-            energy_wo_dot = energy.replace('.', '_')
-            dict_mix.update(
-                {f'{energy}.{techno}': self.bspline_dict[f"{energy}.{techno}.{energy_wo_dot}_{techno.replace('.', '_')}_array_mix"]['eval_t'] for techno in self.technology_dict[energy]})
-
-        self.output_dict['invest_mix'] = DataFrame(
-            dict_mix, index=years)
+        # set output dataframes
+        for dataframe in output_dataframes.keys():
+            self.output_dict[dataframe] = output_dataframes[dataframe]
