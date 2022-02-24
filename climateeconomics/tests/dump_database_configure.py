@@ -250,12 +250,6 @@ def dump_json_file_from_dict(dict_to_dump):
     return None
 
 
-def dump_json_file_from_dict(dict_to_dump):
-    with open("all_witness_dev.json", "w") as outfile:
-        json.dump(dict_to_dump, outfile, indent=4)
-    return None
-
-
 def dump_json_files_from_dict(dict_to_dump):
     for discipline in dict_to_dump.keys():
         with open(f'{discipline}.json', "w") as outfile:
