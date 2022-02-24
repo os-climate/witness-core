@@ -70,7 +70,7 @@ class TestScatter(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         repo = 'climateeconomics.sos_processes.iam.witness'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'witness_coarse')
+            repo, 'witness')
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
@@ -113,17 +113,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                   3])
+            3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                 3])
+            3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                   3])
+            3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                     3])
+            3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                   3])
+            3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                      3])
+            3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -160,7 +160,8 @@ class TestScatter(unittest.TestCase):
             os.system(
                 f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
             #             os.system(
-            # f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
+            # f'git add
+            # ./climateeconomics/tests/utility_tests/witness_perfos.csv')
             os.system(
                 f'git commit -m "Add {fig_name}"')
 
@@ -223,17 +224,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                   3])
+            3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                 3])
+            3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                   3])
+            3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                     3])
+            3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                   3])
+            3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                      3])
+            3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -269,7 +270,8 @@ class TestScatter(unittest.TestCase):
             os.system(
                 f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
             #             os.system(
-            # f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
+            # f'git add
+            # ./climateeconomics/tests/utility_tests/witness_perfos.csv')
             os.system(
                 f'git commit -m "Add {fig_name}"')
 
@@ -332,17 +334,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                   3])
+            3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                 3])
+            3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                   3])
+            3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                     3])
+            3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                   3])
+            3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                      3])
+            3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -438,17 +440,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                       3])
+                3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                     3])
+                3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                       3])
+                3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                         3])
+                3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                       3])
+                3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                          3])
+                3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -546,17 +548,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                       3])
+                3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                     3])
+                3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                       3])
+                3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                         3])
+                3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                       3])
+                3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                          3])
+                3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -657,17 +659,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                       3])
+                3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                     3])
+                3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                       3])
+                3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                         3])
+                3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                       3])
+                3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                          3])
+                3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -699,7 +701,46 @@ class TestScatter(unittest.TestCase):
 
         print("done")
 
+    def test_07_witness_memory_perfos(self):
+
+        self.name = 'Test'
+        self.ee = ExecutionEngine(self.name)
+        repo = 'climateeconomics.sos_processes.iam.witness'
+        builder = self.ee.factory.get_builder_from_process(
+            repo, 'witness_coarse')
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.ee.configure()
+        usecase = Studycoarse(execution_engine=self.ee)
+        usecase.study_name = self.name
+        values_dict = usecase.setup_usecase()
+
+        input_dict_to_load = {}
+
+        for uc_d in values_dict:
+            input_dict_to_load.update(uc_d)
+
+        input_dict_to_load[f'{self.name}.n_processes'] = 1
+        input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
+        input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
+        self.ee.load_study_from_input_dict(input_dict_to_load)
+
+        import tracemalloc
+        tracemalloc.start()
+        snapshot1 = tracemalloc.take_snapshot()
+        self.ee.execute()
+        snapshot2 = tracemalloc.take_snapshot()
+        current, peak = tracemalloc.get_traced_memory()
+        print(
+            f"Current memory usage is {current / 10**6}MB; Peak was {peak / 10**6}MB")
+        top_stats = snapshot2.compare_to(snapshot1, 'lineno')
+
+        print("[ Top 10 differences ]")
+        for stat in top_stats[:10]:
+            print(stat)
+        tracemalloc.stop()
+
 
 if '__main__' == __name__:
     cls = TestScatter()
-    cls.test_06_witness_perfos_parallel_comparison()
+    cls.test_07_witness_memory_perfos()
