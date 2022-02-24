@@ -747,4 +747,4 @@ class TestScatter(unittest.TestCase):
 
 if '__main__' == __name__:
     cls = TestScatter()
-    cls.test_01_witness_perfos_execute()
+    cls.test_07_witness_memory_perfos()
