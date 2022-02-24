@@ -264,7 +264,7 @@ class LandUseDiscipline(SoSDiscipline):
                         series_to_add.append(new_series)
 
                 new_chart = TwoAxesInstanciatedChart('years', LandUseDiscipline.AGRICULTURE_FOOD_CHARTS,
-                                                     chart_name=LandUseDiscipline.AGRICULTURE_FOOD_CHARTS, stacked_bar=True)
+                                                     chart_name='Usage of the agriculture surface (Gha)', stacked_bar=True)
                 new_chart.add_series(agriculture_surface_series)
 
                 for serie in series_to_add:
