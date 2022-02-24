@@ -724,7 +724,7 @@ class TestScatter(unittest.TestCase):
             input_dict_to_load.update(uc_d)
 
         input_dict_to_load[f'{self.name}.WITNESS_MDO.max_iter'] = 5
-        input_dict_to_load[f'{self.name}.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 5
+        #input_dict_to_load[f'{self.name}.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 5
 
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
         input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
