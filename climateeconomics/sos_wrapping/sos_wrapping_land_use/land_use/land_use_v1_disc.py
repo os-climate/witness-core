@@ -68,7 +68,7 @@ class LandUseV1Discipline(SoSDiscipline):
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
 
-    AGRICULTURE_CHARTS = 'Agriculture usage (Giga ha)'
+    AGRICULTURE_CHARTS = 'Agriculture surface usage (Giga ha)'
     FOREST_CHARTS = 'Forest usage (Giga ha)'
     AVAILABLE_FOREST_CHARTS = 'Forests surface evolution (Giga ha)'
     AVAILABLE_AGRICULTURE_CHARTS = 'Agriculture surface evolution (Giga ha)'
