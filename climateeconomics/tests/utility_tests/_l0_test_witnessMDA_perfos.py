@@ -680,17 +680,16 @@ class TestScatter(unittest.TestCase):
 
         labels = ['', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',
                   'convert_array_into_new_types', 'Others']
-        #n_processes_list = [1, 10, 20, 30]
-        n_processes_list = [1]
+        n_processes_list = [1, 10, 20, 30]
         dict_perfo = {}
 
         for n_core in n_processes_list:
             performances_list = []
-            for i in range(0, 1):
+            for i in range(0, 5):
                 performances_list.append(execute_full_usecase(n_core))
-            dict_perfo[n_core] = [sum(x) / 1 for x in zip(*performances_list)]
+            dict_perfo[n_core] = [sum(x) / 5 for x in zip(*performances_list)]
 
-        with open(join(dirname(__file__), 'witness_parallel_perfos_2.csv'), 'w+') as f:
+        with open(join(dirname(__file__), 'witness_parallel_perfos.csv'), 'w+') as f:
             writer = csv.writer(f)
             writer.writerow(labels)
             for n_core in n_processes_list:
