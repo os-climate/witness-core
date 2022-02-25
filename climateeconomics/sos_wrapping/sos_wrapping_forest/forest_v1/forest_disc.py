@@ -66,8 +66,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                                           'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                }
-    # cost per ha 12000 $/ha (buy the land + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
-    # 1USD = 0,7360 euro in 2019
 
     DESC_OUT = {
         'CO2_emissions_detail_df': {
