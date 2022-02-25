@@ -708,11 +708,11 @@ class TestScatter(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         repo = 'climateeconomics.sos_processes.iam.witness'
         builder = self.ee.factory.get_builder_from_process(
-            repo, 'witness_optim_process_independent_invest')
+            repo, 'witness')
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
-        usecase = StudyMDO(execution_engine=self.ee)
+        usecase = Study(execution_engine=self.ee)
         #usecase = Study(execution_engine=self.ee)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
