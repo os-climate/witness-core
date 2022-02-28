@@ -57,7 +57,10 @@ $$\beta_i := \sum_{\mathclap{j \in J}} \alpha_{i,j}$$
 We then have one death rate per age category and per year. 
 Having a different GDP from McIsaac (2017)[^1] we could not use values of parameters from the paper so we fitted the death using data detailed in the data section bellow. 
 
-# Life expectancy
+## Working age population
+The working age population is the population in age to work, it is the sum of population in the 15-70 age range.
+
+## Life expectancy
 Life expectancy at birth is the age-averaged proportion of surviving people:
 
 With $d_n$ the death rate at age $n$, and $s_n$ the surviving rate at age $n$ the life expectancy is:
@@ -67,9 +70,6 @@ Surviving rate is calculated as:
 $$s_{n+1} = s_n * (1 - d_n)$$
 
 With $s_0 = 1$
-
-# Working population
-The working population is the sum of population in the 15-70 age range.
 
 ## Data
 For the first year, we initialise the population with data from United Nations[^5]. This data contains the population by 5 years age-range for year 2020.  
