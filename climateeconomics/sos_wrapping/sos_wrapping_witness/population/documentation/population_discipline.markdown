@@ -68,6 +68,9 @@ $$s_{n+1} = s_n * (1 - d_n)$$
 
 With $s_0 = 1$
 
+# Working population
+The working population is the sum of population in the 15-70 age range.
+
 ## Data
 For the first year, we initialise the population with data from United Nations[^5]. This data contains the population by 5 years age-range for year 2020.  
  As we needed data by one year age range we made the assumption that within each age range the population is linearly allocated between each age. For example if there is 5 millions people in the 0-4 age range. We assume that there is 1 million 2 year old people and exactly the same amount of 3 year old.  
