@@ -67,6 +67,7 @@ class Population:
         # First year of the regression of knowledge function
         self.year_reg_know = 1800
 
+
     def create_dataframe(self):
         '''
         Create the dataframe and fill it with values at year_start
@@ -111,7 +112,7 @@ class Population:
                                     columns=['years', 'population_1570'])
         self.working_population_df['years'] = years_range
         self.working_population_df.loc[self.year_start,
-                          'population_1570'] = population_df.iloc[0, 16:72].sum()#will take 15yo to 70yo
+                          'population_1570'] = population_df.loc[self.year_start, '15':'70'].sum()#will take 15yo to 70yo
 
         # BIRTH RATE
         # BASE => calculated from GDB and knowledge level
@@ -334,7 +335,7 @@ class Population:
         output df of number of birth per year
         '''
         # Sum population between 15 and 49year
-        pop_1549 = sum(self.population_df.iloc[year - self.year_start, 16:51])
+        pop_1549 = sum(self.population_df.loc[year, '15':'49'])
         nb_birth = self.birth_rate.at[year, 'birth_rate'] * pop_1549
         self.birth_df.loc[year, 'number_of_birth'] = nb_birth
 
@@ -359,7 +360,7 @@ class Population:
             self.population_df.loc[year,
                                    'total'] = self.population_df.iloc[year - year_start, 1:-1].sum()
             # compute working population from 15yo to 70yo
-            self.working_population_df.loc[year, 'population_1570'] = sum(self.population_df.iloc[year - self.year_start, 16:72])
+            self.working_population_df.loc[year, 'population_1570'] = sum(self.population_df.loc[year, '15':'70'])
 
         return self.population_df
 
@@ -677,8 +678,8 @@ class Population:
             d_pop_d_y = {}
             sum_tot_pop = np.zeros(number_of_values)
             age_list = self.population_df.columns[1:-1]
-            range_age_1549 = np.arange(15, 50)
-            range_age_1570 = np.arange(15, 71)
+            range_age_1549 = np.arange(15, 49+1)# 15 to 49
+            range_age_1570 = np.arange(15, 70+1)# 15 to 70
             d_pop_d_age_prev = {}
             sum_pop_1549 = np.zeros(number_of_values)
             sum_pop_1570 = np.zeros(number_of_values)
