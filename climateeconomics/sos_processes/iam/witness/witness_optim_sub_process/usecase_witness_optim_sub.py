@@ -74,7 +74,7 @@ class Study(ClimateEconomicsStudyManager):
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = dspace_df[f'{energy_wo_dot}_array_mix']['value']
             for technology in self.witness_uc.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 output_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix', 'type': 'dataframe', 'key': f'{energy}.{technology}', 'namespace_in': 'ns_energy_mix', 'namespace_out': 'ns_invest'}
 
         for ccs in self.witness_uc.ccs_list:
@@ -83,7 +83,7 @@ class Study(ClimateEconomicsStudyManager):
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_array_mix']['value']
             for technology in self.witness_uc.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 output_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix', 'type': 'dataframe', 'key': f'{ccs}.{technology}', 'namespace_in': 'ns_ccs', 'namespace_out': 'ns_invest'}
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
@@ -96,7 +96,7 @@ class Study(ClimateEconomicsStudyManager):
             dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_ctrl'] = dspace_df[f'forest_investment_ctrl']['value']
             output_descriptor['forest_investment_ctrl'] = {'out_name': 'forest_investment', 'type': 'dataframe', 'key': 'forest_investment', 'namespace_in': 'ns_witness', 'namespace_out': 'ns_witness'}
             dv_arrays_dict[f'{self.witness_uc.study_name}.deforested_surface_ctrl'] = dspace_df[f'deforested_surface_ctrl']['value']
-            output_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforested_surface', 'type': 'dataframe', 'key': 'deforested_surface', 'namespace_in': 'ns_witness', 'namespace_out': 'ns_witness'}
+            output_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforestation_surface', 'type': 'dataframe', 'key': 'deforested_surface', 'namespace_in': 'ns_witness', 'namespace_out': 'ns_witness'}
             dv_arrays_dict[f'{self.witness_uc.study_name}.red_to_white_meat_ctrl'] = dspace_df[f'red_to_white_meat_ctrl']['value']
             output_descriptor['red_to_white_meat_ctrl'] = {'out_name': 'red_to_white_meat', 'type': 'array', 'namespace_in': 'ns_witness', 'namespace_out': 'ns_witness'}
             dv_arrays_dict[f'{self.witness_uc.study_name}.meat_to_vegetables_ctrl'] = dspace_df[f'meat_to_vegetables_ctrl']['value']

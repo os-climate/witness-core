@@ -21,8 +21,6 @@ from pandas import DataFrame, read_csv
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from energy_models.core.stream_type.carbon_models.carbon_capture import CarbonCapture
-from energy_models.core.stream_type.carbon_models.carbon_storage import CarbonStorage
 
 
 class DesignVarDisc(AbstractJacobianUnittest):
@@ -47,7 +45,7 @@ class DesignVarDisc(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.core.design_variables_translation.witness_bspline_invest_distrib.design_var_disc.Design_Var_Discipline'
+        mod_path = 'climateeconomics.core.design_variables_translation.witness_bspline_invest_distrib.design_var_disc.DesignVarDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -63,12 +61,12 @@ class DesignVarDisc(AbstractJacobianUnittest):
         years = np.arange(2020, 2101, 1)
 
         self.energy_list = ['methane', 'liquid_fuel', 'electricity']
-        self.ccs_list = [CarbonCapture.name, CarbonStorage.name]
+        self.ccs_list = ['carbon_capture', 'carbon_storage']
         self.dict_technos = {}
         self.dict_technos['methane'] = ['FossilGas', 'UpgradingBioGas']
         self.dict_technos['liquid_fuel'] = ['Refinery', 'FischerTropsch']
-        self.dict_technos[CarbonCapture.name] = ['Capture1', 'Capture2']
-        self.dict_technos[CarbonStorage.name] = ['Storage1', 'Storage2']
+        self.dict_technos['carbon_capture'] = ['Capture1', 'Capture2']
+        self.dict_technos[ 'carbon_storage'] = ['Storage1', 'Storage2']
         self.dict_technos['electricity'] = ['CoalGen', 'Nuclear', 'SolarPV']
 
         self.output_descriptor = {}
@@ -77,7 +75,7 @@ class DesignVarDisc(AbstractJacobianUnittest):
                                                        'key': 'forest_investment', 'namespace_in': 'ns_witness',
                                                        'namespace_out': 'ns_witness'}
 
-        self.output_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforested_surface', 'type': 'dataframe',
+        self.output_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforestation_surface', 'type': 'dataframe',
                                                         'key': 'deforested_surface', 'namespace_in': 'ns_witness',
                                                         'namespace_out': 'ns_witness'}
 
@@ -103,15 +101,7 @@ class DesignVarDisc(AbstractJacobianUnittest):
                        f'{self.name}.deforested_surface_ctrl': deforested_surface_ctrl,
                        f'{self.name}.red_to_white_meat_ctrl': red_to_white_meat_ctrl,
                        f'{self.name}.meat_to_vegetables_ctrl': meat_to_vegetables_ctrl,
-                       # f'{self.name}.energy_list': self.energy_list,
-                       # f'{self.name}.ccs_list': self.ccs_list,
                        f'{self.name}.DesignVar.output_descriptor': self.output_descriptor,
-                       # f'{self.name}.DesignVar.is_val_level': False,
-                       # f'{self.name}.methane.technologies_list': ['FossilGas', 'UpgradingBioGas'],
-                       # f'{self.name}.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
-                       # f'{self.name}.carbon_capture.technologies_list': ['Capture1', 'Capture2'],
-                       # f'{self.name}.carbon_storage.technologies_list': ['Storage1', 'Storage2'],
-                       # f'{self.name}.electricity.technologies_list': ['CoalGen', 'Nuclear', 'SolarPV']
                        }
         self.input_names = []
         ddict = {}
@@ -120,7 +110,7 @@ class DesignVarDisc(AbstractJacobianUnittest):
             for techno in self.dict_technos[energy]:
                 techno_wo_dot = techno.replace('.', '_')
                 invest_mix_name = f'{self.name}.{energy}.{techno}.{energy_wo_dot}_{techno_wo_dot}_array_mix'
-                invest_mix_name_wo = f'{energy_wo_dot}_{techno_wo_dot}_array_mix'
+                invest_mix_name_wo = f'{energy}.{techno}.{energy_wo_dot}_{techno_wo_dot}_array_mix'
 
                 ddict[invest_mix_name_wo] = {'value': energy_mix_array,
                                              'lower_bnd': 1, 'upper_bnd': 100, 'enable_variable': True, 'activated_elem': [True, True, True, True, True, True, True]}

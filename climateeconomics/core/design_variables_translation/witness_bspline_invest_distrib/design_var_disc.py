@@ -29,11 +29,11 @@ color_list = plt_color.qualitative.Plotly
 color_list.extend(plt_color.qualitative.Alphabet)
 
 
-class Design_Var_Discipline(SoSDiscipline):
+class DesignVarDiscipline(SoSDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Flat Investments Design Variable Model',
+        'label': 'Design Variable Model',
         'type': 'Test',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -70,6 +70,9 @@ class Design_Var_Discipline(SoSDiscipline):
             output_descriptor = self.get_sosdisc_inputs('output_descriptor')
             if output_descriptor:
                 for key in output_descriptor.keys():
+                    # var_name = self.ee.dm.get_all_namespaces(output_descriptor[key]['out_name'])[0]
+                    # var_type = self.ee.dm.get_data(var_name)['type']
+
                     dynamic_inputs[key] = {'type': 'array', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': output_descriptor[key]['namespace_in']}
                     dynamic_outputs[output_descriptor[key]['out_name']] = {'type': output_descriptor[key]['type'], 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': output_descriptor[key]['namespace_out']}
 
@@ -150,7 +153,7 @@ class Design_Var_Discipline(SoSDiscipline):
     def get_chart_filter_list(self):
 
         chart_filters = []
-        chart_list = ['Others', 'Array mixes']
+        chart_list = ['BSpline']
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
 
@@ -178,25 +181,14 @@ class Design_Var_Discipline(SoSDiscipline):
             init_xvect = True
         else:
             init_xvect = False
-        if 'Others' in charts:
-            list_dv = ['livestock_usage_factor_array','deforested_surface_ctrl','forest_investment_ctrl', \
-                        'red_to_white_meat_ctrl', 'meat_to_vegetables_ctrl']
-            for parameter in list_dv:
+
+        if 'BSpline' in charts:
+            list_dv = self.get_sosdisc_inputs('output_descriptor')
+            for parameter in list_dv.keys():
                 new_chart = self.get_chart_BSpline(
                     parameter, init_xvect)
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
-
-        if 'Array mixes' in charts:
-
-            invest_mix = self.get_sosdisc_outputs('invest_mix')
-            for column in invest_mix:
-                if column != 'years':
-
-                    new_chart = self.get_chart_BSpline_array_mix(
-                        column, init_xvect)
-                    if new_chart is not None:
-                        instanciated_charts.append(new_chart)
 
         return instanciated_charts
 
@@ -210,8 +202,8 @@ class Design_Var_Discipline(SoSDiscipline):
         Output: InstantiatedPlotlyNativeChart
         """
         design_space = self.get_sosdisc_inputs('design_space')
-        if parameter not in design_space['variable'].to_list():
-            return None
+        parameter
+
         ctrl_pts = list(self.get_sosdisc_inputs(parameter))
         starting_pts = list(
             design_space[design_space['variable'] == parameter]['value'].values[0])
@@ -221,17 +213,19 @@ class Design_Var_Discipline(SoSDiscipline):
                 ctrl_pts.insert(i, design_space.loc[design_space['variable']
                                                     == parameter, 'value'].to_list()[0][i])
         eval_pts = None
-        for key in self.get_sosdisc_outputs().keys():
-            if key in parameter or parameter[:-6] in key or parameter[:-15] in key:
-                ## output design var may be a dataframe or array
-                if isinstance(self.get_sosdisc_outputs(key), pd.DataFrame):
-                    for column in self.get_sosdisc_outputs(key).columns:
-                        if column not in ['years', ]:
-                            eval_pts = self.get_sosdisc_outputs(key)[column].values
-                            years = self.get_sosdisc_outputs(key)['years'].values
-                else:
-                    eval_pts = self.get_sosdisc_outputs(key)
-                    years = np.arange(self.get_sosdisc_inputs('year_start'), self.get_sosdisc_inputs('year_end') + 1, 1)
+
+        years = np.arange(self.get_sosdisc_inputs('year_start'), self.get_sosdisc_inputs('year_end') + 1, 1)
+        output_descriptor = self.get_sosdisc_inputs('output_descriptor')
+        out_name = output_descriptor[parameter]['out_name']
+        out_type = output_descriptor[parameter]['type']
+
+        if out_type == 'array':
+            eval_pts = self.get_sosdisc_outputs(out_name)
+
+        elif out_type == 'dataframe':
+            col_name = output_descriptor[parameter]['key']
+            eval_pts = self.get_sosdisc_outputs(out_name)[col_name].values
+
         if eval_pts is None:
             print('eval pts not found in sos_disc_outputs')
             return None
@@ -266,75 +260,4 @@ class Design_Var_Discipline(SoSDiscipline):
                               xaxis_title='years', yaxis_title=f'value of {parameter}')
             new_chart = InstantiatedPlotlyNativeChart(
                 fig, chart_name=chart_name, default_title=True)
-        return new_chart
-
-    def get_chart_BSpline_array_mix(self, column_name, init_xvect=False):
-        """
-        Function to create post-proc for the design variables with display of the control points used to 
-        calculate the B-Splines.
-        The activation/deactivation of control points is accounted for by inserting the values from the design space
-        dataframe into the ctrl_pts if need be (activated_elem==False) and at the appropriate index.
-        Input: parameter (name), parameter values, design_space
-        Output: InstantiatedPlotlyNativeChart
-        """
-        design_space = self.get_sosdisc_inputs('design_space')
-
-        techno_array = column_name.replace('.', '_')
-        design_space_name = f'{techno_array}_array_mix'
-        if design_space_name not in design_space['variable'].to_list():
-            return None
-        inputs_dict = self.get_sosdisc_inputs()
-
-        inputs_dict_keys = list(inputs_dict.keys())
-
-        key_array_mix = [
-            key for key in inputs_dict_keys if key.endswith(design_space_name)]
-        if len(key_array_mix) == 1:
-            key_array_mix = key_array_mix[0]
-        else:
-            return None
-        ctrl_pts = inputs_dict[key_array_mix]
-        starting_pts = list(
-            design_space[design_space['variable'] == design_space_name]['value'].values[0])
-        for i, activation in enumerate(design_space.loc[design_space['variable']
-                                                        == design_space_name, 'activated_elem'].to_list()[0]):
-            if not activation and len(design_space.loc[design_space['variable'] == design_space_name, 'value'].to_list()[0]) > i:
-                ctrl_pts.insert(i, design_space.loc[design_space['variable']
-                                                    == design_space_name, 'value'].to_list()[0][i])
-
-        invest_mix = self.get_sosdisc_outputs('invest_mix')
-
-        eval_pts = invest_mix[column_name].values
-        years = invest_mix['years'].values
-
-        chart_name = f'B-Spline for {design_space_name}'
-        fig = go.Figure()
-        if 'complex' in str(type(ctrl_pts[0])):
-            ctrl_pts = [np.real(value) for value in ctrl_pts]
-        if 'complex' in str(type(eval_pts[0])):
-            eval_pts = [np.real(value) for value in eval_pts]
-        if 'complex' in str(type(starting_pts[0])):
-            starting_pts = [np.real(value) for value in starting_pts]
-        x_ctrl_pts = np.linspace(
-            years[0], years[-1], len(ctrl_pts))
-        marker_dict = dict(size=150 / len(ctrl_pts), line=dict(
-            width=150 / (3 * len(ctrl_pts)), color='DarkSlateGrey'))
-        fig.add_trace(go.Scatter(x=list(x_ctrl_pts),
-                                 y=list(ctrl_pts), name='Poles',
-                                 line=dict(color=color_list[0]),
-                                 mode='markers',
-                                 marker=marker_dict))
-        fig.add_trace(go.Scatter(x=list(years), y=list(eval_pts), name='B-Spline',
-                                 line=dict(color=color_list[0]),))
-        if init_xvect:
-            marker_dict['opacity'] = 0.5
-            fig.add_trace(go.Scatter(x=list(x_ctrl_pts),
-                                     y=list(starting_pts), name='Initial Poles',
-                                     mode='markers',
-                                     line=dict(color=color_list[0]),
-                                     marker=marker_dict))
-        fig.update_layout(title={'text': chart_name, 'x': 0.5, 'y': 1.0, 'xanchor': 'center', 'yanchor': 'top'},
-                          xaxis_title='years', yaxis_title=f'value of {design_space_name}')
-        new_chart = InstantiatedPlotlyNativeChart(
-            fig, chart_name=chart_name, default_title=True)
         return new_chart
