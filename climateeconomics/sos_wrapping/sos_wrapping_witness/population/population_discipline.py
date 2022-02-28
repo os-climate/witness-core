@@ -162,7 +162,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         chart_list = ['World population', 'Population detailed', 'Population detailed year start', 'Population detailed mid year', '15-49 age range birth rate',
                       'knowledge', 'death rate per age range', 'Number of birth and death per year',
                       'Cumulative climate deaths', 'Number of climate death per year',
-                      'Life expectancy evolution', '15-70 age range working population']
+                      'Life expectancy evolution', 'working age population over years']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -228,14 +228,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             new_chart.series.append(new_series)
 
-            new_series2 = InstanciatedSeries(
-                years, list(pop_df['population_1570']), 'working population (15-70 age range)', 'lines', visible_line)
-
-            new_chart.series.append(new_series2)
-
             instanciated_charts.append(new_chart)
 
-        if '15-70 age range working population' in chart_list:
+        if 'working age population over years' in chart_list:
             years = list(pop_df.index)
 
             year_start = years[0]
@@ -244,9 +239,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             min_value, max_value = self.get_greataxisrange(
                 pop_df['population_1570'])
 
-            chart_name = '15-70 age range working population over years'
+            chart_name = 'working age population over years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'working population',
+            new_chart = TwoAxesInstanciatedChart('years', '15-70 age range population',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -256,7 +251,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             ordonate_data = list(pop_df['population_1570'])
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'working population', 'lines', visible_line)
+                years, ordonate_data, 'population', 'lines', visible_line)
 
             new_chart.series.append(new_series)
 
@@ -272,9 +267,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             min_value, max_value = self.get_greataxisrange(
                 birth_rate_df['birth_rate'])
 
-            chart_name = '15-49 age range birth_rate'
+            chart_name = '15-49 age range birth rate'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' birth_rate',
+            new_chart = TwoAxesInstanciatedChart('years', ' birth rate',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
