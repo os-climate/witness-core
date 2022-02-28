@@ -625,11 +625,11 @@ class TestScatter(unittest.TestCase):
             self.ee = ExecutionEngine(self.name)
             repo = 'climateeconomics.sos_processes.iam.witness'
             builder = self.ee.factory.get_builder_from_process(
-                repo, 'witness_coarse')
+                repo, 'witness')
 
             self.ee.factory.set_builders_to_coupling_builder(builder)
             self.ee.configure()
-            usecase = Studycoarse(execution_engine=self.ee)
+            usecase = Study(execution_engine=self.ee)
             usecase.study_name = self.name
             values_dict = usecase.setup_usecase()
 
@@ -693,7 +693,7 @@ class TestScatter(unittest.TestCase):
                 performances_list.append(execute_full_usecase(n_core))
             dict_perfo[n_core] = [sum(x) / 5 for x in zip(*performances_list)]
 
-        with open(join(dirname(__file__), 'witness_coarse_parallel_perfos_multiprocessing.csv'), 'w+') as f:
+        with open(join(dirname(__file__), 'witness_full_parallel_perfos_multiprocessing.csv'), 'w+') as f:
             writer = csv.writer(f)
             writer.writerow(labels)
             for n_core in n_processes_list:
