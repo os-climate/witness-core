@@ -20,7 +20,6 @@ from sos_trades_core.tools.post_processing.post_processing_factory import PostPr
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from climateeconomics.core.design_variables_translation.witness_bspline.design_var_disc import Design_Var_Discipline
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
@@ -33,7 +32,6 @@ EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
 OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
-WRITE_XVECT = Design_Var_Discipline.WRITE_XVECT
 
 
 class Study(ClimateEconomicsStudyManager):
