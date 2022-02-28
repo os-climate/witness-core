@@ -92,6 +92,44 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, inputs=[f'{self.name}.economics_df'], outputs=[
                 f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
 
+    def test_working_population_discipline_analytic_grad_output(self):
+        '''
+        Test gradient population wrt economics_df
+        '''
+        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+                       f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.temperature_df': self.temperature_df
+                       }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
+                            discipline=disc_techno, inputs=[f'{self.name}.economics_df'], outputs=[
+                f'{self.name}.working_population_df'], step=1e-15, derr_approx='complex_step')
+    
+    def test_working_population_discipline_analytic_grad_temp(self):
+        '''
+        Test gradient population wrt economics_df
+        '''
+        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+                       f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.temperature_df': self.temperature_df
+                       }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_temp.pkl',
+                            discipline=disc_techno, inputs=[f'{self.name}.temperature_df'], outputs=[
+                f'{self.name}.working_population_df'], step=1e-15, derr_approx='complex_step')
+
     def test_population_discipline_analytic_grad_temperature(self):
         '''
         Test gradient population wrt temperature_df

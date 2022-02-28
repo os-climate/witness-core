@@ -87,6 +87,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'working_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
+                          'namespace': 'ns_witness'},
         'population_detail_df': {'type': 'dataframe'},
         'birth_rate_df': {'type': 'dataframe'},
         'death_rate_dict': {'type': 'dict'},
@@ -107,7 +109,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
 
         # model execution
-        population_detail_df, birth_rate_df, death_rate_dict, birth_df, death_dict, life_expectancy_df = self.model.compute(
+        population_detail_df, birth_rate_df, death_rate_dict, birth_df, death_dict, life_expectancy_df, working_population_df = self.model.compute(
             in_dict)
 
         population_df = population_detail_df[['years', 'total']]
@@ -116,9 +118,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         # Convert population in billion of people
         population_df['population'] = population_df['population'] / \
             self.model.million
-
+        population_detail_df['population_1570'] = working_population_df['population_1570']
+        working_population_df['population_1570'] = working_population_df['population_1570']/ self.model.million
         # store output data
         out_dict = {"population_df": population_df,
+                    "working_population_df":working_population_df,
                     "population_detail_df": population_detail_df,
                     "birth_rate_df": birth_rate_df,
                     "death_rate_dict": death_rate_dict,
@@ -134,13 +138,19 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         gradiant of coupling variable to compute: 
         """
 
-        d_pop_d_output = self.model.compute_d_pop_d_output()
+        d_pop_d_output, d_working_pop_d_output = self.model.compute_d_pop_d_output()
         self.set_partial_derivative_for_other_types(
             ('population_df', 'population'), ('economics_df', 'output_net_of_d'), d_pop_d_output / self.model.million)
+        self.set_partial_derivative_for_other_types(
+            ('working_population_df', 'population_1570'), ('economics_df', 'output_net_of_d'), d_working_pop_d_output / self.model.million)
 
-        d_pop_d_temp = self.model.compute_d_pop_d_temp()
+
+        d_pop_d_temp, d_working_pop_d_temp = self.model.compute_d_pop_d_temp()
         self.set_partial_derivative_for_other_types(
             ('population_df', 'population'), ('temperature_df', 'temp_atmo'), d_pop_d_temp / self.model.million)
+        self.set_partial_derivative_for_other_types(
+            ('working_population_df', 'population_1570'), ('temperature_df', 'temp_atmo'), d_working_pop_d_temp / self.model.million)
+
 
     def get_chart_filter_list(self):
 
@@ -150,8 +160,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         chart_filters = []
 
         chart_list = ['World population', 'Population detailed', 'Population detailed year start', 'Population detailed mid year', '15-49 age range birth rate',
-                      'knowledge', 'death rate per age range', 'Number of birth and death per year', 'Cumulative climate deaths', 'Number of climate death per year',
-                      'Life expectancy evolution']
+                      'knowledge', 'death rate per age range', 'Number of birth and death per year',
+                      'Cumulative climate deaths', 'Number of climate death per year',
+                      'Life expectancy evolution', '15-70 age range working population']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -214,6 +225,38 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'population', 'lines', visible_line)
+
+            new_chart.series.append(new_series)
+
+            new_series2 = InstanciatedSeries(
+                years, list(pop_df['population_1570']), 'working population (15-70 age range)', 'lines', visible_line)
+
+            new_chart.series.append(new_series2)
+
+            instanciated_charts.append(new_chart)
+
+        if '15-70 age range working population' in chart_list:
+            years = list(pop_df.index)
+
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+
+            min_value, max_value = self.get_greataxisrange(
+                pop_df['population_1570'])
+
+            chart_name = '15-70 age range working population over years'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'working population',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
+                                                 chart_name)
+
+            visible_line = True
+
+            ordonate_data = list(pop_df['population_1570'])
+
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'working population', 'lines', visible_line)
 
             new_chart.series.append(new_series)
 
@@ -450,7 +493,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                 new_chart = TwoAxesInstanciatedChart('age', ' number of people',
                                                      chart_name=chart_name)
 
-                ordonate_data = list(pop_df.iloc[year - year_start, 1:-1])
+                ordonate_data = list(pop_df.iloc[year - year_start, 1:-2])
 
                 new_series = InstanciatedSeries(
                     pop_column, ordonate_data, '', 'bar')
@@ -472,7 +515,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart('age', ' number of people',
                                                  chart_name=chart_name)
 
-            ordonate_data = list(pop_df.iloc[0, 1:-1])
+            ordonate_data = list(pop_df.iloc[0, 1:-2])
 
             new_series = InstanciatedSeries(
                 pop_column, ordonate_data, '', 'bar')
@@ -497,7 +540,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart('age', ' number of people',
                                                  chart_name=chart_name)
 
-            ordonate_data = list(pop_df.iloc[year - year_start, 1:-1])
+            ordonate_data = list(pop_df.iloc[year - year_start, 1:-2])
 
             new_series = InstanciatedSeries(
                 pop_column, ordonate_data, '', 'bar')
