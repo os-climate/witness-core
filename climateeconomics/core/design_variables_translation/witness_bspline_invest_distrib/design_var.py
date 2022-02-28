@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from numpy import arange
-from pandas import DataFrame
+from pandas import DataFrame, Series
 from sos_trades_core.tools.bspline.bspline import BSpline
 
 import numpy as np
@@ -32,14 +32,8 @@ class Design_var(object):
         self.year_start = inputs_dict['year_start']
         self.year_end = inputs_dict['year_end']
         self.time_step = inputs_dict['time_step']
-
-        self.energy_list = inputs_dict['energy_list']
-        self.ccs_list = inputs_dict['ccs_list']
-        self.is_val_level = inputs_dict['is_val_level']
-        self.technology_dict = {
-            energy: inputs_dict[f'{energy}.technologies_list'] for energy in self.energy_list + self.ccs_list}
+        self.output_descriptor = inputs_dict['output_descriptor']
         self.output_dict = {}
-
         self.bspline_dict = {}
         self.dspace = inputs_dict['design_space']
 
@@ -47,27 +41,18 @@ class Design_var(object):
         '''
         Configure with inputs_dict from the discipline
         '''
+
         self.output_dict = {}
-        if self.is_val_level:
-            list_ctrl = ['livestock_usage_factor_array']
-        else:
-            list_ctrl = ['deforested_surface_ctrl',
-                         'meat_to_vegetables_ctrl', 'red_to_white_meat_ctrl', 'forest_investment_ctrl']
-
-        list_ctrl.extend(
-            [key for key in inputs_dict if key.endswith('_array_mix')])
-
+        list_ctrl = self.output_descriptor.keys()
         years = arange(self.year_start, self.year_end + 1, self.time_step)
-
         list_t_years = np.linspace(0.0, 1.0, len(years))
 
-        for full_elem in list_ctrl:
-            elem = full_elem.split('.')[-1]
+        for elem in list_ctrl:
             l_activated = self.dspace.loc[self.dspace[self.VARIABLES]
                                           == elem, self.ACTIVATED_ELEM_LIST].to_list()[0]
             value_dv = self.dspace.loc[self.dspace[self.VARIABLES]
                                        == elem, self.VALUE].to_list()[0]
-            elem_val = inputs_dict[full_elem]
+            elem_val = inputs_dict[elem]
             index_false = None
             if not all(l_activated):
                 index_false = l_activated.index(False)
@@ -75,41 +60,32 @@ class Design_var(object):
                 elem_val.insert(index_false, value_dv[index_false])
                 elem_val = np.asarray(elem_val)
 
-            if len(inputs_dict[full_elem]) == len(years):
-                self.bspline_dict[full_elem] = {
-                    'bspline': None, 'eval_t': inputs_dict[full_elem], 'b_array': np.identity(len(years))}
+            if len(inputs_dict[elem]) == len(years):
+                self.bspline_dict[elem] = {
+                    'bspline': None, 'eval_t': inputs_dict[elem], 'b_array': np.identity(len(years))}
             else:
                 bspline = BSpline(n_poles=len(elem_val))
                 bspline.set_ctrl_pts(elem_val)
                 eval_t, b_array = bspline.eval_list_t(list_t_years)
                 b_array = bspline.update_b_array(b_array, index_false)
 
-                self.bspline_dict[full_elem] = {
+                self.bspline_dict[elem] = {
                     'bspline': bspline, 'eval_t': eval_t, 'b_array': b_array}
         #######
 
-        if self.is_val_level:
-            livestock_usage_factor_df = DataFrame(
-                {'years': years, 'percentage': self.bspline_dict['livestock_usage_factor_array']['eval_t']}, index=years)
-            self.output_dict['livestock_usage_factor_df'] = livestock_usage_factor_df
+        # loop over output_descriptor to build output
+        for key in self.output_descriptor.keys():
+            out_name = self.output_descriptor[key]['out_name']
+            out_type = self.output_descriptor[key]['type']
 
-        else:
-            deforestation_surface = DataFrame(
-                {'years': years, 'deforested_surface': self.bspline_dict['deforested_surface_ctrl']['eval_t']})
-            forest_investment = DataFrame(
-                {'years': years, 'forest_investment': self.bspline_dict['forest_investment_ctrl']['eval_t']})
+            if out_type == 'array':
+                self.output_dict[out_name] = self.bspline_dict[key]['eval_t']
+            elif out_type == 'dataframe':
+                if self.output_descriptor[key]['out_name'] not in self.output_dict.keys():
+                    # init output dataframes with 'years' index
+                    self.output_dict[out_name] = DataFrame({'years': years}, index=years)
 
-            self.output_dict['deforestation_surface'] = deforestation_surface
-            self.output_dict['red_to_white_meat'] = self.bspline_dict['red_to_white_meat_ctrl']['eval_t']
-            self.output_dict['meat_to_vegetables'] = self.bspline_dict['meat_to_vegetables_ctrl']['eval_t']
-            self.output_dict['forest_investment'] = forest_investment
-
-        dict_mix = {'years': years}
-
-        for energy in self.energy_list + self.ccs_list:
-            energy_wo_dot = energy.replace('.', '_')
-            dict_mix.update(
-                {f'{energy}.{techno}': self.bspline_dict[f"{energy}.{techno}.{energy_wo_dot}_{techno.replace('.', '_')}_array_mix"]['eval_t'] for techno in self.technology_dict[energy]})
-
-        self.output_dict['invest_mix'] = DataFrame(
-            dict_mix, index=years)
+                col_name = self.output_descriptor[key]['key']
+                self.output_dict[out_name][col_name] = self.bspline_dict[key]['eval_t']
+            else:
+                raise(ValueError('Output type not yet supported'))
