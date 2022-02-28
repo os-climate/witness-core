@@ -30,6 +30,7 @@ class Population:
         Constructor
         '''
         self.population_df = None
+        self.working_population_df = None
         self.birth_rate = None
         self.death_rate_df = None
         self.set_data(inputs)
@@ -104,6 +105,13 @@ class Population:
 
         column_list = self.age_list.copy()
         column_list.insert(0, 'years')
+
+        # WORKING POULATION
+        self.working_population_df = DataFrame(index=years_range,
+                                    columns=['years', 'population_1570'])
+        self.working_population_df['years'] = years_range
+        self.working_population_df.loc[self.year_start,
+                          'population_1570'] = population_df.iloc[0, 16:72].sum()#will take 15yo to 70yo
 
         # BIRTH RATE
         # BASE => calculated from GDB and knowledge level
@@ -325,8 +333,8 @@ class Population:
                 population df 
         output df of number of birth per year
         '''
-        # Sum population between 15 and 49year. 3 is 15-19 and 9 is 45-49
-        pop_1549 = sum(self.population_df.iloc[year - self.year_start, 15:49])
+        # Sum population between 15 and 49year
+        pop_1549 = sum(self.population_df.iloc[year - self.year_start, 16:51])
         nb_birth = self.birth_rate.at[year, 'birth_rate'] * pop_1549
         self.birth_df.loc[year, 'number_of_birth'] = nb_birth
 
@@ -350,8 +358,11 @@ class Population:
             self.population_df.loc[year, '100+'] += old_not_dead
             self.population_df.loc[year,
                                    'total'] = self.population_df.iloc[year - year_start, 1:-1].sum()
+            # compute working population from 15yo to 70yo
+            self.working_population_df.loc[year, 'population_1570'] = sum(self.population_df.iloc[year - self.year_start, 16:72])
 
         return self.population_df
+
 
     def compute_life_expectancy(self, year):
         """
@@ -415,7 +426,7 @@ class Population:
 
         return self.population_df.fillna(0.0), self.birth_rate.fillna(0.0), self.death_rate_dict, \
             self.birth_df.fillna(
-                0.0), self.death_dict, self.life_expectancy_df.fillna(0.0)
+                0.0), self.death_dict, self.life_expectancy_df.fillna(0.0), self.working_population_df.fillna(0.0)
 
     # GRADIENTS OF POPULATION WTR GDP
     def compute_d_pop_d_output(self):
@@ -425,6 +436,7 @@ class Population:
 
         # derivative of population of the current year for each age
         d_pop_d_output = {}
+        d_working_pop_d_output = np.zeros((nb_years, nb_years))
         d_pop_tot_d_output = np.zeros((nb_years, nb_years))
         d_birthrate_d_output = np.zeros((nb_years, nb_years))
         d_birth_d_output = np.zeros((nb_years, nb_years))
@@ -449,12 +461,13 @@ class Population:
 
                 d_death_d_output[year] = self.d_death_d_generic(year, d_base_deathrate_d_output,
                                                                 d_death_rate_climate_d_output, d_pop_d_output)
-                d_pop_d_output, d_pop_1549_d_output, d_pop_tot_d_output = self.d_poptotal_generic(year, d_pop_d_output,
+                d_pop_d_output, d_pop_1549_d_output, d_pop_tot_d_output, d_working_pop_d_output = self.d_poptotal_generic(year, d_pop_d_output,
                                                                                                   d_death_d_output,
                                                                                                   d_birth_d_output,
                                                                                                   d_pop_1549_d_output,
-                                                                                                  d_pop_tot_d_output)
-        return d_pop_tot_d_output
+                                                                                                  d_pop_tot_d_output,
+                                                                                                  d_working_pop_d_output)
+        return d_pop_tot_d_output, d_working_pop_d_output
 
     def d_birthrate_d_output(self, year, d_pop_tot_d_output):
         """ Compute the derivative of birth rate wrt output
@@ -506,7 +519,7 @@ class Population:
         idty = np.zeros(nb_years)
         idty[iyear] = 1
         d_birth_d_output = np.zeros((nb_years, nb_years))
-        pop_1549 = sum(self.population_df.iloc[iyear, 15:49])
+        pop_1549 = sum(self.population_df.iloc[iyear, 16:51])
         d_pop_1549 = d_pop_1549_d_output[iyear]
 
         br = self.birth_rate.at[year, 'birth_rate']
@@ -648,7 +661,7 @@ class Population:
         return d_death
 
     def d_poptotal_generic(self, year, d_pop, d_death, d_birth, d_pop_1549,
-                           d_total_pop):
+                           d_total_pop, d_working_pop):
         """
         Compute derivative of column total of pop df wrt output
         """
@@ -664,9 +677,11 @@ class Population:
             d_pop_d_y = {}
             sum_tot_pop = np.zeros(number_of_values)
             age_list = self.population_df.columns[1:-1]
-            range_age_1549 = np.arange(14, 48)
+            range_age_1549 = np.arange(15, 50)
+            range_age_1570 = np.arange(15, 71)
             d_pop_d_age_prev = {}
             sum_pop_1549 = np.zeros(number_of_values)
+            sum_pop_1570 = np.zeros(number_of_values)
 
             for i in range(0, len(age_list)):
                 # compute population of previous year: population - nb_death =>
@@ -689,6 +704,8 @@ class Population:
                 sum_tot_pop += d_pop_d_y[age_list[i]]
                 if i in range_age_1549:
                     sum_pop_1549 += d_pop_d_y[age_list[i]]
+                if i in range_age_1570:
+                    sum_pop_1570 += d_pop_d_y[age_list[i]]
 
             # add old not dead at year before at 100+ this year
             d_old_not_dead = d_pop_d_age_prev[age_list[-1]]
@@ -697,9 +714,10 @@ class Population:
 
             d_pop[year + 1] = d_pop_d_y
             d_pop_1549[iyear + 1] = sum_pop_1549
+            d_working_pop[iyear + 1] = sum_pop_1570
             d_total_pop[iyear + 1] = sum_tot_pop
 
-        return d_pop, d_pop_1549, d_total_pop
+        return d_pop, d_pop_1549, d_total_pop, d_working_pop
 
     # WRT TEMPERATURE
     def compute_d_pop_d_temp(self):
@@ -709,6 +727,7 @@ class Population:
 
         # derivative of population of the current year for each age
         d_pop_d_temp = {}
+        d_working_pop_d_temp = np.zeros((nb_years, nb_years))
         d_pop_tot_d_temp = np.zeros((nb_years, nb_years))
         d_birthrate_d_temp = np.zeros((nb_years, nb_years))
         d_birth_d_temp = np.zeros((nb_years, nb_years))
@@ -733,12 +752,13 @@ class Population:
 
                 d_death_d_temp[year] = self.d_death_d_generic(
                     year, d_base_death_rate, d_climate_death_rate, d_pop_d_temp)
-                d_pop_d_temp, d_pop_1549_d_temp, d_pop_tot_d_temp = self.d_poptotal_generic(year, d_pop_d_temp,
+                d_pop_d_temp, d_pop_1549_d_temp, d_pop_tot_d_temp, d_working_pop_d_temp = self.d_poptotal_generic(year, d_pop_d_temp,
                                                                                             d_death_d_temp,
                                                                                             d_birth_d_temp,
                                                                                             d_pop_1549_d_temp,
-                                                                                            d_pop_tot_d_temp)
-        return d_pop_tot_d_temp
+                                                                                            d_pop_tot_d_temp,
+                                                                                            d_working_pop_d_temp)
+        return d_pop_tot_d_temp, d_working_pop_d_temp
 
     def d_birthrate_d_temp(self, year, d_pop_tot_d_temp):
         """ Compute the derivative of birth rate wrt temp
