@@ -42,7 +42,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'climateeconomics.sos_processes.iam.witness', 'witness',
             techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, process_level=self.process_level)
         # design variables builder
-        design_var_path = 'sostrades-core.sos_trades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
+        design_var_path = 'sos_trades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
         design_var_builder = self.ee.factory.get_builder_from_module(
             f'{designvariable_name}', design_var_path)
         chain_builders.append(design_var_builder)
