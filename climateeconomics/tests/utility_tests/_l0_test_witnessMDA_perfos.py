@@ -693,7 +693,7 @@ class TestScatter(unittest.TestCase):
                 performances_list.append(execute_full_usecase(n_core))
             dict_perfo[n_core] = [sum(x) / 5 for x in zip(*performances_list)]
 
-        with open(join(dirname(__file__), 'witness_full_parallel_perfos_multiprocessing.csv'), 'w+') as f:
+        with open(join(dirname(__file__), 'witness_full_parallel_perfos_multiprocessing_and_threading.csv'), 'w+') as f:
             writer = csv.writer(f)
             writer.writerow(labels)
             for n_core in n_processes_list:
