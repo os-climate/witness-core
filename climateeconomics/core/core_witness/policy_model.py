@@ -38,7 +38,7 @@ class PolicyModel():
         """
         self.CO2_damage_price = param['CO2_damage_price']
         self.CCS_price = param['CCS_price']
-        self.CO2_tax['years'] = self.CO2_damage_price['years']
+        self.CO2_tax['years'] = self.CO2_damage_price['years'].values
         CO2_damage_price_array = self.CO2_damage_price['CO2_damage_price'].values
         CCS_price_array = self.CCS_price['ccs_price_per_tCO2'].values
         self.CO2_tax['CO2_tax'] = smooth_maximum_vect(
@@ -48,7 +48,7 @@ class PolicyModel():
         """
         compute dCO2_tax/dCO2_damage and dCO2_tax/dCCS_price
         """
-        self.CO2_tax['years'] = self.CO2_damage_price['years']
+        self.CO2_tax['years'] = self.CO2_damage_price['years'].values
         CO2_damage_price_array = self.CO2_damage_price['CO2_damage_price'].values
         CCS_price_array = self.CCS_price['ccs_price_per_tCO2'].values
         dsmooth = get_dsmooth_dvariable_vect(
