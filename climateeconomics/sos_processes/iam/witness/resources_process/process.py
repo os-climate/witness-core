@@ -26,6 +26,7 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def get_builders(self):
 
         ns_scatter = self.ee.study_name + '.All_resources'
