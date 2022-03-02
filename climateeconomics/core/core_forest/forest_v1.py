@@ -94,11 +94,11 @@ class Forest():
         # forest surface is in Gha, deforestation_surface is in Mha,
         # deforested_surface is in Gha
         self.forest_surface_df['deforested_surface'] = - \
-            self.deforestation_surface['deforested_surface'] / 1000
+            self.deforestation_surface['deforested_surface'].values / 1000
 
         # forested surface
         # invest in G$, coest_per_ha in $/ha --> Gha
-        self.forest_surface_df['forested_surface'] = self.forest_investment['forest_investment'] / self.cost_per_ha
+        self.forest_surface_df['forested_surface'] = self.forest_investment['forest_investment'].values / self.cost_per_ha
 
         # total
         self.forest_surface_df['forest_surface_evol'] = self.forest_surface_df['forested_surface'] + \
