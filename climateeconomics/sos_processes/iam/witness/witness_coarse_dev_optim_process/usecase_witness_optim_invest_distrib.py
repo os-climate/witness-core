@@ -119,12 +119,16 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
                              f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False}
+
+        #---- NORMALIZATION REFERENCES -> Specific to each optim usecase
+        ref_value_dict = {f'{self.witness_uc.witness_uc.study_name}.NormalizationReferences.land_use_constraint_ref': 0.1}
+        
 # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
 # True}
 
         #print("Design space dimension is ", dspace_size)
 
-        return [values_dict] + [optim_values_dict]
+        return [values_dict] + [optim_values_dict] + [ref_value_dict]
 
 
 if '__main__' == __name__:
