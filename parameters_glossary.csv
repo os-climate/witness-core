@@ -118,7 +118,7 @@ electricity_SolarThermal_array_mix,Electricity SolarThermal array mix,%,Mix data
 electricity_WindOffshore_array_mix,Electricity WindOffshore array mix,%,Mix data concerning WindOffshore.,,
 electricity_WindOnshore_array_mix,Electricity WindOnshore array mix,%,Mix data concerning WindOnshore.,,
 emissions_control_rate,Emissions control rate,,Fraction of emissions that are reduced or controlled by a climate change policy,http://webdice.rdcep.org/glossary/emissions_control_rate,ABATAA - mass
-emissions_df,Emissions_df,,Data concerning CO2 emission.,,
+emissions_df,Emissions data,,Data concerning CO2 emission.,,
 energy_emis_share,CO2 emissions from energy usage share,,Share of C02 emissions from energy usage.,,ADBBAA - active energy
 energy_factor,Energy factor,,Parameter of WITNESS production function: value by which we multiply the energy supply in the production function. ,,
 energy_investment,Energy Investment by year,G$,Dataframe going from macroeconomics to energy mix for MDA.,,
@@ -176,7 +176,7 @@ initial_raw_energy_price,Initial Raw Energy Price,$/MWh,Initial Raw energy price
 invest_ccs_mix,Invest ccs mix,,Investment in the CCS mix.,,
 invest_energy_mix,Energy Mix Investment Coefficients,,Coefficients of energy mix investments (not normalized) to distribute the total investments.,,
 invest_mix,Investment mix,,"For each year, give the weight of the investment in each concerned sector.",,
-invest_norm,Invest_norm,,Normalised investment.,,
+invest_norm,Invest norm,,Normalised investment.,,
 invest_objective,Invest objective,,"Value of the investment objective. Smaller the value is, better the objective is accomplished.",,
 is_val_level,Is val level,,On/off for val level parameter.,,
 kg_to_kcal_dict,Kcal per kg,kcal/kg,Gives the average amount of kcal for 1kg of food. Each column represent a differents type of food.,,
