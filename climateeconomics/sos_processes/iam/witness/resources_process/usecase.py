@@ -24,6 +24,8 @@ import numpy as np
 from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -95,14 +97,24 @@ class Study(ClimateEconomicsStudyManager):
         setup_data_list.append(uranium_input)
 
         # ALL_RESOURCE
+        modeled_resources = AllResourceModel.RESOURCE_LIST
+        non_modeled_resource_price = pd.DataFrame({'years': years})
+        resources_CO2_emissions = pd.DataFrame({'years': years})
+        for resource in ResourceGlossary.GlossaryDict.values():
+            if resource['name'] not in modeled_resources:
+                non_modeled_resource_price[resource['name']
+                                           ] = resource['price']
+            resources_CO2_emissions[resource['name']
+                                    ] = resource['CO2_emissions']
+        non_modeled_resource_price.index = non_modeled_resource_price['years']
+        resources_CO2_emissions.index = resources_CO2_emissions['years']
+        resource_input[self.study_name + self.all_resource_name +
+                       '.non_modeled_resource_price'] = non_modeled_resource_price
+        resource_input[self.study_name + self.all_resource_name +
+                       '.resources_CO2_emissions'] = resources_CO2_emissions
+        setup_data_list.append(resource_input)
         data_dir_resource = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
-        Non_modeled_resource_price = pd.read_csv(
-            join(data_dir_resource, 'resource_data_price.csv'))
-        Non_modeled_resource_price.index = Non_modeled_resource_price['years']
-        resource_input[self.study_name + self.all_resource_name +
-                       '.non_modeled_resource_price'] = Non_modeled_resource_price
-        setup_data_list.append(resource_input)
         resource_demand = pd.read_csv(
             join(data_dir_resource, 'all_demand_from_energy_mix.csv'))
 
