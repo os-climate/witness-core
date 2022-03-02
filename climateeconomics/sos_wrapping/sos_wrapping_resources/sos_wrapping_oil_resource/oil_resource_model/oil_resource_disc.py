@@ -16,6 +16,7 @@ limitations under the License.
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_resources.resources_model import ResourceModel
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import numpy as np
@@ -44,11 +45,13 @@ class OilDiscipline(SoSDiscipline):
     default_production_start = 1990
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
 
+    resource_name = ResourceGlossary.Oil['name']
+
     DESC_IN = {ResourceModel.DEMAND: {'type': 'dataframe', 'unit': 'Mt',
                                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'production_start':{'type': 'int', 'default': default_production_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'oil_resource'}
+               'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'oil_resource'}
                }
 
     DESC_OUT = {
@@ -59,7 +62,8 @@ class OilDiscipline(SoSDiscipline):
         ResourceModel.USE_STOCK: {'type': 'dataframe', 'unit': 'million_tonnes', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'oil_resource'},
         ResourceModel.PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes',
                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'oil_resource'},
-        ResourceModel.PAST_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'oil_resource'}
+        ResourceModel.PAST_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes',
+                                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'oil_resource'}
     }
 
     def init_execution(self):
@@ -77,8 +81,8 @@ class OilDiscipline(SoSDiscipline):
 
         oil_demand = pd.DataFrame(
             {'years': inp_dict['All_Demand']['years'].values})
-        oil_demand['oil_resource'] = inp_dict['All_Demand']['oil_resource']
-        self.oil_model.compute(oil_demand, 'oil_resource', 1990)
+        oil_demand[self.resource_name] = inp_dict['All_Demand'][self.resource_name]
+        self.oil_model.compute(oil_demand, self.resource_name, 1990)
 
         years = np.arange(inp_dict['year_start'], inp_dict['year_end'] + 1)
 
@@ -114,12 +118,13 @@ class OilDiscipline(SoSDiscipline):
         # get oil input demand
         inputs_dict = self.get_sosdisc_inputs()
         output_dict = self.get_sosdisc_outputs()
-        oil_resource = 'oil_resource'
+        oil_resource = self.resource_name
         oil_demand = pd.DataFrame(
             {'years': inputs_dict['All_Demand']['years'].values})
-        oil_demand['oil_resource'] = inputs_dict['All_Demand'][oil_resource]
-            
-        grad_stock, grad_price, grad_use = self.oil_model.get_derivative_resource(oil_resource)
+        oil_demand[self.resource_name] = inputs_dict['All_Demand'][oil_resource]
+
+        grad_stock, grad_price, grad_use = self.oil_model.get_derivative_resource(
+            oil_resource)
         # # ------------------------------------------------
         # # Stock resource gradient
         for oil_type in output_dict['resource_stock']:
@@ -128,12 +133,12 @@ class OilDiscipline(SoSDiscipline):
         # # ------------------------------------------------
         # # Price resource gradient
         self.set_partial_derivative_for_other_types(
-                (ResourceModel.RESOURCE_PRICE, 'price'), (f'{ResourceModel.DEMAND}', oil_resource), grad_price)
+            (ResourceModel.RESOURCE_PRICE, 'price'), (f'{ResourceModel.DEMAND}', oil_resource), grad_price)
         # # ------------------------------------------------
         # # Use resource gradient
         for oil_type in output_dict['resource_stock']:
             self.set_partial_derivative_for_other_types(
-                (ResourceModel.USE_STOCK, oil_type), (f'{ResourceModel.DEMAND}', oil_resource), grad_use[oil_type])                
+                (ResourceModel.USE_STOCK, oil_type), (f'{ResourceModel.DEMAND}', oil_resource), grad_use[oil_type])
         # # ------------------------------------------------
         # # Prod resource gradient did not depend on demand
 
@@ -148,8 +153,9 @@ class OilDiscipline(SoSDiscipline):
                     chart_list = chart_filter.selected_values
 
         if 'all' in chart_list:
-            production_start=self.get_sosdisc_inputs(ResourceModel.PRODUCTION_START)
-            years_start=self.get_sosdisc_inputs(ResourceModel.YEAR_START)
+            production_start = self.get_sosdisc_inputs(
+                ResourceModel.PRODUCTION_START)
+            years_start = self.get_sosdisc_inputs(ResourceModel.YEAR_START)
             stock_df = self.get_sosdisc_outputs(
                 ResourceModel.RESOURCE_STOCK)
             years = stock_df.index.values.tolist()
@@ -160,13 +166,14 @@ class OilDiscipline(SoSDiscipline):
             production_df = self.get_sosdisc_outputs(
                 ResourceModel.PRODUCTION)
 
-            past_production_df =self.get_sosdisc_outputs(ResourceModel.PAST_PRODUCTION)
-            past_production_cut= past_production_df.loc[past_production_df['years']
-                                              >= production_start]
-            production_cut=production_df.loc[production_df.index
-                                              <= years_start]
-            production_years= production_df.index.values.tolist()
-            past_production_year=past_production_df['years'].values.tolist()
+            past_production_df = self.get_sosdisc_outputs(
+                ResourceModel.PAST_PRODUCTION)
+            past_production_cut = past_production_df.loc[past_production_df['years']
+                                                         >= production_start]
+            production_cut = production_df.loc[production_df.index
+                                               <= years_start]
+            production_years = production_df.index.values.tolist()
+            past_production_year = past_production_df['years'].values.tolist()
 
             # two charts for stock evolution and price evolution
             stock_chart = TwoAxesInstanciatedChart('years', 'stock [Mt]',
@@ -186,13 +193,13 @@ class OilDiscipline(SoSDiscipline):
                                                                   chart_name='Oil production through the years',
                                                                   stacked_bar=True)
             model_production_cumulated_chart = TwoAxesInstanciatedChart('years',
-                                                                  'Comparison between model and real Oil production [Mt]',
-                                                                  chart_name='Oil production through the years',
-                                                                  stacked_bar=False)
+                                                                        'Comparison between model and real Oil production [Mt]',
+                                                                        chart_name='Oil production through the years',
+                                                                        stacked_bar=False)
             past_production_chart = TwoAxesInstanciatedChart('years',
-                                                                  'Oil past production [Mt]',
-                                                                  chart_name='Oil past production through the years',
-                                                                  stacked_bar=False)
+                                                             'Oil past production [Mt]',
+                                                             chart_name='Oil past production through the years',
+                                                             stacked_bar=False)
 
             for stock_kind in stock_df:
                 stock_serie = InstanciatedSeries(
@@ -210,15 +217,17 @@ class OilDiscipline(SoSDiscipline):
                 use_stock_chart.add_series(use_stock_serie)
                 use_stock_cumulated_chart.add_series(use_stock_serie)
 
-                production_cut_series=InstanciatedSeries(
-                    production_years, (production_cut[stock_kind]).values.tolist(), stock_kind +' predicted production', InstanciatedSeries.BAR_DISPLAY)
+                production_cut_series = InstanciatedSeries(
+                    production_years, (production_cut[stock_kind]).values.tolist(), stock_kind + ' predicted production', InstanciatedSeries.BAR_DISPLAY)
                 past_production_series = InstanciatedSeries(
                     past_production_year, (past_production_df[stock_kind]).values.tolist(), stock_kind, InstanciatedSeries.LINES_DISPLAY)
-                past_production_cut_series=InstanciatedSeries(
-                    production_years, (past_production_cut[stock_kind]).values.tolist(), stock_kind+' real production', InstanciatedSeries.LINES_DISPLAY)
+                past_production_cut_series = InstanciatedSeries(
+                    production_years, (past_production_cut[stock_kind]).values.tolist(), stock_kind + ' real production', InstanciatedSeries.LINES_DISPLAY)
                 past_production_chart.add_series(past_production_series)
-                model_production_cumulated_chart.add_series(past_production_cut_series)
-                model_production_cumulated_chart.add_series(production_cut_series)
+                model_production_cumulated_chart.add_series(
+                    past_production_cut_series)
+                model_production_cumulated_chart.add_series(
+                    production_cut_series)
 
             price_serie = InstanciatedSeries(
                 years, (price_df['price']).values.tolist(), 'oil price', InstanciatedSeries.LINES_DISPLAY)

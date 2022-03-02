@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-#from climateeconomics.core.core_land_use.land_use import LandUse,\
-#OrderOfMagnitude
+# from climateeconomics.core.core_land_use.land_use import LandUse,\
+# OrderOfMagnitude
 
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_resources.resources_model import ResourceModel
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import numpy as np
@@ -48,21 +49,24 @@ class UraniumDiscipline(SoSDiscipline):
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
     default_uranium_accessibility = 'recoverable'
 
+    resource_name = ResourceGlossary.Uranium['name']
+
     DESC_IN = {ResourceModel.DEMAND: {'type': 'dataframe', 'unit': 'Mt',
-                                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'production_start':{'type': 'int', 'default': default_production_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'uranium_resource'}
-                              }
+               'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'uranium_resource'}
+               }
 
     DESC_OUT = {
         ResourceModel.RESOURCE_STOCK: {
             'type': 'dataframe', 'unit': 'tonnes', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'uranium_resource'},
-        ResourceModel.RESOURCE_PRICE:{
+        ResourceModel.RESOURCE_PRICE: {
             'type': 'dataframe', 'unit': 'USD/k', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'uranium_resource'},
         ResourceModel.USE_STOCK: {'type': 'dataframe', 'unit': 'tonnes', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'uranium_resource'},
         ResourceModel.PRODUCTION: {'type': 'dataframe', 'unit': 'tonnes', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'uranium_resource'},
-        ResourceModel.PAST_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'uranium_resource'}
+        ResourceModel.PAST_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes',
+                                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'uranium_resource'}
     }
 
     def init_execution(self):
@@ -77,10 +81,10 @@ class UraniumDiscipline(SoSDiscipline):
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
 
         #-- compute
-        uranium_demand=pd.DataFrame(
+        uranium_demand = pd.DataFrame(
             {'years': inp_dict['All_Demand']['years'].values})
-        uranium_demand ['uranium_resource'] = inp_dict['All_Demand']['uranium_resource']
-        self.uranium_model.compute(uranium_demand,'uranium_resource',2015)
+        uranium_demand['uranium_resource'] = inp_dict['All_Demand']['uranium_resource']
+        self.uranium_model.compute(uranium_demand, 'uranium_resource', 2015)
 
         outputs_dict = {
             ResourceModel.RESOURCE_STOCK: self.uranium_model.resource_stock,
@@ -119,7 +123,8 @@ class UraniumDiscipline(SoSDiscipline):
             {'years': inputs_dict['All_Demand']['years'].values})
         uranium_demand['uranium_resource'] = inputs_dict['All_Demand'][uranium_resource]
 
-        grad_stock, grad_price, grad_use = self.uranium_model.get_derivative_resource(uranium_resource)
+        grad_stock, grad_price, grad_use = self.uranium_model.get_derivative_resource(
+            uranium_resource)
         # # ------------------------------------------------
         # # Stock resource gradient
         for uranium_type in output_dict['resource_stock']:
@@ -128,7 +133,7 @@ class UraniumDiscipline(SoSDiscipline):
         # # ------------------------------------------------
         # # Price resource gradient
         self.set_partial_derivative_for_other_types(
-                (ResourceModel.RESOURCE_PRICE, 'price'), (f'{ResourceModel.DEMAND}', uranium_resource), grad_price)
+            (ResourceModel.RESOURCE_PRICE, 'price'), (f'{ResourceModel.DEMAND}', uranium_resource), grad_price)
         # # ------------------------------------------------
         # # Use resource gradient
         for uranium_type in output_dict['resource_stock']:
@@ -148,8 +153,9 @@ class UraniumDiscipline(SoSDiscipline):
                     chart_list = chart_filter.selected_values
 
         if 'all' in chart_list:
-            production_start=self.get_sosdisc_inputs(ResourceModel.PRODUCTION_START)
-            years_start=self.get_sosdisc_inputs(ResourceModel.YEAR_START)
+            production_start = self.get_sosdisc_inputs(
+                ResourceModel.PRODUCTION_START)
+            years_start = self.get_sosdisc_inputs(ResourceModel.YEAR_START)
             stock_df = self.get_sosdisc_outputs(
                 ResourceModel.RESOURCE_STOCK)
             years = stock_df.index.values.tolist()
@@ -159,13 +165,14 @@ class UraniumDiscipline(SoSDiscipline):
                 ResourceModel.USE_STOCK)
             production_df = self.get_sosdisc_outputs(
                 ResourceModel.PRODUCTION)
-            past_production_df =self.get_sosdisc_outputs(ResourceModel.PAST_PRODUCTION)
-            past_production_cut= past_production_df.loc[past_production_df['years']
-                                              >= production_start]
-            production_cut=production_df.loc[production_df.index
-                                              <= years_start]
-            production_years= production_df.index.values.tolist()
-            past_production_year=past_production_df['years'].values.tolist()
+            past_production_df = self.get_sosdisc_outputs(
+                ResourceModel.PAST_PRODUCTION)
+            past_production_cut = past_production_df.loc[past_production_df['years']
+                                                         >= production_start]
+            production_cut = production_df.loc[production_df.index
+                                               <= years_start]
+            production_years = production_df.index.values.tolist()
+            past_production_year = past_production_df['years'].values.tolist()
 
             # two charts for stock evolution and price evolution
             stock_chart = TwoAxesInstanciatedChart('years', 'Uranium stocks [t]',
@@ -186,13 +193,13 @@ class UraniumDiscipline(SoSDiscipline):
                                                                   chart_name='Uranium production through the years',
                                                                   stacked_bar=True)
             model_production_cumulated_chart = TwoAxesInstanciatedChart('years',
-                                                                  'Comparison between model and real Uranium production [Mt]',
-                                                                  chart_name='Uranium production through the years',
-                                                                  stacked_bar=False)
+                                                                        'Comparison between model and real Uranium production [Mt]',
+                                                                        chart_name='Uranium production through the years',
+                                                                        stacked_bar=False)
             past_production_chart = TwoAxesInstanciatedChart('years',
-                                                                  'Uranium past production [Mt]',
-                                                                  chart_name='Uranium past production through the years',
-                                                                  stacked_bar=False)
+                                                             'Uranium past production [Mt]',
+                                                             chart_name='Uranium past production through the years',
+                                                             stacked_bar=False)
             for stock_kind in stock_df:
                 stock_serie = InstanciatedSeries(
                     years, (stock_df[stock_kind]).values.tolist(), stock_kind, InstanciatedSeries.LINES_DISPLAY)
@@ -209,14 +216,15 @@ class UraniumDiscipline(SoSDiscipline):
                 use_stock_chart.add_series(use_stock_serie)
                 use_stock_cumulated_chart.add_series(use_stock_serie)
 
-            production_cut_series=InstanciatedSeries(
+            production_cut_series = InstanciatedSeries(
                 production_years, (production_cut['uranium_40']).values.tolist(), 'Uranium 40 USD/kU predicted production', InstanciatedSeries.BAR_DISPLAY)
             past_production_series = InstanciatedSeries(
                 past_production_year, (past_production_df['uranium_40']).values.tolist(), 'Uranium 40USD/kU', InstanciatedSeries.LINES_DISPLAY)
-            past_production_cut_series=InstanciatedSeries(
+            past_production_cut_series = InstanciatedSeries(
                 production_years, (past_production_cut['uranium_40']).values.tolist(), 'Uranium 40 USD/kU real production', InstanciatedSeries.LINES_DISPLAY)
             past_production_chart.add_series(past_production_series)
-            model_production_cumulated_chart.add_series(past_production_cut_series)
+            model_production_cumulated_chart.add_series(
+                past_production_cut_series)
             model_production_cumulated_chart.add_series(production_cut_series)
             price_serie = InstanciatedSeries(
                 years, (price_df['price']).values.tolist(), 'uranium price', InstanciatedSeries.LINES_DISPLAY)

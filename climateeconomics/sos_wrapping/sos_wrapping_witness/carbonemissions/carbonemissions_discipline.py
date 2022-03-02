@@ -18,6 +18,7 @@ from climateeconomics.core.core_witness.carbon_emissions_model import CarbonEmis
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_forest.forest import Forest
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from copy import deepcopy
 import pandas as pd
 import numpy as np
@@ -156,7 +157,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('co2_emissions_Gt', 'Total CO2 emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
 
-        sinks_dict = {'CO2_emissions_by_use_sinks': 'CO2 removed by energy mix (Gt)', 'co2_emissions_needed_by_energy_mix':
+        sinks_dict = {'CO2_emissions_by_use_sinks': f"{ResourceGlossary.CO2['name']} removed by energy mix (Gt)", 'co2_emissions_needed_by_energy_mix':
                       'carbon_capture needed by energy mix (Gt)', 'co2_emissions_ccus_Gt': 'carbon_storage Limited by capture (Gt)'}
 
         for df_name, col_name in sinks_dict.items():
