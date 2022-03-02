@@ -84,7 +84,7 @@ class Forest():
         # forest surface is in Gha, deforestation_surface is in Mha,
         # deforested_surface is in Gha
         self.deforested_surface_df['forest_surface_evol'] = - \
-            self.deforestation_surface['deforested_surface'] / 1000
+            self.deforestation_surface['deforested_surface'].values / 1000
 
         self.deforested_surface_df['forest_surface_evol_cumulative'] = np.cumsum(
             self.deforested_surface_df['forest_surface_evol'])
