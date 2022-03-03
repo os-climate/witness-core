@@ -28,6 +28,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def __init__(self, ee, process_level='val'):
         WITNESSSubProcessBuilder.__init__(
             self, ee)
@@ -55,6 +56,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
             techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
 
+        if self.process_level == 'dev':
+            for i, disc in enumerate(chain_builders_energy):
+                if disc.sos_name == 'Resources':
+                    i_disc_to_pop = i
+            chain_builders_energy.pop(i_disc_to_pop)
         chain_builders.extend(chain_builders_energy)
 
         if self.process_level != 'dev':
