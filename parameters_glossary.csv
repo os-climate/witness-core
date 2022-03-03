@@ -214,7 +214,7 @@ min_co2_objective,Min CO2 objective,GtCO2,"Value of CO2 objective. Smaller the v
 min_utility_objective,Min utility objective,,"Value of the min utility objective. Smaller the value is, better the objective is accomplished.",,
 non_modeled_resource_price,Non modeled resource price per year,$/t,Price data concerning modeled.,,
 nu_knowledge,nu knowledge,,Data concerning CO2 nu_knowl.,,
-other_use_agriculture,Other use agriculture,ha/person,"ha/person requested for the production of other prodcuts than the other considerated (coffee, tea, chocolate, sugar…).",,
+other_use_agriculture,Other use agriculture,ha/person,"ha/person requested for the production of other prodcuts than the other considerated (coffee, tea, chocolate, sugarï¿½).",,
 output_elasticity,Output elasticity,,Output elasticity of capital in DICE production function. ,,
 output_energy_exponent,Output energy exponent,,Parameter of WITNESS production function: Exponent of energy supply in the production function equation.,,
 output_energy_share,Output energy share,,Parameter of WITNESS production function: Share of  energy supply in the production function. By oppisition to the share of capital-labour factor. ,,
@@ -232,6 +232,7 @@ pop_start,Global inital population,millions,Human population on Earth at the fir
 popasym,Population limit asymptot,millions of people,Asymptotic upper limit of the human population on Earth in millions of people.,,
 population_detail_df,Population detailed df,,Population per year per age.,,
 population_df,Population data,Million of persons,Global population number.,,
+working_age_population_df,working age Population,Million of persons,population number in age of working (15-70 years old).,,
 population_growth,Population growth,,Growth rate of population.,,
 population_start,Initial population,,Population at year start per age range.,,
 ppm_objective,Ppm objective,,Data concerning CO2 ppm_obje.,,
@@ -292,3 +293,8 @@ welfare_objective,Welfare objective,,"Value of the welfare objective. Lower is t
 write_xvect,Write xvect,,The value of the current point of optimisation.,,
 year_end,Ending year,year,Final year of the study.,,D - Nominal property
 year_start,Starting year,year,Initial year of the study.,,D - Nominal property
+co2_emissions_ccus_Gt,CO2 captured and stored by CCUS,GtCO2,Quantity of CO2 captued by CCUS. This value take into account the captured CO2 and the capacity to store it.,,
+CO2_emissions_by_use_sources,Sources of CO2 emitted,GtCO2,This sum up the sources of CO2 emissions. ,,
+CO2_emissions_by_use_sinks,Sinks of CO2,GtCO2,This sum up the sinks of CO2. This represents the CO2 removed from atmosphere.,,
+co2_emissions_needed_by_energy_mix,CO2 needed by energy mix,GtCO2,Quantity of CO2 needed for some tehcnologies of energy production.,,
+co2_for_food,CO2 for food,MtCO2,Quantity of CO2 due to food production.,,

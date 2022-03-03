@@ -19,6 +19,18 @@ import pandas as pd
 from copy import deepcopy
 import os
 
+from energy_models.core.stream_type.resources_models.methanol import Methanol
+from energy_models.core.stream_type.resources_models.natural_oil import NaturalOil
+from energy_models.core.stream_type.resources_models.oil import CrudeOil
+from energy_models.core.stream_type.resources_models.oxygen import Oxygen
+from energy_models.core.stream_type.resources_models.potassium_hydroxide import PotassiumHydroxide
+from energy_models.core.stream_type.resources_models.sodium_hydroxide import SodiumHydroxide
+from climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_uranium_resource.uranium_resource_model.uranium_resource_disc import UraniumDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_coal_resource.coal_resource_model.coal_resource_disc import CoalDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_gas_resource.gas_resource_model.gas_resource_disc import GasDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_oil_resource.oil_resource_model.oil_resource_disc import OilDiscipline
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+
 
 class OrderOfMagnitude():
     KILO = 'k'
@@ -40,14 +52,21 @@ class AllResourceModel():
     YEAR_END = 'year_end'
     ALL_RESOURCE_DEMAND = 'all_resource_demand'
     ALL_RESOURCE_STOCK = 'all_resource_stock'
-    ALL_RESOURCE_PRICE = 'resource_price'
+    ALL_RESOURCE_PRICE = 'resources_price'
     All_RESOURCE_USE = 'all_resource_use'
     ALL_RESOURCE_PRODUCTION = 'all_resource_production'
     RATIO_USABLE_DEMAND = 'all_resource_ratio_usable_demand'
     ALL_RESOURCE_RATIO_PROD_DEMAND = 'all_resource_ratio_prod_demand'
+    ALL_RESOURCE_CO2_EMISSIONS = 'resources_CO2_emissions'
     NON_MODELED_RESOURCE_PRICE = 'non_modeled_resource_price'
-    RESOURCE_LIST = ['oil_resource', 'uranium_resource',
-                     'natural_gas_resource', 'coal_resource']
+    RESOURCE_LIST = [OilDiscipline.resource_name, UraniumDiscipline.resource_name,
+                     GasDiscipline.resource_name, CoalDiscipline.resource_name]
+    NON_MODELED_RESOURCE_LIST = list(
+        set([resource['name'] for resource in ResourceGlossary.GlossaryDict.values()]).symmetric_difference(set(RESOURCE_LIST)))
+
+    CO2_emissions_dict = {}
+    for resource in ResourceGlossary.GlossaryDict.values():
+        CO2_emissions_dict[resource['name']] = resource['CO2_emissions']
 
     def __init__(self, param):
         '''
@@ -60,6 +79,7 @@ class AllResourceModel():
         self.all_resource_production = None
         self.all_resource_ratio_prod_demand = None
         self.all_resource_ratio_usable_demand = None
+        self.all_resource_co2_emissions = None
         self.resource_demand = None
         self.set_data()
         self.price_gas_conversion = 1.379 * 35310700 * 10**-6
@@ -140,7 +160,7 @@ class AllResourceModel():
                         data_frame_use[types]
 
             # conversion in Mt of the different resource:
-            if resource == 'natural_gas_resource':
+            if resource == GasDiscipline.resource_name:
                 self.all_resource_production[resource] = self.all_resource_production[resource] * \
                     self.gas_conversion
                 self.all_resource_stock[resource] = self.all_resource_stock[resource] * \
@@ -149,7 +169,7 @@ class AllResourceModel():
                     self.gas_conversion
                 self.all_resource_price[resource] = self.all_resource_price[resource] * \
                     self.price_gas_conversion
-            if resource == 'uranium_resource':
+            if resource == UraniumDiscipline.resource_name:
                 self.all_resource_production[resource] = self.all_resource_production[resource] * \
                     self.uranium_conversion
                 self.all_resource_stock[resource] = self.all_resource_stock[resource] * \
@@ -158,10 +178,10 @@ class AllResourceModel():
                     self.uranium_conversion
                 self.all_resource_price[resource] = self.all_resource_price[resource] * \
                     self.price_uranium_conversion
-            if resource == 'coal_resource':
+            if resource == CoalDiscipline.resource_name:
                 self.all_resource_price[resource] = self.all_resource_price[resource] * \
                     self.price_coal_conversion
-            if resource == 'oil_resource':
+            if resource == OilDiscipline.resource_name:
                 self.all_resource_price[resource] = self.all_resource_price[resource] * \
                     self.price_oil_conversion
 
@@ -177,20 +197,25 @@ class AllResourceModel():
             if resource_non_modeled not in AllResourceModel.RESOURCE_LIST:
                 self.all_resource_price[resource_non_modeled] = data_frame_other_resource_price[resource_non_modeled]
 
+        self.all_resource_co2_emissions = self.get_co2_emissions(list(demand_df['years'].values),
+                                                                 list(
+            AllResourceModel.RESOURCE_LIST),
+            list(AllResourceModel.NON_MODELED_RESOURCE_LIST))
+
     def get_derivative_all_resource(self, inputs_dict, resource_type):
         """ Compute derivative of total stock regarding year demand
         """
         grad_stock = pd.DataFrame()
         grad_use = pd.DataFrame()
         grad_price = pd.DataFrame()
-        if resource_type == 'natural_gas_resource':
+        if resource_type == GasDiscipline.resource_name:
             grad_stock = self.gas_conversion * \
                 np.identity(
                     len(inputs_dict[f'{resource_type}.resource_stock'].index))
             grad_use = self.gas_conversion * \
                 np.identity(
                     len(inputs_dict[f'{resource_type}.use_stock'].index))
-        elif resource_type == 'uranium_resource':
+        elif resource_type == UraniumDiscipline.resource_name:
             grad_stock = self.uranium_conversion * \
                 np.identity(
                     len(inputs_dict[f'{resource_type}.resource_stock'].index))
@@ -202,19 +227,19 @@ class AllResourceModel():
                 len(inputs_dict[f'{resource_type}.resource_stock'].index))
             grad_use = np.identity(
                 len(inputs_dict[f'{resource_type}.use_stock'].index))
-        if resource_type == 'natural_gas_resource':
+        if resource_type == GasDiscipline.resource_name:
             grad_price = self.price_gas_conversion * \
                 np.identity(
                     len(inputs_dict[f'{resource_type}.resource_price'].index))
-        elif resource_type == 'oil_resource':
+        elif resource_type == OilDiscipline.resource_name:
             grad_price = self.price_oil_conversion * \
                 np.identity(
                     len(inputs_dict[f'{resource_type}.resource_price'].index))
-        elif resource_type == 'uranium_resource':
+        elif resource_type == UraniumDiscipline.resource_name:
             grad_price = self.price_uranium_conversion * \
                 np.identity(
                     len(inputs_dict[f'{resource_type}.resource_price'].index))
-        elif resource_type == 'coal_resource':
+        elif resource_type == CoalDiscipline.resource_name:
             grad_price = self.price_coal_conversion * \
                 np.identity(
                     len(inputs_dict[f'{resource_type}.resource_price'].index))
@@ -235,3 +260,26 @@ class AllResourceModel():
         grad_use_ratio_on_use = grad_use / (demand.values)
 
         return grad_use_ratio_on_use, grad_use_ratio_on_demand
+
+    def get_co2_emissions(self, years, resource_list, non_modeled_resource_list):
+        '''Function to create a dataframe with the CO2 emissions for all the ressources
+        For now it just create a df with set values but it should be upgraded to retrieve the CO2 emissions
+        from each modeled resources
+        '''
+        # Create a dataframe
+        resources_CO2_emissions = pd.DataFrame({'years': years})
+
+        # Loop on modeled resources, retrieve CO2 emissions and create column with result
+        #(No resource with modeled CO2 emissions for now)
+        for resource in resource_list:
+            pass
+
+        for resource in non_modeled_resource_list:
+            if resource in self.CO2_emissions_dict.keys():
+                resources_CO2_emissions[resource] = np.ones(
+                    len(years)) * self.CO2_emissions_dict[resource]
+            else:
+                resources_CO2_emissions[resource] = np.zeros(
+                    len(years))
+
+        return resources_CO2_emissions

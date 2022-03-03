@@ -30,7 +30,7 @@ class Population:
         Constructor
         '''
         self.population_df = None
-        self.working_population_df = None
+        self.working_age_population_df = None
         self.birth_rate = None
         self.death_rate_df = None
         self.set_data(inputs)
@@ -108,10 +108,10 @@ class Population:
         column_list.insert(0, 'years')
 
         # WORKING POULATION
-        self.working_population_df = DataFrame(index=years_range,
+        self.working_age_population_df = DataFrame(index=years_range,
                                     columns=['years', 'population_1570'])
-        self.working_population_df['years'] = years_range
-        self.working_population_df.loc[self.year_start,
+        self.working_age_population_df['years'] = years_range
+        self.working_age_population_df.loc[self.year_start,
                           'population_1570'] = population_df.loc[self.year_start, '15':'70'].sum()#will take 15yo to 70yo
 
         # BIRTH RATE
@@ -360,7 +360,7 @@ class Population:
             self.population_df.loc[year,
                                    'total'] = self.population_df.iloc[year - year_start, 1:-1].sum()
             # compute working population from 15yo to 70yo
-            self.working_population_df.loc[year, 'population_1570'] = sum(self.population_df.loc[year, '15':'70'])
+            self.working_age_population_df.loc[year, 'population_1570'] = sum(self.population_df.loc[year, '15':'70'])
 
         return self.population_df
 
@@ -427,7 +427,7 @@ class Population:
 
         return self.population_df.fillna(0.0), self.birth_rate.fillna(0.0), self.death_rate_dict, \
             self.birth_df.fillna(
-                0.0), self.death_dict, self.life_expectancy_df.fillna(0.0), self.working_population_df.fillna(0.0)
+                0.0), self.death_dict, self.life_expectancy_df.fillna(0.0), self.working_age_population_df.fillna(0.0)
 
     # GRADIENTS OF POPULATION WTR GDP
     def compute_d_pop_d_output(self):
