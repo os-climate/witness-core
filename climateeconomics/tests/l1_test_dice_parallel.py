@@ -23,10 +23,13 @@ from tempfile import gettempdir
 from copy import deepcopy
 from sos_trades_core.sos_processes.compare_data_manager_tooling import delete_keys_from_dict,\
     compare_dict
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from scipy.interpolate.interpolate import interp1d
 
 
 class DICEParallelTest(unittest.TestCase):
+
+    RESSOURCE_CO2 = ResourceGlossary.CO2['name']
 
     def setUp(self):
 
@@ -92,7 +95,8 @@ class DICEParallelTest(unittest.TestCase):
 
         CO2_emissions_by_use_sinks = pd.DataFrame()
         CO2_emissions_by_use_sinks['years'] = energy_supply_df_y["years"]
-        CO2_emissions_by_use_sinks['CO2 removed by energy mix (Gt)'] = 0.0
+        CO2_emissions_by_use_sinks[
+            f'{self.RESSOURCE_CO2} removed by energy mix (Gt)'] = 0.0
 
         co2_emissions_needed_by_energy_mix = pd.DataFrame()
         co2_emissions_needed_by_energy_mix['years'] = energy_supply_df_y["years"]
