@@ -93,11 +93,24 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
                 f'{WITNESS_ns}.EnergyMix.{energy}.{techno}')[0]
             consumption_techno = techno_disc.get_sosdisc_outputs(
                 'techno_consumption')
-            for col in consumption_techno.columns:
-                consumption_techno[col] *= techno_disc.get_sosdisc_inputs(
-                    'scaling_factor_techno_consumption')
             if resource_name in consumption_techno.columns:
-                resource_consumed[f'{energy} {techno}'] = consumption_techno[resource_name]
+                resource_consumed[f'{energy} {techno}'] = consumption_techno[resource_name] * techno_disc.get_sosdisc_inputs(
+                    'scaling_factor_techno_consumption')
+    CCUS = execution_engine.dm.get_disciplines_with_name(
+        f'{WITNESS_ns}.ccus')[0]
+    ccs_list = CCUS.get_sosdisc_inputs('ccs_list')
+    for stream in ccs_list:
+        stream_disc = execution_engine.dm.get_disciplines_with_name(
+            f'{WITNESS_ns}.ccus.{stream}')[0]
+        techno_list = stream_disc.get_sosdisc_inputs('technologies_list')
+        for techno in techno_list:
+            techno_disc = execution_engine.dm.get_disciplines_with_name(
+                f'{WITNESS_ns}.ccus.{stream}.{techno}')[0]
+            consumption_techno = techno_disc.get_sosdisc_outputs(
+                'techno_consumption')
+            if resource_name in consumption_techno.columns:
+                resource_consumed[f'{stream} {techno}'] = consumption_techno[resource_name] * techno_disc.get_sosdisc_inputs(
+                    'scaling_factor_techno_consumption')
 
     # Create Figure
     chart_name = f'{resource_name} consumption by technologies'
