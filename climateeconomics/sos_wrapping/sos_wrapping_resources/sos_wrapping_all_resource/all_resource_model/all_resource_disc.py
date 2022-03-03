@@ -63,13 +63,14 @@ class AllResourceDiscipline(SoSDiscipline):
         AllResourceModel.ALL_RESOURCE_STOCK: {
             'type': 'dataframe', 'unit': 'million_tonnes'},
         AllResourceModel.ALL_RESOURCE_PRICE: {
-            'type': 'dataframe', 'unit': 'USD/USton'},
+            'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
         AllResourceModel.All_RESOURCE_USE: {'type': 'dataframe', 'unit': 'million_tonnes'},
         AllResourceModel.ALL_RESOURCE_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
         AllResourceModel.RATIO_USABLE_DEMAND: {'type': 'dataframe', 'default': ratio_available_resource_default, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
         AllResourceModel.ALL_RESOURCE_DEMAND: {'type': 'dataframe', 'unit': '-',
-                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
-
+                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+        AllResourceModel.ALL_RESOURCE_CO2_EMISSIONS: {
+            'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
     }
 
     def init_execution(self):
@@ -106,12 +107,13 @@ class AllResourceDiscipline(SoSDiscipline):
         years = np.arange(inp_dict['year_start'], inp_dict['year_end'] + 1)
 
         outputs_dict = {
-            AllResourceModel.ALL_RESOURCE_STOCK: self.all_resource_model.all_resource_stock,
-            AllResourceModel.ALL_RESOURCE_PRICE: self.all_resource_model.all_resource_price,
-            AllResourceModel.All_RESOURCE_USE: self.all_resource_model.all_resource_use,
-            AllResourceModel.ALL_RESOURCE_PRODUCTION: self.all_resource_model.all_resource_production,
-            AllResourceModel.RATIO_USABLE_DEMAND: self.all_resource_model.all_resource_ratio_usable_demand,
-            AllResourceModel.ALL_RESOURCE_DEMAND: self.all_resource_model.resource_demand
+            AllResourceModel.ALL_RESOURCE_STOCK: self.all_resource_model.all_resource_stock.reset_index(),
+            AllResourceModel.ALL_RESOURCE_PRICE: self.all_resource_model.all_resource_price.reset_index(),
+            AllResourceModel.All_RESOURCE_USE: self.all_resource_model.all_resource_use.reset_index(),
+            AllResourceModel.ALL_RESOURCE_PRODUCTION: self.all_resource_model.all_resource_production.reset_index(),
+            AllResourceModel.RATIO_USABLE_DEMAND: self.all_resource_model.all_resource_ratio_usable_demand.reset_index(),
+            AllResourceModel.ALL_RESOURCE_DEMAND: self.all_resource_model.resource_demand.reset_index(),
+            AllResourceModel.ALL_RESOURCE_CO2_EMISSIONS: self.all_resource_model.all_resource_co2_emissions.reset_index(),
         }
 
         #-- store outputs

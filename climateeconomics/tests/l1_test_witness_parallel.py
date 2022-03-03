@@ -106,7 +106,8 @@ class WITNESSParallelTest(unittest.TestCase):
                 # print(disc1)
                 for keyout, subjac in disc1.jac.items():
                     for keyin in subjac.keys():
-                        comparison = disc1.jac[keyout][keyin] == disc2.jac[keyout][keyin]
+                        comparison = disc1.jac[keyout][keyin].toarray(
+                        ) == disc2.jac[keyout][keyin].toarray()
                         try:
                             self.assertTrue(comparison.all())
                         except:
@@ -114,7 +115,7 @@ class WITNESSParallelTest(unittest.TestCase):
                             print(keyout + ' vs ' + keyin)
                             np.set_printoptions(threshold=1e6)
                             for arr, arr2 in zip(disc1.jac[keyout][keyin], disc2.jac[keyout][keyin]):
-                                if not (arr == arr2).all():
+                                if not (arr.toarray() == arr2.toarray()).all():
 
                                     print(arr)
                                     print(arr2)

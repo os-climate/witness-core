@@ -87,7 +87,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'working_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
+        'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
                           'namespace': 'ns_witness'},
         'population_detail_df': {'type': 'dataframe'},
         'birth_rate_df': {'type': 'dataframe'},
@@ -109,7 +109,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
 
         # model execution
-        population_detail_df, birth_rate_df, death_rate_dict, birth_df, death_dict, life_expectancy_df, working_population_df = self.model.compute(
+        population_detail_df, birth_rate_df, death_rate_dict, birth_df, death_dict, life_expectancy_df, working_age_population_df = self.model.compute(
             in_dict)
 
         population_df = population_detail_df[['years', 'total']]
@@ -118,11 +118,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         # Convert population in billion of people
         population_df['population'] = population_df['population'] / \
             self.model.million
-        population_detail_df['population_1570'] = working_population_df['population_1570']
-        working_population_df['population_1570'] = working_population_df['population_1570']/ self.model.million
+        population_detail_df['population_1570'] = working_age_population_df['population_1570']
+        working_age_population_df['population_1570'] = working_age_population_df['population_1570']/ self.model.million
         # store output data
         out_dict = {"population_df": population_df,
-                    "working_population_df":working_population_df,
+                    "working_age_population_df":working_age_population_df,
                     "population_detail_df": population_detail_df,
                     "birth_rate_df": birth_rate_df,
                     "death_rate_dict": death_rate_dict,
@@ -142,14 +142,14 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('population_df', 'population'), ('economics_df', 'output_net_of_d'), d_pop_d_output / self.model.million)
         self.set_partial_derivative_for_other_types(
-            ('working_population_df', 'population_1570'), ('economics_df', 'output_net_of_d'), d_working_pop_d_output / self.model.million)
+            ('working_age_population_df', 'population_1570'), ('economics_df', 'output_net_of_d'), d_working_pop_d_output / self.model.million)
 
 
         d_pop_d_temp, d_working_pop_d_temp = self.model.compute_d_pop_d_temp()
         self.set_partial_derivative_for_other_types(
             ('population_df', 'population'), ('temperature_df', 'temp_atmo'), d_pop_d_temp / self.model.million)
         self.set_partial_derivative_for_other_types(
-            ('working_population_df', 'population_1570'), ('temperature_df', 'temp_atmo'), d_working_pop_d_temp / self.model.million)
+            ('working_age_population_df', 'population_1570'), ('temperature_df', 'temp_atmo'), d_working_pop_d_temp / self.model.million)
 
 
     def get_chart_filter_list(self):
