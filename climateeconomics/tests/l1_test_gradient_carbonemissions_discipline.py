@@ -22,10 +22,11 @@ from pandas import DataFrame, read_csv
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
 
 class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
-    AbstractJacobianUnittest.DUMP_JACOBIAN = False
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
@@ -86,7 +87,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         CO2_emissions_by_use_sinks = pd.DataFrame()
         CO2_emissions_by_use_sinks['years'] = energy_supply_df_y["years"]
-        CO2_emissions_by_use_sinks['CO2 removed by energy mix (Gt)'] = 0.0
+        CO2_emissions_by_use_sinks[f'{CO2.name} removed by energy mix (Gt)'] = 0.0
 
         co2_emissions_needed_by_energy_mix = pd.DataFrame()
         co2_emissions_needed_by_energy_mix['years'] = energy_supply_df_y["years"]
@@ -173,7 +174,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         CO2_emissions_by_use_sinks = pd.DataFrame()
         CO2_emissions_by_use_sinks['years'] = energy_supply_df_y["years"]
-        CO2_emissions_by_use_sinks['CO2 removed by energy mix (Gt)'] = 0.0
+        CO2_emissions_by_use_sinks[f'{CO2.name} removed by energy mix (Gt)'] = 0.0
 
         co2_emissions_needed_by_energy_mix = pd.DataFrame()
         co2_emissions_needed_by_energy_mix['years'] = energy_supply_df_y["years"]
