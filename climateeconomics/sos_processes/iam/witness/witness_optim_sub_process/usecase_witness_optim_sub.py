@@ -3,6 +3,7 @@
 # All rights reserved.
 
 from sos_trades_core.study_manager.study_manager import StudyManager
+from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
@@ -156,6 +157,7 @@ class Study(ClimateEconomicsStudyManager):
             output_descriptor['red_to_white_meat_ctrl'] = {'out_name': 'red_to_white_meat',
                                                            'type': 'array',
                                                            'index': years,
+                                                           'index_name': 'year',
                                                            'namespace_in': 'ns_witness',
                                                            'namespace_out': 'ns_witness'
                                                            }
@@ -163,6 +165,7 @@ class Study(ClimateEconomicsStudyManager):
             output_descriptor['meat_to_vegetables_ctrl'] = {'out_name': 'meat_to_vegetables',
                                                             'type': 'array',
                                                             'index': years,
+                                                            'index_name': 'years',
                                                             'namespace_in': 'ns_witness',
                                                             'namespace_out': 'ns_witness'
                                                             }
@@ -205,7 +208,6 @@ if '__main__' == __name__:
         len(uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines))
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
-
 
 #     uc_cls.execution_engine.root_process.sos_disciplines[0].coupling_structure.graph.export_initial_graph(
 #         "initial.pdf")
