@@ -25,6 +25,7 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def get_builders(self):
 
         # scenario build map
@@ -51,7 +52,11 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_ccs',
                                          'ns_resource',
                                          #'ns_ref',
-                                         'ns_invest'
+                                         'ns_invest',
+                                         'coal_resource',
+                                         'uranium_resource',
+                                         'oil_resource',
+                                         'natural_gas_resource',
                                          ]}
 
         self.ee.smaps_manager.add_build_map(
