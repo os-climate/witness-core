@@ -120,12 +120,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                 'techno_evo_eff': 'no',  # yes or no
                                 'years_between_harvest': years_between_harvest,
                                 'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
-                                'recyle_part': recycle_part,
+                                'recycle_part': recycle_part,
                                 'construction_delay': construction_delay}
     # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [1.135081, 1.135081, 1.135081]})
+        {'past_years': np.arange(-construction_delay, 0), 'invest': [1.135081, 1.135081, 1.135081]})
     # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
     # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
     # 92% of the production come from managed wood. 8% from unmanaged wood
@@ -164,21 +164,21 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                'wood_techno_dict': {'type': 'dict', 'unit': '-', 'default': managed_wood_techno_dict, 'namespace': 'ns_forest'},
                'managed_wood_initial_prod': {'type': 'float', 'unit': 'TWh', 'default': mw_initial_production, 'namespace': 'ns_forest'},
-               'managed_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'default': 1.25 * 0.92, 'namespace': 'ns_forest'},
+               'managed_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'namespace': 'ns_forest'},
                'managed_wood_invest_before_year_start': {'type': 'dataframe', 'unit': 'G$',
-                                                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                         'dataframe_descriptor': {'past_years': ('float', None, False),
                                                                                   'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+                                                         'namespace': 'ns_forest'},
                'managed_wood_investment': {'type': 'dataframe', 'unit': 'G$',
                                            'dataframe_descriptor': {'years': ('float', None, False),
                                                                     'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                'unmanaged_wood_initial_prod': {'type': 'float', 'unit': 'TWh', 'default': uw_initial_production, 'namespace': 'ns_forest'},
-               'unmanaged_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'default': 1.25 * 0.08, 'namespace': 'ns_forest'},
+               'unmanaged_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'namespace': 'ns_forest'},
                'unmanaged_wood_invest_before_year_start': {'type': 'dataframe', 'unit': 'G$',
-                                                           'dataframe_descriptor': {'years': ('float', None, False),
+                                                           'dataframe_descriptor': {'past_years': ('float', None, False),
                                                                                     'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+                                                           'namespace': 'ns_forest'},
                'unmanaged_wood_investment': {'type': 'dataframe', 'unit': 'G$',
                                              'dataframe_descriptor': {'years': ('float', None, False),
                                                                       'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
