@@ -22,7 +22,7 @@ import numpy as np
 
 
 class PopulationJacobianDiscTest(AbstractJacobianUnittest):
-
+    
     def setUp(self):
 
         self.name = 'Test'
@@ -109,7 +109,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
                             discipline=disc_techno, inputs=[f'{self.name}.economics_df'], outputs=[
-                f'{self.name}.working_population_df'], step=1e-15, derr_approx='complex_step')
+                f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
     
     def test_working_population_discipline_analytic_grad_temp(self):
         '''
@@ -128,7 +128,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_temp.pkl',
                             discipline=disc_techno, inputs=[f'{self.name}.temperature_df'], outputs=[
-                f'{self.name}.working_population_df'], step=1e-15, derr_approx='complex_step')
+                f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_temperature(self):
         '''
@@ -187,7 +187,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_temp_neg.pkl',
                             discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
-                                f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
+                                f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_big_gdp(self):
         '''
@@ -226,7 +226,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_big_gdp.pkl',
                             discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
-                                f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
+                                f'{self.name}.population_df', f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_big_temp(self):
         '''
@@ -265,7 +265,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_augmente_temp.pkl',
                             discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
-                                f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
+                                f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_small_pop(self):
         '''
@@ -309,7 +309,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_small_pop.pkl',
                             discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
-                                f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
+                                f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_big_pop(self):
         '''
@@ -354,4 +354,4 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_big_pop.pkl',
                             discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
-                                f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
+                                f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
