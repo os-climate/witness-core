@@ -28,6 +28,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def __init__(self, ee):
         WITNESSSubProcessBuilder.__init__(self, ee)
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
@@ -48,12 +49,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
             techno_dict=techno_dict, invest_discipline=self.invest_discipline)
 
+        for i, disc in enumerate(chain_builders_energy):
+            if disc.sos_name == 'Resources':
+                i_disc_to_pop = i
+        chain_builders_energy.pop(i_disc_to_pop)
         chain_builders.extend(chain_builders_energy)
 
-        land_use_path = 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_disc.LandUseDiscipline'
-        chain_builders_land_use = self.ee.factory.get_builder_from_module(
-            'Land_Use', land_use_path)
-        chain_builders.append(chain_builders_land_use)
+        chain_builders.extend(chain_builders_energy)
 
         # Update namespace regarding land use and energy mix coupling
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
