@@ -29,7 +29,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
     def get_builders(self):
 
-        ns_scatter = self.ee.study_name + '.All_resources'
+        ns_scatter = self.ee.study_name + '.Resources'
 
         ns_dict = {'coal_resource': f'{ns_scatter}.coal_resource',
                    'oil_resource': f'{ns_scatter}.oil_resource',
@@ -40,7 +40,11 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_demand': ns_scatter
                    }
         #'oil_availability_and_price': f'{ns_scatter}.oil.oil_availability_and_price',
-        mods_dict = {'All_resources.coal_resource': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_coal_resource.coal_resource_model.coal_resource_disc.CoalDiscipline', 'All_resources.oil_resource': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_oil_resource.oil_resource_model.oil_resource_disc.OilDiscipline', 'All_resources.natural_gas_resource': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_gas_resource.gas_resource_model.gas_resource_disc.GasDiscipline', 'All_resources.uranium_resource': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_uranium_resource.uranium_resource_model.uranium_resource_disc.UraniumDiscipline', 'All_resources': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_all_resource.all_resource_model.all_resource_disc.AllResourceDiscipline'
+        mods_dict = {'Resources.coal_resource': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_coal_resource.coal_resource_model.coal_resource_disc.CoalDiscipline',
+                     'Resources.oil_resource': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_oil_resource.oil_resource_model.oil_resource_disc.OilDiscipline',
+                     'Resources.natural_gas_resource': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_gas_resource.gas_resource_model.gas_resource_disc.GasDiscipline',
+                     'Resources.uranium_resource': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_uranium_resource.uranium_resource_model.uranium_resource_disc.UraniumDiscipline',
+                     'Resources': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_all_resource.all_resource_model.all_resource_disc.AllResourceDiscipline'
                      }
         #chain_builders_resource = self.ee.factory.get_builder_from_module()
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
