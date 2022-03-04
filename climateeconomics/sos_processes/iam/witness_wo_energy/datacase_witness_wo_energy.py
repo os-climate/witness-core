@@ -22,7 +22,12 @@ from pathlib import Path
 from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
-
+from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
+from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase import Study as datacase_landuse
+from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import Study as datacase_agriculture
+from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
+from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
+from sos_trades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
@@ -37,6 +42,8 @@ class DataStudy():
         self.year_end = year_end
         self.time_step = time_step
         self.study_name_wo_extra_name = self.study_name
+        self.dspace = {}
+        self.dspace['dspace_size'] = 0
 
     def setup_usecase(self):
         setup_data_list = []
@@ -130,6 +137,46 @@ class DataStudy():
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
             {'years': years, 'CO2_tax_efficiency': CO2_tax_efficiency})
+
+        #-- load data from resource
+
+        dc_resource = datacase_resource(
+            self.year_start, self.year_end)
+        dc_resource.study_name = self.study_name
+
+        #-- load data from land use
+        dc_landuse = datacase_landuse(
+            self.year_start, self.year_end, self.time_step, name='.Land.Land_Use_V1', extra_name='.EnergyMix')
+        dc_landuse.study_name = self.study_name
+
+        #-- load data from agriculture
+        dc_agriculture = datacase_agriculture(
+            self.year_start, self.year_end, self.time_step, name='.Land.Agriculture')
+        dc_agriculture.study_name = self.study_name
+
+        #-- load data from forest
+
+        dc_forest = datacase_forest(
+            self.year_start, self.year_end, self.time_step, name='.Land.Forest')
+        dc_forest.study_name = self.study_name
+
+        resource_input_list = dc_resource.setup_usecase()
+        setup_data_list = setup_data_list + resource_input_list
+
+        land_use_list = dc_landuse.setup_usecase()
+        setup_data_list = setup_data_list + land_use_list
+
+        agriculture_list = dc_agriculture.setup_usecase()
+        setup_data_list = setup_data_list + agriculture_list
+
+        forest_list = dc_forest.setup_usecase()
+        setup_data_list = setup_data_list + forest_list
+        StudyManager.merge_design_spaces(
+            self, [dc_forest.dspace, dc_agriculture.dspace])
+        # constraint land use
+
+        # WITNESS
+        # setup objectives
 
         witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
 
