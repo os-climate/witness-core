@@ -100,44 +100,30 @@ class Forest():
         self.forest_investment = in_dict[self.REFORESTATION_INVESTMENT]
         self.cost_per_ha = in_dict[self.REFORESTATION_COST_PER_HA]
         self.initial_emissions = self.param[self.INITIAL_CO2_EMISSIONS]
-        years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.limit_deforestation_surface = self.param[self.LIMIT_DEFORESTATION_SURFACE]
+        self.years = np.arange(
+            self.year_start, self.year_end + 1, self.time_step)
 
-        self.forest_surface_df['years'] = years
-        self.managed_wood_df['years'] = years
-        self.biomass_dry['years'] = years
-
-        # check limit of deforestation
-        for element in range(0, len(years)):
-            if self.forest_surface_df.loc[element, 'forest_surface_evol_cumulative'] < -self.limit_deforestation_surface / 1000:
-                self.forest_surface_df.loc[element,
-                                           'forest_surface_evol'] = 0
-                self.forest_surface_df.loc[element, 'deforested_surface'] = - \
-                    self.forest_surface_df.loc[element, 'forested_surface']
-                self.forest_surface_df.loc[element,
-                                           'forest_surface_evol_cumulative'] = -self.limit_deforestation_surface / 1000
-                self.forest_surface_df.loc[element,
-                                           'deforested_surface_cumulative'] = -self.forest_surface_df.loc[element, 'forested_surface_cumulative'] - self.limit_deforestation_surface / 1000
-
+        self.forest_surface_df['years'] = self.years
+        self.managed_wood_df['years'] = self.years
+        self.biomass_dry['years'] = self.years
         self.CO2_emitted_df['years'] = self.years
-        # in Gt of CO2
-        self.CO2_emitted_df['emitted_CO2_evol'] = -self.forest_surface_df['forest_surface_evol'] * \
-            self.CO2_per_ha / 1000
-        self.CO2_emitted_df['emitted_CO2'] = -self.forest_surface_df['deforested_surface'] * \
-            self.CO2_per_ha / 1000
-        self.CO2_emitted_df['captured_CO2'] = -self.forest_surface_df['forested_surface'] * \
-            self.CO2_per_ha / 1000
 
-        self.CO2_emitted_df['emitted_CO2_evol_cumulative'] = -self.forest_surface_df['forest_surface_evol_cumulative'] * \
-            self.CO2_per_ha / 1000 + self.initial_emissions
-        self.CO2_emitted_df['emitted_CO2_cumulative'] = -self.forest_surface_df['deforested_surface_cumulative'] * \
-            self.CO2_per_ha / 1000 + self.initial_emissions
-        self.CO2_emitted_df['captured_CO2_cumulative'] = -self.forest_surface_df['forested_surface_cumulative'] * \
-            self.CO2_per_ha / 1000
+        # compute data of each contribution
+        self.compute_reforestation_deforestation()
+        self.compute_managed_wood_production()
+        self.compute_reforestation_deforestation()
+        # sum up global surface data
+        self.sumup_global_surface_data()
+        # check deforestation limit
+        self.check_deforestation_limit()
+
+        # sum up global CO2 data
+        self.compute_global_CO2_production
 
     def compute_managed_wood_production(self):
         """
-        compute data concernidng managed wood : surface taken, production, CO2 absorbed
+        compute data concerning managed wood : surface taken, production, CO2 absorbed, as delta and cumulative
         """
         construction_delay = self.techno_wood_info['construction_delay']
         density_per_ha = self.techno_wood_info['density_per_ha']
@@ -180,7 +166,7 @@ class Forest():
 
     def compute_unmanaged_wood_production(self):
         """
-        TO BE FILLED IN THE SMAE WAY RTHAN MANAGED WOOD PRODUCTION
+        compute data concerning unmanaged wood : surface taken, production, CO2 absorbed, as delta and cumulative
         """
 
         construction_delay = self.techno_wood_info['construction_delay']
@@ -225,30 +211,78 @@ class Forest():
 
     def compute_reforestation_deforestation(self):
         """
-        compute land use and CO2 emitted due to reforestation et deforestation activities
+        compute land use and due to reforestation et deforestation activities
+        CO2 is not computed here because surface limit need to be taken into account before.
         """
         # forest surface is in Gha, deforestation_surface is in Mha,
         # deforested_surface is in Gha
-        self.forest_surface_df['deforested_surface'] = - \
+        self.forest_surface_df['delta_deforestation_surface'] = - \
             self.deforestation_surface['deforested_surface'].values / 1000
 
         # forested surface
         # invest in G$, coest_per_ha in $/ha --> Gha
-        self.forest_surface_df['forested_surface'] = self.forest_investment['forest_investment'].values / self.cost_per_ha
+        self.forest_surface_df['delta_reforestation_surface'] = self.forest_investment['forest_investment'].values / self.cost_per_ha
 
-        # managed wood
+        self.forest_surface_df['deforestation_surface'] = np.cumsum(
+            self.forest_surface_df['delta_deforestation_surface'])
+        self.forest_surface_df['reforestation_surface'] = np.cumsum(
+            self.forest_surface_df['delta_reforestation_surface'])
 
-        # total
-        self.forest_surface_df['forest_surface_evol'] = self.forest_surface_df['forested_surface'] + \
-            self.forest_surface_df['deforested_surface']
+    def sumup_global_surface_data(self):
+        """
+        managed wood and unmanaged wood impact forest_surface_df
+        """
+        self.forest_surface_df['delta_global_forest_surface'] = self.forest_surface_df['delta_reforestation_surface'] + self.forest_surface_df['delta_deforestation_surface'] +\
+            self.unmanaged_wood_df['delta_surface'] + \
+            self.managed_wood_df['delta_surface']
+        self.forest_surface_df['global_forest_surface'] = self.forest_surface_df['reforestation_surface'] + self.forest_surface_df['deforestation_surface'] + \
+            self.unmanaged_wood_df['cumulative_surface'] + \
+            self.managed_wood_df['cumulative_surface']
 
-        # cumulative values
-        self.forest_surface_df['forest_surface_evol_cumulative'] = np.cumsum(
-            self.forest_surface_df['forest_surface_evol'])
-        self.forest_surface_df['deforested_surface_cumulative'] = np.cumsum(
-            self.forest_surface_df['deforested_surface'])
-        self.forest_surface_df['forested_surface_cumulative'] = np.cumsum(
-            self.forest_surface_df['forested_surface'])
+    def check_deforestation_limit(self):
+        """
+        take into acount deforestation limit.
+        If limit is not crossed, nothing happen
+        If limit is crossed, deforestation_surface is limited and delta_deforestation is set to 0.
+        """
+
+        # check limit of deforestation
+        for element in range(0, len(self.years)):
+            if self.forest_surface_df.loc[element, 'global_forest_surface'] < -self.limit_deforestation_surface / 1000:
+                self.forest_surface_df.loc[element,
+                                           'delta_global_forest_surface'] = 0
+                self.forest_surface_df.loc[element, 'delta_deforestation_surface'] = - \
+                    self.forest_surface_df.loc[element,
+                                               'delta_global_forest_surface']
+                self.forest_surface_df.loc[element,
+                                           'global_forest_surface'] = -self.limit_deforestation_surface / 1000
+                self.forest_surface_df.loc[element,
+                                           'deforestation_surface'] = -self.forest_surface_df.loc[element, 'reforestation_surface'] - self.managed_wood_df.loc[element, 'cumulative_surface'] - self.unmanaged_wood_df.loc[element, 'cumulative_surface'] - self.limit_deforestation_surface / 1000
+
+    def compute_global_CO2_production(self):
+        """
+        compute the global CO2 production in Gt
+        """
+        # in Gt of CO2
+        self.CO2_emitted_df['delta_CO2_emitted'] = -self.forest_surface_df['delta_global_forest_surface'] * \
+            self.CO2_per_ha / 1000
+        self.CO2_emitted_df['delta_CO2_deforestation'] = -self.forest_surface_df['delta_deforestation_surface'] * \
+            self.CO2_per_ha / 1000
+        self.CO2_emitted_df['delta_CO2_reforestation'] = -self.forest_surface_df['delta_reforestation_surface'] * \
+            self.CO2_per_ha / 1000
+
+        self.CO2_emitted_df['CO2_deforestation'] = -self.forest_surface_df['deforestation_surface'] * \
+            self.CO2_per_ha / 1000
+        self.CO2_emitted_df['CO2_reforestation'] = -self.forest_surface_df['reforestation_surface'] * \
+            self.CO2_per_ha / 1000
+        # global sum up
+        self.CO2_emitted_df['global_CO2_emitted'] = -self.forest_surface_df['deforestation_surface'] * \
+            self.CO2_per_ha / 1000 + self.initial_emissions
+        self.CO2_emitted_df['global_CO2_captured'] = -(self.forest_surface_df['reforestation_surface'] +
+                                                       self.unmanaged_wood_df['cumulative_surface'] +
+                                                       self.managed_wood_df['cumulative_surface']) * self.CO2_per_ha / 1000
+        self.CO2_emitted_df['global_CO2_emission_balance'] = self.CO2_emitted_df['global_CO2_emitted'] + \
+            self.CO2_emitted_df['global_CO2_captured']
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
