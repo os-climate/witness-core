@@ -47,7 +47,7 @@ class Study(StudyManager):
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.alpha'] = alpha_i
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 1
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 11
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
 
         for scenario in scenario_list:
