@@ -52,7 +52,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_v1')
+            'climateeconomics.sos_processes.iam.witness', 'witness_dev_optim_process')
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
@@ -64,19 +64,19 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict = {}
         for dict_v in values_dict:
             full_values_dict.update(dict_v)
-        full_values_dict[f'{self.name}.tolerance_linear_solver_MDO'] = 1.0e-12
-        full_values_dict[f'{self.name}.linearization_mode'] = 'adjoint'
-        full_values_dict[f'{self.name}.warm_start'] = False
-        full_values_dict[f'{self.name}.tolerance'] = 1.0e-12
-        full_values_dict[f'{self.name}.chain_linearize'] = False
-        full_values_dict[f'{self.name}.sub_mda_class'] = 'MDANewtonRaphson'
-        full_values_dict[f'{self.name}.max_mda_iter'] = 1
+        full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.tolerance_linear_solver_MDO'] = 1.0e-12
+        full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.linearization_mode'] = 'adjoint'
+        full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.warm_start'] = False
+        full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.tolerance'] = 1.0e-12
+        full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.chain_linearize'] = False
+        full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDANewtonRaphson'
+        full_values_dict[f'{self.name}.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
 
         for i in range(10):
             self.ee = ExecutionEngine(self.name)
             builder = self.ee.factory.get_builder_from_process(
-                'climateeconomics.sos_processes.iam.witness', 'witness_v1')
+                'climateeconomics.sos_processes.iam.witness', 'witness_dev_optim_process')
             self.ee.factory.set_builders_to_coupling_builder(builder)
             self.ee.configure()
             full_values_dict[f'{self.name}.max_mda_iter'] = i
