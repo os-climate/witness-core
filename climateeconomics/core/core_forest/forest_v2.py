@@ -49,14 +49,13 @@ class Forest():
         self.create_dataframe()
 
     def set_data(self):
+        """
+        """
         self.year_start = self.param[self.YEAR_START]
         self.year_end = self.param[self.YEAR_END]
         self.time_step = self.param[self.TIME_STEP]
-        # deforestation limite
         self.limit_deforestation_surface = self.param[self.LIMIT_DEFORESTATION_SURFACE]
-        # percentage of deforestation
         self.deforestation_surface = self.param[self.DEFORESTATION_SURFACE]
-        # kg of CO2 not absorbed for 1 ha of forest deforested
         self.CO2_per_ha = self.param[self.CO2_PER_HA]
         # initial CO2 emissions
         self.initial_emissions = self.param[self.INITIAL_CO2_EMISSIONS]
@@ -127,12 +126,12 @@ class Forest():
         """
         construction_delay = self.techno_wood_info['construction_delay']
         density_per_ha = self.techno_wood_info['density_per_ha']
-        mean_density = self.techno_wood_info['mean_density']
+        mean_density = self.techno_wood_info['density']
         years_between_harvest = self.techno_wood_info['years_between_harvest']
         recycle_part = self.techno_wood_info['recycle_part']
         residue_density_percentage = self.techno_wood_info['residue_density_percentage']
         residue_percentage_for_energy = self.techno_wood_info['residue_percentage_for_energy']
-        # ADD TEST FOR $  or € unit OF PRICE #############
+        # ADD TEST FOR $  or euro unit OF PRICE #############
         mw_cost = self.techno_wood_info['Managed_wood_price_per_ha']
         # managed wood from past invest. invest in G$ - surface in Gha.
         mw_from_past_invest = self.managed_wood_invest_before_year_start['investment'] / mw_cost
@@ -171,12 +170,12 @@ class Forest():
 
         construction_delay = self.techno_wood_info['construction_delay']
         density_per_ha = self.techno_wood_info['density_per_ha']
-        mean_density = self.techno_wood_info['mean_density']
+        mean_density = self.techno_wood_info['density']
         years_between_harvest = self.techno_wood_info['years_between_harvest']
         recycle_part = self.techno_wood_info['recycle_part']
         residue_density_percentage = self.techno_wood_info['residue_density_percentage']
         residue_percentage_for_energy = self.techno_wood_info['residue_percentage_for_energy']
-        # ADD TEST FOR $  or € unit OF PRICE #############
+        # ADD TEST FOR $  or euro unit OF PRICE #############
         uw_cost = self.techno_wood_info['Unmanaged_wood_price_per_ha']
         # unmanaged wood from past invest. invest in G$ - surface in Gha.
         uw_from_past_invest = self.unmanaged_wood_invest_before_year_start[
