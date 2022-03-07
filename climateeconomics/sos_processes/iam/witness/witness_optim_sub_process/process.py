@@ -41,17 +41,18 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness',
             techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, process_level=self.process_level)
-        # design variables builder
-        design_var_path = 'sos_trades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
-        design_var_builder = self.ee.factory.get_builder_from_module(
-            f'{designvariable_name}', design_var_path)
-        chain_builders.append(design_var_builder)
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
             extra_name, after_name=self.ee.study_name)
         self.ee.factory.update_builder_list_with_extra_name(
             extra_name, builder_list=chain_builders)
+
+        # design variables builder
+        design_var_path = 'sos_trades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
+        design_var_builder = self.ee.factory.get_builder_from_module(
+            f'{designvariable_name}', design_var_path)
+        chain_builders.append(design_var_builder)
 
         # function manager builder
         fmanager_path = 'sos_trades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'

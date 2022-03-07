@@ -120,12 +120,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                 'techno_evo_eff': 'no',  # yes or no
                                 'years_between_harvest': years_between_harvest,
                                 'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
-                                'recyle_part': recycle_part,
+                                'recycle_part': recycle_part,
                                 'construction_delay': construction_delay}
     # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
     invest_before_year_start = pd.DataFrame(
-        {'past years': np.arange(-construction_delay, 0), 'invest': [1.135081, 1.135081, 1.135081]})
+        {'past_years': np.arange(-construction_delay, 0), 'invest': [1.135081, 1.135081, 1.135081]})
     # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
     # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
     # 92% of the production come from managed wood. 8% from unmanaged wood
@@ -164,21 +164,21 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                'wood_techno_dict': {'type': 'dict', 'unit': '-', 'default': managed_wood_techno_dict, 'namespace': 'ns_forest'},
                'managed_wood_initial_prod': {'type': 'float', 'unit': 'TWh', 'default': mw_initial_production, 'namespace': 'ns_forest'},
-               'managed_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'default': 1.25 * 0.92, 'namespace': 'ns_forest'},
+               'managed_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'namespace': 'ns_forest'},
                'managed_wood_invest_before_year_start': {'type': 'dataframe', 'unit': 'G$',
-                                                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                         'dataframe_descriptor': {'past_years': ('float', None, False),
                                                                                   'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+                                                         'namespace': 'ns_forest'},
                'managed_wood_investment': {'type': 'dataframe', 'unit': 'G$',
                                            'dataframe_descriptor': {'years': ('float', None, False),
                                                                     'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                'unmanaged_wood_initial_prod': {'type': 'float', 'unit': 'TWh', 'default': uw_initial_production, 'namespace': 'ns_forest'},
-               'unmanaged_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'default': 1.25 * 0.08, 'namespace': 'ns_forest'},
+               'unmanaged_wood_initial_surface': {'type': 'float', 'unit': 'Gha', 'namespace': 'ns_forest'},
                'unmanaged_wood_invest_before_year_start': {'type': 'dataframe', 'unit': 'G$',
-                                                           'dataframe_descriptor': {'years': ('float', None, False),
+                                                           'dataframe_descriptor': {'past_years': ('float', None, False),
                                                                                     'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+                                                           'namespace': 'ns_forest'},
                'unmanaged_wood_investment': {'type': 'dataframe', 'unit': 'G$',
                                              'dataframe_descriptor': {'years': ('float', None, False),
                                                                       'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
@@ -187,13 +187,17 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'CO2_emissions_detail_df': {
-            'type': 'dataframe', 'unit': 'Gha', 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'unit': 'GtCO2', 'namespace': 'ns_forest'},
         Forest.FOREST_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         Forest.FOREST_DETAIL_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha'},
         Forest.CO2_EMITTED_FOREST_DF: {
             'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'managed_wood_df': {
+            'type': 'dataframe', 'unit': 'Gha', 'namespace': 'ns_forest'},
+        'unmanaged_wood_df': {
+            'type': 'dataframe', 'unit': 'Gha',  'namespace': 'ns_forest'},
     }
 
     FOREST_CHARTS = 'Forest chart'
@@ -219,6 +223,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
             Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'forest_surface_evol']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
+            'managed_wood_df': self.forest_model.managed_wood_df,
+            'unmanaged_wood_df': self.forest_model.unmanaged_wood_df,
+
         }
 
         #-- store outputs
@@ -311,49 +318,75 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
+        forest_surface_df = self.get_sosdisc_outputs(
+            Forest.FOREST_DETAIL_SURFACE_DF)
+        managed_wood_df = self.get_sosdisc_outputs(
+            'managed_wood_df')
+        unmanaged_wood_df = self.get_sosdisc_outputs(
+            'unmanaged_wood_df')
+
         if ForestDiscipline.FOREST_CHARTS in chart_list:
 
-            forest_surface_df = self.get_sosdisc_outputs(
-                Forest.FOREST_DETAIL_SURFACE_DF)
             years = forest_surface_df['years'].values.tolist()
             # values are *1000 to convert from Gha to Mha
-            surface_evol_by_year = forest_surface_df['forest_surface_evol'].values * 1000
-            surface_evol_cum = forest_surface_df['forest_surface_evol_cumulative'].values * 1000
-            deforested_surface_by_year = forest_surface_df['deforested_surface'].values * 1000
-            deforested_surface_cum = forest_surface_df['deforested_surface_cumulative'].values * 1000
-            forested_surface_by_year = forest_surface_df['forested_surface'].values * 1000
-            forested_surface_cum = forest_surface_df['forested_surface_cumulative'].values * 1000
+            delta_reforestation = forest_surface_df['delta_reforestation_surface'].values * 1000
+            reforestation = forest_surface_df['reforestation_surface'].values * 1000
+
+            delta_deforestation = forest_surface_df['delta_deforestation_surface'].values * 1000
+            deforestation = forest_surface_df['deforested_surface'].values * 1000
+
+            delta_managed_wood_surface = managed_wood_df['delta_surface'].values * 1000
+            managed_wood_surface = managed_wood_df['cumulative_surface'].values * 1000
+
+            delta_unmanaged_wood_surface = unmanaged_wood_df['delta_surface'].values * 1000
+            unmanaged_wood_surface = unmanaged_wood_df['cumulative_surface'].values * 1000
+
+            delta_global = forest_surface_df['delta_global_forest_surface'].values * 1000
+            global_surface = forest_surface_df['global_forest_surface'].values * 1000
 
             # forest evolution year by year chart
-            new_chart = TwoAxesInstanciatedChart('years', 'Forest surface evolution [Mha / year]',
-                                                 chart_name='Forest surface evolution', stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart('years', 'Yearly delta of forest surface evolution [Mha / year]',
+                                                 chart_name='Yearly delta of forest surface evolution', stacked_bar=True)
 
             deforested_series = InstanciatedSeries(
-                years, deforested_surface_by_year.tolist(), 'Deforestation', 'bar')
+                years, delta_deforestation.tolist(), 'Deforestation', 'bar')
             forested_series = InstanciatedSeries(
-                years, forested_surface_by_year.tolist(), 'Reforestation', 'bar')
+                years, delta_reforestation.tolist(), 'Reforestation', 'bar')
             total_series = InstanciatedSeries(
-                years, surface_evol_by_year.tolist(), 'Surface evolution', InstanciatedSeries.LINES_DISPLAY)
+                years, delta_global.tolist(), 'Global forest surface', InstanciatedSeries.LINES_DISPLAY)
+            managed_wood_series = InstanciatedSeries(
+                years, delta_managed_wood_surface.tolist(), 'Managed wood', 'bar')
+            unmanaged_wood_series = InstanciatedSeries(
+                years, delta_unmanaged_wood_surface.tolist(), 'Unmanaged wood', 'bar')
 
             new_chart.add_series(deforested_series)
             new_chart.add_series(total_series)
             new_chart.add_series(forested_series)
+            new_chart.add_series(managed_wood_series)
+            new_chart.add_series(unmanaged_wood_series)
 
             instanciated_charts.append(new_chart)
 
             # forest cumulative evolution chart
-            new_chart = TwoAxesInstanciatedChart('years', 'Cumulative forest surface evolution [Mha]',
-                                                 chart_name='Cumulative forest surface evolution', stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart('years', 'Forest surface evolution [Mha]',
+                                                 chart_name='Global forest surface evolution', stacked_bar=True)
 
             deforested_series = InstanciatedSeries(
-                years, deforested_surface_cum.tolist(), 'Deforested surface', 'bar')
+                years, deforestation.tolist(), 'Deforested surface', 'bar')
             forested_series = InstanciatedSeries(
-                years, forested_surface_cum.tolist(), 'Forested surface', 'bar')
+                years, reforestation.tolist(), 'Reforested surface', 'bar')
             total_series = InstanciatedSeries(
-                years, surface_evol_cum.tolist(), 'Surface evolution', InstanciatedSeries.LINES_DISPLAY)
+                years, global_surface.tolist(), 'Forest surface evolution', InstanciatedSeries.LINES_DISPLAY)
+            managed_wood_series = InstanciatedSeries(
+                years, managed_wood_surface.tolist(), 'Managed wood', 'bar')
+            unmanaged_wood_series = InstanciatedSeries(
+                years, unmanaged_wood_surface.tolist(), 'Unmanaged wood', 'bar')
+
             new_chart.add_series(deforested_series)
             new_chart.add_series(total_series)
             new_chart.add_series(forested_series)
+            new_chart.add_series(managed_wood_series)
+            new_chart.add_series(unmanaged_wood_series)
 
             instanciated_charts.append(new_chart)
 
@@ -361,40 +394,62 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             CO2_emissions_df = self.get_sosdisc_outputs(
                 'CO2_emissions_detail_df')
-            CO2_emitted_year_by_year = CO2_emissions_df['emitted_CO2']
-            CO2_captured_year_by_year = CO2_emissions_df['captured_CO2']
-            CO2_total_year_by_year = CO2_emissions_df['emitted_CO2_evol']
-            CO2_emitted_cum = CO2_emissions_df['emitted_CO2_cumulative']
-            CO2_captured_cum = CO2_emissions_df['captured_CO2_cumulative']
-            CO2_total_cum = CO2_emissions_df['emitted_CO2_evol_cumulative']
+
+            delta_reforestation = CO2_emissions_df['delta_CO2_reforestation'].values
+            reforestation = CO2_emissions_df['CO2_reforestation'].values
+
+            delta_deforestation = CO2_emissions_df['delta_CO2_deforestation'].values
+            deforestation = CO2_emissions_df['CO2_deforestation'].values
+
+            delta_managed_wood_surface = managed_wood_df['delta_CO2_emitted'].values
+            managed_wood_surface = managed_wood_df['CO2_emitted'].values
+
+            delta_unmanaged_wood_surface = unmanaged_wood_df['delta_CO2_emitted'].values
+            unmanaged_wood_surface = unmanaged_wood_df['CO2_emitted'].values
+
+            delta_global = forest_surface_df['delta_CO2_emitted'].values
+            global_surface = forest_surface_df['global_CO2_emission_balance'].values
 
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2 / year]',
                                                  chart_name='Yearly forest delta CO2 emissions', stacked_bar=True)
 
-            CO2_emitted_series = InstanciatedSeries(
-                years, CO2_emitted_year_by_year.tolist(), 'CO2 emissions', InstanciatedSeries.BAR_DISPLAY)
-            CO2_captured_series = InstanciatedSeries(
-                years, CO2_captured_year_by_year.tolist(), 'CO2 capture', InstanciatedSeries.BAR_DISPLAY)
+            CO2_deforestation_series = InstanciatedSeries(
+                years, delta_deforestation.tolist(), 'Deforestation emissions', InstanciatedSeries.BAR_DISPLAY)
+            CO2_reforestation_series = InstanciatedSeries(
+                years, delta_reforestation.tolist(), 'Reforestation emissions', InstanciatedSeries.BAR_DISPLAY)
             CO2_total_series = InstanciatedSeries(
-                years, CO2_total_year_by_year.tolist(), 'CO2 evolution', InstanciatedSeries.LINES_DISPLAY)
+                years, delta_global.tolist(), 'Global CO2 balance', InstanciatedSeries.LINES_DISPLAY)
+            CO2_managed_wood_series = InstanciatedSeries(
+                years, delta_managed_wood_surface.tolist(), 'Managed wood emissions', InstanciatedSeries.BAR_DISPLAY)
+            CO2_unmanaged_wood_series = InstanciatedSeries(
+                years, delta_unmanaged_wood_surface.tolist(), 'Unmanaged wood emissions', InstanciatedSeries.BAR_DISPLAY)
 
-            new_chart.add_series(CO2_emitted_series)
+            new_chart.add_series(CO2_deforestation_series)
             new_chart.add_series(CO2_total_series)
-            new_chart.add_series(CO2_captured_series)
+            new_chart.add_series(CO2_reforestation_series)
+            new_chart.add_series(CO2_managed_wood_series)
+            new_chart.add_series(CO2_unmanaged_wood_series)
+
             instanciated_charts.append(new_chart)
 
             # in Gt
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2]',
                                                  chart_name='Forest CO2 emissions', stacked_bar=True)
-            CO2_emitted_series = InstanciatedSeries(
-                years, CO2_emitted_cum.tolist(), 'CO2 emissions', InstanciatedSeries.BAR_DISPLAY)
-            CO2_captured_series = InstanciatedSeries(
-                years, CO2_captured_cum.tolist(), 'CO2 capture', InstanciatedSeries.BAR_DISPLAY)
+            CO2_deforestation_series = InstanciatedSeries(
+                years, deforestation.tolist(), 'Deforestation emissions', InstanciatedSeries.BAR_DISPLAY)
+            CO2_reforestation_series = InstanciatedSeries(
+                years, reforestation.tolist(), 'Reforestation emissions', InstanciatedSeries.BAR_DISPLAY)
             CO2_total_series = InstanciatedSeries(
-                years, CO2_total_cum.tolist(), 'CO2 evolution', InstanciatedSeries.LINES_DISPLAY, custom_data=['width'])
+                years, global_surface.tolist(), 'Global CO2 balance', InstanciatedSeries.LINES_DISPLAY)
+            CO2_managed_wood_series = InstanciatedSeries(
+                years, managed_wood_surface.tolist(), 'Managed wood emissions', InstanciatedSeries.BAR_DISPLAY)
+            CO2_unmanaged_wood_series = InstanciatedSeries(
+                years, unmanaged_wood_surface.tolist(), 'Unmanaged wood emissions', InstanciatedSeries.BAR_DISPLAY)
 
-            new_chart.add_series(CO2_emitted_series)
+            new_chart.add_series(CO2_deforestation_series)
             new_chart.add_series(CO2_total_series)
-            new_chart.add_series(CO2_captured_series)
+            new_chart.add_series(CO2_reforestation_series)
+            new_chart.add_series(CO2_managed_wood_series)
+            new_chart.add_series(CO2_unmanaged_wood_series)
             instanciated_charts.append(new_chart)
         return instanciated_charts

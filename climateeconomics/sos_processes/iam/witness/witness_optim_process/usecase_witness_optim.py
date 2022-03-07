@@ -20,7 +20,6 @@ from sos_trades_core.tools.post_processing.post_processing_factory import PostPr
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from climateeconomics.core.design_variables_translation.witness_bspline.design_var_disc import Design_Var_Discipline
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -32,13 +31,12 @@ EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
 OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
-WRITE_XVECT = Design_Var_Discipline.WRITE_XVECT
 
 
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[1], techno_dict=DEFAULT_TECHNO_DICT):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT):
 
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -101,7 +99,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "maxcor": dspace_size,
                                                                       "pg_tol": 1.e-8,
                                                                       "max_iter": 500,
-                                                                      "disp": 110},
+                                                                      "disp": 30},
 
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-10,
                                                                                                                    'max_iter': 10000},

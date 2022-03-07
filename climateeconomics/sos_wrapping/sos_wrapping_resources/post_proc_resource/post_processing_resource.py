@@ -75,8 +75,8 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     '''
 
     # Prepare data
-    resource_name = namespace.split('All_resources.')[-1]
-    WITNESS_ns = namespace.split('.All_resources')[0]
+    resource_name = namespace.split('Resources.')[-1]
+    WITNESS_ns = namespace.split('.Resources')[0]
     EnergyMix = execution_engine.dm.get_disciplines_with_name(
         f'{WITNESS_ns}.EnergyMix')[0]
     years = np.arange(EnergyMix.get_sosdisc_inputs(
@@ -114,7 +114,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
 
     # Create Figure
     chart_name = f'{resource_name} consumption by technologies'
-    new_chart = TwoAxesInstanciatedChart('years', f'{resource_name} consumed by techno',
+    new_chart = TwoAxesInstanciatedChart('years', f'{resource_name} consumed by techno (Mt)',
                                          chart_name=chart_name, stacked_bar=True)
     for col in resource_consumed.columns:
         if 'category' not in col and col != 'years':
