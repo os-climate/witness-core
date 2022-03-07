@@ -769,26 +769,60 @@ class TestScatter(unittest.TestCase):
             plt.savefig('total_time_coarse.jpg')
             plt.show()
 
+        def plot_hbar(file_name):
+            disciplines_list = []
+            disciplines_run_time = []
+            with open(file_name) as csv_file:
+                csv_reader = csv.reader(csv_file,delimiter = ',')
+                line_count = 0
+                for row in csv_reader:
+                    if line_count==0:
+                        for disc in row:
+                            disciplines_list.append(disc)
+                    else:
+                        for time in row:
+                            disciplines_run_time.append(round(float(time),2))
+                    line_count +=1
+            df = pd.DataFrame({'disciplines':disciplines_list,'run_time':disciplines_run_time})
+            df = df.sort_values('run_time',ascending=False)
+            df = df.head(30)
+            disciplines_run_time.sort(reverse=True)
+            total_run_time = sum(disciplines_run_time)
+            sns.set_style('darkgrid')
+            plt.style.use('ggplot')
+            plt.figure(figsize=(12, 10))
+            ax = sns.barplot(x='run_time', y='disciplines', data=df, ec='k')
+            ax.set_title("execution time per discipline")
+            for c in ax.containers:
+                for k, v in enumerate(c):
+                    x = disciplines_run_time[k] + 0.005
+                    y = v.get_y() + v.get_width()+0.005
+                    text = f'{round ((disciplines_run_time[k]/total_run_time)*100)} %'
+                    ax.text(x, y, text)
+            plt.savefig('execution_time_per_disciplines_coarse_percent.jpg')
+            plt.show()
+
         labels = ['n_processes', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',
                   'convert_array_into_new_types', 'Others']
         n_processes_list = [1, 10, 20, 30]
+        n_processes_list = [1]
 
-        dict_perfo = {}
-        for n_core in n_processes_list:
-            performances_list = []
-            for i in range(0, 5):
-                performances_list.append(execute_full_usecase(n_core))
-            dict_perfo[n_core] = [sum(x) / 5 for x in zip(*performances_list)]
+        # dict_perfo = {}
+        # for n_core in n_processes_list:
+        #     performances_list = []
+        #     for i in range(0, 1):
+        #         performances_list.append(execute_full_usecase(n_core))
+        #     dict_perfo[n_core] = [sum(x) / 1 for x in zip(*performances_list)]
 
-        with open(join(dirname(__file__), 'witness_full_parallel_perfos_processing_sequential.csv'), 'w+') as f:
-            writer = csv.writer(f)
-            writer.writerow(labels)
-            for n_core in n_processes_list:
-                data = [f'with_{n_core}_cores']
-                data.extend(dict_perfo[n_core])
-                writer.writerow(data)
-        witness_parallel_status()
-
+        # with open(join(dirname(__file__), 'witness_full_parallel_perfos_processing_sequential.csv'), 'w+') as f:
+        #     writer = csv.writer(f)
+        #     writer.writerow(labels)
+        #     for n_core in n_processes_list:
+        #         data = [f'with_{n_core}_cores']
+        #         data.extend(dict_perfo[n_core])
+        #         writer.writerow(data)
+        # witness_parallel_status()
+        plot_hbar('execute_split_coarse.csv')
         print("done")
 
     def test_07_witness_memory_perfos(self):
