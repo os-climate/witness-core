@@ -63,7 +63,7 @@ class Study(ClimateEconomicsStudyManager):
         year_end = scenarioUseCase.year_end
         years = np.arange(year_start, year_end + 1)
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5)/1e-4,np.ones(len(years)-5)/4), axis=None)
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5)*1e-4,np.ones(len(years)-5)/4), axis=None)
         return values_dict
 
 
