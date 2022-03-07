@@ -38,6 +38,8 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_energy_mix': ns_scatter,
                    'ns_ref': f'{ns_scatter}.NormalizationReferences',
                    'ns_agriculture': ns_scatter,
+                   'ns_ccs': ns_scatter,
+                   'ns_energy': ns_scatter,
                    'ns_forest': ns_scatter}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
