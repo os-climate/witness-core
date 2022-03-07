@@ -37,8 +37,10 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_dict = {'ns_witness': ns_scatter,
                    'ns_energy_mix': ns_scatter,
                    'ns_ref': f'{ns_scatter}.NormalizationReferences',
+                   'ns_agriculture': ns_scatter,
                    'ns_ccs': ns_scatter,
-                   'ns_energy': ns_scatter}
+                   'ns_energy': ns_scatter,
+                   'ns_forest': ns_scatter}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
@@ -49,5 +51,32 @@ class ProcessBuilder(BaseProcessBuilder):
                      'Policy': 'climateeconomics.sos_wrapping.sos_wrapping_witness.policymodel.policy_discipline.PolicyDiscipline'}
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
+
+        chain_builders_resource = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'resources_process')
+        builder_list.extend(chain_builders_resource)
+
+        chain_builders_landuse = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'land_use_v1_process')
+        builder_list.extend(chain_builders_landuse)
+
+        chain_builders_agriculture = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'agriculture_process')
+        builder_list.extend(chain_builders_agriculture)
+
+        chain_builders_population = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'population_process')
+        builder_list.extend(chain_builders_population)
+
+        chain_builders_forest = self.ee.factory.get_builder_from_process(
+            'climateeconomics.sos_processes.iam.witness', 'forest_v1_process')
+        builder_list.extend(chain_builders_forest)
+
+        ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
+                   'ns_functions': f'{self.ee.study_name}.EnergyMix',
+                   'ns_resource ': f'{self.ee.study_name}.EnergyMix',
+                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
 
         return builder_list

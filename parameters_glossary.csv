@@ -232,7 +232,7 @@ pop_start,Global inital population,millions,Human population on Earth at the fir
 popasym,Population limit asymptot,millions of people,Asymptotic upper limit of the human population on Earth in millions of people.,,
 population_detail_df,Population detailed df,,Population per year per age.,,
 population_df,Population data,Million of persons,Global population number.,,
-working_age_population_df,working age Population,Million of persons,population number in age of working (15-70 years old).,,
+working_age_population_df,Working age population,Million of persons,Population number in age of working (15-70 years old).,,
 population_growth,Population growth,,Growth rate of population.,,
 population_start,Initial population,,Population at year start per age range.,,
 ppm_objective,Ppm objective,,Data concerning CO2 ppm_obje.,,

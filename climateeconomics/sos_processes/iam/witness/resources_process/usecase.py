@@ -54,7 +54,7 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
 
-        self.all_resource_name = '.All_resources'
+        self.all_resource_name = '.Resources'
 
         self.year_start = year_start
         self.year_end = year_end

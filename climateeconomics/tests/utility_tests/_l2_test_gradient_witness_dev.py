@@ -42,9 +42,9 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         Test all the couplings for the disciplines in the "specific_disc" list on the witness_dev process
         '''
 
-        specific_disciplines = ['All_resources.coal_resource', 'All_resources.oil_resource',
-                                'All_resources.natural_gas_resource',
-                                'All_resources.uranium_resource', 'All_resources',
+        specific_disciplines = ['Resources.coal_resource', 'Resources.oil_resource',
+                                'Resources.natural_gas_resource',
+                                'Resources.uranium_resource', 'Resources',
                                 'Resources', 'Land.Land_Use', 'Land.Agriculture',
                                 'Population', 'Land.Forest', ]
 
