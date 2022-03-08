@@ -262,6 +262,7 @@ class AllResourceModel():
             demand.values, 1.0e-10)
         identity_neg = np.diag(
             np.linspace(-1, -1, len(inputs_dict['All_Demand'].index)))
+        # pylint: disable=unsubscriptable-object
         grad_use_ratio_on_demand = (
             resource_use * d_demand_limited.T[0] / (demand_limited**2)).values * identity_neg
         grad_use_ratio_on_use = grad_use / (demand_limited)
