@@ -73,6 +73,8 @@ class Forest():
         self.unmanaged_wood_invest_before_year_start = self.param[
             'unmanaged_wood_invest_before_year_start']
         self.unmanaged_wood_investment = self.param['unmanaged_wood_investment']
+        self.transport = self.param['transport_cost']
+        self.margin = self.param['margin']
 
     def create_dataframe(self):
         """
@@ -86,12 +88,16 @@ class Forest():
         self.forest_surface_df = pd.DataFrame()
         self.CO2_emitted_df = pd.DataFrame()
         self.managed_wood_df = pd.DataFrame()
-        self.biomass_dry = pd.DataFrame()
+        self.unmanaged_wood_df = pd.DataFrame()
+        self.biomass_dry_df = pd.DataFrame()
+        self.price_df = pd.DataFrame()
 
     def compute(self, in_dict):
         """
         Computation methods
         """
+        self.biomass_dry_calorific_value = 3.6  # kwh/kg
+        # calorific value to be taken from factorised info
         self.deforestation_surface = in_dict[self.DEFORESTATION_SURFACE]
         self.year_start = in_dict[self.YEAR_START]
         self.year_end = in_dict[self.YEAR_END]
@@ -105,20 +111,25 @@ class Forest():
 
         self.forest_surface_df['years'] = self.years
         self.managed_wood_df['years'] = self.years
-        self.biomass_dry['years'] = self.years
+        self.unmanaged_wood_df['years'] = self.years
+        self.biomass_dry_df['years'] = self.years
         self.CO2_emitted_df['years'] = self.years
+        self.price_df['years'] = self.years
 
         # compute data of each contribution
         self.compute_reforestation_deforestation()
         self.compute_managed_wood_production()
-        self.compute_reforestation_deforestation()
+        self.compute_unmanaged_wood_production()
         # sum up global surface data
         self.sumup_global_surface_data()
         # check deforestation limit
         self.check_deforestation_limit()
 
         # sum up global CO2 data
-        self.compute_global_CO2_production
+        self.compute_global_CO2_production()
+
+        # compute biomass dry production
+        self.compute_biomass_dry_production()
 
     def compute_managed_wood_production(self):
         """
@@ -131,6 +142,7 @@ class Forest():
         recycle_part = self.techno_wood_info['recycle_part']
         residue_density_percentage = self.techno_wood_info['residue_density_percentage']
         residue_percentage_for_energy = self.techno_wood_info['residue_percentage_for_energy']
+        wood_percentage_for_energy = self.techno_wood_info['wood_percentage_for_energy']
         # ADD TEST FOR $  or euro unit OF PRICE #############
         mw_cost = self.techno_wood_info['Managed_wood_price_per_ha']
         # managed wood from past invest. invest in G$ - surface in Gha.
@@ -138,7 +150,7 @@ class Forest():
         # managed wood from actual invest
         mw_from_invest = self.managed_wood_investment['investment'] / mw_cost
         # concat all managed wood form invest
-        mw_added = pd.concat([mw_from_past_invest, mw_from_invest])
+        mw_added = pd.concat([mw_from_past_invest, mw_from_invest]).values
         # remove value that exceed year_end
         for i in range(0, construction_delay):
             mw_added = np.delete(mw_added, len(mw_added) - 1)
@@ -156,12 +168,25 @@ class Forest():
             self.managed_wood_df['delta_biomass_production']) + self.managed_wood_inital_prod
         self.managed_wood_df['residues_production'] = self.managed_wood_df['biomass_production'] * \
             residue_density_percentage * (1 - residue_percentage_for_energy)
+        self.managed_wood_df['residues_production_for_energy'] = self.managed_wood_df['residues_production'] * \
+            residue_percentage_for_energy
+        self.managed_wood_df['residues_production_for_industry'] = self.managed_wood_df['residues_production'] * \
+            (1 - residue_percentage_for_energy)
+
+        self.managed_wood_df['wood_production'] = self.managed_wood_df['biomass_production'] * \
+            (1 - residue_density_percentage)
+        self.managed_wood_df['wood_production_for_energy'] = self.managed_wood_df['wood_production'] * \
+            wood_percentage_for_energy
+        self.managed_wood_df['wood_production_for_industry'] = self.managed_wood_df['wood_production'] * \
+            (1 - wood_percentage_for_energy)
 
         # CO2 part
         self.managed_wood_df['delta_CO2_emitted'] = - \
-            self.managed_wood_df['delta_surface'] * self.CO2_per_ha
+            self.managed_wood_df['delta_surface'] * self.CO2_per_ha / 1000
+        # CO2 emitted is delta cumulate
         self.managed_wood_df['CO2_emitted'] = - \
-            self.managed_wood_df['cumulative_surface'] * self.CO2_per_ha
+            (self.managed_wood_df['cumulative_surface'] -
+             self.managed_wood_initial_surface) * self.CO2_per_ha / 1000
 
     def compute_unmanaged_wood_production(self):
         """
@@ -175,6 +200,7 @@ class Forest():
         recycle_part = self.techno_wood_info['recycle_part']
         residue_density_percentage = self.techno_wood_info['residue_density_percentage']
         residue_percentage_for_energy = self.techno_wood_info['residue_percentage_for_energy']
+        wood_percentage_for_energy = self.techno_wood_info['wood_percentage_for_energy']
         # ADD TEST FOR $  or euro unit OF PRICE #############
         uw_cost = self.techno_wood_info['Unmanaged_wood_price_per_ha']
         # unmanaged wood from past invest. invest in G$ - surface in Gha.
@@ -183,7 +209,7 @@ class Forest():
         # unmanaged wood from actual invest
         uw_from_invest = self.unmanaged_wood_investment['investment'] / uw_cost
         # concat all unmanaged wood form invest
-        uw_added = pd.concat([uw_from_past_invest, uw_from_invest])
+        uw_added = pd.concat([uw_from_past_invest, uw_from_invest]).values
         # remove value that exceed year_end
         for i in range(0, construction_delay):
             uw_added = np.delete(uw_added, len(uw_added) - 1)
@@ -194,19 +220,30 @@ class Forest():
             uw_added) + self.unmanaged_wood_initial_surface
 
         # Biomass production part
-        ##### precise what is 3.6 ################
         self.unmanaged_wood_df['delta_biomass_production'] = self.unmanaged_wood_df['delta_surface'] * density_per_ha * mean_density * 3.6 / \
             years_between_harvest / (1 - recycle_part)
         self.unmanaged_wood_df['biomass_production'] = np.cumsum(
             self.unmanaged_wood_df['delta_biomass_production']) + self.unmanaged_wood_inital_prod
         self.unmanaged_wood_df['residues_production'] = self.unmanaged_wood_df['biomass_production'] * \
-            residue_density_percentage * (1 - residue_percentage_for_energy)
+            residue_density_percentage
+        self.unmanaged_wood_df['residues_production_for_energy'] = self.unmanaged_wood_df['residues_production'] * \
+            residue_percentage_for_energy
+        self.unmanaged_wood_df['residues_production_for_industry'] = self.unmanaged_wood_df['residues_production'] * \
+            (1 - residue_percentage_for_energy)
+
+        self.unmanaged_wood_df['wood_production'] = self.unmanaged_wood_df['biomass_production'] * \
+            (1 - residue_density_percentage)
+        self.unmanaged_wood_df['wood_production_for_energy'] = self.unmanaged_wood_df['wood_production'] * \
+            wood_percentage_for_energy
+        self.unmanaged_wood_df['wood_production_for_industry'] = self.unmanaged_wood_df['wood_production'] * \
+            (1 - wood_percentage_for_energy)
 
         # CO2 part
-        self.managed_wood_df['delta_CO2_emitted'] = - \
-            self.managed_wood_df['delta_surface'] * self.CO2_per_ha
-        self.managed_wood_df['CO2_emitted'] = - \
-            self.managed_wood_df['cumulative_surface'] * self.CO2_per_ha
+        self.unmanaged_wood_df['delta_CO2_emitted'] = - \
+            self.unmanaged_wood_df['delta_surface'] * self.CO2_per_ha / 1000
+        self.unmanaged_wood_df['CO2_emitted'] = - \
+            (self.unmanaged_wood_df['cumulative_surface'] - self.unmanaged_wood_initial_surface) * \
+            self.CO2_per_ha / 1000
 
     def compute_reforestation_deforestation(self):
         """
@@ -271,17 +308,87 @@ class Forest():
             self.CO2_per_ha / 1000
 
         self.CO2_emitted_df['CO2_deforestation'] = -self.forest_surface_df['deforestation_surface'] * \
-            self.CO2_per_ha / 1000
+            self.CO2_per_ha / 1000 + self.initial_emissions
         self.CO2_emitted_df['CO2_reforestation'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000
         # global sum up
         self.CO2_emitted_df['global_CO2_emitted'] = -self.forest_surface_df['deforestation_surface'] * \
             self.CO2_per_ha / 1000 + self.initial_emissions
-        self.CO2_emitted_df['global_CO2_captured'] = -(self.forest_surface_df['reforestation_surface'] +
-                                                       self.unmanaged_wood_df['cumulative_surface'] +
-                                                       self.managed_wood_df['cumulative_surface']) * self.CO2_per_ha / 1000
+        self.CO2_emitted_df['global_CO2_captured'] = -self.forest_surface_df['reforestation_surface'] * \
+            self.CO2_per_ha / 1000 + \
+            self.unmanaged_wood_df['CO2_emitted'] + \
+            self.managed_wood_df['CO2_emitted']
         self.CO2_emitted_df['global_CO2_emission_balance'] = self.CO2_emitted_df['global_CO2_emitted'] + \
             self.CO2_emitted_df['global_CO2_captured']
+
+    def compute_biomass_dry_production(self):
+        """
+        compute total biomass dry prod
+        """
+
+        self.biomass_dry_df['biomass_dry_for_energy'] = self.unmanaged_wood_df['residues_production_for_energy'] + self.unmanaged_wood_df['wood_production_for_energy'] + \
+            self.managed_wood_df['wood_production_for_energy'] + \
+            self.managed_wood_df['residues_production_for_energy']
+
+        density_per_ha = self.techno_wood_info['density_per_ha']
+        mean_density = self.techno_wood_info['density']
+        years_between_harvest = self.techno_wood_info['years_between_harvest']
+        recycle_part = self.techno_wood_info['recycle_part']
+
+        self.biomass_dry_per_ha = density_per_ha * mean_density * 3.6
+
+        managed_wood_part = self.managed_wood_df['biomass_production'] / (
+            self.managed_wood_df['biomass_production'] + self.unmanaged_wood_df['biomass_production'])
+        unmanaged_wood_part = self.unmanaged_wood_df['biomass_production'] / (
+            self.managed_wood_df['biomass_production'] + self.unmanaged_wood_df['biomass_production'])
+
+        self.compute_price('Managed_wood')
+        self.compute_price('Unmanaged_wood')
+
+        self.biomass_dry_df['price_per_MWh'] = self.biomass_dry_df['Managed_wood_price'] * \
+            managed_wood_part + \
+            self.biomass_dry_df['Unmanaged_wood_price'] * \
+            unmanaged_wood_part
+
+        self.biomass_dry_df['managed_wood_price'] = self.biomass_dry_df['Managed_wood_price'] * \
+            self.biomass_dry_calorific_value
+        self.biomass_dry_df['unmanaged_wood_price'] = self.biomass_dry_df['Unmanaged_wood_price'] * \
+            self.biomass_dry_calorific_value
+        self.biomass_dry_df['price_per_ton'] = self.biomass_dry_df['price_per_MWh'] * \
+            self.biomass_dry_calorific_value
+
+    def compute_price(self, techno_name):
+        """
+        compute price as in techno_type
+        """
+
+        # Maximize with smooth exponential
+#         price_df['invest'] = compute_func_with_exp_min(
+#             investment, self.min_value_invest)
+
+        self.crf = self.compute_crf()
+
+        self.biomass_dry_df[f'{techno_name}_transport'] = self.transport['transport'] / \
+            self.biomass_dry_calorific_value
+        # Factory cost including CAPEX OPEX
+        self.biomass_dry_df[f'{techno_name}_capex'] = self.techno_wood_info[f'{techno_name}_price_per_ha'] * \
+            (self.crf + 0.045) / self.biomass_dry_per_ha * \
+            1000
+
+        self.biomass_dry_df[f'{techno_name}_price'] = (
+            self.biomass_dry_df[f'{techno_name}_capex'] +
+            self.biomass_dry_df[f'{techno_name}_transport']) * self.margin['margin']
+
+    def compute_crf(self):
+        """
+        Compute annuity factor with the Weighted averaged cost of capital
+        and the lifetime of the selected solution
+        """
+        wacc = 0.1
+        crf = (wacc * (1.0 + wacc) ** 100) / \
+              ((1.0 + wacc) ** 100 - 1.0)
+
+        return crf
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
