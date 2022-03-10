@@ -642,7 +642,125 @@ class MacroEconomics():
         else:
             dnet_output = (1 - damefrac) * dgross_output
         return dnet_output
-    
+
+    def compute_denergy_investment_dshare_energy_investement(self):
+        """
+        energy_investment(t), trillions $USD (including renewable investments)
+        Share of the total output
+
+        """
+
+        years = np.arange(self.year_start,
+                          self.year_end + 1, self.time_step)
+        nb_years = len(years)
+
+        net_output = self.economics_df['net_output'].values
+        energy_investment_wo_tax = self.share_energy_investment.values  * net_output
+        denergy_investment_wo_tax = np.identity(nb_years) /100.0 * net_output
+        denergy_investment_wo_renewable = denergy_investment_wo_tax * 1e3
+
+        self.co2_emissions_Gt['Total CO2 emissions'].clip(
+            lower=0.0, inplace=True)
+
+        dren_investments = self.dren_investments_denergy_investment_wo_tax(energy_investment_wo_tax, denergy_investment_wo_tax)
+        denergy_investment = denergy_investment_wo_tax + dren_investments
+
+        return denergy_investment, denergy_investment_wo_renewable
+
+    def dren_investments_denergy_investment_wo_tax(self, energy_investment_wo_tax, denergy_investment_wo_tax):
+        """
+        computes gradients for energy investment for renewable part by energy_investment_wo_tax
+        for a given year: returns net CO2 emissions * CO2 taxes * a efficiency factor
+        """
+        co2_invest_limit = self.co2_invest_limit
+        emissions = self.co2_emissions_Gt['Total CO2 emissions'].values * 1e9  # t CO2
+        co2_taxes = self.co2_taxes['CO2_tax'].values  # $/t
+        co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
+
+        ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
+
+        years = np.arange(self.year_start,
+                          self.year_end + 1, self.time_step)
+        nb_years = len(years)
+        # derivative matrix initialization
+        dren_investments = np.zeros((nb_years, nb_years))
+        for i in range(0, nb_years):
+            # if emissions is zero the right gradient (positive) is not zero but the left gradient is zero
+            # when complex step we add ren_invest with the complex step and it is
+            # not good
+            if ren_investments[i].real == 0.0:
+                ren_investments[i] = 0.0
+
+            # Saturation of renewable invest at n * invest wo tax with n ->
+            # co2_invest_limit entry parameter
+            if ren_investments[i] > co2_invest_limit * energy_investment_wo_tax[i] and ren_investments[i] != 0.0:
+                u = co2_invest_limit * energy_investment_wo_tax[i] / 10.0
+                u_prime = co2_invest_limit * denergy_investment_wo_tax[i] / 10.0
+                v = 9.0 + np.exp(- co2_invest_limit * energy_investment_wo_tax[i] / ren_investments[i])
+                v_prime = (- co2_invest_limit * denergy_investment_wo_tax[i] / ren_investments[i]) * (v - 9.0)
+
+                dren_investments[i] = u_prime * v + v_prime * u
+
+        return dren_investments
+
+    def compute_dinvestment_dshare_energy_investement(self, denergy_investment):
+        years = np.arange(self.year_start,
+                          self.year_end + 1, self.time_step)
+        nb_years = len(years)
+        net_output = self.economics_df['net_output'].values
+        dinvestment = denergy_investment - np.identity(nb_years) /100.0 * net_output
+
+        return dinvestment
+
+    def compute_denergy_investment_dco2_tax(self):
+
+
+        self.co2_emissions_Gt['Total CO2 emissions'].clip(
+            lower=0.0, inplace=True)
+        net_output = self.economics_df['net_output'].values
+        energy_investment_wo_tax = self.share_energy_investment.values * net_output
+
+        dren_investments = self.dren_investments_dco2_tax(energy_investment_wo_tax)
+        denergy_investment = dren_investments
+
+        return denergy_investment
+
+    def dren_investments_dco2_tax(self,energy_investment_wo_tax):
+        years = np.arange(self.year_start,
+                          self.year_end + 1, self.time_step)
+        nb_years = len(years)
+        co2_invest_limit = self.co2_invest_limit
+        emissions = self.co2_emissions_Gt['Total CO2 emissions'].values * 1e9  # t CO2
+        co2_taxes = self.co2_taxes['CO2_tax'].values  # $/t
+        co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
+
+        ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
+        d_ren_investments_dco2_taxes =  emissions * co2_tax_eff / 1e12 * np.identity(nb_years)
+        years = np.arange(self.year_start,
+                          self.year_end + 1, self.time_step)
+        nb_years = len(years)
+        # derivative matrix initialization
+        dren_investments = np.zeros((nb_years, nb_years))
+        for i in range(0, nb_years):
+            dren_investments[i] = d_ren_investments_dco2_taxes[i]
+
+            # if emissions is zero the right gradient (positive) is not zero but the left gradient is zero
+            # when complex step we add ren_invest with the complex step and it is
+            # not good
+            if ren_investments[i].real == 0.0:
+                ren_investments[i] = 0.0
+                d_ren_investments_dco2_taxes = np.zeros(nb_years)
+
+            # Saturation of renewable invest at n * invest wo tax with n ->
+            # co2_invest_limit entry parameter
+            if ren_investments[i] > co2_invest_limit * energy_investment_wo_tax[i] and ren_investments[i] != 0.0:
+                v = np.exp(- co2_invest_limit * energy_investment_wo_tax[i] / ren_investments[i])
+                v_prime = (d_ren_investments_dco2_taxes[i] * co2_invest_limit * energy_investment_wo_tax[i] / (ren_investments[i]**2))
+
+                dren_investments[i] = co2_invest_limit * energy_investment_wo_tax[i] / 10.0 * v_prime * v
+
+        return dren_investments
+
     def dinvestment(self, dnet_output):
         years = self.years_range
         nb_years = len(years)
@@ -668,6 +786,7 @@ class MacroEconomics():
                         
                 dinvestment[i, j] = denergy_investment[i, j] + self.share_n_energy_investment[years[i]] * dnet_output[i, j]
         return denergy_investment, dinvestment  
+
    
     def compute_dconsumption(self, dnet_output, dinvestment):
         """gradient computation for consumption
@@ -708,7 +827,8 @@ class MacroEconomics():
                         self.population_df.at[years[i], 'population'] * 1000
 
         return dconsumption_pc
-    
+
+
     def compute_dconsumption_pc_dpopulation(self):
         """gradient computation for pc_consumption wrt population
         Args:
