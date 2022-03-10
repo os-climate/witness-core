@@ -187,7 +187,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dconsumption = self.macro_model.compute_dconsumption(np.zeros((self.macro_model.nb_years, self.macro_model.nb_years)), dinvestment)
         dconsumption_pc = self.macro_model.compute_dconsumption_pc(dconsumption)
         self.set_partial_derivative_for_other_types(
-             ('output', 'pc_consumption'), ('co2_emissions_Gt', 'Total CO2 emissions'), dconsumption_pc)
+             ('economics_df', 'pc_consumption'), ('co2_emissions_Gt', 'Total CO2 emissions'), dconsumption_pc)
         self.set_partial_derivative_for_other_types(
              ('pc_consumption_constraint',), ('co2_emissions_Gt', 'Total CO2 emissions'), - dconsumption_pc / ref_pc_consumption_constraint)
 
