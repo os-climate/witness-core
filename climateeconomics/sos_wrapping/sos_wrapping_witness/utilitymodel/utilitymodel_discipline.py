@@ -25,7 +25,6 @@ import numpy as np
 class UtilityModelDiscipline(ClimateEcoDiscipline):
     "UtilityModel discipline for DICE"
 
-
     # ontology information
     _ontology_data = {
         'label': 'Utility WITNESS Model',
@@ -179,7 +178,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['Utility', 'Utility of pc consumption']
+        chart_list = ['Utility', 'Utility of pc consumption',
+                      'Energy price effect on utility']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -264,4 +264,42 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
+        if 'Energy price effect on utility' in chart_list:
+
+            utility_df = deepcopy(self.get_sosdisc_outputs('utility_df'))
+
+            discounted_utility_final = utility_df['discounted_utility'].values
+
+            energy_mean_price = self.get_sosdisc_inputs('energy_mean_price')[
+                'energy_price'].values
+
+            energy_price_ref = self.get_sosdisc_inputs(
+                'initial_raw_energy_price')
+
+            energy_price_ratio = energy_price_ref / energy_mean_price
+
+            discounted_utility_before = discounted_utility_final / energy_price_ratio
+
+            years = list(utility_df.index)
+
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+
+            chart_name = 'Energy price ratio effect on discounted utility'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Discounted Utility (trill $)',
+                                                 chart_name=chart_name)
+
+            visible_line = True
+
+            new_series = InstanciatedSeries(
+                years, discounted_utility_before.tolist(), 'Before energy price ratio effect', 'lines', visible_line)
+
+            new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                years, discounted_utility_final.tolist(), 'After energy price ratio effect', 'lines', visible_line)
+
+            new_chart.series.append(new_series)
+            instanciated_charts.append(new_chart)
         return instanciated_charts
