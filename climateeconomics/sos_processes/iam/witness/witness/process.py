@@ -73,4 +73,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'ns_witness',
             'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_optim.post_processing_witness_full')
 
+        for resource_namespace in ['coal_resource', 'oil_resource', 'natural_gas_resource', 'uranium_resource']:
+            self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                resource_namespace, 'climateeconomics.sos_wrapping.sos_wrapping_resources.post_proc_resource.post_processing_resource')
+
         return chain_builders

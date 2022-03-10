@@ -63,9 +63,9 @@ class MacroDiscTest(unittest.TestCase):
             (year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
         # Energy invest divided by 1e2 (scaling factor invest)
-        energy_invest = np.asarray([0.026] * nb_per)
+        energy_invest = np.asarray([2.6] * nb_per)
 
-        total_invest = np.asarray([25.0] * nb_per)
+        total_invest = np.asarray([27.0] * nb_per)
         total_invest = DataFrame(
             {'years': years, 'share_investment': total_invest})
         share_energy_investment = DataFrame(
