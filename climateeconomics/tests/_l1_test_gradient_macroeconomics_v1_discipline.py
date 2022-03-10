@@ -160,8 +160,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_v1_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            inputs=[f'{self.name}.CO2_taxes'],
-                            outputs=[f'{self.name}.{self.model_name}.output'])
+                            inputs=[f'{self.name}.co2_emissions_Gt'],
+                            outputs=[f'{self.name}.economics_df', 
+                                      f'{self.name}.energy_investment',
+                                      f'{self.name}.pc_consumption_constraint'])
 
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_v1_discipline.pkl',
 #                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
@@ -175,9 +177,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 #                                     f'{self.name}.working_age_population_df'],
 #                             outputs=[f'{self.name}.economics_df', 
 #                                      f'{self.name}.energy_investment',
-#                                      f'{self.name}.pc_consumption_constraint',
-#                                      f'{self.name}.workforce_df,
-#                                      f'{self.name}.usable_capital_df'])
+#                                      f'{self.name}.pc_consumption_constraint'])
 
     def _test_macro_economics_energy_supply_negative_damageproductivity(self):
 

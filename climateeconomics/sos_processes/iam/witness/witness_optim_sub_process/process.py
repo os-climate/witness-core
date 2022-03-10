@@ -37,6 +37,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         designvariable_name = "DesignVariables"
         func_manager_name = "FunctionsManager"
         extra_name = 'WITNESS'
+        self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
 
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness',
