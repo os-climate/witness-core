@@ -774,8 +774,16 @@ class MacroEconomics():
                             * np.exp(- self.co2_invest_limit * energy_investment_wo_tax / ren_investments)
                         
                 dinvestment[i, j] = denergy_investment[i, j] + self.share_n_energy_investment[years[i]] * dnet_output[i, j]
-        return denergy_investment, dinvestment  
+        return denergy_investment, dinvestment
 
+    def compute_dinvestment_dtotal_share_of_gdp(self):
+            years = self.years_range
+            nb_years = len(years)
+            net_output = self.economics_df['net_output'].values
+            dnon_energy_investment = np.identity(nb_years) / 100.0 * net_output
+            dinvestment = dnon_energy_investment
+
+            return dinvestment
    
     def compute_dconsumption(self, dnet_output, dinvestment):
         """gradient computation for consumption
@@ -927,6 +935,7 @@ class MacroEconomics():
         #investment = energy_investment + non_energy_investment
         dinvestment = denergy_invest
         return denergy_invest, dinvestment
+
       
     """-------------------END of Gradient functions-------------------"""
 

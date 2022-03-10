@@ -285,6 +285,16 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('pc_consumption_constraint',), ('CO2_taxes', 'CO2_tax'),- dconsumption_pc / ref_pc_consumption_constraint)
 
+        # compute gradient total_share_investment_gdp
+        dinvestment = self.macro_model.compute_dinvestment_dtotal_share_of_gdp()
+        dnet_output = np.zeros((nb_years, nb_years))
+        dconsumption = self.macro_model.compute_dconsumption(dnet_output, dinvestment)
+        dconsumption_pc = self.macro_model.compute_dconsumption_pc(dconsumption)
+        self.set_partial_derivative_for_other_types(
+            ('economics_df', 'pc_consumption'), ('total_investment_share_of_gdp', 'share_investment'), dconsumption_pc)
+        self.set_partial_derivative_for_other_types(
+            ('pc_consumption_constraint',), ('total_investment_share_of_gdp', 'share_investment'), - dconsumption_pc / ref_pc_consumption_constraint)
+
     def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
