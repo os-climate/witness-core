@@ -63,6 +63,7 @@ class MacroEconomics():
             self.year_start,
             self.year_end + 1,
             self.time_step)
+        self.nb_years = len(self.years_range)
         self.frac_damage_prod = self.param['frac_damage_prod']
         self.damage_to_productivity = self.param['damage_to_productivity']
         self.init_output_growth = self.param['init_output_growth']
@@ -554,8 +555,7 @@ class MacroEconomics():
     def compute_dworkforce_dworkagepop(self):
         """ Gradient for workforce wrt working age population 
         """
-        years = self.years_range
-        nb_years = len(years)
+        nb_years = self.nb_years
 
         employment_rate = self.workforce_df['employment_rate'].values
         dworkforce_dworkagepop = np.identity(nb_years)
@@ -599,8 +599,7 @@ class MacroEconomics():
         usable_capital = capital * (energy / e_max)  
         """
         #derivative: capital/e_max 
-        years = self.years_range
-        nb_years = len(years)
+        nb_years = self.nb_years
         #Inputs 
         capital = self.economics_df['capital'].values
         e_max = self.usable_capital_df['e_max'].values
@@ -791,7 +790,34 @@ class MacroEconomics():
         doutput_dcap[0,0] = 0 
         #Then doutput = doutput_d_prod * dproductivity
         doutput = dcapitalu_denergy * doutput_dcap
-        return doutput    
+        return doutput   
+     
+    def compute_dinvest_dco2emissions(self):
+        years = self.years_range
+        nb_years = len(years)
+        co2_invest_limit = self.co2_invest_limit
+        emissions = self.co2_emissions_Gt['Total CO2 emissions'].values * 1e9  # t CO2
+        co2_taxes = self.co2_taxes['CO2_tax'].values  # $/t
+        co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
+        energy_investment_wo_tax = self.economics_df['energy_investment_wo_tax'].values
+        dren_investments = np.identity(nb_years)
+        
+        ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
+        dren_investments *= co2_taxes * co2_tax_eff/ 1e12
+        
+        for i in range(0, nb_years):
+            if ren_investments[i] >  co2_invest_limit * energy_investment_wo_tax[i] and ren_investments[i] != 0.0:
+                g_prime = co2_taxes[i] * co2_tax_eff[i]/ 1e12 
+                f_prime =  g_prime * co2_invest_limit * energy_investment_wo_tax[i] / 10.0 * (co2_invest_limit * energy_investment_wo_tax[i]/ren_investments[i]**2)*\
+                                                                                 np.exp(- co2_invest_limit * energy_investment_wo_tax[i] / ren_investments[i])
+                dren_investments[i,i] = f_prime
+            if ren_investments[i].real == 0.0:
+                dren_investments[i,i] = 0.0
+        # #energy_investment = investwithout + ren_invest then denergy_investment = dren_investments
+        denergy_invest = dren_investments
+        #investment = energy_investment + non_energy_investment
+        dinvestment = denergy_invest
+        return denergy_invest, dinvestment
     
     def compute_dinvest_dco2taxes(self):
         years = self.years_range
