@@ -30,6 +30,8 @@ from climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_coal_reso
 from climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_gas_resource.gas_resource_model.gas_resource_disc import GasDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_oil_resource.oil_resource_model.oil_resource_disc import OilDiscipline
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
+from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
+    compute_func_with_exp_min
 
 
 class OrderOfMagnitude():
@@ -186,8 +188,9 @@ class AllResourceModel():
                     self.price_oil_conversion
 
             # compute ratio production and usable resource VS demand:
-            self.all_resource_ratio_usable_demand[resource] = self.all_resource_use[resource].div(
-                self.resource_demand[resource])
+            demand_limited = compute_func_with_exp_min(
+                np.array(self.resource_demand[resource].values), 1.0e-10)
+            self.all_resource_ratio_usable_demand[resource] = self.all_resource_use[resource].values / demand_limited
 
         # price assignment for non modeled resource:
         data_frame_other_resource_price = deepcopy(
@@ -253,11 +256,16 @@ class AllResourceModel():
 
         resource_use = output_dict[AllResourceModel.All_RESOURCE_USE][resource_type]
         demand = inputs_dict['All_Demand'][resource_type]
+        demand_limited = compute_func_with_exp_min(
+            demand.values, 1.0e-10)
+        d_demand_limited = compute_dfunc_with_exp_min(
+            demand.values, 1.0e-10)
         identity_neg = np.diag(
             np.linspace(-1, -1, len(inputs_dict['All_Demand'].index)))
+        # pylint: disable=unsubscriptable-object
         grad_use_ratio_on_demand = (
-            resource_use / (demand**2).values).values * identity_neg
-        grad_use_ratio_on_use = grad_use / (demand.values)
+            resource_use * d_demand_limited.T[0] / (demand_limited**2)).values * identity_neg
+        grad_use_ratio_on_use = grad_use / (demand_limited)
 
         return grad_use_ratio_on_use, grad_use_ratio_on_demand
 
