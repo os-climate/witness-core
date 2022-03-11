@@ -1,19 +1,19 @@
 ## Macroeconomics model
 ### Main Inputs 
 - Damage data ($damage\_df$): Dataframe with damage fraction to be applied to output 
--  Working age population ($working\_age\_population\_df$): Dataframe with working age population per year in million of people. 
+-  Working age population ($working\_age\_population\_df$): Dataframe with working age population per year in million of people
 - Population df ($population\_df$): Dataframe with total population per year in millions of people
 - Energy Production Quantity ($energy\_production$): Dataframe with Total Final Consumption of energy per year in Pwh
 - Share of investment in energy ($share\_energy\_investment$): Share of total investment that goes to energy
 - Total investment share of GDP ($total\_investment\_share\_of\_gdp$): Total share of GDP that is invested
 - Damage to productivity ($damage\_to\_productivity$): If True: apply damage to productivity. if False: Apply damage only to production. 
-- CO2 Emissions: Dataframe with C02 emissions per year 
+- CO2 Emissions: Dataframe with C02 emissions per year in Gt 
 - C02 taxes($CO2\_taxes$): C02 taxes per year in\$/tC02 
 - Initial rate of time preference ($init\_rate\_time\_pref$)
   
 ### Outputs 
-- Economics detail df ($economics\_detail_df$): Dataframe with most of model outputs
-- Economics Data ($economics\_df$): Dataframe with coupling model outputs from previous dataframe. It contains Gross output and net output in trillion dollars and consumption per capital in k\$.
+- Economics detail df ($economics\_detail\_df$): Dataframe with most of model outputs
+- Economics Data ($economics\_df$): Dataframe with coupling model outputs from previous dataframe. It contains gross output and net output in trillion dollars and consumption per capita in k\$.
 - Energy investment by year ($energy\_investment$): the investment in energy by year in G\$. 
 - Global investment constraint ($global\_investment\_constraint$): Value of the investment constraint for optimization
 - Per capita consumption constraint ($pc\_consumption\_constraint$): Value of the per capita consumption constraint for the optimization
@@ -23,8 +23,7 @@
 
                     
 ### Time Step 
-The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. The user can choose the year end and the duration of the period (in years) by changing the parameters $year\, end$ and $time \,step$. For example, for a year start at 2020, year end in 2100 and a duration of time step of 5 years we have $t \, \epsilon \,[0, 16]$.
-
+The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. The user can choose the year end and the duration of the period (in years) by changing the parameters $year\, end$ and $time \,step$.
 
 ### Global output
 #### Usable capital 
@@ -83,7 +82,7 @@ Investment is defined using the inputs $share\_energy\_investment$ and $share\_n
 The investment in energy $I^E$ is: $$I_{t}^E = share\_energy\_investment_t * Q_t + ren\_investments$$
 With:
 $$ren\_investments = emissions \cdot co2\_taxes \cdot co2\_tax\_eff$$
-However, invest coming from CO2 taxes are capped at the value of energy investment without tax multiplied by the model input factor co2_input_limit. It is 2 by default and smoothed with the following formula:
+However, investments coming from CO2 taxes are capped at the value of energy investment without tax multiplied by the model input factor co2_input_limit. It is 2 by default and smoothed with the following formula:
 $$ren\_investments = co2\_invest\_limit \cdot \frac{energy\_investment\_wo\_tax}{10} \cdot(9.0 + e^{- \frac{co2\_invest\_limit \cdot energy\_investment\_wo\_tax}{ren\_investments}})$$
 
 The investment in non-energy $I^{NE}$ is :  
@@ -103,15 +102,15 @@ To obtain the value of the production function parameters we fitted our calculat
 - Parameters for production function: output_alpha,  output_gamma
 - parameters for productivity function: productivity_start, productivity_gr_start, decline_rate_tfp
 - Capital at year start in trillion dollars ($capital\_start$)
-- Output at year start $(init\_gross\_output$) in trillion dollars. 
-- Usable capital parameters: capital_utilisation_ratio, energy_eff_k, energy_eff_cst, energy_eff_xzero, energy_eff_max
+- Output at year start $(init\_gross\_output$) in trillion dollars
+- Usable capital parameters: capital_utilisation_ratio, $energy\_eff\_k$, $energy\_eff\_cst$, $energy\_eff\_xzero$, $energy\_eff\_max$
 - Capital depreciation rate 
 - Elasticity of consumption
 -  Lower bounds for capital, consumption, per capita consumption
 -  Productivity damage fraction: Fraction of damage applied to productivity
 -  Initial output growth rate
 -  C02 tax efficiency: how much of the co2 tax can be reinvested (\%)
--  Employment rate recovery function parameters: employment_a_param employment_power_param, employment_rate_base_value
+-  Employment rate recovery function parameters: $employment\_a\_param$, $employment\_power\_param$, $employment\_rate\_base\_value$
 
 ## References
 
