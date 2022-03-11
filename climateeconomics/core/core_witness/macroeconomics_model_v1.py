@@ -170,7 +170,7 @@ class MacroEconomics():
         """
         Set couplings inputs with right index, scaling... 
         """
-        self.damefrac = self.inputs['damage_frac_output']
+        self.damefrac = self.inputs['damage_df']
         self.damefrac.index = self.damefrac['years'].values
         #Scale energy production
         self.scaling_factor_energy_production = self.inputs['scaling_factor_energy_production']
@@ -558,8 +558,7 @@ class MacroEconomics():
         nb_years = self.nb_years
 
         employment_rate = self.workforce_df['employment_rate'].values
-        dworkforce_dworkagepop = np.identity(nb_years)
-        dworkforce_dworkagepop *= employment_rate 
+        dworkforce_dworkagepop = np.identity(nb_years) * employment_rate
         
         return dworkforce_dworkagepop
     
@@ -713,7 +712,7 @@ class MacroEconomics():
         return dinvestment
 
     def compute_denergy_investment_dco2_tax(self):
-        self.co2_emissions_Gt['Total CO2 emissions'].clip(lower=0.0, inplace=True)
+        #self.co2_emissions_Gt['Total CO2 emissions'].clip(lower=0.0, inplace=True)
         net_output = self.economics_df['net_output'].values
         energy_investment_wo_tax = self.share_energy_investment.values * net_output
         dren_investments = self.dren_investments_dco2_tax(energy_investment_wo_tax)
@@ -730,16 +729,19 @@ class MacroEconomics():
         co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
 
         ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
-        d_ren_investments_dco2_taxes =  emissions * co2_tax_eff / 1e12 * np.identity(nb_years)
+        d_ren_investments_dco2_taxes = emissions * co2_tax_eff / 1e12 * np.identity(nb_years)
         # derivative matrix initialization
         dren_investments = np.zeros((nb_years, nb_years))
         for i in range(0, nb_years):
-            dren_investments[i] = d_ren_investments_dco2_taxes[i]
+
             # if emissions is zero the right gradient (positive) is not zero but the left gradient is zero
             # when complex step we add ren_invest with the complex step and it is not good
             if ren_investments[i].real == 0.0:
                 ren_investments[i] = 0.0
-                d_ren_investments_dco2_taxes = np.zeros(nb_years)
+                d_ren_investments_dco2_taxes[i] = np.zeros(nb_years)
+
+            dren_investments[i] = d_ren_investments_dco2_taxes[i]
+
             # Saturation of renewable invest at n * invest wo tax with n ->
             # co2_invest_limit entry parameter
             if ren_investments[i] > co2_invest_limit * energy_investment_wo_tax[i] and ren_investments[i] != 0.0:
@@ -754,8 +756,7 @@ class MacroEconomics():
         years = self.years_range
         nb_years = len(years)
         dinvestment =  np.zeros((nb_years, nb_years))
-        denergy_investment = np.identity(nb_years)
-        denergy_investment *= self.share_energy_investment.values * dnet_output
+        denergy_investment = self.share_energy_investment.values * dnet_output
         # Saturation of renewable invest at n * invest wo tax with n ->
         # co2_invest_limit entry parameter
         for i in range(0, nb_years):
@@ -793,15 +794,11 @@ class MacroEconomics():
         """
         years = self.years_range
         nb_years = len(years)
-        # derivative matrix initialization
-        dconsumption = np.zeros((nb_years, nb_years))
-        # first line stays at zero since derivatives of initial values are zero
+        dconsumption = dnet_output - dinvestment 
         for i in range(0, nb_years):
             consumption = self.economics_df.at[years[i], 'consumption']
             if consumption == self.lo_conso:
-                pass
-            else:
-                dconsumption[i, i] = dnet_output[i, i] - dinvestment[i, i]
+                dconsumption[i] = np.zeros(nb_years)
         return dconsumption
 
     def compute_dconsumption_pc(self, dconsumption):
@@ -860,7 +857,7 @@ class MacroEconomics():
         #at zero gross output is an input
         doutput_dprod[0,0] = 0 
         #Then doutput = doutput_d_prod * dproductivity
-        doutput *= dproductivity* doutput_dprod
+        doutput = np.dot(doutput_dprod,dproductivity)
         return doutput
     
     def dnet_output_ddamage(self, dgross_output):

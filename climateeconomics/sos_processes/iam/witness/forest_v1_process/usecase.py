@@ -111,11 +111,11 @@ class Study(StudyManager):
         setup_data_list.append(forest_input)
 
         deforestation_surface_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
-        forest_investment_ctrl = np.linspace(5.0, 8.0, self.nb_poles)
+        forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
 
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['deforested_surface_ctrl'] = deforestation_surface_ctrl
-        design_space_ctrl_dict['forest_investment_ctrl'] = forest_investment_ctrl
+        design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
@@ -156,8 +156,8 @@ class Study(StudyManager):
         update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
                                 list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
 
-        update_dspace_dict_with(ddict, 'forest_investment_ctrl',
-                                list(self.design_space_ctrl['forest_investment_ctrl'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
+        update_dspace_dict_with(ddict, 'forest_investment_array_mix',
+                                list(self.design_space_ctrl['forest_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
         return ddict
 
 
