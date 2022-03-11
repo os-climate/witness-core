@@ -190,6 +190,7 @@ class DataStudy():
         witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
+        witness_input[f'{self.study_name}.is_dev'] = True
         #witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
 #         self.exec_eng.dm.export_couplings(
 #             in_csv=True, f_name='couplings.csv')
