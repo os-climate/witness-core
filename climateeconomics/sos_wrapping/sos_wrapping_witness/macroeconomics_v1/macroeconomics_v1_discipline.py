@@ -102,7 +102,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'global_investment_constraint': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'pc_consumption_constraint': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'workforce_df':  {'type': 'dataframe'}, 
-        'usable_capital_df':  {'type': 'dataframe'}
+        'usable_capital_df':  {'type': 'dataframe'}, 
+        'output': {'type': 'dataframe'}
     }
 
     def init_execution(self):
@@ -126,7 +127,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         population_df = param.pop('population_df')
         working_age_population_df = param.pop('working_age_population_df')
 
-        macro_inputs = {'damage_frac_output': damage_df[['years', 'damage_frac_output']],
+        macro_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                         'energy_production': energy_production,
                         'scaling_factor_energy_production': param['scaling_factor_energy_production'],
                         'scaling_factor_energy_investment': param['scaling_factor_energy_investment'],
