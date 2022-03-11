@@ -558,8 +558,7 @@ class MacroEconomics():
         nb_years = self.nb_years
 
         employment_rate = self.workforce_df['employment_rate'].values
-        dworkforce_dworkagepop = np.identity(nb_years)
-        dworkforce_dworkagepop *= employment_rate 
+        dworkforce_dworkagepop = np.identity(nb_years) * employment_rate
         
         return dworkforce_dworkagepop
     
@@ -713,7 +712,7 @@ class MacroEconomics():
         return dinvestment
 
     def compute_denergy_investment_dco2_tax(self):
-        self.co2_emissions_Gt['Total CO2 emissions'].clip(lower=0.0, inplace=True)
+        #self.co2_emissions_Gt['Total CO2 emissions'].clip(lower=0.0, inplace=True)
         net_output = self.economics_df['net_output'].values
         energy_investment_wo_tax = self.share_energy_investment.values * net_output
         dren_investments = self.dren_investments_dco2_tax(energy_investment_wo_tax)
@@ -730,16 +729,19 @@ class MacroEconomics():
         co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
 
         ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
-        d_ren_investments_dco2_taxes =  emissions * co2_tax_eff / 1e12 * np.identity(nb_years)
+        d_ren_investments_dco2_taxes = emissions * co2_tax_eff / 1e12 * np.identity(nb_years)
         # derivative matrix initialization
         dren_investments = np.zeros((nb_years, nb_years))
         for i in range(0, nb_years):
-            dren_investments[i] = d_ren_investments_dco2_taxes[i]
+
             # if emissions is zero the right gradient (positive) is not zero but the left gradient is zero
             # when complex step we add ren_invest with the complex step and it is not good
             if ren_investments[i].real == 0.0:
                 ren_investments[i] = 0.0
-                d_ren_investments_dco2_taxes = np.zeros(nb_years)
+                d_ren_investments_dco2_taxes[i] = np.zeros(nb_years)
+
+            dren_investments[i] = d_ren_investments_dco2_taxes[i]
+
             # Saturation of renewable invest at n * invest wo tax with n ->
             # co2_invest_limit entry parameter
             if ren_investments[i] > co2_invest_limit * energy_investment_wo_tax[i] and ren_investments[i] != 0.0:
