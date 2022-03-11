@@ -102,8 +102,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'global_investment_constraint': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'pc_consumption_constraint': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'workforce_df':  {'type': 'dataframe'}, 
-        'usable_capital_df':  {'type': 'dataframe'}, 
-        'output': {'type': 'dataframe'}
+        'usable_capital_df':  {'type': 'dataframe'}
     }
 
     def init_execution(self):

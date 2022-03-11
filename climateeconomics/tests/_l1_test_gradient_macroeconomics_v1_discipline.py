@@ -187,7 +187,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 #                                      f'{self.name}.energy_investment',
 #                                      f'{self.name}.pc_consumption_constraint'])
 
-    def test_macro_economics_energy_supply_negative_damageproductivity(self):
+    def _test_macro_economics_energy_supply_negative_damageproductivity(self):
 
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
@@ -350,10 +350,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint',
-                                     f'{self.name}.workforce_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
-    def _test_macro_economics_analytic_grad_gigantic_invest(self):
+    def test_macro_economics_analytic_grad_gigantic_invest(self):
 
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
@@ -411,8 +410,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint',
-                                     f'{self.name}.workforce_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
 
     def _test_macro_economics_very_high_emissions(self):
 
