@@ -115,7 +115,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         return [
             self.test_macro_economics_analytic_grad,
             self.test_macro_economics_analytic_grad_damageproductivity,
-            self.test_macro_economics_energy_supply_negative_damageproductivity,
             self.test_macro_economics_analytic_grad_max_damage,
             self.test_macro_economics_analytic_grad_gigantic_invest,
             self.test_macro_economics_very_high_emissions
