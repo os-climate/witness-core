@@ -121,7 +121,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             self.test_macro_economics_very_high_emissions
         ]
 
-    def test_macro_economics_analytic_grad(self):
+    def _test_macro_economics_analytic_grad(self):
 
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
@@ -160,10 +160,18 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_v1_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            inputs=[f'{self.name}.co2_emissions_Gt'],
-                            outputs=[f'{self.name}.economics_df', 
+                             inputs=[f'{self.name}.energy_production', 
+                                     f'{self.name}.damage_df', 
+                                     f'{self.name}.share_energy_investment', 
+                                     f'{self.name}.total_investment_share_of_gdp',
+                                     f'{self.name}.co2_emissions_Gt',  
+                                     f'{self.name}.CO2_taxes', 
+                                     f'{self.name}.population_df',
+                                     f'{self.name}.working_age_population_df'],
+                             outputs=[f'{self.name}.economics_df', 
                                       f'{self.name}.energy_investment',
                                       f'{self.name}.pc_consumption_constraint'])
+
 
 #         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_v1_discipline.pkl',
 #                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
@@ -179,7 +187,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 #                                      f'{self.name}.energy_investment',
 #                                      f'{self.name}.pc_consumption_constraint'])
 
-    def _test_macro_economics_energy_supply_negative_damageproductivity(self):
+    def test_macro_economics_energy_supply_negative_damageproductivity(self):
 
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
@@ -187,7 +195,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -232,8 +240,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.economics_df', 
                                      f'{self.name}.energy_investment',
-                                     f'{self.name}.pc_consumption_constraint',
-                                     f'{self.name}.workforce_df'])
+                                     f'{self.name}.pc_consumption_constraint'])
+
 
     def _test_macro_economics_analytic_grad_damageproductivity(self):
 
@@ -243,7 +251,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -297,7 +305,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -353,7 +361,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -414,7 +422,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -478,7 +486,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -543,7 +551,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 

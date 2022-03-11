@@ -170,7 +170,7 @@ class MacroEconomics():
         """
         Set couplings inputs with right index, scaling... 
         """
-        self.damefrac = self.inputs['damage_frac_output']
+        self.damefrac = self.inputs['damage_df']
         self.damefrac.index = self.damefrac['years'].values
         #Scale energy production
         self.scaling_factor_energy_production = self.inputs['scaling_factor_energy_production']
@@ -754,8 +754,7 @@ class MacroEconomics():
         years = self.years_range
         nb_years = len(years)
         dinvestment =  np.zeros((nb_years, nb_years))
-        denergy_investment = np.identity(nb_years)
-        denergy_investment *= self.share_energy_investment.values * dnet_output
+        denergy_investment = self.share_energy_investment.values * dnet_output
         # Saturation of renewable invest at n * invest wo tax with n ->
         # co2_invest_limit entry parameter
         for i in range(0, nb_years):
@@ -793,15 +792,11 @@ class MacroEconomics():
         """
         years = self.years_range
         nb_years = len(years)
-        # derivative matrix initialization
-        dconsumption = np.zeros((nb_years, nb_years))
-        # first line stays at zero since derivatives of initial values are zero
+        dconsumption = dnet_output - dinvestment 
         for i in range(0, nb_years):
             consumption = self.economics_df.at[years[i], 'consumption']
             if consumption == self.lo_conso:
-                pass
-            else:
-                dconsumption[i, i] = dnet_output[i, i] - dinvestment[i, i]
+                dconsumption[i] = np.zeros(nb_years)
         return dconsumption
 
     def compute_dconsumption_pc(self, dconsumption):
@@ -860,7 +855,7 @@ class MacroEconomics():
         #at zero gross output is an input
         doutput_dprod[0,0] = 0 
         #Then doutput = doutput_d_prod * dproductivity
-        doutput *= dproductivity* doutput_dprod
+        doutput = np.dot(doutput_dprod,dproductivity)
         return doutput
     
     def dnet_output_ddamage(self, dgross_output):
