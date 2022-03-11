@@ -920,11 +920,11 @@ class MacroEconomics():
         dren_investments = np.identity(nb_years)
         
         ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
-        dren_investments *= co2_taxes * co2_tax_eff/ 1e12
+        dren_investments *= co2_taxes * co2_tax_eff / 1e12 * 1e9
         
         for i in range(0, nb_years):
             if ren_investments[i] >  co2_invest_limit * energy_investment_wo_tax[i] and ren_investments[i] != 0.0:
-                g_prime = co2_taxes[i] * co2_tax_eff[i]/ 1e12 
+                g_prime = co2_taxes[i] * co2_tax_eff[i] / 1e12 * 1e9
                 f_prime =  g_prime * co2_invest_limit * energy_investment_wo_tax[i] / 10.0 * (co2_invest_limit * energy_investment_wo_tax[i]/ren_investments[i]**2)*\
                                                                                  np.exp(- co2_invest_limit * energy_investment_wo_tax[i] / ren_investments[i])
                 dren_investments[i,i] = f_prime
