@@ -183,7 +183,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         denergy_invest, dinvestment = self.macro_model.compute_dinvest_dco2emissions()
         self.set_partial_derivative_for_other_types(
             ('energy_investment', 'energy_investment'), 
-            ('co2_emissions_Gt', 'Total CO2 emissions'), denergy_invest / scaling_factor_energy_investment * 1e3 / 100.0)  # Invest from T$ to G$
+            ('co2_emissions_Gt', 'Total CO2 emissions'), denergy_invest / scaling_factor_energy_investment * 1e3)  # Invest from T$ to G$
         dconsumption = self.macro_model.compute_dconsumption(np.zeros((self.macro_model.nb_years, self.macro_model.nb_years)), dinvestment)
         dconsumption_pc = self.macro_model.compute_dconsumption_pc(dconsumption)
         self.set_partial_derivative_for_other_types(
