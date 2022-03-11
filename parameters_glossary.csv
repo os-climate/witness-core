@@ -309,5 +309,5 @@ employment_a_param,Employment rate recovery parameter a ,,Parameter of the emplo
 employment_power_param,Employment rate recovery param exponent,,,,
 employment_rate_base_value,Base employment rate,,Employment rate value outside of COVID-19 recovery phase. ,,
 pc_consumption_constraint,Per capita consumption constraint,,Per capita consumption constraint.,,
- workforce_df,Workforce data ,million of people,Number of people in the workforce per year.,,
+workforce_df,Workforce data ,million of people,Number of people in the workforce per year.,,
 usable_capital_df,Usable capital data ,,"Usable capital data: contains usable capital in trillion of dollars, e_max value and energy efficiency per year.",,
