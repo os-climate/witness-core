@@ -91,6 +91,7 @@ class MacroEconomics():
         self.employment_a_param =  self.param['employment_a_param']
         self.employment_power_param = self.param['employment_power_param']
         self.employment_rate_base_value = self.param['employment_rate_base_value']
+        self.ref_emax_enet_constraint = self.param['ref_emax_enet_constraint']
 
     def create_dataframe(self):
         '''
@@ -499,6 +500,13 @@ class MacroEconomics():
             self.share_n_energy_investment.values - \
             self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0
 
+    def compute_emax_enet_constraint(self):
+        """ Equation for Emax constraint 
+        """
+        e_max = self.usable_capital_df['e_max'].values
+        energy = self.energy_production['Total production'].values
+        self.emax_enet_constraint = (energy - e_max) / self.ref_emax_enet_constraint 
+            
     def compute(self, inputs, damage_prod=False):
         """
         Compute all models for year range
@@ -546,12 +554,31 @@ class MacroEconomics():
         self.compute_comsumption_pc_constraint()
         # Compute global investment constraint
         self.compute_global_investment_constraint()
+        # COmpute e_max net energy constraint 
+        self.compute_emax_enet_constraint()
 
         return self.economics_df.fillna(0.0), self.energy_investment.fillna(0.0), self.global_investment_constraint, \
-            self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint, self.workforce_df, self.usable_capital_df
+            self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint, self.workforce_df, \
+            self.usable_capital_df, self.emax_enet_constraint
 
 
     """-------------------Gradient functions-------------------"""
+    
+    def demaxconstraint_denergy(self):
+        #TODO 
+        dcapital_denergy = 0
+        # capital u = 
+        #output = productivity * (alpha * capital_u**gamma + (1-alpha)* (working_pop)**gamma)**(1/gamma)
+        #net output = f(output) 
+        #investment = self.share_n_energy_investment[year] * net_output + energy invest
+        #capital = capital(t-1) *(1_depre rate)**time step + time_step *investment 
+        energy_efficiency = self.usable_capital_df['energy_efficiency'].values
+        #emax  = capital/ (capital_utilisation_ratio * energy_efficiency) 
+        demax_denergy = dcapital_denergy/ (self.capital_utilisation_ratio * energy_efficiency)
+        #emax_enet_constraint = (energy - e_max) / self.ref_emax_enet_constraint
+        dconstraint_denergy = (1- demax_denergy)/self. ref_emax_enet_constraint 
+        return dconstraint_denergy
+    
     def compute_dworkforce_dworkagepop(self):
         """ Gradient for workforce wrt working age population 
         """
@@ -604,7 +631,6 @@ class MacroEconomics():
         e_max = self.usable_capital_df['e_max'].values
         dusablecapital_denergy = np.identity(nb_years) 
         dusablecapital_denergy *= capital/e_max       
-        #Is dcapital missing ?
         return dusablecapital_denergy
         
     def dgrossoutput_dworkingpop(self): 
@@ -932,7 +958,6 @@ class MacroEconomics():
         #investment = energy_investment + non_energy_investment
         dinvestment = denergy_invest
         return denergy_invest, dinvestment
-
       
     """-------------------END of Gradient functions-------------------"""
 
