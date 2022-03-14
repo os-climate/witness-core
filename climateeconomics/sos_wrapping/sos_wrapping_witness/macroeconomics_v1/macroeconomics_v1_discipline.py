@@ -90,7 +90,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         #Employment rate param 
         'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level' : 3},
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3},
-        'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3} 
+        'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3}, 
+        'ref_emax_enet_constraint': {'type': 'float', 'default': 1, 'user_level': 3, 'namespace': 'ns_ref'}, 
     }
 
 
@@ -102,7 +103,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'global_investment_constraint': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'pc_consumption_constraint': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'workforce_df':  {'type': 'dataframe'}, 
-        'usable_capital_df':  {'type': 'dataframe'}
+        'usable_capital_df':  {'type': 'dataframe'}, 
+        'emax_enet_constraint':  {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
 
     def init_execution(self):
@@ -147,7 +149,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             print(
                 'For at least one year, the share of energy investment is above 100% of total investment')
         # Model execution
-        economics_df, energy_investment, global_investment_constraint, energy_investment_wo_renewable, pc_consumption_constraint, workforce_df, usable_capital_df = \
+        economics_df, energy_investment, global_investment_constraint, energy_investment_wo_renewable, \
+        pc_consumption_constraint, workforce_df, usable_capital_df, emax_enet_constraint = \
             self.macro_model.compute(macro_inputs)
 
         # Store output data
@@ -158,7 +161,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        'energy_investment_wo_renewable': energy_investment_wo_renewable,
                        'pc_consumption_constraint': pc_consumption_constraint, 
                        'workforce_df': workforce_df, 
-                       'usable_capital_df' : usable_capital_df}
+                       'usable_capital_df' : usable_capital_df, 
+                       'emax_enet_constraint': emax_enet_constraint}
                        
         self.store_sos_outputs_values(dict_values)
 
@@ -174,6 +178,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             'scaling_factor_energy_investment')
         ref_pc_consumption_constraint = self.get_sosdisc_inputs(
             'ref_pc_consumption_constraint')
+        ref_emax_enet_constraint = self.get_sosdisc_inputs(
+            'ref_emax_enet_constraint')
         year_start = self.get_sosdisc_inputs('year_start')
         year_end = self.get_sosdisc_inputs('year_end')
         time_step = self.get_sosdisc_inputs('time_step')
@@ -194,6 +200,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         #Compute gradient for coupling variable Total production
         dcapitalu_denergy = self.macro_model.dusablecapital_denergy()
         dgross_output = self.macro_model.dgrossoutput_denergy(dcapitalu_denergy)
+
         self.set_partial_derivative_for_other_types(
               ('economics_df', 'gross_output'), ('energy_production', 'Total production'), scaling_factor_energy_production * dgross_output)
         dnet_output = self.macro_model.dnet_output(dgross_output)
@@ -209,7 +216,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                  * dconsumption_pc / ref_pc_consumption_constraint)
         self.set_partial_derivative_for_other_types(
              ('energy_investment', 'energy_investment'), ('energy_production', 'Total production'), scaling_factor_energy_production * denergy_investment / scaling_factor_energy_investment * 1e3)  # Invest from T$ to G$
-
+        self.set_partial_derivative_for_other_types(
+             ('emax_enet_constraint',), ('energy_production', 'Total production'), scaling_factor_energy_production/ref_emax_enet_constraint)  
+        
 #        Compute gradient for coupling variable damage
         dproductivity = self.macro_model.compute_dproductivity()
         dgross_output = self.macro_model.dgross_output_ddamage(dproductivity)
