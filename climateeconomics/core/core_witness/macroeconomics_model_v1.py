@@ -570,8 +570,8 @@ class MacroEconomics():
         nb_years = self.nb_years
         years = self.years_range
         dcapital = np.zeros((nb_years, nb_years))
-        for i in range(1, nb_years):
-            for j in range(1, i+1):
+        for i in range(0, nb_years):
+            for j in range(0, i+1):
                 if i < nb_years - 1:
                     capital_after = self.economics_df.at[years[i + 1], 'capital']
                     if capital_after == self.lo_capital:
@@ -590,7 +590,7 @@ class MacroEconomics():
         demax *= 1e3 / (self.capital_utilisation_ratio * energy_efficiency)
         demax = np.dot( demax, dcapital) 
         demaxconstraint_demax = demax / self.ref_emax_enet_constraint
-        return demaxconstraint_demax, demax
+        return demaxconstraint_demax
         
     def demaxconstraint_denergy_test(self):
         """
