@@ -51,6 +51,10 @@ class DataStudy():
             (self.year_end - self.year_start) / self.time_step + 1)
         years = arange(self.year_start, self.year_end + 1, self.time_step)
 
+        forest_invest = np.linspace(5.0, 8.0, len(years))
+        self.forest_invest_df = pd.DataFrame(
+            {"years": years, "forest_investment": forest_invest})
+
         # private values economics operator model
         witness_input = {}
         witness_input[self.study_name + '.year_start'] = self.year_start
@@ -74,7 +78,7 @@ class DataStudy():
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
 #         witness_input[self.study_name +
 #                       '.Damage.damage_constraint_factor'] = np.asarray([1] * len(years))
-
+        witness_input[f'{self.study_name}.InvestmentDistribution.forest_investment'] = self.forest_invest_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[3], 'data')
