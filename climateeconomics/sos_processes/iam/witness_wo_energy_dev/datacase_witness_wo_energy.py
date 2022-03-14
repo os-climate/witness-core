@@ -138,6 +138,10 @@ class DataStudy():
         default_co2_efficiency = pd.DataFrame(
             {'years': years, 'CO2_tax_efficiency': CO2_tax_efficiency})
 
+        forest_invest = np.linspace(5.0, 8.0, len(years))
+        self.forest_invest_df = pd.DataFrame(
+            {"years": years, "forest_investment": forest_invest})
+
         #-- load data from resource
 
         dc_resource = datacase_resource(
@@ -191,6 +195,7 @@ class DataStudy():
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
         witness_input[f'{self.study_name}.is_dev'] = True
+        witness_input[f'{self.study_name}.InvestmentDistribution.forest_investment']=self.forest_invest_df
         #witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
 #         self.exec_eng.dm.export_couplings(
 #             in_csv=True, f_name='couplings.csv')

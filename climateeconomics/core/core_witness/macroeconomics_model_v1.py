@@ -903,7 +903,7 @@ class MacroEconomics():
         #at zero gross output is an input
         doutput_dcap[0,0] = 0 
         #Then doutput = doutput_d_prod * dproductivity
-        doutput = dcapitalu_denergy * doutput_dcap
+        doutput = np.dot(dcapitalu_denergy, doutput_dcap)
         return doutput   
      
     def compute_dinvest_dco2emissions(self):
