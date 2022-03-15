@@ -33,9 +33,9 @@ Moreover, the capital is not able to absorb more energy that it is built for,  t
 $$Ku=K \cdot \frac{En}{E\_max\_k}$$
 with $K$ the capital stock in trillions dollars and $En$ the net energy supply in TWh.   
 The maximum usable energy of capital ($E\_max\_k$) energy evolves with technology evolution as well as the productivity of the capital ($P$):
- $$E\_max\_k = \frac{K}{capital\_utilisation\_ratio \cdot P} $$
+ $$E\_max\_k = \frac{K}{capital\_utilisation\_ratio \cdot P}$$
  with $capital\_utilisation\_ratio$ the capital utilisation rate and P the productivity of the capital represented by a logistic function: 
- $$ P = min\_value+ \frac{L}{1+e^{-k(year-xo)}}$$
+ $$P = min\_value+ \frac{L}{1+e^{-k(year-xo)}}$$
  with L is $energy\_eff\_max$ in the inputs, $min\_value$ is $energy\_eff\_cst$, $xo$ is $energy\_eff\_xzero$, and $k$ $energy\_eff\_k$.  
 
 #### Gross Output 
