@@ -155,7 +155,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         # Store output data
         dict_values = {'economics_detail_df': economics_df,
-                       'economics_df': economics_df[['years', 'gross_output', 'pc_consumption', 'net_output']],
+                       'economics_df': economics_df[['years', 'gross_output', 'pc_consumption', 'output_net_of_d']],
                        'energy_investment': energy_investment,
                        'global_investment_constraint': global_investment_constraint,
                        'energy_investment_wo_renewable': energy_investment_wo_renewable,
@@ -215,7 +215,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
               ('economics_df', 'gross_output'), ('energy_production', 'Total production'), scaling_factor_energy_production * dgross_output)
         self.set_partial_derivative_for_other_types(
-              ('economics_df', 'net_output'), ('energy_production', 'Total production'), scaling_factor_energy_production * dnet_output)
+              ('economics_df', 'output_net_of_d'), ('energy_production', 'Total production'), scaling_factor_energy_production * dnet_output)
 
         self.set_partial_derivative_for_other_types(
              ('economics_df', 'pc_consumption'), ('energy_production', 'Total production'), scaling_factor_energy_production * dconsumption_pc)
@@ -239,7 +239,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
              ('economics_df', 'gross_output'), ('damage_df', 'damage_frac_output'), dgross_output)
         self.set_partial_derivative_for_other_types(
-             ('economics_df', 'net_output'), ('damage_df', 'damage_frac_output'), dnet_output)
+             ('economics_df', 'output_net_of_d'), ('damage_df', 'damage_frac_output'), dnet_output)
         self.set_partial_derivative_for_other_types(
              ('economics_df', 'pc_consumption'), ('damage_df', 'damage_frac_output'), dconsumption_pc)
         self.set_partial_derivative_for_other_types(
@@ -264,7 +264,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
              ('economics_df', 'gross_output'), ('working_age_population_df', 'population_1570'),dworkforce_dworkingagepop * dgross_output)
         dnet_output = self.macro_model.dnet_output(dgross_output)
         self.set_partial_derivative_for_other_types(
-             ('economics_df', 'net_output'), ('working_age_population_df', 'population_1570'),dworkforce_dworkingagepop * dnet_output)
+             ('economics_df', 'output_net_of_d'), ('working_age_population_df', 'population_1570'),dworkforce_dworkingagepop * dnet_output)
         denergy_investment, dinvestment = self.macro_model.dinvestment(dnet_output)
         self.set_partial_derivative_for_other_types(
              ('energy_investment', 'energy_investment'), ('working_age_population_df', 'population_1570'), dworkforce_dworkingagepop * denergy_investment / scaling_factor_energy_investment * 1e3)
@@ -372,11 +372,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'output of damage' in chart_list:
 
-            to_plot = ['gross_output', 'net_output']
+            to_plot = ['gross_output', 'output_net_of_d']
             #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             legend = {'gross_output': 'world gross output',
-                      'net_output': 'world output net of damage'}
+                      'output_net_of_d': 'world output net of damage'}
 
             years = list(economics_df.index)
 
@@ -540,7 +540,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
             ordonate_data_bis = list(second_serie)
             new_series = InstanciatedSeries(
-                years, ordonate_data_bis, '', 'lines', visible_line) 
+                years, ordonate_data_bis, 'Usable capital', 'lines', visible_line) 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
         
