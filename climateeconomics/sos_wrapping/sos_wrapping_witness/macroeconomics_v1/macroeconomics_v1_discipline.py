@@ -343,7 +343,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         chart_list = ['output of damage', 'gross output and gross output bis',
                       'investment', 'energy_investment', 'consumption', 
                       'Output growth rate', 'energy supply',
-                      'usable capital', 'employment_rate', 'workforce', 'productivity']
+                      'usable capital', 'employment_rate', 'workforce', 'productivity', 'energy efficiency', 'e_max']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -576,7 +576,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        
         if 'employment_rate' in chart_list:
 
             years = list(workforce_df.index)
@@ -664,7 +663,70 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
+        
+        if 'energy efficiency' in chart_list:
 
+            to_plot = ['energy_efficiency']
+            #economics_df = discipline.get_sosdisc_outputs('economics_df')
+
+            years = list(usable_capital_df.index)
+
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+
+            min_value, max_value = self.get_greataxisrange(
+                usable_capital_df[to_plot])
+
+            chart_name = 'Capital energy efficiency over the years'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'no unit',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
+                                                 chart_name)
+
+            for key in to_plot:
+                visible_line = True
+
+                ordonate_data = list(usable_capital_df[key])
+
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, key, 'lines', visible_line)
+
+                new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+            
+        if 'e_max' in chart_list:
+
+            to_plot = 'e_max'
+            #economics_df = discipline.get_sosdisc_outputs('economics_df')
+
+            years = list(usable_capital_df.index)
+
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+
+            min_value, max_value = self.get_greataxisrange(
+                usable_capital_df[to_plot])
+
+            chart_name = 'E_max value over the year'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Twh',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
+                                                 chart_name)
+            visible_line = True
+
+            ordonate_data = list(usable_capital_df[to_plot])
+
+            new_series = InstanciatedSeries(
+                    years, ordonate_data,'E_max', 'lines', visible_line)
+            note = {'E_max': ' maximum energy that capital stock can absorb for production'}
+            new_chart.annotation_upper_left = note   
+            new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+            
         if 'Energy_supply' in chart_list:
             to_plot = ['Total production']
             #economics_df = discipline.get_sosdisc_outputs('economics_df')
