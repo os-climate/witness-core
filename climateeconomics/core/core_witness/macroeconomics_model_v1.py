@@ -159,7 +159,7 @@ class MacroEconomics():
         self.workforce_df = workforce_df
         #Usable capital df
         usable_capital_df = pd.DataFrame(index=default_index, columns=['years',
-                     'ennergy_efficiency', 'e_max', 'usable_capital'])
+                     'energy_efficiency', 'e_max', 'usable_capital'])
         for key in usable_capital_df.keys():
             usable_capital_df[key] = 0
         usable_capital_df['years'] = self.years_range
