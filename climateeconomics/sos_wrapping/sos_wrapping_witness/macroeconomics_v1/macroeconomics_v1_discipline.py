@@ -699,6 +699,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         if 'e_max' in chart_list:
 
             to_plot = 'e_max'
+            energy_production = deepcopy(self.get_sosdisc_inputs('energy_production'))
+            scaling_factor_energy_production = self.get_sosdisc_inputs('scaling_factor_energy_production')
+            total_production = energy_production['Total production'] * scaling_factor_energy_production
             #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(usable_capital_df.index)
@@ -706,25 +709,32 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
 
-            min_value, max_value = self.get_greataxisrange(
-                usable_capital_df[to_plot])
+            max_values = {}
+            min_values = {}
+            min_values['e_max'], max_values['e_max'] = self.get_greataxisrange(usable_capital_df[to_plot])
+            min_values['energy'], max_values['energy'] =  self.get_greataxisrange(total_production)
 
-            chart_name = 'E_max value over the year'
+            min_value = min(min_values.values())
+            max_value = max(max_values.values())
+
+            chart_name = 'E_max value and Net Energy'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Twh',
                                                  [year_start - 5, year_end + 5],
-                                                 [min_value, max_value],
-                                                 chart_name)
+                                                 [min_value, max_value], chart_name)
             visible_line = True
 
             ordonate_data = list(usable_capital_df[to_plot])
+            ordonate_data_enet = list(total_production)
 
             new_series = InstanciatedSeries(
                     years, ordonate_data,'E_max', 'lines', visible_line)
             note = {'E_max': ' maximum energy that capital stock can absorb for production'}
             new_chart.annotation_upper_left = note   
             new_chart.series.append(new_series)
-
+            new_series = InstanciatedSeries(
+                    years, ordonate_data_enet,'Net energy', 'lines', visible_line)
+            new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
             
         if 'Energy_supply' in chart_list:
