@@ -591,75 +591,7 @@ class MacroEconomics():
         demax = np.dot( demax, dcapital) 
         demaxconstraint_demax = demax / self.ref_emax_enet_constraint
         return demaxconstraint_demax
-        
-    def demaxconstraint_denergy_test(self):
-        """
-        gradient of energy cosntraint wrt to energy supply.
-        """
-        nb_years = self.nb_years
-        years = self.years_range
-        alpha = self.output_alpha
-        gamma = self.output_gamma
-        doutput_dcap = np.identity(nb_years)
-        dusablecapital_denergy = np.zeros((nb_years, nb_years))
-        dgross_output = np.zeros((nb_years, nb_years))
-        dnet_output = np.zeros((nb_years, nb_years))
-        denergy_investment = np.zeros((nb_years, nb_years))
-        dinvestment = np.zeros((nb_years, nb_years))
-        dcapital = np.zeros((nb_years, nb_years))
-        demax = np.zeros((nb_years, nb_years))
-        dconstraint = np.zeros((nb_years, nb_years))
-        
-        for i in range(1, nb_years):
-            capital = self.economics_df.at[years[i],'capital']
-            e_max = self.usable_capital_df.at[years[i],'e_max']
-            working_pop = self.workforce_df.at[years[i],'workforce']
-            capital_u = self.usable_capital_df.at[years[i],'usable_capital']
-            productivity = self.economics_df.at[years[i],'productivity']
-            damefrac = self.damefrac.at[years[i],'damage_frac_output']
-            emissions = self.co2_emissions_Gt.at[years[i],'Total CO2 emissions']
-            co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
-            co2_tax_eff = self.co2_tax_efficiency.at[years[i], 'CO2_tax_efficiency']
-            energy_investment_wo_tax = self.economics_df.at[years[i],'energy_investment_wo_tax']
-            net_output = self.economics_df.at[years[i], 'net_output']
-            energy_efficiency = self.usable_capital_df.at[years[i],'energy_efficiency']
-            ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  # T$
-            
-            for j in range(1, i + 1):
-                #usable capital 
-                if i==j: 
-                    dusablecapital_denergy[i,j] *= capital/e_max
-                #gross output 
-                g = alpha * capital_u**gamma + (1-alpha)* (working_pop)**gamma
-                g_prime = alpha*gamma*capital_u**(gamma-1)
-                f_prime = productivity * (1/gamma) * g * g_prime 
-                doutput_dcap[i,j] *= f_prime
-                dgross_output[i,j] = dusablecapital_denergy[i,j] * doutput_dcap[i,j]  
-                #net output 
-                if self.damage_to_productivity == True:
-                    dnet_output[i,j] = (1 - damefrac) / (1 - self.frac_damage_prod * damefrac) * dgross_output[i,j]
-                else:
-                    dnet_output[i,j] = (1 - damefrac) * dgross_output[i,j]       
-                #invest       
-                if ren_investments > self.co2_invest_limit * energy_investment_wo_tax:
-                    denergy_investment[i, j] += self.co2_invest_limit * self.share_energy_investment[years[i]] * dnet_output[i, j] * 9 / 10 \
-                            + self.co2_invest_limit * self.share_energy_investment[years[i]] * dnet_output[i, j] / 10 * np.exp(- self.co2_invest_limit * energy_investment_wo_tax / ren_investments) \
-                            + self.co2_invest_limit * self.share_energy_investment[years[i]] * net_output / 10 * (-1) * self.co2_invest_limit * self.share_energy_investment[years[i]] * dnet_output[i, j] / ren_investments \
-                            * np.exp(- self.co2_invest_limit * energy_investment_wo_tax / ren_investments)
-                        
-                dinvestment[i, j] = denergy_investment[i, j] + self.share_n_energy_investment[years[i]] * dnet_output[i, j]
-                #E max
-                demax [i,j] = dcapital[i,j]/ (self.capital_utilisation_ratio * energy_efficiency)
-                dconstraint[i,j] = (1- demax[i,j])/self. ref_emax_enet_constraint 
-                if i < nb_years - 1:
-                    capital_after = self.economics_df.at[years[i + 1], 'capital']
-                    if capital_after == self.lo_capital:
-                        dcapital[i + 1, j] = 0
-                    else:
-                        dcapital[i + 1, j] = dcapital[i, j] * (1 - self.depreciation_capital) ** self.time_step + self.time_step * dinvestment[i, j]
-
-        return dconstraint
-    
+           
     def compute_dworkforce_dworkagepop(self):
         """ Gradient for workforce wrt working age population 
         """
@@ -1041,5 +973,3 @@ class MacroEconomics():
         return denergy_invest, dinvestment
       
     """-------------------END of Gradient functions-------------------"""
-
- 
