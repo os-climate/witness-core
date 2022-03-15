@@ -104,7 +104,7 @@ class MacroEconomics():
             index=default_index,
             columns=['years',
                      'gross_output',
-                     'net_output',
+                     'output_net_of_d',
                      'productivity',
                      'productivity_gr',
                      'consumption',
@@ -332,7 +332,7 @@ class MacroEconomics():
 
         """
 #         saving_rate = self.saving_rate[year]
-        net_output = self.economics_df.at[year, 'net_output']
+        net_output = self.economics_df.at[year, 'output_net_of_d']
 #         investment = saving_rate * net_output
         energy_investment = self.economics_df.at[year,
                                                  'energy_investment']
@@ -347,7 +347,7 @@ class MacroEconomics():
         Share of the total output 
 
         """
-        net_output = self.economics_df.at[year, 'net_output']
+        net_output = self.economics_df.at[year, 'output_net_of_d']
         energy_investment_wo_tax = self.share_energy_investment[year] * net_output
         
         self.co2_emissions_Gt['Total CO2 emissions'].clip(lower=0.0, inplace=True)
@@ -452,7 +452,7 @@ class MacroEconomics():
             output_net_of_d = (1 - damage) * gross_output
         else:
             output_net_of_d = gross_output * (1 - damefrac)
-        self.economics_df.loc[year, 'net_output'] = output_net_of_d
+        self.economics_df.loc[year, 'output_net_of_d'] = output_net_of_d
         return output_net_of_d
 
     def compute_consumption(self, year):
@@ -462,7 +462,7 @@ class MacroEconomics():
             output: Economic output at t
             savings: Savings rate at t
         """
-        net_output = self.economics_df.at[year, 'net_output']
+        net_output = self.economics_df.at[year, 'output_net_of_d']
         investment = self.economics_df.at[year, 'investment']
         consumption = net_output - investment
         # lower bound for conso
@@ -692,7 +692,7 @@ class MacroEconomics():
                           self.year_end + 1, self.time_step)
         nb_years = len(years)
 
-        net_output = self.economics_df['net_output'].values
+        net_output = self.economics_df['output_net_of_d'].values
         energy_investment_wo_tax = self.share_energy_investment.values  * net_output
         denergy_investment_wo_tax = np.identity(nb_years) /100.0 * net_output
         denergy_investment_wo_renewable = denergy_investment_wo_tax * 1e3
@@ -745,14 +745,14 @@ class MacroEconomics():
         years = np.arange(self.year_start,
                           self.year_end + 1, self.time_step)
         nb_years = len(years)
-        net_output = self.economics_df['net_output'].values
+        net_output = self.economics_df['output_net_of_d'].values
         dinvestment = denergy_investment - np.identity(nb_years) /100.0 * net_output
 
         return dinvestment
 
     def compute_denergy_investment_dco2_tax(self):
         #self.co2_emissions_Gt['Total CO2 emissions'].clip(lower=0.0, inplace=True)
-        net_output = self.economics_df['net_output'].values
+        net_output = self.economics_df['output_net_of_d'].values
         energy_investment_wo_tax = self.share_energy_investment.values * net_output
         dren_investments = self.dren_investments_dco2_tax(energy_investment_wo_tax)
         denergy_investment = dren_investments
@@ -803,7 +803,7 @@ class MacroEconomics():
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i], 'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],'energy_investment_wo_tax']
-            net_output = self.economics_df.at[years[i], 'net_output']
+            net_output = self.economics_df.at[years[i], 'output_net_of_d']
             ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  # T$
             for j in range(0, i + 1):
                 if ren_investments > self.co2_invest_limit * energy_investment_wo_tax:
@@ -819,7 +819,7 @@ class MacroEconomics():
     def compute_dinvestment_dtotal_share_of_gdp(self):
             years = self.years_range
             nb_years = len(years)
-            net_output = self.economics_df['net_output'].values
+            net_output = self.economics_df['output_net_of_d'].values
             dnon_energy_investment = np.identity(nb_years) / 100.0 * net_output
             dinvestment = dnon_energy_investment
 
