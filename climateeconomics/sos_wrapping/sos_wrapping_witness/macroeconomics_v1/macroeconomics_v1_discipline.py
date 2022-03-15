@@ -540,7 +540,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
             ordonate_data_bis = list(second_serie)
             new_series = InstanciatedSeries(
-                years, ordonate_data_bis, '', 'lines', visible_line) 
+                years, ordonate_data_bis, 'Usable capital', 'lines', visible_line) 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
         
