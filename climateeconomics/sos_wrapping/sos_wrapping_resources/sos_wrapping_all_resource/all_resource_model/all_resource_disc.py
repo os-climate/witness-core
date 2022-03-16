@@ -173,7 +173,7 @@ class AllResourceDiscipline(SoSDiscipline):
     def get_post_processing_list(self, chart_filters=None):
 
         instanciated_charts = []
-
+        chart_list = ['all']
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
