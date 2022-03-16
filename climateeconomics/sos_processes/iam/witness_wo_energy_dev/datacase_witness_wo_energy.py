@@ -86,6 +86,9 @@ class DataStudy():
             join(global_data_dir, 'population_df.csv'))
         population_df.index = years
         witness_input[self.study_name + '.population_df'] = population_df
+        working_age_population_df = pd.DataFrame(
+            {'years': years, 'population_1570': 6300}, index=years)
+        witness_input[self.study_name + '.working_age_population_df'] = working_age_population_df
 
         self.share_energy_investment_array = asarray([1.65] * nb_per)
 
