@@ -92,7 +92,7 @@ class DataStudy():
 
         self.share_energy_investment_array = asarray([1.65] * nb_per)
 
-        total_invest = asarray([25.0] * nb_per)
+        total_invest = asarray([27.0] * nb_per)
         total_invest = DataFrame(
             {'years': years, 'share_investment': total_invest})
         witness_input[self.study_name +
@@ -266,6 +266,15 @@ class DataStudy():
         # -------------------------------------------------
         # pc_consumption_constraint
         list_var.append('pc_consumption_constraint')
+        list_parent.append('')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(-1.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
+        # -------------------------------------------------
+        # e_max_constraint
+        list_var.append('emax_enet_constraint')
         list_parent.append('')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)

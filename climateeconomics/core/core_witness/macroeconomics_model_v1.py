@@ -505,7 +505,7 @@ class MacroEconomics():
         """
         e_max = self.usable_capital_df['e_max'].values
         energy = self.energy_production['Total production'].values
-        self.emax_enet_constraint = (energy - e_max) / self.ref_emax_enet_constraint 
+        self.emax_enet_constraint = - (energy - e_max) / self.ref_emax_enet_constraint 
             
     def compute(self, inputs, damage_prod=False):
         """
