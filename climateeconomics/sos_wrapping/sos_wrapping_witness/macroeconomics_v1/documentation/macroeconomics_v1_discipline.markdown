@@ -33,14 +33,14 @@ Moreover, the capital is not able to absorb more energy that it is built for,  t
 $$Ku=K \cdot \frac{En}{E\_max\_k}$$
 with $K$ the capital stock in trillions dollars and $En$ the net energy supply in TWh.   
 The maximum usable energy of capital ($E\_max\_k$) energy evolves with technology evolution as well as the productivity of the capital ($P$):
- $$E\_max\_k = \frac{K}{capital\_utilisation\_ratio \cdot P} $$
+ $$E\_max\_k = \frac{K}{capital\_utilisation\_ratio \cdot P}$$
  with $capital\_utilisation\_ratio$ the capital utilisation rate and P the productivity of the capital represented by a logistic function: 
- $$ P = min\_value+ \frac{L}{1+e^{-k(year-xo)}}$$
+ $$P = min\_value+ \frac{L}{1+e^{-k(year-xo)}}$$
  with L is $energy\_eff\_max$ in the inputs, $min\_value$ is $energy\_eff\_cst$, $xo$ is $energy\_eff\_xzero$, and $k$ $energy\_eff\_k$.  
 
 #### Gross Output 
 From the definition of the usable capital ($Ku)$ a standard constant elasticity of substitution (CES) function from classical economy is used to compute the GDP ($Y$): 
-$$ Y = A \cdot (\alpha \cdot Ku^{\gamma} + (1-\alpha) \cdot L^\gamma)^{\frac{1}{\gamma}} $$
+$$Y = A \cdot (\alpha \cdot Ku^{\gamma} + (1-\alpha) \cdot L^\gamma)^{\frac{1}{\gamma}}$$
 $A$ the Total Factor Productivity (TFP), $L$ the labor force in million of people $\alpha \in (0,1)$ the share parameter reflecting the capital intensity in production, $\gamma$ the substitution parameter. $\gamma = \frac{\sigma-1}{\sigma}$ where $\sigma$ is the elasticity of substitution between capital and labor.
 
 #### Net output 
