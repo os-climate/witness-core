@@ -75,8 +75,8 @@ class ForestTestCase(unittest.TestCase):
                                          'wood_residues_moisture': 0.35,  # 35% moisture content
                                          'wood_residue_colorific_value': 4.356,
                                          'Opex_percentage': 0.045,
-                                         'Managed_wood_price_per_ha': 14872,  # 13047,
-                                         'Unmanaged_wood_price_per_ha': 11500,  # 10483,
+                                         'managed_wood_price_per_ha': 14872,  # 13047,
+                                         'unmanaged_wood_price_per_ha': 11500,  # 10483,
                                          'Price_per_ha_unit': 'euro/ha',
                                          'full_load_hours': 8760.0,
                                          'euro_dollar': 1.1447,  # in 2019, date of the paper
@@ -203,5 +203,5 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
