@@ -95,8 +95,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'wood_residues_moisture': 0.35,  # 35% moisture content
                                          'wood_residue_colorific_value': 4.356,
                                          'Opex_percentage': 0.045,
-                                         'Managed_wood_price_per_ha': 15000,  # 13047,
-                                         'Unmanaged_wood_price_per_ha': 11000,  # 10483,
+                                         'managed_wood_price_per_ha': 15000,  # 13047,
+                                         'unmanaged_wood_price_per_ha': 11000,  # 10483,
                                          'Price_per_ha_unit': 'euro/ha',
                                          'full_load_hours': 8760.0,
                                          'euro_dollar': 1.1447,  # in 2019, date of the paper

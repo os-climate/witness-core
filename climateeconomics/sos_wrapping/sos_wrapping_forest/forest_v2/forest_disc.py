@@ -101,8 +101,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         # Capex init: 12000 $/ha to buy the land (CCUS-report_V1.30)
                         # + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
                         # 1USD = 0,87360 euro in 2019
-                        'Managed_wood_price_per_ha': 13047,
-                        'Unmanaged_wood_price_per_ha': 10483,
+                        'managed_wood_price_per_ha': 13047,
+                        'unmanaged_wood_price_per_ha': 10483,
                         'Price_per_ha_unit': 'euro/ha',
                         'full_load_hours': 8760.0,
                         'euro_dollar': 1.1447,  # in 2019, date of the paper
@@ -239,7 +239,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'unmanaged_wood_df': self.forest_model.unmanaged_wood_df,
             'biomass_dry_detail_df': self.forest_model.biomass_dry_df,
             #             'biomass_dry_df': self.forest_model.biomass_dry_df[['years', 'price_per_MWh', 'biomass_dry_for_energy']]
-            'biomass_dry_df': self.forest_model.biomass_dry_df[['years', 'biomass_dry_for_energy']]
+            'biomass_dry_df': self.forest_model.biomass_dry_df[['years', 'biomass_dry_for_energy (Mt)']]
         }
 
         #-- store outputs
@@ -252,8 +252,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
         self.forest_model.compute(in_dict)
         wood_techno_dict = in_dict['wood_techno_dict']
-        mw_price_per_ha = wood_techno_dict['Managed_wood_price_per_ha']
-        uw_price_per_ha = wood_techno_dict['Unmanaged_wood_price_per_ha']
+        mw_price_per_ha = wood_techno_dict['managed_wood_price_per_ha']
+        uw_price_per_ha = wood_techno_dict['unmanaged_wood_price_per_ha']
         wood_percentage_for_energy = wood_techno_dict['wood_percentage_for_energy']
         residue_percentage_for_energy = wood_techno_dict['residue_percentage_for_energy']
         residue_percentage = wood_techno_dict['residue_density_percentage']
@@ -350,7 +350,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_biomass_wood_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(
             d_cum_mw_surface_d_invest, wood_percentage, wood_percentage_for_energy, managed_wood_part)
         self.set_partial_derivative_for_other_types(
-            ('biomass_dry_df', 'biomass_dry_for_energy'),
+            ('biomass_dry_df', 'biomass_dry_for_energy (Mt)'),
             ('managed_wood_investment', 'investment'),
             d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest)
 
@@ -361,7 +361,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_biomass_wood_d_uw_invest = self.forest_model.d_biomass_prod_d_invest(
             d_cum_uw_surface_d_invest, wood_percentage, wood_percentage_for_energy, unmanaged_wood_part)
         self.set_partial_derivative_for_other_types(
-            ('biomass_dry_df', 'biomass_dry_for_energy'),
+            ('biomass_dry_df', 'biomass_dry_for_energy (Mt)'),
             ('unmanaged_wood_investment', 'investment'),
             d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest)
 
@@ -533,13 +533,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 'biomass_dry_detail_df')
 
             # chart biomass dry for energy production
-            new_chart = TwoAxesInstanciatedChart('years', 'Equivalent energy of biomass dry [TWh]',
-                                                 chart_name='Beak down of biomass dry production for energy', stacked_bar=True)
-            mw_residues_energy = managed_wood_df['residues_production_for_energy']
-            mw_wood_energy = managed_wood_df['wood_production_for_energy']
-            uw_residues_energy = unmanaged_wood_df['residues_production_for_energy']
-            uw_wood_energy = unmanaged_wood_df['wood_production_for_energy']
-            biomass_dry_energy = biomass_dry_df['biomass_dry_for_energy']
+            new_chart = TwoAxesInstanciatedChart('years', 'biomass dry [Mt]',
+                                                 chart_name='Break down of biomass dry production for energy', stacked_bar=True)
+            mw_residues_energy = managed_wood_df['residues_production_for_energy (Mt)']
+            mw_wood_energy = managed_wood_df['wood_production_for_energy (Mt)']
+            uw_residues_energy = unmanaged_wood_df['residues_production_for_energy (Mt)']
+            uw_wood_energy = unmanaged_wood_df['wood_production_for_energy (Mt)']
+            biomass_dry_energy = biomass_dry_df['biomass_dry_for_energy (Mt)']
 
             mn_residues_series = InstanciatedSeries(
                 years, mw_residues_energy.tolist(), 'Residues from managed wood', InstanciatedSeries.BAR_DISPLAY)
@@ -560,12 +560,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             # chart total biomass dry production
-            new_chart = TwoAxesInstanciatedChart('years', 'Equivalent energy of biomass dry [TWh]',
-                                                 chart_name='Beak down of biomass dry production for energy', stacked_bar=True)
-            residues_industry = managed_wood_df['residues_production_for_industry'] + \
-                unmanaged_wood_df['residues_production_for_industry']
-            wood_industry = managed_wood_df['wood_production_for_industry'] + \
-                unmanaged_wood_df['wood_production_for_industry']
+            new_chart = TwoAxesInstanciatedChart('years', 'biomass dry [Mt]',
+                                                 chart_name='Break down of biomass dry production for energy', stacked_bar=True)
+            residues_industry = managed_wood_df['residues_production_for_industry (Mt)'] + \
+                unmanaged_wood_df['residues_production_for_industry (Mt)']
+            wood_industry = managed_wood_df['wood_production_for_industry (Mt)'] + \
+                unmanaged_wood_df['wood_production_for_industry (Mt)']
             biomass_industry = residues_industry + wood_industry
             residues_energy = mw_residues_energy + uw_residues_energy
             wood_energy = mw_wood_energy + uw_wood_energy
@@ -585,8 +585,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
             # biomassdry price per kWh
             new_chart = TwoAxesInstanciatedChart('years', 'Price [$/MWh]',
                                                  chart_name='Biomass dry price evolution', stacked_bar=True)
-            mw_price = biomass_dry_df['Managed_wood_price']
-            uw_price = biomass_dry_df['Unmanaged_wood_price']
+            mw_price = biomass_dry_df['managed_wood_price_per_MWh']
+            uw_price = biomass_dry_df['unmanaged_wood_price_per_MWh']
             average_price = biomass_dry_df['price_per_MWh']
 
             mw_price_series = InstanciatedSeries(
@@ -605,7 +605,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart('years', 'Price [$/ton]',
                                                  chart_name='Biomass dry price evolution', stacked_bar=True)
             mw_price = biomass_dry_df['managed_wood_price_per_ton']
-            uw_price = biomass_dry_df['unmanaged_wood_price_ton']
+            uw_price = biomass_dry_df['unmanaged_wood_price_per_ton']
             average_price = biomass_dry_df['price_per_ton']
 
             mw_price_series = InstanciatedSeries(
