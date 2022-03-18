@@ -65,10 +65,7 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_ref',
                                          'ns_invest',
                                          'ns_agriculture',
-                                         'coal_resource',
-                                         'uranium_resource',
-                                         'oil_resource',
-                                         'natural_gas_resource',
+
 
                                          ]}
 
