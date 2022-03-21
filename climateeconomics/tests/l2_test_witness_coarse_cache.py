@@ -19,7 +19,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.use
 import unittest
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from sos_trades_core.sos_processes.compare_data_manager_tooling import compare_dict
+from gemseo.utils.compare_data_manager_tooling import compare_dict
 
 
 class WitnessCoarseCache(unittest.TestCase):
