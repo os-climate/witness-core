@@ -51,6 +51,10 @@ class DataStudy():
             (self.year_end - self.year_start) / self.time_step + 1)
         years = arange(self.year_start, self.year_end + 1, self.time_step)
 
+        forest_invest = np.linspace(5.0, 8.0, len(years))
+        self.forest_invest_df = pd.DataFrame(
+            {"years": years, "forest_investment": forest_invest})
+
         # private values economics operator model
         witness_input = {}
         witness_input[self.study_name + '.year_start'] = self.year_start
@@ -74,7 +78,7 @@ class DataStudy():
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
 #         witness_input[self.study_name +
 #                       '.Damage.damage_constraint_factor'] = np.asarray([1] * len(years))
-
+        witness_input[f'{self.study_name}.InvestmentDistribution.forest_investment'] = self.forest_invest_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[3], 'data')
@@ -82,10 +86,13 @@ class DataStudy():
             join(global_data_dir, 'population_df.csv'))
         population_df.index = years
         witness_input[self.study_name + '.population_df'] = population_df
+        working_age_population_df = pd.DataFrame(
+            {'years': years, 'population_1570': 6300}, index=years)
+        witness_input[self.study_name + '.working_age_population_df'] = working_age_population_df
 
         self.share_energy_investment_array = asarray([1.65] * nb_per)
 
-        total_invest = asarray([25.0] * nb_per)
+        total_invest = asarray([27.0] * nb_per)
         total_invest = DataFrame(
             {'years': years, 'share_investment': total_invest})
         witness_input[self.study_name +
@@ -137,6 +144,10 @@ class DataStudy():
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
             {'years': years, 'CO2_tax_efficiency': CO2_tax_efficiency})
+
+        forest_invest = np.linspace(5.0, 8.0, len(years))
+        self.forest_invest_df = pd.DataFrame(
+            {"years": years, "forest_investment": forest_invest})
 
         #-- load data from resource
 
@@ -190,6 +201,7 @@ class DataStudy():
         witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
+        witness_input[f'{self.study_name}.is_dev'] = True
         #witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
 #         self.exec_eng.dm.export_couplings(
 #             in_csv=True, f_name='couplings.csv')
@@ -254,6 +266,15 @@ class DataStudy():
         # -------------------------------------------------
         # pc_consumption_constraint
         list_var.append('pc_consumption_constraint')
+        list_parent.append('')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(-1.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
+        # -------------------------------------------------
+        # e_max_constraint
+        list_var.append('emax_enet_constraint')
         list_parent.append('')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)
