@@ -21,7 +21,7 @@ from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_en
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from tempfile import gettempdir
 from copy import deepcopy
-from sos_trades_core.sos_processes.compare_data_manager_tooling import delete_keys_from_dict,\
+from gemseo.utils.compare_data_manager_tooling import delete_keys_from_dict,\
     compare_dict
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from scipy.interpolate.interpolate import interp1d
