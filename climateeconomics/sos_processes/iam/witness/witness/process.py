@@ -56,10 +56,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
             techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
 
-        for i, disc in enumerate(chain_builders_energy):
-            if disc.sos_name == 'Resources':
-                i_disc_to_pop = i
-        chain_builders_energy.pop(i_disc_to_pop)
+        if self.process_level == 'dev':
+            for i, disc in enumerate(chain_builders_energy):
+                if disc.sos_name == 'Resources':
+                    i_disc_to_pop = i
+            chain_builders_energy.pop(i_disc_to_pop)
+
         chain_builders.extend(chain_builders_energy)
 
         # Update namespace regarding land use and energy mix coupling
@@ -72,9 +74,9 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
             'ns_witness',
             'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_optim.post_processing_witness_full')
-
-        for resource_namespace in ['coal_resource', 'oil_resource', 'natural_gas_resource', 'uranium_resource']:
-            self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-                resource_namespace, 'climateeconomics.sos_wrapping.sos_wrapping_resources.post_proc_resource.post_processing_resource')
+        if self.process_level == 'dev':
+            for resource_namespace in ['coal_resource', 'oil_resource', 'natural_gas_resource', 'uranium_resource']:
+                self.ee.post_processing_manager.add_post_processing_module_to_namespace(
+                    resource_namespace, 'climateeconomics.sos_wrapping.sos_wrapping_resources.post_proc_resource.post_processing_resource')
 
         return chain_builders

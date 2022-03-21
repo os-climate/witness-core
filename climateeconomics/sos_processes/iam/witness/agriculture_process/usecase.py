@@ -63,7 +63,7 @@ class Study(StudyManager):
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
-        self.nb_poles = 7
+        self.nb_poles = 8
 
     def setup_usecase(self):
 
