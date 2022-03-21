@@ -21,7 +21,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as EnergyMDA
 import unittest
 from sos_trades_core.study_manager.base_study_manager import BaseStudyManager
-from sos_trades_core.sos_processes.compare_data_manager_tooling import compare_dict
+from gemseo.utils.compare_data_manager_tooling import compare_dict
 from copy import deepcopy
 import sys
 import pickle
