@@ -128,7 +128,7 @@ class WitnessCoarseCache(unittest.TestCase):
                         "disp": 110}
         full_values_dict['Test.WITNESS_MDO.algo_options'] = algo_options
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.warm_start'] = True
-        full_values_dict['Test.WITNESS_MDO.max_iter'] = 3
+        full_values_dict['Test.WITNESS_MDO.max_iter'] = 2
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 10
 
