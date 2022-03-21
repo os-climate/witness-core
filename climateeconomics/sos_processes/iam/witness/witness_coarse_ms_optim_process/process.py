@@ -54,10 +54,6 @@ class ProcessBuilder(BaseProcessBuilder):
                                          #'ns_ref',
                                          'ns_agriculture',
                                          'ns_invest',
-                                         'coal_resource',
-                                         'uranium_resource',
-                                         'oil_resource',
-                                         'natural_gas_resource',
                                          ]}
 
         self.ee.smaps_manager.add_build_map(

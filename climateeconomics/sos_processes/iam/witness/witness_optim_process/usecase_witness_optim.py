@@ -20,6 +20,7 @@ from sos_trades_core.tools.post_processing.post_processing_factory import PostPr
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sos_trades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -31,6 +32,8 @@ EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
 OBJECTIVE_LAGR = FunctionManagerDisc.OBJECTIVE_LAGR
 FUNC_DF = FunctionManagerDisc.FUNC_DF
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
+WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
+
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -113,9 +116,8 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "use_threading": False,
                                                                           "wait_time_between_fork": 0},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50, }
-# f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
-# True}
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}': False}
 
         #print("Design space dimension is ", dspace_size)
 
