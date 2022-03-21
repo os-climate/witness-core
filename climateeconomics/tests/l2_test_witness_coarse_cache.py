@@ -128,9 +128,9 @@ class WitnessCoarseCache(unittest.TestCase):
                         "disp": 110}
         full_values_dict['Test.WITNESS_MDO.algo_options'] = algo_options
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.warm_start'] = True
-        full_values_dict['Test.WITNESS_MDO.max_iter'] = 1
+        full_values_dict['Test.WITNESS_MDO.max_iter'] = 3
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
-        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 1
+        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 10
 
         # execute optim with SimpleCache and retrieve dm
         self.ee.load_study_from_input_dict(full_values_dict)
@@ -181,5 +181,3 @@ if '__main__' == __name__:
     cls = WitnessCoarseCache()
     cls.test_01_cache_on_witness_coarse_optim_with_unconverged_mda()
     cls.test_02_cache_on_witness_coarse_optim_with_warm_start()
-
-    # augmeter max_iter, max_mda_iter, changer sub_mda_class
