@@ -374,7 +374,8 @@ class CarbonEmissions():
         self.co2_emissions_ccus_Gt.index = self.co2_emissions_ccus_Gt[
             'years'].values
 
-        self.CO2_emitted_forest_df = self.inputs_models['CO2_emitted_forest_df']
+        self.CO2_emitted_forest_df = self.inputs_models['CO2_emitted_forest_df'].copy(
+            deep=True)
         self.CO2_emitted_forest_df.index = self.CO2_emitted_forest_df['years'].values
         self.compute_total_CO2_emissions()
         # Iterate over years
