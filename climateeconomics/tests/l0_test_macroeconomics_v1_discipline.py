@@ -39,7 +39,8 @@ class MacroDiscTest(unittest.TestCase):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
-                   'ns_public': f'{self.name}'}
+                   'ns_public': f'{self.name}',
+                   'ns_functions': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
