@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
@@ -87,7 +87,7 @@ class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_01_grad_lost_capital_objective(self):
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_welfare.pkl', discipline=self.disc_techno, step=1e-15,
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_lost_capital_objective.pkl', discipline=self.disc_techno, step=1e-15,
                             inputs=[f'{self.name}.EnergyMix.methane.FossilGas.lost_capital',
                                     f'{self.name}.EnergyMix.methane.UpgradingBiogas.lost_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.lost_capital',
