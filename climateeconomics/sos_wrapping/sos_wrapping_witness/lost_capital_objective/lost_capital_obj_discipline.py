@@ -81,7 +81,8 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         for lost_capital in all_lost_capital_list:
             dynamic_inputs[f'{lost_capital}.lost_capital'] = {'type': 'dataframe',
                                                               'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                              'namespace': 'ns_energy_mix'}
+                                                              'namespace': 'ns_energy_mix',
+                                                              'unit': 'G$'}
 
         self.add_inputs(dynamic_inputs)
 
