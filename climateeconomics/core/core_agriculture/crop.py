@@ -96,6 +96,13 @@ class Crop():
         self.initial_age_distrib = self.param['initial_age_distrib']
         self.initial_production = self.param['initial_production']
         self.nb_years_amort_capex = 10
+        self.construction_delay = 3 # default value
+        if 'construction_delay' in self.techno_infos_dict:
+            self.construction_delay = self.techno_infos_dict['construction_delay']
+        else:
+            print(
+                f'The construction_delay data is not set for Crop : default = 3 years  ')
+
 
     def create_dataframe(self):
         '''
@@ -106,15 +113,22 @@ class Crop():
             self.year_end + 1,
             self.time_step)
         self.years = years
-        self.food_land_surface_df = pd.DataFrame()
-        self.total_food_land_surface = pd.DataFrame()
-        self.mix_detailed_production = pd.DataFrame()
-        self.mix_detailed_prices = pd.DataFrame()
+        self.food_land_surface_df = pd.DataFrame({'years': self.years})
+        self.food_land_surface_df.index = self.years
+        self.total_food_land_surface = pd.DataFrame({'years': self.years})
+        self.total_food_land_surface.index = self.years
+        self.mix_detailed_production = pd.DataFrame({'years': self.years})
+        self.mix_detailed_production.index = self.years
+        self.mix_detailed_prices = pd.DataFrame({'years': self.years})
+        self.mix_detailed_prices.index = self.years
         self.production = pd.DataFrame({'years': self.years})
-        self.biomass_production_df = pd.DataFrame()
-        self.land_demand_df = pd.DataFrame()
+        self.production.index = self.years
+        self.land_demand_df = pd.DataFrame({'years': self.years})
+        self.land_demand_df.index = self.years
         self.cost_details = pd.DataFrame({'years': self.years})
-        self.biomass_price_df = pd.DataFrame()
+        self.cost_details.index = self.years
+        self.biomass_price_df = pd.DataFrame({'years': self.years})
+        self.biomass_price_df.index = self.years
         self.column_dict = {'red meat (Gha)': 'red meat', 'white meat (Gha)': 'white meat',
                             'milk (Gha)': 'milk', 'eggs (Gha)': 'eggs', 'rice and maize (Gha)': 'rice and maize',
                             'potatoes (Gha)': 'potatoes', 'fruits and vegetables (Gha)': 'fruits and vegetables',
@@ -126,6 +140,8 @@ class Crop():
         '''
         # invest level from G$ to M$
         self.scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
+        self.invest_level = inputs_dict['invest_level']
+        self.invest_level.index = self.years
         self.invest_level['invest'] = self.invest_level['invest'] * \
             self.scaling_factor_invest_level
         if self.initial_age_distrib['distrib'].sum() > 100.001 or self.initial_age_distrib[
@@ -180,7 +196,6 @@ class Crop():
         surface_df['years'] = self.years
 
         self.food_land_surface_df = surface_df
-
         self.total_food_land_surface['years'] = surface_df['years']
         self.total_food_land_surface['total surface (Gha)'] = surface_df['total surface (Gha)']
 
@@ -566,6 +581,7 @@ class Crop():
 
         self.production = pd.merge(self.production, age_distrib_prod_sum, how='left', on='years').rename(
             columns={'distrib_prod (Mt)': 'Crop for energy (Mt)'}).fillna(0.0)
+        self.production.index = self.years
 
     def compute_aging_distribution_production(self):
         '''
@@ -580,15 +596,10 @@ class Crop():
         aging_distrib_year_df[f'distrib_prod (Mt)'] = self.initial_age_distrib['distrib'] * \
             self.initial_production / 100.0
 
-        if 'construction_delay' in self.techno_infos_dict:
-            construction_delay = self.techno_infos_dict['construction_delay']
-        else:
-            print(
-                f'The construction_delay data is not set for Crop : default = 3 years  ')
-            construction_delay = 3
+
 
         production_from_invest = self.compute_prod_from_invest(
-            construction_delay=construction_delay)
+            construction_delay=self.construction_delay)
 
         # get the whole dataframe for new production with one line for each
         # year at each age
@@ -604,7 +615,7 @@ class Crop():
         prod_array = production_from_invest['prod_from_invest'].values.tolist(
         ) * len_years
 
-        new_prod_aged = pd.DataFrame({'years': year_array, 'age': age_array, 'distrib_prod (Mt)': age_array})
+        new_prod_aged = pd.DataFrame({'years': year_array, 'age': age_array, 'distrib_prod (Mt)': prod_array})
 
         # get the whole dataframe for old production with one line for each
         # year at each age
@@ -639,8 +650,15 @@ class Crop():
         '''
         Compute the crop production from investment in t
         '''
+        prod_before_ystart = pd.DataFrame({'years': np.arange(self.year_start - construction_delay, self.year_start),
+                                           'invest': [0.0]*(construction_delay),
+                                           'Capex ($/Mwh)': self.cost_details.loc[self.cost_details[
+                                                                                           'years'] == self.year_start, 'Capex ($/Mwh)'].values[
+                                               0]})
+
         production_from_invest = pd.concat(
-            [self.cost_details[['years', 'invest', 'Capex ($/Mwh)']]], ignore_index=True)
+            [self.cost_details[['years', 'invest', 'Capex ($/Mwh)']], prod_before_ystart], ignore_index=True)
+
         production_from_invest.sort_values(by=['years'], inplace=True)
         ## Invest in M$ | Capex in $/Mwh | Prod in Mt
         production_from_invest['prod_from_invest'] = production_from_invest['invest'].values / \
@@ -668,7 +686,12 @@ class Crop():
         """
         Compute land use required for crop for energy
         """
-        self.land_demand_df['Crop for energy (Gha)'] = self.mix_detailed_production['Crop for energy (Mt)'] / self.techno_infos_dict['density_per_ha']
+        self.land_demand_df['Crop for energy (Gha)'] = self.mix_detailed_production['Crop for energy (Mt)'] / \
+                                                       self.techno_infos_dict['density_per_ha']
+        #self.land_demand_df.index = self.years
+        #self.land_demand_df['years'] = self.total_food_land_surface['years']
+        self.land_demand_df['Crop for food (Gha)'] = self.food_land_surface_df['total surface (Gha)']
+
 
     ####### Gradient #########
 
@@ -781,3 +804,56 @@ class Crop():
         total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
 
         return total_surface_climate_grad.values * idty
+
+    def compute_dprod_from_dinvest(self):
+        #return dproduction_from_dinvest
+
+        '''
+               Compute the partial derivative of prod vs invest  and the partial derivative of prod vs capex
+               To compute after the total derivative of prod vs invest = dpprod_dpinvest + dpprod_dpcapex*dcapexdinvest
+               with dcapexdinvest already computed for detailed prices
+               '''
+
+        nb_years = (self.year_end - self.year_start + 1)
+        arr_type = 'float64'
+        dprod_list_dinvest_list = np.zeros(
+            (nb_years, nb_years), dtype=arr_type)
+
+        # We fill this jacobian column by column because it is the same element
+        # in the entire column
+        for i in range(nb_years):
+
+            len_non_zeros = min(max(0, nb_years - self.construction_delay - i), self.techno_infos_dict['lifetime'])
+            first_len_zeros = min( i + self.construction_delay, nb_years)
+            last_len_zeros = max(0, nb_years - len_non_zeros - first_len_zeros)
+            # For prod in each column there is lifetime times the same value which is dpprod_dpinvest
+            # This value is delayed in time (means delayed in lines for
+            # jacobian by construction _delay)
+            # Each column is then composed of [0,0,0... (dp/dx,dp/dx)*lifetime,
+            # 0,0,0]
+            dpprod_dpinvest = 1 / self.cost_details[f'Capex ($/Mwh)'].values[i] /\
+                                                             self.data_fuel_dict['calorific_value']
+            is_invest_negative = max(
+                np.sign(self.cost_details['invest'].values[i] + np.finfo(float).eps), 0.0)
+            dprod_list_dinvest_list[:, i] = np.hstack((np.zeros(first_len_zeros),
+                                                       np.ones(
+                                                           len_non_zeros) * dpprod_dpinvest * is_invest_negative,
+                                                       np.zeros(last_len_zeros)))
+
+
+
+        return dprod_list_dinvest_list
+
+    def compute_d_prod_dland_for_food(self, dland_for_food):
+        '''
+        Compute gradient of production from land surface from food
+        an identity matrice with the same scalar on diagonal
+
+        '''
+        # production = residue production from food + crop energy production
+        # residue production from food = compute_residue_from_food_investment
+        d_prod_dland_for_food = dland_for_food * \
+                                self.techno_infos_dict['residue_density_percentage'] * \
+                                self.techno_infos_dict['density_per_ha'] * \
+                                self.techno_infos_dict['residue_percentage_for_energy']
+        return d_prod_dland_for_food
