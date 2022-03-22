@@ -170,7 +170,7 @@ class Forest():
         self.managed_wood_df['biomass_production (Mt)'] = np.cumsum(
             self.managed_wood_df['delta_biomass_production (Mt)']) + self.managed_wood_inital_prod / self.biomass_dry_calorific_value
         self.managed_wood_df['residues_production (Mt)'] = self.managed_wood_df['biomass_production (Mt)'] * \
-            residue_density_percentage * (1 - residue_percentage_for_energy)
+            residue_density_percentage
         self.managed_wood_df['residues_production_for_energy (Mt)'] = self.managed_wood_df['residues_production (Mt)'] * \
             residue_percentage_for_energy
         self.managed_wood_df['residues_production_for_industry (Mt)'] = self.managed_wood_df['residues_production (Mt)'] * \
@@ -223,7 +223,7 @@ class Forest():
             uw_added) + self.unmanaged_wood_initial_surface
 
         # Biomass production part
-        self.unmanaged_wood_df['delta_biomass_production (Mt)'] = self.unmanaged_wood_df['delta_surface'] * density_per_ha * mean_density  / \
+        self.unmanaged_wood_df['delta_biomass_production (Mt)'] = self.unmanaged_wood_df['delta_surface'] * density_per_ha * mean_density / \
             years_between_harvest / (1 - recycle_part)
         self.unmanaged_wood_df['biomass_production (Mt)'] = np.cumsum(
             self.unmanaged_wood_df['delta_biomass_production (Mt)']) + self.unmanaged_wood_inital_prod / self.biomass_dry_calorific_value
@@ -330,11 +330,9 @@ class Forest():
         """
 
         self.biomass_dry_df['biomass_dry_for_energy (Mt)'] = self.unmanaged_wood_df['residues_production_for_energy (Mt)'] + \
-                                                            self.unmanaged_wood_df['wood_production_for_energy (Mt)'] + \
-                                                            self.managed_wood_df['wood_production_for_energy (Mt)'] + \
-                                                            self.managed_wood_df['residues_production_for_energy (Mt)']
-
-
+            self.unmanaged_wood_df['wood_production_for_energy (Mt)'] + \
+            self.managed_wood_df['wood_production_for_energy (Mt)'] + \
+            self.managed_wood_df['residues_production_for_energy (Mt)']
 
         self.managed_wood_part = self.managed_wood_df['biomass_production (Mt)'] / (
             self.managed_wood_df['biomass_production (Mt)'] + self.unmanaged_wood_df['biomass_production (Mt)'])
@@ -364,8 +362,8 @@ class Forest():
         # Maximize with smooth exponential
 #         price_df['invest'] = compute_func_with_exp_min(
 #             investment, self.min_value_invest)
-        density_per_ha = self.techno_wood_info['density_per_ha'] # m3/ha
-        mean_density = self.techno_wood_info['density'] #kg/m3
+        density_per_ha = self.techno_wood_info['density_per_ha']  # m3/ha
+        mean_density = self.techno_wood_info['density']  # kg/m3
 
         self.crf = self.compute_crf()
 
@@ -479,11 +477,40 @@ class Forest():
 
         ddelta_prod_dinvest = d_surf_d_invest * density_per_ha * density * \
             wood_or_residues_percentage * percentage_for_energy / \
-            years_between_harvest / (1 - recycle_part) * biomass_part.values
+            years_between_harvest / \
+            (1 - recycle_part)  # * biomass_part.values / \
+        # self.biomass_dry_calorific_value
 
         return ddelta_prod_dinvest
 
-    def d_biomass_price_d_invest(self):
+    def d_biomass_price_d_invest_mw(self, dprod_dinvest):
         """
+        compute derivate of biomass price by invest in managed wood
+        """
+        mw_prod = self.managed_wood_df['biomass_production (Mt)'].values
+        biomass_prod = self.managed_wood_df['biomass_production (Mt)'].values + \
+            self.unmanaged_wood_df['biomass_production (Mt)'].values
+        d_mwpart_d_mw_invest = (
+            dprod_dinvest * biomass_prod - mw_prod * dprod_dinvest) / biomass_prod**2
 
+        derivate = self.biomass_dry_df['managed_wood_price_per_ton'].values * d_mwpart_d_mw_invest - \
+            self.biomass_dry_df['unmanaged_wood_price_per_ton'].values * \
+            d_mwpart_d_mw_invest
+
+        return derivate
+
+    def d_biomass_price_d_invest_uw(self, dprod_dinvest):
         """
+        compute derivate of biomass price by invest in unmanaged wood
+        """
+        uw_prod = self.unmanaged_wood_df['biomass_production (Mt)'].values
+        biomass_prod = self.managed_wood_df['biomass_production (Mt)'] .values + \
+            self.unmanaged_wood_df['biomass_production (Mt)'].values
+        d_uwpart_d_uw_invest = (
+            dprod_dinvest * biomass_prod - uw_prod * dprod_dinvest) / biomass_prod**2
+
+        derivate = self.biomass_dry_df['unmanaged_wood_price_per_ton'].values * d_uwpart_d_uw_invest - \
+            self.biomass_dry_df['managed_wood_price_per_ton'].values * \
+            d_uwpart_d_uw_invest
+
+        return derivate
