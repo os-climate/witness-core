@@ -157,7 +157,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
                     'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                             'invest': ('float',  None, True)},
-                    'dataframe_edition_locked': False},
+                    'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'user_level': 2},
         'margin': {'type': 'dataframe', 'unit': '%'},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
@@ -189,7 +189,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'cost_details': {'type': 'dataframe', 'unit': 'Mt'},
         'biomass_production_df': {'type': 'dataframe', 'unit': 'Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'biomass_price_df': {'type': 'dataframe', 'unit': '$/Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'land_demand_df': {'type': 'dataframe', 'unit': 'Gha'}
+        'land_demand_df': {'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'}
         }
 
     CROP_CHARTS = 'crop and diet charts'
@@ -214,6 +214,9 @@ class CropDiscipline(ClimateEcoDiscipline):
         temperature_df = input_dict.pop('temperature_df')
         self.crop_model.compute(population_df, temperature_df)
 
+        biomass_production_df = self.crop_model.mix_detailed_production[['years', 'Total (Mt)']]
+        biomass_production_df = biomass_production_df.rename(columns={'Total (Mt)': "biomass_dry (Mt)"})
+
         outputs_dict = {
             'food_land_surface_df': self.crop_model.food_land_surface_df,
             'total_food_land_surface': self.crop_model.total_food_land_surface,
@@ -223,7 +226,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             'mix_detailed_prices': self.crop_model.mix_detailed_prices,
             'cost_details': self.crop_model.cost_details,
             'mix_detailed_production': self.crop_model.mix_detailed_production,
-            'biomass_production_df': self.crop_model.biomass_production_df,
+            'biomass_production_df': biomass_production_df,
             'biomass_price_df': self.crop_model.biomass_price_df,
             'land_demand_df': self.crop_model.land_demand_df,
         }
@@ -238,7 +241,11 @@ class CropDiscipline(ClimateEcoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         population_df = inputs_dict.pop('population_df')
         temperature_df = inputs_dict['temperature_df']
+        scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
+        density_per_ha = inputs_dict['techno_infos_dict']['density_per_ha']
+        residue_density_percentage = inputs_dict['techno_infos_dict']['residue_density_percentage']
         model = self.crop_model
+        model.configure_parameters(inputs_dict)
         model.compute(population_df, temperature_df)
 
         # get variable
@@ -246,7 +253,8 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         # get column of interest
         food_land_surface_df_columns = list(food_land_surface_df)
-        food_land_surface_df_columns.remove('years')
+        if 'years' in food_land_surface_df_columns:
+            food_land_surface_df_columns.remove('years')
         food_land_surface_df_columns.remove('total surface (Gha)')
 
         # sum is needed to have d_total_surface_d_population
@@ -272,6 +280,50 @@ class CropDiscipline(ClimateEcoDiscipline):
             ('total_food_land_surface', 'total surface (Gha)'), ('red_to_white_meat', 'red_to_white_meat'), d_surface_d_red_to_white)
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('meat_to_vegetables', 'meat_to_vegetables'), d_surface_d_meat_to_vegetable)
+
+        # gradients for biomass_production_df from total food land surface
+        d_prod_dpopulation = model.compute_d_prod_dland_for_food(summ)
+        d_prod_dtemperature = model.compute_d_prod_dland_for_food(d_total_d_temperature)
+        d_prod_dred_to_white = model.compute_d_prod_dland_for_food(d_surface_d_red_to_white)
+        d_prod_dmeat_to_vegetable = model.compute_d_prod_dland_for_food(d_surface_d_meat_to_vegetable)
+
+        self.set_partial_derivative_for_other_types(
+            ('biomass_production_df', f'biomass_dry (Mt)'),
+            ('population_df', 'population'),
+            d_prod_dpopulation)
+        self.set_partial_derivative_for_other_types(
+            ('biomass_production_df', f'biomass_dry (Mt)'), ('temperature_df', 'temp_atmo'),
+            d_prod_dtemperature)
+        self.set_partial_derivative_for_other_types(
+            ('biomass_production_df', f'biomass_dry (Mt)'), ('red_to_white_meat', 'red_to_white_meat'),
+            d_prod_dred_to_white)
+        self.set_partial_derivative_for_other_types(
+            ('biomass_production_df', f'biomass_dry (Mt)'), ('meat_to_vegetables', 'meat_to_vegetables'),
+            d_prod_dmeat_to_vegetable)
+
+        # gradients for biomass_production_df from invest
+        dprod_dinvest = model.compute_dprod_from_dinvest()
+        self.set_partial_derivative_for_other_types(
+            ('biomass_production_df', f'biomass_dry (Mt)'),
+            ('invest_level', 'invest'),
+            dprod_dinvest * scaling_factor_invest_level)
+
+        # gradient for land demand
+        self.set_partial_derivative_for_other_types(
+            ('land_demand_df', 'Crop for energy (Gha)'),
+            ('invest_level', 'invest'),
+            dprod_dinvest * scaling_factor_invest_level * (1 - residue_density_percentage) / density_per_ha)
+
+        self.set_partial_derivative_for_other_types(
+            ('land_demand_df', 'Crop for food (Gha)'), ('population_df', 'population'), summ)
+        self.set_partial_derivative_for_other_types(
+            ('land_demand_df', 'Crop for food (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
+        self.set_partial_derivative_for_other_types(
+            ('land_demand_df', 'Crop for food (Gha)'), ('red_to_white_meat', 'red_to_white_meat'),
+            d_surface_d_red_to_white)
+        self.set_partial_derivative_for_other_types(
+            ('land_demand_df', 'Crop for food (Gha)'), ('meat_to_vegetables', 'meat_to_vegetables'),
+            d_surface_d_meat_to_vegetable)
 
     def get_chart_filter_list(self):
 
