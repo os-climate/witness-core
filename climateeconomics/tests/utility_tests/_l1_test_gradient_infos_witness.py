@@ -21,7 +21,7 @@ from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import S
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
 
 
-class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
+class WitnessFullGradient(AbstractJacobianUnittest):
 
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
@@ -35,13 +35,13 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return [
-            self.test_05_adjoint_with_bsplines,
+            self.test_01_gradient_objective_wrt_design_var_on_witness_full,
             # self.test_02_gradient_residus_wrt_state_var_on_witness_full,
             # self.test_03_gradient_residus_wrt_design_var_on_witness_full,
             # self.test_04_gradient_objective_wrt_design_var_on_witness_full
         ]
 
-    def test_01_gradient_objective_wrt_state_var_on_witness_full(self):
+    def test_01_gradient_objective_wrt_design_var_on_witness_full(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -85,5 +85,5 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    cls = WitnessFullJacobianDiscTest()
-    cls.test_05_adjoint_with_bsplines()
+    cls = WitnessFullGradient()
+    cls.test_01_gradient_objective_wrt_design_var_on_witness_full()
