@@ -598,5 +598,5 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = CoarseJacobianTestCase()
     cls.setUp()
-    # cls.launch_data_pickle_generation()
+    # self.launch_data_pickle_generation()
     cls.test_07_coarse_fossil_stream_discipline_jacobian()

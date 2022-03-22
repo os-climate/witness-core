@@ -13,43 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname, exists
-import numpy as np
-import pandas as pd
 
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import Study as witness_proc_usecase
 import unittest
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
-class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
+class WitnessCoarseDesynchro(unittest.TestCase):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    def test_01_desynchro_on_witness_coarse_optim_outputs(self):
 
-    obj_const = ['welfare_objective', 'min_utility_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',
-                 'total_prod_minus_min_prod_constraint_df', 'co2_emissions_objective', 'energy_production_objective', 'syngas_prod_objective', 'land_demand_constraint_df']
-
-    def setUp(self):
-
-        self.name = 'Test'
-        self.ee = ExecutionEngine(self.name)
-
-    def analytic_grad_entry(self):
-        '''
-
-        '''
-        return [
-        ]
-
-    def test_01_desynchro(self):
-        '''
-        Test on the witness full MDA + design var to get bspline with func manager 
-
-        we can test only lagrangian objective vs design var
-        '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
@@ -110,5 +85,5 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    cls = WitnessCoarseJacobianDiscTest()
-    cls.test_01_desynchro()
+    cls = WitnessCoarseDesynchro()
+    cls.test_01_desynchro_on_witness_coarse_optim_outputs()

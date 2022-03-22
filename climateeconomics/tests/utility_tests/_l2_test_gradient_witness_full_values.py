@@ -77,4 +77,4 @@ if '__main__' == __name__:
     AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = WitnessFullJacobianDiscTest()
     cls.test_01()
-    # cls.test_06_gradient_each_discipline_on_dm_pkl()
+    # self.test_06_gradient_each_discipline_on_dm_pkl()
