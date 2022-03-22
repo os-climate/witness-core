@@ -60,8 +60,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'frac_damage_prod': {'type': 'float', 'default': 0.30, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'delta_co2_price': {'type': 'float', 'default': 200., 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                            'namespace': 'ns_ref', 'user_level': 2},
         'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                        'namespace': 'ns_ref', 'user_level': 2},
         'damage_constraint_factor': {'type': 'array', 'user_level': 2}

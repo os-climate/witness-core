@@ -18,7 +18,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_c
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from tempfile import gettempdir
 from copy import deepcopy
-from sos_trades_core.sos_processes.compare_data_manager_tooling import delete_keys_from_dict,\
+from gemseo.utils.compare_data_manager_tooling import delete_keys_from_dict,\
     compare_dict
 import numpy as np
 

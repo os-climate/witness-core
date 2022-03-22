@@ -15,6 +15,10 @@ limitations under the License.
 '''
 import csv
 
+import pandas as pd
+import seaborn as sns
+
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
 '''
@@ -114,17 +118,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-            3])
+                                   3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-            3])
+                                 3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-            3])
+                                   3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-            3])
+                                     3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-            3])
+                                   3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-            3])
+                                      3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -225,17 +229,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-            3])
+                                   3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-            3])
+                                 3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-            3])
+                                   3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-            3])
+                                     3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-            3])
+                                   3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-            3])
+                                      3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -335,17 +339,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-            3])
+                                   3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-            3])
+                                 3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-            3])
+                                   3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-            3])
+                                     3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-            3])
+                                   3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-            3])
+                                      3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -441,17 +445,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                3])
+                                       3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                3])
+                                     3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                3])
+                                       3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                3])
+                                         3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                3])
+                                       3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                3])
+                                          3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -549,17 +553,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                3])
+                                       3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                3])
+                                     3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                3])
+                                       3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                3])
+                                         3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                3])
+                                       3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                3])
+                                          3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -617,7 +621,7 @@ class TestScatter(unittest.TestCase):
             os.system('git pull')
             os.system('git push')
 
-    def test_06_witness_perfos_parallel_comparison(self):
+    def _test_06_witness_perfos_parallel_comparison(self):
 
         def execute_full_usecase(n_processes):
 
@@ -660,17 +664,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                3])
+                                       3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                3])
+                                     3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                3])
+                                       3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                3])
+                                         3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                3])
+                                       3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                3])
+                                          3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -681,26 +685,145 @@ class TestScatter(unittest.TestCase):
 
             return sizes
 
-        labels = ['', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',
+        def stack_bar_chart(data, x, title, figsize, color, xlabel, ylabel, tailles, trick=False,
+                            given_labels=False):
+            """This function builds a barplot, displays the percentage of each hue(subcategory)
+                and orders the bars according to a given order
+            """
+            plt.figure(figsize=figsize)
+            ax = data.plot(
+                x=x,
+                kind='bar',
+                stacked=True,
+                title=title,
+                mark_right=True, figsize=figsize, color=color)
+
+            plt.xlabel(xlabel)
+            plt.ylabel(ylabel)
+            plt.legend(loc='upper left', bbox_to_anchor=(1, 1))
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=40, ha="right")
+            u = 0
+            for c in ax.containers:
+                # custom label calculates percent and add an empty string so 0 value bars don't have a number
+                labels = [f'{(v.get_height()) / (tailles[k]) * 100:0.1f}%' if (v.get_height()) > 0 else '' for k, v
+                          in enumerate(c)]
+                position = 'center'
+                if (trick and (u == 3)):
+                    position = 'edge'
+                if (given_labels):
+                    labels = [f'{round(v.get_height(), 2)}%' for k, v in enumerate(c)]
+
+                ax.bar_label(c, labels=labels, label_type=position)
+                u = u + 1
+
+                # ax.bar_label(c,labels=labels, label_type='center')
+
+            plt.savefig('witness_coarse_parallel_perfos.jpg')
+            plt.show()
+
+        def witness_parallel_status():
+            pd.set_option('display.max_columns', None)
+            execution_modes = ['sequential', 'threading_10_cores', 'threading_20_cores', 'multiprocessing_10_cores',
+                               'multiprocessing_20_cores']
+            linearizes_coarse = [41, 38, 38, 30, 33]
+            execute_coarse = [24, 23, 23, 35, 35]
+            others_coarse = [20, 20, 20, 22, 22]
+            total_coarse = [94, 82, 81, 87, 90]
+            total_coarse_analysis = pd.DataFrame({'exec_mode':execution_modes,'run_time':total_coarse})
+
+            linearizes_full = [327, 345, 349, 107, 135]
+            execute_full = [73, 66, 70, 108, 117]
+            others_full = [144, 137, 136, 165, 165]
+            total_full = [543, 548, 555, 380, 417]
+            execution_modes_new = ['sequential', 'threading_10_cores', 'threading_20_cores', 'multiprocessing_10_cores',
+                               'multiprocessing_20_cores','multiproc_10_seq','multiproc_20_seq']
+            total_full_new = [543, 548, 555, 380, 417,327,346]
+            total_full_analysis = pd.DataFrame({'exec_mode': execution_modes_new, 'run_time': total_full_new})
+            coarse_analysis = pd.DataFrame(
+                {'exec_mode': execution_modes, 'Linearize': linearizes_coarse, 'Execute': execute_coarse,
+                 'Others': others_coarse})
+            full_analysis = pd.DataFrame(
+                {'exec_mode': execution_modes, 'Linearize': linearizes_full, 'Execute': execute_full,
+                 'Others': others_full})
+            # stack_bar_chart(data=full_analysis, x='exec_mode', title="witness full parallel perfo", figsize=(12, 10),
+            #                 color=["green", "red", "gold"], xlabel="execution_mode", ylabel="running_time",
+            #                 tailles=total_full)
+            # stack_bar_chart(data=coarse_analysis, x='exec_mode', title="witness coarse parallel perfo", figsize=(12, 10),
+            #                 color=["green", "red", "gold"], xlabel="execution_mode", ylabel="running_time",
+            #                 tailles=total_coarse)
+
+            sns.set_style('darkgrid')
+            plt.style.use('ggplot')
+            plt.figure(figsize= (12,10))
+            ax = sns.barplot(x='exec_mode', y='run_time', data=total_coarse_analysis, ec='k')
+            ax.set_xticklabels(ax.get_xticklabels(), rotation = 40, ha='right')
+            ax.set_title("total run time witness coarse")
+            for c in ax.containers:
+                for k,v in enumerate(c):
+                    x = v.get_x() + v.get_width()/2
+                    y = v.get_height()
+                    if y <60 :
+                        text = round(y)
+                    else:
+                        text = f'{round(y//60)} mn {round(y%60)} s'
+                    ax.text(x,y,text,ha='center')
+            plt.savefig('total_time_coarse.jpg')
+            plt.show()
+
+        def plot_hbar(file_name):
+            disciplines_list = []
+            disciplines_run_time = []
+            with open(file_name) as csv_file:
+                csv_reader = csv.reader(csv_file,delimiter = ',')
+                line_count = 0
+                for row in csv_reader:
+                    if line_count==0:
+                        for disc in row:
+                            disciplines_list.append(disc)
+                    else:
+                        for time in row:
+                            disciplines_run_time.append(round(float(time),2))
+                    line_count +=1
+            df = pd.DataFrame({'disciplines':disciplines_list,'run_time':disciplines_run_time})
+            df = df.sort_values('run_time',ascending=False)
+            df = df.head(30)
+            disciplines_run_time.sort(reverse=True)
+            total_run_time = sum(disciplines_run_time)
+            sns.set_style('darkgrid')
+            plt.style.use('ggplot')
+            plt.figure(figsize=(12, 10))
+            ax = sns.barplot(x='run_time', y='disciplines', data=df, ec='k')
+            ax.set_title("execution time per discipline")
+            for c in ax.containers:
+                for k, v in enumerate(c):
+                    x = disciplines_run_time[k] + 0.005
+                    y = v.get_y() + v.get_width()+0.005
+                    text = f'{round ((disciplines_run_time[k]/total_run_time)*100)} %'
+                    ax.text(x, y, text)
+            plt.savefig('execution_time_per_disciplines_coarse_percent.jpg')
+            plt.show()
+
+        labels = ['n_processes', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',
                   'convert_array_into_new_types', 'Others']
         n_processes_list = [1, 10, 20, 30]
+        n_processes_list = [1]
 
-        dict_perfo = {}
+        # dict_perfo = {}
+        # for n_core in n_processes_list:
+        #     performances_list = []
+        #     for i in range(0, 1):
+        #         performances_list.append(execute_full_usecase(n_core))
+        #     dict_perfo[n_core] = [sum(x) / 1 for x in zip(*performances_list)]
 
-        for n_core in n_processes_list:
-            performances_list = []
-            for i in range(0, 5):
-                performances_list.append(execute_full_usecase(n_core))
-            dict_perfo[n_core] = [sum(x) / 5 for x in zip(*performances_list)]
-
-        with open(join(dirname(__file__), 'witness_full_parallel_perfos_processing_sequential.csv'), 'w+') as f:
-            writer = csv.writer(f)
-            writer.writerow(labels)
-            for n_core in n_processes_list:
-                data = [f'with_{n_core}_cores']
-                data.extend(dict_perfo[n_core])
-                writer.writerow(data)
-
+        # with open(join(dirname(__file__), 'witness_full_parallel_perfos_processing_sequential.csv'), 'w+') as f:
+        #     writer = csv.writer(f)
+        #     writer.writerow(labels)
+        #     for n_core in n_processes_list:
+        #         data = [f'with_{n_core}_cores']
+        #         data.extend(dict_perfo[n_core])
+        #         writer.writerow(data)
+        # witness_parallel_status()
+        plot_hbar('execute_split_coarse.csv')
         print("done")
 
     def test_07_witness_memory_perfos(self):
@@ -714,7 +837,7 @@ class TestScatter(unittest.TestCase):
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
         usecase = Study(execution_engine=self.ee)
-        #usecase = Study(execution_engine=self.ee)
+        # usecase = Study(execution_engine=self.ee)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -724,7 +847,7 @@ class TestScatter(unittest.TestCase):
             input_dict_to_load.update(uc_d)
 
         input_dict_to_load[f'{self.name}.WITNESS_MDO.max_iter'] = 5
-        #input_dict_to_load[f'{self.name}.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 5
+        # input_dict_to_load[f'{self.name}.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 5
 
         input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
         input_dict_to_load[f'{self.name}.sub_mda_class'] = 'GSPureNewtonMDA'
@@ -737,7 +860,7 @@ class TestScatter(unittest.TestCase):
         snapshot2 = tracemalloc.take_snapshot()
         current, peak = tracemalloc.get_traced_memory()
         print(
-            f"Current memory usage is {current / 10**6}MB; Peak was {peak / 10**6}MB")
+            f"Current memory usage is {current / 10 ** 6}MB; Peak was {peak / 10 ** 6}MB")
         top_stats = snapshot2.compare_to(snapshot1, 'lineno')
 
         print("[ Top 10 differences ]")
@@ -748,4 +871,4 @@ class TestScatter(unittest.TestCase):
 
 if '__main__' == __name__:
     cls = TestScatter()
-    cls.test_06_witness_perfos_parallel_comparison()
+    cls._test_06_witness_perfos_parallel_comparison()
