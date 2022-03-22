@@ -68,7 +68,7 @@ class WitnessFullGradient(AbstractJacobianUnittest):
 
 
         values_dict['Test.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
-        values_dict['Test.WITNESS_Eval.max_mda_iter'] = 1
+        #values_dict['Test.WITNESS_Eval.max_mda_iter'] = 1
 
         self.ee.load_study_from_input_dict(values_dict)
 
