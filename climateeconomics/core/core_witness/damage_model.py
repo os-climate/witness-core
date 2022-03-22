@@ -47,7 +47,6 @@ class DamageModel():
         self.tp_a3 = self.param['tp_a3']
         self.tp_a4 = self.param['tp_a4']
         self.frac_damage_prod = self.param['frac_damage_prod']
-        self.delta_co2_price = self.param['delta_co2_price']
         self.total_emissions_ref = self.param['total_emissions_damage_ref']
         self.damage_constraint_factor = self.param['damage_constraint_factor']
         self.co2_damage_price_df = None
