@@ -28,42 +28,54 @@ class LostCapitalObjective():
         '''
         self.param = param
         self.set_data()
-        self.create_dataframe()
         self.lost_capital_objective = np.array([0.0])
+        self.lost_capital_df = None
+        self.techno_capital_df = None
 
     def set_data(self):
         self.year_start = self.param['year_start']
         self.year_end = self.param['year_end']
         self.lost_capital_obj_ref = self.param['lost_capital_obj_ref']
-        self.energy_list = self.param['energy_list']
 
-    def create_dataframe(self):
+    def create_year_range(self):
         '''
         Create the dataframe and fill it with values at year_start
         '''
-        years_range = np.arange(
+        self.years_range = np.arange(
             self.year_start,
             self.year_end + 1)
-
-        self.lost_capital_df = pd.DataFrame(
-            columns=['years', 'Sum of lost capital'])
-        self.lost_capital_df['years'] = years_range
 
     def compute(self, inputs_dict):
         """
         Compute the sum of lost_capitals
         """
-        self.create_dataframe()
-        lost_capitals_df_list = [value.drop(
-            ['years'], axis=1) for key, value in inputs_dict.items() if key.endswith('lost_capital')]
+        self.create_year_range()
 
-        lost_capital_df = pd.concat(lost_capitals_df_list, axis=1)
-        self.lost_capital_df['Sum of lost capital'] = lost_capital_df.sum(
+        self.lost_capital_df = self.agreggate_and_compute_sum(
+            'lost_capital', inputs_dict)
+
+        self.techno_capital_df = self.agreggate_and_compute_sum(
+            'techno_capital', inputs_dict)
+        self.compute_objective()
+
+    def agreggate_and_compute_sum(self, name, inputs_dict):
+        '''
+        Aggregate each variable that ends with name in a dataframe and compute the sum of each column
+        '''
+        name_df_list = [value.drop(
+            ['years'], axis=1) for key, value in inputs_dict.items() if key.endswith(name)]
+
+        lost_capital_df_concat = pd.concat(name_df_list, axis=1)
+        name_sum = 'Sum of ' + name.replace('_', ' ')
+
+        lost_capital_df = pd.DataFrame({'years': self.years_range})
+        lost_capital_df[name_sum] = lost_capital_df_concat.sum(
             axis=1)
 
-        self.lost_capital_df = pd.concat(
-            [self.lost_capital_df, lost_capital_df], axis=1)
-        self.compute_objective()
+        lost_capital_df = pd.concat(
+            [lost_capital_df, lost_capital_df_concat], axis=1)
+
+        return lost_capital_df
 
     def compute_objective(self):
         '''
@@ -83,3 +95,9 @@ class LostCapitalObjective():
         Get lost capital dataframe with all lost capitals
         '''
         return self.lost_capital_df
+
+    def get_techno_capital_df(self):
+        '''
+        Get techno capital dataframe with all lost capitals
+        '''
+        return self.techno_capital_df

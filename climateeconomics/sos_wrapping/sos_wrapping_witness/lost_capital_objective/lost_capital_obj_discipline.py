@@ -49,7 +49,8 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
     }
     DESC_OUT = {
         'lost_capital_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'lost_capital_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'lost_capital_df': {'type': 'dataframe'},
+        'techno_capital_df': {'type': 'dataframe'}
     }
 
     def setup_sos_disciplines(self):
@@ -101,7 +102,10 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
                                                                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                        'namespace': lost_capital_tuple[1],
                                                                        'unit': 'G$'}
-
+            dynamic_inputs[f'{lost_capital_tuple[0]}.techno_capital'] = {'type': 'dataframe',
+                                                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                         'namespace': lost_capital_tuple[1],
+                                                                         'unit': 'G$'}
         self.add_inputs(dynamic_inputs)
 
     def init_execution(self):
@@ -118,9 +122,10 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
         lost_capital_objective = self.model.get_objective()
         lost_capital_df = self.model.get_lost_capital_df()
-
+        techno_capital_df = self.model.get_techno_capital_df()
         # store output data
         dict_values = {'lost_capital_df': lost_capital_df,
+                       'techno_capital_df': techno_capital_df,
                        'lost_capital_objective': lost_capital_objective}
         self.store_sos_outputs_values(dict_values)
 
@@ -149,7 +154,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
         chart_filters = []
 
-        chart_list = ['Lost Capitals']
+        chart_list = ['Lost Capitals', 'Energy Mix Total Capital']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -187,6 +192,23 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
             new_series = InstanciatedSeries(
                 years, lost_capital_df['Sum of lost capital'].values.tolist(), 'Sum of lost capital', 'lines')
+
+            new_chart.series.append(new_series)
+            instanciated_charts.append(new_chart)
+
+        if 'Energy Mix Total Capital' in chart_list:
+
+            techno_capital_df = self.get_sosdisc_outputs('techno_capital_df')
+
+            years = list(techno_capital_df['years'].values)
+
+            chart_name = 'Energy Mix total capital'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Total Capital (G$)',
+                                                 chart_name=chart_name)
+
+            new_series = InstanciatedSeries(
+                years, techno_capital_df['Sum of techno capital'].values.tolist(), '', 'lines')
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
