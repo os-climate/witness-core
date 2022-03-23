@@ -43,6 +43,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         'year_start': {'type': 'int', 'default': 2020, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
+        'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'lost_capital_obj_ref': {'type': 'float', 'default': 1.0e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
     }
@@ -64,13 +65,30 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
                 for energy in energy_list:
                     dynamic_inputs[f'{energy}.technologies_list'] = {'type': 'string_list',
                                                                      'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                     'namespace': 'ns_energy_mix',
+                                                                     'namespace': 'ns_energy',
                                                                      'structuring': True}
 
                     if f'{energy}.technologies_list' in self._data_in:
-                        energy_techno_dict[energy] = self.get_sosdisc_inputs(
+                        techno_list = self.get_sosdisc_inputs(
                             f'{energy}.technologies_list')
+                        if techno_list is not None:
+                            energy_techno_dict[energy] = {'namespace': 'ns_energy',
+                                                          'value': techno_list}
+        if 'ccs_list' in self._data_in:
+            ccs_list = self.get_sosdisc_inputs('ccs_list')
+            if ccs_list is not None:
+                for ccs in ccs_list:
+                    dynamic_inputs[f'{ccs}.technologies_list'] = {'type': 'string_list',
+                                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                  'namespace': 'ns_ccs',
+                                                                  'structuring': True}
 
+                    if f'{ccs}.technologies_list' in self._data_in:
+                        techno_list = self.get_sosdisc_inputs(
+                            f'{ccs}.technologies_list')
+                        if techno_list is not None:
+                            energy_techno_dict[ccs] = {'namespace': 'ns_ccs',
+                                                       'value': techno_list}
         if len(energy_techno_dict) != 0:
             full_techno_list = compute_full_techno_list(energy_techno_dict)
 
@@ -78,11 +96,11 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
             # the list could be appended with other capital than energy
             all_lost_capital_list.extend(full_techno_list)
 
-        for lost_capital in all_lost_capital_list:
-            dynamic_inputs[f'{lost_capital}.lost_capital'] = {'type': 'dataframe',
-                                                              'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                              'namespace': 'ns_energy_mix',
-                                                              'unit': 'G$'}
+        for lost_capital_tuple in all_lost_capital_list:
+            dynamic_inputs[f'{lost_capital_tuple[0]}.lost_capital'] = {'type': 'dataframe',
+                                                                       'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                       'namespace': lost_capital_tuple[1],
+                                                                       'unit': 'G$'}
 
         self.add_inputs(dynamic_inputs)
 
@@ -181,8 +199,8 @@ def compute_full_techno_list(energy_techno_dict):
     Get the full list of technologies with a dictionary of energy_techno_dict
     '''
     full_techno_list = []
-    for energy, techno_list in energy_techno_dict.items():
+    for energy, techno_dict in energy_techno_dict.items():
         full_techno_list.extend(
-            [f'{energy}.{techno}' for techno in techno_list])
+            [(f'{energy}.{techno}', techno_dict['namespace']) for techno in techno_dict['value']])
 
     return full_techno_list
