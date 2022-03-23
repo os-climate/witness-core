@@ -176,7 +176,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
             chart_name = 'Capital lost'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Lost Capitals (M$)',
+            new_chart = TwoAxesInstanciatedChart('years', 'Lost Capitals (G$)',
                                                  chart_name=chart_name, stacked_bar=True)
             for industry in lost_capital_df.columns:
                 if industry not in ['years', 'Sum of lost capital'] and not (lost_capital_df[industry] == 0.0).all():
