@@ -52,7 +52,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 
-
         chain_builders_landuse = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'land_use_v1_process')
         builder_list.extend(chain_builders_landuse)
@@ -75,5 +74,18 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_ref': f'{self.ee.study_name}.NormalizationReferences'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
+
+        ns_dict = {'ns_witness': self.ee.study_name,
+                   'ns_energy_mix': f'{self.ee.study_name}.EnergyMix',
+                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences'}
+
+        '''
+        Add lost capital objective discipline to all WITNESS processes
+        '''
+        mods_dict = {'InvestmentDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_witness.lost_capital_objective.lost_capital_obj_discipline.LostCapitalObjectiveDiscipline'
+                     }
+        lost_capital_list = self.create_builder_list(
+            mods_dict, ns_dict=ns_dict)
+        builder_list.extend(lost_capital_list)
 
         return builder_list
