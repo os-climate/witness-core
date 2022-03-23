@@ -35,10 +35,13 @@ class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
 
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}.EnergyMix',
-                   'ns_ref': f'{self.name}'}
         self.ee = ExecutionEngine(self.name)
+
+        ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_energy': f'{self.name}.EnergyMix',
+                   'ns_ref': f'{self.name}',
+                   'ns_ccs': f'{self.name}.CCUS', }
+
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.lost_capital_objective.lost_capital_obj_discipline.LostCapitalObjectiveDiscipline'
@@ -49,13 +52,13 @@ class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
         year_end = 2100
         year_start = 2020
-        loss_fg = 12.
-        loss_ub = 22.
-        loss_rf = 16.
-        loss_ft = 0.0
+        loss_fg = 12
+        loss_ct = 2
+        loss_ub = 22
+        loss_rf = 16
+        loss_ft = 4
         lost_capital_fg = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
                                         'FossilGas': loss_fg})
         lost_capital_ub = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
@@ -64,13 +67,18 @@ class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                                         'Refinery': loss_rf})
         lost_capital_ft = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
                                         'FischerTropsch': loss_ft})
+        lost_capital_ct = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+                                        'CC_tech': loss_ct})
         lost_capital_obj_ref = 100.
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
                        f'{self.name}.lost_capital_obj_ref': lost_capital_obj_ref,
                        f'{self.name}.energy_list': ['fuel.liquid_fuel', 'methane'],
+                       f'{self.name}.ccs_list': ['carbon_capture'],
                        f'{self.name}.EnergyMix.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
+                       f'{self.name}.CCUS.carbon_capture.technologies_list': ['CC_tech'],
+                       f'{self.name}.CCUS.carbon_capture.CC_tech.lost_capital': lost_capital_ct,
                        f'{self.name}.EnergyMix.methane.FossilGas.lost_capital': lost_capital_fg,
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.lost_capital': lost_capital_ub,
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.lost_capital': lost_capital_rf,
@@ -90,6 +98,7 @@ class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_lost_capital_objective.pkl', discipline=self.disc_techno, step=1e-15,
                             inputs=[f'{self.name}.EnergyMix.methane.FossilGas.lost_capital',
                                     f'{self.name}.EnergyMix.methane.UpgradingBiogas.lost_capital',
+                                    f'{self.name}.CCUS.carbon_capture.CC_tech.lost_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.lost_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.lost_capital'],
                             outputs=[f'{self.name}.lost_capital_objective'],
