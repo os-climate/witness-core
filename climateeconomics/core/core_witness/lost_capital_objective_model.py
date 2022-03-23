@@ -65,15 +65,17 @@ class LostCapitalObjective():
         name_df_list = [value.drop(
             ['years'], axis=1) for key, value in inputs_dict.items() if key.endswith(name)]
 
-        lost_capital_df_concat = pd.concat(name_df_list, axis=1)
-        name_sum = 'Sum of ' + name.replace('_', ' ')
-
         lost_capital_df = pd.DataFrame({'years': self.years_range})
-        lost_capital_df[name_sum] = lost_capital_df_concat.sum(
-            axis=1)
 
-        lost_capital_df = pd.concat(
-            [lost_capital_df, lost_capital_df_concat], axis=1)
+        if len(name_df_list) != 0:
+            lost_capital_df_concat = pd.concat(name_df_list, axis=1)
+            name_sum = 'Sum of ' + name.replace('_', ' ')
+
+            lost_capital_df[name_sum] = lost_capital_df_concat.sum(
+                axis=1)
+
+            lost_capital_df = pd.concat(
+                [lost_capital_df, lost_capital_df_concat], axis=1)
 
         return lost_capital_df
 
@@ -81,8 +83,9 @@ class LostCapitalObjective():
         '''
         Compute objective
         '''
-        self.lost_capital_objective = np.asarray(
-            [self.lost_capital_df['Sum of lost capital'].sum()]) / self.lost_capital_obj_ref
+        if 'Sum of lost capital' in self.lost_capital_df:
+            self.lost_capital_objective = np.asarray(
+                [self.lost_capital_df['Sum of lost capital'].sum()]) / self.lost_capital_obj_ref
 
     def get_objective(self):
         '''
