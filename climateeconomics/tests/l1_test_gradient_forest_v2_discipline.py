@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
@@ -37,7 +37,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             self.test_forest_analytic_grad
         ]
 
-    def _test_forest_analytic_grad(self):
+    def test_forest_analytic_grad(self):
 
         model_name = 'Test'
         ns_dict = {'ns_witness': f'{self.name}',
