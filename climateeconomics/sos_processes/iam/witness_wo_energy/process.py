@@ -76,7 +76,7 @@ class ProcessBuilder(BaseProcessBuilder):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         ns_dict = {'ns_witness': self.ee.study_name,
-                   'ns_energy_mix': f'{self.ee.study_name}.EnergyMix',
+                   'ns_energy_mix': f'{self.ee.study_name}',
                    'ns_ref': f'{self.ee.study_name}.NormalizationReferences'}
 
         '''
