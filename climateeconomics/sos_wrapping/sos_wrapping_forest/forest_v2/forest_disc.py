@@ -368,7 +368,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         # d biomass dry price d managed wood invest
         d_biomass_price_d_mw_invest = self.forest_model.d_biomass_price_d_invest_mw(
-            d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest)
+
+            d_cum_mw_surface_d_invest)
         self.set_partial_derivative_for_other_types(
             ('biomass_dry_df', 'price_per_MWh'),
             ('managed_wood_investment', 'investment'),
@@ -376,9 +377,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         # d biomass dry price d unmanaged wood invest
         d_biomass_price_d_uw_invest = self.forest_model.d_biomass_price_d_invest_uw(
-            d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest)
+            d_biomass_residues_d_uw_invest, d_biomass_wood_d_uw_invest, wood_percentage_for_energy, residue_percentage_for_energy)
         self.set_partial_derivative_for_other_types(
             ('biomass_dry_df', 'price_per_MWh'),
+
             ('unmanaged_wood_investment', 'investment'),
             d_biomass_price_d_uw_invest)
 
