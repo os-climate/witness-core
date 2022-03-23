@@ -56,13 +56,13 @@ class WitnessCoarseCache(unittest.TestCase):
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 1
 
-        # execute optim with SimpleCache and retrieve dm
+        # execute optim without cache and retrieve dm
         self.ee.load_study_from_input_dict(full_values_dict)
         self.ee.execute()
 
-        dm_with_simple_cache = self.ee.dm.get_data_dict_values()
+        dm_without_cache = self.ee.dm.get_data_dict_values()
 
-        # desactivate cache, execute optim and retrieve dm
+        # execute optim with SimpleCache and retrieve dm
 
         self.ee2 = ExecutionEngine(self.name)
 
@@ -73,11 +73,11 @@ class WitnessCoarseCache(unittest.TestCase):
         self.ee2.configure()
 
         for cache_type_key in self.ee2.dm.get_all_namespaces_from_var_name('cache_type'):
-            full_values_dict[cache_type_key] = 'None'
+            full_values_dict[cache_type_key] = 'SimpleCache'
         self.ee2.load_study_from_input_dict(full_values_dict)
         self.ee2.execute()
 
-        dm_without_cache = self.ee2.dm.get_data_dict_values()
+        dm_with_simple_cache = self.ee2.dm.get_data_dict_values()
 
         # remove cache_type keys from dm_with_simple_cache and dm_without_cache
         for cache_type_key in self.ee.dm.get_all_namespaces_from_var_name('cache_type') + self.ee.dm.get_all_namespaces_from_var_name('residuals_history'):
@@ -132,13 +132,13 @@ class WitnessCoarseCache(unittest.TestCase):
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 10
 
-        # execute optim with SimpleCache and retrieve dm
+        # execute optim without cache and retrieve dm
         self.ee.load_study_from_input_dict(full_values_dict)
         self.ee.execute()
 
-        dm_with_simple_cache = self.ee.dm.get_data_dict_values()
+        dm_without_cache = self.ee.dm.get_data_dict_values()
 
-        # desactivate cache, execute optim and retrieve dm
+        # execute optim with SimpleCache and retrieve dm
 
         self.ee2 = ExecutionEngine(self.name)
 
@@ -149,11 +149,11 @@ class WitnessCoarseCache(unittest.TestCase):
         self.ee2.configure()
 
         for cache_type_key in self.ee2.dm.get_all_namespaces_from_var_name('cache_type'):
-            full_values_dict[cache_type_key] = 'None'
+            full_values_dict[cache_type_key] = 'SimpleCache'
         self.ee2.load_study_from_input_dict(full_values_dict)
         self.ee2.execute()
 
-        dm_without_cache = self.ee2.dm.get_data_dict_values()
+        dm_with_simple_cache = self.ee2.dm.get_data_dict_values()
 
         # remove cache_type keys from dm_with_simple_cache and dm_without_cache
         for cache_type_key in self.ee.dm.get_all_namespaces_from_var_name('cache_type') + self.ee.dm.get_all_namespaces_from_var_name('residuals_history'):
