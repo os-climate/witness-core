@@ -162,8 +162,11 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            #                             inputs=[
+                            #                                 f'{self.name}.{Forest.DEFORESTATION_SURFACE}',  f'{self.name}.{Forest.REFORESTATION_INVESTMENT}', f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
+                            #                             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
+                            #                                      f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
+                            #                                      f'{self.name}.biomass_dry_df'])
                             inputs=[
-                                f'{self.name}.{Forest.DEFORESTATION_SURFACE}',  f'{self.name}.{Forest.REFORESTATION_INVESTMENT}', f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
-                            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-                                     f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
-                                     f'{self.name}.biomass_dry_df'])
+            f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
+            outputs=[f'{self.name}.biomass_dry_df'])

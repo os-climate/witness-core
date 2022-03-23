@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import climateeconomics.tests.utility_tests as jacobian_target
+import climateeconomics.tests as jacobian_target
 
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -22,4 +22,4 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 if __name__ == '__main__':
 
     AbstractJacobianUnittest.launch_all_pickle_generation(
-        jacobian_target, '_l2_test_gradient_witness_dev.py')
+        jacobian_target, 'l2_test_gradient_witness.py')
