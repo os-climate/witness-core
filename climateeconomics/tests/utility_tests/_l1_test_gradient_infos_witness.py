@@ -72,7 +72,7 @@ class WitnessFullGradient(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        output_full_names = ['Test.WITNESS_Eval.WITNESS.invest_objective']
+        output_full_names = ['Test.WITNESS_Eval.WITNESS.invest_objective_sum']
         input_full_names = ['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix']
 
         disc = self.ee.root_process.sos_disciplines[0]
