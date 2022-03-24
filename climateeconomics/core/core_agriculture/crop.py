@@ -76,6 +76,11 @@ class Crop():
         self.year_start = self.param[Crop.YEAR_START]
         self.year_end = self.param[Crop.YEAR_END]
         self.time_step = self.param[Crop.TIME_STEP]
+        years = np.arange(
+            self.year_start,
+            self.year_end + 1,
+            self.time_step)
+        self.years = years
         self.diet_df = self.param[Crop.DIET_DF]
         self.kg_to_kcal_dict = self.param[Crop.KG_TO_KCAL_DICT]
         self.kg_to_m2_dict = self.param[Crop.KG_TO_M2_DICT]
@@ -87,8 +92,11 @@ class Crop():
         self.invest_level = self.param['invest_level']
         self.margin = self.param['margin'].loc[self.param['margin']['years']
                                                 <= self.year_end]
+        self.margin.index = self.param['margin']['years'].values
         self.transport_cost = self.param['transport_cost']
+        self.transport_cost.index = self.transport_cost['years'].values
         self.transport_margin = self.param['transport_margin']
+        self.transport_margin.index = self.transport_margin['years'].values
         self.data_fuel_dict = self.param['data_fuel_dict']
         self.techno_infos_dict = self.param['techno_infos_dict']
         # invest level from G$ to M$
@@ -108,11 +116,7 @@ class Crop():
         '''
         Create the dataframe and fill it with values at year_start
         '''
-        years = np.arange(
-            self.year_start,
-            self.year_end + 1,
-            self.time_step)
-        self.years = years
+
         self.food_land_surface_df = pd.DataFrame({'years': self.years})
         self.food_land_surface_df.index = self.years
         self.total_food_land_surface = pd.DataFrame({'years': self.years})
@@ -456,6 +460,7 @@ class Crop():
                                               <= self.cost_details['years'].max()]['invest'].values
 
         # Maximize with smooth exponential
+        #this invest is not used in the price computation
         self.cost_details['invest'] = compute_func_with_exp_min(
             invest_inputs, self.min_value_invest)
 

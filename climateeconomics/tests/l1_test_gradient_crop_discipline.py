@@ -30,6 +30,7 @@ import numpy as np
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
     def setUp(self):
 
         self.name = 'Test'
@@ -186,7 +187,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_discipline.pkl', discipline=disc_techno,
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_crop_discipline.pkl', discipline=disc_techno,
                             step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.population_df',
                                     f'{self.name}.temperature_df',
