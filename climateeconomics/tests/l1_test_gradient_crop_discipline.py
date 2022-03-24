@@ -29,15 +29,15 @@ import numpy as np
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         '''
-                Initialize third data needed for testing
-                '''
+        Initialize third data needed for testing
+        '''
         self.year_start = 2020
         self.year_end = 2055
         self.time_step = 1
@@ -113,7 +113,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         density_per_ha = 2903 * 1.25
         # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
         # energy of all surfaces
-        self.initial_production = 4.8 * density_per_ha * energy_crop_percentage  # in Mt
+        self.initial_production = 4.8 * density_per_ha * 3.6 * energy_crop_percentage  # in TWh
 
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,

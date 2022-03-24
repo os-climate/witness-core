@@ -108,7 +108,7 @@ class CropTestCase(unittest.TestCase):
         density_per_ha = 2903 * 1.25
         # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
         # energy of all surfaces
-        self.initial_production = 4.8 * density_per_ha * energy_crop_percentage   # in Mt
+        self.initial_production = 4.8 * density_per_ha * 3.6 * energy_crop_percentage   # in TWh
 
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,

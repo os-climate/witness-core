@@ -83,7 +83,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
     # energy of all surfaces
     initial_production = 4.8 * density_per_ha * \
-        energy_crop_percentage   # in Twh
+        3.6 * energy_crop_percentage   # in Twh
     construction_delay = 1  # years
     lifetime = 50
 
