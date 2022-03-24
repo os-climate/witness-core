@@ -83,7 +83,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
     # energy of all surfaces
     initial_production = 4.8 * density_per_ha * \
-        energy_crop_percentage   # in Twh
+        3.6 * energy_crop_percentage   # in Twh
     construction_delay = 1  # years
     lifetime = 50
 
@@ -186,9 +186,9 @@ class CropDiscipline(ClimateEcoDiscipline):
         'crop_productivity_evolution': {'type': 'dataframe'},
         'mix_detailed_prices': {'type': 'dataframe', 'unit': '$/t'},
         'mix_detailed_production': {'type': 'dataframe', 'unit': 'Mt'},
-        'cost_details': {'type': 'dataframe', 'unit': 'Mt'},
+        'cost_details': {'type': 'dataframe'},
         'biomass_production_df': {'type': 'dataframe', 'unit': 'Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'biomass_price_df': {'type': 'dataframe', 'unit': '$/Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'biomass_price_df': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'land_demand_df': {'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'}
         }
 
