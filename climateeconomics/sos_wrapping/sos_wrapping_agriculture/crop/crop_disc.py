@@ -452,6 +452,27 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
+            # ------------------------------------------
+            # DIET EVOLUTION VARIABLES
+            chart_name = 'Diet evolution'
+            red_to_white_meat = self.get_sosdisc_inputs('red_to_white_meat')
+            meat_to_vegetables = self.get_sosdisc_inputs('meat_to_vegetables')
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Diet change [%]',
+                                                 chart_name=chart_name)
+
+            visible_line = True
+            ordonate_data = list(red_to_white_meat)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Red to white meat', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(meat_to_vegetables)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Meat to vegetables', 'lines', visible_line)
+            new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+
         if 'Crop Productivity Evolution' in chart_list:
 
             prod_df = self.get_sosdisc_outputs(

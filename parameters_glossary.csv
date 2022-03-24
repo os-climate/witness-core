@@ -200,6 +200,8 @@ liquid_fuel_Refinery_array_mix,Liquid fuel Refinery array mix,%,Mix data concern
 livestock_land_use_per_capita,Livestock surface per person,ha/person,"The average surface dedicated to food production with livestock, for 1 person, for 1 year.",,
 livestock_usage_factor_array,Livestock usage factor array,%,Array data concerning usage.,,
 livestock_usage_factor_df,Livestock usage factor,%,Give for each year the percentage of usage of land dedicated to food from livestock.,,
+lost_capital_df,Lost Capital,G$,Aggregation of all lost capitals in WITNESS,,
+lost_capital_objective,Lost Capital Objective,,Lost capital objective sum of all lost capitals on years,,
 lo_capital,Lower limit capital,trillions $,Lower bound of capital in trillions dollars.,,CC - Costs
 lo_conso,Lower limit consumption,trillions $,Lower bound of consumption in trillions dollars.,,CC - Costs
 lo_mat,Atmospheric concentration lower bound,,Lower limit of atmospheric concentration of carbon.,,ABATAA - mass
@@ -276,6 +278,7 @@ temperature_objective,Temperature objective,,"Value of the temperature objective
 theta,Theta,,Parameter used in death rate computation.,,
 time_step,Time step,year,Time step in years per period.,,AAAFAA - duration
 tipping_point,Tipping point damage function,,"If True ""tipping point"" damage function is used instead of standard DICE.",,
+total_capital_df,Total Capital,G$,Aggregation of all total capitals in WITNESS,,
 total_emissions_damage_ref,Total emissions damage ref,Gt,Reference value concerning emissions.,,
 total_emissions_ref,Total emissions ref,GtCO2,Dataframe going from macroeconomics to total_emissions mix for MDA.,,
 total_food_land_surface,Total food land surface,Gha,Total land surface taken by food (crops and lifestock).,,

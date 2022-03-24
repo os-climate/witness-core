@@ -157,7 +157,7 @@ class Study(StudyManager):
         density_per_ha = 2903 * 1.25
         # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
         # energy of all surfaces
-        initial_production = 4.8 * density_per_ha * energy_crop_percentage  # in Mt
+        initial_production =  4.8 * density_per_ha * 3.6 * energy_crop_percentage   # in Twh
         lifetime = 50
         initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                                  'distrib': [0.16, 0.24, 0.31, 0.39, 0.47, 0.55, 0.63, 0.71, 0.78, 0.86,
