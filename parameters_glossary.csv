@@ -40,6 +40,8 @@ biogas_AnaerobicDigestion_array_mix,Biogas Anaerobic Digestion mix data,%,Mix da
 biomass_dry_CropEnergy_array_mix,Biomass dry CropEnergy mix data,%,Mix data concerning Crop Energy.,,
 biomass_dry_ManagedWood_array_mix,Biomass dry ManagedWood mix data,%,Mix data concerning Managed wood.,,
 biomass_dry_UnmanagedWood_array_mix,Biomass dry UnmanagedWood array mix,%,Mix data concerning unmanaged wood.,,
+biomass_price_df,Biomass dry price data,,Mix data concerning biomass dry prices.,,
+biomass_production_df,Biomass dry production data,Mt,Mix data concerning biomass dry production.,,
 birth_df,Number of births,,Number of birth per year.,,
 birth_rate_delta,Birth rate delta,,Parameter of birth rate equation: slope of the curve.,,
 birth_rate_df,Birth rate ,,Birth rate per year for 15-49 aged population.,,
@@ -78,7 +80,9 @@ conc_upper_strata,Upper strata equilibrium concentration ,Gtc,The concentration 
 conso_elasticity,Consumption elasticity,,The elasticity of marginal utility. It measures how utility changes with consumption.,,
 constant_birthrate_know,Constant birthrate know,,Parameter of birthrate.,,
 cost_backstop,Cost backstop,,Cost of backstop.,,CC - Costs
+cost_details,Cost details,,Detailed costs.,,
 crop_land_use_per_capita,Crop surface per person,ha/person,"The average surface dedicated to food production with crop, for 1 person, for 1 year.",,
+crop_productivity_evolution,Crop productivity evolution,,Evolution of the crop productivity depending on climate change.,,
 damag_expo,Damage exponent in the standard DICE damage function,,Damage exponent in the standard DICE damage function. It represents the form of the relationship between temperature and economic damage.,,
 damag_int,Damage intercept in standard DICE damage function,,Damage intercept in standard DICE damage function.,,
 damag_quad,Damage quadratic term in standard DICE damage function,,Damage quadratic term in standard DICE damage function.,,
