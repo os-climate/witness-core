@@ -36,12 +36,12 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
 
-        return [self.test_01_gradient_all_disciplines_witness_full(),
+        return [#self.test_01_gradient_all_disciplines_witness_full(),
                 self.test_02_gradient_all_disciplines_witness_coarse(),
-                self.test_03_gradient_all_disciplines_witness_full_dev(),
-                self.test_04_gradient_all_disciplines_witness_coarse_dev(),
-                self.test_05_gradient_all_disciplines_witness_min_tech(),
-                self.test_06_gradient_all_disciplines_witness_min_tech_dev(),
+                #self.test_03_gradient_all_disciplines_witness_full_dev(),
+                #self.test_04_gradient_all_disciplines_witness_coarse_dev(),
+                #self.test_05_gradient_all_disciplines_witness_min_tech(),
+                #self.test_06_gradient_all_disciplines_witness_min_tech_dev(),
                 ]
 
     def all_usecase_disciplines_jacobian_test(self, usecase, directory=AbstractJacobianUnittest.PICKLE_DIRECTORY,
