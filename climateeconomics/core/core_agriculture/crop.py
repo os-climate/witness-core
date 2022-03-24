@@ -599,9 +599,7 @@ class Crop():
         aging_distrib_year_df = pd.DataFrame(
             {'age': self.initial_age_distrib['age'].values})
         aging_distrib_year_df[f'distrib_prod (Mt)'] = self.initial_age_distrib['distrib'] * \
-            self.initial_production / 100.0
-
-
+            self.initial_production / self.data_fuel_dict['calorific_value'] / 100.0
 
         production_from_invest = self.compute_prod_from_invest(
             construction_delay=self.construction_delay)
