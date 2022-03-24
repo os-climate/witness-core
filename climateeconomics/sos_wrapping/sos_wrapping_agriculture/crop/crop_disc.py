@@ -480,12 +480,32 @@ class CropDiscipline(ClimateEcoDiscipline):
                 'land_demand_df')
             mix_detailed_prices = self.get_sosdisc_outputs('mix_detailed_prices')
             data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
+            cost_details = self.get_sosdisc_outputs('cost_details')
+            invest_level = self.get_sosdisc_inputs('invest_level') * self.get_sosdisc_inputs('scaling_factor_invest_level')
             years = list(prod_df.index)
+
+            # ------------------------------------------
+            # INVEST (M$)
+            chart_name = 'Input investments over the years'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Investments [M$]',
+                                                 chart_name=chart_name)
+
+            visible_line = True
+
+            for invest in invest_level:
+                if invest != 'years':
+                    ordonate_data = list(invest_level[invest])
+                    new_series = InstanciatedSeries(
+                        years, ordonate_data, invest , 'bar', visible_line)
+                    new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
             # ------------------------------------------
             # PRODUCTION (Mt)
-            chart_name = 'Crop for energy production (Mt)'
+            chart_name = 'Crop for energy production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop mass for energy production',
+            new_chart = TwoAxesInstanciatedChart('years', 'Crop mass for energy production [Mt]',
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -494,15 +514,15 @@ class CropDiscipline(ClimateEcoDiscipline):
                 if crop != 'years':
                     ordonate_data = list(mix_detailed_production[crop])
                     new_series = InstanciatedSeries(
-                        years, ordonate_data, crop , 'lines', visible_line)
+                        years, ordonate_data, crop.replace("(Mt)", "") , 'lines', visible_line)
                     new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
             # ------------------------------------------
             # PRODUCTION (TWh)
-            chart_name = 'Crop for energy production (TWh)'
+            chart_name = 'Crop for energy production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop for energy production',
+            new_chart = TwoAxesInstanciatedChart('years', 'Crop for energy production [TWh]',
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -511,7 +531,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 if crop != 'years':
                     ordonate_data = list(mix_detailed_production[crop] * data_fuel_dict['calorific_value'])
                     new_series = InstanciatedSeries(
-                        years, ordonate_data, crop.replace("(Mt)", "(TWh)") , 'lines', visible_line)
+                        years, ordonate_data, crop.replace("(Mt)", "") , 'lines', visible_line)
                     new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -519,7 +539,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             # LAND USE (Gha)
             chart_name = 'Land demand for Crop for energy'
 
-            land_demand_chart = TwoAxesInstanciatedChart('years', 'Land demand (Gha)',
+            land_demand_chart = TwoAxesInstanciatedChart('years', 'Land demand [Gha]',
                                                  chart_name=chart_name)
             ordonate_data = list(land_demand_df['Crop for energy (Gha)'])
             land_demand_serie = InstanciatedSeries(
@@ -529,9 +549,9 @@ class CropDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(land_demand_chart)
             # ------------------------------------------
             # PRICE ($/MWh)
-            chart_name = 'Crop energy prices'
+            chart_name = 'Crop energy prices by type'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices',
+            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices [$/MWh]',
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -540,7 +560,23 @@ class CropDiscipline(ClimateEcoDiscipline):
                 if crop != 'years':
                     ordonate_data = list(mix_detailed_prices[crop] / data_fuel_dict['calorific_value'])
                     new_series = InstanciatedSeries(
-                        years, ordonate_data, crop.replace("($/t)", "($/MWh)") , 'lines', visible_line)
+                        years, ordonate_data, crop.replace("($/t)", "") , 'lines', visible_line)
+                    new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+            # PRICE DETAILED($/MWh)
+            chart_name = 'Detailed prices for crop energy production'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices [$/MWh]',
+                                                 chart_name=chart_name)
+
+            visible_line = True
+
+            for price in cost_details:
+                if 'Transport' in price or 'Factory' in price or 'Total ($/MWh)' in price:
+                    ordonate_data = list(cost_details[price])
+                    new_series = InstanciatedSeries(
+                        years, ordonate_data, price.replace("($/MWh)", "") , 'lines', visible_line)
                     new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -548,7 +584,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             # PRICE ($/t)
             chart_name = 'Crop mass prices'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices',
+            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices [$/t]',
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -557,7 +593,23 @@ class CropDiscipline(ClimateEcoDiscipline):
                 if crop != 'years':
                     ordonate_data = list(mix_detailed_prices[crop])
                     new_series = InstanciatedSeries(
-                        years, ordonate_data, crop, 'lines', visible_line)
+                        years, ordonate_data, crop.replace("($/t)", ""), 'lines', visible_line)
+                    new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+            # PRICE DETAILED($/t)
+            chart_name = 'Detailed prices for crop energy production'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices [$/t]',
+                                                 chart_name=chart_name)
+
+            visible_line = True
+
+            for price in cost_details:
+                if 'Transport' in price or 'Factory' in price or 'Total ($/MWh)' in price:
+                    ordonate_data = list(cost_details[price] * data_fuel_dict['calorific_value'])
+                    new_series = InstanciatedSeries(
+                        years, ordonate_data, price.replace("($/MWh)", "") , 'lines', visible_line)
                     new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)

@@ -466,16 +466,16 @@ class Crop():
 
         # CAPEX 
         capex_init = self.check_capex_unity(self.techno_infos_dict)
-        self.cost_details['Capex ($/Mwh)'] = capex_init * np.ones(len(self.cost_details['invest']))
+        self.cost_details['Capex ($/MWh)'] = capex_init * np.ones(len(self.cost_details['invest']))
 
         # CRF
         self.crf = self.compute_crf(self.techno_infos_dict)
 
         # Energy costs
-        self.cost_details['Energy costs ($/Mwh)'] = self.compute_other_primary_energy_costs()
+        self.cost_details['Energy costs ($/MWh)'] = self.compute_other_primary_energy_costs()
 
         # Factory cost including CAPEX OPEX
-        self.cost_details['Factory ($/Mwh)'] = self.cost_details[f'Capex ($/Mwh)'] * (self.crf + self.techno_infos_dict['Opex_percentage'])
+        self.cost_details['Factory ($/MWh)'] = self.cost_details[f'Capex ($/MWh)'] * (self.crf + self.techno_infos_dict['Opex_percentage'])
 
         if 'nb_years_amort_capex' in self.techno_infos_dict:
             self.nb_years_amort_capex = self.techno_infos_dict['nb_years_amort_capex']
@@ -484,27 +484,27 @@ class Crop():
         len_y = max(self.cost_details['years']) + \
             1 - min(self.cost_details['years'])
         self.cost_details['Crop_factory_amort'] = (np.tril(np.triu(np.ones((len_y, len_y)), k=0), k=self.nb_years_amort_capex - 1).transpose() *
-                                                           np.array(self.cost_details['Factory ($/Mwh)'].values / self.nb_years_amort_capex)).T.sum(axis=0)
+                                                           np.array(self.cost_details['Factory ($/MWh)'].values / self.nb_years_amort_capex)).T.sum(axis=0)
         # pylint: enable=no-member
 
         # Compute and add transport
-        self.cost_details['Transport ($/Mwh)'] = self.transport_cost['transport'] * \
+        self.cost_details['Transport ($/MWh)'] = self.transport_cost['transport'] * \
             self.transport_margin['margin'] / 100.0 / self.data_fuel_dict['calorific_value']
 
         # Crop amort
-        self.cost_details['Crop amort ($/Mwh)'] = self.cost_details['Crop_factory_amort'] + self.cost_details['Transport ($/Mwh)'] + \
-            self.cost_details['Energy costs ($/Mwh)']
+        self.cost_details['Crop amort ($/MWh)'] = self.cost_details['Crop_factory_amort'] + self.cost_details['Transport ($/MWh)'] + \
+            self.cost_details['Energy costs ($/MWh)']
 
-        # Total cost (Mwh)
-        self.cost_details['Total ($/Mwh)'] = self.cost_details['Energy costs ($/Mwh)'] +  self.cost_details['Factory ($/Mwh)'] + self.cost_details['Transport ($/Mwh)']
+        # Total cost (MWh)
+        self.cost_details['Total ($/MWh)'] = self.cost_details['Energy costs ($/MWh)'] +  self.cost_details['Factory ($/MWh)'] + self.cost_details['Transport ($/MWh)']
 
         # Add margin in %
-        self.cost_details['Total ($/Mwh)'] *= self.margin.loc[self.margin['years']
+        self.cost_details['Total ($/MWh)'] *= self.margin.loc[self.margin['years']
                                                         <= self.cost_details['years'].max()]['margin'].values / 100.0                                  
-        self.cost_details['Crop amort ($/Mwh)'] *= self.margin.loc[self.margin['years']
+        self.cost_details['Crop amort ($/MWh)'] *= self.margin.loc[self.margin['years']
                                                                    <= self.cost_details['years'].max()]['margin'].values / 100.0
         # Total cost (t)
-        self.cost_details['Total ($/t)'] = self.cost_details['Total ($/Mwh)'] * self.data_fuel_dict['calorific_value']
+        self.cost_details['Total ($/t)'] = self.cost_details['Total ($/MWh)'] * self.data_fuel_dict['calorific_value']
         self.biomass_price_df['Crop for energy ($/t)'] = self.cost_details['Total ($/t)']
 
         price_crop = self.cost_details['Total ($/t)'] / \
@@ -549,7 +549,7 @@ class Crop():
 
     def compute_other_primary_energy_costs(self):
         """
-        Compute primary costs to produce 1 Mwh of crop
+        Compute primary costs to produce 1 MWh of crop
         """
         
         return 0.0
@@ -655,17 +655,17 @@ class Crop():
         '''
         prod_before_ystart = pd.DataFrame({'years': np.arange(self.year_start - construction_delay, self.year_start),
                                            'invest': [0.0]*(construction_delay),
-                                           'Capex ($/Mwh)': self.cost_details.loc[self.cost_details[
-                                                                                           'years'] == self.year_start, 'Capex ($/Mwh)'].values[
+                                           'Capex ($/MWh)': self.cost_details.loc[self.cost_details[
+                                                                                           'years'] == self.year_start, 'Capex ($/MWh)'].values[
                                                0]})
 
         production_from_invest = pd.concat(
-            [self.cost_details[['years', 'invest', 'Capex ($/Mwh)']], prod_before_ystart], ignore_index=True)
+            [self.cost_details[['years', 'invest', 'Capex ($/MWh)']], prod_before_ystart], ignore_index=True)
 
         production_from_invest.sort_values(by=['years'], inplace=True)
-        ## Invest in M$ | Capex in $/Mwh | Prod in Mt
+        ## Invest in M$ | Capex in $/MWh | Prod in Mt
         production_from_invest['prod_from_invest'] = production_from_invest['invest'].values / \
-            production_from_invest[f'Capex ($/Mwh)'].values / self.data_fuel_dict['calorific_value']
+            production_from_invest[f'Capex ($/MWh)'].values / self.data_fuel_dict['calorific_value']
 
         production_from_invest['years'] += construction_delay
 
@@ -834,7 +834,7 @@ class Crop():
             # jacobian by construction _delay)
             # Each column is then composed of [0,0,0... (dp/dx,dp/dx)*lifetime,
             # 0,0,0]
-            dpprod_dpinvest = 1 / self.cost_details[f'Capex ($/Mwh)'].values[i] /\
+            dpprod_dpinvest = 1 / self.cost_details[f'Capex ($/MWh)'].values[i] /\
                                                              self.data_fuel_dict['calorific_value']
             is_invest_negative = max(
                 np.sign(self.cost_details['invest'].values[i] + np.finfo(float).eps), 0.0)
