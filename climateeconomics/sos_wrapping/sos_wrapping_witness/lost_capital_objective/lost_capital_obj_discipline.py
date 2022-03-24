@@ -181,7 +181,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
             chart_name = 'Capital lost'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Lost Capitals (G$)',
+            new_chart = TwoAxesInstanciatedChart('years', 'Lost Capital [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
             for industry in lost_capital_df.columns:
                 if industry not in ['years', 'Sum of lost capital'] and not (lost_capital_df[industry] == 0.0).all():
@@ -206,7 +206,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
             chart_name = 'Energy Mix total capital vs Lost capital'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Total Capital (G$)',
+            new_chart = TwoAxesInstanciatedChart('years', 'Total Capital [G$]',
                                                  chart_name=chart_name)
 
             new_series = InstanciatedSeries(
