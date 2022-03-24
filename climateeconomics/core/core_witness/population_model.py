@@ -356,8 +356,8 @@ class Population:
             # Add not dead people over 100+
             old_not_dead = pop_before[-1]
             self.population_df.loc[year, '100+'] += old_not_dead
-#             self.population_df.loc[year,
-#                                    'total'] = self.population_df.iloc[year - year_start, 1:-1].sum()
+            self.population_df.loc[year,
+                                   'total'] = self.population_df.iloc[year - year_start, 1:-1].sum()
             # compute working population from 15yo to 70yo
 #             self.working_age_population_df.loc[year, 'population_1570'] = sum(
 #                 self.population_df.loc[year, '15':'70'])
@@ -412,9 +412,6 @@ class Population:
             self.compute_life_expectancy(year)
         self.population_df = self.population_df.replace(
             [np.inf, -np.inf], np.nan)
-
-        self.population_df['total'] = self.population_df[[
-            str(i) for i in np.arange(0, 100)] + ['100+']].sum(axis=1)
 
         self.working_age_population_df['population_1570'] = self.population_df[[
             str(i) for i in np.arange(15, 71)]].sum(axis=1)
