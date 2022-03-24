@@ -316,7 +316,7 @@ class Population:
 
                 nb_death = pop_year * np.array(full_dr_death)
 
-                total_deaths += nb_death
+                total_deaths = total_deaths + nb_death
                 self.death_list_dict[effect].append(nb_death)
 #                 self.death_dict[effect].iloc[year -
 # self.year_start, 1:-1] = list(nb_death)
