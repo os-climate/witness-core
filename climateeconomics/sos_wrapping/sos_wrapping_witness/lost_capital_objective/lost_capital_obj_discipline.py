@@ -200,15 +200,22 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
             techno_capital_df = self.get_sosdisc_outputs('techno_capital_df')
 
+            lost_capital_df = self.get_sosdisc_outputs('lost_capital_df')
+
             years = list(techno_capital_df['years'].values)
 
-            chart_name = 'Energy Mix total capital'
+            chart_name = 'Energy Mix total capital vs Lost capital'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Total Capital (G$)',
                                                  chart_name=chart_name)
 
             new_series = InstanciatedSeries(
-                years, techno_capital_df['Sum of techno capital'].values.tolist(), '', 'lines')
+                years, techno_capital_df['Sum of techno capital'].values.tolist(), 'Energy Mix Capital', 'lines')
+
+            new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                years, lost_capital_df['Sum of lost capital'].values.tolist(), 'Lost Capital', 'bar')
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
