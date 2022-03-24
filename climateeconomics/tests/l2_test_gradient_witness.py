@@ -20,7 +20,7 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
+from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT, DEFAULT_MIN_TECH_DICT, DEFAULT_TECHNO_DICT_DEV, DEFAULT_MIN_TECH_DEV_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from tqdm import tqdm
 
@@ -38,6 +38,10 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         return [self.test_01_gradient_all_disciplines_witness_full(),
                 self.test_02_gradient_all_disciplines_witness_coarse(),
+                self.test_03_gradient_all_disciplines_witness_full_dev(),
+                self.test_04_gradient_all_disciplines_witness_coarse_dev(),
+                self.test_05_gradient_all_disciplines_witness_min_tech(),
+                self.test_06_gradient_all_disciplines_witness_min_tech_dev(),
                 ]
 
     def all_usecase_disciplines_jacobian_test(self, usecase, directory=AbstractJacobianUnittest.PICKLE_DIRECTORY,
@@ -192,6 +196,127 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_coarse')
 
         excluded_disc = ['FunctionsManager']
+        self.all_usecase_disciplines_jacobian_test(usecase, directory=directory, excluded_disc=excluded_disc)
+
+    def test_03_gradient_all_disciplines_witness_full_dev(self):
+        """
+        """
+        self.name = 'Test'
+        self.ee = ExecutionEngine(self.name)
+
+        builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
+                                                           'witness_optim_sub_process',
+                                                           process_level='dev',
+                                                           techno_dict=DEFAULT_TECHNO_DICT_DEV,
+                                                           )
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.ee.configure()
+
+        usecase = witness_sub_proc_usecase(bspline=True,
+                                           execution_engine=self.ee,
+                                           process_level='dev',
+                                           techno_dict=DEFAULT_TECHNO_DICT_DEV,
+                                           )
+        usecase.study_name = self.name
+
+        directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_full_dev')
+
+        excluded_disc = ['WITNESS.EnergyMix.hydrogen.liquid_hydrogen']
+
+        excluded_outputs = ['Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.energy_production_detailed',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_detailed_techno_prices',
+                            'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_production_detailed',
+                            ]
+
+        # optional_disciplines_list = ['WITNESS.EnergyMix.fuel.liquid_fuel']
+
+        self.all_usecase_disciplines_jacobian_test(usecase,
+                                                   directory=directory,
+                                                   excluded_disc=excluded_disc,
+                                                   excluded_outputs=excluded_outputs,
+                                                   )
+
+    def test_04_gradient_all_disciplines_witness_coarse_dev(self):
+        """
+        """
+        self.name = 'Test'
+        self.ee = ExecutionEngine(self.name)
+
+        builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
+                                                           'witness_optim_sub_process',
+                                                           techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                                           process_level='dev',
+                                                           )
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.ee.configure()
+
+        usecase = witness_sub_proc_usecase(bspline=True,
+                                           execution_engine=self.ee,
+                                           techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                           process_level='dev',
+                                           )
+        usecase.study_name = self.name
+
+        directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_coarse_dev')
+
+        excluded_disc = ['FunctionsManager']
+        self.all_usecase_disciplines_jacobian_test(usecase, directory=directory, excluded_disc=excluded_disc)
+
+    def test_05_gradient_all_disciplines_witness_min_tech(self):
+        """
+        """
+        self.name = 'Test'
+        self.ee = ExecutionEngine(self.name)
+
+        builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
+                                                           'witness_optim_sub_process',
+                                                           techno_dict=DEFAULT_MIN_TECH_DICT,
+                                                           process_level='val',
+                                                           )
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.ee.configure()
+
+        usecase = witness_sub_proc_usecase(bspline=True,
+                                           execution_engine=self.ee,
+                                           techno_dict=DEFAULT_MIN_TECH_DICT,
+                                           process_level='val',
+                                           )
+        usecase.study_name = self.name
+
+        directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_min_tech')
+
+        excluded_disc = []
+
+        self.all_usecase_disciplines_jacobian_test(usecase, directory=directory, excluded_disc=excluded_disc)
+
+    def test_06_gradient_all_disciplines_witness_min_tech_dev(self):
+        """
+        """
+        self.name = 'Test'
+        self.ee = ExecutionEngine(self.name)
+
+        builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
+                                                           'witness_optim_sub_process',
+                                                           techno_dict=DEFAULT_MIN_TECH_DEV_DICT,
+                                                           process_level='dev',
+                                                           )
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+        self.ee.configure()
+
+        usecase = witness_sub_proc_usecase(bspline=True,
+                                           execution_engine=self.ee,
+                                           techno_dict=DEFAULT_MIN_TECH_DEV_DICT,
+                                           process_level='dev',
+                                           )
+        usecase.study_name = self.name
+
+        directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_min_tech_dev')
+
+        excluded_disc = []
+
         self.all_usecase_disciplines_jacobian_test(usecase, directory=directory, excluded_disc=excluded_disc)
 
     # def _test_gradient_all_disciplines_witness_full_at_x(self):
