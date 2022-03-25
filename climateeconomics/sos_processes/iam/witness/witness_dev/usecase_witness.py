@@ -26,7 +26,6 @@ from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
-
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
@@ -46,7 +45,7 @@ class Study(ClimateEconomicsStudyManager):
         self.techno_dict = techno_dict
         self.process_level = process_level
         self.dc_energy = datacase_energy(
-            self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
+            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
@@ -79,12 +78,12 @@ class Study(ClimateEconomicsStudyManager):
     def setup_usecase(self):
         setup_data_list = []
 
-        #-- load data from energy model
-        #-- Start with energy to have it at first position in the list...
+        # -- load data from energy model
+        # -- Start with energy to have it at first position in the list...
 
         self.dc_energy.study_name = self.study_name
         self.energy_mda_usecase = self.dc_energy
-        #-- load data from witness
+        # -- load data from witness
         dc_witness = datacase_witness_dev(
             self.year_start, self.year_end, self.time_step)
         dc_witness.study_name = self.study_name
@@ -105,7 +104,7 @@ class Study(ClimateEconomicsStudyManager):
         # WITNESS
         # setup objectives
         self.func_df = pd.concat(
-            [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(), self.dc_energy.setup_objectives(),  land_use_df_constraint])
+            [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(), self.dc_energy.setup_objectives(), land_use_df_constraint])
 
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
@@ -117,7 +116,8 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA'}
+            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+            f'{self.study_name}.cache_type': 'SimpleCache'}
 
         setup_data_list.append(numerical_values_dict)
 

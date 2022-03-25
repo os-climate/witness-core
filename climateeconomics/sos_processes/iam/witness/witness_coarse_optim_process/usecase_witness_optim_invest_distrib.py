@@ -25,7 +25,6 @@ from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
-
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
@@ -51,7 +50,7 @@ class Study(ClimateEconomicsStudyManager):
         self.techno_dict = techno_dict
 
         self.witness_uc = witness_optim_sub_usecase(
-            self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
+            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
@@ -81,6 +80,7 @@ class Study(ClimateEconomicsStudyManager):
         dspace_size = self.witness_uc.dspace_size
         # optimization functions:
         optim_values_dict = {f'{ns}.epsilon0': 1,
+                             f'{ns}.cache_type': 'SimpleCache',
                              f'{ns}.{self.optim_name}.design_space': dspace_df,
                              f'{ns}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,
                              f'{ns}.{self.optim_name}.eq_constraints': [],
@@ -120,7 +120,7 @@ class Study(ClimateEconomicsStudyManager):
 # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
 # True}
 
-        #print("Design space dimension is ", dspace_size)
+        # print("Design space dimension is ", dspace_size)
 
         return [values_dict] + [optim_values_dict]
 
