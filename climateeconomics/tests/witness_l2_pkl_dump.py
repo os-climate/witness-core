@@ -21,5 +21,14 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 if __name__ == '__main__':
 
+    pkl_dir = AbstractJacobianUnittest.PICKLE_DIRECTORY
+    directories = [f'{pkl_dir}/witness_full',
+                   f'{pkl_dir}/witness_full_dev',
+                   f'{pkl_dir}/witness_coarse',
+                   f'{pkl_dir}/witness_coarse_dev',
+                   f'{pkl_dir}/witness_min_tech',
+                   f'{pkl_dir}/witness_min_tech_dev',
+                   ]
+
     AbstractJacobianUnittest.launch_all_pickle_generation(
-        jacobian_target, 'l2_test_gradient_witness.py')
+        jacobian_target, 'l2_test_gradient_witness.py', directories=directories)
