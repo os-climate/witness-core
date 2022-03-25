@@ -602,7 +602,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             residues_energy_series = InstanciatedSeries(
                 years, residues_energy.tolist(), 'Residues dedicated to energy', InstanciatedSeries.BAR_DISPLAY)
             wood_energy_series = InstanciatedSeries(
-                years, wood_energy.tolist(), 'Wood dedicated to industry', InstanciatedSeries.BAR_DISPLAY)
+                years, wood_energy.tolist(), 'Wood dedicated to energy', InstanciatedSeries.BAR_DISPLAY)
 
             new_chart.add_series(biomass_industry_series)
             new_chart.add_series(residues_energy_series)
