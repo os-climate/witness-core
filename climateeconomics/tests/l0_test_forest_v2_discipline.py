@@ -115,6 +115,7 @@ class ForestTestCase(unittest.TestCase):
         margin = np.linspace(1.1, 1.1, year_range)
         self.margin_df = pd.DataFrame(
             {"years": years, "margin": margin})
+        self.initial_unsused_forest_surface = 4 - 1.25
 
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
@@ -135,7 +136,8 @@ class ForestTestCase(unittest.TestCase):
                       'unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
                       'unmanaged_wood_investment': self.mw_invest_df,
                       'transport_cost': self.transport_df,
-                      'margin': self.margin_df
+                      'margin': self.margin_df,
+                      'initial_unsused_forest_surface': self.initial_unsused_forest_surface
 
                       }
 
@@ -183,8 +185,7 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.managed_wood_initial_prod': self.managed_wood_techno_dict,
                        f'{name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
                        f'{name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
-                       # 1.25 * 0.92,
-                       f'{name}.{model_name}.managed_wood_initial_surface': 4,
+                       f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{name}.{model_name}.unmanaged_wood_initial_prod': self.uw_initial_production,
@@ -193,6 +194,8 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.unmanaged_wood_investment': self.mw_invest_df,
                        f'{name}.{model_name}.transport_cost': self.transport_df,
                        f'{name}.{model_name}.margin': self.margin_df,
+                       f'{name}.{model_name}.initial_unsused_forest_surface': self.initial_unsused_forest_surface,
+
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
@@ -203,5 +206,5 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
