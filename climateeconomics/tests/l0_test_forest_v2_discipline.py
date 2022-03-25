@@ -166,7 +166,7 @@ class ForestTestCase(unittest.TestCase):
                    'ns_forest': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v2.forest_disc.ForestDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)
