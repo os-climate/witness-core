@@ -550,7 +550,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             for crop in mix_detailed_production:
                 if crop != 'years':
-                    ordonate_data = list(mix_detailed_production[crop] * data_fuel_dict['calorific_value'])
+                    ordonate_data = list(mix_detailed_production[crop] * data_fuel_dict['high_calorific_value'])
                     new_series = InstanciatedSeries(
                         years, ordonate_data, crop.replace("(Mt)", "") , 'lines', visible_line)
                     new_chart.series.append(new_series)
