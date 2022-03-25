@@ -100,7 +100,7 @@ class WitnessCoarseCache(unittest.TestCase):
         self.assertTrue(optim_output_df_simple_cache.equals(
             optim_output_df_without_cache))
 
-    def test_02_cache_on_witness_coarse_optim_with_warm_start(self):
+    def test_02_cache_on_witness_coarse_optim(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -127,7 +127,7 @@ class WitnessCoarseCache(unittest.TestCase):
                         "max_iter": 2,
                         "disp": 110}
         full_values_dict['Test.WITNESS_MDO.algo_options'] = algo_options
-        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.warm_start'] = True
+        full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.warm_start'] = False
         full_values_dict['Test.WITNESS_MDO.max_iter'] = 2
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
         full_values_dict['Test.WITNESS_MDO.WITNESS_Eval.max_mda_iter'] = 10
@@ -179,5 +179,6 @@ class WitnessCoarseCache(unittest.TestCase):
 
 if '__main__' == __name__:
     cls = WitnessCoarseCache()
-    cls.test_01_cache_on_witness_coarse_optim_with_unconverged_mda()
-    cls.test_02_cache_on_witness_coarse_optim_with_warm_start()
+#     cls.test_01_cache_on_witness_coarse_optim_with_unconverged_mda()
+    cls.test_02_cache_on_witness_coarse_optim()
+
