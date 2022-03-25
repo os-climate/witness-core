@@ -401,7 +401,7 @@ class Forest():
         Compute annuity factor with the Weighted averaged cost of capital
         and the lifetime of the selected solution
         """
-        wacc = 0.1
+        wacc = self.techno_wood_info['WACC']
         crf = (wacc * (1.0 + wacc) ** 100) / \
               ((1.0 + wacc) ** 100 - 1.0)
 

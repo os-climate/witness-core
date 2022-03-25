@@ -95,6 +95,7 @@ class ForestTestCase(unittest.TestCase):
                                          'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                          'recycle_part': recycle_part,
                                          'construction_delay': construction_delay,
+                                         'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})

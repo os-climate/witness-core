@@ -115,6 +115,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                          'recycle_part': recycle_part,
                                          'construction_delay': construction_delay,
+                                         'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
@@ -135,6 +136,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         margin = np.linspace(1.1, 1.1, year_range)
         self.margin_df = pd.DataFrame(
             {"years": years, "margin": margin})
+        self.initial_unsused_forest_surface = 4 - 1.25
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
@@ -155,7 +157,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.unmanaged_wood_investment': self.mw_invest_df,
                        f'{self.name}.{model_name}.transport_cost': self.transport_df,
-                       f'{self.name}.{model_name}.margin': self.margin_df
+                       f'{self.name}.{model_name}.margin': self.margin_df,
+                       f'{self.name}.{model_name}.initial_unsused_forest_surface': self.initial_unsused_forest_surface,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
