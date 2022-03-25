@@ -18,6 +18,7 @@ from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilte
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 from climateeconomics.core.core_forest.forest_v2 import Forest
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -42,6 +43,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-tree fa-fw',
         'version': '',
     }
+    biomass_cal_val = BiomassDry.data_energy_dict[
+        'calorific_value']
     default_year_start = 2020
     default_year_end = 2050
 
@@ -138,11 +141,11 @@ class ForestDiscipline(ClimateEcoDiscipline):
 # wood_density * 3.36) / years_between_harvest / (1 - recycle_part)  # in
 # Twh
     mw_initial_production = 1.25 * 0.92 * \
-        density_per_ha * mean_density * 3.6 / \
+        density_per_ha * mean_density * biomass_cal_val / \
         years_between_harvest / (1 - recycle_part)  # in Twh
 
     uw_initial_production = 1.25 * 0.08 * \
-        density_per_ha * mean_density * 3.6 / \
+        density_per_ha * mean_density * biomass_cal_val / \
         years_between_harvest / (1 - recycle_part)
 
     DESC_IN = {Forest.YEAR_START: {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -439,7 +442,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             initial_forest = self.get_sosdisc_inputs(
                 'initial_unsused_forest_surface') * 1000
             unused_forest = np.linspace(
-                initial_forest, initial_forest, len(years))
+                initial_forest, initial_forest, len(years)) + deforestation
 
             # forest evolution year by year chart
             new_chart = TwoAxesInstanciatedChart('years', 'Yearly delta of forest surface evolution [Mha / year]',
@@ -478,15 +481,14 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 years, managed_wood_surface.tolist(), 'Managed wood', 'bar')
             unmanaged_wood_series = InstanciatedSeries(
                 years, unmanaged_wood_surface.tolist(), 'Unmanaged wood', 'bar')
-            initial_forest_series = InstanciatedSeries(
+            unused_forest_series = InstanciatedSeries(
                 years, unused_forest.tolist(), 'Unused forest', 'bar')
 
-            new_chart.add_series(deforested_series)
+            new_chart.add_series(unused_forest_series)
             new_chart.add_series(total_series)
             new_chart.add_series(forested_series)
             new_chart.add_series(managed_wood_series)
             new_chart.add_series(unmanaged_wood_series)
-            new_chart.add_series(initial_forest_series)
 
             instanciated_charts.append(new_chart)
 
@@ -586,9 +588,41 @@ class ForestDiscipline(ClimateEcoDiscipline):
             new_chart.add_series(un_wood_series)
             instanciated_charts.append(new_chart)
 
+            # chart biomass dry for energy production
+            new_chart = TwoAxesInstanciatedChart('years', 'Biomass dry [TWh]',
+                                                 chart_name='Break down of biomass dry production for energy', stacked_bar=True)
+            mw_residues_energy = managed_wood_df[
+                'residues_production_for_energy (Mt)'] * ForestDiscipline.biomass_cal_val
+            mw_wood_energy = managed_wood_df['wood_production_for_energy (Mt)'] * \
+                ForestDiscipline.biomass_cal_val
+            uw_residues_energy = unmanaged_wood_df[
+                'residues_production_for_energy (Mt)'] * ForestDiscipline.biomass_cal_val
+            uw_wood_energy = unmanaged_wood_df['wood_production_for_energy (Mt)'] * \
+                ForestDiscipline.biomass_cal_val
+            biomass_dry_energy = biomass_dry_df['biomass_dry_for_energy (Mt)'] * \
+                ForestDiscipline.biomass_cal_val
+
+            mn_residues_series = InstanciatedSeries(
+                years, mw_residues_energy.tolist(), 'Residues from managed wood', InstanciatedSeries.BAR_DISPLAY)
+            mn_wood_series = InstanciatedSeries(
+                years, mw_wood_energy.tolist(), 'Wood from managed wood', InstanciatedSeries.BAR_DISPLAY)
+            un_residues_series = InstanciatedSeries(
+                years, uw_residues_energy.tolist(), 'Residues from unmanaged wood', InstanciatedSeries.BAR_DISPLAY)
+            un_wood_series = InstanciatedSeries(
+                years, uw_wood_energy.tolist(), 'Wood from unmanaged wood', InstanciatedSeries.BAR_DISPLAY)
+            biomass_dry_energy_series = InstanciatedSeries(
+                years, biomass_dry_energy.tolist(), 'Total biomass dry produced', InstanciatedSeries.LINES_DISPLAY)
+
+            new_chart.add_series(mn_residues_series)
+            new_chart.add_series(mn_wood_series)
+            new_chart.add_series(biomass_dry_energy_series)
+            new_chart.add_series(un_residues_series)
+            new_chart.add_series(un_wood_series)
+            instanciated_charts.append(new_chart)
+
             # chart total biomass dry production
             new_chart = TwoAxesInstanciatedChart('years', 'biomass dry [Mt]',
-                                                 chart_name='Break down of biomass dry production for energy', stacked_bar=True)
+                                                 chart_name='Break down of biomass dry production', stacked_bar=True)
             residues_industry = managed_wood_df['residues_production_for_industry (Mt)'] + \
                 unmanaged_wood_df['residues_production_for_industry (Mt)']
             wood_industry = managed_wood_df['wood_production_for_industry (Mt)'] + \

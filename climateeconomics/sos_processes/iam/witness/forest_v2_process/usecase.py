@@ -181,16 +181,18 @@ class Study(StudyManager):
                      '.wood_techno_dict'] = wood_techno_dict
         forest_input[self.study_name + self.forest_name +
                      '.managed_wood_initial_prod'] = mw_initial_production
+        # 1.15 = 1.25 * 0.92
         forest_input[self.study_name + self.forest_name +
-                     '.managed_wood_initial_surface'] = 1.25 * 0.92
+                     '.managed_wood_initial_surface'] = 1.15
         forest_input[self.study_name + self.forest_name +
                      '.managed_wood_invest_before_year_start'] = invest_before_year_start
         forest_input[self.study_name +
                      '.managed_wood_investment'] = mw_invest_df
         forest_input[self.study_name + self.forest_name +
                      '.unmanaged_wood_initial_prod'] = uw_initial_production
+        # 1.15 = 1.25 * 0.08
         forest_input[self.study_name + self.forest_name +
-                     '.unmanaged_wood_initial_surface'] = 1.25 * 0.08
+                     '.unmanaged_wood_initial_surface'] = 0.1
         forest_input[self.study_name + self.forest_name +
                      '.unmanaged_wood_invest_before_year_start'] = invest_before_year_start
         forest_input[self.study_name +
