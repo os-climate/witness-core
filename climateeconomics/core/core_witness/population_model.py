@@ -80,16 +80,10 @@ class Population:
         pop_column = [str(x) for x in np.arange(0, 100)]
         pop_column.append('100+')
         self.full_age_list = pop_column
-        pop_df_column = pop_column.copy()
-        pop_df_column.insert(0, 'years')
-        pop_df_column.append('total')
-        population_df = DataFrame(
-            index=years_range,
-            columns=pop_df_column)
-        for key in population_df.keys():
-            population_df[key] = 0
-        population_df.loc[self.year_start,
-                          'total'] = self.pop_init_df['population'].sum()
+        self.pop_df_column = pop_column.copy()
+
+        self.pop_df_column.append('total')
+
         # POPULATION
         # select all age except 100+
         pop_init = self.pop_init_df.iloc[:-1, 1]
@@ -99,95 +93,63 @@ class Population:
         pop_by_age = list(chain(*zip(*[pop_init for _ in range(5)])))
         # Add 100+ value of pop init
         pop_by_age.append(self.pop_init_df.iloc[-1, 1])
-        population_df.iloc[0, 1:-1] = pop_by_age
-        population_df['years'] = years_range
-        self.population_df = population_df
+
+        self.total_pop = self.pop_init_df['population'].sum()
+        self.population_dict = {2020: np.array(
+            pop_by_age + [self.total_pop])}
 
         column_list = self.age_list.copy()
         column_list.insert(0, 'years')
-
+        self.column_list = self.age_list.copy()
         # WORKING POULATION
         self.working_age_population_df = DataFrame(index=years_range,
                                                    columns=['years', 'population_1570'])
         self.working_age_population_df['years'] = years_range
-#         self.working_age_population_df.loc[self.year_start,
-#                                            'population_1570'] = population_df.loc[self.year_start, '15':'70'].sum()  # will take 15yo to 70yo
 
         # BIRTH RATE
         # BASE => calculated from GDB and knowledge level
-        self.birth_rate = DataFrame(index=years_range,
-                                    columns=['years', 'knowledge', 'birth_rate'])
-        for key in self.birth_rate.keys():
-            self.birth_rate[key] = 0
-        self.birth_rate['years'] = years_range
+        self.birth_rate = DataFrame({'years': years_range,
+                                     'knowledge': 0,
+                                     'birth_rate': 0},
+                                    index=years_range)
 
         # BIRTH NUMBER
         # BASE => calculated from GDB and knowledge level
-        self.birth_df = DataFrame(index=years_range,
-                                  columns=['years', 'knowledge', 'birth_rate'])
-        for key in self.birth_df.keys():
-            self.birth_df[key] = 0
-        self.birth_df['years'] = years_range
+        self.birth_df = DataFrame({'years': years_range,
+                                   'knowledge': 0,
+                                   'birth_rate': 0},
+                                  index=years_range)
 
         # DEATH RATE - slices of 4 years age in column
         # BASE => calculated from GDP
-        self.base_death_rate_df = DataFrame(index=years_range,
-                                            columns=column_list)
-        for key in self.base_death_rate_df.keys():
-            self.base_death_rate_df[key] = 0
-        self.base_death_rate_df['years'] = years_range
-
+        self.base_death_rate_df_dict = {}
         # CLIMATE => calculated from temperature increase
-        self.climate_death_rate_df = DataFrame(index=years_range,
-                                               columns=column_list)
-        for key in self.climate_death_rate_df.keys():
-            self.climate_death_rate_df[key] = 0
-        self.climate_death_rate_df['years'] = years_range
-
+        self.climate_death_rate_df_dict = {}
         # TOTAL => sum of all effects
-        self.death_rate_df = DataFrame(index=years_range,
-                                       columns=column_list)
-        for key in self.death_rate_df.keys():
-            self.death_rate_df[key] = 0
-        self.death_rate_df['years'] = years_range
+        self.death_rate_df_dict = {}
 
-        # CONTAINER => dictionnary containing death rates
-        self.death_rate_dict = {'base': self.base_death_rate_df, 'climate': self.climate_death_rate_df,
-                                'total': self.death_rate_df}
+        # CONTAINER => dictionnary containing death rates dictionaties
 
+        self.death_rate_dict = {'base': self.base_death_rate_df_dict, 'climate': self.climate_death_rate_df_dict,
+                                'total': self.death_rate_df_dict}
         # DEATH NUMBER - one column per age
         # BASE => calculated from GDP
-        self.base_death_df = DataFrame(index=years_range,
-                                       columns=pop_df_column)
-        for key in self.base_death_df.keys():
-            self.base_death_df[key] = 0
-        self.base_death_df['years'] = years_range
+        init_dict = {'years': years_range}
+        init_dict.update({col: 0 for col in self.pop_df_column})
 
+        self.base_death_df = DataFrame(init_dict, index=years_range)
         # CLIMATE => calculated from temperature increase
-        self.climate_death_df = DataFrame(index=years_range,
-                                          columns=pop_df_column)
-        for key in self.climate_death_df.keys():
-            self.climate_death_df[key] = 0
-        self.climate_death_df['years'] = years_range
-
+        self.climate_death_df = DataFrame(init_dict.copy(), index=years_range)
         # TOTAL => sum of all effects
-        self.death_df = DataFrame(index=years_range,
-                                  columns=pop_df_column)
-        for key in self.death_df.keys():
-            self.death_df[key] = 0
-        self.death_df['years'] = years_range
+        self.death_df = DataFrame(init_dict.copy(), index=years_range)
 
         # CONTAINER => dictionnary containing death number
         self.death_dict = {}
-        self.death_list_dict = {effect: [] for effect in self.death_rate_dict}
+        self.death_list_dict = {effect: []
+                                for effect in self.death_rate_dict}
         # LIFE EXPECTANCY
-        self.life_expectancy_df = DataFrame(index=years_range,
-                                            columns=['years', 'life_expectancy'])
-        for key in self.life_expectancy_df.keys():
-            self.life_expectancy_df[key] = 0
-        self.life_expectancy_df['years'] = years_range
-
-        return population_df
+        self.life_expectancy_df = DataFrame({'years': years_range,
+                                             'life_expectancy': 0}, index=years_range)
 
     def compute_knowledge(self):
         """ Compute knowledge function for all year. Knowledge is a regression on % of 
@@ -210,7 +172,7 @@ class Population:
         '''
         # COnvert GDP in $
         gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
-        pop = self.population_df.loc[year, 'total']
+        pop = self.total_pop
         birth_rate = self.br_upper + (self.br_lower - self.br_upper) / (
             1 + np.exp(-self.br_delta * (gdp / pop - self.br_phi))) ** (1 / self.br_nu)
         self.birth_rate.loc[year, 'birth_rate'] = birth_rate
@@ -224,7 +186,7 @@ class Population:
         """
         # Convert GDP in $
         gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
-        pop = self.population_df.loc[year, 'total']
+        pop = self.total_pop
         knowledge = self.birth_rate.loc[year, 'knowledge']
         # Compute in two steps
         f_knowledge = self.cst_br_k + self.alpha_br_k * \
@@ -248,7 +210,7 @@ class Population:
         output : death rate for the year for each age range. type: pandas Series   
         '''
         gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
-        pop = self.population_df.loc[year, 'total']
+        pop = self.total_pop
         param = self.dr_param_df
         # For all age range compute death rate
         death_rate = param['death_rate_upper'] + (param['death_rate_lower'] - param['death_rate_upper']) / (
@@ -270,7 +232,7 @@ class Population:
         output : death rate for the year for each age range. type: pandas Series   
         '''
         gdp = self.economics_df.at[year, 'output_net_of_d'] * self.trillion
-        pop = self.population_df.loc[year, 'total']
+        pop = self.total_pop
         temp = self.temperature_df.loc[year, 'temp_atmo']
         param = self.dr_param_df
         add_death = self.climate_mortality_param_df
@@ -284,13 +246,10 @@ class Population:
         climate_death_rate = add_death['beta'].values * \
             (temp / cal_temp_increase) ** theta
 
-        # Fill the year row in death rate df
-        self.base_death_rate_df.iloc[year - self.year_start, 1:] = death_rate
-        self.climate_death_rate_df.iloc[year - self.year_start,
-                                        1:] = climate_death_rate * death_rate
-        self.death_rate_df.iloc[year - self.year_start,
-                                1:] = death_rate * (1 + climate_death_rate)
-
+        # Fill the year key in each death rate dict
+        self.base_death_rate_df_dict[year] = death_rate
+        self.climate_death_rate_df_dict[year] = climate_death_rate * death_rate
+        self.death_rate_df_dict[year] = death_rate * (1 + climate_death_rate)
         return self.death_rate_dict
 
     def compute_death_number(self, year):
@@ -299,20 +258,22 @@ class Population:
                 death rate value per age range 
         output df of number of death 
         """
-        # Pop year = row of df without year and total
-        pop_year = self.population_df.iloc[year - self.year_start, 1:-1].values
+
+        # last value is always total
+        pop_year = self.population_dict[year][:-1]
         total_deaths = np.zeros(len(pop_year))
 
         for effect in self.death_rate_dict:
             if effect != 'total':
-                dr_year = self.death_rate_dict[effect].iloc[year -
-                                                            self.year_start, 1:-1].values
-
+                # get the death rate in the dict instead of the df at key year
+                # except the 100+
+                dr_year = self.death_rate_dict[effect][year][:-1]
                 # Duplicate each element of the list 5 times so that we have a
                 # death rate per age
                 full_dr_death = np.repeat(dr_year, 5).tolist()
+                # The last value is the 100+ that we do not want to repeat
                 full_dr_death.append(
-                    self.death_rate_dict[effect].loc[year, '100+'])
+                    self.death_rate_dict[effect][year][-1])
 
                 nb_death = pop_year * np.array(full_dr_death)
 
@@ -333,7 +294,7 @@ class Population:
         output df of number of birth per year
         '''
         # Sum population between 15 and 49year
-        pop_1549 = sum(self.population_df.loc[year, '15':'49'])
+        pop_1549 = sum(self.population_dict[year][15:50])
         nb_birth = self.birth_rate.at[year, 'birth_rate'] * pop_1549
         self.birth_df.loc[year, 'number_of_birth'] = nb_birth
 
@@ -344,25 +305,19 @@ class Population:
             pass
         else:
             year_start = self.year_start
-            pop_before = self.population_df.iloc[year -
-                                                 1 - year_start, 1:-1].values
+            pop_before = self.population_dict[year - 1][:-1]
             pop_before = pop_before - total_death
 
-            # Add new born
-            self.population_df.loc[year, '0'] = nb_birth
-            # Then update population
-            # And +1 for each person alive
-            self.population_df.iloc[year - year_start, 2:-1] = pop_before[:-1]
+            # Add new born And +1 for each person alive
+            population_list = [nb_birth] + list(pop_before[:-1])
             # Add not dead people over 100+
             old_not_dead = pop_before[-1]
-            self.population_df.loc[year, '100+'] += old_not_dead
-            self.population_df.loc[year,
-                                   'total'] = self.population_df.iloc[year - year_start, 1:-1].sum()
-            # compute working population from 15yo to 70yo
-#             self.working_age_population_df.loc[year, 'population_1570'] = sum(
-#                 self.population_df.loc[year, '15':'70'])
-
-        return self.population_df
+            population_list[-1] += old_not_dead
+            # compute the total
+            self.total_pop = sum(population_list)
+            # Add pop each age + total in the dict
+            self.population_dict[year] = np.array(
+                population_list + [self.total_pop])
 
     def compute_life_expectancy(self, year):
         """
@@ -371,11 +326,13 @@ class Population:
         pop_0 = 1 
         pop_i = pop_i-1(1- death_rate_i) 
         """
-        dr_year = self.death_rate_df.iloc[year - self.year_start, 1:-1]
+        #dr_year = self.death_rate_df.iloc[year - self.year_start, 1:-1]
+        # do not duplicate 100+
+        dr_year = self.death_rate_df_dict[year][:-1]
         # Duplicate each element of the list 5 times so that we have a death
         # rate per age
-        full_dr_death = list(chain(*zip(*[list(dr_year) for _ in range(5)])))
-        full_dr_death.append(self.death_rate_df.loc[year, '100+'])
+        full_dr_death = list(np.repeat(dr_year, 5))
+        full_dr_death.append(self.death_rate_df_dict[year][-1])
 
         nb_age = len(self.full_age_list)
         pop = [0] * nb_age
@@ -410,11 +367,32 @@ class Population:
             nb_birth = self.compute_birth_number(year)
             self.compute_population_next_year(year + 1, total_death, nb_birth)
             self.compute_life_expectancy(year)
+
+        self.population_df = DataFrame.from_dict(
+            self.population_dict, orient='index', columns=self.pop_df_column)
+
+        self.population_df.insert(loc=0, column='years',
+                                  value=self.years_range)
         self.population_df = self.population_df.replace(
             [np.inf, -np.inf], np.nan)
 
+        # Compute working age population between 15 and 70 years
         self.working_age_population_df['population_1570'] = self.population_df[[
             str(i) for i in np.arange(15, 71)]].sum(axis=1)
+
+        # reconstruction of the dataframes with the dictionaries
+        self.climate_death_rate_df = DataFrame.from_dict(
+            self.climate_death_rate_df_dict, orient='index', columns=self.column_list)
+        self.base_death_rate_df = DataFrame.from_dict(
+            self.base_death_rate_df_dict, orient='index', columns=self.column_list)
+        self.death_rate_df = DataFrame.from_dict(
+            self.death_rate_df_dict, orient='index', columns=self.column_list)
+
+        # recontruction of the death rate_dict with dataframes instead f
+        # ditionaries at the end of the year loop
+        self.death_rate_dict = {'base': self.base_death_rate_df,
+                                'climate': self.climate_death_rate_df,
+                                'total': self.death_rate_df}
         # Calculation of cumulative deaths
         for effect in self.death_rate_dict:
             self.death_dict[effect] = DataFrame(
@@ -587,7 +565,7 @@ class Population:
         param.index = param['param'].values
 
         d_climate_deathrate_d_output = {}
-        climate_death_rate = self.climate_death_rate_df.iloc[iyear, 1:]
+        climate_death_rate = self.climate_death_rate_df.iloc[iyear, :]
         temp = self.temperature_df.loc[year, 'temp_atmo']
         add_death = self.climate_mortality_param_df
         add_death.index = param['param'].values
@@ -630,7 +608,7 @@ class Population:
             list_d_pop_d_out = dict_d_population_d_output[year]
 
         # get death rate by age
-        dr_year = self.death_rate_dict['total'].iloc[iyear, 1:-1]
+        dr_year = self.death_rate_dict['total'].iloc[iyear, :-1]
         # Duplicate each element of the list 5 times so that we have a death
         # rate per age
         full_dr_death = list(chain(*zip(*[list(dr_year) for _ in range(5)])))
@@ -866,8 +844,8 @@ class Population:
         param.index = param['param'].values
 
         d_climate_deathrate_d_temp = {}
-        base_death_rate = self.base_death_rate_df.iloc[iyear, 1:]
-        climate_death_rate = self.climate_death_rate_df.iloc[iyear, 1:]
+        base_death_rate = self.base_death_rate_df.iloc[iyear, :]
+        climate_death_rate = self.climate_death_rate_df.iloc[iyear, :]
         temp = self.temperature_df.loc[year, 'temp_atmo']
         cal_temp_increase = self.cal_temp_increase
         theta = self.theta

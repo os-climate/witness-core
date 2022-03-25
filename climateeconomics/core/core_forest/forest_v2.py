@@ -34,11 +34,27 @@ class Forest():
     INITIAL_CO2_EMISSIONS = 'initial_emissions'
     REFORESTATION_INVESTMENT = 'forest_investment'
     REFORESTATION_COST_PER_HA = 'reforestation_cost_per_ha'
+    WOOD_TECHNO_DICT = 'wood_techno_dict'
+    MW_INITIAL_PROD = 'managed_wood_initial_prod'
+    MW_INITIAL_SURFACE = 'managed_wood_initial_surface'
+    MW_INVEST_BEFORE_YEAR_START = 'managed_wood_invest_before_year_start'
+    MW_INVESTMENT = 'managed_wood_investment'
+    UW_INITIAL_PROD = 'unmanaged_wood_initial_prod'
+    UW_INITIAL_SURFACE = 'unmanaged_wood_initial_surface'
+    UW_INVEST_BEFORE_YEAR_START = 'unmanaged_wood_invest_before_year_start'
+    UW_INVESTMENT = 'unmanaged_wood_investment'
+    TANSPORT_COST = 'transport_cost'
+    MARGIN = 'margin'
+    UNUSED_FOREST = 'initial_unsused_forest_surface'
 
     FOREST_SURFACE_DF = 'forest_surface_df'
     FOREST_DETAIL_SURFACE_DF = 'forest_surface_detail_df'
     CO2_EMITTED_FOREST_DF = 'CO2_emitted_forest_df'
     CO2_EMITTED_DETAIL_DF = 'CO2_emissions_detail_df'
+    MW_DF = 'managed_wood_df'
+    UW_DF = 'unmanaged_wood_df'
+    BIOMASS_DRY_DETAIL_DF = 'biomass_dry_detail_df'
+    BIOMASS_DRY_DF = 'biomass_dry_df'
 
     def __init__(self, param):
         """
@@ -62,19 +78,20 @@ class Forest():
         # forest data
         self.forest_investment = self.param[self.REFORESTATION_INVESTMENT]
         self.cost_per_ha = self.param[self.REFORESTATION_COST_PER_HA]
-        self.techno_wood_info = self.param['wood_techno_dict']
-        self.managed_wood_inital_prod = self.param['managed_wood_initial_prod']
-        self.managed_wood_initial_surface = self.param['managed_wood_initial_surface']
+        self.techno_wood_info = self.param[self.WOOD_TECHNO_DICT]
+        self.managed_wood_inital_prod = self.param[self.MW_INITIAL_PROD]
+        self.managed_wood_initial_surface = self.param[self.MW_INITIAL_SURFACE]
         self.managed_wood_invest_before_year_start = self.param[
-            'managed_wood_invest_before_year_start']
-        self.managed_wood_investment = self.param['managed_wood_investment']
-        self.unmanaged_wood_inital_prod = self.param['unmanaged_wood_initial_prod']
-        self.unmanaged_wood_initial_surface = self.param['unmanaged_wood_initial_surface']
+            self.MW_INVEST_BEFORE_YEAR_START]
+        self.managed_wood_investment = self.param[self.MW_INVESTMENT]
+        self.unmanaged_wood_inital_prod = self.param[self.UW_INITIAL_PROD]
+        self.unmanaged_wood_initial_surface = self.param[self.UW_INITIAL_SURFACE]
         self.unmanaged_wood_invest_before_year_start = self.param[
-            'unmanaged_wood_invest_before_year_start']
-        self.unmanaged_wood_investment = self.param['unmanaged_wood_investment']
-        self.transport = self.param['transport_cost']
-        self.margin = self.param['margin']
+            self.UW_INVEST_BEFORE_YEAR_START]
+        self.unmanaged_wood_investment = self.param[self.UW_INVESTMENT]
+        self.transport = self.param[self.TANSPORT_COST]
+        self.margin = self.param[self.MARGIN]
+        self.initial_unsused_forest_surface = self.param[self.UNUSED_FOREST]
 
     def create_dataframe(self):
         """
@@ -108,8 +125,8 @@ class Forest():
         self.limit_deforestation_surface = self.param[self.LIMIT_DEFORESTATION_SURFACE]
         self.years = np.arange(
             self.year_start, self.year_end + 1, self.time_step)
-        self.managed_wood_investment = in_dict['managed_wood_investment']
-        self.unmanaged_wood_investment = in_dict['unmanaged_wood_investment']
+        self.managed_wood_investment = in_dict[self.MW_INVESTMENT]
+        self.unmanaged_wood_investment = in_dict[self.UW_INVESTMENT]
 
         self.forest_surface_df['years'] = self.years
         self.managed_wood_df['years'] = self.years
@@ -276,7 +293,8 @@ class Forest():
             self.managed_wood_df['delta_surface']
         self.forest_surface_df['global_forest_surface'] = self.forest_surface_df['reforestation_surface'] + self.forest_surface_df['deforestation_surface'] + \
             self.unmanaged_wood_df['cumulative_surface'] + \
-            self.managed_wood_df['cumulative_surface']
+            self.managed_wood_df['cumulative_surface'] + \
+            self.initial_unsused_forest_surface
 
     def check_deforestation_limit(self):
         """
@@ -383,7 +401,7 @@ class Forest():
         Compute annuity factor with the Weighted averaged cost of capital
         and the lifetime of the selected solution
         """
-        wacc = 0.1
+        wacc = self.techno_wood_info['WACC']
         crf = (wacc * (1.0 + wacc) ** 100) / \
               ((1.0 + wacc) ** 100 - 1.0)
 
