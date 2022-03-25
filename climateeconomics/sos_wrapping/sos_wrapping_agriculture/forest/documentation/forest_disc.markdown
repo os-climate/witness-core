@@ -56,7 +56,7 @@ Managed wood and unmanaged wood are two way to plant trees and then to harvest b
 
 **Surface of forest**
 Each year, a certain amount of money is invested into managed wood or unmanaged wood. This is an input data of the model. Knowing the price per ha (in **wood tehcno dict**) the surface added each year can be deduced by
-$$ Added\_surface = investment / price\_per\_ha$$
+$$Added\_surface = investment / price\_per\_ha$$
 This price per ha take into account planting tree, preparing ground, harvesting and other activities linked to wood management.
 By adding the surface of forest planting each year, the cumulative surface is computed, which represent the total of managed or unmanaged wood added since the first year of the study.
 
