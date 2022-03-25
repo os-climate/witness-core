@@ -378,7 +378,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'surface (Gha)',
+            new_chart = TwoAxesInstanciatedChart('years', 'surface [Gha]',
                                                  chart_name='Surface taken to produce food over time', stacked_bar=True)
             new_chart.add_series(crop_surface_series)
 
@@ -405,7 +405,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'surface (%)',
+            new_chart = TwoAxesInstanciatedChart('years', 'surface [%]',
                                                  chart_name='Share of the surface used to produce food over time', stacked_bar=True)
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
@@ -437,7 +437,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'food quantity (kg / person / year)',
+            new_chart = TwoAxesInstanciatedChart('years', 'food quantity [kg / person / year]',
                                                  chart_name='Evolution of the diet over time', stacked_bar=True)
 
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
@@ -481,7 +481,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Crop productivity evolution'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' productivity evolution (%)',
+            new_chart = TwoAxesInstanciatedChart('years', ' productivity evolution [%]',
                                                  chart_name=chart_name)
 
             visible_line = True
