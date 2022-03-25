@@ -45,7 +45,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_forest': f'{self.name}.{model_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v2.forest_disc.ForestDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -165,11 +165,11 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            #                             inputs=[
-                            #                                 f'{self.name}.{Forest.DEFORESTATION_SURFACE}',  f'{self.name}.{Forest.REFORESTATION_INVESTMENT}', f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
-                            #                             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-                            #                                      f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
-                            #                                      f'{self.name}.biomass_dry_df'])
                             inputs=[
-            f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
-            outputs=[f'{self.name}.biomass_dry_df'])
+            f'{self.name}.{Forest.DEFORESTATION_SURFACE}',  f'{self.name}.{Forest.REFORESTATION_INVESTMENT}', f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
+            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
+                     f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
+                     f'{self.name}.biomass_dry_df'])
+#                             inputs=[
+#             f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
+#             outputs=[f'{self.name}.biomass_dry_df'])
