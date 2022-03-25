@@ -95,6 +95,7 @@ class ForestTestCase(unittest.TestCase):
                                          'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                          'recycle_part': recycle_part,
                                          'construction_delay': construction_delay,
+                                         'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
@@ -115,6 +116,7 @@ class ForestTestCase(unittest.TestCase):
         margin = np.linspace(1.1, 1.1, year_range)
         self.margin_df = pd.DataFrame(
             {"years": years, "margin": margin})
+        self.initial_unsused_forest_surface = 4 - 1.25
 
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
@@ -135,7 +137,8 @@ class ForestTestCase(unittest.TestCase):
                       'unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
                       'unmanaged_wood_investment': self.mw_invest_df,
                       'transport_cost': self.transport_df,
-                      'margin': self.margin_df
+                      'margin': self.margin_df,
+                      'initial_unsused_forest_surface': self.initial_unsused_forest_surface
 
                       }
 
@@ -163,7 +166,7 @@ class ForestTestCase(unittest.TestCase):
                    'ns_forest': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v2.forest_disc.ForestDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)
@@ -183,8 +186,7 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.managed_wood_initial_prod': self.managed_wood_techno_dict,
                        f'{name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
                        f'{name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
-                       # 1.25 * 0.92,
-                       f'{name}.{model_name}.managed_wood_initial_surface': 4,
+                       f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{name}.{model_name}.unmanaged_wood_initial_prod': self.uw_initial_production,
@@ -193,6 +195,8 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.unmanaged_wood_investment': self.mw_invest_df,
                        f'{name}.{model_name}.transport_cost': self.transport_df,
                        f'{name}.{model_name}.margin': self.margin_df,
+                       f'{name}.{model_name}.initial_unsused_forest_surface': self.initial_unsused_forest_surface,
+
                        }
 
         ee.load_study_from_input_dict(inputs_dict)

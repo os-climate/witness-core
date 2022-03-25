@@ -77,37 +77,9 @@ class PopDiscTest(unittest.TestCase):
 
         self.ee.dm.set_values_from_dict(values_dict)
         t0 = time.time()
-
-#         profil = cProfile.Profile()
-#         profil.enable()
         self.ee.execute()
-        mda_class = self.ee.dm.get_value(f'{self.name}.sub_mda_class')
-        n_processes = self.ee.dm.get_value(f'{self.name}.n_processes')
-#         profil.disable()
-#         result = StringIO()
-#
-#         ps = pstats.Stats(profil, stream=result)
-#         ps.sort_stats('cumulative')
-#         ps.print_stats(1000)
-#         result = result.getvalue()
-#         # chop the string into a csv-like buffer
-#         result = 'ncalls' + result.split('ncalls')[-1]
-#         result = '\n'.join([','.join(line.rstrip().split(None, 5))
-#                             for line in result.split('\n')])
-#         #
-#         with open(join(dirname(__file__), f'testpop_perfos.csv'), 'w+') as f:
-#             # f = open(result.rsplit('.')[0] + '.csv', 'w')
-#             f.write(result)
-#             f.close()
         print('old_time : 8.636150598526001  s ')
         print('Time : ', time.time() - t0, ' s')
-#         output_dict = self.ee.root_process.sos_disciplines[0].get_sosdisc_outputs(
-#         )
-# #         with open('pop_output.pkl', 'wb') as handle:
-# #             pickle.dump(output_dict, handle, protocol=pickle.HIGHEST_PROTOCOL)
-#
-#         with open('pop_output.pkl', 'rb') as handle:
-#             old_output_dict = pickle.load(handle)
 
         res_pop = self.ee.dm.get_value(f'{self.name}.population_df')
 

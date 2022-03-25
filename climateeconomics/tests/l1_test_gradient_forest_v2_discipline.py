@@ -45,7 +45,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_forest': f'{self.name}.{model_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v2.forest_disc.ForestDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -115,6 +115,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                          'recycle_part': recycle_part,
                                          'construction_delay': construction_delay,
+                                         'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
@@ -135,6 +136,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         margin = np.linspace(1.1, 1.1, year_range)
         self.margin_df = pd.DataFrame(
             {"years": years, "margin": margin})
+        self.initial_unsused_forest_surface = 4 - 1.25
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
@@ -155,18 +157,19 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.unmanaged_wood_investment': self.mw_invest_df,
                        f'{self.name}.{model_name}.transport_cost': self.transport_df,
-                       f'{self.name}.{model_name}.margin': self.margin_df
+                       f'{self.name}.{model_name}.margin': self.margin_df,
+                       f'{self.name}.{model_name}.initial_unsused_forest_surface': self.initial_unsused_forest_surface,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            #                             inputs=[
-                            #                                 f'{self.name}.{Forest.DEFORESTATION_SURFACE}',  f'{self.name}.{Forest.REFORESTATION_INVESTMENT}', f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
-                            #                             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-                            #                                      f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
-                            #                                      f'{self.name}.biomass_dry_df'])
                             inputs=[
-            f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
-            outputs=[f'{self.name}.biomass_dry_df'])
+            f'{self.name}.{Forest.DEFORESTATION_SURFACE}',  f'{self.name}.{Forest.REFORESTATION_INVESTMENT}', f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
+            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
+                     f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
+                     f'{self.name}.biomass_dry_df'])
+#                             inputs=[
+#             f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
+#             outputs=[f'{self.name}.biomass_dry_df'])
