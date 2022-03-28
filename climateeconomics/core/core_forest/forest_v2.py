@@ -110,6 +110,14 @@ class Forest():
         self.biomass_dry_df = pd.DataFrame()
         self.price_df = pd.DataFrame()
 
+        #output dataframes:
+        self.techno_production = pd.DataFrame()
+        self.techno_prices = pd.DataFrame()
+        self.techno_consumption = pd.DataFrame()
+        self.techno_consumption_woratio = pd.DataFrame()
+        self.land_use_required = pd.DataFrame()
+        self.CO2_emissions = pd.DataFrame()
+
     def compute(self, in_dict):
         """
         Computation methods
@@ -137,6 +145,13 @@ class Forest():
         self.CO2_emitted_df['years'] = self.years
         self.price_df['years'] = self.years
 
+        self.techno_production['years'] = self.years
+        self.techno_prices['years'] = self.years
+        self.techno_consumption['years'] = self.years
+        self.techno_consumption_woratio['years'] = self.years
+        self.land_use_required['years'] = self.years
+        self.CO2_emissions['years'] = self.years
+
         # compute data of each contribution
         self.compute_reforestation_deforestation()
         self.compute_managed_wood_production()
@@ -151,6 +166,17 @@ class Forest():
 
         # compute biomass dry production
         self.compute_biomass_dry_production()
+
+        # compute outputs:
+        self.land_use_required['forest (Gha)'] = self.forest_surface_df['global_forest_surface']
+        # techno production in TWh
+        self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] = self.biomass_dry_df['biomass_dry_for_energy (Mt)'] * self.biomass_dry_calorific_value
+        # price in $/MWh
+        self.techno_prices[f'{BiomassDry.name}'] = self.biomass_dry_df['price_per_MWh']
+
+        # emissions are not computed here because the global emission balance is directly passed to carbon emission model
+
+        # no consumption
 
     def compute_managed_wood_production(self):
         """
@@ -260,12 +286,7 @@ class Forest():
         self.unmanaged_wood_df['wood_production_for_industry (Mt)'] = self.unmanaged_wood_df['wood_production (Mt)'] * \
             (1 - wood_percentage_for_energy)
 
-        # CO2 part
-        self.unmanaged_wood_df['delta_CO2_emitted'] = - \
-            self.unmanaged_wood_df['delta_surface'] * self.CO2_per_ha / 1000
-        self.unmanaged_wood_df['CO2_emitted'] = - \
-            (self.unmanaged_wood_df['cumulative_surface'] - self.unmanaged_wood_initial_surface) * \
-            self.CO2_per_ha / 1000
+        # CO2 part: no absorption of CO2 because it is unmanaged
 
     def compute_reforestation_deforestation(self):
         """
@@ -286,6 +307,7 @@ class Forest():
         self.forest_surface_df['reforestation_surface'] = np.cumsum(
             self.forest_surface_df['delta_reforestation_surface'])
 
+
     def sumup_global_surface_data(self):
         """
         managed wood and unmanaged wood impact forest_surface_df
@@ -297,6 +319,8 @@ class Forest():
             self.unmanaged_wood_df['cumulative_surface'] + \
             self.managed_wood_df['cumulative_surface'] + \
             self.initial_unsused_forest_surface
+
+
 
     def check_deforestation_limit(self):
         """
@@ -339,7 +363,6 @@ class Forest():
             self.CO2_per_ha / 1000 + self.initial_emissions
         self.CO2_emitted_df['global_CO2_captured'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000 + \
-            self.unmanaged_wood_df['CO2_emitted'] + \
             self.managed_wood_df['CO2_emitted']
         self.CO2_emitted_df['global_CO2_emission_balance'] = self.CO2_emitted_df['global_CO2_emitted'] + \
             self.CO2_emitted_df['global_CO2_captured']
@@ -373,6 +396,7 @@ class Forest():
             self.biomass_dry_calorific_value
         self.biomass_dry_df['price_per_MWh'] = self.biomass_dry_df['price_per_ton'] / \
             self.biomass_dry_calorific_value
+
 
     def compute_price(self, techno_name):
         """
