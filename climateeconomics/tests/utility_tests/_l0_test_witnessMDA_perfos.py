@@ -169,8 +169,8 @@ class TestScatter(unittest.TestCase):
             os.system(
                 f'git commit -m "Add {fig_name}"')
 
-    #             os.system('git pull')
-    #             os.system('git push')
+            os.system('git pull')
+            os.system('git push')
 
     def test_02_witness_perfos_execute_GSNR(self):
 
