@@ -118,17 +118,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                   3])
+            3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                 3])
+            3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                   3])
+            3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                     3])
+            3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                   3])
+            3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                      3])
+            3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -229,17 +229,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                   3])
+            3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                 3])
+            3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                   3])
+            3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                     3])
+            3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                   3])
+            3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                      3])
+            3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -339,17 +339,17 @@ class TestScatter(unittest.TestCase):
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                   3])
+            3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                 3])
+            3])
         inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                   3])
+            3])
         pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                     3])
+            3])
         dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                   3])
+            3])
         gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                      3])
+            3])
 
         _convert_array_into_new_type = float(
             [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -445,17 +445,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                       3])
+                3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                     3])
+                3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                       3])
+                3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                         3])
+                3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                       3])
+                3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                          3])
+                3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -553,17 +553,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                       3])
+                3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                     3])
+                3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                       3])
+                3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                         3])
+                3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                       3])
+                3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                          3])
+                3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -664,17 +664,17 @@ class TestScatter(unittest.TestCase):
             total_time = float(lines[1].split(',')[3])
             print('total_time : ', total_time)
             linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
-                                       3])
+                3])
             execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
-                                     3])
+                3])
             inversion_time = float([line for line in lines if 'algo_lib.py' in line][0].split(',')[
-                                       3])
+                3])
             pre_run_mda_time = float([line for line in lines if 'pre_run_mda' in line][0].split(',')[
-                                         3])
+                3])
             dres_dvar_time = float([line for line in lines if 'dres_dvar' in line][0].split(',')[
-                                       3])
+                3])
             gauss_seidel_time = float([line for line in lines if 'gauss_seidel.py' in line][0].split(',')[
-                                          3])
+                3])
 
             _convert_array_into_new_type = float(
                 [line for line in lines if '_convert_array_into_new_type' in line][0].split(',')[
@@ -704,14 +704,16 @@ class TestScatter(unittest.TestCase):
             ax.set_xticklabels(ax.get_xticklabels(), rotation=40, ha="right")
             u = 0
             for c in ax.containers:
-                # custom label calculates percent and add an empty string so 0 value bars don't have a number
+                # custom label calculates percent and add an empty string so 0
+                # value bars don't have a number
                 labels = [f'{(v.get_height()) / (tailles[k]) * 100:0.1f}%' if (v.get_height()) > 0 else '' for k, v
                           in enumerate(c)]
                 position = 'center'
                 if (trick and (u == 3)):
                     position = 'edge'
                 if (given_labels):
-                    labels = [f'{round(v.get_height(), 2)}%' for k, v in enumerate(c)]
+                    labels = [
+                        f'{round(v.get_height(), 2)}%' for k, v in enumerate(c)]
 
                 ax.bar_label(c, labels=labels, label_type=position)
                 u = u + 1
@@ -729,16 +731,18 @@ class TestScatter(unittest.TestCase):
             execute_coarse = [24, 23, 23, 35, 35]
             others_coarse = [20, 20, 20, 22, 22]
             total_coarse = [94, 82, 81, 87, 90]
-            total_coarse_analysis = pd.DataFrame({'exec_mode':execution_modes,'run_time':total_coarse})
+            total_coarse_analysis = pd.DataFrame(
+                {'exec_mode': execution_modes, 'run_time': total_coarse})
 
             linearizes_full = [327, 345, 349, 107, 135]
             execute_full = [73, 66, 70, 108, 117]
             others_full = [144, 137, 136, 165, 165]
             total_full = [543, 548, 555, 380, 417]
             execution_modes_new = ['sequential', 'threading_10_cores', 'threading_20_cores', 'multiprocessing_10_cores',
-                               'multiprocessing_20_cores','multiproc_10_seq','multiproc_20_seq']
-            total_full_new = [543, 548, 555, 380, 417,327,346]
-            total_full_analysis = pd.DataFrame({'exec_mode': execution_modes_new, 'run_time': total_full_new})
+                                   'multiprocessing_20_cores', 'multiproc_10_seq', 'multiproc_20_seq']
+            total_full_new = [543, 548, 555, 380, 417, 327, 346]
+            total_full_analysis = pd.DataFrame(
+                {'exec_mode': execution_modes_new, 'run_time': total_full_new})
             coarse_analysis = pd.DataFrame(
                 {'exec_mode': execution_modes, 'Linearize': linearizes_coarse, 'Execute': execute_coarse,
                  'Others': others_coarse})
@@ -754,19 +758,20 @@ class TestScatter(unittest.TestCase):
 
             sns.set_style('darkgrid')
             plt.style.use('ggplot')
-            plt.figure(figsize= (12,10))
-            ax = sns.barplot(x='exec_mode', y='run_time', data=total_coarse_analysis, ec='k')
-            ax.set_xticklabels(ax.get_xticklabels(), rotation = 40, ha='right')
+            plt.figure(figsize=(12, 10))
+            ax = sns.barplot(x='exec_mode', y='run_time',
+                             data=total_coarse_analysis, ec='k')
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=40, ha='right')
             ax.set_title("total run time witness coarse")
             for c in ax.containers:
-                for k,v in enumerate(c):
-                    x = v.get_x() + v.get_width()/2
+                for k, v in enumerate(c):
+                    x = v.get_x() + v.get_width() / 2
                     y = v.get_height()
-                    if y <60 :
+                    if y < 60:
                         text = round(y)
                     else:
                         text = f'{round(y//60)} mn {round(y%60)} s'
-                    ax.text(x,y,text,ha='center')
+                    ax.text(x, y, text, ha='center')
             plt.savefig('total_time_coarse.jpg')
             plt.show()
 
@@ -774,18 +779,19 @@ class TestScatter(unittest.TestCase):
             disciplines_list = []
             disciplines_run_time = []
             with open(file_name) as csv_file:
-                csv_reader = csv.reader(csv_file,delimiter = ',')
+                csv_reader = csv.reader(csv_file, delimiter=',')
                 line_count = 0
                 for row in csv_reader:
-                    if line_count==0:
+                    if line_count == 0:
                         for disc in row:
                             disciplines_list.append(disc)
                     else:
                         for time in row:
-                            disciplines_run_time.append(round(float(time),2))
-                    line_count +=1
-            df = pd.DataFrame({'disciplines':disciplines_list,'run_time':disciplines_run_time})
-            df = df.sort_values('run_time',ascending=False)
+                            disciplines_run_time.append(round(float(time), 2))
+                    line_count += 1
+            df = pd.DataFrame({'disciplines': disciplines_list,
+                               'run_time': disciplines_run_time})
+            df = df.sort_values('run_time', ascending=False)
             df = df.head(30)
             disciplines_run_time.sort(reverse=True)
             total_run_time = sum(disciplines_run_time)
@@ -797,7 +803,7 @@ class TestScatter(unittest.TestCase):
             for c in ax.containers:
                 for k, v in enumerate(c):
                     x = disciplines_run_time[k] + 0.005
-                    y = v.get_y() + v.get_width()+0.005
+                    y = v.get_y() + v.get_width() + 0.005
                     text = f'{round ((disciplines_run_time[k]/total_run_time)*100)} %'
                     ax.text(x, y, text)
             plt.savefig('execution_time_per_disciplines_coarse_percent.jpg')
@@ -871,4 +877,4 @@ class TestScatter(unittest.TestCase):
 
 if '__main__' == __name__:
     cls = TestScatter()
-    cls._test_06_witness_perfos_parallel_comparison()
+    cls.test_01_witness_perfos_execute()
