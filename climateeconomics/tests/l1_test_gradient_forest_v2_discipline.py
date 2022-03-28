@@ -24,8 +24,8 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    np.set_printoptions(threshold=np.inf)
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
 
@@ -165,11 +165,18 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            inputs=[
-            f'{self.name}.{Forest.DEFORESTATION_SURFACE}',  f'{self.name}.{Forest.REFORESTATION_INVESTMENT}', f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
-            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-                     f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
-                     f'{self.name}.biomass_dry_df'])
-#                             inputs=[
-#             f'{self.name}.managed_wood_investment', f'{self.name}.unmanaged_wood_investment'],
-#             outputs=[f'{self.name}.biomass_dry_df'])
+                            inputs=[f'{self.name}.{Forest.DEFORESTATION_SURFACE}',
+                                    f'{self.name}.{Forest.REFORESTATION_INVESTMENT}',
+                                    f'{self.name}.managed_wood_investment',
+                                    f'{self.name}.unmanaged_wood_investment'],
+                            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
+                                     f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
+                                     f'{self.name}.biomass_dry_df',
+                                     f'{self.name}.techno_production',
+                                     f'{self.name}.techno_prices',
+                                     f'{self.name}.techno_consumption', # output at zero
+                                     f'{self.name}.techno_consumption_woratio', # output at zero
+                                     f'{self.name}.land_use_required',
+                                     f'{self.name}.CO2_emissions'] # output at zero
+                            )
+
