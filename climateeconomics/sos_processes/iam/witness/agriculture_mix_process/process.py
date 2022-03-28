@@ -54,7 +54,7 @@ class ProcessBuilder(EnergyProcessBuilder):
             if techno_name == "Crop":
                 technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'
             elif techno_name == "Forest":
-                technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v2.forest_disc.ForestDiscipline'
+                technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
             mods_dict[f'{agriculture_mix}.{techno_name}'] = technoDiscPath
             print(technoDiscPath)
 
