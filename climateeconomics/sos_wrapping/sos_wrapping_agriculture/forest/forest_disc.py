@@ -591,27 +591,27 @@ class ForestDiscipline(ClimateEcoDiscipline):
             # chart biomass dry for energy production
             new_chart = TwoAxesInstanciatedChart('years', 'Biomass dry [TWh]',
                                                  chart_name='Break down of biomass dry production for energy', stacked_bar=True)
-            mw_residues_energy = managed_wood_df[
+            mw_residues_energy_twh = managed_wood_df[
                 'residues_production_for_energy (Mt)'] * ForestDiscipline.biomass_cal_val
-            mw_wood_energy = managed_wood_df['wood_production_for_energy (Mt)'] * \
+            mw_wood_energy_twh = managed_wood_df['wood_production_for_energy (Mt)'] * \
                 ForestDiscipline.biomass_cal_val
-            uw_residues_energy = unmanaged_wood_df[
+            uw_residues_energy_twh = unmanaged_wood_df[
                 'residues_production_for_energy (Mt)'] * ForestDiscipline.biomass_cal_val
-            uw_wood_energy = unmanaged_wood_df['wood_production_for_energy (Mt)'] * \
+            uw_wood_energy_twh = unmanaged_wood_df['wood_production_for_energy (Mt)'] * \
                 ForestDiscipline.biomass_cal_val
-            biomass_dry_energy = biomass_dry_df['biomass_dry_for_energy (Mt)'] * \
+            biomass_dry_energy_twh = biomass_dry_df['biomass_dry_for_energy (Mt)'] * \
                 ForestDiscipline.biomass_cal_val
 
             mn_residues_series = InstanciatedSeries(
-                years, mw_residues_energy.tolist(), 'Residues from managed wood', InstanciatedSeries.BAR_DISPLAY)
+                years, mw_residues_energy_twh.tolist(), 'Residues from managed wood', InstanciatedSeries.BAR_DISPLAY)
             mn_wood_series = InstanciatedSeries(
-                years, mw_wood_energy.tolist(), 'Wood from managed wood', InstanciatedSeries.BAR_DISPLAY)
+                years, mw_wood_energy_twh.tolist(), 'Wood from managed wood', InstanciatedSeries.BAR_DISPLAY)
             un_residues_series = InstanciatedSeries(
-                years, uw_residues_energy.tolist(), 'Residues from unmanaged wood', InstanciatedSeries.BAR_DISPLAY)
+                years, uw_residues_energy_twh.tolist(), 'Residues from unmanaged wood', InstanciatedSeries.BAR_DISPLAY)
             un_wood_series = InstanciatedSeries(
-                years, uw_wood_energy.tolist(), 'Wood from unmanaged wood', InstanciatedSeries.BAR_DISPLAY)
+                years, uw_wood_energy_twh.tolist(), 'Wood from unmanaged wood', InstanciatedSeries.BAR_DISPLAY)
             biomass_dry_energy_series = InstanciatedSeries(
-                years, biomass_dry_energy.tolist(), 'Total biomass dry produced', InstanciatedSeries.LINES_DISPLAY)
+                years, biomass_dry_energy_twh.tolist(), 'Total biomass dry produced', InstanciatedSeries.LINES_DISPLAY)
 
             new_chart.add_series(mn_residues_series)
             new_chart.add_series(mn_wood_series)
@@ -623,10 +623,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
             # chart total biomass dry production
             new_chart = TwoAxesInstanciatedChart('years', 'biomass dry [Mt]',
                                                  chart_name='Break down of biomass dry production', stacked_bar=True)
-            residues_industry = managed_wood_df['residues_production_for_industry (Mt)'] + \
-                unmanaged_wood_df['residues_production_for_industry (Mt)']
-            wood_industry = managed_wood_df['wood_production_for_industry (Mt)'] + \
-                unmanaged_wood_df['wood_production_for_industry (Mt)']
+            residues_industry = managed_wood_df['residues_production_for_industry (Mt)'].values + \
+                unmanaged_wood_df['residues_production_for_industry (Mt)'].values
+            wood_industry = managed_wood_df['wood_production_for_industry (Mt)'].values + \
+                unmanaged_wood_df['wood_production_for_industry (Mt)'].values
             biomass_industry = residues_industry + wood_industry
             residues_energy = mw_residues_energy + uw_residues_energy
             wood_energy = mw_wood_energy + uw_wood_energy
