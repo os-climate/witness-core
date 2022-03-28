@@ -29,7 +29,7 @@ import numpy as np
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -196,7 +196,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.invest_level',
                                     ],
                             outputs=[f'{self.name}.total_food_land_surface',
-                                     f'{self.name}.land_demand_df',
-                                     f'{self.name}.biomass_price_df',
-                                     f'{self.name}.biomass_production_df'
+                                     f'{self.name}.land_use_required',
+                                     f'{self.name}.techno_prices',
+                                     f'{self.name}.techno_production'
                                     ])
