@@ -109,7 +109,7 @@ class TestScatter(unittest.TestCase):
         result = '\n'.join([','.join(line.rstrip().split(None, 5))
                             for line in result.split('\n')])
         #
-        with open(join(dirname(__file__), f'witness_coarse_perfos{n_processes}.csv'), 'w+') as f:
+        with open(join(dirname(__file__), f'witness_perfos.csv'), 'w+') as f:
             # f = open(result.rsplit('.')[0] + '.csv', 'w')
             f.write(result)
             f.close()
@@ -164,9 +164,8 @@ class TestScatter(unittest.TestCase):
             #
             os.system(
                 f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
-            #             os.system(
-            # f'git add
-            # ./climateeconomics/tests/utility_tests/witness_perfos.csv')
+            os.system(
+                f'git add ./climateeconomics/tests/utility_tests/witness_perfos.csv')
             os.system(
                 f'git commit -m "Add {fig_name}"')
 
