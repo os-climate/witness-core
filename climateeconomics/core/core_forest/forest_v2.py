@@ -175,8 +175,11 @@ class Forest():
         self.techno_prices[f'{BiomassDry.name}'] = self.biomass_dry_df['price_per_MWh']
 
         # emissions are not computed here because the global emission balance is directly passed to carbon emission model
+        self.CO2_emissions[f'{BiomassDry.name}'] = np.zeros(len(self.years))
 
         # no consumption
+        self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(len(self.years))
+        self.techno_consumption_woratio[f'{BiomassDry.name}'] = np.zeros(len(self.years))
 
     def compute_managed_wood_production(self):
         """
