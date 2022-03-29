@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 import os
 from copy import deepcopy
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+
 from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
 
 class OrderOfMagnitude():
@@ -137,7 +139,13 @@ class Crop():
                             'milk (Gha)': 'milk', 'eggs (Gha)': 'eggs', 'rice and maize (Gha)': 'rice and maize',
                             'potatoes (Gha)': 'potatoes', 'fruits and vegetables (Gha)': 'fruits and vegetables',
                             'other (Gha)': 'other', 'total surface (Gha)': 'total surface'}
-    
+        self.techno_consumption = pd.DataFrame({'years': self.years})
+        self.techno_consumption.index = self.years
+        self.techno_consumption_woratio = pd.DataFrame({'years': self.years})
+        self.techno_consumption_woratio.index = self.years
+        self.CO2_emissions = pd.DataFrame({'years': self.years})
+        self.CO2_emissions.index = self.years
+
     def configure_parameters(self, inputs_dict):
         '''
         Configure with inputs_dict from the discipline
@@ -224,6 +232,13 @@ class Crop():
 
         # compute crop for energy land use
         self.compute_land_use()
+
+        # no emisions
+        self.CO2_emissions[f'{BiomassDry.name}'] = np.zeros(len(self.years))
+
+        # no consumption
+        self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(len(self.years))
+        self.techno_consumption_woratio[f'{BiomassDry.name}'] = np.zeros(len(self.years))
 
     def compute_quantity_of_food(self, population_df, diet_df):
         """
