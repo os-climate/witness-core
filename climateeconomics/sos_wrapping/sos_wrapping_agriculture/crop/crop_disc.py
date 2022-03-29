@@ -157,14 +157,14 @@ class CropDiscipline(ClimateEcoDiscipline):
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
                     'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                             'invest': ('float',  None, True)},
-                    'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+                    'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop'},
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'user_level': 2},
-        'margin': {'type': 'dataframe', 'unit': '%'},
-        'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
+        'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_witness'},
+        'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                             'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                     'transport': ('float',  None, True)},
                             'dataframe_edition_locked': False},
-        'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
+        'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                             'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                         'margin': ('float',  None, True)},
                             'dataframe_edition_locked': False},
@@ -187,9 +187,19 @@ class CropDiscipline(ClimateEcoDiscipline):
         'mix_detailed_prices': {'type': 'dataframe', 'unit': '$/MWh'},
         'mix_detailed_production': {'type': 'dataframe', 'unit': 'TWh'},
         'cost_details': {'type': 'dataframe'},
-        'techno_production': {'type': 'dataframe', 'unit': 'TWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'techno_prices': {'type': 'dataframe', 'unit': '$/MWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'land_use_required': {'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'}
+        'techno_production': {
+            'type': 'dataframe', 'unit': 'TWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'techno_prices': {
+            'type': 'dataframe', 'unit': '$/MWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'techno_consumption': {
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'techno_consumption_woratio': {
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'land_use_required': {
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'CO2_emissions': {
+            'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+            'namespace': 'ns_crop'},
         }
 
     CROP_CHARTS = 'crop and diet charts'
@@ -229,6 +239,9 @@ class CropDiscipline(ClimateEcoDiscipline):
             'techno_production': techno_production,
             'techno_prices': self.crop_model.techno_prices,
             'land_use_required': self.crop_model.land_use_required,
+            'techno_consumption': self.crop_model.techno_consumption, # output at zero
+            'techno_consumption_woratio': self.crop_model.techno_consumption_woratio, # output at zero
+            'CO2_emissions': self.crop_model.CO2_emissions, # output at zero
         }
 
         #-- store outputs

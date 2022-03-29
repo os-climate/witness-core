@@ -44,7 +44,7 @@ class Forest():
     UW_INITIAL_SURFACE = 'unmanaged_wood_initial_surface'
     UW_INVEST_BEFORE_YEAR_START = 'unmanaged_wood_invest_before_year_start'
     UW_INVESTMENT = 'unmanaged_wood_investment'
-    TANSPORT_COST = 'transport_cost'
+    TRANSPORT_COST = 'transport_cost'
     MARGIN = 'margin'
     UNUSED_FOREST = 'initial_unsused_forest_surface'
 
@@ -90,7 +90,7 @@ class Forest():
         self.unmanaged_wood_invest_before_year_start = self.param[
             self.UW_INVEST_BEFORE_YEAR_START]
         self.unmanaged_wood_investment = self.param[self.UW_INVESTMENT]
-        self.transport = self.param[self.TANSPORT_COST]
+        self.transport = self.param[self.TRANSPORT_COST]
         self.margin = self.param[self.MARGIN]
         self.initial_unsused_forest_surface = self.param[self.UNUSED_FOREST]
 

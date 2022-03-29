@@ -157,7 +157,8 @@ class CropTestCase(unittest.TestCase):
                    'ns_functions': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_biomass_dry': f'{name}.{model_name}',
-                   'ns_land_use':f'{name}.{model_name}'}
+                   'ns_land_use':f'{name}.{model_name}',
+                   'ns_crop':f'{name}.{model_name}'}
 
         ee.ns_manager.add_ns_def(ns_dict)
 

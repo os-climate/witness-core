@@ -132,21 +132,15 @@ class ForestDiscipline(ClimateEcoDiscipline):
     # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
     # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
     # 92% of the production come from managed wood. 8% from unmanaged wood
-    # 3.36 : calorific value of wood kwh/kg
-    # 4.356 : calorific value of residues
-    # initial_production = 1.25 * 0.92 * density_per_ha * density * 3.36  # in
-    # Twh
-#     initial_production = 1.25 * 0.92 * \
-#         (residue_density_m3_per_ha * residues_density * 4.356 + wood_density_m3_per_ha *
-# wood_density * 3.36) / years_between_harvest / (1 - recycle_part)  # in
-# Twh
     mw_initial_production = 1.25 * 0.92 * \
         density_per_ha * mean_density * biomass_cal_val / \
         years_between_harvest / (1 - recycle_part)  # in Twh
-
+    uw_initial_surface = 1.25 * 0.92
     uw_initial_production = 1.25 * 0.08 * \
         density_per_ha * mean_density * biomass_cal_val / \
         years_between_harvest / (1 - recycle_part)
+    mw_initial_surface = 1.25 * 0.08
+    initial_unsused_forest_surface = 4 - 1.25
 
     DESC_IN = {Forest.YEAR_START: {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                Forest.YEAR_END: {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -167,34 +161,34 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                Forest.WOOD_TECHNO_DICT: {'type': 'dict', 'unit': '-', 'default': wood_techno_dict, 'namespace': 'ns_forest'},
                Forest.MW_INITIAL_PROD: {'type': 'float', 'unit': 'TWh', 'default': mw_initial_production, 'namespace': 'ns_forest'},
-               Forest.MW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha', 'namespace': 'ns_forest'},
+               Forest.MW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha', 'default': mw_initial_surface, 'namespace': 'ns_forest'},
                Forest.MW_INVEST_BEFORE_YEAR_START: {'type': 'dataframe', 'unit': 'G$',
                                                     'dataframe_descriptor': {'past_years': ('float', None, False),
                                                                              'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                                    'default': invest_before_year_start,
                                                     'namespace': 'ns_forest'},
                Forest.MW_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                       'dataframe_descriptor': {'years': ('float', None, False),
                                                                'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                Forest.UW_INITIAL_PROD: {'type': 'float', 'unit': 'TWh', 'default': uw_initial_production, 'namespace': 'ns_forest'},
-               Forest.UW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha', 'namespace': 'ns_forest'},
+               Forest.UW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha', 'default': uw_initial_surface, 'namespace': 'ns_forest'},
                Forest.UW_INVEST_BEFORE_YEAR_START: {'type': 'dataframe', 'unit': 'G$',
                                                     'dataframe_descriptor': {'past_years': ('float', None, False),
                                                                              'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                                    'default': invest_before_year_start,
                                                     'namespace': 'ns_forest'},
                Forest.UW_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                       'dataframe_descriptor': {'years': ('float', None, False),
                                                                'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-               Forest.TANSPORT_COST: {'type': 'dataframe', 'unit': '$/t',
-                                      'dataframe_descriptor': {'years': ('float', None, False),
-                                                               'transport': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                      'namespace': 'ns_forest'},
-               Forest.MARGIN: {'type': 'dataframe', 'unit': '%',
+               Forest.TRANSPORT_COST: {'type': 'dataframe', 'unit': '$/t', 'namespace': 'ns_witness', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                       'dataframe_descriptor': {'years': ('float', None, False),
+                                                               'transport': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
+               Forest.MARGIN: {'type': 'dataframe', 'unit': '%', 'namespace': 'ns_witness', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                'dataframe_descriptor': {'years': ('float', None, False),
-                                                        'margin': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                               'namespace': 'ns_forest'},
-               Forest.UNUSED_FOREST: {'type': 'float', 'unit': 'Gha', 'namespace': 'ns_forest'},
+                                                        'margin': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
+               Forest.UNUSED_FOREST: {'type': 'float', 'unit': 'Gha', 'default': initial_unsused_forest_surface, 'namespace': 'ns_forest'},
                }
 
     DESC_OUT = {
@@ -219,18 +213,18 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': '-', 'namespace': 'ns_forest'},
 
         'techno_production': {
-            'type': 'dataframe', 'unit': 'Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'TWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'techno_prices': {
-            'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': '$/MWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'techno_consumption': {
-            'type': 'dataframe', 'unit': 'Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'techno_consumption_woratio': {
-            'type': 'dataframe', 'unit': 'Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'land_use_required': {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'CO2_emissions': {
             'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_witness'},
+            'namespace': 'ns_forest'},
 
     }
 

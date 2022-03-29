@@ -162,9 +162,9 @@ class Study(EnergyMixStudyManager):
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
-        self.deforestation_surface = np.linspace(10, 5, year_range)
-        deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": self.deforestation_surface})
+        deforestation_surface = np.linspace(10, 5, year_range)
+        self.deforestation_surface_df = pd.DataFrame(
+            {"years": years, "deforested_surface": deforestation_surface})
 
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
@@ -176,11 +176,10 @@ class Study(EnergyMixStudyManager):
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
                        f'{self.study_name}.{energy_name}.technologies_list': self.technologies_list,
-                       f'{self.study_name}.{energy_name}.Forest.margin': self.margin,
-                       f'{self.study_name}.{energy_name}.Crop.margin': self.margin,
-                       f'{self.study_name}.{energy_name}.transport_cost': self.transport,
-                       f'{self.study_name}.{energy_name}.transport_margin': self.margin,
-                       f'{self.study_name}.{energy_name}.invest_techno_mix': investment_mix,
+                       f'{self.study_name}.margin': self.margin,
+                       f'{self.study_name}.transport_cost': self.transport,
+                       f'{self.study_name}.transport_margin': self.margin,
+                       f'{self.study_name}.invest_techno_mix': investment_mix,
                        }
         if self.main_study:
             values_dict.update(
@@ -189,7 +188,7 @@ class Study(EnergyMixStudyManager):
                  f'{self.study_name}.{energy_name}.Crop.red_to_white_meat': red_to_white_meat,
                  f'{self.study_name}.{energy_name}.Crop.meat_to_vegetables': meat_to_vegetables,
                  f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
-                 f'{self.study_name}.deforestation_surface': self.deforestation_surface,
+                 f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
                  f'{self.study_name}.forest_investment': self.forest_invest_df,
                  f'{self.study_name}.managed_wood_investment': self.forest_invest_df,
                  f'{self.study_name}.unmanaged_wood_investment': self.forest_invest_df,
@@ -206,7 +205,7 @@ class Study(EnergyMixStudyManager):
                                                         'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
                     values_dict[f'{self.study_name}.{energy_name}.{techno}.invest_level'] = invest_level_techno
             else:
-                values_dict[f'{self.study_name}.{energy_name}.invest_level'] = self.invest_level
+                values_dict[f'{self.study_name}.invest_level'] = self.invest_level
         else:
             self.update_dv_arrays()
 
@@ -255,5 +254,5 @@ if '__main__' == __name__:
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()

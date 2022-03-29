@@ -29,7 +29,7 @@ import numpy as np
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -152,7 +152,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_functions': f'{self.name}',
                    'ns_agriculture': f'{self.name}',
                    'ns_biomass_dry': f'{self.name}',
-                   'ns_land_use':f'{self.name}'}
+                   'ns_land_use':f'{self.name}',
+                   'ns_crop':f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -177,7 +178,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.meat_to_vegetables': self.meat_to_vegetables,
                        f'{self.name}.{self.model_name}.{Crop.OTHER_USE_CROP}': self.other,
                        f'{self.name}.invest_level': self.invest_level,
-                       f'{self.name}.{self.model_name}.margin': self.margin,
+                       f'{self.name}.margin': self.margin,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport_cost,
                        f'{self.name}.data_fuel_dict': BiomassDry.data_energy_dict
