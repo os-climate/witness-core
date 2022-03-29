@@ -21,11 +21,11 @@ As forest captures 16 Gt of CO2 per year, reducing forest by 1% results in a def
 - **managed wood initial prod**, which is the production of biomass by managed wood at the first year of the study. Unit is TWh.
 - **managed wood initial surface**, which is the surface dedicated to managed wood, at the first year of the study. Unit is Gha. Default is 1.15Gha, at 2020.
 - **managed wood invest before year start**, which are the investments made into managed wood that impact the first years of the study. Unit is G$.
-- ** managed wood investment**, which are the investment made into managed wood over the years. Unit is G$.
+- **managed wood investment**, which are the investment made into managed wood over the years. Unit is G$.
 - **unmanaged wood initial prod**, which is the production of biomass by unmanaged wood at the first year of the study. Unit is TWh.
 - **unmanaged wood initial surface**, which is the surface dedicated to unmanaged wood, at the first year of the study. Unit is Gha. Default is 1.15Gha, at 2020.
 - **unmanaged wood invest before year start**, which are the investments made into unmanaged wood that impact the first years of the study. Unit is G$.
-- ** unmanaged wood investment**, which are the investment made into unmanaged wood over the years. Unit is G$.
+- **unmanaged wood investment**, which are the investment made into unmanaged wood over the years. Unit is G$.
 - **transport cost**, which is the cost of transport of biomass. Unit is $/ton.
 - **margin**, factor applied to the total cost of biomass to represent the commercial margin.
 - **unused_forest_surface**, the initial surface of forest that is not used for energy or industrial purpose. As 1.25Gha of forest are used and there are 4Gha of forest, the unused surface is 2.75Gha.
@@ -50,7 +50,7 @@ $$Reforestation\_surface = Reforestation\_investment / cost\_per\_ha$$
 
 The cumulative value is the sum of all the forest surface evolution from the first year of the study to the given year of the data.
 
-##Managed wood and unmanaged wood
+## Managed wood and unmanaged wood
 
 Managed wood and unmanaged wood are two way to plant trees and then to harvest biomass such as wood or residues. Managed wood concerns forest that are under management plan and unmanaged wood does not have management plan. This represent in 2020 around of 1.25 Gha, with 92% are managed and 8% non managed.
 
@@ -62,7 +62,7 @@ By adding the surface of forest planting each year, the cumulative surface is co
 
 **Biomass production**
 The quantity of biomass produced by 1 ha is given by
-$$biomasss\_per_ha = quantity\_per\_ha * average\_density / years\_between\_harvest / (1-recycle)$$
+$$biomasss\_per\_ha = quantity\_per\_ha * average\_density / years\_between\_harvest / (1-recycle)$$
 with:
 quantity\_per\_ha : the average quantity of wood per ha in m^3/ha. This is the average between wood and residues.
 average\_density : the average density of biomass in kg/m^3
