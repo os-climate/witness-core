@@ -44,7 +44,7 @@ class MacroEconomics():
         self.init_gross_output = self.param['init_gross_output']
         self.capital_start = self.param['capital_start']
         self.population_df = self.param['population_df']
-        self.population_df.index = self.population_df['years'].values
+#         self.population_df.index = self.population_df['years'].values
         self.productivity_gr_start = self.param['productivity_gr_start']
         self.decline_rate_tfp = self.param['decline_rate_tfp']
         self.depreciation_capital = self.param['depreciation_capital']
@@ -158,7 +158,7 @@ class MacroEconomics():
         self.energy_investment = self.energy_investment.replace(
             [np.inf, -np.inf], np.nan)
 
-        return economics_df.fillna(0.0), energy_investment.fillna(0.0), 
+        return economics_df.fillna(0.0), energy_investment.fillna(0.0),
 
     def compute_productivity_growthrate(self, year):
         '''
@@ -1054,7 +1054,7 @@ class MacroEconomics():
                                     alpha + (1 - c) * (self.economics_df['capital'].values)**beta))
         energy_part = np.maximum(0, self.economics_df['energy_productivity'].values *
                                  (energy_factor * np.maximum(0, self.energy_production['Total production'].values))**gamma)
-        
+
         # first line stays at zero since derivatives of initial values are zero
         for i in range(1, nb_years):
 
@@ -1089,9 +1089,12 @@ class MacroEconomics():
                         deconomic_part = productivity_i * c * pop_factor * alpha * (pop_factor * population) ** (alpha - 1) + dcapital[i, j] * beta * productivity_i * \
                             (1 - c) * (capital_i) ** (beta - 1)
                     else:
-                        deconomic_part = dcapital[i, j] * beta * productivity_i * (1 - c) * (capital_i) ** (beta - 1) 
+                        deconomic_part = dcapital[i, j] * beta * \
+                            productivity_i * (1 - c) * \
+                            (capital_i) ** (beta - 1)
 
-                dgross_output[i, j] = theta * (b * deconomic_part) * (b * economic_part[i] + (1 - b) * energy_part[i]) ** (theta - 1)
+                dgross_output[i, j] = theta * (b * deconomic_part) * (
+                    b * economic_part[i] + (1 - b) * energy_part[i]) ** (theta - 1)
 
                 if self.damage_to_productivity == True:
                     dnet_output[i, j] = (
@@ -1099,7 +1102,8 @@ class MacroEconomics():
                 else:
                     dnet_output[i, j] = (1 - damefrac_i) * dgross_output[i, j]
 
-                denergy_investment[i, j] = self.share_energy_investment[years[i]] * dnet_output[i, j]
+                denergy_investment[i, j] = self.share_energy_investment[years[i]
+                                                                        ] * dnet_output[i, j]
 
                 # Saturation of renewable invest at n * invest wo tax with n ->
                 # co2_invest_limit entry parameter
@@ -1109,7 +1113,7 @@ class MacroEconomics():
                         + self.co2_invest_limit * self.share_energy_investment[years[i]] * dnet_output[i, j] / 10 * np.exp(- self.co2_invest_limit * energy_investment_wo_tax / ren_investments) \
                         + self.co2_invest_limit * self.share_energy_investment[years[i]] * net_output / 10 * (-1) * self.co2_invest_limit * self.share_energy_investment[years[i]] * dnet_output[i, j] / ren_investments \
                         * np.exp(- self.co2_invest_limit * energy_investment_wo_tax / ren_investments)
-                        
+
                 dinvestment[i, j] = denergy_investment[i, j] + \
                     self.share_n_energy_investment[years[i]
                                                    ] * dnet_output[i, j]
@@ -1452,9 +1456,11 @@ class MacroEconomics():
             if consumption_pc > self.lo_per_capita_conso:
                 for j in range(0, i + 1):
                     if i == j:
-                        dconsumption_pc[i, j] = (dconsumption[i, j] * population - consumption) / (population * population) * 1000
+                        dconsumption_pc[i, j] = (
+                            dconsumption[i, j] * population - consumption) / (population * population) * 1000
                     else:
-                        dconsumption_pc[i, j] = dconsumption[i, j] / population * 1000
+                        dconsumption_pc[i, j] = dconsumption[i,
+                                                             j] / population * 1000
         return dconsumption_pc
 
     def compute_dinterest_rate(self, dconsumption):
@@ -1497,28 +1503,35 @@ class MacroEconomics():
 
         damage_to_productivity = self.damage_to_productivity
         frac_damage_prod = self.frac_damage_prod
-        
-        for i in range(0, nb_years ):
+
+        for i in range(0, nb_years):
 
             for j in range(0, i + 1):
                 damefrac = self.damefrac.at[years[i], 'damage_frac_output']
-                gross_output_ter = self.economics_df.at[years[i], 'gross_output']
+                gross_output_ter = self.economics_df.at[years[i],
+                                                        'gross_output']
 
                 if damage_to_productivity == True:
-                    damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
+                    damage = 1 - ((1 - damefrac) /
+                                  (1 - self.frac_damage_prod * damefrac))
                     # u = 1 - damefrac
                     # v = 1 - self.frac_damage_prod * damefrac
-                    d_damage = - ((- 1  * (1 - self.frac_damage_prod * damefrac) - (1 - damefrac) * (- frac_damage_prod)) / ((1 - self.frac_damage_prod * damefrac) ** 2))
+                    d_damage = - ((- 1 * (1 - self.frac_damage_prod * damefrac) - (1 - damefrac)
+                                   * (- frac_damage_prod)) / ((1 - self.frac_damage_prod * damefrac) ** 2))
 
                     if i == j:
-                        d_output_net_of_d[i, j] = (1 - damage) * dgross_output[i, j] - d_damage * gross_output_ter
+                        d_output_net_of_d[i, j] = (
+                            1 - damage) * dgross_output[i, j] - d_damage * gross_output_ter
                     else:
-                        d_output_net_of_d[i, j] = dgross_output[i, j] - damage * dgross_output[i, j]
+                        d_output_net_of_d[i, j] = dgross_output[i,
+                                                                j] - damage * dgross_output[i, j]
                 else:
-                    if i == j:                        
-                        d_output_net_of_d[i, j] = dgross_output[i, j] - gross_output_ter - dgross_output[i, j] * damefrac
+                    if i == j:
+                        d_output_net_of_d[i, j] = dgross_output[i, j] - \
+                            gross_output_ter - dgross_output[i, j] * damefrac
                     else:
-                        d_output_net_of_d[i, j] = dgross_output[i, j] - dgross_output[i, j] * damefrac
+                        d_output_net_of_d[i, j] = dgross_output[i,
+                                                                j] - dgross_output[i, j] * damefrac
 
         return d_output_net_of_d
 
@@ -1537,18 +1550,22 @@ class MacroEconomics():
 
         damage_to_productivity = self.damage_to_productivity
         frac_damage_prod = self.frac_damage_prod
-        
-        for i in range(0, nb_years ):
+
+        for i in range(0, nb_years):
 
             for j in range(0, i + 1):
                 damefrac = self.damefrac.at[years[i], 'damage_frac_output']
-                gross_output_ter = self.economics_df.at[years[i], 'gross_output']
+                gross_output_ter = self.economics_df.at[years[i],
+                                                        'gross_output']
 
                 if damage_to_productivity == True:
-                    damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
-                    d_output_net_of_d[i, j] = dgross_output[i, j] * (1 - damage)
+                    damage = 1 - ((1 - damefrac) /
+                                  (1 - self.frac_damage_prod * damefrac))
+                    d_output_net_of_d[i,
+                                      j] = dgross_output[i, j] * (1 - damage)
                 else:
-                    d_output_net_of_d[i, j] = dgross_output[i, j] * (1 - damefrac)
+                    d_output_net_of_d[i, j] = dgross_output[i,
+                                                            j] * (1 - damefrac)
 
         return d_output_net_of_d
 
@@ -1626,7 +1643,7 @@ class MacroEconomics():
             self.compute_output_growth(year)
         self.economics_df = self.economics_df.replace(
             [np.inf, -np.inf], np.nan)
-        # Compute consumption per capita constraint 
+        # Compute consumption per capita constraint
         self.compute_comsumption_pc_constraint()
         # Compute global investment constraint
         self.global_investment_constraint = deepcopy(
@@ -1637,4 +1654,5 @@ class MacroEconomics():
             self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0
 
         return self.economics_df.fillna(0.0), self.energy_investment.fillna(0.0), self.global_investment_constraint, \
-            self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint
+            self.energy_investment_wo_renewable.fillna(
+                0.0), self.pc_consumption_constraint
