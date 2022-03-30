@@ -243,13 +243,13 @@ class DataStudy():
         # -------------------------------------------------
         # CO2 ppm constraints
         list_var.extend(
-            ['rockstrom_limit_constraint', 'minimum_ppm_constraint'])
-        list_parent.extend(['CO2 ppm', 'CO2 ppm'])
-        list_ns.extend(['ns_functions', 'ns_functions'])
-        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        list_weight.extend([0.0, -1.0])
+            ['rockstrom_limit_constraint', 'minimum_ppm_constraint', 'lost_capital_cons'])
+        list_parent.extend(['CO2 ppm', 'CO2 ppm', ''])
+        list_ns.extend(['ns_functions', 'ns_functions', 'ns_functions'])
+        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+        list_weight.extend([0.0, -1.0, 0.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
+            [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_SUM])
         # -------------------------------------------------
         # pc_consumption_constraint
         list_var.append('pc_consumption_constraint')
