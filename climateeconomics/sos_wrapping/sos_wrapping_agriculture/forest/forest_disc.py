@@ -128,7 +128,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
     # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
     invest_before_year_start = pd.DataFrame(
-        {'past_years': np.arange(-construction_delay, 0), 'invest': [1.135081, 1.135081, 1.135081]})
+            {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
     # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
     # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
     # 92% of the production come from managed wood. 8% from unmanaged wood
