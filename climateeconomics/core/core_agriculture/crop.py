@@ -234,7 +234,7 @@ class Crop():
         self.compute_land_use()
 
         # no emisions
-        self.CO2_emissions[f'{BiomassDry.name}'] = np.zeros(len(self.years))
+        self.CO2_emissions['Crop'] = np.zeros(len(self.years))
 
         # no consumption
         self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(len(self.years))
@@ -520,7 +520,13 @@ class Crop():
                                                                    <= self.cost_details['years'].max()]['margin'].values / 100.0
         # Total cost (t)
         self.cost_details['Total ($/t)'] = self.cost_details['Total ($/MWh)'] * self.data_fuel_dict['calorific_value']
-        self.techno_prices['Crop for Energy ($/MWh)'] = self.cost_details['Total ($/MWh)']
+        self.techno_prices['Crop'] = self.cost_details['Total ($/MWh)']
+
+        if 'CO2_taxes_factory' in self.cost_details:
+            self.techno_prices['Crop_wotaxes'] = self.cost_details['Total ($/MWh)'] - \
+                self.cost_details['CO2_taxes_factory']
+        else:
+            self.techno_prices['Crop_wotaxes'] = self.cost_details['Total ($/MWh)']
 
         price_crop = self.cost_details['Total ($/t)'] / \
             (1 + self.techno_infos_dict['residue_density_percentage'] *

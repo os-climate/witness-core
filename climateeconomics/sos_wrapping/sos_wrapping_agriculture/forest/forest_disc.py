@@ -370,9 +370,14 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(('biomass_dry_df', 'price_per_MWh'), ('unmanaged_wood_investment', 'investment'), d_biomass_price_d_uw_invest)
 
         # d techno_prices d managed wood invest
-        self.set_partial_derivative_for_other_types(('techno_prices', 'biomass_dry'), ('managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), ('managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
         # d techno_prices d unmanaged wood invest
-        self.set_partial_derivative_for_other_types(('techno_prices', 'biomass_dry'), ('unmanaged_wood_investment', 'investment'), d_biomass_price_d_uw_invest)
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), ('unmanaged_wood_investment', 'investment'), d_biomass_price_d_uw_invest)
+
+        # d techno_prices d managed wood invest
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), ('managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
+        # d techno_prices d unmanaged wood invest
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), ('unmanaged_wood_investment', 'investment'), d_biomass_price_d_uw_invest)
 
     def get_chart_filter_list(self):
 

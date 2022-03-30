@@ -169,9 +169,25 @@ class Study(EnergyMixStudyManager):
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
-
+        self.forest_invest_df = pd.DataFrame(
+            {"years": years, "forest_investment": forest_invest})
+        mw_invest = np.linspace(1, 4, year_range)
+        uw_invest = np.linspace(0, 1, year_range)
+        self.mw_invest_df = pd.DataFrame(
+            {"years": years, "investment": mw_invest})
+        self.uw_invest_df = pd.DataFrame(
+            {"years": years, "investment": uw_invest})
         # define invest mix
         investment_mix = self.get_investments()
+
+        co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
+        co2_taxes = [14.86, 17.22, 20.27,
+                     29.01,  34.05,   39.08,  44.69,   50.29]
+        func = sc.interp1d(co2_taxes_year, co2_taxes,
+                           kind='linear', fill_value='extrapolate')
+
+        self.co2_taxes = pd.DataFrame(
+            {'years': years, 'CO2_tax': func(years)})
 
         values_dict = {f'{self.study_name}.year_start': self.year_start,
                        f'{self.study_name}.year_end': self.year_end,
@@ -180,18 +196,19 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.transport_cost': self.transport,
                        f'{self.study_name}.transport_margin': self.margin,
                        f'{self.study_name}.invest_techno_mix': investment_mix,
+                       f'{self.study_name}.CO2_taxes': self.co2_taxes,
                        }
         if self.main_study:
             values_dict.update(
                 {f'{self.study_name}.{energy_name}.Crop.land_surface_for_food_df': land_surface_for_food,
                  f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
-                 f'{self.study_name}.{energy_name}.Crop.red_to_white_meat': red_to_white_meat,
-                 f'{self.study_name}.{energy_name}.Crop.meat_to_vegetables': meat_to_vegetables,
+                 f'{self.study_name}.{energy_name}.red_to_white_meat': red_to_white_meat,
+                 f'{self.study_name}.{energy_name}.meat_to_vegetables': meat_to_vegetables,
                  f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
                  f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
                  f'{self.study_name}.forest_investment': self.forest_invest_df,
-                 f'{self.study_name}.managed_wood_investment': self.forest_invest_df,
-                 f'{self.study_name}.unmanaged_wood_investment': self.forest_invest_df,
+                 f'{self.study_name}.managed_wood_investment': self.mw_invest_df,
+                 f'{self.study_name}.unmanaged_wood_investment': self.uw_invest_df,
                  f'{self.study_name}.population_df': population_df,
                  f'{self.study_name}.temperature_df': temperature_df,
                  })
@@ -254,5 +271,5 @@ if '__main__' == __name__:
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()

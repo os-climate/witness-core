@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.stream_type.stream_disc import StreamDiscipline
+from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
-class AgricultureMixDiscipline(StreamDiscipline):
+class AgricultureMixDiscipline(EnergyDiscipline):
 
     # ontology information
     _ontology_data = {
@@ -38,17 +38,17 @@ class AgricultureMixDiscipline(StreamDiscipline):
 
     DESC_IN = {'technologies_list': {'type': 'string_list',
                                      'possible_values': ['Crop', 'Forest'],
-                                     'visibility': StreamDiscipline.SHARED_VISIBILITY,
+                                     'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_agriculture',
                                      'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': StreamDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict},
                }
-    DESC_IN.update(StreamDiscipline.DESC_IN)
+    DESC_IN.update(EnergyDiscipline.DESC_IN)
 
     energy_name = BiomassDry.name
 
-    DESC_OUT = StreamDiscipline.DESC_OUT  # -- add specific techno outputs to this
+    DESC_OUT = EnergyDiscipline.DESC_OUT  # -- add specific techno outputs to this
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -82,7 +82,7 @@ class AgricultureMixDiscipline(StreamDiscipline):
                 year_list, emission_list.tolist(), technology, 'bar')
             new_chart.series.append(serie)
         serie = InstanciatedSeries(
-            year_list, co2_per_use.tolist(), 'CO2 from use of brut production', 'bar')
+            year_list, co2_per_use['CO2_per_use'].tolist(), 'CO2 from use of brut production', 'bar')
         new_chart.series.append(serie)
         new_charts.append(new_chart)
 
