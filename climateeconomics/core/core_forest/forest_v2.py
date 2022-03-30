@@ -172,10 +172,16 @@ class Forest():
         # techno production in TWh
         self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] = self.biomass_dry_df['biomass_dry_for_energy (Mt)'] * self.biomass_dry_calorific_value
         # price in $/MWh
-        self.techno_prices[f'{BiomassDry.name}'] = self.biomass_dry_df['price_per_MWh']
+        self.techno_prices['Forest'] = self.biomass_dry_df['price_per_MWh']
+
+        if 'CO2_taxes_factory' in self.biomass_dry_df:
+            self.techno_prices['Forest_wotaxes'] = self.biomass_dry_df['price_per_MWh'] - \
+                self.biomass_dry_df['CO2_taxes_factory']
+        else:
+            self.techno_prices['Forest_wotaxes'] = self.biomass_dry_df['price_per_MWh']
 
         # emissions are not computed here because the global emission balance is directly passed to carbon emission model
-        self.CO2_emissions[f'{BiomassDry.name}'] = np.zeros(len(self.years))
+        self.CO2_emissions['Forest'] = np.zeros(len(self.years))
 
         # no consumption
         self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(len(self.years))
