@@ -62,7 +62,15 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     year_range = default_year_end - default_year_start + 1
     default_red_to_white_meat = np.linspace(0, 50, year_range)
     default_meat_to_vegetables = np.linspace(0, 25, year_range)
-
+    default_other_use = np.linspace(0.102, 0.102, year_range)
+    default_diet_df = pd.DataFrame({'red meat': [11.02],
+                                    'white meat': [31.11],
+                                    'milk': [79.27],
+                                    'eggs': [9.68],
+                                    'rice and maize': [97.76],
+                                    'potatoes': [32.93],
+                                    'fruits and vegetables': [217.62],
+                                    })
     DESC_IN = {'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
@@ -70,9 +78,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                  'dataframe_descriptor': {'years': ('float', None, False),
                                                           'population': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-               'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year',
-                           'dataframe_descriptor': {'years': ('float', None, False),
-                                                    'red meat': ('float', [0, 1e9], True), 'white meat': ('float', [0, 1e9], True), 'milkt': ('float', [0, 1e9], True),
+               'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
+                           'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True), 'white meat': ('float', [0, 1e9], True), 'milk': ('float', [0, 1e9], True),
                                                     'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),
                                                     'fruits and vegetables': ('float', [0, 1e9], True)},
                            'dataframe_edition_locked': False, 'namespace': 'ns_agriculture'},
@@ -80,8 +87,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                'kg_to_m2_dict': {'type': 'dict', 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
                'red_to_white_meat': {'type': 'array', 'default': default_red_to_white_meat, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
                'meat_to_vegetables': {'type': 'array', 'default': default_meat_to_vegetables, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
-               'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_agriculture'},
-               'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+               'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'default': default_other_use, 'namespace': 'ns_agriculture'},
+               'temperature_df': {'type': 'dataframe', 'unit': 'degree Celsius', 'visibility': 'Shared', 'namespace': 'ns_witness'},
                'param_a': {'type': 'float', 'default': - 0.00833, 'user_level': 3},
                'param_b': {'type': 'float', 'default': - 0.04167, 'user_level': 3}
                }
@@ -102,7 +109,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
 
-        self.agriculture_model = Agriculture(param )
+        self.agriculture_model = Agriculture(param)
 
     def run(self):
 
@@ -161,8 +168,10 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
 
-        d_surface_d_red_to_white = model.d_surface_d_red_to_white(population_df)
-        d_surface_d_meat_to_vegetable = model.d_surface_d_meat_to_vegetable(population_df)
+        d_surface_d_red_to_white = model.d_surface_d_red_to_white(
+            population_df)
+        d_surface_d_meat_to_vegetable = model.d_surface_d_meat_to_vegetable(
+            population_df)
 
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('red_to_white_meat', 'red_to_white_meat'), d_surface_d_red_to_white)
