@@ -831,13 +831,12 @@ class MacroEconomics():
             input: gradients of net_output, investment
             output: gradients of consumption
         """
-        years = self.years_range
-        nb_years = len(years)
+        consumption = self.economics_df['consumption'].values
         dconsumption = dnet_output - dinvestment 
-        for i in range(0, nb_years):
-            consumption = self.economics_df.at[years[i], 'consumption']
-            if consumption == self.lo_conso:
-                dconsumption[i] = np.zeros(nb_years)
+        #find index where lower bound reached
+        theyears = np.where(consumption == self.lo_conso)[0]
+        #Then for these years derivative = 0       
+        dconsumption[theyears] = 0      
         return dconsumption
 
     def compute_dconsumption_pc(self, dconsumption):
@@ -846,21 +845,18 @@ class MacroEconomics():
             input: gradients of consumption
             output: gradients of pc_consumption
         """
-        years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
-        nb_years = len(years)
         # derivative matrix initialization
-        dconsumption_pc = np.zeros((nb_years, nb_years))
-        # first line stays at zero since derivatives of initial values are zero
-        for i in range(0, nb_years):
-            consumption_pc = self.economics_df.at[years[i], 'pc_consumption']
-            if consumption_pc > self.lo_per_capita_conso:
-                for j in range(0, i + 1):
-                    dconsumption_pc[i, j] = dconsumption[i, j] / \
-                        self.population_df.at[years[i], 'population'] * 1000
+        population = self.population_df['population'].values
+        pc_consumption = self.economics_df['pc_consumption'].values
+        #compute derivative: conso_pc = conso / population*1000
+        dconso_pc_dconso = np.diag(1/population*1000)
+        dconsumption_pc = np.dot(dconso_pc_dconso, dconsumption)
+        #find index where lower bound reached
+        theyears = np.where(pc_consumption == self.lo_per_capita_conso)[0]
+        #Then for that years derivative = 0        
+        dconsumption_pc[theyears] = 0  
 
         return dconsumption_pc
-
 
     def compute_dconsumption_pc_dpopulation(self):
         """gradient computation for pc_consumption wrt population
@@ -871,23 +867,24 @@ class MacroEconomics():
         self.economics_df.loc[year, 'pc_consumption'] = max(
             consumption_pc, self.lo_per_capita_conso)
         """
-        years = self.years_range
-        nb_years = len(years)
-        dconsumption_pc = np.zeros((nb_years, nb_years))
-        for i in range(0, nb_years):
-            consumption_pc = self.economics_df.at[years[i], 'pc_consumption']
-            consumption = self.economics_df.at[years[i], 'consumption']
-            pop = self.population_df.at[years[i], 'population']
-            if consumption_pc > self.lo_per_capita_conso:
-                dconsumption_pc[i,i] = - consumption*1000/ pop**2 
+        nb_years = len(self.years_range)
+        #inputs
+        consumption_pc = self.economics_df['pc_consumption'].values
+        consumption = self.economics_df['consumption'].values
+        pop = self.population_df['population'].values
+        #compute
+        dconsumption_pc = np.identity(nb_years) * (- consumption*1000/ pop**2)
+        #find index where lower bound reached
+        theyears = np.where(consumption_pc == self.lo_per_capita_conso)[0]
+        #Then for that years derivative = 0       
+        dconsumption_pc[theyears] = 0  
         return dconsumption_pc
-    
+
     def dgross_output_ddamage(self, dproductivity):
         years = self.years_range
         nb_years = len(years)
         alpha = self.output_alpha
         gamma = self.output_gamma
-        doutput = np.identity(nb_years)
         doutput_dprod = np.identity(nb_years)
         working_pop = self.workforce_df['workforce'].values
         capital_u = self.usable_capital_df['usable_capital'].values
