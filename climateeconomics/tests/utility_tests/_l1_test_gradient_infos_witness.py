@@ -49,7 +49,6 @@ class WitnessFullGradient(AbstractJacobianUnittest):
         repo = 'climateeconomics.sos_processes.iam.witness'
         chain_builders = self.ee.factory.get_builder_from_process(
             repo, 'witness_optim_sub_process')
-
         ns_dict = {'ns_functions': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    'ns_public': f'{self.ee.study_name}', }
@@ -69,11 +68,15 @@ class WitnessFullGradient(AbstractJacobianUnittest):
 
         values_dict['Test.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
         #values_dict['Test.WITNESS_Eval.max_mda_iter'] = 1
+        values_dict['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix'] = 81 * [30.]
+        self.ee.load_study_from_input_dict(values_dict)
+
+
 
         self.ee.load_study_from_input_dict(values_dict)
 
         output_full_names = ['Test.WITNESS_Eval.WITNESS.invest_objective_sum']
-        input_full_names = ['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix']
+        input_full_names = ['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix'] #['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix']
 
         disc = self.ee.root_process.sos_disciplines[0]
         disc.add_differentiated_inputs(input_full_names)
