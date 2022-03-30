@@ -66,7 +66,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'damage_df': {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
     }
 
@@ -75,6 +75,23 @@ class DamageDiscipline(ClimateEcoDiscipline):
     def init_execution(self):
         in_dict = self.get_sosdisc_inputs()
         self.model = DamageModel(in_dict)
+
+    def setup_sos_disciplines(self):
+
+        self.update_default_with_years()
+
+    def update_default_with_years(self):
+        '''
+        Update all default dataframes with years 
+        '''
+        if 'year_start' in self._data_in:
+            year_start, year_end = self.get_sosdisc_inputs(
+                ['year_start', 'year_end'])
+            years = np.arange(year_start, year_end + 1)
+            damage_constraint_factor_default = np.concatenate(
+                (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
+            self.set_dynamic_default_values(
+                {'damage_constraint_factor': damage_constraint_factor_default})
 
     def run(self):
         ''' model execution '''
