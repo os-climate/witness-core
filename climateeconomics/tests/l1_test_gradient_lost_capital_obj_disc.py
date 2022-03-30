@@ -106,5 +106,5 @@ class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CCUS.carbon_capture.CC_tech.lost_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.lost_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.lost_capital'],
-                            outputs=[f'{self.name}.lost_capital_objective'],
+                            outputs=[f'{self.name}.lost_capital_objective', f'{self.name}.lost_capital_cons'],
                             derr_approx='complex_step')
