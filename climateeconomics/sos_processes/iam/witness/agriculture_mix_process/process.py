@@ -38,24 +38,30 @@ class ProcessBuilder(EnergyProcessBuilder):
         ns_study = self.ee.study_name
 
         biomass_dry_name = BiomassDry.name
-        agriculture_mix = 'AgricultureMix'
-        ns_dict = {'ns_agriculture': f'{ns_study}.{agriculture_mix}',
-                   'ns_energy': f'{ns_study}.{agriculture_mix}',
+        ns_agriculture_mix = 'AgricultureMix'
+        ns_crop = 'Crop'
+        ns_forest = 'Forest'
+        ns_dict = {'ns_agriculture': f'{ns_study}.{ns_agriculture_mix}',
+                   'ns_energy': f'{ns_study}.{ns_agriculture_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
                    'ns_witness': f'{ns_study}',
-                   'ns_resource': f'{ns_study}.{agriculture_mix}'}
+                   'ns_biomass_dry': f'{ns_study}',
+                   'ns_land_use': f'{ns_study}',
+                   'ns_crop': f'{ns_study}.{ns_agriculture_mix}.{ns_crop}',
+                   'ns_forest': f'{ns_study}.{ns_agriculture_mix}.{ns_forest}'}
+
         mods_dict = {}
         agricultureDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture'
-        mods_dict[f'{agriculture_mix}'] = agricultureDiscPath + '.agriculture_mix_disc.AgricultureMixDiscipline'
+        mods_dict[f'{ns_agriculture_mix}'] = agricultureDiscPath + '.agriculture_mix_disc.AgricultureMixDiscipline'
         for techno_name in self.techno_list:
             #technoDiscPath = self.get_techno_disc_path(techno_name,agricultureDiscPath)
             # fix just while crop and forest are not in the right folder
             if techno_name == "Crop":
                 technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'
             elif techno_name == "Forest":
-                technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v2.forest_disc.ForestDiscipline'
-            mods_dict[f'{agriculture_mix}.{techno_name}'] = technoDiscPath
+                technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
+            mods_dict[f'{ns_agriculture_mix}.{techno_name}'] = technoDiscPath
             print(technoDiscPath)
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
