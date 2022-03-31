@@ -133,9 +133,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
             {"years": years, "transport": transport})
-        margin = np.linspace(1.1, 1.1, year_range)
-        self.margin_df = pd.DataFrame(
-            {"years": years, "margin": margin})
+        self.margin = pd.DataFrame(
+            {'years': years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_unsused_forest_surface = 4 - 1.25
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
@@ -157,7 +156,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.unmanaged_wood_investment': self.mw_invest_df,
                        f'{self.name}.transport_cost': self.transport_df,
-                       f'{self.name}.margin': self.margin_df,
+                       f'{self.name}.margin': self.margin,
                        f'{self.name}.{model_name}.initial_unsused_forest_surface': self.initial_unsused_forest_surface,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)

@@ -446,7 +446,7 @@ class Forest():
 
         self.biomass_dry_df[f'{techno_name}_price_per_ton'] = (
             self.biomass_dry_df[f'{techno_name}_capex ($/t)'] +
-            self.biomass_dry_df[f'{techno_name}_transport ($/t)']) * self.margin['margin']
+            self.biomass_dry_df[f'{techno_name}_transport ($/t)']) * self.margin['margin'] / 100.0
 
     def compute_crf(self):
         """
