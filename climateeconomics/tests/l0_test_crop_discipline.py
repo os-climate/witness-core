@@ -157,7 +157,8 @@ class CropTestCase(unittest.TestCase):
                    'ns_functions': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_biomass_dry': f'{name}.{model_name}',
-                   'ns_land_use':f'{name}.{model_name}'}
+                   'ns_land_use':f'{name}.{model_name}',
+                   'ns_crop':f'{name}.{model_name}'}
 
         ee.ns_manager.add_ns_def(ns_dict)
 
@@ -196,5 +197,5 @@ class CropTestCase(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
 
-        # for graph in graph_list:
-        #    graph.to_plotly().show()
+        for graph in graph_list:
+           graph.to_plotly().show()
