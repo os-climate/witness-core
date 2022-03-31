@@ -15,20 +15,15 @@ limitations under the License.
 '''
 
 import climateeconomics.tests as jacobian_target
-
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 if __name__ == '__main__':
 
     pkl_dir = AbstractJacobianUnittest.PICKLE_DIRECTORY
-    directories = [f'{pkl_dir}/witness_full',
-                   f'{pkl_dir}/witness_full_dev',
-                   f'{pkl_dir}/witness_coarse',
-                   f'{pkl_dir}/witness_coarse_dev',
+    directories = [
                    f'{pkl_dir}/witness_min_tech',
-                   f'{pkl_dir}/witness_min_tech_dev',
                    ]
 
     AbstractJacobianUnittest.launch_all_pickle_generation(
-        jacobian_target, '_l2_test_gradient_witness.py', directories=directories)
+        jacobian_target, '_l2_test_gradient_witness_mintech_val.py', directories=directories)

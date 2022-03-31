@@ -121,7 +121,7 @@ class Forest():
         self.biomass_dry_df = pd.DataFrame({'years': self.years})
         self.biomass_dry_df.index = self.years
 
-        #output dataframes:
+        # output dataframes:
         self.techno_production = pd.DataFrame({'years': self.years})
         self.techno_production.index = self.years
         self.techno_prices = pd.DataFrame({'years': self.years})
@@ -134,6 +134,8 @@ class Forest():
         self.land_use_required.index = self.years
         self.CO2_emissions = pd.DataFrame({'years': self.years})
         self.CO2_emissions.index = self.years
+        self.lost_capital = pd.DataFrame({'years': self.years})
+        self.lost_capital.index = self.years
 
     def compute(self, in_dict):
         """
@@ -176,7 +178,8 @@ class Forest():
         self.sumup_global_surface_data()
         # check deforestation limit
         self.check_deforestation_limit()
-
+        # compute cpaital and lost capital
+        self.compute_lost_capital()
         # sum up global CO2 data
         self.compute_global_CO2_production()
 
@@ -186,7 +189,8 @@ class Forest():
         # compute outputs:
         self.land_use_required['forest (Gha)'] = self.forest_surface_df['global_forest_surface']
         # techno production in TWh
-        self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] = self.biomass_dry_df['biomass_dry_for_energy (Mt)'] * self.biomass_dry_calorific_value
+        self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] = self.biomass_dry_df[
+            'biomass_dry_for_energy (Mt)'] * self.biomass_dry_calorific_value
         # price in $/MWh
         self.techno_prices['Forest'] = self.biomass_dry_df['price_per_MWh']
 
@@ -196,12 +200,15 @@ class Forest():
         else:
             self.techno_prices['Forest_wotaxes'] = self.biomass_dry_df['price_per_MWh']
 
-        # emissions are not computed here because the global emission balance is directly passed to carbon emission model
+        # emissions are not computed here because the global emission balance
+        # is directly passed to carbon emission model
         self.CO2_emissions['Forest'] = np.zeros(len(self.years))
 
         # no consumption
-        self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(len(self.years))
-        self.techno_consumption_woratio[f'{BiomassDry.name}'] = np.zeros(len(self.years))
+        self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(
+            len(self.years))
+        self.techno_consumption_woratio[f'{BiomassDry.name}'] = np.zeros(
+            len(self.years))
 
     def compute_managed_wood_production(self):
         """
@@ -332,7 +339,6 @@ class Forest():
         self.forest_surface_df['reforestation_surface'] = np.cumsum(
             self.forest_surface_df['delta_reforestation_surface'])
 
-
     def sumup_global_surface_data(self):
         """
         managed wood and unmanaged wood impact forest_surface_df
@@ -344,8 +350,6 @@ class Forest():
             self.unmanaged_wood_df['cumulative_surface'] + \
             self.managed_wood_df['cumulative_surface'] + \
             self.initial_unsused_forest_surface
-
-
 
     def check_deforestation_limit(self):
         """
@@ -364,7 +368,7 @@ class Forest():
                                                'delta_global_forest_surface']
                 self.forest_surface_df.loc[year,
                                            'global_forest_surface'] = -self.limit_deforestation_surface / 1000
-                self.forest_surface_df.loc[year,'deforestation_surface'] = - self.forest_surface_df.loc[year, 'reforestation_surface'] - \
+                self.forest_surface_df.loc[year, 'deforestation_surface'] = - self.forest_surface_df.loc[year, 'reforestation_surface'] - \
                     self.managed_wood_df.loc[year, 'cumulative_surface'] - self.unmanaged_wood_df.loc[year, 'cumulative_surface'] - \
                     self.limit_deforestation_surface / 1000
 
@@ -423,7 +427,6 @@ class Forest():
         self.biomass_dry_df['price_per_MWh'] = self.biomass_dry_df['price_per_ton'] / \
             self.biomass_dry_calorific_value
 
-
     def compute_price(self, techno_name):
         """
         compute price as in techno_type
@@ -446,7 +449,7 @@ class Forest():
 
         self.biomass_dry_df[f'{techno_name}_price_per_ton'] = (
             self.biomass_dry_df[f'{techno_name}_capex ($/t)'] +
-            self.biomass_dry_df[f'{techno_name}_transport ($/t)']) * self.margin['margin']
+            self.biomass_dry_df[f'{techno_name}_transport ($/t)']) * self.margin['margin'] / 100.0
 
     def compute_crf(self):
         """
@@ -458,6 +461,31 @@ class Forest():
               ((1.0 + wacc) ** 100 - 1.0)
 
         return crf
+
+    def compute_lost_capital(self):
+        """
+        Compute the loss of capital due to reforestation and deforestation activities that have opposite effect but cost money.
+        To deforest and to reforest only for surface expanse result as a lost of capital.
+
+        lost_capital = min(reforest_surface, deforest_surface) * cost_per_ha
+        cost_per_ha is in $/ha
+        reforest_surface and deforest_surface are in Gha
+        lost_capital is in G$ 
+        """
+        self.lost_capital['lost_capital_G$'] = 0
+        self.lost_capital['capital_G$'] = 0
+        # abs() needed because deforestation surface is negative
+        for element in self.years:
+            if abs(self.forest_surface_df.at[element, 'delta_deforestation_surface']) < self.forest_surface_df.at[element, 'delta_reforestation_surface']:
+                self.lost_capital.at[element, 'lost_capital_G$'] = abs(self.forest_surface_df.at[element,
+                                                                                                 'delta_deforestation_surface']) * self.cost_per_ha
+                self.lost_capital.at[element, 'capital_G$'] = self.forest_surface_df.at[element,
+                                                                                        'delta_reforestation_surface'] * self.cost_per_ha
+            else:
+                self.lost_capital.at[element, 'lost_capital_G$'] = self.forest_surface_df.at[element,
+                                                                                             'delta_reforestation_surface'] * self.cost_per_ha
+                self.lost_capital.at[element, 'capital_G$'] = abs(self.forest_surface_df.at[element,
+                                                                                            'delta_deforestation_surface']) * self.cost_per_ha
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
