@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 import os
 from copy import deepcopy
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+
 from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
 
 class OrderOfMagnitude():
@@ -127,17 +129,23 @@ class Crop():
         self.mix_detailed_prices.index = self.years
         self.production = pd.DataFrame({'years': self.years})
         self.production.index = self.years
-        self.land_demand_df = pd.DataFrame({'years': self.years})
-        self.land_demand_df.index = self.years
+        self.land_use_required = pd.DataFrame({'years': self.years})
+        self.land_use_required.index = self.years
         self.cost_details = pd.DataFrame({'years': self.years})
         self.cost_details.index = self.years
-        self.biomass_price_df = pd.DataFrame({'years': self.years})
-        self.biomass_price_df.index = self.years
+        self.techno_prices = pd.DataFrame({'years': self.years})
+        self.techno_prices.index = self.years
         self.column_dict = {'red meat (Gha)': 'red meat', 'white meat (Gha)': 'white meat',
                             'milk (Gha)': 'milk', 'eggs (Gha)': 'eggs', 'rice and maize (Gha)': 'rice and maize',
                             'potatoes (Gha)': 'potatoes', 'fruits and vegetables (Gha)': 'fruits and vegetables',
                             'other (Gha)': 'other', 'total surface (Gha)': 'total surface'}
-    
+        self.techno_consumption = pd.DataFrame({'years': self.years})
+        self.techno_consumption.index = self.years
+        self.techno_consumption_woratio = pd.DataFrame({'years': self.years})
+        self.techno_consumption_woratio.index = self.years
+        self.CO2_emissions = pd.DataFrame({'years': self.years})
+        self.CO2_emissions.index = self.years
+
     def configure_parameters(self, inputs_dict):
         '''
         Configure with inputs_dict from the discipline
@@ -211,19 +219,26 @@ class Crop():
         # compute prod from invests
         self.compute_primary_energy_production()
         crop_energy_production = deepcopy(
-            self.production['Crop for energy (Mt)'])
+            self.production['Crop for Energy (Mt)'])
         # production of residue is the production from food surface and from
         # crop energy
         self.residue_prod_from_food_surface = self.compute_residue_from_food()
         self.mix_detailed_production['Crop residues (Mt)'] = self.residue_prod_from_food_surface.values +  \
             self.techno_infos_dict['residue_density_percentage'] * crop_energy_production
 
-        self.mix_detailed_production['Crop for energy (Mt)'] = crop_energy_production * (1 - self.techno_infos_dict['residue_density_percentage'])
+        self.mix_detailed_production['Crop for Energy (Mt)'] = crop_energy_production * (1 - self.techno_infos_dict['residue_density_percentage'])
 
-        self.mix_detailed_production['Total (Mt)'] = self.mix_detailed_production['Crop for energy (Mt)'] + self.mix_detailed_production['Crop residues (Mt)']
+        self.mix_detailed_production['Total (Mt)'] = self.mix_detailed_production['Crop for Energy (Mt)'] + self.mix_detailed_production['Crop residues (Mt)']
 
         # compute crop for energy land use
         self.compute_land_use()
+
+        # no emisions
+        self.CO2_emissions['Crop'] = np.zeros(len(self.years))
+
+        # no consumption
+        self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(len(self.years))
+        self.techno_consumption_woratio[f'{BiomassDry.name}'] = np.zeros(len(self.years))
 
     def compute_quantity_of_food(self, population_df, diet_df):
         """
@@ -505,7 +520,13 @@ class Crop():
                                                                    <= self.cost_details['years'].max()]['margin'].values / 100.0
         # Total cost (t)
         self.cost_details['Total ($/t)'] = self.cost_details['Total ($/MWh)'] * self.data_fuel_dict['calorific_value']
-        self.biomass_price_df['Crop for energy ($/t)'] = self.cost_details['Total ($/t)']
+        self.techno_prices['Crop'] = self.cost_details['Total ($/MWh)']
+
+        if 'CO2_taxes_factory' in self.cost_details:
+            self.techno_prices['Crop_wotaxes'] = self.cost_details['Total ($/MWh)'] - \
+                self.cost_details['CO2_taxes_factory']
+        else:
+            self.techno_prices['Crop_wotaxes'] = self.cost_details['Total ($/MWh)']
 
         price_crop = self.cost_details['Total ($/t)'] / \
             (1 + self.techno_infos_dict['residue_density_percentage'] *
@@ -581,11 +602,11 @@ class Crop():
 
         age_distrib_prod_sum = self.age_distrib_prod_df.groupby(['years'], as_index=False).agg({f'distrib_prod (Mt)': 'sum'}
                                                                                                )
-        if 'Crop for energy (Mt)' in self.production:
-            del self.production['Crop for energy (Mt)']
+        if 'Crop for Energy (Mt)' in self.production:
+            del self.production['Crop for Energy (Mt)']
 
         self.production = pd.merge(self.production, age_distrib_prod_sum, how='left', on='years').rename(
-            columns={'distrib_prod (Mt)': 'Crop for energy (Mt)'}).fillna(0.0)
+            columns={'distrib_prod (Mt)': 'Crop for Energy (Mt)'}).fillna(0.0)
         self.production.index = self.years
 
     def compute_aging_distribution_production(self):
@@ -679,7 +700,7 @@ class Crop():
         '''
         # compute residue part from food land surface for energy sector in Mt
         residue_production = self.total_food_land_surface['total surface (Gha)'] * \
-            self.techno_infos_dict['residue_density_percentage'] *\
+            self.techno_infos_dict['residue_density_percentage'] * \
             self.techno_infos_dict['density_per_ha'] * \
             self.techno_infos_dict['residue_percentage_for_energy']
 
@@ -689,11 +710,9 @@ class Crop():
         """
         Compute land use required for crop for energy
         """
-        self.land_demand_df['Crop for energy (Gha)'] = self.mix_detailed_production['Crop for energy (Mt)'] / \
+        self.land_use_required['Crop for Energy (Gha)'] = self.mix_detailed_production['Crop for Energy (Mt)'] / \
                                                        self.techno_infos_dict['density_per_ha']
-        #self.land_demand_df.index = self.years
-        #self.land_demand_df['years'] = self.total_food_land_surface['years']
-        self.land_demand_df['Crop for food (Gha)'] = self.food_land_surface_df['total surface (Gha)']
+        self.land_use_required['Crop for Food (Gha)'] = self.food_land_surface_df['total surface (Gha)']
 
 
     ####### Gradient #########
@@ -844,7 +863,7 @@ class Crop():
                                                        np.zeros(last_len_zeros)))
 
 
-
+        # Mt to GWh
         return dprod_list_dinvest_list
 
     def compute_d_prod_dland_for_food(self, dland_for_food):
@@ -858,5 +877,6 @@ class Crop():
         d_prod_dland_for_food = dland_for_food * \
                                 self.techno_infos_dict['residue_density_percentage'] * \
                                 self.techno_infos_dict['density_per_ha'] * \
-                                self.techno_infos_dict['residue_percentage_for_energy']
+                                self.techno_infos_dict['residue_percentage_for_energy'] * \
+                                self.data_fuel_dict['calorific_value']
         return d_prod_dland_for_food
