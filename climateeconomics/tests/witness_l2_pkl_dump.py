@@ -31,4 +31,4 @@ if __name__ == '__main__':
                    ]
 
     AbstractJacobianUnittest.launch_all_pickle_generation(
-        jacobian_target, 'l2_test_gradient_witness.py', directories=directories)
+        jacobian_target, '_l2_test_gradient_witness.py', directories=directories)
