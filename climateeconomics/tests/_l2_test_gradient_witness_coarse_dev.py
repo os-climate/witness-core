@@ -56,9 +56,5 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
 
         directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_coarse_dev')
 
-        excluded_disc = ['FunctionsManager',
-                         'WITNESS.EnergyMix',
-                         'WITNESS.CCUS.carbon_capture.flue_gas_capture.FlueGasTechno',
-                         'WITNESS.InvestmentDistribution'
-                         ]
+        excluded_disc = []
         self.all_usecase_disciplines_jacobian_test(usecase, directory=directory, excluded_disc=excluded_disc)

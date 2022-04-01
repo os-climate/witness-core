@@ -56,15 +56,7 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
 
         directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_min_tech_dev')
 
-        excluded_disc = ['WITNESS.EnergyMix.electricity.CoalGen',
-                         'WITNESS.EnergyMix.biomass_dry.CropEnergy',
-                         'WITNESS.EnergyMix.hydrogen.liquid_hydrogen',
-                         'WITNESS.EnergyMix.hydrogen.gaseous_hydrogen.WaterGasShift',
-                         'WITNESS.EnergyMix',
-                         'WITNESS.CCUS.carbon_capture.direct_air_capture.AmineScrubbing',
-                         'WITNESS.CCUS.carbon_capture.flue_gas_capture.MonoEthanolAmine',
-                         'WITNESS.InvestmentDistribution',
-                         ]
+        excluded_disc = []
 
         excluded_outputs = ['Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_detailed_techno_prices',
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_production_detailed',
