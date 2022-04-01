@@ -197,9 +197,9 @@ class Study(StudyManager):
                      '.unmanaged_wood_invest_before_year_start'] = invest_before_year_start
         forest_input[self.study_name +
                      '.unmanaged_wood_investment'] = mw_invest_df
-        forest_input[self.study_name + self.forest_name +
+        forest_input[self.study_name +
                      '.transport_cost'] = transport_df
-        forest_input[self.study_name + self.forest_name +
+        forest_input[self.study_name +
                      '.margin'] = margin_df
         forest_input[self.study_name + self.forest_name +
                      '.initial_unsused_forest_surface'] = initial_unsused_forest_surface
