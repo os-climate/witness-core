@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
@@ -58,14 +58,14 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
-        deforestation_surface = np.array(np.linspace(10, 100, year_range))
+        deforestation_surface = np.array(np.linspace(10, 1, year_range))
         self.deforestation_surface_df = pd.DataFrame(
             {"years": years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
         self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
-        forest_invest = np.linspace(2, 4, year_range)
+        forest_invest = np.linspace(2, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
         self.reforestation_cost_per_ha = 3800
@@ -173,9 +173,12 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.biomass_dry_df',
                                      f'{self.name}.Forest.techno_production',
                                      f'{self.name}.Forest.techno_prices',
-                                     f'{self.name}.Forest.techno_consumption', # output at zero
-                                     f'{self.name}.Forest.techno_consumption_woratio', # output at zero
+                                     # output at zero
+                                     f'{self.name}.Forest.techno_consumption',
+                                     # output at zero
+                                     f'{self.name}.Forest.techno_consumption_woratio',
                                      f'{self.name}.Forest.land_use_required',
-                                     f'{self.name}.Forest.CO2_emissions'] # output at zero
+                                     # output at zero
+                                     f'{self.name}.Forest.CO2_emissions',
+                                     f'{self.name}.Forest.capital']
                             )
-

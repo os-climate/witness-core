@@ -215,7 +215,8 @@ class Forest():
 
         # Biomass production part
         # Gha * m3/ha * kg/m3 => Mt
-        # recycle part is from the 2nd hand wood that will be recycled from the first investment
+        # recycle part is from the 2nd hand wood that will be recycled from the
+        # first investment
         self.managed_wood_df['delta_biomass_production (Mt)'] = self.managed_wood_df['delta_surface'] * density_per_ha * mean_density / \
             years_between_harvest / (1 - recycle_part)
         self.managed_wood_df['biomass_production (Mt)'] = np.cumsum(
@@ -274,7 +275,8 @@ class Forest():
             uw_added) + self.unmanaged_wood_initial_surface
 
         # Biomass production part
-        # recycle part is from the 2nd hand wood that will be recycled from the first investment
+        # recycle part is from the 2nd hand wood that will be recycled from the
+        # first investment
         self.unmanaged_wood_df['delta_biomass_production (Mt)'] = self.unmanaged_wood_df['delta_surface'] * density_per_ha * mean_density / \
             years_between_harvest / (1 - recycle_part)
         self.unmanaged_wood_df['biomass_production (Mt)'] = np.cumsum(
@@ -450,17 +452,16 @@ class Forest():
         self.lost_capital['lost_capital_G$'] = 0
         self.lost_capital['capital_G$'] = 0
         # abs() needed because deforestation surface is negative
-        for i in range(0, len(self.years)):
-            if abs(self.forest_surface_df.at[i, 'delta_deforestation_surface']) < self.forest_surface_df.at[i, 'delta_reforestation_surface']:
-                self.lost_capital.at[i, 'lost_capital_G$'] = abs(self.forest_surface_df.at[i,
-                                                                                                 'delta_deforestation_surface']) * self.cost_per_ha
-                self.lost_capital.at[i, 'capital_G$'] = self.forest_surface_df.at[i,
-                                                                                        'delta_reforestation_surface'] * self.cost_per_ha
+
+        for element in range(0, len(self.years)):
+            if abs(self.forest_surface_df.at[element, 'delta_deforestation_surface']) < self.forest_surface_df.at[element, 'delta_reforestation_surface']:
+                self.lost_capital.loc[element, 'lost_capital_G$'] = abs(self.forest_surface_df.loc[element,
+                                                                                                   'delta_deforestation_surface']) * self.cost_per_ha
             else:
-                self.lost_capital.at[i, 'lost_capital_G$'] = self.forest_surface_df.at[i,
-                                                                                             'delta_reforestation_surface'] * self.cost_per_ha
-                self.lost_capital.at[i, 'capital_G$'] = abs(self.forest_surface_df.at[i,
-                                                                                            'delta_reforestation_surface']) * self.cost_per_ha
+                self.lost_capital.loc[element, 'lost_capital_G$'] = self.forest_surface_df.loc[element,
+                                                                                               'delta_reforestation_surface'] * self.cost_per_ha
+
+        self.lost_capital['capital_G$'] = self.forest_surface_df['delta_reforestation_surface'] * self.cost_per_ha
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
@@ -644,3 +645,42 @@ class Forest():
                 res[i, j - construction_delay] = derivate[i, i]
 
         return res
+
+    def d_capital_total_d_invest(self,):
+        """
+        Compute derivate of capital total of reforestation regarding reforestation_investment
+        """
+        dcapital_d_invest = np.identity(len(self.years))
+
+        return dcapital_d_invest
+
+    def d_lostcapitald_invest(self, d_delta_reforestation_dinvest):
+        """"
+        compute derivate of lost capital regarding reforestation_investment
+        if deforestation_surf < reforestation surf : no dependancies --> derivate is null
+        if deforestation_sur > reforestation_surf : derivate is d_delta_reforestation_dinvest * cost_per_ha
+        """
+        result = d_delta_reforestation_dinvest
+        for element in range(0, len(self.years)):
+            if abs(self.forest_surface_df.at[element, 'delta_deforestation_surface']) < self.forest_surface_df.at[element, 'delta_reforestation_surface']:
+                result[element, element] = 0
+            else:
+                result[element, element] = result[element,
+                                                  element] * self.cost_per_ha
+        return result
+
+    def d_lostcapitald_deforestation(self, d_delta_deforestation_d_deforestation):
+        """"
+        compute derivate of lost capital regarding reforestation_investment
+        if deforestation_surf < reforestation surf : d_delta_deforestation_d_deforestation * cost_per_ha
+        if deforestation_sur > reforestation_surf : no dependencies
+        """
+        result = d_delta_deforestation_d_deforestation
+        for element in range(0, len(self.years)):
+            if abs(self.forest_surface_df.at[element, 'delta_deforestation_surface']) > self.forest_surface_df.at[element, 'delta_reforestation_surface']:
+                result[element, element] = 0
+            else:
+                result[element, element] = result[element,
+                                                  element] * self.cost_per_ha
+
+        return result

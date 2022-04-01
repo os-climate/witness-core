@@ -315,6 +315,17 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
             'unmanaged_wood_investment', 'investment'), d_cum_uw_surface_d_invest)
 
+        # total capital vs reforestation investment grad
+        dcapitaltotal_dinvest = self.forest_model.d_capital_total_d_invest()
+        self.set_partial_derivative_for_other_types(('capital', 'capital_G$'), (
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dcapitaltotal_dinvest)
+
+        # lost capital vs reforestation investment grad
+        dlostcapital_dinvest = self.forest_model.d_lostcapitald_invest(
+            d_forest_surface_d_invest)
+        self.set_partial_derivative_for_other_types(('capital', 'lost_capital_G$'), (
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dlostcapital_dinvest)
+
         # land use required
         # forest surface vs forest invest
         self.set_partial_derivative_for_other_types(('land_use_required', 'forest (Gha)'), (
@@ -341,12 +352,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.DEFORESTATION_SURFACE, 'deforested_surface'), d_cum_CO2_emitted_d_deforestation_surface)
 
         # d_CO2 d invest reforestation
-        d_CO2_emitted_d_invest = self.forest_model.d_CO2_emitted(
-            d_forest_surface_d_invest)
-        d_cum_CO2_emitted_d_invest = self.forest_model.d_cum(
-            d_CO2_emitted_d_invest)
+        d_cum_CO2_emitted_d_invest_ref = self.forest_model.d_CO2_emitted(
+            d_cum_forest_surface_d_invest)
         self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'global_CO2_emission_balance'), (
-            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_CO2_emitted_d_invest)
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_CO2_emitted_d_invest_ref)
 
         # d_CO2 d invest managed wood
         d_CO2_emitted_d_invest = self.forest_model.d_CO2_emitted(
