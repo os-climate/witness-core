@@ -485,7 +485,7 @@ class Forest():
                 self.lost_capital.at[element, 'lost_capital_G$'] = self.forest_surface_df.at[element,
                                                                                              'delta_reforestation_surface'] * self.cost_per_ha
                 self.lost_capital.at[element, 'capital_G$'] = abs(self.forest_surface_df.at[element,
-                                                                                            'delta_deforestation_surface']) * self.cost_per_ha
+                                                                                            'delta_reforestation_surface']) * self.cost_per_ha
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
