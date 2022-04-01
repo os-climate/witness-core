@@ -167,7 +167,7 @@ class Study(StudyManager):
                                                              3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
         agriculture_input[self.study_name +
                           '.invest_level'] = invest_level
-        agriculture_input[self.study_name + self.agriculture_name +
+        agriculture_input[self.study_name +
                           '.margin'] = margin
         agriculture_input[self.study_name +
                           '.transport_margin'] = margin
@@ -249,5 +249,5 @@ if '__main__' == __name__:
         graph_list = ppf.get_post_processing_by_discipline(
          disc, filters, as_json=False)
 
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
