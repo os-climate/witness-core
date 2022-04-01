@@ -242,6 +242,7 @@ class Forest():
 
         # Biomass production part
         # Gha * m3/ha * kg/m3 => Mt
+        # recycle part is from the 2nd hand wood that will be recycled from the first investment
         self.managed_wood_df['delta_biomass_production (Mt)'] = self.managed_wood_df['delta_surface'] * density_per_ha * mean_density / \
             years_between_harvest / (1 - recycle_part)
         self.managed_wood_df['biomass_production (Mt)'] = np.cumsum(
@@ -300,6 +301,7 @@ class Forest():
             uw_added) + self.unmanaged_wood_initial_surface
 
         # Biomass production part
+        # recycle part is from the 2nd hand wood that will be recycled from the first investment
         self.unmanaged_wood_df['delta_biomass_production (Mt)'] = self.unmanaged_wood_df['delta_surface'] * density_per_ha * mean_density / \
             years_between_harvest / (1 - recycle_part)
         self.unmanaged_wood_df['biomass_production (Mt)'] = np.cumsum(
@@ -485,7 +487,7 @@ class Forest():
                 self.lost_capital.at[element, 'lost_capital_G$'] = self.forest_surface_df.at[element,
                                                                                              'delta_reforestation_surface'] * self.cost_per_ha
                 self.lost_capital.at[element, 'capital_G$'] = abs(self.forest_surface_df.at[element,
-                                                                                            'delta_deforestation_surface']) * self.cost_per_ha
+                                                                                            'delta_reforestation_surface']) * self.cost_per_ha
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
@@ -564,6 +566,7 @@ class Forest():
         prod = surface * density_per_ha * density * wood_or_residues_percentage * percentage_for_energy / years_between_harvest / (1 - recycle_part)
         --> only surface is dependant of invest, the other parameters does not depends of invest.
         d_surf_d_invest is alread computed and known.
+        # recycle part is from the 2nd hand wood that will be recycled from the first investment
         """
         density = self.techno_wood_info['density']
         density_per_ha = self.techno_wood_info['density_per_ha']
