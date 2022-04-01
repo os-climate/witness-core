@@ -144,7 +144,7 @@ class Study(EnergyMixStudyManager):
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': 1e4})
+            {'years': years, 'invest': 1})
 
         land_surface_for_food = pd.DataFrame({'years': years,
                                               'Agriculture total (Gha)': np.ones(len(years)) * 4.8})
