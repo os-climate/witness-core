@@ -98,6 +98,8 @@ class Forest():
         self.transport = self.param[self.TRANSPORT_COST]
         self.margin = self.param[self.MARGIN]
         self.initial_unsused_forest_surface = self.param[self.UNUSED_FOREST]
+        self.scaling_factor_techno_consumption = self.param['scaling_factor_techno_consumption']
+        self.scaling_factor_techno_production = self.param['scaling_factor_techno_production']
 
     def create_dataframe(self):
         """
