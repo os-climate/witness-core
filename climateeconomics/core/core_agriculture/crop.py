@@ -92,27 +92,21 @@ class Crop():
         self.param_a = self.param['param_a']
         self.param_b = self.param['param_b']
         self.invest_level = self.param['invest_level']
-        self.margin = self.param['margin'].loc[self.param['margin']['years']
-                                                <= self.year_end]
-        self.margin.index = self.param['margin']['years'].values
         self.transport_cost = self.param['transport_cost']
-        self.transport_cost.index = self.transport_cost['years'].values
         self.transport_margin = self.param['transport_margin']
-        self.transport_margin.index = self.transport_margin['years'].values
         self.data_fuel_dict = self.param['data_fuel_dict']
         self.techno_infos_dict = self.param['techno_infos_dict']
-        # invest level from G$ to M$
         self.scaling_factor_invest_level = self.param['scaling_factor_invest_level']
         self.initial_age_distrib = self.param['initial_age_distrib']
         self.initial_production = self.param['initial_production']
         self.nb_years_amort_capex = 10
         self.construction_delay = 3 # default value
+        self.margin = self.param['margin']
         if 'construction_delay' in self.techno_infos_dict:
             self.construction_delay = self.techno_infos_dict['construction_delay']
         else:
             print(
                 f'The construction_delay data is not set for Crop : default = 3 years  ')
-
 
     def create_dataframe(self):
         '''
@@ -120,40 +114,31 @@ class Crop():
         '''
 
         self.food_land_surface_df = pd.DataFrame({'years': self.years})
-        self.food_land_surface_df.index = self.years
         self.total_food_land_surface = pd.DataFrame({'years': self.years})
-        self.total_food_land_surface.index = self.years
         self.mix_detailed_production = pd.DataFrame({'years': self.years})
-        self.mix_detailed_production.index = self.years
         self.mix_detailed_prices = pd.DataFrame({'years': self.years})
-        self.mix_detailed_prices.index = self.years
         self.production = pd.DataFrame({'years': self.years})
-        self.production.index = self.years
         self.land_use_required = pd.DataFrame({'years': self.years})
-        self.land_use_required.index = self.years
         self.cost_details = pd.DataFrame({'years': self.years})
-        self.cost_details.index = self.years
         self.techno_prices = pd.DataFrame({'years': self.years})
-        self.techno_prices.index = self.years
         self.column_dict = {'red meat (Gha)': 'red meat', 'white meat (Gha)': 'white meat',
                             'milk (Gha)': 'milk', 'eggs (Gha)': 'eggs', 'rice and maize (Gha)': 'rice and maize',
                             'potatoes (Gha)': 'potatoes', 'fruits and vegetables (Gha)': 'fruits and vegetables',
                             'other (Gha)': 'other', 'total surface (Gha)': 'total surface'}
         self.techno_consumption = pd.DataFrame({'years': self.years})
-        self.techno_consumption.index = self.years
         self.techno_consumption_woratio = pd.DataFrame({'years': self.years})
-        self.techno_consumption_woratio.index = self.years
         self.CO2_emissions = pd.DataFrame({'years': self.years})
-        self.CO2_emissions.index = self.years
 
     def configure_parameters(self, inputs_dict):
         '''
         Configure with inputs_dict from the discipline
         '''
+        if inputs_dict['margin'] is not None:
+            self.margin = inputs_dict['margin'].loc[inputs_dict['margin']['years']
+                                                    <= self.year_end]
         # invest level from G$ to M$
         self.scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
         self.invest_level = inputs_dict['invest_level']
-        self.invest_level.index = self.years
         self.invest_level['invest'] = self.invest_level['invest'] * \
             self.scaling_factor_invest_level
         if self.initial_age_distrib['distrib'].sum() > 100.001 or self.initial_age_distrib[
@@ -185,8 +170,6 @@ class Crop():
         @unit updated_diet_df: kg/person/year
 
         '''     
-        #Set index of coupling dataframe in inputs
-        temperature_df.index = temperature_df['years'].values
         
         # construct the diet over time
         update_diet_df = self.diet_change(self.diet_df, self.red_to_white_meat,
@@ -257,12 +240,11 @@ class Crop():
         @unit result: kg / year
         """
         result = pd.DataFrame()
-        population_df.index = diet_df.index
         for key in diet_df.keys():
             if key == "years":
                 result[key] = diet_df[key]
             else:
-                result[key] = population_df['population'] * diet_df[key] * 1e6
+                result[key] = population_df['population'].values * diet_df[key].values * 1e6
         # as population is in million of habitants, *1e6 is needed
         return(result)
 
@@ -367,9 +349,6 @@ class Crop():
             removed_white_meat
         changed_diet_df['fruits and vegetables'] = changed_diet_df['fruits and vegetables'] + added_fruit
 
-        changed_diet_df.index = np.arange(
-            self.year_start, self.year_end + 1, 1)
-
         return(changed_diet_df)
 
     def convert_surface_to_percentage(self, surface_df):
@@ -402,14 +381,13 @@ class Crop():
                 - parameters of productivity function
                 - temperature_df: dataframe, degree celsius wrt preindustrial level, dataframe of temperature increase
         """
-        temperature = temperature_df['temp_atmo']
+        temperature = temperature_df['temp_atmo'].values
         #Compute the difference in temperature wrt 2020 reference
         temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
         #Compute reduction in productivity due to increase in temperature 
         pdctivity_reduction = self.param_a * temp**2 + self.param_b * temp
         self.prod_reduction = pdctivity_reduction
         self.productivity_evolution = pd.DataFrame({"years": self.years, 'productivity_evolution': pdctivity_reduction})
-        self.productivity_evolution.index = self.years
         #Apply this reduction to increase land surface needed
         surface_df = surface_df_before.multiply(other = (1- pdctivity_reduction), axis=0)
         
@@ -607,7 +585,6 @@ class Crop():
 
         self.production = pd.merge(self.production, age_distrib_prod_sum, how='left', on='years').rename(
             columns={'distrib_prod (Mt)': 'Crop for Energy (Mt)'}).fillna(0.0)
-        self.production.index = self.years
 
     def compute_aging_distribution_production(self):
         '''
@@ -733,7 +710,7 @@ class Crop():
         d_land_surface_d_pop_before = np.identity(
             number_of_values) * updated_diet_food * self.kg_to_m2_dict[self.column_dict[column_name]] / 1e7
         #Add climate change impact 
-        d_land_surface_d_pop = d_land_surface_d_pop_before * (1 - self.prod_reduction.values)
+        d_land_surface_d_pop = d_land_surface_d_pop_before * (1 - self.prod_reduction)
         
         return(d_land_surface_d_pop)
 
@@ -745,7 +722,7 @@ class Crop():
         result_without_climate = np.identity(
             number_of_values) * self.other_use_crop / 1e3
         #Add climate change impact
-        result = result_without_climate * (1 - self.prod_reduction.values)
+        result = result_without_climate * (1 - self.prod_reduction)
         
         return(result)
     
@@ -791,9 +768,9 @@ class Crop():
         fruits_diet_grad = self.diet_df['red meat'].values[0] / 100 * self.kg_to_kcal_dict['red meat'] / self.kg_to_kcal_dict['white meat'] \
             * self.meat_to_vegetables / 100 * self.kg_to_kcal_dict['white meat'] / self.kg_to_kcal_dict['fruits and vegetables']
         
-        red_meat_quantity_grad = red_meat_diet_grad * population_df['population'] * 1e6
-        white_meat_quantity_grad = white_meat_diet_grad * population_df['population'] * 1e6
-        fruits_quantity_grad = fruits_diet_grad * population_df['population'] * 1e6
+        red_meat_quantity_grad = red_meat_diet_grad * population_df['population'].values * 1e6
+        white_meat_quantity_grad = white_meat_diet_grad * population_df['population'].values * 1e6
+        fruits_quantity_grad = fruits_diet_grad * population_df['population'].values * 1e6
 
         red_meat_surface_grad = red_meat_quantity_grad * kg_food_to_surface['red meat'] * self.hatom2 / 1e9
         white_meat_surface_grad = white_meat_quantity_grad * kg_food_to_surface['white meat'] * self.hatom2 / 1e9
@@ -816,8 +793,8 @@ class Crop():
             self.red_to_white_meat / 100 * self.kg_to_kcal_dict['red meat'] / self.kg_to_kcal_dict['white meat']) / 100
         fruits_diet_grad = - white_meat_diet_grad * self.kg_to_kcal_dict['white meat'] / self.kg_to_kcal_dict['fruits and vegetables']
         
-        white_meat_quantity_grad = white_meat_diet_grad * population_df['population'] * 1e6
-        fruits_quantity_grad = fruits_diet_grad * population_df['population'] * 1e6
+        white_meat_quantity_grad = white_meat_diet_grad * population_df['population'].values * 1e6
+        fruits_quantity_grad = fruits_diet_grad * population_df['population'].values * 1e6
 
         white_meat_surface_grad = white_meat_quantity_grad * kg_food_to_surface['white meat'] * self.hatom2 / 1e9
         fruits_meat_quantity_grad = fruits_quantity_grad * kg_food_to_surface['fruits and vegetables'] * self.hatom2 / 1e9
