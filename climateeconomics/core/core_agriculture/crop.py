@@ -101,6 +101,7 @@ class Crop():
         self.initial_production = self.param['initial_production']
         self.nb_years_amort_capex = 10
         self.construction_delay = 3 # default value
+        self.margin = self.param['margin']
         if 'construction_delay' in self.techno_infos_dict:
             self.construction_delay = self.techno_infos_dict['construction_delay']
         else:
@@ -709,7 +710,7 @@ class Crop():
         d_land_surface_d_pop_before = np.identity(
             number_of_values) * updated_diet_food * self.kg_to_m2_dict[self.column_dict[column_name]] / 1e7
         #Add climate change impact 
-        d_land_surface_d_pop = d_land_surface_d_pop_before * (1 - self.prod_reduction.values)
+        d_land_surface_d_pop = d_land_surface_d_pop_before * (1 - self.prod_reduction)
         
         return(d_land_surface_d_pop)
 
@@ -721,7 +722,7 @@ class Crop():
         result_without_climate = np.identity(
             number_of_values) * self.other_use_crop / 1e3
         #Add climate change impact
-        result = result_without_climate * (1 - self.prod_reduction.values)
+        result = result_without_climate * (1 - self.prod_reduction)
         
         return(result)
     
