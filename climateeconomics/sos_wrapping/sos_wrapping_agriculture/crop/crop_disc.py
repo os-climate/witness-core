@@ -160,6 +160,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                                             'invest': ('float',  None, True)},
                     'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop'},
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'user_level': 2},
+        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_witness'},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                             'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
@@ -214,20 +216,25 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
-        input_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
         # -- configure class with inputs
-        self.crop_model.red_to_white_meat = input_dict[Crop.RED_TO_WHITE_MEAT]
-        self.crop_model.meat_to_vegetables = input_dict[Crop.MEAT_TO_VEGETABLES]
-        self.crop_model.invest_level = input_dict[Crop.INVEST_LEVEL]
-        self.crop_model.configure_parameters(input_dict)
+        self.crop_model.red_to_white_meat = inputs_dict[Crop.RED_TO_WHITE_MEAT]
+        self.crop_model.meat_to_vegetables = inputs_dict[Crop.MEAT_TO_VEGETABLES]
+        self.crop_model.invest_level = inputs_dict[Crop.INVEST_LEVEL]
+        self.crop_model.configure_parameters(inputs_dict)
         #-- compute
-        population_df = input_dict.pop('population_df')
-        temperature_df = input_dict.pop('temperature_df')
+        population_df = inputs_dict.pop('population_df')
+        temperature_df = inputs_dict.pop('temperature_df')
         self.crop_model.compute(population_df, temperature_df)
-
-        techno_production = self.crop_model.mix_detailed_production[['years', 'Total (Mt)']] * self.crop_model.data_fuel_dict['calorific_value']
-        techno_production = techno_production.rename(columns={'Total (Mt)': "biomass_dry (TWh)"})
-
+        
+        techno_production = self.crop_model.mix_detailed_production[['years', 'Total (TWh)']]
+        #Scale production TWh -> PWh
+        techno_production = techno_production.rename(columns={'Total (TWh)': "biomass_dry (TWh)"})
+        for column in techno_production.columns:
+            if column == 'years':
+                continue
+            techno_production[column] = techno_production[column].values / \
+                inputs_dict['scaling_factor_techno_production']
         outputs_dict = {
             'food_land_surface_df': self.crop_model.food_land_surface_df,
             'total_food_land_surface': self.crop_model.total_food_land_surface,
@@ -256,6 +263,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         population_df = inputs_dict.pop('population_df')
         temperature_df = inputs_dict['temperature_df']
         scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
+        scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
         density_per_ha = inputs_dict['techno_infos_dict']['density_per_ha']
         residue_density_percentage = inputs_dict['techno_infos_dict']['residue_density_percentage']
         calorific_value = inputs_dict['data_fuel_dict']['calorific_value']
@@ -321,13 +329,13 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('techno_production', 'biomass_dry (TWh)'),
             ('invest_level', 'invest'),
-            dprod_dinvest * scaling_factor_invest_level * calorific_value)
+            dprod_dinvest * scaling_factor_invest_level * calorific_value / scaling_factor_techno_production)
 
         # gradient for land demand
         self.set_partial_derivative_for_other_types(
             ('land_use_required', 'Crop for Energy (Gha)'),
             ('invest_level', 'invest'),
-            dprod_dinvest * scaling_factor_invest_level * (1 - residue_density_percentage) / density_per_ha)
+            dprod_dinvest * scaling_factor_invest_level * (1 - residue_density_percentage) / density_per_ha * calorific_value)
 
         self.set_partial_derivative_for_other_types(
             ('land_use_required', 'Crop for Food (Gha)'), ('population_df', 'population'), summ)
@@ -548,9 +556,9 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             for crop in mix_detailed_production:
                 if crop != 'years':
-                    ordonate_data = list(mix_detailed_production[crop])
+                    ordonate_data = list(mix_detailed_production[crop] * data_fuel_dict['calorific_value'])
                     new_series = InstanciatedSeries(
-                        years, ordonate_data, crop.replace("(Mt)", "") , 'lines', visible_line)
+                        years, ordonate_data, crop.replace("(TWh)", "") , 'lines', visible_line)
                     new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -565,9 +573,9 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             for crop in mix_detailed_production:
                 if crop != 'years':
-                    ordonate_data = list(mix_detailed_production[crop] * data_fuel_dict['calorific_value'])
+                    ordonate_data = list(mix_detailed_production[crop])
                     new_series = InstanciatedSeries(
-                        years, ordonate_data, crop.replace("(Mt)", "") , 'lines', visible_line)
+                        years, ordonate_data, crop.replace("(TWh)", "") , 'lines', visible_line)
                     new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
