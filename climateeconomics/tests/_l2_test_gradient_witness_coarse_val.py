@@ -53,6 +53,6 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
 
         directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_coarse')
 
-        excluded_disc = ['FunctionsManager']
+        excluded_disc = []
         self.all_usecase_disciplines_jacobian_test(usecase, directory=directory, excluded_disc=excluded_disc)
 

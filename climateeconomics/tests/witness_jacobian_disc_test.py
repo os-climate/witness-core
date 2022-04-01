@@ -110,7 +110,7 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                                             parallel=WitnessJacobianDiscTest.PARALLEL)
                     except:
                         try:
-                            print('Jacobian may have change, dumping pkl...')
+                            print('Jacobian may have changed, dumping pkl...')
                             self.ee.dm.delete_complex_in_df_and_arrays()
                             AbstractJacobianUnittest.DUMP_JACOBIAN = True
                             self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
