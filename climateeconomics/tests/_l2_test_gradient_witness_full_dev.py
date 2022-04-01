@@ -56,35 +56,7 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
 
         directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_full_dev')
 
-        excluded_disc = ['WITNESS.EnergyMix.hydrogen.liquid_hydrogen',
-                         'WITNESS.EnergyMix.hydrogen.gaseous_hydrogen.WaterGasShift',
-                         'WITNESS.Resources.uranium_resource',
-                         'WITNESS.EnergyMix.methane.Methanation',
-                         'WITNESS.EnergyMix.hydrogen.gaseous_hydrogen.Electrolysis.SOEC',
-                         'WITNESS.EnergyMix.hydrogen.gaseous_hydrogen.Electrolysis.PEM',
-                         'WITNESS.EnergyMix.hydrogen.gaseous_hydrogen.Electrolysis.AWE',
-                         'WITNESS.EnergyMix.biogas.AnaerobicDigestion',
-                         'WITNESS.EnergyMix.syngas.Pyrolysis',
-                         'WITNESS.EnergyMix.syngas.AutothermalReforming',
-                         'WITNESS.EnergyMix.syngas.CoElectrolysis',
-                         'WITNESS.EnergyMix.fuel.liquid_fuel.Refinery',
-                         'WITNESS.EnergyMix.fuel.liquid_fuel.FischerTropsch',
-                         'WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.HefaDecarboxylation',
-                         'WITNESS.EnergyMix.fuel.hydrotreated_oil_fuel.HefaDeoxygenation',
-                         'WITNESS.EnergyMix.biomass_dry.CropEnergy',
-                         'WITNESS.EnergyMix.electricity.CoalGen',
-                         'WITNESS.EnergyMix.fuel.biodiesel.Transesterification',
-                         'WITNESS.EnergyMix',
-                         'WITNESS.InvestmentDistribution',
-                         'WITNESS.CCUS.carbon_capture.direct_air_capture.AmineScrubbing',
-                         'WITNESS.CCUS.carbon_capture.direct_air_capture.CalciumPotassiumScrubbing',
-                         'WITNESS.CCUS.carbon_capture.flue_gas_capture.CalciumLooping',
-                         'WITNESS.CCUS.carbon_capture.flue_gas_capture.ChilledAmmoniaProcess',
-                         'WITNESS.CCUS.carbon_capture.flue_gas_capture.CO2Membranes',
-                         'WITNESS.CCUS.carbon_capture.flue_gas_capture.MonoEthanolAmine',
-                         'WITNESS.CCUS.carbon_capture.flue_gas_capture.PiperazineProcess',
-                         'WITNESS.CCUS.carbon_capture.flue_gas_capture.PressureSwingAdsorption',
-                         ]
+        excluded_disc = []
 
         excluded_outputs = ['Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_detailed_techno_prices',
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.liquid_fuel.energy_production_detailed',
@@ -93,8 +65,6 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_detailed_techno_prices',
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.biodiesel.energy_production_detailed',
                             ]
-
-        # optional_disciplines_list = ['WITNESS.EnergyMix.fuel.liquid_fuel']
 
         self.all_usecase_disciplines_jacobian_test(usecase,
                                                    directory=directory,
