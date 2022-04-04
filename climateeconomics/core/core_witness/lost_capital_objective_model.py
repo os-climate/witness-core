@@ -32,7 +32,6 @@ class LostCapitalObjective():
         self.lost_capital_objective = np.array([0.0])
         self.lost_capital_df = None
         self.techno_capital_df = None
-        self.lost_capital_cons = np.array([0.0])
 
     def set_data(self):
         self.year_start = self.param['year_start']
@@ -62,7 +61,6 @@ class LostCapitalObjective():
         self.techno_capital_df = self.agreggate_and_compute_sum(
             'techno_capital', inputs_dict)
         self.compute_objective()
-        self.compute_constraint_ineq()
 
     def agreggate_and_compute_sum(self, name, inputs_dict):
         '''
