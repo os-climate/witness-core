@@ -250,6 +250,17 @@ class DataStudy():
         list_weight.extend([0.0, -1.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
+
+        # -------------------------------------------------
+        # e_max_constraint
+        list_var.append('emax_enet_constraint')
+        list_parent.append('')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(-1.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
+
         # -------------------------------------------------
         # pc_consumption_constraint
         list_var.append('pc_consumption_constraint')
