@@ -40,6 +40,7 @@ class LostCapitalObjective():
         self.lost_capital_obj_ref = self.param['lost_capital_obj_ref']
         self.lost_capital_limit = self.param['lost_capital_limit']
 
+
     def create_year_range(self):
         '''
         Create the dataframe and fill it with values at year_start
@@ -92,28 +93,13 @@ class LostCapitalObjective():
             self.lost_capital_objective = np.asarray(
                 [self.lost_capital_df['Sum of lost capital'].sum()]) / self.lost_capital_obj_ref / self.delta_years
 
-    def compute_constraint_ineq(self):
-        '''
-        Compute constraint ineq
-        '''
-        if 'Sum of lost capital' in self.lost_capital_df:
-            lost_capital_cons = (
-                self.lost_capital_df['Sum of lost capital'].values - self.lost_capital_limit) / self.lost_capital_obj_ref / self.delta_years
-
-            self.lost_capital_cons = np.sqrt(
-                compute_func_with_exp_min(lost_capital_cons ** 2, 1e-15))
-
     def get_objective(self):
         '''
         Get lost capital objective
         '''
         return self.lost_capital_objective
 
-    def get_constraint(self):
-        '''
-        Get lost capital constraint
-        '''
-        return self.lost_capital_cons
+
 
     def get_lost_capital_df(self):
         '''
