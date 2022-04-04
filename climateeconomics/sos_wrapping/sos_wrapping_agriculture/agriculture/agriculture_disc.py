@@ -60,8 +60,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                           'fruits and vegetables': 624,
                           }
     year_range = default_year_end - default_year_start + 1
-    default_red_to_white_meat = np.linspace(0, 50, year_range)
-    default_meat_to_vegetables = np.linspace(0, 25, year_range)
+    default_red_meat_percentage = np.linspace(100, 10, year_range)
+    default_white_meat_percentage = np.linspace(100, 10, year_range)
     default_other_use = np.linspace(0.102, 0.102, year_range)
     default_diet_df = pd.DataFrame({'red meat': [11.02],
                                     'white meat': [31.11],
@@ -85,8 +85,10 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                            'dataframe_edition_locked': False, 'namespace': 'ns_agriculture'},
                'kg_to_kcal_dict': {'type': 'dict', 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
                'kg_to_m2_dict': {'type': 'dict', 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
-               'red_to_white_meat': {'type': 'array', 'default': default_red_to_white_meat, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
-               'meat_to_vegetables': {'type': 'array', 'default': default_meat_to_vegetables, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+               # design variables of changing diet
+               'red_meat_percentage': {'type': 'array', 'default': default_red_meat_percentage, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+               'white_meat_percentage': {'type': 'array', 'default': default_white_meat_percentage, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+
                'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'default': default_other_use, 'namespace': 'ns_agriculture'},
                'temperature_df': {'type': 'dataframe', 'unit': 'degree Celsius', 'visibility': 'Shared', 'namespace': 'ns_witness'},
                'param_a': {'type': 'float', 'default': - 0.00833, 'user_level': 3},
@@ -116,8 +118,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
-        self.agriculture_model.red_to_white_meat = inp_dict[Agriculture.RED_TO_WHITE_MEAT]
-        self.agriculture_model.meat_to_vegetables = inp_dict[Agriculture.MEAT_TO_VEGETABLES]
+        self.agriculture_model.red_meat_percentage = inp_dict['red_meat_percentage']
+        self.agriculture_model.white_meat_percentage = inp_dict['white_meat_percentage']
         #-- compute
         population_df = inp_dict.pop('population_df')
         temperature_df = inp_dict['temperature_df']
@@ -168,15 +170,14 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
 
-        d_surface_d_red_to_white = model.d_surface_d_red_to_white(
-            population_df)
-        d_surface_d_meat_to_vegetable = model.d_surface_d_meat_to_vegetable(
-            population_df)
+        d_surface_d_red_meat_percentage = model.d_surface_d_red_meat_percentage(population_df)
+        d_surface_d_white_meat_percentage = model.d_surface_d_white_meat_percentage(population_df)
 
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('red_to_white_meat', 'red_to_white_meat'), d_surface_d_red_to_white)
+            ('total_food_land_surface', 'total surface (Gha)'), ('red_meat_percentage', 'red_meat_percentage'), d_surface_d_red_meat_percentage)
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('meat_to_vegetables', 'meat_to_vegetables'), d_surface_d_meat_to_vegetable)
+            ('total_food_land_surface', 'total surface (Gha)'), ('white_meat_percentage', 'white_meat_percentage'), d_surface_d_white_meat_percentage)
+
 
     def get_chart_filter_list(self):
 
