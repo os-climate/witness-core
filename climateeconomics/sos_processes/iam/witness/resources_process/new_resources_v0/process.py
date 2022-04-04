@@ -6,6 +6,13 @@ from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilde
 
 class ProcessBuilder(BaseProcessBuilder):
 
+    _ontology_data = {
+        'label': 'WITNESS Resource Copper V0 Process',
+        'description': '',
+        'category': '',
+        'version': '',
+    }
+
     def get_builders(self):
         
         mods_dict = {'CopperModel': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_copper_resource_v0.copper_disc.CopperDisc'}
