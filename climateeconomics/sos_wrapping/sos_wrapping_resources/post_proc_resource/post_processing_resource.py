@@ -17,6 +17,7 @@ limitations under the License.
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import InstantiatedPlotlyNativeChart
+from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import numpy as np
 from matplotlib.pyplot import cm
@@ -26,6 +27,7 @@ from plotly.subplots import make_subplots
 import pandas as pd
 from plotly.express.colors import qualitative
 
+RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
 
 def post_processing_filters(execution_engine, namespace):
     '''
@@ -93,8 +95,8 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
                 f'{WITNESS_ns}.EnergyMix.{energy}.{techno}')[0]
             consumption_techno = techno_disc.get_sosdisc_outputs(
                 'techno_consumption')
-            if resource_name in consumption_techno.columns:
-                resource_consumed[f'{energy} {techno}'] = consumption_techno[resource_name] * techno_disc.get_sosdisc_inputs(
+            if f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})' in consumption_techno.columns:
+                resource_consumed[f'{energy} {techno}'] = consumption_techno[f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})'] * techno_disc.get_sosdisc_inputs(
                     'scaling_factor_techno_consumption')
     CCUS = execution_engine.dm.get_disciplines_with_name(
         f'{WITNESS_ns}.CCUS')[0]
@@ -108,8 +110,8 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
                 f'{WITNESS_ns}.CCUS.{stream}.{techno}')[0]
             consumption_techno = techno_disc.get_sosdisc_outputs(
                 'techno_consumption')
-            if resource_name in consumption_techno.columns:
-                resource_consumed[f'{stream} {techno}'] = consumption_techno[resource_name] * techno_disc.get_sosdisc_inputs(
+            if f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})' in consumption_techno.columns:
+                resource_consumed[f'{stream} {techno}'] = consumption_techno[f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})'] * techno_disc.get_sosdisc_inputs(
                     'scaling_factor_techno_consumption')
 
     # Create Figure

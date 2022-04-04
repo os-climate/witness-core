@@ -54,7 +54,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'decline_rate_tfp': {'type': 'float', 'default': 0.02351234, 'user_level': 3},
         'depreciation_capital': {'type': 'float', 'default': 0.08, 'user_level': 2},
         'init_rate_time_pref': {'type': 'float', 'default': 0.0, 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'conso_elasticity': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
+        'conso_elasticity': {'type': 'float', 'default': 1.45, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
         'lo_capital': {'type': 'float', 'unit': 'trillions $', 'default': 1.0, 'user_level': 3},
         'lo_conso': {'type': 'float', 'unit': 'trillions $', 'default': 2.0, 'user_level': 3},
         'lo_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 0.01, 'user_level': 3},

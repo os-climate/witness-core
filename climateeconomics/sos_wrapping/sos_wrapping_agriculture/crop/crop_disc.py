@@ -22,7 +22,7 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
-
+from copy import deepcopy
 
 class CropDiscipline(ClimateEcoDiscipline):
     ''' Crop discipline transforms crops and crops residues
@@ -42,6 +42,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-seedling fa-fw',
         'version': '',
     }
+    techno_name = 'CropEnergy'
     default_year_start = 2020
     default_year_end = 2050
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
@@ -157,14 +158,16 @@ class CropDiscipline(ClimateEcoDiscipline):
         'invest_level': {'type': 'dataframe', 'unit': 'G$',
                     'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                             'invest': ('float',  None, True)},
-                    'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+                    'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop'},
         'scaling_factor_invest_level': {'type': 'float', 'default': 1e3, 'user_level': 2},
-        'margin': {'type': 'dataframe', 'unit': '%'},
-        'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
+        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_witness'},
+        'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                             'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                     'transport': ('float',  None, True)},
                             'dataframe_edition_locked': False},
-        'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
+        'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                             'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                                         'margin': ('float',  None, True)},
                             'dataframe_edition_locked': False},
@@ -184,12 +187,22 @@ class CropDiscipline(ClimateEcoDiscipline):
         'food_land_surface_percentage_df': {'type': 'dataframe', 'unit': '%'},
         'updated_diet_df': {'type': 'dataframe', 'unit': 'kg/person/year'},
         'crop_productivity_evolution': {'type': 'dataframe'},
-        'mix_detailed_prices': {'type': 'dataframe', 'unit': '$/t'},
-        'mix_detailed_production': {'type': 'dataframe', 'unit': 'Mt'},
+        'mix_detailed_prices': {'type': 'dataframe', 'unit': '$/MWh'},
+        'mix_detailed_production': {'type': 'dataframe', 'unit': 'TWh'},
         'cost_details': {'type': 'dataframe'},
-        'biomass_production_df': {'type': 'dataframe', 'unit': 'Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'biomass_price_df': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'land_demand_df': {'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'}
+        'techno_production': {
+            'type': 'dataframe', 'unit': 'TWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'techno_prices': {
+            'type': 'dataframe', 'unit': '$/MWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'techno_consumption': {
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'techno_consumption_woratio': {
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'land_use_required': {
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'CO2_emissions': {
+            'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+            'namespace': 'ns_crop'},
         }
 
     CROP_CHARTS = 'crop and diet charts'
@@ -203,20 +216,25 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
-        input_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
         # -- configure class with inputs
-        self.crop_model.red_to_white_meat = input_dict[Crop.RED_TO_WHITE_MEAT]
-        self.crop_model.meat_to_vegetables = input_dict[Crop.MEAT_TO_VEGETABLES]
-        self.crop_model.invest_level = input_dict[Crop.INVEST_LEVEL]
-        self.crop_model.configure_parameters(input_dict)
+        self.crop_model.red_to_white_meat = inputs_dict[Crop.RED_TO_WHITE_MEAT]
+        self.crop_model.meat_to_vegetables = inputs_dict[Crop.MEAT_TO_VEGETABLES]
+        self.crop_model.invest_level = inputs_dict[Crop.INVEST_LEVEL]
+        self.crop_model.configure_parameters(inputs_dict)
         #-- compute
-        population_df = input_dict.pop('population_df')
-        temperature_df = input_dict.pop('temperature_df')
+        population_df = inputs_dict.pop('population_df')
+        temperature_df = inputs_dict.pop('temperature_df')
         self.crop_model.compute(population_df, temperature_df)
-
-        biomass_production_df = self.crop_model.mix_detailed_production[['years', 'Total (Mt)']]
-        biomass_production_df = biomass_production_df.rename(columns={'Total (Mt)': "biomass_dry (Mt)"})
-
+        
+        techno_production = self.crop_model.mix_detailed_production[['years', 'Total (TWh)']]
+        #Scale production TWh -> PWh
+        techno_production = techno_production.rename(columns={'Total (TWh)': "biomass_dry (TWh)"})
+        for column in techno_production.columns:
+            if column == 'years':
+                continue
+            techno_production[column] = techno_production[column].values / \
+                inputs_dict['scaling_factor_techno_production']
         outputs_dict = {
             'food_land_surface_df': self.crop_model.food_land_surface_df,
             'total_food_land_surface': self.crop_model.total_food_land_surface,
@@ -226,9 +244,12 @@ class CropDiscipline(ClimateEcoDiscipline):
             'mix_detailed_prices': self.crop_model.mix_detailed_prices,
             'cost_details': self.crop_model.cost_details,
             'mix_detailed_production': self.crop_model.mix_detailed_production,
-            'biomass_production_df': biomass_production_df,
-            'biomass_price_df': self.crop_model.biomass_price_df,
-            'land_demand_df': self.crop_model.land_demand_df,
+            'techno_production': techno_production,
+            'techno_prices': self.crop_model.techno_prices,
+            'land_use_required': self.crop_model.land_use_required,
+            'techno_consumption': self.crop_model.techno_consumption, # output at zero
+            'techno_consumption_woratio': self.crop_model.techno_consumption_woratio, # output at zero
+            'CO2_emissions': self.crop_model.CO2_emissions, # output at zero
         }
 
         #-- store outputs
@@ -242,8 +263,10 @@ class CropDiscipline(ClimateEcoDiscipline):
         population_df = inputs_dict.pop('population_df')
         temperature_df = inputs_dict['temperature_df']
         scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
+        scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
         density_per_ha = inputs_dict['techno_infos_dict']['density_per_ha']
         residue_density_percentage = inputs_dict['techno_infos_dict']['residue_density_percentage']
+        calorific_value = inputs_dict['data_fuel_dict']['calorific_value']
         model = self.crop_model
         model.configure_parameters(inputs_dict)
         model.compute(population_df, temperature_df)
@@ -281,48 +304,48 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('meat_to_vegetables', 'meat_to_vegetables'), d_surface_d_meat_to_vegetable)
 
-        # gradients for biomass_production_df from total food land surface
+        # gradients for techno_production from total food land surface
         d_prod_dpopulation = model.compute_d_prod_dland_for_food(summ)
         d_prod_dtemperature = model.compute_d_prod_dland_for_food(d_total_d_temperature)
         d_prod_dred_to_white = model.compute_d_prod_dland_for_food(d_surface_d_red_to_white)
         d_prod_dmeat_to_vegetable = model.compute_d_prod_dland_for_food(d_surface_d_meat_to_vegetable)
 
         self.set_partial_derivative_for_other_types(
-            ('biomass_production_df', f'biomass_dry (Mt)'),
+            ('techno_production', 'biomass_dry (TWh)'),
             ('population_df', 'population'),
             d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('biomass_production_df', f'biomass_dry (Mt)'), ('temperature_df', 'temp_atmo'),
+            ('techno_production', 'biomass_dry (TWh)'), ('temperature_df', 'temp_atmo'),
             d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
-            ('biomass_production_df', f'biomass_dry (Mt)'), ('red_to_white_meat', 'red_to_white_meat'),
+            ('techno_production', 'biomass_dry (TWh)'), ('red_to_white_meat', 'red_to_white_meat'),
             d_prod_dred_to_white)
         self.set_partial_derivative_for_other_types(
-            ('biomass_production_df', f'biomass_dry (Mt)'), ('meat_to_vegetables', 'meat_to_vegetables'),
+            ('techno_production', 'biomass_dry (TWh)'), ('meat_to_vegetables', 'meat_to_vegetables'),
             d_prod_dmeat_to_vegetable)
 
-        # gradients for biomass_production_df from invest
+        # gradients for techno_production from invest
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(
-            ('biomass_production_df', f'biomass_dry (Mt)'),
+            ('techno_production', 'biomass_dry (TWh)'),
             ('invest_level', 'invest'),
-            dprod_dinvest * scaling_factor_invest_level)
+            dprod_dinvest * scaling_factor_invest_level * calorific_value / scaling_factor_techno_production)
 
         # gradient for land demand
         self.set_partial_derivative_for_other_types(
-            ('land_demand_df', 'Crop for energy (Gha)'),
+            ('land_use_required', 'Crop for Energy (Gha)'),
             ('invest_level', 'invest'),
-            dprod_dinvest * scaling_factor_invest_level * (1 - residue_density_percentage) / density_per_ha)
+            dprod_dinvest * scaling_factor_invest_level * (1 - residue_density_percentage) / density_per_ha * calorific_value)
 
         self.set_partial_derivative_for_other_types(
-            ('land_demand_df', 'Crop for food (Gha)'), ('population_df', 'population'), summ)
+            ('land_use_required', 'Crop for Food (Gha)'), ('population_df', 'population'), summ)
         self.set_partial_derivative_for_other_types(
-            ('land_demand_df', 'Crop for food (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
+            ('land_use_required', 'Crop for Food (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
         self.set_partial_derivative_for_other_types(
-            ('land_demand_df', 'Crop for food (Gha)'), ('red_to_white_meat', 'red_to_white_meat'),
+            ('land_use_required', 'Crop for Food (Gha)'), ('red_to_white_meat', 'red_to_white_meat'),
             d_surface_d_red_to_white)
         self.set_partial_derivative_for_other_types(
-            ('land_demand_df', 'Crop for food (Gha)'), ('meat_to_vegetables', 'meat_to_vegetables'),
+            ('land_use_required', 'Crop for Food (Gha)'), ('meat_to_vegetables', 'meat_to_vegetables'),
             d_surface_d_meat_to_vegetable)
 
     def get_chart_filter_list(self):
@@ -495,14 +518,14 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         if 'Crop Energy' in chart_list:
 
-            mix_detailed_production = self.get_sosdisc_outputs(
-                'mix_detailed_production')
-            land_demand_df = self.get_sosdisc_outputs(
-                'land_demand_df')
-            mix_detailed_prices = self.get_sosdisc_outputs('mix_detailed_prices')
-            data_fuel_dict = self.get_sosdisc_inputs('data_fuel_dict')
-            cost_details = self.get_sosdisc_outputs('cost_details')
-            invest_level = self.get_sosdisc_inputs('invest_level') * self.get_sosdisc_inputs('scaling_factor_invest_level')
+            mix_detailed_production = deepcopy(self.get_sosdisc_outputs(
+                'mix_detailed_production'))
+            land_use_required = deepcopy(self.get_sosdisc_outputs(
+                'land_use_required'))
+            mix_detailed_prices = deepcopy(self.get_sosdisc_outputs('mix_detailed_prices'))
+            data_fuel_dict = deepcopy(self.get_sosdisc_inputs('data_fuel_dict'))
+            cost_details = deepcopy(self.get_sosdisc_outputs('cost_details'))
+            invest_level = deepcopy(self.get_sosdisc_inputs('invest_level') * self.get_sosdisc_inputs('scaling_factor_invest_level'))
             years = list(prod_df.index)
 
             # ------------------------------------------
@@ -524,7 +547,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
             # ------------------------------------------
             # PRODUCTION (Mt)
-            chart_name = 'Crop for energy production'
+            chart_name = 'Crop for Energy production'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Crop mass for energy production [Mt]',
                                                  chart_name=chart_name)
@@ -533,36 +556,36 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             for crop in mix_detailed_production:
                 if crop != 'years':
-                    ordonate_data = list(mix_detailed_production[crop])
+                    ordonate_data = list(mix_detailed_production[crop] * data_fuel_dict['calorific_value'])
                     new_series = InstanciatedSeries(
-                        years, ordonate_data, crop.replace("(Mt)", "") , 'lines', visible_line)
+                        years, ordonate_data, crop.replace("(TWh)", "") , 'lines', visible_line)
                     new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
             # ------------------------------------------
             # PRODUCTION (TWh)
-            chart_name = 'Crop for energy production'
+            chart_name = 'Crop for Energy production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop for energy production [TWh]',
+            new_chart = TwoAxesInstanciatedChart('years', 'Crop for Energy production [TWh]',
                                                  chart_name=chart_name)
 
             visible_line = True
 
             for crop in mix_detailed_production:
                 if crop != 'years':
-                    ordonate_data = list(mix_detailed_production[crop] * data_fuel_dict['calorific_value'])
+                    ordonate_data = list(mix_detailed_production[crop])
                     new_series = InstanciatedSeries(
-                        years, ordonate_data, crop.replace("(Mt)", "") , 'lines', visible_line)
+                        years, ordonate_data, crop.replace("(TWh)", "") , 'lines', visible_line)
                     new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
             # ------------------------------------------
             # LAND USE (Gha)
-            chart_name = 'Land demand for Crop for energy'
+            chart_name = 'Land demand for Crop for Energy'
 
             land_demand_chart = TwoAxesInstanciatedChart('years', 'Land demand [Gha]',
                                                  chart_name=chart_name)
-            ordonate_data = list(land_demand_df['Crop for energy (Gha)'])
+            ordonate_data = list(land_use_required['Crop for Energy (Gha)'])
             land_demand_serie = InstanciatedSeries(
                         years, ordonate_data, 'Crop' , 'lines', visible_line)
             land_demand_chart.series.append(land_demand_serie)
