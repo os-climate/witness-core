@@ -46,7 +46,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'biomass_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
+        'biomass_list': {'type': 'string_list', 'default': [], 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'lost_capital_obj_ref': {'type': 'float', 'default': 1.0e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'lost_capital_limit': {'type': 'float', 'default': 300, 'user_level': 2,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
