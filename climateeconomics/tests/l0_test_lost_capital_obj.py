@@ -69,6 +69,7 @@ class LostCapitalObjDiscTest(unittest.TestCase):
         lost_capital_ref = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
                                          'reforestation': loss_ref})
         lost_capital_obj_ref = 100.
+        delta_years = year_end + 1 - year_start
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
                        f'{self.name}.lost_capital_obj_ref': lost_capital_obj_ref,
@@ -106,7 +107,7 @@ class LostCapitalObjDiscTest(unittest.TestCase):
                              lost_capital_df['Sum of lost capital'].values.tolist())
 
         self.assertEqual(lost_capital_objective,
-                         sum_lost_capital_th * (year_end - year_start + 1) / lost_capital_obj_ref)
+                         sum_lost_capital_th * (year_end - year_start + 1) / lost_capital_obj_ref / delta_years)
         print(lost_capital_objective)
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

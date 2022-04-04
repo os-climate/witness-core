@@ -64,7 +64,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                Forest.REFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                                  'dataframe_descriptor': {'years': ('float', None, False),
                                                                           'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
                }
 
     DESC_OUT = {

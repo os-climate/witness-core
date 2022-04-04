@@ -64,7 +64,7 @@ class Study(StudyManager):
         self.year_end = year_end
         self.time_step = time_step
         self.nb_poles = 8
-
+        self.additional_ns = ''
     def setup_usecase(self):
 
         setup_data_list = []
@@ -105,7 +105,7 @@ class Study(StudyManager):
 
         forest_input[self.study_name +
                      '.deforestation_surface'] = deforestation_surface_df
-        forest_input[self.study_name +
+        forest_input[self.study_name + self.additional_ns+
                      '.forest_investment'] = self.forest_invest_df
 
         setup_data_list.append(forest_input)
