@@ -167,12 +167,12 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         lost_capital_df = outputs_dict['lost_capital_df']
         input_capital_list = [
             key for key in inputs_dict.keys() if key.endswith('lost_capital')]
-
+        delta_years = len(lost_capital_df['years'].values)
         for lost_capital in input_capital_list:
             column_name = [
                 col for col in inputs_dict[lost_capital].columns if col != 'years'][0]
             self.set_partial_derivative_for_other_types(
-                ('lost_capital_objective', ), (lost_capital, column_name), np.ones(len(years)) / lost_capital_obj_ref)
+                ('lost_capital_objective', ), (lost_capital, column_name), np.ones(len(years)) / lost_capital_obj_ref / delta_years)
 
 
     def get_chart_filter_list(self):
