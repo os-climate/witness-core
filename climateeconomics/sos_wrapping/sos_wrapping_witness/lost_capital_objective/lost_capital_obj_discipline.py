@@ -46,8 +46,8 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'biomass_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'lost_capital_obj_ref': {'type': 'float', 'default': 1.0e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'biomass_list': {'type': 'string_list', 'default': [], 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
+        'lost_capital_obj_ref': {'type': 'float', 'default': 10., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'lost_capital_limit': {'type': 'float', 'default': 300, 'user_level': 2,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
@@ -168,6 +168,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         lost_capital_limit = inputs_dict['lost_capital_limit']
         outputs_dict = self.get_sosdisc_outputs()
         lost_capital_df = outputs_dict['lost_capital_df']
+        delta_years = len(lost_capital_df['years'].values)
         input_capital_list = [
             key for key in inputs_dict.keys() if key.endswith('lost_capital')]
         dlost_capital_cons = self.compute_dlost_capital_constraint_dlost_capital(
@@ -176,7 +177,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
             column_name = [
                 col for col in inputs_dict[lost_capital].columns if col != 'years'][0]
             self.set_partial_derivative_for_other_types(
-                ('lost_capital_objective', ), (lost_capital, column_name), np.ones(len(years)) / lost_capital_obj_ref)
+                ('lost_capital_objective', ), (lost_capital, column_name), np.ones(len(years)) / lost_capital_obj_ref / delta_years)
             self.set_partial_derivative_for_other_types(
                 ('lost_capital_cons', ), (lost_capital, column_name), dlost_capital_cons)
 
@@ -193,8 +194,8 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         #invest_objective = abs_delta
 
         idt = np.identity(len(lost_capital_df['Sum of lost capital'].values))
-
-        ddelta_dlost_capital = idt / lost_capital_obj_ref
+        delta_years = len(lost_capital_df['years'].values)
+        ddelta_dlost_capital = idt / lost_capital_obj_ref / delta_years
 
         dabs_ddelta_dlost_capital = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
             delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dlost_capital
