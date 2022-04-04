@@ -131,20 +131,20 @@ class LandUseV1():
 
         self.land_surface_df['Agriculture total (Gha)'] = [
             total_agriculture_surfaces] * number_of_data
-        self.land_surface_df['Agriculture total (Gha)'] = self.land_surface_df['Agriculture total (Gha)'] + self.land_surface_df['Added Agriculture (Gha)'] \
-            - self.land_surface_df['Deforestation (Gha)']
+        self.land_surface_df['Agriculture total (Gha)'] = self.land_surface_df['Agriculture total (Gha)'].values + self.land_surface_df['Added Agriculture (Gha)'].values \
+            - self.land_surface_df['Deforestation (Gha)'].values
 
-        self.land_surface_df.index = self.land_demand_df['years']
+        self.land_surface_df.index = self.land_demand_df['years'].values
 
         # remove land use by food from available land
-        self.land_surface_df['Agriculture (Gha)'] = self.land_surface_df['Agriculture total (Gha)'] - \
-            total_food_land_surface['total surface (Gha)']
+        self.land_surface_df['Agriculture (Gha)'] = self.land_surface_df['Agriculture total (Gha)'].values - \
+            total_food_land_surface['total surface (Gha)'].values
 
-        self.land_surface_df['Food Usage (Gha)'] = total_food_land_surface['total surface (Gha)']
+        self.land_surface_df['Food Usage (Gha)'] = total_food_land_surface['total surface (Gha)'].values
         # --------------------------------------
         # Land surface for food is coupled with crops energy input
         # To be removed and plug output from agriculture model directly!!
-        self.land_surface_for_food_df = pd.DataFrame({'years': self.land_demand_df['years'],
+        self.land_surface_for_food_df = pd.DataFrame({'years': self.land_demand_df['years'].values,
                                                       'Agriculture total (Gha)': total_food_land_surface['total surface (Gha)'].values})
 
         forest_surfaces = self.__extract_and_convert_superficie(
@@ -154,8 +154,8 @@ class LandUseV1():
 
         self.land_surface_df['Forest (Gha)'] = [
             forest_surfaces] * number_of_data
-        self.land_surface_df['Forest (Gha)'] = self.land_surface_df['Forest (Gha)'] + self.land_surface_df['Added Forest (Gha)'] \
-            + self.land_surface_df['Deforestation (Gha)']
+        self.land_surface_df['Forest (Gha)'] = self.land_surface_df['Forest (Gha)'].values + self.land_surface_df['Added Forest (Gha)'].values \
+            + self.land_surface_df['Deforestation (Gha)'].values
 
         demand_crops = self.__extract_and_make_sum(
             LandUseV1.AGRICULTURE_TECHNO)

@@ -52,8 +52,6 @@ class Crop():
     DIET_DF = 'diet_df'
     KG_TO_KCAL_DICT = 'kg_to_kcal_dict'
     KG_TO_M2_DICT = 'kg_to_m2_dict'
-    RED_TO_WHITE_MEAT = 'red_to_white_meat'
-    MEAT_TO_VEGETABLES = 'meat_to_vegetables'
     OTHER_USE_CROP = 'other_use_crop'
     FOOD_LAND_SURFACE_DF = 'food_land_surface_df'
     INVEST_LEVEL = 'invest_level'
