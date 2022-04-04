@@ -113,7 +113,7 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.co2_emissions_Gt'] = co2_emissions_gt
         values_dict[f'{self.name}.energy_mean_price'] = energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
-        values_dict[f'{self.name}.sub_mda_class'] = "MDANewtonRaphson"
+        values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"
         values_dict[f'{self.name}.n_processes'] = n_proc
         values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = co2_emissions_ccus_Gt
         values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = CO2_emissions_by_use_sources
@@ -122,7 +122,7 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.energy_list'] = []
         values_dict[f'{self.name}.ccs_list'] = []
         self.ee.load_study_from_input_dict(values_dict)
-
+        self.ee.configure()
         self.ee.execute()
         dm_dict_1 = deepcopy(self.ee.get_anonimated_data_dict())
         residual_history = self.ee.root_process.sub_mda_list[0].residual_history
@@ -147,7 +147,7 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.co2_emissions_Gt'] = co2_emissions_gt
         values_dict[f'{self.name}.energy_mean_price'] = energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
-        values_dict[f'{self.name}.sub_mda_class'] = "MDANewtonRaphson"
+        values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"
         values_dict[f'{self.name}.n_processes'] = n_proc
         values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = co2_emissions_ccus_Gt
         values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = CO2_emissions_by_use_sources
