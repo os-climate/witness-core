@@ -53,8 +53,6 @@ class Agriculture():
     DIET_DF = 'diet_df'
     KG_TO_KCAL_DICT = 'kg_to_kcal_dict'
     KG_TO_M2_DICT = 'kg_to_m2_dict'
-    RED_TO_WHITE_MEAT = 'red_to_white_meat'
-    MEAT_TO_VEGETABLES = 'meat_to_vegetables'
     OTHER_USE_AGRICULTURE = 'other_use_agriculture'
 
     FOOD_LAND_SURFACE_DF = 'food_land_surface_df'
@@ -79,8 +77,8 @@ class Agriculture():
         self.diet_df = self.param[Agriculture.DIET_DF]
         self.kg_to_kcal_dict = self.param[Agriculture.KG_TO_KCAL_DICT]
         self.kg_to_m2_dict = self.param[Agriculture.KG_TO_M2_DICT]
-        self.red_to_white_meat = self.param[Agriculture.RED_TO_WHITE_MEAT]
-        self.meat_to_vegetables = self.param[Agriculture.MEAT_TO_VEGETABLES]
+        self.red_meat_percentage = self.param['red_meat_percentage']
+        self.white_meat_percentage = self.param['white_meat_percentage']
         self.other_use_agriculture = self.param[Agriculture.OTHER_USE_AGRICULTURE]
         self.param_a = self.param['param_a']
         self.param_b = self.param['param_b']
@@ -128,13 +126,11 @@ class Agriculture():
         temperature_df.index = temperature_df['years'].values
         
         # construct the diet over time
-        update_diet_df = self.diet_change(self.diet_df, self.red_to_white_meat,
-                                          self.meat_to_vegetables)
-        self.updated_diet_df = deepcopy(update_diet_df)
+        self.updated_diet_df = deepcopy(self.update_diet())
 
         # compute the quantity of food consumed
         food_quantity_df = self.compute_quantity_of_food(
-            population_df, update_diet_df)
+            population_df, self.updated_diet_df)
 
         # compute the surface needed in m^2
         food_surface_df_before = self.compute_surface(
@@ -226,83 +222,38 @@ class Agriculture():
 
         return(result)
 
-    def diet_change(self, diet_df, red_to_white_meat, meat_to_vegetables):
-        """
-        update diet data
+    def update_diet(self):
+        '''
+            update diet data:
+                - compute new kcal/person/year from red and white meat
+                - update proportionally all vegetable kcal/person/year
+                - compute new diet_df
+        '''
+        starting_diet = self.diet_df
+        changed_diet_df = pd.DataFrame({'years': self.years})
 
-        @param diet_df: diet of the first year of the study (first year only)
-        @type diet_df: dataframe
-        @unit diet_df: kg/person/year
+        # compute the kcal changed of red meat:
+        # kg_food/person/year
+        changed_diet_df['red meat'] = starting_diet['red meat'].values[0] * self.red_meat_percentage / 100
+        changed_diet_df['white meat'] = starting_diet['white meat'].values[0] * self.white_meat_percentage / 100
 
-        @param red_to_white_meat: percentage of the red meat "transformed" into white meat, regarding base diet
-        @type diet_df: array
-        @unit diet_df: %
+        removed_red_meat_kcal = starting_diet['red meat'].values[0] * (1 - self.red_meat_percentage / 100) * self.kg_to_kcal_dict['red meat']
+        removed_white_meat_kcal = starting_diet['white meat'].values[0] * (1 - self.white_meat_percentage / 100) * self.kg_to_kcal_dict['white meat']
 
-        @param meat_to_vegetables:  percentage of the white meat "transformed" into fruit and vegetables, regarding base diet
-        @type diet_df: array
-        @unit diet_df: %
+        for key in starting_diet:
+            # compute new vegetable diet: add the removed_kcal/3 for each 3 category of vegetable
+            if key == 'fruits and vegetables' or key == 'potatoes' or key == 'rice and maize':
+                proportion = starting_diet[key].values[0] / \
+                             (starting_diet['fruits and vegetables'].values[0] + starting_diet['potatoes'].values[0] + starting_diet['rice and maize'].values[0])
+                changed_diet_df[key] = [starting_diet[key].values[0]] * len(self.years) + \
+                                       (removed_red_meat_kcal + removed_white_meat_kcal) * proportion / self.kg_to_kcal_dict[key]
+            # no impact on eggs and milk
+            elif key != 'red meat' and key != 'white meat':
+                changed_diet_df[key] = [starting_diet[key].values[0]] * len(self.years)
 
-        @param result: changed_diet_df : contain the updated data of the quantity of each food, for each year of the study
-        @param result: dataframe
-        @unit result: kg/person/year
-        """
-        unity_array = np.array([1.] * len(red_to_white_meat))
-        changed_diet_df = pd.DataFrame()
-        # compute the number of kcal of red meat to transfert to white meat
-        # /100 because red_to_white_meat is in %
-        removed_red_meat = diet_df['red meat'].values[0] * \
-            red_to_white_meat / 100
+        return changed_diet_df
 
-        # compute the kg of white meat needed to fill the kcal left by red meat
-        added_white_meat = removed_red_meat * \
-            self.kg_to_kcal_dict['red meat'] / \
-            self.kg_to_kcal_dict['white meat']
 
-        # update diet_df with new meat data
-        for key in diet_df:
-            if key == 'red meat':
-                changed_diet_df[key] = diet_df[key].values[0] * \
-                    (unity_array - red_to_white_meat / 100)
-            elif key == 'white meat':
-                changed_diet_df[key] = diet_df[key].values[0] * \
-                    unity_array + added_white_meat
-            else:
-                changed_diet_df[key] = diet_df[key].values[0] * \
-                    unity_array
-
-        # compute the number of kcal of white meat to transfert to vegetables
-        # /100 because meat_to_vegetables is in %
-        removed_white_meat = changed_diet_df['white meat'].values * \
-            meat_to_vegetables / 100 
-
-        # compute the kg of fruit and vegetables needed to fill the kcal
-        added_fruit = removed_white_meat * self.kg_to_kcal_dict['white meat'] / \
-            self.kg_to_kcal_dict['fruits and vegetables']
-
-        # update diet_df with new vegetables data
-        changed_diet_df['white meat'] = changed_diet_df['white meat'].values - \
-            removed_white_meat
-        changed_diet_df['fruits and vegetables'] = changed_diet_df['fruits and vegetables'] + added_fruit
-
-        changed_diet_df.index = np.arange(
-            self.year_start, self.year_end + 1, 1)
-
-        return(changed_diet_df)
-
-#     def convert_diet_kcal_to_percentage(self, diet_df):
-#         """
-#         """
-#         percentage_diet_df = diet_df
-#         sum = np.array([0] * len(percentage_diet_df.index))
-#
-#         for key in self.kg_to_kcal_dict.keys():
-#             percentage_diet_df[key] = percentage_diet_df[key] * \
-#                 self.kg_to_kcal_dict[key]
-#             sum = sum + percentage_diet_df[key]
-#
-#         percentage_diet_df = percentage_diet_df / sum
-#
-#         return(percentage_diet_df)
 
     def convert_surface_to_percentage(self, surface_df):
         """
@@ -343,63 +294,13 @@ class Agriculture():
         self.productivity_evolution = pd.DataFrame({"years": self.years, 'productivity_evolution': pdctivity_reduction})
         self.productivity_evolution.index = self.years
         #Apply this reduction to increase land surface needed
-        surface_df = surface_df_before.multiply(other = (1- pdctivity_reduction), axis=0)
+        surface_df = surface_df_before.multiply(other = (1- pdctivity_reduction.values), axis=0)
         
         return surface_df
 
-    def updated_diet_expression(self, column_name):
-        """
-        gives the expression of the updated diet for each column.
-        if  column is red meat : 
-         updated_red_meat = diet_df[red meat] * (1 - convert_to_white_meat_factor)
-         updated_white_meat = diet_df[white_meat] + added_WM - removed_WM
-
-
-        @param column_name: name of the column
-        @type column_name: string
-        @unit column_name: none
-
-        @param result: expression of the updated diet with the input data
-        @type result: array
-        @unit result: kg/person/year
-        """
-        unity_array = np.array([1.] * (self.year_end - self.year_start + 1))
-        if column_name == "red meat":
-            result = self.diet_df[column_name].values[0] * \
-                (unity_array - self.red_to_white_meat / 100)
-
-        elif column_name == "white meat":
-            removed_red_meat = self.diet_df['red meat'].values[0] * \
-                self.red_to_white_meat / 100
-            added_white_meat = removed_red_meat * \
-                self.kg_to_kcal_dict['red meat'] / \
-                self.kg_to_kcal_dict['white meat']
-            removed_white_meat = (self.diet_df["white meat"].values[0] * unity_array + added_white_meat) * \
-                self.meat_to_vegetables / 100
-            result = self.diet_df[column_name].values[0] * \
-                unity_array + added_white_meat - removed_white_meat
-
-        elif column_name == 'fruits and vegetables':
-            removed_red_meat = self.diet_df['red meat'].values[0] * \
-                self.red_to_white_meat / 100
-            added_white_meat = removed_red_meat * \
-                self.kg_to_kcal_dict['red meat'] / \
-                self.kg_to_kcal_dict['white meat']
-            removed_white_meat = (self.diet_df['white meat'].values[0] * unity_array + added_white_meat) * \
-                self.meat_to_vegetables / 100
-            added_fruits_and_vegetables = removed_white_meat * self.kg_to_kcal_dict['white meat'] / \
-                self.kg_to_kcal_dict['fruits and vegetables']
-            result = self.diet_df[column_name].values[0] * \
-                unity_array + added_fruits_and_vegetables
-
-        else:
-            result = self.diet_df[column_name
-                                  ].values[0] * unity_array
-        return(result)
-
     ####### Gradient #########
 
-    def d_land_surface_d_population(self, column_name):
+    def d_land_surface_d_population(self, column_name_Gha):
         """
         Compute the derivate of food_land_surface_df wrt population, for a specific column.
         derivate_step1 = diet_expression(kg/person/year) * kg_to_m2 / 1e7
@@ -409,11 +310,10 @@ class Agriculture():
         need self.column_dict because input column get '(Gha)' at the end
         / 1e7 comes from the unit : *1e6 (population in million) /1e4 (m2 to ha) /1e9 (ha to Gha)
         """
-        updated_diet_food = self.updated_diet_expression(
-            self.column_dict[column_name])
         number_of_values = (self.year_end - self.year_start + 1)
+        column_name = self.column_dict[column_name_Gha]
         d_land_surface_d_pop_before = np.identity(
-            number_of_values) * updated_diet_food * self.kg_to_m2_dict[self.column_dict[column_name]] / 1e7
+            number_of_values) * self.updated_diet_df[column_name].values * self.kg_to_m2_dict[column_name] / 1e7
         #Add climate change impact 
         d_land_surface_d_pop = d_land_surface_d_pop_before * (1 - self.prod_reduction.values)
         
@@ -459,52 +359,54 @@ class Agriculture():
         
         return d_food_land_surface_d_temperature
 
-    def d_surface_d_red_to_white(self, population_df):
+    def d_surface_d_red_meat_percentage(self, population_df):
         """
-        Compute the derivative of total food land surface wrt red to white percentage design variable
+        Compute the derivative of total food land surface wrt red meat percentage design variable
         """
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
         kg_food_to_surface = self.kg_to_m2_dict
         #red to white meat value influences red meat, white meat, and vegetable surface
-        red_meat_diet_grad = - self.diet_df['red meat'].values[0] / 100 
-        white_meat_diet_grad = self.diet_df['red meat'].values[0] / 100 * self.kg_to_kcal_dict['red meat'] / self.kg_to_kcal_dict['white meat'] \
-            * (1 - self.meat_to_vegetables / 100)
-        fruits_diet_grad = self.diet_df['red meat'].values[0] / 100 * self.kg_to_kcal_dict['red meat'] / self.kg_to_kcal_dict['white meat'] \
-            * self.meat_to_vegetables / 100 * self.kg_to_kcal_dict['white meat'] / self.kg_to_kcal_dict['fruits and vegetables']
-        
-        red_meat_quantity_grad = red_meat_diet_grad * population_df['population'] * 1e6
-        white_meat_quantity_grad = white_meat_diet_grad * population_df['population'] * 1e6
-        fruits_quantity_grad = fruits_diet_grad * population_df['population'] * 1e6
+        red_meat_diet_grad = self.diet_df['red meat'].values[0] / 100 * kg_food_to_surface['red meat']
 
-        red_meat_surface_grad = red_meat_quantity_grad * kg_food_to_surface['red meat'] * self.hatom2 / 1e9
-        white_meat_surface_grad = white_meat_quantity_grad * kg_food_to_surface['white meat'] * self.hatom2 / 1e9
-        fruits_meat_quantity_grad = fruits_quantity_grad * kg_food_to_surface['fruits and vegetables'] * self.hatom2 / 1e9
 
-        total_surface_grad = red_meat_surface_grad + white_meat_surface_grad + fruits_meat_quantity_grad
+        removed_red_kcal = - self.diet_df['red meat'].values[0] / 100 * self.kg_to_kcal_dict['red meat']
+
+        vegetables_column_names = ['fruits and vegetables', 'potatoes', 'rice and maize']
+        # sub total gradient is the sum of all gradients of food category
+        sub_total_surface_grad = red_meat_diet_grad
+        for vegetable_name in vegetables_column_names:
+
+            proportion = self.diet_df[vegetable_name].values[0] / \
+                                 (self.diet_df['fruits and vegetables'].values[0] + self.diet_df['potatoes'].values[0] + self.diet_df['rice and maize'].values[0])
+            sub_total_surface_grad =  sub_total_surface_grad + removed_red_kcal * proportion  / self.kg_to_kcal_dict[vegetable_name] * kg_food_to_surface[vegetable_name]
+
+        total_surface_grad = sub_total_surface_grad * population_df['population'].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
 
         return total_surface_climate_grad.values * idty
 
-    def d_surface_d_meat_to_vegetable(self, population_df):
+    def d_surface_d_white_meat_percentage(self, population_df):
         """
-        Compute the derivative of total food land surface wrt meat to vegetable percentage design variable
+        Compute the derivative of total food land surface wrt white meat percentage design variable
         """
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
         kg_food_to_surface = self.kg_to_m2_dict
-        #meat to vegetables value influences white meat and vegetable surface 
-        white_meat_diet_grad = - (self.diet_df['white meat'].values[0] + self.diet_df['red meat'].values[0] * \
-            self.red_to_white_meat / 100 * self.kg_to_kcal_dict['red meat'] / self.kg_to_kcal_dict['white meat']) / 100
-        fruits_diet_grad = - white_meat_diet_grad * self.kg_to_kcal_dict['white meat'] / self.kg_to_kcal_dict['fruits and vegetables']
-        
-        white_meat_quantity_grad = white_meat_diet_grad * population_df['population'] * 1e6
-        fruits_quantity_grad = fruits_diet_grad * population_df['population'] * 1e6
+        #red to white meat value influences red meat, white meat, and vegetable surface
+        white_meat_diet_grad = self.diet_df['white meat'].values[0] / 100 * kg_food_to_surface['white meat']
+        removed_white_kcal = - self.diet_df['white meat'].values[0] / 100 * self.kg_to_kcal_dict['white meat']
 
-        white_meat_surface_grad = white_meat_quantity_grad * kg_food_to_surface['white meat'] * self.hatom2 / 1e9
-        fruits_meat_quantity_grad = fruits_quantity_grad * kg_food_to_surface['fruits and vegetables'] * self.hatom2 / 1e9
+        vegetables_column_names = ['fruits and vegetables', 'potatoes', 'rice and maize']
+        # sub total gradient is the sum of all gradients of food category
+        sub_total_surface_grad = white_meat_diet_grad
+        for vegetable_name in vegetables_column_names:
 
-        total_surface_grad = white_meat_surface_grad + fruits_meat_quantity_grad
+            proportion = self.diet_df[vegetable_name].values[0] / \
+                                 (self.diet_df['fruits and vegetables'].values[0] + self.diet_df['potatoes'].values[0] + self.diet_df['rice and maize'].values[0])
+            sub_total_surface_grad =  sub_total_surface_grad + removed_white_kcal * proportion  / self.kg_to_kcal_dict[vegetable_name] * kg_food_to_surface[vegetable_name]
+
+        total_surface_grad = sub_total_surface_grad * population_df['population'].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
 
         return total_surface_climate_grad.values * idty

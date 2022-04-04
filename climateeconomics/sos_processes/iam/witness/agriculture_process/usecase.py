@@ -93,16 +93,8 @@ class Study(StudyManager):
             {"years": years, "population": population})
         population_df.index = years
 
-        red_to_white_meat = np.linspace(0, 50, year_range)
-        meat_to_vegetables = np.linspace(0, 50, year_range)
-        red_to_white_meat_df = pd.DataFrame(
-            {'years': years, 'red_to_white_meat_percentage': red_to_white_meat})
-        meat_to_vegetables_df = pd.DataFrame(
-            {'years': years, 'meat_to_vegetables_percentage': meat_to_vegetables})
-        red_to_white_meat_df.index = years
-        meat_to_vegetables_df.index = years
-        self.red_to_white_meat_df = red_to_white_meat_df
-        self.meat_to_vegetables_df = meat_to_vegetables_df
+        self.red_meat_percentage = np.linspace(100, 30, year_range)
+        self.white_meat_percentage = np.linspace(100, 30, year_range)
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -123,9 +115,9 @@ class Study(StudyManager):
                           '.diet_df'] = diet_df
 
         agriculture_input[self.study_name +
-                          '.red_to_white_meat'] = red_to_white_meat
+                          '.red_meat_percentage'] = self.red_meat_percentage
         agriculture_input[self.study_name +
-                          '.meat_to_vegetables'] = meat_to_vegetables
+                          '.white_meat_percentage'] = self.white_meat_percentage
         agriculture_input[self.study_name + self.agriculture_name +
                           '.other_use_agriculture'] = other
 
@@ -137,12 +129,12 @@ class Study(StudyManager):
 
         setup_data_list.append(agriculture_input)
 
-        red_to_white_meat_ctrl = np.linspace(15.0, 15.0, self.nb_poles)
-        meat_to_vegetables_ctrl = np.linspace(15.0, 15.0, self.nb_poles)
+        red_meat_percentage_ctrl = np.linspace(100.0, 100.0, self.nb_poles)
+        meat_to_vegetables_ctrl = np.linspace(100.0, 100.0, self.nb_poles)
 
         design_space_ctrl_dict = {}
-        design_space_ctrl_dict['red_to_white_meat_ctrl'] = red_to_white_meat_ctrl
-        design_space_ctrl_dict['meat_to_vegetables_ctrl'] = meat_to_vegetables_ctrl
+        design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
+        design_space_ctrl_dict['white_meat_percentage_ctrl'] = meat_to_vegetables_ctrl
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
@@ -152,10 +144,10 @@ class Study(StudyManager):
     def setup_initial_design_variable(self):
 
         init_design_var_df = pd.DataFrame(
-            columns=['red_to_white_meat_percentage', 'meat_to_vegetables_percentage'], index=arange(self.year_start, self.year_end + 1, self.time_step))
+            columns=['red_meat_percentage', 'white_meat_percentage'], index=arange(self.year_start, self.year_end + 1, self.time_step))
 
-        init_design_var_df['red_to_white_meat_percentage'] = self.red_to_white_meat_df['red_to_white_meat_percentage']
-        init_design_var_df['meat_to_vegetables_percentage'] = self.meat_to_vegetables_df['meat_to_vegetables_percentage']
+        init_design_var_df['red_meat_percentage'] = self.red_meat_percentage
+        init_design_var_df['white_meat_percentage'] = self.white_meat_percentage
 
         return init_design_var_df
 
@@ -163,15 +155,15 @@ class Study(StudyManager):
             #-- energy optimization inputs
             # Design Space
         dim_a = len(
-            self.red_to_white_meat_df['red_to_white_meat_percentage'].values)
-        lbnd1 = [0.0] * dim_a
-        ubnd1 = [70.0] * dim_a
+            self.red_meat_percentage)
+        lbnd1 = [30.0] * dim_a
+        ubnd1 = [100.0] * dim_a
 
         # Design variables:
         self.update_dspace_dict_with(
-            'red_to_white_meat_array', self.red_to_white_meat_df['red_to_white_meat_percentage'].values, lbnd1, ubnd1)
+            'red_meat_percentage_array', self.red_meat_percentage, lbnd1, ubnd1)
         self.update_dspace_dict_with(
-            'meat_to_vegetables_array', self.meat_to_vegetables_df['meat_to_vegetables_percentage'].values, lbnd1, ubnd1)
+            'white_meat_percentage_array', self.white_meat_percentage, lbnd1, ubnd1)
 
     def setup_design_space_ctrl_new(self):
         # Design Space
@@ -180,10 +172,10 @@ class Study(StudyManager):
         ddict['dspace_size'] = 0
 
         # Design variables:
-        update_dspace_dict_with(ddict, 'red_to_white_meat_ctrl',
-                                list(self.design_space_ctrl['red_to_white_meat_ctrl'].values), [0.0] * self.nb_poles, [70.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
-        update_dspace_dict_with(ddict, 'meat_to_vegetables_ctrl',
-                                list(self.design_space_ctrl['meat_to_vegetables_ctrl'].values), [0.0] * self.nb_poles, [70.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
+        update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
+                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [30.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
+                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [30.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         return ddict
 
@@ -195,12 +187,12 @@ if '__main__' == __name__:
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
+    ppf = PostProcessingFactory()
+    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+        filters = ppf.get_post_processing_filters_by_discipline(
+             disc)
+        graph_list = ppf.get_post_processing_by_discipline(
+             disc, filters, as_json=False)
 
-    #     for graph in graph_list:
-    #         graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()

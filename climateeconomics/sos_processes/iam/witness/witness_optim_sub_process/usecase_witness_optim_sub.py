@@ -145,16 +145,16 @@ class Study(ClimateEconomicsStudyManager):
                                                         'index_name': 'years',
                                                         'namespace_in': 'ns_witness',
                                                         'namespace_out': 'ns_witness'}
-        dv_arrays_dict[f'{self.witness_uc.study_name}.red_to_white_meat_ctrl'] = dspace_df[f'red_to_white_meat_ctrl']['value']
-        design_var_descriptor['red_to_white_meat_ctrl'] = {'out_name': 'red_to_white_meat',
+        dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = dspace_df[f'red_meat_percentage_ctrl']['value']
+        design_var_descriptor['red_meat_percentage_ctrl'] = {'out_name': 'red_meat_percentage',
                                                        'out_type': 'array',
                                                        'index': years,
                                                        'index_name': 'year',
                                                        'namespace_in': 'ns_witness',
                                                        'namespace_out': 'ns_witness'
                                                        }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.meat_to_vegetables_ctrl'] = dspace_df[f'meat_to_vegetables_ctrl']['value']
-        design_var_descriptor['meat_to_vegetables_ctrl'] = {'out_name': 'meat_to_vegetables',
+        dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_percentage_ctrl'] = dspace_df[f'white_meat_percentage_ctrl']['value']
+        design_var_descriptor['white_meat_percentage_ctrl'] = {'out_name': 'white_meat_percentage',
                                                         'out_type': 'array',
                                                         'index': years,
                                                         'index_name': 'years',

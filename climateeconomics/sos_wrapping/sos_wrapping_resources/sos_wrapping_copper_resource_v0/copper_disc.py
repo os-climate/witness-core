@@ -9,6 +9,19 @@ import numpy as np
 
 
 class CopperDisc(SoSDiscipline):
+
+    _ontology_data = {
+        'label': 'Copper Resource Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fa-solid fa-reel',
+        'version': '',
+    }
     _maturity = 'Fake'
 
     DESC_IN = { 'copper_demand': {'type': 'dataframe', 'unit': 'Mt'},

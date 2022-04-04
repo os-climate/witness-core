@@ -121,16 +121,8 @@ class Study(EnergyMixStudyManager):
             {"years": years, "population": population})
         population_df.index = years
 
-        red_to_white_meat = np.linspace(0, 50, year_range)
-        meat_to_vegetables = np.linspace(0, 50, year_range)
-        red_to_white_meat_df = pd.DataFrame(
-            {'years': years, 'red_to_white_meat_percentage': red_to_white_meat})
-        meat_to_vegetables_df = pd.DataFrame(
-            {'years': years, 'meat_to_vegetables_percentage': meat_to_vegetables})
-        red_to_white_meat_df.index = years
-        meat_to_vegetables_df.index = years
-        self.red_to_white_meat_df = red_to_white_meat_df
-        self.meat_to_vegetables_df = meat_to_vegetables_df
+        self.red_meat_percentage = np.linspace(100, 50, year_range)
+        self.white_meat_percentage = np.linspace(100, 50, year_range)
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -202,8 +194,8 @@ class Study(EnergyMixStudyManager):
             values_dict.update(
                 {f'{self.study_name}.{energy_name}.Crop.land_surface_for_food_df': land_surface_for_food,
                  f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
-                 f'{self.study_name}.{energy_name}.red_to_white_meat': red_to_white_meat,
-                 f'{self.study_name}.{energy_name}.meat_to_vegetables': meat_to_vegetables,
+                 f'{self.study_name}.{energy_name}.red_meat_percentage': self.red_meat_percentage,
+                 f'{self.study_name}.{energy_name}.white_meat_percentage': self.white_meat_percentage,
                  f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
                  f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
                  f'{self.study_name}.forest_investment': self.forest_invest_df,
@@ -235,15 +227,15 @@ class Study(EnergyMixStudyManager):
             #-- energy optimization inputs
             # Design Space
         dim_a = len(
-            self.red_to_white_meat_df['red_to_white_meat_percentage'].values)
-        lbnd1 = [0.0] * dim_a
-        ubnd1 = [70.0] * dim_a
+            self.red_meat_percentage)
+        lbnd1 = [30.0] * dim_a
+        ubnd1 = [100.0] * dim_a
 
         # Design variables:
         self.update_dspace_dict_with(
-            'red_to_white_meat_array', self.red_to_white_meat_df['red_to_white_meat_percentage'].values, lbnd1, ubnd1)
+            'red_meat_percentage_array', self.red_meat_percentage, lbnd1, ubnd1)
         self.update_dspace_dict_with(
-            'meat_to_vegetables_array', self.meat_to_vegetables_df['meat_to_vegetables_percentage'].values, lbnd1, ubnd1)
+            'white_meat_percentage_array', self.white_meat_percentage, lbnd1, ubnd1)
 
     def setup_design_space_ctrl_new(self):
         # Design Space
@@ -252,10 +244,10 @@ class Study(EnergyMixStudyManager):
         ddict['dspace_size'] = 0
 
         # Design variables:
-        update_dspace_dict_with(ddict, 'red_to_white_meat_ctrl',
-                                list(self.design_space_ctrl['red_to_white_meat_ctrl'].values), [0.0] * self.nb_poles, [70.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
-        update_dspace_dict_with(ddict, 'meat_to_vegetables_ctrl',
-                                list(self.design_space_ctrl['meat_to_vegetables_ctrl'].values), [0.0] * self.nb_poles, [70.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
+        update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
+                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [30.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
+                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [30.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         return ddict
 

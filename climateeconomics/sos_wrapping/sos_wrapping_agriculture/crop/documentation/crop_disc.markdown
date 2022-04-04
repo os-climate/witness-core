@@ -82,8 +82,8 @@ By default, the values are:
 |2566|1860|550|1500|1150|670|624|kcal/kg|
 
 These data are extracted from [^9].
-* **red to white meat percentage**, gives the percentage of red meat that will be converted into white meat.
-* **meat to vegetables percentage**, gives the percentage of white meat that will be converted into vegetables and fruits.
+* **red meat calory percentage**, gives the percentage of red meat kcal.
+* **white meat calory percentage**, gives the percentage of white meat kcal.
 * **other_use_agriculture**, gives the average ha per person for the use of agriculture in other way that the 7 food types. It mainly takes into account :
 cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) - tobacco - yams - natural rubber - millet - textile fiber (cotton and other)... 
 By default, it is set to 0.102ha/person to represent around of 800 millions of ha for a population of 7.8billions of people. [^10]
@@ -134,32 +134,40 @@ cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) -
 This section aims to explain how the diet change works in the agriculture model.
 
 In this model, the user is able to change diet over time, then, to observe the effect of the changes.
-First of all, when a diet change, one of the risk is to be undernourished. To prevent that, the diet will remain at the same amount of kcal all the time.
-When the term "convert" a food X to an other Y is used, it means suppress a quantity of food X, which corresponds to an amount of E kcal, and then add a amount of food Y that fill the E kcal removed.
+First of all, when a diet change, one of the risk is to be undernourished. 
+To prevent that, the diet will remain at the same amount of kcal all the time.
+When the term "convert" a food X to an other Y is used, it means suppress a quantity of food X, which corresponds to an amount of E kcal, 
+and then add a amount of food Y that fill the E kcal removed.
 
 The model starts from the base-diet given in input, **diet_df**.
-The first change is to convert red meat into white meat, using **red_to_white_meat**. This will give the percentage converted, based on the base-diet.
-For red_to_white_meat = 0%, nothing will change.
-For red_to_white_meat = 100%, all red meat is removed, and missing kcal are filled by additional white meat.
+The first change is to convert red meat and white meat, using **red_meat_percentage** and **white_meat_percentage** to vegetables (fruit and vegetables, potatoes and rice and maize).
+This will give the percentage converted, based on the base-diet.
+For red_meat_percentage = 100%, nothing will change.
+For red_meat_percentage = 0%, all red meat is removed, and missing kcal are filled by additional vegetables.
+Eggs and milk are not impacted.
+
 The following picture shows the different steps.
 ![](diet_update.PNG)
 
-First, the quantity of removed red meat is calculated:
-$$red\_meat\_removed = base\_diet\_red\_meat * red\_to\_white\_meat$$
+First, the new quantity of red meat is calculated:
+$$base\_diet\_red\_meat = base\_diet\_red\_meat * red\_meat\_percentage / 100$$
 
 This red\_meat\_removed corresponds to a quantity of kcal determined by:
-$$energy\_removed = red\_meat\_removed * kg\_to\_kcal\_red\_meat$$
+$$red\_energy\_removed = base\_diet\_red\_meat * (1 - red\_meat\_percentage / 100) * kg\_to\_kcal\_red\_meat$$
 
-Then, the quantity of white meat needed to fill this energy is:
-$$added\_white\_meat = energy\_removed / kg\_to\_kcal\_white\_meat$$
+Then, the new quantity of white meat is calculated:
+$$base\_diet\_white\_meat = base\_diet\_white\_meat * white\_meat\_percentage / 100$$
 
-Finally, the diet has to be updated with the new data:
-$$base\_diet\_red\_meat = base\_diet\_red\_meat - red\_meat\_removed$$
-$$base\_diet\_white\_meat = base\_diet\_white\_meat + added\_white\_meat$$
+This white\_meat\_removed corresponds to a quantity of kcal determined by:
+$$white\_energy\_removed = base\_diet\_white\_meat * (1 - white\_meat\_percentage / 100) * kg\_to\_kcal\_white\_meat$$
 
-The second change allowed is the conversion of white meat to fruits and vegetables. It uses exactly the same methods and steps than the red to white meat change. 
+Finally, the diet has to be updated with the conversion into vegetables:
+the amount of calory is proportionaly reported to the vegetables.
+for the 'fruit and vegetables' diet:
+$$proportion = base\_diet\_fruit\_and\_vegetables / (base\_diet\_fruit\_and\_vegetables + base\_diet\_potatoes + base\_diet\_rice\_and\_maize)$$
+$$base\_diet\_fruit\_and\_vegetables += (red\_energy\_removed + white\_energy\_removed) * proportion / kg\_to\_kcal\_fruit\_and\_vegetables$$
 
-The important point is the red to white meat change is applied first. Then, and only after, the change of meat to vegetable is applied. So, this last change of diet is based on this first updated diet.
+The same formula is applicated to the 'potatoes' and 'rice and maize' food categories.
 
 ## Climate change impact
 The increase in temperature due to global warming has consequences on crop productivity. Effects of global warming on agriculture are for example drought, flooding and increased crops water needs.   
@@ -194,7 +202,7 @@ However, the different hypothesis lead to limitations that should be kept in min
 The following points list the limitations of the agriculture model:
 
 * The model does not allow a modification of the global kcal amount of the diet. This kcal amount is set by the initial diet, and will remain the same.
-* The model does not test the feasibility of the diet change. For example, convert 100% of red meat to white meat in one year is allowed in the model, even if it is probably not realisable.
+* The model does not test the feasibility of the diet change. For example, convert 100% of red meat or white meat in one year is allowed in the model, even if it is probably not realisable.
 * The model considers a global average diet, and does not include change depending on country or habits.
 * The land use to produce food are assumed to be able to produce any type of food, without regarding average weather or climate conditions. For example equatorial or temperate climate may have different affinity with food production.
 
