@@ -63,8 +63,9 @@ class CropDiscipline(ClimateEcoDiscipline):
                           'fruits and vegetables': 624,
                           }
     year_range = default_year_end - default_year_start + 1
-    default_red_to_white_meat = np.linspace(0, 50, year_range)
-    default_meat_to_vegetables = np.linspace(0, 25, year_range)
+
+    default_red_meat_percentage = np.linspace(100, 10, year_range)
+    default_white_meat_percentage = np.linspace(100, 10, year_range)
 
     # mdpi: according to the NASU recommendations,
     # a fixed value of 0.25 is applied to all crops
@@ -149,8 +150,10 @@ class CropDiscipline(ClimateEcoDiscipline):
                     'dataframe_edition_locked': False, 'namespace': 'ns_agriculture'},
         'kg_to_kcal_dict': {'type': 'dict', 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
         'kg_to_m2_dict': {'type': 'dict', 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
-        'red_to_white_meat': {'type': 'array', 'default': default_red_to_white_meat, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
-        'meat_to_vegetables': {'type': 'array', 'default': default_meat_to_vegetables, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+        # design variables of changing diet
+        'red_meat_percentage': {'type': 'array', 'default': default_red_meat_percentage, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+        'white_meat_percentage': {'type': 'array', 'default': default_white_meat_percentage, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_agriculture'},
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'param_a': {'type': 'float', 'default': - 0.00833, 'user_level': 3},
@@ -215,18 +218,12 @@ class CropDiscipline(ClimateEcoDiscipline):
     def run(self):
 
         #-- get inputs
-        inputs = list(self.DESC_IN.keys())
-        inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        input_dict = self.get_sosdisc_inputs()
         # -- configure class with inputs
-        self.crop_model.red_to_white_meat = inputs_dict[Crop.RED_TO_WHITE_MEAT]
-        self.crop_model.meat_to_vegetables = inputs_dict[Crop.MEAT_TO_VEGETABLES]
-        self.crop_model.invest_level = inputs_dict[Crop.INVEST_LEVEL]
-        self.crop_model.configure_parameters(inputs_dict)
+        self.crop_model.configure_parameters_update(input_dict)
         #-- compute
-        population_df = inputs_dict.pop('population_df')
-        temperature_df = inputs_dict.pop('temperature_df')
-        self.crop_model.compute(population_df, temperature_df)
-        
+        self.crop_model.compute()
+
         techno_production = self.crop_model.mix_detailed_production[['years', 'Total (TWh)']]
         #Scale production TWh -> PWh
         techno_production = techno_production.rename(columns={'Total (TWh)': "biomass_dry (TWh)"})
@@ -234,7 +231,8 @@ class CropDiscipline(ClimateEcoDiscipline):
             if column == 'years':
                 continue
             techno_production[column] = techno_production[column].values / \
-                inputs_dict['scaling_factor_techno_production']
+                input_dict['scaling_factor_techno_production']
+
         outputs_dict = {
             'food_land_surface_df': self.crop_model.food_land_surface_df,
             'total_food_land_surface': self.crop_model.total_food_land_surface,
@@ -260,7 +258,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         Compute jacobian for each coupling variable
         """
         inputs_dict = self.get_sosdisc_inputs()
-        population_df = inputs_dict.pop('population_df')
+        population_df = inputs_dict['population_df']
         temperature_df = inputs_dict['temperature_df']
         scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
         scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
@@ -268,8 +266,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         residue_density_percentage = inputs_dict['techno_infos_dict']['residue_density_percentage']
         calorific_value = inputs_dict['data_fuel_dict']['calorific_value']
         model = self.crop_model
-        model.configure_parameters(inputs_dict)
-        model.compute(population_df, temperature_df)
+        model.configure_parameters_update(inputs_dict)
+        model.compute()
 
         # get variable
         food_land_surface_df = model.food_land_surface_df
@@ -296,39 +294,35 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
 
-        d_surface_d_red_to_white = model.d_surface_d_red_to_white(population_df)
-        d_surface_d_meat_to_vegetable = model.d_surface_d_meat_to_vegetable(population_df)
+        d_surface_d_red_meat_percentage = model.d_surface_d_red_meat_percentage(population_df)
+        d_surface_d_white_meat_percentage = model.d_surface_d_white_meat_percentage(population_df)
 
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('red_to_white_meat', 'red_to_white_meat'), d_surface_d_red_to_white)
+            ('total_food_land_surface', 'total surface (Gha)'), ('red_meat_percentage', 'red_meat_percentage'), d_surface_d_red_meat_percentage)
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('meat_to_vegetables', 'meat_to_vegetables'), d_surface_d_meat_to_vegetable)
+            ('total_food_land_surface', 'total surface (Gha)'), ('white_meat_percentage', 'white_meat_percentage'), d_surface_d_white_meat_percentage)
 
         # gradients for techno_production from total food land surface
         d_prod_dpopulation = model.compute_d_prod_dland_for_food(summ)
         d_prod_dtemperature = model.compute_d_prod_dland_for_food(d_total_d_temperature)
-        d_prod_dred_to_white = model.compute_d_prod_dland_for_food(d_surface_d_red_to_white)
-        d_prod_dmeat_to_vegetable = model.compute_d_prod_dland_for_food(d_surface_d_meat_to_vegetable)
+        d_prod_dred_to_white = model.compute_d_prod_dland_for_food(d_surface_d_red_meat_percentage)
+        d_prod_dmeat_to_vegetable = model.compute_d_prod_dland_for_food(d_surface_d_white_meat_percentage)
 
-        self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            ('population_df', 'population'),
+        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('population_df', 'population'),
             d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
             ('techno_production', 'biomass_dry (TWh)'), ('temperature_df', 'temp_atmo'),
             d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'), ('red_to_white_meat', 'red_to_white_meat'),
+            ('techno_production', 'biomass_dry (TWh)'), ('red_meat_percentage', 'red_meat_percentage'),
             d_prod_dred_to_white)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'), ('meat_to_vegetables', 'meat_to_vegetables'),
+            ('techno_production', 'biomass_dry (TWh)'), ('white_meat_percentage', 'white_meat_percentage'),
             d_prod_dmeat_to_vegetable)
 
         # gradients for techno_production from invest
         dprod_dinvest = model.compute_dprod_from_dinvest()
-        self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            ('invest_level', 'invest'),
+        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('invest_level', 'invest'),
             dprod_dinvest * scaling_factor_invest_level * calorific_value / scaling_factor_techno_production)
 
         # gradient for land demand
@@ -342,11 +336,11 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('land_use_required', 'Crop for Food (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
         self.set_partial_derivative_for_other_types(
-            ('land_use_required', 'Crop for Food (Gha)'), ('red_to_white_meat', 'red_to_white_meat'),
-            d_surface_d_red_to_white)
+            ('land_use_required', 'Crop for Food (Gha)'), ('red_meat_percentage', 'red_meat_percentage'),
+            d_surface_d_red_meat_percentage)
         self.set_partial_derivative_for_other_types(
-            ('land_use_required', 'Crop for Food (Gha)'), ('meat_to_vegetables', 'meat_to_vegetables'),
-            d_surface_d_meat_to_vegetable)
+            ('land_use_required', 'Crop for Food (Gha)'), ('white_meat_percentage', 'white_meat_percentage'),
+            d_surface_d_white_meat_percentage)
 
     def get_chart_filter_list(self):
 
@@ -478,20 +472,20 @@ class CropDiscipline(ClimateEcoDiscipline):
             # ------------------------------------------
             # DIET EVOLUTION VARIABLES
             chart_name = 'Diet evolution'
-            red_to_white_meat = self.get_sosdisc_inputs('red_to_white_meat')
-            meat_to_vegetables = self.get_sosdisc_inputs('meat_to_vegetables')
+            red_meat_percentage = self.get_sosdisc_inputs('red_meat_percentage')
+            white_meat_percentage = self.get_sosdisc_inputs('white_meat_percentage')
 
             new_chart = TwoAxesInstanciatedChart('years', 'Diet change [%]',
                                                  chart_name=chart_name)
 
             visible_line = True
-            ordonate_data = list(red_to_white_meat)
+            ordonate_data = list(red_meat_percentage)
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'Red to white meat', 'lines', visible_line)
+                years, ordonate_data, 'red meat percentage', 'lines', visible_line)
             new_chart.series.append(new_series)
-            ordonate_data = list(meat_to_vegetables)
+            ordonate_data = list(white_meat_percentage)
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'Meat to vegetables', 'lines', visible_line)
+                years, ordonate_data, 'white meat percentage', 'lines', visible_line)
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)

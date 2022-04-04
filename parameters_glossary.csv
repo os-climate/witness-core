@@ -247,6 +247,7 @@ predictible_production,Production prediction,million_tonnes,Data concerning CO2 
 production_start,Production start,[-],Data concerning CO2 producti.,,
 productivity_gr_start,Productivity growth rate at start,,Productivity growth rate at first year.,,
 productivity_start,Productivity at start,,Productivity at first year.,,
+red_meat_percentage,Red meat calory percentage,%,Percentage of the red meat calories quantity by person and by year.,,
 red_to_white_meat,Red to white meat percentage,%,"Give the percentage of red meat removed, based on the starting diet value. The kcal removed will be filled by adding white meat.",,
 red_to_white_meat_ctrl,Red to white meat ctrl,%,Ctrl data concerning to_white.,,
 ref_pc_consumption_constraint,Ref pc consumption constraint,k$,Constraint data concerning pc.,,
@@ -297,6 +298,7 @@ use_stock,Use stock,million_tonnes,Stock usage.,,
 utility_df,Utility Data,,Data concerning utility.,,
 welfare_obj_option,Welfare obj option,,Option on welfare objective computation.,,
 welfare_objective,Welfare objective,,"Value of the welfare objective. Lower is the value, better the objective is accomplished.",,
+white_meat_percentage,White meat calory percentage,%,Percentage of the white meat calories quantity by person and by year.,,
 write_xvect,Write xvect,,The value of the current point of optimisation.,,
 year_end,Ending year,year,Final year of the study.,,D - Nominal property
 year_start,Starting year,year,Initial year of the study.,,D - Nominal property
