@@ -8,3 +8,4 @@ coverage.xml
 build/
 dist/
 climateeconomics.egg-info/
+pytest.ini
