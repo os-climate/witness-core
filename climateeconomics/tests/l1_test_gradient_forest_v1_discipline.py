@@ -41,7 +41,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Test'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_forest': f'{self.name}.{model_name}'}
+                   'ns_forest': f'{self.name}.{model_name}',
+                   'ns_invest': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_forest.forest_v1.forest_disc.ForestDiscipline'

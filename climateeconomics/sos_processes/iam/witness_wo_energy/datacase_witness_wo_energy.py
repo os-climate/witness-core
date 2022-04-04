@@ -159,7 +159,7 @@ class DataStudy():
         dc_forest = datacase_forest(
             self.year_start, self.year_end, self.time_step, name='.Land.Forest')
         dc_forest.study_name = self.study_name
-
+        dc_forest.additional_ns = '.InvestmentDistribution'
         resource_input_list = dc_resource.setup_usecase()
         setup_data_list = setup_data_list + resource_input_list
 
