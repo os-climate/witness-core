@@ -48,6 +48,7 @@ class LostCapitalObjective():
         self.years_range = np.arange(
             self.year_start,
             self.year_end + 1)
+        self.delta_years = len(self.years_range)
 
     def compute(self, inputs_dict):
         """
@@ -62,6 +63,7 @@ class LostCapitalObjective():
             'techno_capital', inputs_dict)
         self.compute_objective()
         self.compute_constraint_ineq()
+
     def agreggate_and_compute_sum(self, name, inputs_dict):
         '''
         Aggregate each variable that ends with name in a dataframe and compute the sum of each column
@@ -89,7 +91,7 @@ class LostCapitalObjective():
         '''
         if 'Sum of lost capital' in self.lost_capital_df:
             self.lost_capital_objective = np.asarray(
-                [self.lost_capital_df['Sum of lost capital'].sum()]) / self.lost_capital_obj_ref
+                [self.lost_capital_df['Sum of lost capital'].sum()]) / self.lost_capital_obj_ref / self.delta_years
 
     def get_objective(self):
         '''
