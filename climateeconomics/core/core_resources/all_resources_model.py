@@ -277,17 +277,18 @@ class AllResourceModel():
         # Create a dataframe
         resources_CO2_emissions = pd.DataFrame({'years': years})
 
-        # Loop on modeled resources, retrieve CO2 emissions and create column with result
-        #(No resource with modeled CO2 emissions for now)
-        for resource in resource_list:
-            pass
 
-        for resource in non_modeled_resource_list:
+        for resource in non_modeled_resource_list + resource_list:
             if resource in self.CO2_emissions_dict.keys():
                 resources_CO2_emissions[resource] = np.ones(
                     len(years)) * self.CO2_emissions_dict[resource]
             else:
                 resources_CO2_emissions[resource] = np.zeros(
                     len(years))
+
+        # Loop on modeled resources, retrieve CO2 emissions and create column with result
+        # (No resource with modeled CO2 emissions for now)
+        for resource in resource_list:
+            pass
 
         return resources_CO2_emissions

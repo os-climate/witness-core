@@ -113,9 +113,8 @@ class ForestTestCase(unittest.TestCase):
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
             {"years": years, "transport": transport})
-        margin = np.linspace(1.1, 1.1, year_range)
-        self.margin_df = pd.DataFrame(
-            {"years": years, "margin": margin})
+        self.margin = pd.DataFrame(
+            {'years': years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_unsused_forest_surface = 4 - 1.25
 
         self.param = {'year_start': self.year_start,
@@ -137,9 +136,10 @@ class ForestTestCase(unittest.TestCase):
                       'unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
                       'unmanaged_wood_investment': self.mw_invest_df,
                       'transport_cost': self.transport_df,
-                      'margin': self.margin_df,
-                      'initial_unsused_forest_surface': self.initial_unsused_forest_surface
-
+                      'margin': self.margin,
+                      'initial_unsused_forest_surface': self.initial_unsused_forest_surface,
+                      'scaling_factor_techno_consumption': 1e3,
+                      'scaling_factor_techno_production': 1e3,
                       }
 
     def test_forest_model(self):
@@ -194,7 +194,7 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{name}.{model_name}.unmanaged_wood_investment': self.mw_invest_df,
                        f'{name}.{model_name}.transport_cost': self.transport_df,
-                       f'{name}.{model_name}.margin': self.margin_df,
+                       f'{name}.{model_name}.margin': self.margin,
                        f'{name}.{model_name}.initial_unsused_forest_surface': self.initial_unsused_forest_surface,
 
                        }
@@ -207,5 +207,5 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
-        #    graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()

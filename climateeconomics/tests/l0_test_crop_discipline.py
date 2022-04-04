@@ -130,6 +130,8 @@ class CropTestCase(unittest.TestCase):
                       'data_fuel_dict': BiomassDry.data_energy_dict,
                       'techno_infos_dict': CropDiscipline.techno_infos_dict_default,
                       'scaling_factor_invest_level': 1e3,
+                      'scaling_factor_techno_consumption': 1e3,
+                      'scaling_factor_techno_production': 1e3,
                       'initial_age_distrib': initial_age_distribution,
                       'initial_production': self.initial_production
                       }
@@ -157,7 +159,8 @@ class CropTestCase(unittest.TestCase):
                    'ns_functions': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_biomass_dry': f'{name}.{model_name}',
-                   'ns_land_use':f'{name}.{model_name}'}
+                   'ns_land_use':f'{name}.{model_name}',
+                   'ns_crop':f'{name}.{model_name}'}
 
         ee.ns_manager.add_ns_def(ns_dict)
 
@@ -195,5 +198,5 @@ class CropTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #    graph.to_plotly().show()
+        #for graph in graph_list:
+        #   graph.to_plotly().show()
