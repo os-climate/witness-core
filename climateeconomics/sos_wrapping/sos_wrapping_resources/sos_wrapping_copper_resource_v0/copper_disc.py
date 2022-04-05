@@ -27,7 +27,9 @@ class CopperDisc(SoSDiscipline):
     DESC_IN = { 'copper_demand': {'type': 'dataframe', 'unit': 'Mt'},
                 'year_start': {'type' : 'int', 'default': CopperModel.YEAR_START, 'unit': '[-]'},
                 'year_end': {'type': 'int', 'default': CopperModel.YEAR_END, 'unit': '[-]'},
-                'annual_extraction' : {'type' : 'float_list', 'unit' : 'Mt', 'default' : [26] * 81}}
+                'annual_extraction' : {'type' : 'float_list', 'unit' : 'Mt', 'default' : [26] * 81},
+                'initial_copper_reserve': {'type' : 'float', 'unit' : 'Mt', 'default': 3500},
+                'initial_copper_stock': {'type' : 'float', 'unit' : 'Mt', 'default': 880}}
 
     DESC_OUT = { CopperModel.COPPER_RESERVE: {'type': 'dataframe', 'unit': 'million_tonnes'},
                  CopperModel.COPPER_STOCK: {'type': 'dataframe', 'unit': 'million_tonnes'},
@@ -92,9 +94,10 @@ class CopperDisc(SoSDiscipline):
 
             production_list = production['World Production'].values
             cumulated_production_list = production['Cumulated World Production'].values
+            ratio_list = production['Ratio'].values
             stock_list = stock['Stock'].values
             reserve_list = reserve['Reserve'].values
-            price_evolution_list = price['Price/Mt'].values
+            price_evolution_list = price['Price/t'].values
             extraction_list = production['Extraction'].values
 
     
@@ -107,10 +110,13 @@ class CopperDisc(SoSDiscipline):
                                                    'Stock [Mt]', chart_name="Copper Use")
 
             chart_price_evolution = TwoAxesInstanciatedChart('Years [y]', 
-                                                             'Price/Mt [USD]', chart_name="Copper Price Evolution")
+                                                             'Price/t [USD/t]', chart_name="Copper Price Evolution")
             
             chart_copper_situation = TwoAxesInstanciatedChart('Years [y]', 
                                                               'Copper [Mt]', chart_name="Copper Repartition", stacked_bar=True)
+            
+            chart_ratio = TwoAxesInstanciatedChart('Years [y]', 
+                                                 'Ratio [-]',  chart_name="Copper Ratio extraction/demand")
 
 
 
@@ -119,12 +125,14 @@ class CopperDisc(SoSDiscipline):
             reserve_series = InstanciatedSeries(period_of_exploitation, reserve_list.tolist(), "Copper Reserve", 'lines')
             price_evolution_series = InstanciatedSeries(period_of_exploitation, price_evolution_list.tolist(), "Copper Price Evolution", 'lines')
             extraction_series = InstanciatedSeries(period_of_exploitation, extraction_list.tolist(), "Copper Extraction", 'lines')
+            ratio_series = InstanciatedSeries(period_of_exploitation, ratio_list.tolist(), "Copper Ratio",'lines')
 
-            bar_cumulated_production_serie = InstanciatedSeries(period_of_exploitation, cumulated_production_list.tolist(), "Cumulated Copper Production", InstanciatedSeries.BAR_DISPLAY)
+            bar_cumulated_production_serie = InstanciatedSeries(period_of_exploitation, cumulated_production_list.tolist(), "Cumulated Copper Consumption", InstanciatedSeries.BAR_DISPLAY)
             bar_stock_series = InstanciatedSeries(period_of_exploitation, stock_list.tolist(), "Copper Stock", InstanciatedSeries.BAR_DISPLAY)
             bar_reserve_series = InstanciatedSeries(period_of_exploitation, reserve_list.tolist(), "Copper Reserve", InstanciatedSeries.BAR_DISPLAY)
 
             chart_production.series.append(production_series)
+            chart_ratio.series.append(ratio_series)
             chart_stock.series.append(stock_series)
             chart_stock.series.append(reserve_series)
             chart_stock.series.append(production_series)
@@ -139,5 +147,6 @@ class CopperDisc(SoSDiscipline):
             instanciated_charts.append(chart_stock)
             instanciated_charts.append(chart_price_evolution)
             instanciated_charts.append(chart_copper_situation)
+            instanciated_charts.append(chart_ratio)
 
         return instanciated_charts
