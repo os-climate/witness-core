@@ -225,8 +225,8 @@ class Crop():
         self.CO2_emissions['Crop'] = np.zeros(len(self.years))
 
         # no consumption
-        self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(len(self.years))
-        self.techno_consumption_woratio[f'{BiomassDry.name}'] = np.zeros(len(self.years))
+        self.techno_consumption['biomass_dry (TWh)'] = np.zeros(len(self.years))
+        self.techno_consumption_woratio['biomass_dry (TWh)'] = np.zeros(len(self.years))
 
     def compute_quantity_of_food(self, population_df, diet_df):
         """
