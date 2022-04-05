@@ -460,21 +460,26 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             # ------------------------------------------
             # DIET EVOLUTION VARIABLES
-            chart_name = 'Diet evolution'
+            chart_name = "Diet evolution, percentage of red and white meat in a person's diet"
+            starting_diet = self.get_sosdisc_inputs('diet_df')
+            total_diet = starting_diet.values.sum()
             red_meat_percentage = self.get_sosdisc_inputs('red_meat_percentage')
             white_meat_percentage = self.get_sosdisc_inputs('white_meat_percentage')
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Diet change [%]',
+            red_meat_evolution = updated_diet_df['red meat'].values * red_meat_percentage / total_diet
+            white_meat_evolution  = updated_diet_df['white meat'].values * white_meat_percentage / total_diet
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Diet evolution [%]',
                                                  chart_name=chart_name)
 
             visible_line = True
-            ordonate_data = list(red_meat_percentage)
+            ordonate_data = list(red_meat_evolution)
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'red meat percentage', 'lines', visible_line)
+                years, ordonate_data, 'percentage of red meat in diet', 'lines', visible_line)
             new_chart.series.append(new_series)
-            ordonate_data = list(white_meat_percentage)
+            ordonate_data = list(white_meat_evolution)
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'white meat percentage', 'lines', visible_line)
+                years, ordonate_data, 'percentage of white meat in diet', 'lines', visible_line)
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
