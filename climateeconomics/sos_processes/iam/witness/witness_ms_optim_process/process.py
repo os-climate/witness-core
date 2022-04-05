@@ -43,7 +43,6 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_syngas',
                                          'ns_flue_gas',
                                          'ns_energy_study',
-                                         'ns_demand',
                                          'ns_biodiesel',
                                          'ns_biomass_dry',
                                          'ns_biogas',

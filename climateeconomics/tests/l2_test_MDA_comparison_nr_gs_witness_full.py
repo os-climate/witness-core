@@ -29,8 +29,8 @@ class TestComparisonNR_GS(unittest.TestCase):
     SoSDiscipline test class
     """
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',  'EnergyMix.methane.demand_violation', 'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation', 'EnergyMix.biogas.demand_violation', 'EnergyMix.syngas.demand_violation', 'EnergyMix.liquid_fuel.demand_violation',
-                 'EnergyMix.solid_fuel.demand_violation', 'EnergyMix.biomass_dry.demand_violation', 'EnergyMix.electricity.demand_violation', 'EnergyMix.biodiesel.demand_violation', 'EnergyMix.hydrogen.liquid_hydrogen.demand_violation', 'EnergyMix.primary_energies_production']
+    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective',
+                 'ppm_objective', 'EnergyMix.primary_energies_production']
 
     def setUp(self):
         '''
