@@ -25,8 +25,8 @@ class WitnessFullGradient(AbstractJacobianUnittest):
 
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective', 'co2_emissions_objective', 'CO2_tax_minus_CO2_damage_constraint_df', 'EnergyMix.methane.demand_violation', 'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation', 'EnergyMix.biogas.demand_violation', 'EnergyMix.syngas.demand_violation', 'EnergyMix.liquid_fuel.demand_violation',
-                 'EnergyMix.solid_fuel.demand_violation', 'EnergyMix.biomass_dry.demand_violation', 'EnergyMix.electricity.demand_violation', 'EnergyMix.biodiesel.demand_violation', 'EnergyMix.hydrogen.liquid_hydrogen.demand_violation', 'primary_energies_production', 'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
+    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective', 'co2_emissions_objective',
+                 'CO2_tax_minus_CO2_damage_constraint_df', 'primary_energies_production', 'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
 
     def setUp(self):
 
@@ -65,18 +65,17 @@ class WitnessFullGradient(AbstractJacobianUnittest):
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
 
-
         values_dict['Test.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
         #values_dict['Test.WITNESS_Eval.max_mda_iter'] = 1
         values_dict['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix'] = 81 * [30.]
         self.ee.load_study_from_input_dict(values_dict)
 
-
-
         self.ee.load_study_from_input_dict(values_dict)
 
         output_full_names = ['Test.WITNESS_Eval.WITNESS.invest_objective_sum']
-        input_full_names = ['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix'] #['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix']
+        # ['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix']
+        input_full_names = [
+            'Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix']
 
         disc = self.ee.root_process.sos_disciplines[0]
         disc.add_differentiated_inputs(input_full_names)

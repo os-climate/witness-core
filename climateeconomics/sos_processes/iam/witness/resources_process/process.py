@@ -46,7 +46,6 @@ class ProcessBuilder(BaseProcessBuilder):
                    'uranium_resource': f'{ns_scatter}.{self.URANIUM_NAME}',
                    'ns_public': self.ee.study_name,
                    'ns_resource': ns_scatter,
-                   'ns_demand': ns_scatter
                    }
         #'oil_availability_and_price': f'{ns_scatter}.oil.oil_availability_and_price',
         mods_dict = {f'Resources.{self.COAL_NAME}': 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_coal_resource.coal_resource_model.coal_resource_disc.CoalDiscipline',

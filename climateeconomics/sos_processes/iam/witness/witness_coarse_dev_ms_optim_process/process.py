@@ -25,6 +25,7 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def get_builders(self):
 
         # scenario build map
@@ -41,7 +42,6 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_optim',
                                          'ns_flue_gas',
                                          'ns_energy_study',
-                                         'ns_demand',
                                          'ns_energy',
                                          'ns_carbon_capture',
                                          'ns_carbon_storage',
