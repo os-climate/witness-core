@@ -41,13 +41,12 @@ class CropTestCase(unittest.TestCase):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
-        population = np.array(np.linspace(7800, 7800, year_range))
+        population = np.array(np.linspace(7800, 9200, year_range))
         self.population_df = pd.DataFrame(
             {"years": years, "population": population})
         self.population_df.index = years
-        temperature = np.array(np.linspace(1.05, 5, year_range))
-        self.temperature_df = pd.DataFrame(
-            {"years": years, "temp_atmo": temperature})
+        temperature = np.array(np.linspace(0.0,5.0, year_range))
+        self.temperature_df = pd.DataFrame({"years": years, "temp_atmo": temperature})
         self.temperature_df.index = years
 
         lifetime = 50
@@ -76,9 +75,8 @@ class CropTestCase(unittest.TestCase):
                                    'potatoes': 670,
                                    'fruits and vegetables': 624,
                                    }
-        self.red_to_white_meat = np.linspace(0, 50, year_range)
-        self.meat_to_vegetables = np.linspace(0, 100, year_range)
-
+        self.red_meat_percentage = np.linspace(100, 10, year_range)
+        self.white_meat_percentage = np.linspace(100, 10, year_range)
         self.diet_df = pd.DataFrame({'red meat': [11.02],
                                      'white meat': [31.11],
                                      'milk': [79.27],
@@ -118,8 +116,6 @@ class CropTestCase(unittest.TestCase):
                       'population_df': self.population_df,
                       'temperature_df': self.temperature_df,
                       'kg_to_m2_dict': self.default_kg_to_m2,
-                      'red_to_white_meat': self.red_to_white_meat,
-                      'meat_to_vegetables': self.meat_to_vegetables,
                       'other_use_crop': self.other,
                       'param_a':  - 0.00833,
                       'param_b': - 0.04167,
@@ -130,8 +126,12 @@ class CropTestCase(unittest.TestCase):
                       'data_fuel_dict': BiomassDry.data_energy_dict,
                       'techno_infos_dict': CropDiscipline.techno_infos_dict_default,
                       'scaling_factor_invest_level': 1e3,
+                      'scaling_factor_techno_consumption': 1e3,
+                      'scaling_factor_techno_production': 1e3,
                       'initial_age_distrib': initial_age_distribution,
-                      'initial_production': self.initial_production
+                      'initial_production': self.initial_production,
+                      'red_meat_percentage': self.red_meat_percentage,
+                      'white_meat_percentage': self.white_meat_percentage,
                       }
 
     def test_crop_model(self):
@@ -141,8 +141,8 @@ class CropTestCase(unittest.TestCase):
         '''
 
         crop = Crop(self.param)
-
-        crop.compute(self.population_df, self.temperature_df)
+        crop.configure_parameters_update(self.param)
+        crop.compute()
 
     def test_crop_discipline(self):
         '''
@@ -177,8 +177,8 @@ class CropTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{Crop.KG_TO_KCAL_DICT}': self.default_kg_to_kcal,
                        f'{name}.{model_name}.{Crop.KG_TO_M2_DICT}': self.default_kg_to_m2,
                        f'{name}.{model_name}.{Crop.POPULATION_DF}': self.population_df,
-                       f'{name}.{model_name}.{Crop.RED_TO_WHITE_MEAT}': self.red_to_white_meat,
-                       f'{name}.{model_name}.{Crop.MEAT_TO_VEGETABLES}': self.meat_to_vegetables,
+                       f'{name}.{model_name}.red_meat_percentage': self.red_meat_percentage,
+                       f'{name}.{model_name}.white_meat_percentage': self.white_meat_percentage,
                        f'{name}.{model_name}.{Crop.OTHER_USE_CROP}': self.other,
                        f'{name}.{model_name}.temperature_df': self.temperature_df,
                        f'{name}.{model_name}.invest_level': self.invest_level,
@@ -197,4 +197,4 @@ class CropTestCase(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         # for graph in graph_list:
-        #    graph.to_plotly().show()
+        #     graph.to_plotly().show()

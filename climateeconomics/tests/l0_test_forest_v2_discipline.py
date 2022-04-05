@@ -137,8 +137,9 @@ class ForestTestCase(unittest.TestCase):
                       'unmanaged_wood_investment': self.mw_invest_df,
                       'transport_cost': self.transport_df,
                       'margin': self.margin,
-                      'initial_unsused_forest_surface': self.initial_unsused_forest_surface
-
+                      'initial_unsused_forest_surface': self.initial_unsused_forest_surface,
+                      'scaling_factor_techno_consumption': 1e3,
+                      'scaling_factor_techno_production': 1e3,
                       }
 
     def test_forest_model(self):

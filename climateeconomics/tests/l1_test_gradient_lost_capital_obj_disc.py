@@ -87,7 +87,8 @@ class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.EnergyMix.methane.FossilGas.techno_capital': lost_capital_fg,
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': lost_capital_ub,
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': lost_capital_rf,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': lost_capital_ft, }
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': lost_capital_ft,
+                       f'{self.name}.gamma': 0.5}
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -106,5 +107,5 @@ class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CCUS.carbon_capture.CC_tech.lost_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.lost_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.lost_capital'],
-                            outputs=[f'{self.name}.lost_capital_objective', f'{self.name}.lost_capital_cons'],
+                            outputs=[f'{self.name}.lost_capital_objective'],
                             derr_approx='complex_step')

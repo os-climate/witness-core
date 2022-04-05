@@ -121,16 +121,8 @@ class Study(EnergyMixStudyManager):
             {"years": years, "population": population})
         population_df.index = years
 
-        red_to_white_meat = np.linspace(0, 50, year_range)
-        meat_to_vegetables = np.linspace(0, 50, year_range)
-        red_to_white_meat_df = pd.DataFrame(
-            {'years': years, 'red_to_white_meat_percentage': red_to_white_meat})
-        meat_to_vegetables_df = pd.DataFrame(
-            {'years': years, 'meat_to_vegetables_percentage': meat_to_vegetables})
-        red_to_white_meat_df.index = years
-        meat_to_vegetables_df.index = years
-        self.red_to_white_meat_df = red_to_white_meat_df
-        self.meat_to_vegetables_df = meat_to_vegetables_df
+        self.red_meat_percentage = np.linspace(100, 50, year_range)
+        self.white_meat_percentage = np.linspace(100, 50, year_range)
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -144,10 +136,7 @@ class Study(EnergyMixStudyManager):
 
         # the value for invest_level is just set as an order of magnitude
         self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': 1e4})
-
-        land_surface_for_food = pd.DataFrame({'years': years,
-                                              'Agriculture total (Gha)': np.ones(len(years)) * 4.8})
+            {'years': years, 'invest': 1})
 
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
@@ -155,10 +144,6 @@ class Study(EnergyMixStudyManager):
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 7.6})
 
-        self.resources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
-        self.resources_price['years'] = years
-        self.resources_price['CO2'] = np.linspace(
-            50.0, 100.0, len(years))         # biomass_dry price in $/kg
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
@@ -167,8 +152,7 @@ class Study(EnergyMixStudyManager):
             {"years": years, "deforested_surface": deforestation_surface})
 
         forest_invest = np.linspace(5, 8, year_range)
-        self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
         mw_invest = np.linspace(1, 4, year_range)
@@ -195,15 +179,13 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.margin': self.margin,
                        f'{self.study_name}.transport_cost': self.transport,
                        f'{self.study_name}.transport_margin': self.margin,
-                       f'{self.study_name}.invest_techno_mix': investment_mix,
                        f'{self.study_name}.CO2_taxes': self.co2_taxes,
                        }
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{energy_name}.Crop.land_surface_for_food_df': land_surface_for_food,
-                 f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
-                 f'{self.study_name}.{energy_name}.red_to_white_meat': red_to_white_meat,
-                 f'{self.study_name}.{energy_name}.meat_to_vegetables': meat_to_vegetables,
+                {f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
+                 f'{self.study_name}.{energy_name}.red_meat_percentage': self.red_meat_percentage,
+                 f'{self.study_name}.{energy_name}.white_meat_percentage': self.white_meat_percentage,
                  f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
                  f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
                  f'{self.study_name}.forest_investment': self.forest_invest_df,
@@ -235,15 +217,15 @@ class Study(EnergyMixStudyManager):
             #-- energy optimization inputs
             # Design Space
         dim_a = len(
-            self.red_to_white_meat_df['red_to_white_meat_percentage'].values)
-        lbnd1 = [0.0] * dim_a
-        ubnd1 = [70.0] * dim_a
+            self.red_meat_percentage)
+        lbnd1 = [30.0] * dim_a
+        ubnd1 = [100.0] * dim_a
 
         # Design variables:
         self.update_dspace_dict_with(
-            'red_to_white_meat_array', self.red_to_white_meat_df['red_to_white_meat_percentage'].values, lbnd1, ubnd1)
+            'red_meat_percentage_array', self.red_meat_percentage, lbnd1, ubnd1)
         self.update_dspace_dict_with(
-            'meat_to_vegetables_array', self.meat_to_vegetables_df['meat_to_vegetables_percentage'].values, lbnd1, ubnd1)
+            'white_meat_percentage_array', self.white_meat_percentage, lbnd1, ubnd1)
 
     def setup_design_space_ctrl_new(self):
         # Design Space
@@ -252,10 +234,10 @@ class Study(EnergyMixStudyManager):
         ddict['dspace_size'] = 0
 
         # Design variables:
-        update_dspace_dict_with(ddict, 'red_to_white_meat_ctrl',
-                                list(self.design_space_ctrl['red_to_white_meat_ctrl'].values), [0.0] * self.nb_poles, [70.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
-        update_dspace_dict_with(ddict, 'meat_to_vegetables_ctrl',
-                                list(self.design_space_ctrl['meat_to_vegetables_ctrl'].values), [0.0] * self.nb_poles, [70.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True])
+        update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
+                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [30.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
+                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [30.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         return ddict
 
@@ -271,5 +253,5 @@ if '__main__' == __name__:
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()

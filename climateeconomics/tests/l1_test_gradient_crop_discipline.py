@@ -79,8 +79,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                    'potatoes': 670,
                                    'fruits and vegetables': 624,
                                    }
-        self.red_to_white_meat = np.linspace(0, 50, year_range)
-        self.meat_to_vegetables = np.linspace(0, 100, year_range)
+        self.red_meat_percentage = np.linspace(100, 10, year_range)
+        self.white_meat_percentage = np.linspace(100, 10, year_range)
 
         self.diet_df = pd.DataFrame({'red meat': [11.02],
                                      'white meat': [31.11],
@@ -123,8 +123,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                       'population_df': self.population_df,
                       'temperature_df': self.temperature_df,
                       'kg_to_m2_dict': self.default_kg_to_m2,
-                      'red_to_white_meat': self.red_to_white_meat,
-                      'meat_to_vegetables': self.meat_to_vegetables,
+                      'red_meat_percentage': self.red_meat_percentage,
+                      'white_meat_percentage': self.white_meat_percentage,
                       'other_use_crop': self.other,
                       'param_a': - 0.00833,
                       'param_b': - 0.04167,
@@ -174,8 +174,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.kg_to_m2_dict': self.default_kg_to_m2,
                        f'{self.name}.population_df': self.population_df,
                        f'{self.name}.temperature_df': self.temperature_df,
-                       f'{self.name}.red_to_white_meat': self.red_to_white_meat,
-                       f'{self.name}.meat_to_vegetables': self.meat_to_vegetables,
+                       f'{self.name}.red_meat_percentage': self.red_meat_percentage,
+                       f'{self.name}.white_meat_percentage': self.white_meat_percentage,
                        f'{self.name}.{self.model_name}.{Crop.OTHER_USE_CROP}': self.other,
                        f'{self.name}.invest_level': self.invest_level,
                        f'{self.name}.margin': self.margin,
@@ -192,12 +192,18 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                             step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.population_df',
                                     f'{self.name}.temperature_df',
-                                    f'{self.name}.red_to_white_meat',
-                                    f'{self.name}.meat_to_vegetables',
+                                    f'{self.name}.red_meat_percentage',
+                                    f'{self.name}.white_meat_percentage',
                                     f'{self.name}.invest_level',
                                     ],
                             outputs=[f'{self.name}.total_food_land_surface',
                                      f'{self.name}.land_use_required',
                                      f'{self.name}.techno_prices',
-                                     f'{self.name}.techno_production'
+                                     f'{self.name}.techno_production',
+                                     # output at zero
+                                     f'{self.name}.techno_consumption',
+                                     # output at zero
+                                     f'{self.name}.techno_consumption_woratio',
+                                     # output at zero
+                                     f'{self.name}.CO2_emissions',
                                     ])
