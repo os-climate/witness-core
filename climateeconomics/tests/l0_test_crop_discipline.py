@@ -41,11 +41,11 @@ class CropTestCase(unittest.TestCase):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
-        population = np.array(np.linspace(7800, 7800, year_range))
+        population = np.array(np.linspace(7800, 9200, year_range))
         self.population_df = pd.DataFrame(
             {"years": years, "population": population})
         self.population_df.index = years
-        temperature = np.array(np.linspace(0.0,0.0, year_range))
+        temperature = np.array(np.linspace(0.0,5.0, year_range))
         self.temperature_df = pd.DataFrame({"years": years, "temp_atmo": temperature})
         self.temperature_df.index = years
 
@@ -141,8 +141,8 @@ class CropTestCase(unittest.TestCase):
         '''
 
         crop = Crop(self.param)
-
-        crop.compute(self.population_df, self.temperature_df)
+        crop.configure_parameters_update(self.param)
+        crop.compute()
 
     def test_crop_discipline(self):
         '''
@@ -196,5 +196,5 @@ class CropTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
