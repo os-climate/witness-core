@@ -199,5 +199,11 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.total_food_land_surface',
                                      f'{self.name}.land_use_required',
                                      f'{self.name}.techno_prices',
-                                     f'{self.name}.techno_production'
+                                     f'{self.name}.techno_production',
+                                     # output at zero
+                                     f'{self.name}.techno_consumption',
+                                     # output at zero
+                                     f'{self.name}.techno_consumption_woratio',
+                                     # output at zero
+                                     f'{self.name}.CO2_emissions',
                                     ])

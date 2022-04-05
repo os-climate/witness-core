@@ -616,9 +616,8 @@ class Crop():
         """
         Compute land use required for crop for energy
         """
-        self.land_use_required['Crop for Energy (Gha)'] = self.mix_detailed_production['Crop for Energy (TWh)'] / \
+        self.land_use_required['Crop (Gha)'] = self.mix_detailed_production['Crop for Energy (TWh)'] / \
                                                        self.techno_infos_dict['density_per_ha']
-        self.land_use_required['Crop for Food (Gha)'] = self.food_land_surface_df['total surface (Gha)']
 
 
     ####### Gradient #########
