@@ -29,7 +29,7 @@ class CopperDisc(SoSDiscipline):
                 'year_end': {'type': 'int', 'default': CopperModel.YEAR_END, 'unit': '[-]'},
                 'annual_extraction' : {'type' : 'float_list', 'unit' : 'Mt', 'default' : [26] * 81},
                 'initial_copper_reserve': {'type' : 'float', 'unit' : 'Mt', 'default': 3500},
-                'initial_copper_stock': {'type' : 'float', 'unit' : 'Mt', 'default': 880}}
+                'initial_copper_stock': {'type' : 'float', 'unit' : 'Mt', 'default': 880, 'user_level' : 2}}
 
     DESC_OUT = { CopperModel.COPPER_RESERVE: {'type': 'dataframe', 'unit': 'million_tonnes'},
                  CopperModel.COPPER_STOCK: {'type': 'dataframe', 'unit': 'million_tonnes'},
