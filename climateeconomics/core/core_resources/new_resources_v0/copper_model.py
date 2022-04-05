@@ -36,6 +36,26 @@ class CopperModel :
 
     def compute(self, copper_demand, period_of_exploitation):
         
+        
+        self.create_dataframe(copper_demand)
+        
+
+        
+        for year in period_of_exploitation :           
+
+            
+            # reserves update
+            self.compute_copper_reserve(year)
+            # stock and production update
+            self.compute_copper_stock_and_production(year)
+            # determines yearly production price
+            self.compute_copper_price(year)
+
+
+    #### méthodes statiques
+
+    def create_dataframe(self, copper_demand) :
+
         self.copper_demand = copper_demand
         years = np.arange(2020, 2101, 1)
 
@@ -62,22 +82,6 @@ class CopperModel :
         self.copper_prod_price['Total Price'] = np.linspace(0,0,len(years))
         self.copper_stock['Stock'] = np.linspace(0,0,len(years))
         self.copper_prod_price['Price/t'] = np.linspace(0,0,len(years))
-
-        
-
-        
-        for year in period_of_exploitation :           
-
-            
-            # reserves update
-            self.compute_copper_reserve(year)
-            # stock and production update
-            self.compute_copper_stock_and_production(year)
-            # determines yearly production price
-            self.compute_copper_price(year)
-
-
-    #### méthodes statiques
 
   
     def compute_copper_reserve(self, year):
