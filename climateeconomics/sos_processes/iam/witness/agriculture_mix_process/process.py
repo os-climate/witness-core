@@ -16,7 +16,7 @@ limitations under the License.
 
 from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
     INVEST_DISCIPLINE_OPTIONS
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process._usecase import TECHNOLOGIES_LIST_FOR_OPT
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import TECHNOLOGIES_LIST_FOR_OPT
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 import re
 

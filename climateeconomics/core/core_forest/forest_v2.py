@@ -98,6 +98,8 @@ class Forest():
         self.transport = self.param[self.TRANSPORT_COST]
         self.margin = self.param[self.MARGIN]
         self.initial_unsused_forest_surface = self.param[self.UNUSED_FOREST]
+        self.scaling_factor_techno_consumption = self.param['scaling_factor_techno_consumption']
+        self.scaling_factor_techno_production = self.param['scaling_factor_techno_production']
 
     def create_dataframe(self):
         """
@@ -160,7 +162,7 @@ class Forest():
         self.compute_biomass_dry_production()
 
         # compute outputs:
-        self.land_use_required['forest (Gha)'] = self.forest_surface_df['global_forest_surface']
+        self.land_use_required['Forest (Gha)'] = self.forest_surface_df['global_forest_surface']
         # techno production in TWh
         self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] = self.biomass_dry_df[
             'biomass_dry_for_energy (Mt)'] * self.biomass_dry_calorific_value
@@ -178,9 +180,9 @@ class Forest():
         self.CO2_emissions['Forest'] = np.zeros(len(self.years))
 
         # no consumption
-        self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(
+        self.techno_consumption['biomass_dry (TWh)'] = np.zeros(
             len(self.years))
-        self.techno_consumption_woratio[f'{BiomassDry.name}'] = np.zeros(
+        self.techno_consumption_woratio['biomass_dry (TWh)'] = np.zeros(
             len(self.years))
 
     def compute_managed_wood_production(self):

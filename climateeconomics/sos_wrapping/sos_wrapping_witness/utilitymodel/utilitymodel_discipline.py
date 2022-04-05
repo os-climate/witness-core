@@ -44,7 +44,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         'year_start': {'type': 'int', 'default': 2020, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
-        'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
+        'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
         'welfare_obj_option': {'type': 'string', 'default': 'welfare', 'possible_values': ['last_utility', 'welfare'], 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
@@ -93,7 +93,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         # store output data
         dict_values = {'utility_df': utility_df,
                        'welfare_objective': welfare_objective,
-                       'min_utility_objective': min_utility_objective, }
+                       'min_utility_objective': min_utility_objective,
+                       }
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

@@ -46,15 +46,16 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'biomass_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'lost_capital_obj_ref': {'type': 'float', 'default': 1.0e3, 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'biomass_list': {'type': 'string_list', 'default': [], 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
+        'lost_capital_obj_ref': {'type': 'float', 'default': 10., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'lost_capital_limit': {'type': 'float', 'default': 300, 'user_level': 2,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
+                  'user_level': 1},
 
     }
     DESC_OUT = {
         'lost_capital_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'lost_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'lost_capital_df': {'type': 'dataframe'},
         'techno_capital_df': {'type': 'dataframe'}
     }
@@ -147,12 +148,10 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         lost_capital_objective = self.model.get_objective()
         lost_capital_df = self.model.get_lost_capital_df()
         techno_capital_df = self.model.get_techno_capital_df()
-        lost_capital_cons = self.model.get_constraint()
         # store output data
         dict_values = {'lost_capital_df': lost_capital_df,
                        'techno_capital_df': techno_capital_df,
-                       'lost_capital_objective': lost_capital_objective,
-                       'lost_capital_cons': lost_capital_cons}
+                       'lost_capital_objective': lost_capital_objective}
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
@@ -166,40 +165,18 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
                           inputs_dict['year_end'] + 1)
         lost_capital_obj_ref = inputs_dict['lost_capital_obj_ref']
         lost_capital_limit = inputs_dict['lost_capital_limit']
+        gamma = inputs_dict['gamma']
         outputs_dict = self.get_sosdisc_outputs()
         lost_capital_df = outputs_dict['lost_capital_df']
         input_capital_list = [
             key for key in inputs_dict.keys() if key.endswith('lost_capital')]
-        dlost_capital_cons = self.compute_dlost_capital_constraint_dlost_capital(
-            lost_capital_df, lost_capital_obj_ref, lost_capital_limit)
+        delta_years = len(lost_capital_df['years'].values)
         for lost_capital in input_capital_list:
             column_name = [
                 col for col in inputs_dict[lost_capital].columns if col != 'years'][0]
             self.set_partial_derivative_for_other_types(
-                ('lost_capital_objective', ), (lost_capital, column_name), np.ones(len(years)) / lost_capital_obj_ref)
-            self.set_partial_derivative_for_other_types(
-                ('lost_capital_cons', ), (lost_capital, column_name), dlost_capital_cons)
+                ('lost_capital_objective', ), (lost_capital, column_name), np.ones(len(years)) * (1-gamma) / lost_capital_obj_ref / delta_years)
 
-    def compute_dlost_capital_constraint_dlost_capital(self, lost_capital_df, lost_capital_obj_ref, lost_capital_limit):
-        '''
-        Compute derivative of investment objective relative to investment by techno and
-        compared to total energy invest
-        '''
-
-        delta = (lost_capital_df['Sum of lost capital'].values -
-                 lost_capital_limit) / lost_capital_obj_ref
-        #abs_delta = np.sqrt(compute_func_with_exp_min(delta**2, 1e-15))
-        #smooth_delta = np.asarray([smooth_maximum(abs_delta, alpha=10)])
-        #invest_objective = abs_delta
-
-        idt = np.identity(len(lost_capital_df['Sum of lost capital'].values))
-
-        ddelta_dlost_capital = idt / lost_capital_obj_ref
-
-        dabs_ddelta_dlost_capital = 2 * delta / (2 * np.sqrt(compute_func_with_exp_min(
-            delta**2, 1e-15))) * compute_dfunc_with_exp_min(delta**2, 1e-15) * ddelta_dlost_capital
-
-        return dabs_ddelta_dlost_capital
 
     def get_chart_filter_list(self):
 

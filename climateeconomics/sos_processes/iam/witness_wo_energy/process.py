@@ -40,9 +40,10 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_agriculture': ns_scatter,
                    'ns_ccs': ns_scatter,
                    'ns_energy': ns_scatter,
-                   'ns_forest': ns_scatter}
+                   'ns_forest': ns_scatter,
+                   'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
-        mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
+        mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline',
                      'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
                      'Carbon_emissions': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline',
                      'Damage': 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline',
@@ -71,13 +72,15 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    'ns_functions': f'{self.ee.study_name}.EnergyMix',
                    'ns_resource ': f'{self.ee.study_name}.EnergyMix',
-                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences'}
+                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences',
+                   'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         ns_dict = {'ns_witness': self.ee.study_name,
                    'ns_energy_mix': f'{self.ee.study_name}',
-                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences'}
+                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences'
+                   }
 
         '''
         Add lost capital objective discipline to all WITNESS processes

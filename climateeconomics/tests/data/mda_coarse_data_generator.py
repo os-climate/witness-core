@@ -9,7 +9,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_c
 import pickle
 
 
-def launch_data_pickle_generation():
+def launch_data_pickle_generation(directory=''):
     # Run MDA WITNESS Coarse
     name = 'Data_Generator'
     ee = ExecutionEngine(name)
@@ -217,19 +217,24 @@ def launch_data_pickle_generation():
                 mda_coarse_data_technologies_output_dict[techno][key] = {
                     'value': techno_disc.get_sosdisc_outputs(key), 'is_coupling': is_coupling}
 
-    output = open('mda_coarse_data_streams_input_dict.pkl', 'wb')
+    if directory =='':
+        prefix='.'
+    else:
+        prefix=f'./{directory}'
+
+    output = open(f'{prefix}/mda_coarse_data_streams_input_dict.pkl', 'wb')
     pickle.dump(mda_coarse_data_streams_input_dict, output)
     output.close()
 
-    output = open('mda_coarse_data_streams_output_dict.pkl', 'wb')
+    output = open(f'{prefix}/mda_coarse_data_streams_output_dict.pkl', 'wb')
     pickle.dump(mda_coarse_data_streams_output_dict, output)
     output.close()
 
-    output = open('mda_coarse_data_technologies_input_dict.pkl', 'wb')
+    output = open(f'{prefix}/mda_coarse_data_technologies_input_dict.pkl', 'wb')
     pickle.dump(mda_coarse_data_technologies_input_dict, output)
     output.close()
 
-    output = open('mda_coarse_data_technologies_output_dict.pkl', 'wb')
+    output = open(f'{prefix}/mda_coarse_data_technologies_output_dict.pkl', 'wb')
     pickle.dump(mda_coarse_data_technologies_output_dict, output)
     output.close()
 
