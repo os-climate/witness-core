@@ -138,19 +138,12 @@ class Study(EnergyMixStudyManager):
         self.invest_level = pd.DataFrame(
             {'years': years, 'invest': 1})
 
-        land_surface_for_food = pd.DataFrame({'years': years,
-                                              'Agriculture total (Gha)': np.ones(len(years)) * 4.8})
-
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
             {'years': years, 'transport': np.ones(len(years)) * 7.6})
 
-        self.resources_price = pd.DataFrame(columns=['years', 'CO2', 'water'])
-        self.resources_price['years'] = years
-        self.resources_price['CO2'] = np.linspace(
-            50.0, 100.0, len(years))         # biomass_dry price in $/kg
         self.energy_carbon_emissions = pd.DataFrame(
             {'years': years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
@@ -159,8 +152,7 @@ class Study(EnergyMixStudyManager):
             {"years": years, "deforested_surface": deforestation_surface})
 
         forest_invest = np.linspace(5, 8, year_range)
-        self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
         mw_invest = np.linspace(1, 4, year_range)
@@ -187,13 +179,11 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.margin': self.margin,
                        f'{self.study_name}.transport_cost': self.transport,
                        f'{self.study_name}.transport_margin': self.margin,
-                       f'{self.study_name}.invest_techno_mix': investment_mix,
                        f'{self.study_name}.CO2_taxes': self.co2_taxes,
                        }
         if self.main_study:
             values_dict.update(
-                {f'{self.study_name}.{energy_name}.Crop.land_surface_for_food_df': land_surface_for_food,
-                 f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
+                {f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
                  f'{self.study_name}.{energy_name}.red_meat_percentage': self.red_meat_percentage,
                  f'{self.study_name}.{energy_name}.white_meat_percentage': self.white_meat_percentage,
                  f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
