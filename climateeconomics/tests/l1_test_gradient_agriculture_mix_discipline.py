@@ -29,7 +29,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     def setUp(self):
         self.test_name = 'Test'
         self.ee = ExecutionEngine(self.test_name)
@@ -120,9 +120,8 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
             {'years': self.years, 'Crop': CO2_emissions})
 
         land_use_required_energy = np.linspace(0.06, 0.13, year_range)
-        land_use_required_food = np.linspace(5.17, 5.13, year_range)
         self.land_use_required_crop = pd.DataFrame(
-            {'years': self.years, 'Crop (Gha)': land_use_required_energy, 'Crop for Food (Gha)': land_use_required_food})
+            {'years': self.years, 'Crop (Gha)': land_use_required_energy})
         # ----------------------------------------------------
         # Forest related inputs
         deforestation_surface = np.linspace(10, 5, year_range)
