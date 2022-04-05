@@ -81,6 +81,12 @@ The biomass price is the weighted average of managed  and unmanaged biomass pric
 The evolution of CO2 captured by forest is directly linked to the surface of forest. This evolution of CO2 captured is given by:
 $$CO2\_captured\_evolution = Forest\_surface\_evolution * CO2\_per\_ha$$
 
+## Lost capital
+In order to do not waste money, the model will compute the value called lost capital that will be given to the appropriate model. This concerns reforestation and deforestation activities. As they are opposite activities, it is a waste of money and capital to invest in deforestation and reforestation.
+For example, adding 10Mha of forest and removing 12Mha of forest results in removing 2Mha of forest. But the capital for adding the forest is lost.
+As a formula, we use:
+$$lost_capital = min(reforested\_surface, deforrested\_surface) * cost\_per\_ha$$
+
 ## Model limitations
 In this model, the quantity of CO2 captured by ha of forest is assumed to be the same all over the world.  However, the CO2 captured change with the climate condition. Forest in tropical regions are more effective than forest in cold regions. As a result, cutting trees of the Amazon forest does not have the same impact than cutting trees in cold region, in term of captured CO2.
 
