@@ -87,7 +87,8 @@ class LostCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.EnergyMix.methane.FossilGas.techno_capital': lost_capital_fg,
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': lost_capital_ub,
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': lost_capital_rf,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': lost_capital_ft, }
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': lost_capital_ft,
+                       f'{self.name}.gamma': 0.5}
 
         self.ee.load_study_from_input_dict(values_dict)
 
