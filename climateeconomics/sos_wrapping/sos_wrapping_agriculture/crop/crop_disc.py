@@ -488,7 +488,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             prod_df = self.get_sosdisc_outputs(
                 'crop_productivity_evolution')
-            years = list(prod_df.index)
+            years = list(prod_df['years'])
 
             chart_name = 'Crop productivity evolution'
 
@@ -514,7 +514,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             data_fuel_dict = deepcopy(self.get_sosdisc_inputs('data_fuel_dict'))
             cost_details = deepcopy(self.get_sosdisc_outputs('cost_details'))
             invest_level = deepcopy(self.get_sosdisc_inputs('invest_level') * self.get_sosdisc_inputs('scaling_factor_invest_level'))
-            years = list(prod_df.index)
+            years = list(prod_df['years'])
 
             # ------------------------------------------
             # INVEST (M$)
