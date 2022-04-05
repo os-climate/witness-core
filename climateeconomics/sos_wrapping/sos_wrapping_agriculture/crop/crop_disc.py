@@ -327,20 +327,9 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         # gradient for land demand
         self.set_partial_derivative_for_other_types(
-            ('land_use_required', 'Crop for Energy (Gha)'),
+            ('land_use_required', 'Crop (Gha)'),
             ('invest_level', 'invest'),
             dprod_dinvest * scaling_factor_invest_level * (1 - residue_density_percentage) / density_per_ha * calorific_value)
-
-        self.set_partial_derivative_for_other_types(
-            ('land_use_required', 'Crop for Food (Gha)'), ('population_df', 'population'), summ)
-        self.set_partial_derivative_for_other_types(
-            ('land_use_required', 'Crop for Food (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
-        self.set_partial_derivative_for_other_types(
-            ('land_use_required', 'Crop for Food (Gha)'), ('red_meat_percentage', 'red_meat_percentage'),
-            d_surface_d_red_meat_percentage)
-        self.set_partial_derivative_for_other_types(
-            ('land_use_required', 'Crop for Food (Gha)'), ('white_meat_percentage', 'white_meat_percentage'),
-            d_surface_d_white_meat_percentage)
 
     def get_chart_filter_list(self):
 
@@ -579,7 +568,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             land_demand_chart = TwoAxesInstanciatedChart('years', 'Land demand [Gha]',
                                                  chart_name=chart_name)
-            ordonate_data = list(land_use_required['Crop for Energy (Gha)'])
+            ordonate_data = list(land_use_required['Crop (Gha)'])
             land_demand_serie = InstanciatedSeries(
                         years, ordonate_data, 'Crop' , 'lines', visible_line)
             land_demand_chart.series.append(land_demand_serie)
