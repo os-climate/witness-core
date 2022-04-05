@@ -8,20 +8,25 @@ import pandas as pd
 
 class CopperModel :
 
-    YEAR_START = 2020
-    YEAR_END = 2100
-    DEMAND = 'All_Demand'
+    DEMAND = 'copper_demand'
+    YEAR_START = 'year_start'
+    YEAR_END = 'year_end'
+    ANNUAL_EXTRACTION = 'annual_extraction'    
+    INITIAL_RESERVE = 'initial_copper_reserve'
+    INITIAL_STOCK = 'initial_copper_stock'
+
     COPPER_STOCK = 'copper_stock'
     COPPER_PRICE = 'copper_price'
     COPPER_RESERVE = 'copper_reserve'
     PRODUCTION = 'production'
-    INITIAL_RESERVE = 'initial_copper_reserve'
-    INITIAL_STOCK = 'initial_copper_stock'
+    
 
 
-    def __init__(self, copper_demand, annual_extraction):
+    def __init__(self, param):
         self.copper_demand = pd.DataFrame() #DataFrame avec la demande par année en cuivre
-        self.annual_extraction = annual_extraction
+        self.param = param
+        self.set_data()
+        
 
         data_dir = join(dirname(dirname(__file__)), 'sos_wrapping', 'data')
 
@@ -31,7 +36,13 @@ class CopperModel :
         self.copper_prod = pd.DataFrame(columns = ['Year', 'Extraction', 'World Production', 'Cumulated World Production', 'Ratio'])
 
 
-    
+    def set_data(self):
+        self.year_start = self.param[self.YEAR_START]
+        self.year_end = self.param[self.YEAR_END]
+        self.annual_extraction = self.param[self.ANNUAL_EXTRACTION]
+        self.initial_copper_reserve = self.param[self.INITIAL_RESERVE]
+        self.initial_copper_stock = self.param[self.INITIAL_STOCK]
+        self.copper_demand = self.param[self.DEMAND]
     
 
     def compute(self, copper_demand, period_of_exploitation):
@@ -87,8 +98,8 @@ class CopperModel :
     def compute_copper_reserve(self, year):
         copper_extraction = self.copper_prod.loc[year, 'Extraction']
 
-        if year == self.YEAR_START :
-            remainig_copper = 3500 #self.INITIAL_RESERVE['default']
+        if year == self.year_start :
+            remainig_copper = self.initial_copper_reserve #self.INITIAL_RESERVE['default']
        
         else :
             remainig_copper = self.copper_reserve.loc[year -1, 'Reserve']
@@ -118,8 +129,8 @@ class CopperModel :
 
     def compute_copper_stock_and_production(self, year) :
 
-        if year == self.YEAR_START :
-            old_stock = 880 #self.INITIAL_STOCK['default']
+        if year == self.year_start :
+            old_stock = self.initial_copper_stock #self.INITIAL_STOCK['default']
         else :
             old_stock = self.copper_stock.at[year -1, 'Stock']        
        
@@ -143,7 +154,7 @@ class CopperModel :
             #if there is still stock, it means the demand was satified
             self.copper_prod.at[year, 'World Production'] = copper_demand
         
-        if year == self.YEAR_START :
+        if year == self.year_start :
             self.copper_prod.at[year, 'Cumulated World Production'] = self.copper_prod.at[year, 'World Production']
         else : 
             self.copper_prod.at[year, 'Cumulated World Production'] = self.copper_prod.at[year -1, 'Cumulated World Production'] + self.copper_prod.at[year, 'World Production']
@@ -154,7 +165,7 @@ class CopperModel :
     
     def compute_copper_price (self, year) :
 
-        if year ==  self.YEAR_START :
+        if year ==  self.year_start :
             self.copper_prod_price.loc[year, 'Price/t'] = 9780 
 
         else :     

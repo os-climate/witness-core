@@ -25,8 +25,8 @@ class CopperDisc(SoSDiscipline):
     _maturity = 'Fake'
 
     DESC_IN = { 'copper_demand': {'type': 'dataframe', 'unit': 'Mt'},
-                'year_start': {'type' : 'int', 'default': CopperModel.YEAR_START, 'unit': '[-]'},
-                'year_end': {'type': 'int', 'default': CopperModel.YEAR_END, 'unit': '[-]'},
+                'year_start': {'type' : 'int', 'default': 2020, 'unit': '[-]'},
+                'year_end': {'type': 'int', 'default': 2100, 'unit': '[-]'},
                 'annual_extraction' : {'type' : 'float_list', 'unit' : 'Mt', 'default' : [26] * 81},
                 'initial_copper_reserve': {'type' : 'float', 'unit' : 'Mt', 'default': 3500},
                 'initial_copper_stock': {'type' : 'float', 'unit' : 'Mt', 'default': 880, 'user_level' : 2}}
@@ -38,15 +38,19 @@ class CopperDisc(SoSDiscipline):
 
     
     
-
+    def init_execution(self):
+        inputs = list(self.DESC_IN.keys())
+        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        self.copper_model = CopperModel(param)
         
     def run(self):
-        period_of_exploitation = np.arange(self.DESC_IN['year_start']['default'], self.DESC_IN['year_end']['default'] + 1, 1)
+
+        copper_demand, year_start, year_end= self.get_sosdisc_inputs(['copper_demand', 'year_start', 'year_end'])
+        period_of_exploitation = np.arange(year_start, year_end + 1, 1)
 
         # call models
-        copper_demand, annual_extraction = self.get_sosdisc_inputs(['copper_demand', 'annual_extraction'])
+        
 
-        self.copper_model = CopperModel(copper_demand, annual_extraction)
         self.copper_model.compute(copper_demand, period_of_exploitation)
 
         dict_values = { CopperModel.COPPER_RESERVE : self.copper_model.copper_reserve,
