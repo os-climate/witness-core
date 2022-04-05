@@ -225,8 +225,8 @@ class Crop():
         self.CO2_emissions['Crop'] = np.zeros(len(self.years))
 
         # no consumption
-        self.techno_consumption[f'{BiomassDry.name}'] = np.zeros(len(self.years))
-        self.techno_consumption_woratio[f'{BiomassDry.name}'] = np.zeros(len(self.years))
+        self.techno_consumption['biomass_dry (TWh)'] = np.zeros(len(self.years))
+        self.techno_consumption_woratio['biomass_dry (TWh)'] = np.zeros(len(self.years))
 
     def compute_quantity_of_food(self, population_df, diet_df):
         """
@@ -616,9 +616,8 @@ class Crop():
         """
         Compute land use required for crop for energy
         """
-        self.land_use_required['Crop for Energy (Gha)'] = self.mix_detailed_production['Crop for Energy (TWh)'] / \
+        self.land_use_required['Crop (Gha)'] = self.mix_detailed_production['Crop for Energy (TWh)'] / \
                                                        self.techno_infos_dict['density_per_ha']
-        self.land_use_required['Crop for Food (Gha)'] = self.food_land_surface_df['total surface (Gha)']
 
 
     ####### Gradient #########
