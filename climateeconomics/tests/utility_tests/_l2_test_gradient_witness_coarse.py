@@ -303,7 +303,6 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
             inputs = [input for input in inputs if self.ee.dm.get_data(input, 'coupling')
                       and not input.endswith('resources_price')
                       and not input.endswith('resources_CO2_emissions')
-                      and not input.endswith('energy_demand')
                       and not input.endswith('all_streams_demand_ratio')]
             print(disc.name)
             print(i)

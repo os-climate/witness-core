@@ -114,8 +114,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             inputs = disc.get_input_data_names()
             inputs = [input for input in inputs if self.ee.dm.get_data(input, 'coupling')
                       and not input.endswith('resources_price')
-                      and not input.endswith('resources_CO2_emissions')
-                      and not input.endswith('energy_demand')]
+                      and not input.endswith('resources_CO2_emissions')]
             print(disc.name)
             print(i)
             if i > 73:
