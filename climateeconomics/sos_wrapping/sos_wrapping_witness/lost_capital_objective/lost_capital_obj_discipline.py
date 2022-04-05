@@ -50,6 +50,8 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         'lost_capital_obj_ref': {'type': 'float', 'default': 10., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'lost_capital_limit': {'type': 'float', 'default': 300, 'user_level': 2,
                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
+                  'user_level': 1},
 
     }
     DESC_OUT = {
@@ -163,6 +165,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
                           inputs_dict['year_end'] + 1)
         lost_capital_obj_ref = inputs_dict['lost_capital_obj_ref']
         lost_capital_limit = inputs_dict['lost_capital_limit']
+        gamma = inputs_dict['gamma']
         outputs_dict = self.get_sosdisc_outputs()
         lost_capital_df = outputs_dict['lost_capital_df']
         input_capital_list = [
@@ -172,7 +175,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
             column_name = [
                 col for col in inputs_dict[lost_capital].columns if col != 'years'][0]
             self.set_partial_derivative_for_other_types(
-                ('lost_capital_objective', ), (lost_capital, column_name), np.ones(len(years)) / lost_capital_obj_ref / delta_years)
+                ('lost_capital_objective', ), (lost_capital, column_name), np.ones(len(years)) * (1-gamma) / lost_capital_obj_ref / delta_years)
 
 
     def get_chart_filter_list(self):

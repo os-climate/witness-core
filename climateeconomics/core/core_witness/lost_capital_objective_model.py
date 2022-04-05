@@ -33,12 +33,12 @@ class LostCapitalObjective():
         self.lost_capital_df = None
         self.techno_capital_df = None
 
+
     def set_data(self):
         self.year_start = self.param['year_start']
         self.year_end = self.param['year_end']
         self.lost_capital_obj_ref = self.param['lost_capital_obj_ref']
-        self.lost_capital_limit = self.param['lost_capital_limit']
-
+        self.gamma = self.param['gamma']
 
     def create_year_range(self):
         '''
@@ -88,7 +88,7 @@ class LostCapitalObjective():
         Compute objective
         '''
         if 'Sum of lost capital' in self.lost_capital_df:
-            self.lost_capital_objective = np.asarray(
+            self.lost_capital_objective = (1 - self.gamma) * np.asarray(
                 [self.lost_capital_df['Sum of lost capital'].sum()]) / self.lost_capital_obj_ref / self.delta_years
 
     def get_objective(self):
