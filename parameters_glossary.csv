@@ -218,6 +218,8 @@ methane_FossilGas_array_mix,Methane FossilGas array mix,%,Mix data concerning Fo
 methane_UpgradingBiogas_array_mix,Methane UpgradingBiogas array mix,%,Mix data concerning UpgradingBiogas.,,
 min_co2_objective,Min CO2 objective,GtCO2,"Value of CO2 objective. Smaller the value is, better the objective is accomplished.",,
 min_utility_objective,Min utility objective,,"Value of the min utility objective. Smaller the value is, better the objective is accomplished.",,
+mix_detailed_prices,Detailed mix prices,$/MWh,Prices of residues and not residues.,,
+mix_detailed_production,Detailed mix production,TWh,Production load of residues and not residues.,,
 non_modeled_resource_price,Non modeled resource price per year,$/t,Price data concerning modeled.,,
 nu_knowledge,nu knowledge,,Data concerning CO2 nu_knowl.,,
 other_use_agriculture,Other use agriculture,ha/person,"ha/person requested for the production of other prodcuts than the other considerated (coffee, tea, chocolate, sugar�).",,
