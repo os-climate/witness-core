@@ -19,6 +19,7 @@ import pandas as pd
 import os
 from copy import deepcopy
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
 from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
 
@@ -68,7 +69,8 @@ class Crop():
         self.m2toha = 10000.
         self.surface_df = None
         self.scaling_factor_invest_level = None
-
+        self.product_energy_unit = 'TWh'
+        self.mass_unit = 'Mt'
         self.set_data()
         self.create_dataframe()
 
@@ -221,12 +223,16 @@ class Crop():
         # compute crop for energy land use
         self.compute_land_use()
 
-        # no emisions
-        self.CO2_emissions['Crop'] = np.zeros(len(self.years))
+        # CO2 emissions
+        self.compute_carbon_emissions()
 
         # no consumption
-        self.techno_consumption['biomass_dry (TWh)'] = np.zeros(len(self.years))
-        self.techno_consumption_woratio['biomass_dry (TWh)'] = np.zeros(len(self.years))
+        self.techno_consumption[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
+            self.data_fuel_dict['high_calorific_value'] * \
+            self.mix_detailed_production['Total (TWh)']
+        self.techno_consumption_woratio[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
+            self.data_fuel_dict['high_calorific_value'] * \
+            self.mix_detailed_production['Total (TWh)']
 
     def compute_quantity_of_food(self, population_df, diet_df):
         """
@@ -619,6 +625,44 @@ class Crop():
         self.land_use_required['Crop (Gha)'] = self.mix_detailed_production['Crop for Energy (TWh)'] / \
                                                        self.techno_infos_dict['density_per_ha']
 
+    def compute_carbon_emissions(self):
+        '''
+        Compute the carbon emissions from the technology taking into account 
+        CO2 from production + CO2 from primary resources 
+        '''
+        if 'CO2_from_production' not in self.techno_infos_dict:
+            self.CO2_emissions['production'] = self.get_theoretical_co2_prod(
+                unit='kg/kWh')
+        elif self.techno_infos_dict['CO2_from_production'] == 0.0:
+            self.CO2_emissions['production'] = 0.0
+        else:
+            if self.techno_infos_dict['CO2_from_production_unit'] == 'kg/kg':
+                self.CO2_emissions['production'] = self.techno_infos_dict['CO2_from_production'] / \
+                    self.data_fuel_dict['high_calorific_value']
+            elif self.techno_infos_dict['CO2_from_production_unit'] == 'kg/kWh':
+                self.CO2_emissions['production'] = self.techno_infos_dict['CO2_from_production']
+
+        # Add carbon emission from input energies (resources or other
+        # energies)
+
+        co2_emissions_frominput_energies = self.compute_CO2_emissions_from_input_resources(
+        )
+
+        # Add CO2 from production + C02 from input energies
+        self.CO2_emissions['Crop'] = self.CO2_emissions['production'] + \
+            co2_emissions_frominput_energies
+
+    def get_theoretical_co2_prod(self, unit='kg/kWh'):
+        ''' 
+        Get the theoretical CO2 production for a given technology,
+        '''
+        return 0.0
+
+    def compute_CO2_emissions_from_input_resources(self):
+        '''
+        Need to take into account  CO2 from electricity/fuel production
+        '''
+        return 0.0
 
     ####### Gradient #########
 
