@@ -44,7 +44,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'biomass_list': {'type': 'string_list', 'default': [], 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
+        'agriculture_techno_list': {'type': 'string_list', 'default': [], 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'non_use_capital_obj_ref': {'type': 'float', 'default': 10., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'non_use_capital_limit': {'type': 'float', 'default': 300, 'user_level': 2,
                                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
@@ -96,21 +96,12 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                             energy_techno_dict[ccs] = {'namespace': 'ns_ccs',
                                                        'value': techno_list}
 
-        if 'biomass_list' in self._data_in:
-            biomass_list = self.get_sosdisc_inputs('biomass_list')
-            if biomass_list is not None:
-                for biomass in biomass_list:
-                    dynamic_inputs[f'{biomass}.technologies_list'] = {'type': 'string_list',
-                                                                      'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                      'namespace': 'ns_forest',
-                                                                      'structuring': True}
-
-                    if f'{biomass}.technologies_list' in self._data_in:
-                        techno_list = self.get_sosdisc_inputs(
-                            f'{biomass}.technologies_list')
-                        if techno_list is not None:
-                            energy_techno_dict[biomass] = {'namespace': 'ns_forest',
-                                                           'value': techno_list}
+        if 'agriculture_techno_list' in self._data_in:
+            agriculture_techno_list = self.get_sosdisc_inputs(
+                'agriculture_techno_list')
+            if agriculture_techno_list is not None:
+                energy_techno_dict['Agriculture'] = {'namespace': 'ns_witness',
+                                                     'value': agriculture_techno_list}
 
         if len(energy_techno_dict) != 0:
             full_techno_list = compute_full_techno_list(energy_techno_dict)

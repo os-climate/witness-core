@@ -36,6 +36,7 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                    'ns_energy': f'{self.name}.EnergyMix',
                    'ns_ref': f'{self.name}',
                    'ns_ccs': f'{self.name}.CCUS',
+                   'ns_agriculture': f'{self.name}.Agriculture',
                    'ns_forest': f'{self.name}.Forest', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -77,11 +78,11 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                        f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
                        f'{self.name}.energy_list': ['fuel.liquid_fuel', 'methane'],
                        f'{self.name}.ccs_list': ['carbon_capture'],
-                       f'{self.name}.biomass_list': ['biomass_dry'],
+                       f'{self.name}.agriculture_techno_list': ['Forest'],
                        f'{self.name}.EnergyMix.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
                        f'{self.name}.CCUS.carbon_capture.technologies_list': ['CC_tech'],
-                       f'{self.name}.Forest.biomass_dry.technologies_list': ['reforestation'],
+                       f'{self.name}.Forest.biomass_dry.technologies_list': ['Forest'],
                        f'{self.name}.CCUS.carbon_capture.CC_tech.non_use_capital': non_use_capital_ct,
                        f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital': non_use_capital_fg,
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital': non_use_capital_ub,
@@ -92,8 +93,8 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': non_use_capital_ub,
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': non_use_capital_rf,
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': non_use_capital_ft,
-                       f'{self.name}.Forest.biomass_dry.reforestation.non_use_capital': non_use_capital_ref,
-                       f'{self.name}.Forest.biomass_dry.reforestation.techno_capital': non_use_capital_ref, }
+                       f'{self.name}.Agriculture.Forest.non_use_capital': non_use_capital_ref,
+                       f'{self.name}.Agriculture.Forest.techno_capital': non_use_capital_ref, }
 
         self.ee.load_study_from_input_dict(values_dict)
 
