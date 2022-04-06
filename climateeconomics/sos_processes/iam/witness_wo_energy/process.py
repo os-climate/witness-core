@@ -83,12 +83,12 @@ class ProcessBuilder(BaseProcessBuilder):
                    }
 
         '''
-        Add lost capital objective discipline to all WITNESS processes
+        Add non_use capital objective discipline to all WITNESS processes
         '''
-        mods_dict = {'InvestmentDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_witness.lost_capital_objective.lost_capital_obj_discipline.LostCapitalObjectiveDiscipline'
+        mods_dict = {'InvestmentDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_witness.non_use_capital_objective.non_use_capital_obj_discipline.NonUseCapitalObjectiveDiscipline'
                      }
-        lost_capital_list = self.create_builder_list(
+        non_use_capital_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)
-        builder_list.extend(lost_capital_list)
+        builder_list.extend(non_use_capital_list)
 
         return builder_list

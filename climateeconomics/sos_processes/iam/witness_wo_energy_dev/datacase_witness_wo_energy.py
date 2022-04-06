@@ -224,9 +224,9 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective', 'min_utility_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective', 'lost_capital_objective'])
+            ['welfare_objective', 'min_utility_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective', 'non_use_capital_objective'])
         list_parent.extend(['utility_objective', 'utility_objective',
-                            'CO2_obj', 'CO2_obj', 'CO2_obj', 'lost_capital_objective'])
+                            'CO2_obj', 'CO2_obj', 'CO2_obj', 'non_use_capital_objective'])
         list_ns.extend(['ns_functions', 'ns_functions',
                         'ns_functions', 'ns_functions', 'ns_functions', 'ns_witness'])
         list_ftype.extend(
