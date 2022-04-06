@@ -25,10 +25,10 @@ class CopperDisc(SoSDiscipline):
     _maturity = 'Fake'
 
     DESC_IN = { 'copper_demand': {'type': 'dataframe', 'unit': 'Mt'},
-                'year_start': {'type' : 'int', 'default': 2020, 'unit': '[-]'},
-                'year_end': {'type': 'int', 'default': 2100, 'unit': '[-]'},
+                'year_start': {'type' : 'int', 'default': 2020, 'unit': '[-]', 'user_level': 1},
+                'year_end': {'type': 'int', 'default': 2100, 'unit': '[-]', 'user_level': 1},
                 'annual_extraction' : {'type' : 'float_list', 'unit' : 'Mt', 'default' : [26] * 81},
-                'initial_copper_reserve': {'type' : 'float', 'unit' : 'Mt', 'default': 3500},
+                'initial_copper_reserve': {'type' : 'float', 'unit' : 'Mt', 'default': 3500, 'user_level': 2},
                 'initial_copper_stock': {'type' : 'float', 'unit' : 'Mt', 'default': 880, 'user_level' : 2}}
 
     DESC_OUT = { CopperModel.COPPER_RESERVE: {'type': 'dataframe', 'unit': 'million_tonnes'},
