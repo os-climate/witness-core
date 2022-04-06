@@ -193,7 +193,7 @@ class DataStudy():
         witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0
-        witness_input[f'{self.study_name}.gamma'] = 1.0
+        witness_input[f'{self.study_name}.gamma'] = 0.5
         witness_input[f'{self.study_name}.init_discounted_utility'] = 4000.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
