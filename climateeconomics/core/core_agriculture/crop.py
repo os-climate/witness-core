@@ -226,7 +226,7 @@ class Crop():
         # CO2 emissions
         self.compute_carbon_emissions()
 
-        # no consumption
+        # consumption
         self.techno_consumption[f'{CO2.name} ({self.mass_unit})'] = -self.techno_infos_dict['CO2_from_production'] / \
             self.data_fuel_dict['high_calorific_value'] * \
             self.mix_detailed_production['Total (TWh)']
