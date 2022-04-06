@@ -224,14 +224,24 @@ class CropDiscipline(ClimateEcoDiscipline):
         #-- compute
         self.crop_model.compute()
 
-        techno_production = self.crop_model.mix_detailed_production[['years', 'Total (TWh)']]
         #Scale production TWh -> PWh
+        techno_production = self.crop_model.mix_detailed_production[['years', 'Total (TWh)']]
         techno_production = techno_production.rename(columns={'Total (TWh)': "biomass_dry (TWh)"})
         for column in techno_production.columns:
             if column == 'years':
                 continue
             techno_production[column] = techno_production[column].values / \
                 input_dict['scaling_factor_techno_production']
+        #Scale production Mt -> Gt
+        techno_consumption = deepcopy(self.crop_model.techno_consumption)
+        techno_consumption_woratio = deepcopy(self.crop_model.techno_consumption_woratio)
+        for column in techno_consumption.columns:
+            if column == 'years':
+                continue
+            techno_consumption[column] = techno_consumption[column].values / \
+                input_dict['scaling_factor_techno_consumption']
+            techno_consumption_woratio[column] = techno_consumption_woratio[column].values / \
+                input_dict['scaling_factor_techno_consumption']
 
         outputs_dict = {
             'food_land_surface_df': self.crop_model.food_land_surface_df,
@@ -245,9 +255,9 @@ class CropDiscipline(ClimateEcoDiscipline):
             'techno_production': techno_production,
             'techno_prices': self.crop_model.techno_prices,
             'land_use_required': self.crop_model.land_use_required,
-            'techno_consumption': self.crop_model.techno_consumption, # output at zero
-            'techno_consumption_woratio': self.crop_model.techno_consumption_woratio, # output at zero
-            'CO2_emissions': self.crop_model.CO2_emissions, # output at zero
+            'techno_consumption': techno_consumption,
+            'techno_consumption_woratio': techno_consumption_woratio,
+            'CO2_emissions': self.crop_model.CO2_emissions,
         }
 
         #-- store outputs
@@ -265,6 +275,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         density_per_ha = inputs_dict['techno_infos_dict']['density_per_ha']
         residue_density_percentage = inputs_dict['techno_infos_dict']['residue_density_percentage']
         calorific_value = inputs_dict['data_fuel_dict']['calorific_value']
+        CO2_from_production = inputs_dict['techno_infos_dict']['CO2_from_production']
+        high_calorific_value = inputs_dict['data_fuel_dict']['high_calorific_value']
         model = self.crop_model
         model.configure_parameters_update(inputs_dict)
         model.compute()
@@ -307,7 +319,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         d_prod_dtemperature = model.compute_d_prod_dland_for_food(d_total_d_temperature)
         d_prod_dred_to_white = model.compute_d_prod_dland_for_food(d_surface_d_red_meat_percentage)
         d_prod_dmeat_to_vegetable = model.compute_d_prod_dland_for_food(d_surface_d_white_meat_percentage)
-
+        # --------------------------------------------------------------
+        # Techno production gradients
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('population_df', 'population'),
             d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
@@ -319,12 +332,48 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('techno_production', 'biomass_dry (TWh)'), ('white_meat_percentage', 'white_meat_percentage'),
             d_prod_dmeat_to_vegetable)
-
         # gradients for techno_production from invest
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('invest_level', 'invest'),
             dprod_dinvest * scaling_factor_invest_level * calorific_value / scaling_factor_techno_production)
+        # --------------------------------------------------------------
+        # Techno consumption gradients
+        self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('population_df', 'population'),
+            -CO2_from_production / high_calorific_value * d_prod_dpopulation)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption', 'CO2_resource (Mt)'), ('temperature_df', 'temp_atmo'),
+            -CO2_from_production / high_calorific_value * d_prod_dtemperature)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption', 'CO2_resource (Mt)'), ('red_meat_percentage', 'red_meat_percentage'),
+            -CO2_from_production / high_calorific_value * d_prod_dred_to_white)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption', 'CO2_resource (Mt)'), ('white_meat_percentage', 'white_meat_percentage'),
+            -CO2_from_production / high_calorific_value * d_prod_dmeat_to_vegetable)
+        # gradients for techno_production from invest
+        dprod_dinvest = model.compute_dprod_from_dinvest()
+        self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('invest_level', 'invest'),
+            -CO2_from_production / high_calorific_value * dprod_dinvest * scaling_factor_invest_level \
+            * calorific_value / scaling_factor_techno_production)
+        # --------------------------------------------------------------
+        # Techno consumption wo ratio gradients
+        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), ('population_df', 'population'),
+            -CO2_from_production / high_calorific_value * d_prod_dpopulation)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio', 'CO2_resource (Mt)'), ('temperature_df', 'temp_atmo'),
+            -CO2_from_production / high_calorific_value * d_prod_dtemperature)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio', 'CO2_resource (Mt)'), ('red_meat_percentage', 'red_meat_percentage'),
+            -CO2_from_production / high_calorific_value * d_prod_dred_to_white)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio', 'CO2_resource (Mt)'), ('white_meat_percentage', 'white_meat_percentage'),
+            -CO2_from_production / high_calorific_value * d_prod_dmeat_to_vegetable)
 
+        # gradients for techno_production from invest   
+        dprod_dinvest = model.compute_dprod_from_dinvest()
+        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), ('invest_level', 'invest'),
+            -CO2_from_production / high_calorific_value * dprod_dinvest * scaling_factor_invest_level \
+            * calorific_value / scaling_factor_techno_production)
+            
         # gradient for land demand
         self.set_partial_derivative_for_other_types(
             ('land_use_required', 'Crop (Gha)'),
