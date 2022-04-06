@@ -124,6 +124,7 @@ class Forest():
         self.land_use_required = pd.DataFrame({'years': self.years})
         self.CO2_emissions = pd.DataFrame({'years': self.years})
         self.lost_capital = pd.DataFrame({'years': self.years})
+        self.techno_capital = pd.DataFrame({'years': self.years})
 
     def compute(self, in_dict):
         """
@@ -452,7 +453,7 @@ class Forest():
         lost_capital is in G$ 
         """
         self.lost_capital['lost_capital_G$'] = 0
-        self.lost_capital['capital_G$'] = 0
+        self.techno_capital['capital_G$'] = 0
         # abs() needed because deforestation surface is negative
 
         for element in range(0, len(self.years)):
@@ -463,7 +464,7 @@ class Forest():
                 self.lost_capital.loc[element, 'lost_capital_G$'] = self.forest_surface_df.loc[element,
                                                                                                'delta_reforestation_surface'] * self.cost_per_ha
 
-        self.lost_capital['capital_G$'] = self.forest_surface_df['delta_reforestation_surface'] * self.cost_per_ha
+        self.techno_capital['capital_G$'] = self.forest_surface_df['delta_reforestation_surface'] * self.cost_per_ha
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
