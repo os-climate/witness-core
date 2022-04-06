@@ -147,52 +147,52 @@ class ForestDiscipline(ClimateEcoDiscipline):
         Forest.YEAR_END: {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
         Forest.TIME_STEP: {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
         Forest.DEFORESTATION_SURFACE: {'type': 'dataframe', 'unit': 'Mha',
-                                        'dataframe_descriptor': {'years': ('float', None, False),
-                                        'deforested_surface': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                       'dataframe_descriptor': {'years': ('float', None, False),
+                                                                'deforested_surface': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         Forest.LIMIT_DEFORESTATION_SURFACE: {'type': 'float', 'unit': 'Mha', 'default': deforestation_limit,
-                                                'namespace': 'ns_forest', },
+                                             'namespace': 'ns_forest', },
         Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': initial_emissions,
-                                            'namespace': 'ns_forest', },
+                                       'namespace': 'ns_forest', },
         Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000, 'namespace': 'ns_forest'},
         Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 3800, 'namespace': 'ns_forest'},
         Forest.REFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
-                                                 'dataframe_descriptor': {'years': ('float', None, False),
-                                                                          'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                          'dataframe_descriptor': {'years': ('float', None, False),
+                                                                   'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         Forest.WOOD_TECHNO_DICT: {'type': 'dict', 'unit': '-', 'default': wood_techno_dict, 'namespace': 'ns_forest'},
         Forest.MW_INITIAL_PROD: {'type': 'float', 'unit': 'TWh', 'default': mw_initial_production, 'namespace': 'ns_forest'},
         Forest.MW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha', 'default': mw_initial_surface, 'namespace': 'ns_forest'},
         Forest.MW_INVEST_BEFORE_YEAR_START: {'type': 'dataframe', 'unit': 'G$',
-                                            'dataframe_descriptor': {'past_years': ('float', None, False),
-                                            'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                            'default': invest_before_year_start,
-                                            'namespace': 'ns_forest'},
+                                             'dataframe_descriptor': {'past_years': ('float', None, False),
+                                                                      'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                             'default': invest_before_year_start,
+                                             'namespace': 'ns_forest'},
         Forest.MW_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
-                                            'dataframe_descriptor': {'years': ('float', None, False),
-                                            'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                               'dataframe_descriptor': {'years': ('float', None, False),
+                                                        'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         Forest.UW_INITIAL_PROD: {'type': 'float', 'unit': 'TWh', 'default': uw_initial_production, 'namespace': 'ns_forest'},
         Forest.UW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha', 'default': uw_initial_surface, 'namespace': 'ns_forest'},
         Forest.UW_INVEST_BEFORE_YEAR_START: {'type': 'dataframe', 'unit': 'G$',
-                                            'dataframe_descriptor': {'past_years': ('float', None, False),
-                                            'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                            'default': invest_before_year_start,
-                                            'namespace': 'ns_forest'},
+                                             'dataframe_descriptor': {'past_years': ('float', None, False),
+                                                                      'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                             'default': invest_before_year_start,
+                                             'namespace': 'ns_forest'},
         Forest.UW_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
-                                            'dataframe_descriptor': {'years': ('float', None, False),
-                                            'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                               'dataframe_descriptor': {'years': ('float', None, False),
+                                                        'investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         Forest.TRANSPORT_COST: {'type': 'dataframe', 'unit': '$/t', 'namespace': 'ns_witness', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                            'dataframe_descriptor': {'years': ('float', None, False),
-                                            'transport': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
+                                'dataframe_descriptor': {'years': ('float', None, False),
+                                                         'transport': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
         Forest.MARGIN: {'type': 'dataframe', 'unit': '%', 'namespace': 'ns_witness', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {'years': ('float', None, False),
-                                'margin': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
+                                                         'margin': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
         Forest.UNUSED_FOREST: {'type': 'float', 'unit': 'Gha', 'default': initial_unsused_forest_surface, 'namespace': 'ns_forest'},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-               }
+    }
 
     DESC_OUT = {
         Forest.CO2_EMITTED_DETAIL_DF: {
@@ -228,10 +228,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'CO2_emissions': {
             'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_forest'},
-        'capital': {
-            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
-            }
-            
+        'techno_capital': {
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+        'non_use_capital': {
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+    }
+
     FOREST_CHARTS = 'Forest chart'
 
     def init_execution(self):
@@ -249,8 +251,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
         #-- compute
         inputs_dict = self.get_sosdisc_inputs()
         self.forest_model.compute(inputs_dict)
-        #Scale production TWh -> PWh
-        techno_production = self.forest_model.techno_production[['years', 'biomass_dry (TWh)']]
+        # Scale production TWh -> PWh
+        techno_production = self.forest_model.techno_production[[
+            'years', 'biomass_dry (TWh)']]
         for column in techno_production.columns:
             if column == 'years':
                 continue
@@ -272,7 +275,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'techno_consumption_woratio': self.forest_model.techno_consumption_woratio,  # output at zero
             'land_use_required': self.forest_model.land_use_required,
             'CO2_emissions': self.forest_model.CO2_emissions,  # output at zero
-            'capital': self.forest_model.lost_capital,
+            'non_use_capital': self.forest_model.lost_capital,
+            'techno_capital': self.forest_model.techno_capital,
         }
 
         #-- store outputs
@@ -326,13 +330,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         # total capital vs reforestation investment grad
         dcapitaltotal_dinvest = self.forest_model.d_capital_total_d_invest()
-        self.set_partial_derivative_for_other_types(('capital', 'capital_G$'), (
+        self.set_partial_derivative_for_other_types(('techno_capital', 'capital_G$'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dcapitaltotal_dinvest)
 
         # lost capital vs reforestation investment grad
         dlostcapital_dinvest = self.forest_model.d_lostcapitald_invest(
             d_forest_surface_d_invest)
-        self.set_partial_derivative_for_other_types(('capital', 'lost_capital_G$'), (
+        self.set_partial_derivative_for_other_types(('non_use_capital', 'lost_capital_G$'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dlostcapital_dinvest)
 
         # land use required
@@ -737,11 +741,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             # capital graph
-            capital_df = self.get_sosdisc_outputs('capital')
+            tehcno_capital_df = self.get_sosdisc_outputs('techno_capital')
+            lost_capital_df = self.get_sosdisc_outputs('non_use_capital')
             new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
                                                  chart_name='Lost capital due to deforestation<br>and reforestation vs total capital', stacked_bar=True)
-            total_capital = capital_df['capital_G$']
-            lost_capital = capital_df['lost_capital_G$']
+            total_capital = tehcno_capital_df['capital_G$']
+            lost_capital = lost_capital_df['lost_capital_G$']
 
             total_capital_series = InstanciatedSeries(
                 years, total_capital.tolist(), 'Total capital', InstanciatedSeries.LINES_DISPLAY)
