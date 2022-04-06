@@ -18,17 +18,15 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from climateeconomics.core.core_witness.lost_capital_objective_model import LostCapitalObjective
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
-    compute_func_with_exp_min
+from climateeconomics.core.core_witness.non_use_capital_objective_model import NonUseCapitalObjective
 
 
-class LostCapitalObjectiveDiscipline(SoSDiscipline):
-    "Lost Capital Objective discipline for WITNESS optimization"
+class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
+    "Non Use Capital Objective discipline for WITNESS optimization"
 
     # ontology information
     _ontology_data = {
-        'label': 'Lost Capital Objective Model',
+        'label': 'Non Use Capital Objective Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -47,25 +45,25 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'biomass_list': {'type': 'string_list', 'default': [], 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'lost_capital_obj_ref': {'type': 'float', 'default': 10., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'lost_capital_limit': {'type': 'float', 'default': 300, 'user_level': 2,
-                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'non_use_capital_obj_ref': {'type': 'float', 'default': 10., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'non_use_capital_limit': {'type': 'float', 'default': 300, 'user_level': 2,
+                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
 
     }
     DESC_OUT = {
-        'lost_capital_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'lost_capital_df': {'type': 'dataframe'},
+        'non_use_capital_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'non_use_capital_df': {'type': 'dataframe'},
         'techno_capital_df': {'type': 'dataframe'}
     }
 
     def setup_sos_disciplines(self):
 
         dynamic_inputs = {}
-        all_lost_capital_list = []
+        all_non_use_capital_list = []
 
-        # Recover the full techno list to get all lost capital by energy mix
+        # Recover the full techno list to get all non_use capital by energy mix
         energy_techno_dict = {}
         if 'energy_list' in self._data_in:
             energy_list = self.get_sosdisc_inputs('energy_list')
@@ -117,26 +115,26 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
         if len(energy_techno_dict) != 0:
             full_techno_list = compute_full_techno_list(energy_techno_dict)
 
-            # Add the full techno_list to the list of all lost capital
+            # Add the full techno_list to the list of all non_use capital
             # the list could be appended with other capital than energy
-            all_lost_capital_list.extend(full_techno_list)
+            all_non_use_capital_list.extend(full_techno_list)
 
-        for lost_capital_tuple in all_lost_capital_list:
-            dynamic_inputs[f'{lost_capital_tuple[0]}.lost_capital'] = {'type': 'dataframe',
-                                                                       'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                       'namespace': lost_capital_tuple[1],
-                                                                       'unit': 'G$'}
-            dynamic_inputs[f'{lost_capital_tuple[0]}.techno_capital'] = {'type': 'dataframe',
-                                                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                         'namespace': lost_capital_tuple[1],
-                                                                         'unit': 'G$'}
+        for non_use_capital_tuple in all_non_use_capital_list:
+            dynamic_inputs[f'{non_use_capital_tuple[0]}.non_use_capital'] = {'type': 'dataframe',
+                                                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                             'namespace': non_use_capital_tuple[1],
+                                                                             'unit': 'G$'}
+            dynamic_inputs[f'{non_use_capital_tuple[0]}.techno_capital'] = {'type': 'dataframe',
+                                                                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                            'namespace': non_use_capital_tuple[1],
+                                                                            'unit': 'G$'}
 
         self.add_inputs(dynamic_inputs)
 
     def init_execution(self):
 
         inp_dict = self.get_sosdisc_inputs()
-        self.model = LostCapitalObjective(inp_dict)
+        self.model = NonUseCapitalObjective(inp_dict)
 
     def run(self):
         # get inputs
@@ -145,38 +143,37 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
         self.model.compute(inp_dict)
 
-        lost_capital_objective = self.model.get_objective()
-        lost_capital_df = self.model.get_lost_capital_df()
+        non_use_capital_objective = self.model.get_objective()
+        non_use_capital_df = self.model.get_non_use_capital_df()
         techno_capital_df = self.model.get_techno_capital_df()
         # store output data
-        dict_values = {'lost_capital_df': lost_capital_df,
+        dict_values = {'non_use_capital_df': non_use_capital_df,
                        'techno_capital_df': techno_capital_df,
-                       'lost_capital_objective': lost_capital_objective}
+                       'non_use_capital_objective': non_use_capital_objective}
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
         """ 
         Compute jacobian for each coupling variable 
         gradiant of coupling variable to compute: 
-        lost_capital_objective
+        non_use_capital_objective
         """
         inputs_dict = self.get_sosdisc_inputs()
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
-        lost_capital_obj_ref = inputs_dict['lost_capital_obj_ref']
-        lost_capital_limit = inputs_dict['lost_capital_limit']
+        non_use_capital_obj_ref = inputs_dict['non_use_capital_obj_ref']
+        non_use_capital_limit = inputs_dict['non_use_capital_limit']
         gamma = inputs_dict['gamma']
         outputs_dict = self.get_sosdisc_outputs()
-        lost_capital_df = outputs_dict['lost_capital_df']
+        non_use_capital_df = outputs_dict['non_use_capital_df']
         input_capital_list = [
-            key for key in inputs_dict.keys() if key.endswith('lost_capital')]
-        delta_years = len(lost_capital_df['years'].values)
-        for lost_capital in input_capital_list:
+            key for key in inputs_dict.keys() if key.endswith('non_use_capital')]
+        delta_years = len(non_use_capital_df['years'].values)
+        for non_use_capital in input_capital_list:
             column_name = [
-                col for col in inputs_dict[lost_capital].columns if col != 'years'][0]
+                col for col in inputs_dict[non_use_capital].columns if col != 'years'][0]
             self.set_partial_derivative_for_other_types(
-                ('lost_capital_objective', ), (lost_capital, column_name), np.ones(len(years)) * (1-gamma) / lost_capital_obj_ref / delta_years)
-
+                ('non_use_capital_objective', ), (non_use_capital, column_name), np.ones(len(years)) * (1 - gamma) / non_use_capital_obj_ref / delta_years)
 
     def get_chart_filter_list(self):
 
@@ -185,7 +182,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
         chart_filters = []
 
-        chart_list = ['Lost Capitals', 'Energy Mix Total Capital']
+        chart_list = ['Non Use Capitals', 'Energy Mix Total Capital']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -204,25 +201,25 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        if 'Lost Capitals' in chart_list:
+        if 'Non Use Capitals' in chart_list:
 
-            lost_capital_df = self.get_sosdisc_outputs('lost_capital_df')
+            non_use_capital_df = self.get_sosdisc_outputs('non_use_capital_df')
 
-            years = list(lost_capital_df['years'].values)
+            years = list(non_use_capital_df['years'].values)
 
-            chart_name = 'Capital lost'
+            chart_name = 'Non-use Capital'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Lost Capital [G$]',
+            new_chart = TwoAxesInstanciatedChart('years', 'non_use Capital [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
-            for industry in lost_capital_df.columns:
-                if industry not in ['years', 'Sum of lost capital'] and not (lost_capital_df[industry] == 0.0).all():
+            for industry in non_use_capital_df.columns:
+                if industry not in ['years', 'Sum of non-use capital'] and not (non_use_capital_df[industry] == 0.0).all():
                     new_series = InstanciatedSeries(
-                        years, lost_capital_df[industry].values.tolist(), industry, 'bar')
+                        years, non_use_capital_df[industry].values.tolist(), industry, 'bar')
 
                     new_chart.series.append(new_series)
 
             new_series = InstanciatedSeries(
-                years, lost_capital_df['Sum of lost capital'].values.tolist(), 'Sum of lost capital', 'lines')
+                years, non_use_capital_df['Sum of non use capital'].values.tolist(), 'Sum of non-use capital', 'lines')
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
@@ -231,11 +228,11 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
 
             techno_capital_df = self.get_sosdisc_outputs('techno_capital_df')
 
-            lost_capital_df = self.get_sosdisc_outputs('lost_capital_df')
+            non_use_capital_df = self.get_sosdisc_outputs('non_use_capital_df')
 
             years = list(techno_capital_df['years'].values)
 
-            chart_name = 'Energy Mix total capital vs Lost capital'
+            chart_name = 'Energy Mix total capital vs non-use capital'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Total Capital [G$]',
                                                  chart_name=chart_name)
@@ -246,7 +243,7 @@ class LostCapitalObjectiveDiscipline(SoSDiscipline):
             new_chart.series.append(new_series)
 
             new_series = InstanciatedSeries(
-                years, lost_capital_df['Sum of lost capital'].values.tolist(), 'Lost Capital', 'bar')
+                years, non_use_capital_df['Sum of non use capital'].values.tolist(), 'Non-use Capital', 'bar')
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
