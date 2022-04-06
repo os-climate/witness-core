@@ -42,6 +42,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Forest'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}',
+                   'ns_agriculture': f'{self.name}',
                    'ns_forest': f'{self.name}.{model_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -180,5 +181,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.Forest.land_use_required',
                                      # output at zero
                                      f'{self.name}.Forest.CO2_emissions',
-                                     f'{self.name}.Forest.capital']
+                                     f'{self.name}.techno_capital',
+                                     f'{self.name}.non_use_capital']
                             )

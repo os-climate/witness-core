@@ -163,7 +163,8 @@ class ForestTestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
-                   'ns_forest': f'{name}.{model_name}'}
+                   'ns_forest': f'{name}.{model_name}',
+                   'ns_agriculture': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
