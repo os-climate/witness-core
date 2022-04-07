@@ -341,3 +341,6 @@ biomass_dry_df,Biomass dry data,,Important data about biomass dry that are used 
 transport_cost,Transport cost,$/ton,Cost of transport of material in $ per tons.,,
 margin,Margin,,Factor applied to the total price to take into account commercial margin.,,
 initial_unsused_forest_surface,Unused forest surface,Gha,Surface of forest that are not used to produce biomass.,,
+agri_capital_techno_list,Agriculture techno list,,List of technologies of agriculture that lost capital.,,
+techno_capital,Techno Capital,G$,Capital of the considered technology over the year.,,
+non_use_capital,Non use capital,G$,Non use capital of the considered technology.,,
