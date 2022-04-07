@@ -128,7 +128,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             share_energy_investment = pd.DataFrame(
                 {'years': years, 'share_investment': np.ones(len(years)) * 1.65}, index=years)
             total_investment_share_of_gdp = pd.DataFrame(
-                {'years': years, 'share_investment': np.ones(len(years)) * 25.0}, index=years)
+                {'years': years, 'share_investment': np.ones(len(years)) * 27.0}, index=years)
 
             self.set_dynamic_default_values(
                 {'CO2_tax_efficiency': co2_tax_efficiency_default,
