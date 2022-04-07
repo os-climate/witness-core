@@ -144,6 +144,7 @@ The first change is to convert red meat and white meat, using **red_meat_percent
 This will give the percentage converted, based on the base-diet.
 For red_meat_percentage = 100%, nothing will change.
 For red_meat_percentage = 0%, all red meat is removed, and missing kcal are filled by additional vegetables.
+The red and white meat percentage must be between 100% and 30%.
 Eggs and milk are not impacted.
 
 The following picture shows the different steps.
@@ -159,13 +160,13 @@ Then, the new quantity of white meat is calculated:
 $$base\_diet\_white\_meat = base\_diet\_white\_meat * white\_meat\_percentage / 100$$
 
 This white\_meat\_removed corresponds to a quantity of kcal determined by:
-$$white\_energy\_removed = base\_diet\_white\_meat * (1 - white\_meat\_percentage / 100) * kg\_to\_kcal\_white\_meat$$
+$$white\_energy\_removed = base\_diet\_white\_meat * (1 - white\_meat\_percentage / 100) \\* kg\_to\_kcal\_white\_meat$$
 
 Finally, the diet has to be updated with the conversion into vegetables:
 the amount of calory is proportionaly reported to the vegetables.
 for the 'fruit and vegetables' diet:
-$$proportion = base\_diet\_fruit\_and\_vegetables / (base\_diet\_fruit\_and\_vegetables + base\_diet\_potatoes + base\_diet\_rice\_and\_maize)$$
-$$base\_diet\_fruit\_and\_vegetables += (red\_energy\_removed + white\_energy\_removed) * proportion / kg\_to\_kcal\_fruit\_and\_vegetables$$
+$$proportion = base\_diet\_fruit\_and\_vegetables \\/ (base\_diet\_fruit\_and\_vegetables + base\_diet\_potatoes + base\_diet\_rice\_and\_maize)$$
+$$base\_diet\_fruit\_and\_vegetables += (red\_energy\_removed + white\_energy\_removed) \\* proportion / kg\_to\_kcal\_fruit\_and\_vegetables$$
 
 The same formula is applicated to the 'potatoes' and 'rice and maize' food categories.
 
