@@ -333,13 +333,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         # total capital vs reforestation investment grad
         dcapitaltotal_dinvest = self.forest_model.d_capital_total_d_invest()
-        self.set_partial_derivative_for_other_types(('techno_capital', 'capital_G$'), (
+        self.set_partial_derivative_for_other_types(('techno_capital', 'Forest'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dcapitaltotal_dinvest)
 
         # lost capital vs reforestation investment grad
         dlostcapital_dinvest = self.forest_model.d_lostcapitald_invest(
             d_forest_surface_d_invest)
-        self.set_partial_derivative_for_other_types(('non_use_capital', 'lost_capital_G$'), (
+        self.set_partial_derivative_for_other_types(('non_use_capital', 'Forest'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dlostcapital_dinvest)
 
         # land use required
