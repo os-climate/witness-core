@@ -452,19 +452,19 @@ class Forest():
         reforest_surface and deforest_surface are in Gha
         lost_capital is in G$ 
         """
-        self.lost_capital['lost_capital_G$'] = 0
-        self.techno_capital['capital_G$'] = 0
+        self.lost_capital['Forest'] = 0
+        self.techno_capital['Forest'] = 0
         # abs() needed because deforestation surface is negative
 
         for element in range(0, len(self.years)):
             if abs(self.forest_surface_df.at[element, 'delta_deforestation_surface']) < self.forest_surface_df.at[element, 'delta_reforestation_surface']:
-                self.lost_capital.loc[element, 'lost_capital_G$'] = abs(self.forest_surface_df.loc[element,
-                                                                                                   'delta_deforestation_surface']) * self.cost_per_ha
+                self.lost_capital.loc[element, 'Forest'] = abs(self.forest_surface_df.loc[element,
+                                                                                          'delta_deforestation_surface']) * self.cost_per_ha
             else:
-                self.lost_capital.loc[element, 'lost_capital_G$'] = self.forest_surface_df.loc[element,
-                                                                                               'delta_reforestation_surface'] * self.cost_per_ha
+                self.lost_capital.loc[element, 'Forest'] = self.forest_surface_df.loc[element,
+                                                                                      'delta_reforestation_surface'] * self.cost_per_ha
 
-        self.techno_capital['capital_G$'] = self.forest_surface_df['delta_reforestation_surface'] * self.cost_per_ha
+        self.techno_capital['Forest'] = self.forest_surface_df['delta_reforestation_surface'] * self.cost_per_ha
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
