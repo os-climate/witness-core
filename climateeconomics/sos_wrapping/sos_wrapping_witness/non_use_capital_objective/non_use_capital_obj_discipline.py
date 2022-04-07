@@ -198,7 +198,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
 
             years = list(non_use_capital_df['years'].values)
 
-            chart_name = 'Non-use Capital'
+            chart_name = 'Non-use Capital per year'
 
             new_chart = TwoAxesInstanciatedChart('years', 'non_use Capital [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
@@ -223,7 +223,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
 
             years = list(techno_capital_df['years'].values)
 
-            chart_name = 'Energy Mix total capital vs non-use capital'
+            chart_name = 'Energy Mix total capital vs non-use capital per year'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Total Capital [G$]',
                                                  chart_name=chart_name)
