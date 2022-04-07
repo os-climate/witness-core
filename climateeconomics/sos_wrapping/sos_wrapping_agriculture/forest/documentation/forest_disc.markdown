@@ -40,6 +40,8 @@ The outputs of the model are:
 - **unmanaged_wood_df**, gives data about unmanaged wood production.
 - **biomass_dry_detail_df**, gives detailed data about biomass dry production.
 - **biomass_dry_df**, gives major data about biomass dry production.
+- **techno_capital**, which represents the total capital allocated to the reforestation technology, in G$.
+- **non_use_capital**, which is the unused capital of reforestation du to deforestation activities. Unit is G$.
 
 ## Afforestation and deforestation
 
