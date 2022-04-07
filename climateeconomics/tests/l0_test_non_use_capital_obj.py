@@ -78,7 +78,7 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                        f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
                        f'{self.name}.energy_list': ['fuel.liquid_fuel', 'methane'],
                        f'{self.name}.ccs_list': ['carbon_capture'],
-                       f'{self.name}.agriculture_techno_list': ['Forest'],
+                       f'{self.name}.agri_capital_techno_list': ['Forest'],
                        f'{self.name}.EnergyMix.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
                        f'{self.name}.CCUS.carbon_capture.technologies_list': ['CC_tech'],
