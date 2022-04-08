@@ -68,7 +68,7 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         non_use_capital_ct = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
                                            'CC_tech': loss_ct})
         non_use_capital_ref = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
-                                            'reforestation': loss_ref})
+                                            'Forest': loss_ref})
         gamma = 0.5
         non_use_capital_obj_ref = 100.
         delta_years = year_end + 1 - year_start
@@ -82,7 +82,6 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                        f'{self.name}.EnergyMix.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
                        f'{self.name}.CCUS.carbon_capture.technologies_list': ['CC_tech'],
-                       f'{self.name}.Forest.biomass_dry.technologies_list': ['Forest'],
                        f'{self.name}.CCUS.carbon_capture.CC_tech.non_use_capital': non_use_capital_ct,
                        f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital': non_use_capital_fg,
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital': non_use_capital_ub,
@@ -116,5 +115,5 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
