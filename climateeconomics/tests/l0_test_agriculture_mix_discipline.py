@@ -52,14 +52,8 @@ class AgricultureMixModelTestCase(unittest.TestCase):
             {"years": self.years, "population": population})
         self.population_df.index = self.years
 
-        red_to_white_meat = np.linspace(0, 50, year_range)
-        self.red_to_white_meat_df = pd.DataFrame(
-            {'years': self.years, 'red_to_white_meat_percentage': red_to_white_meat})
-        self.red_to_white_meat_df.index = self.years
-        meat_to_vegetables = np.linspace(0, 50, year_range)
-        self.meat_to_vegetables_df = pd.DataFrame(
-            {'years': self.years, 'meat_to_vegetables_percentage': meat_to_vegetables})
-        self.meat_to_vegetables_df.index = self.years
+        self.red_meat_percentage = np.linspace(6, 1, year_range)
+        self.white_meat_percentage = np.linspace(14, 5, year_range)
 
         self.diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],

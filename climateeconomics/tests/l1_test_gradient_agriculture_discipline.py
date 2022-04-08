@@ -88,8 +88,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                    'potatoes': 670,
                                    'fruits and vegetables': 624,
                                    }
-        self.red_meat_percentage = np.linspace(100, 10, year_range)
-        self.white_meat_percentage = np.linspace(100, 10, year_range)
+        self.red_meat_percentage = np.linspace(6, 1, year_range)
+        self.white_meat_percentage = np.linspace(14, 5, year_range)
 
         self.other = np.linspace(0.08, 0.08, year_range)
 
@@ -130,7 +130,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_discipline.pkl', discipline=disc_techno,
                             step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.population_df', 

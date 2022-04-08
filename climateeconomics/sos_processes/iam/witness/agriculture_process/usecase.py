@@ -93,8 +93,8 @@ class Study(StudyManager):
             {"years": years, "population": population})
         population_df.index = years
 
-        self.red_meat_percentage = np.linspace(100, 30, year_range)
-        self.white_meat_percentage = np.linspace(100, 30, year_range)
+        self.red_meat_percentage = np.linspace(6.82, 1, year_range)
+        self.white_meat_percentage = np.linspace(13.95, 5, year_range)
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -129,8 +129,8 @@ class Study(StudyManager):
 
         setup_data_list.append(agriculture_input)
 
-        red_meat_percentage_ctrl = np.linspace(100.0, 100.0, self.nb_poles)
-        meat_to_vegetables_ctrl = np.linspace(100.0, 100.0, self.nb_poles)
+        red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
+        meat_to_vegetables_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
 
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
@@ -156,14 +156,16 @@ class Study(StudyManager):
             # Design Space
         dim_a = len(
             self.red_meat_percentage)
-        lbnd1 = [30.0] * dim_a
-        ubnd1 = [100.0] * dim_a
+        lbnd1 = [1.0] * dim_a
+        ubnd1 = [10.0] * dim_a
+        lbnd2 = [5.0] * dim_a
+        ubnd2 = [20.0] * dim_a
 
         # Design variables:
         self.update_dspace_dict_with(
             'red_meat_percentage_array', self.red_meat_percentage, lbnd1, ubnd1)
         self.update_dspace_dict_with(
-            'white_meat_percentage_array', self.white_meat_percentage, lbnd1, ubnd1)
+            'white_meat_percentage_array', self.white_meat_percentage, lbnd2, ubnd2)
 
     def setup_design_space_ctrl_new(self):
         # Design Space
@@ -173,9 +175,9 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [30.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles, [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [30.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         return ddict
 
