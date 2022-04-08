@@ -14,12 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
-class ProcessBuilder(WITNESSSubProcessBuilder):
+class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
