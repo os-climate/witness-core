@@ -55,3 +55,38 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         self.energy_model = BiomassDry(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)
+
+    def get_chart_co2_emissions(self):
+        new_charts = []
+        # chart_name = f'Comparison of CO2 emissions due to production and use<br>of {self.energy_name} technologies'
+        # new_chart = TwoAxesInstanciatedChart(
+        #     'years', 'CO2 emissions (Mt)', chart_name=chart_name, stacked_bar=True)
+
+        # technology_list = self.get_sosdisc_inputs('technologies_list')
+
+        # co2_per_use = self.get_sosdisc_outputs(
+        #     'CO2_per_use')
+
+        # energy_production = self.get_sosdisc_outputs('energy_production')
+        # scaling_factor_energy_production = self.get_sosdisc_inputs(
+        #     'scaling_factor_energy_production')
+        # for technology in technology_list:
+        #     techno_emissions = self.get_sosdisc_inputs(
+        #         f'{technology}.CO2_emissions')
+        #     year_list = techno_emissions['years'].values.tolist()
+        #     emission_list = techno_emissions[technology].values * \
+        #         energy_production[self.energy_name].values * \
+        #         scaling_factor_energy_production
+        #     serie = InstanciatedSeries(
+        #         year_list, emission_list.tolist(), technology, 'bar')
+        #     new_chart.series.append(serie)
+
+        # co2_per_use = co2_per_use['CO2_per_use'].values * \
+        #     energy_production[self.energy_name].values * \
+        #     scaling_factor_energy_production
+        # serie = InstanciatedSeries(
+        #     year_list, co2_per_use.tolist(), 'CO2 from use of brut production', 'bar')
+        # new_chart.series.append(serie)
+        # new_charts.append(new_chart)
+
+        return new_charts
