@@ -108,6 +108,7 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
+    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
 
     print(len(uc_cls.execution_engine.root_process.sos_disciplines))
     #  self.exec_eng.dm.export_couplings(
