@@ -44,7 +44,8 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'agri_capital_techno_list': {'type': 'string_list', 'default': [], 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
+        'agri_capital_techno_list': {'type': 'string_list',  'default': [],
+                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'non_use_capital_obj_ref': {'type': 'float', 'default': 10., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'non_use_capital_limit': {'type': 'float', 'default': 300, 'user_level': 2,
                                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
@@ -99,8 +100,9 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         if 'agri_capital_techno_list' in self._data_in:
             agriculture_techno_list = self.get_sosdisc_inputs(
                 'agri_capital_techno_list')
+            agriculture_techno_list = ['Forest']
             if agriculture_techno_list is not None:
-                energy_techno_dict['Agriculture'] = {'namespace': 'ns_witness',
+                energy_techno_dict['Agriculture'] = {'namespace': 'ns_forest',
                                                      'value': agriculture_techno_list}
 
         if len(energy_techno_dict) != 0:
@@ -110,15 +112,24 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
             # the list could be appended with other capital than energy
             all_non_use_capital_list.extend(full_techno_list)
 
+#         for non_use_capital_tuple in all_non_use_capital_list:
+#             dynamic_inputs[f'non_use_capital'] = {'type': 'dataframe',
+#                                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
+#                                                   'namespace': 'ns_forest',
+#                                                   'unit': 'G$'}
+#             dynamic_inputs[f'{non_use_capital_tuple[0]}.techno_capital'] = {'type': 'dataframe',
+#                                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
+#                                                                                     'namespace': non_use_capital_tuple[1],
+#                                                                                     'unit': 'G$'}
         for non_use_capital_tuple in all_non_use_capital_list:
-            dynamic_inputs[f'{non_use_capital_tuple[0]}.non_use_capital'] = {'type': 'dataframe',
-                                                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                             'namespace': non_use_capital_tuple[1],
-                                                                             'unit': 'G$'}
-            dynamic_inputs[f'{non_use_capital_tuple[0]}.techno_capital'] = {'type': 'dataframe',
+            dynamic_inputs[f'{non_use_capital_tuple[0]}non_use_capital'] = {'type': 'dataframe',
                                                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                             'namespace': non_use_capital_tuple[1],
                                                                             'unit': 'G$'}
+            dynamic_inputs[f'{non_use_capital_tuple[0]}techno_capital'] = {'type': 'dataframe',
+                                                                           'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                           'namespace': non_use_capital_tuple[1],
+                                                                           'unit': 'G$'}
 
         self.add_inputs(dynamic_inputs)
 
@@ -248,7 +259,11 @@ def compute_full_techno_list(energy_techno_dict):
     '''
     full_techno_list = []
     for energy, techno_dict in energy_techno_dict.items():
-        full_techno_list.extend(
-            [(f'{energy}.{techno}', techno_dict['namespace']) for techno in techno_dict['value']])
+        if energy == 'Agriculture':
+            full_techno_list.extend(
+                [(f'', techno_dict['namespace']) for techno in techno_dict['value']])
+        else:
+            full_techno_list.extend(
+                [(f'{energy}.{techno}.', techno_dict['namespace']) for techno in techno_dict['value']])
 
     return full_techno_list

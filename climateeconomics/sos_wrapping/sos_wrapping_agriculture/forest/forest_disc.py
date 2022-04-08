@@ -230,10 +230,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_forest'},
         'techno_capital': {
-            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'non_use_capital': {
-            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'agri_capital_techno_list': {'type': 'string_list', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1},
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+        'agri_capital_techno_list': {'type': 'string_list', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, },
     }
 
     FOREST_CHARTS = 'Forest chart'

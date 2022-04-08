@@ -260,7 +260,7 @@ class Study(StudyManager):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 
