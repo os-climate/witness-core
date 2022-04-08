@@ -91,9 +91,6 @@ class Study(ClimateEconomicsStudyManager):
 
         self.merge_design_spaces([dspace_forest, dspace_capital])
 
-        # constraint land use
-        land_use_df_constraint = self.setup_constraint_land_use()
-
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
             f'{self.study_name}.max_mda_iter': 50,
@@ -111,6 +108,7 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
+    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
 
     print(len(uc_cls.execution_engine.root_process.sos_disciplines))
     #  self.exec_eng.dm.export_couplings(

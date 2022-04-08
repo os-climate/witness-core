@@ -37,7 +37,7 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                    'ns_ref': f'{self.name}',
                    'ns_ccs': f'{self.name}.CCUS',
                    'ns_agriculture': f'{self.name}.Agriculture',
-                   'ns_forest': f'{self.name}.Forest', }
+                   'ns_forest': f'{self.name}.Agriculture.Forest', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

@@ -33,11 +33,12 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {'ns_witness': ns_scatter,
                    'ns_forest': ns_scatter,
+                   'ns_agriculture': ns_scatter,
                    'ns_public': ns_scatter,
                    'ns_functions': ns_scatter,
                    }
 
-        mods_dict = {'Forest': 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
+        mods_dict = {'Agriculture.Forest': 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
                      }
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 

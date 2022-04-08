@@ -57,7 +57,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Forest', execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.forest_name = name
@@ -75,10 +75,12 @@ class Study(StudyManager):
 
         energy_list = []
         ccs_list = []
-        agriculture_techno_list = []
+        agriculture_techno_list = ['Forest']
         non_use_capital_obj_ref = 10
         non_use_capital_limit = 300
         gamma = 0.5
+        non_use_capital_ref = pd.DataFrame({'years': np.arange(self.year_start, self.year_end + 1),
+                                            'Forest': 3})
         # values of model
         capital_input = {}
         capital_input[self.study_name + '.year_start'] = self.year_start
@@ -89,63 +91,32 @@ class Study(StudyManager):
         capital_input[self.study_name +
                       '.ccs_list'] = ccs_list
         capital_input[self.study_name +
-                      '.agriculture_techno_list'] = agriculture_techno_list
+                      '.agri_capital_techno_list'] = agriculture_techno_list
         capital_input[self.study_name +
                       '.non_use_capital_obj_ref'] = non_use_capital_obj_ref
         capital_input[self.study_name +
                       '.non_use_capital_limit'] = non_use_capital_limit
         capital_input[self.study_name +
                       '.gamma'] = gamma
+        capital_input[self.study_name +
+                      '.Agriculture.Forest.non_use_capital'] = non_use_capital_ref
+        capital_input[self.study_name +
+                      '.Agriculture.Forest.techno_capital'] = non_use_capital_ref
+
+        capital_input[self.study_name +
+                      '.non_use_capital'] = non_use_capital_ref
+        capital_input[self.study_name +
+                      '.techno_capital'] = non_use_capital_ref
 
         setup_data_list.append(capital_input)
 
-        deforestation_surface_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
-
         return setup_data_list
-
-    def setup_initial_design_variable(self):
-
-        init_design_var_df = pd.DataFrame(
-            columns=['deforested_surface', 'forest_investment'], index=arange(self.year_start, self.year_end + 1, self.time_step))
-
-        init_design_var_df['deforested_surface'] = self.deforestation_surface['deforested_surface']
-        init_design_var_df['forest_investment'] = self.forest_invest_df['forest_investment']
-
-        return init_design_var_df
-
-    def setup_design_space(self):
-        #-- energy optimization inputs
-        # Design Space
-        dim_a = len(
-            self.deforestation_surface['deforested_surface'].values)
-        lbnd1 = [0.0] * dim_a
-        ubnd1 = [100.0] * dim_a
-
-        # Design variables:
-        self.update_dspace_dict_with(
-            'deforested_surface_array', self.deforestation_surface['deforested_surface'].values, lbnd1, ubnd1)
-        self.update_dspace_dict_with(
-            'forest_investment_array', self.forest_invest_df['forest_investment'].values, lbnd1, ubnd1)
-
-    def setup_design_space_ctrl_new(self):
-        # Design Space
-        # header = ['variable', 'value', 'lower_bnd', 'upper_bnd']
-        ddict = {}
-        ddict['dspace_size'] = 0
-
-        # Design variables:
-        update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
-                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
-
-        update_dspace_dict_with(ddict, 'forest_investment_array_mix',
-                                list(self.design_space_ctrl['forest_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
-        return ddict
 
 
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 
