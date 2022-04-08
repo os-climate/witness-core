@@ -14,13 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from tempfile import gettempdir
-from copy import deepcopy
-from gemseo.utils.compare_data_manager_tooling import delete_keys_from_dict,\
-    compare_dict
-import numpy as np
 
 
 class WITNESSEmptyMSStudyLoadingTest(unittest.TestCase):
@@ -28,7 +22,6 @@ class WITNESSEmptyMSStudyLoadingTest(unittest.TestCase):
     def setUp(self):
 
         self.name = 'Test'
-        self.root_dir = gettempdir()
         self.ee = ExecutionEngine(self.name)
         self.scatter_scenario = 'optimization scenarios'
         
