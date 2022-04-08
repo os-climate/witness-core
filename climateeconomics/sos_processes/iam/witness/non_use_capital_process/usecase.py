@@ -75,10 +75,12 @@ class Study(StudyManager):
 
         energy_list = []
         ccs_list = []
-        agriculture_techno_list = []
+        agriculture_techno_list = ['Forest']
         non_use_capital_obj_ref = 10
         non_use_capital_limit = 300
         gamma = 0.5
+        non_use_capital_ref = pd.DataFrame({'years': np.arange(self.year_start, self.year_end + 1),
+                                            'Forest': 3})
         # values of model
         capital_input = {}
         capital_input[self.study_name + '.year_start'] = self.year_start
@@ -89,13 +91,17 @@ class Study(StudyManager):
         capital_input[self.study_name +
                       '.ccs_list'] = ccs_list
         capital_input[self.study_name +
-                      '.agriculture_techno_list'] = agriculture_techno_list
+                      '.Agriculture.Forest.agri_capital_techno_list'] = agriculture_techno_list
         capital_input[self.study_name +
                       '.non_use_capital_obj_ref'] = non_use_capital_obj_ref
         capital_input[self.study_name +
                       '.non_use_capital_limit'] = non_use_capital_limit
         capital_input[self.study_name +
                       '.gamma'] = gamma
+        capital_input[self.study_name +
+                      '.Agriculture.Forest.non_use_capital'] = non_use_capital_ref
+        capital_input[self.study_name +
+                      '.Agriculture.Forest.techno_capital'] = non_use_capital_ref
 
         setup_data_list.append(capital_input)
 
@@ -145,7 +151,7 @@ class Study(StudyManager):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 

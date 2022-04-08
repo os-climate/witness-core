@@ -22,6 +22,7 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+from copy import deepcopy
 from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
@@ -125,8 +126,15 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                         'recycle_part': recycle_part,
                         'construction_delay': construction_delay,
-                        'WACC': 0.07, }
-    # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
+                        'WACC': 0.07,
+                        # 1 tonne of tree absorbs 1.8t of CO2 in one
+                        # year
+                        # for a tree of 50 year, for 6.2tCO2/ha/year
+                        # it should be 3.49
+                        'CO2_from_production': - 0.425 * 44.01 / 12.0,
+                        'CO2_from_production_unit': 'kg/kg'}
+
+# invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
     invest_before_year_start = pd.DataFrame(
         {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
@@ -230,10 +238,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_forest'},
         'techno_capital': {
-            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'non_use_capital': {
-            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'agri_capital_techno_list': {'type': 'string_list', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1},
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+        'agri_capital_techno_list': {'type': 'string_list', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, },
     }
 
     FOREST_CHARTS = 'Forest chart'
@@ -261,6 +269,17 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 continue
             techno_production[column] = techno_production[column].values / \
                 inputs_dict['scaling_factor_techno_production']
+        #Scale production Mt -> Gt
+        techno_consumption = deepcopy(self.forest_model.techno_consumption)
+        techno_consumption_woratio = deepcopy(self.forest_model.techno_consumption_woratio)
+        for column in techno_consumption.columns:
+            if column == 'years':
+                continue
+            techno_consumption[column] = techno_consumption[column].values / \
+                inputs_dict['scaling_factor_techno_consumption']
+            techno_consumption_woratio[column] = techno_consumption_woratio[column].values / \
+                inputs_dict['scaling_factor_techno_consumption']
+
         outputs_dict = {
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
@@ -273,10 +292,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             'techno_production': techno_production,
             'techno_prices': self.forest_model.techno_prices,
-            'techno_consumption': self.forest_model.techno_consumption,  # output at zero
-            'techno_consumption_woratio': self.forest_model.techno_consumption_woratio,  # output at zero
+            'techno_consumption': techno_consumption,
+            'techno_consumption_woratio': techno_consumption_woratio,
             'land_use_required': self.forest_model.land_use_required,
-            'CO2_emissions': self.forest_model.CO2_emissions,  # output at zero
+            'CO2_emissions': self.forest_model.CO2_emissions,
             'non_use_capital': self.forest_model.lost_capital,
             'techno_capital': self.forest_model.techno_capital,
             'agri_capital_techno_list': self.AGRI_CAPITAL_TECHNO_LIST
@@ -289,16 +308,19 @@ class ForestDiscipline(ClimateEcoDiscipline):
         """
         Compute jacobian for each coupling variable
         """
-        in_dict = self.get_sosdisc_inputs()
-        self.forest_model.compute(in_dict)
-        wood_techno_dict = in_dict['wood_techno_dict']
+        inputs_dict = self.get_sosdisc_inputs()
+        self.forest_model.compute(inputs_dict)
+        wood_techno_dict = inputs_dict['wood_techno_dict']
         mw_price_per_ha = wood_techno_dict['managed_wood_price_per_ha']
         uw_price_per_ha = wood_techno_dict['unmanaged_wood_price_per_ha']
         wood_percentage_for_energy = wood_techno_dict['wood_percentage_for_energy']
         residue_percentage_for_energy = wood_techno_dict['residue_percentage_for_energy']
         residue_percentage = wood_techno_dict['residue_density_percentage']
         wood_percentage = wood_techno_dict['non_residue_density_percentage']
-        scaling_factor_techno_production = in_dict['scaling_factor_techno_production']
+        scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
+        scaling_factor_techno_consumption = inputs_dict['scaling_factor_techno_consumption']
+        CO2_from_production = inputs_dict['wood_techno_dict']['CO2_from_production']
+        high_calorific_value = BiomassDry.data_energy_dict['high_calorific_value']
         # kwh/kg
         calorific_value = BiomassDry.data_energy_dict['calorific_value']
 
@@ -381,68 +403,49 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'global_CO2_emission_balance'), (
             'managed_wood_investment', 'investment'), d_cum_CO2_emitted_d_invest)
 
-        # d_CO2 d invest unmanaged wood
-        #d_CO2_emitted_d_invest = self.forest_model.d_CO2_emitted(d_uw_surface_d_invest)
-        #d_cum_CO2_emitted_d_invest = self.forest_model.d_cum(d_CO2_emitted_d_invest)
-        #self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'global_CO2_emission_balance'),  ('unmanaged_wood_investment', 'investment'), d_cum_CO2_emitted_d_invest)
-
-        # d biomass dry prod managed wood invest
+        # d techno_production managed wood invest
         managed_wood_part = self.forest_model.managed_wood_part
         d_biomass_residues_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(
             d_cum_mw_surface_d_invest, residue_percentage, residue_percentage_for_energy, managed_wood_part)
         d_biomass_wood_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(
             d_cum_mw_surface_d_invest, wood_percentage, wood_percentage_for_energy, managed_wood_part)
-        self.set_partial_derivative_for_other_types(('biomass_dry_df', 'biomass_dry_for_energy (Mt)'), (
-            'managed_wood_investment', 'investment'), d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest)
+        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('managed_wood_investment', 'investment'),
+            (d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest) * calorific_value / scaling_factor_techno_production)
+        self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('managed_wood_investment', 'investment'),
+            -CO2_from_production / high_calorific_value * (d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest) \
+            * calorific_value / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), ('managed_wood_investment', 'investment'),
+            -CO2_from_production / high_calorific_value * (d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest) \
+            * calorific_value / scaling_factor_techno_consumption)
 
-       # d biomass dry prod unmanaged wood invest
+        # d techno_production unmanaged wood invest
         unmanaged_wood_part = self.forest_model.unmanaged_wood_part
         d_biomass_residues_d_uw_invest = self.forest_model.d_biomass_prod_d_invest(
             d_cum_uw_surface_d_invest, residue_percentage, residue_percentage_for_energy, unmanaged_wood_part)
         d_biomass_wood_d_uw_invest = self.forest_model.d_biomass_prod_d_invest(
             d_cum_uw_surface_d_invest, wood_percentage, wood_percentage_for_energy, unmanaged_wood_part)
-        self.set_partial_derivative_for_other_types(('biomass_dry_df', 'biomass_dry_for_energy (Mt)'), (
-            'unmanaged_wood_investment', 'investment'), d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest)
-
-        # d techno_production managed wood invest
-        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('managed_wood_investment', 'investment'),
-                                                    (d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest) * calorific_value / scaling_factor_techno_production)
-        # d techno_production unmanaged wood invest
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('unmanaged_wood_investment', 'investment'),
-                                                    (d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest) * calorific_value / scaling_factor_techno_production)
+            (d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest) * calorific_value / scaling_factor_techno_production)
+        self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('unmanaged_wood_investment', 'investment'),
+            -CO2_from_production / high_calorific_value * (d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest) \
+            * calorific_value / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), ('unmanaged_wood_investment', 'investment'),
+            -CO2_from_production / high_calorific_value * (d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest) \
+            * calorific_value / scaling_factor_techno_consumption)
 
-        # d biomass dry prod managed wood invest
-        managed_wood_part = self.forest_model.managed_wood_part
-        d_biomass_residues_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(
-            d_cum_mw_surface_d_invest, residue_percentage, residue_percentage_for_energy, managed_wood_part)
-        d_biomass_wood_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(
-            d_cum_mw_surface_d_invest, wood_percentage, wood_percentage_for_energy, managed_wood_part)
-        self.set_partial_derivative_for_other_types(('biomass_dry_df', 'biomass_dry_for_energy (Mt)'), (
-            'managed_wood_investment', 'investment'), d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest)
-
-        # d biomass dry price d managed wood invest
+        # d techno_prices d managed wood invest
         d_biomass_price_d_mw_invest = self.forest_model.d_biomass_price_d_invest_mw(
             mw_price_per_ha)
-        self.set_partial_derivative_for_other_types(('biomass_dry_df', 'price_per_MWh'), (
-            'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
-
-        # d biomass dry price d unmanaged wood invest
-        d_biomass_price_d_uw_invest = self.forest_model.d_biomass_price_d_invest_uw(
-            uw_price_per_ha)
-        self.set_partial_derivative_for_other_types(('biomass_dry_df', 'price_per_MWh'), (
-            'unmanaged_wood_investment', 'investment'), d_biomass_price_d_uw_invest)
-
-        # d techno_prices d managed wood invest
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (
             'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
-        # d techno_prices d unmanaged wood invest
-        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (
-            'unmanaged_wood_investment', 'investment'), d_biomass_price_d_uw_invest)
-
-        # d techno_prices d managed wood invest
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (
             'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
+
         # d techno_prices d unmanaged wood invest
+        d_biomass_price_d_uw_invest = self.forest_model.d_biomass_price_d_invest_uw(
+            uw_price_per_ha)
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (
+            'unmanaged_wood_investment', 'investment'), d_biomass_price_d_uw_invest)
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (
             'unmanaged_wood_investment', 'investment'), d_biomass_price_d_uw_invest)
 
