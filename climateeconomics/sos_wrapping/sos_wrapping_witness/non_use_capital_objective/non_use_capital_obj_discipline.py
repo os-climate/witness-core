@@ -204,7 +204,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
             new_chart = TwoAxesInstanciatedChart('years', 'non_use Capital [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
             for industry in non_use_capital_df.columns:
-                if industry not in ['years', 'Sum of non-use capital'] and not (non_use_capital_df[industry] == 0.0).all():
+                if industry not in ['years', 'Sum of non use capital'] and not (non_use_capital_df[industry] == 0.0).all():
                     new_series = InstanciatedSeries(
                         years, non_use_capital_df[industry].values.tolist(), industry, 'bar')
 
