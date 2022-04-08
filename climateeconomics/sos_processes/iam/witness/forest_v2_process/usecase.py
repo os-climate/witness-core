@@ -133,7 +133,13 @@ class Study(StudyManager):
                             'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                             'recycle_part': recycle_part,
                             'construction_delay': construction_delay,
-                            'WACC': 0.07
+                            'WACC': 0.07,
+                            # 1 tonne of tree absorbs 1.8t of CO2 in one
+                            # year
+                            # for a tree of 50 year, for 6.2tCO2/ha/year
+                            # it should be 3.49
+                            'CO2_from_production': - 0.425 * 44.01 / 12.0,
+                            'CO2_from_production_unit': 'kg/kg'
                             }
         invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
