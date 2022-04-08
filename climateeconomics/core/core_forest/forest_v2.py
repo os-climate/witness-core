@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
 
 class Forest():
@@ -62,6 +63,8 @@ class Forest():
         Constructor
         """
         self.param = param
+        self.product_energy_unit = 'TWh'
+        self.mass_unit = 'Mt'
         self.set_data()
         self.create_dataframe()
 
@@ -132,6 +135,8 @@ class Forest():
         """
         self.biomass_dry_calorific_value = BiomassDry.data_energy_dict[
             'calorific_value']  # kwh/kg
+        self.biomass_dry_high_calorific_value = BiomassDry.data_energy_dict[
+            'high_calorific_value']  # kwh/kg
         # calorific value to be taken from factorised info
         self.deforestation_surface = in_dict[self.DEFORESTATION_SURFACE]
         self.year_start = in_dict[self.YEAR_START]
@@ -176,15 +181,17 @@ class Forest():
         else:
             self.techno_prices['Forest_wotaxes'] = self.biomass_dry_df['price_per_MWh']
 
-        # emissions are not computed here because the global emission balance
-        # is directly passed to carbon emission model
-        self.CO2_emissions['Forest'] = np.zeros(len(self.years))
+        # CO2 emissions
+        self.compute_carbon_emissions()
 
-        # no consumption
-        self.techno_consumption['biomass_dry (TWh)'] = np.zeros(
-            len(self.years))
-        self.techno_consumption_woratio['biomass_dry (TWh)'] = np.zeros(
-            len(self.years))
+        #CO2 consumed
+        self.techno_consumption[f'{CO2.name} ({self.mass_unit})'] = -self.techno_wood_info['CO2_from_production'] / \
+            self.biomass_dry_high_calorific_value * \
+            self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})']
+
+        self.techno_consumption_woratio[f'{CO2.name} ({self.mass_unit})'] = -self.techno_wood_info['CO2_from_production'] / \
+            self.biomass_dry_high_calorific_value * \
+            self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})']
 
     def compute_managed_wood_production(self):
         """
@@ -465,6 +472,45 @@ class Forest():
                                                                                       'delta_reforestation_surface'] * self.cost_per_ha
 
         self.techno_capital['Forest'] = self.forest_surface_df['delta_reforestation_surface'] * self.cost_per_ha
+
+    def compute_carbon_emissions(self):
+        '''
+        Compute the carbon emissions from the technology taking into account 
+        CO2 from production + CO2 from primary resources 
+        '''
+        if 'CO2_from_production' not in self.techno_wood_info:
+            self.CO2_emissions['production'] = self.get_theoretical_co2_prod(
+                unit='kg/kWh')
+        elif self.techno_wood_info['CO2_from_production'] == 0.0:
+            self.CO2_emissions['production'] = 0.0
+        else:
+            if self.techno_wood_info['CO2_from_production_unit'] == 'kg/kg':
+                self.CO2_emissions['production'] = self.techno_wood_info['CO2_from_production'] / \
+                    self.biomass_dry_high_calorific_value
+            elif self.techno_wood_info['CO2_from_production_unit'] == 'kg/kWh':
+                self.CO2_emissions['production'] = self.techno_wood_info['CO2_from_production']
+
+        # Add carbon emission from input energies (resources or other
+        # energies)
+
+        co2_emissions_frominput_energies = self.compute_CO2_emissions_from_input_resources(
+        )
+
+        # Add CO2 from production + C02 from input energies
+        self.CO2_emissions['Forest'] = self.CO2_emissions['production'] + \
+            co2_emissions_frominput_energies
+
+    def get_theoretical_co2_prod(self, unit='kg/kWh'):
+        ''' 
+        Get the theoretical CO2 production for a given technology,
+        '''
+        return 0.0
+
+    def compute_CO2_emissions_from_input_resources(self):
+        '''
+        Need to take into account  CO2 from electricity/fuel production
+        '''
+        return 0.0
 
     # Gradients
     def d_deforestation_surface_d_deforestation_surface(self, ):
