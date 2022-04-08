@@ -31,8 +31,8 @@ By default, the values are:
 |2566|1860|550|1500|1150|670|624|kcal/kg|
 
 These data are extracted from [^3].
-* **red meat calory percentage**, gives the percentage of red meat kcal.
-* **white meat calory percentage**, gives the percentage of white meat kcal.
+* **red meat calory percentage**, gives the percentage of red meat kcal in a person diet.
+* **white meat calory percentage**, gives the percentage of white meat kcal in a person diet.
 * **other_use_agriculture**, gives the average ha per person for the use of agriculture in other way that the 7 food types. It mainly takes into account :
 cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) - tobacco - yams - natural rubber - millet - textile fiber (cotton and other)... 
 By default, it is set to 0.102ha/person to represent around of 800 millions of ha for a population of 7.8billions of people. [^4]
@@ -68,30 +68,31 @@ When the term "convert" a food X to an other Y is used, it means suppress a quan
 The model starts from the base-diet given in input, **diet_df**.
 The first change is to convert red meat and white meat, using **red_meat_percentage** and **white_meat_percentage** to vegetables (fruit and vegetables, potatoes and rice and maize).
 This will give the percentage converted, based on the base-diet.
-For red_meat_percentage = 100%, nothing will change.
+For red_meat_percentage = 6.86%, nothing will change, it is the same as the starting diet.
 For red_meat_percentage = 0%, all red meat is removed, and missing kcal are filled by additional vegetables.
-The red and white meat percentage must be between 100% and 30%.
+The red meat percentage must be between 10% and 1%.
+The white meat percentage must be between 20% and 5%.
 Eggs and milk are not impacted.
 
 The following picture shows the different steps.
 ![](diet_update.PNG)
 
 First, the new quantity of red meat is calculated:
-$$base\_diet\_red\_meat = base\_diet\_red\_meat * red\_meat\_percentage / 100$$
+$$base\_diet\_red\_meat = total\_kcal * red\_meat\_percentage / 100 / kg\_to\_kcal\_red\_meat$$
 
 This red\_meat\_removed corresponds to a quantity of kcal determined by:
-$$red\_energy\_removed = base\_diet\_red\_meat * (1 - red\_meat\_percentage / 100) * kg\_to\_kcal\_red\_meat$$
+$$red\_energy\_removed = base\_diet\_red\_meat - total\_kcal * red\_meat\_percentage / 100$$
 
 Then, the new quantity of white meat is calculated:
-$$base\_diet\_white\_meat = base\_diet\_white\_meat * white\_meat\_percentage / 100$$
+$$base\_diet\_white\_meat = total\_kcal * white\_meat\_percentage / 100 / kg\_to\_kcal\_white\_meat$$
 
 This white\_meat\_removed corresponds to a quantity of kcal determined by:
-$$white\_energy\_removed = base\_diet\_white\_meat * (1 - white\_meat\_percentage / 100) \\* kg\_to\_kcal\_white\_meat$$
+$$white\_energy\_removed = base\_diet\_white\_meat - total\_kcal * white\_meat\_percentage / 100$$
 
 Finally, the diet has to be updated with the conversion into vegetables:
 the amount of calory is proportionaly reported to the vegetables.
 for the 'fruit and vegetables' diet:
-$$proportion = base\_diet\_fruit\_and\_vegetables \\/ (base\_diet\_fruit\_and\_vegetables + base\_diet\_potatoes + base\_diet\_rice\_and\_maize)$$
+$$proportion = base\_diet\_kcal\_fruit\_and\_vegetables \\/ (base\_diet\_kcal\_fruit\_and\_vegetables + base\_diet\_kcal\_potatoes + base\_diet\_kcal\_rice\_and\_maize)$$
 $$base\_diet\_fruit\_and\_vegetables += (red\_energy\_removed + white\_energy\_removed) \\* proportion / kg\_to\_kcal\_fruit\_and\_vegetables$$
 
 The same formula is applicated to the 'potatoes' and 'rice and maize' food categories.
