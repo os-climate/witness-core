@@ -91,9 +91,6 @@ class Study(ClimateEconomicsStudyManager):
 
         self.merge_design_spaces([dspace_forest, dspace_capital])
 
-        # constraint land use
-        land_use_df_constraint = self.setup_constraint_land_use()
-
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
             f'{self.study_name}.max_mda_iter': 50,
