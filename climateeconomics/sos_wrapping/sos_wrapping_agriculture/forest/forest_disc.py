@@ -233,7 +233,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'non_use_capital': {
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
-        'agri_capital_techno_list': {'type': 'string_list', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, },
     }
 
     FOREST_CHARTS = 'Forest chart'
@@ -279,7 +278,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'CO2_emissions': self.forest_model.CO2_emissions,  # output at zero
             'non_use_capital': self.forest_model.lost_capital,
             'techno_capital': self.forest_model.techno_capital,
-            'agri_capital_techno_list': self.AGRI_CAPITAL_TECHNO_LIST
         }
 
         #-- store outputs
