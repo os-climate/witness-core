@@ -60,8 +60,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                           'fruits and vegetables': 624,
                           }
     year_range = default_year_end - default_year_start + 1
-    default_red_meat_percentage = np.linspace(100, 10, year_range)
-    default_white_meat_percentage = np.linspace(100, 10, year_range)
+
+    total_kcal = 414542.4
+    red_meat_percentage = default_kg_to_kcal['red meat'] / total_kcal * 100
+    white_meat_percentage = default_kg_to_kcal['white meat'] / total_kcal * 100
+    default_red_meat_percentage = np.linspace(red_meat_percentage, 0.3 * red_meat_percentage, year_range)
+    default_white_meat_percentage = np.linspace(white_meat_percentage, 0.3 * white_meat_percentage, year_range)
+
     default_other_use = np.linspace(0.102, 0.102, year_range)
     default_diet_df = pd.DataFrame({'red meat': [11.02],
                                     'white meat': [31.11],
@@ -273,8 +278,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             # chart of the updated diet
-            updated_diet_df = self.get_sosdisc_outputs(
-                'updated_diet_df')
+            updated_diet_df = self.get_sosdisc_outputs('updated_diet_df')
+            starting_diet = self.get_sosdisc_inputs('diet_df')
+            kg_to_kcal_dict = self.get_sosdisc_inputs('kg_to_kcal_dict')
+            total_kcal = 0
+            #compute total kcal
+            for key in starting_diet:
+                total_kcal += starting_diet[key].values[0] * kg_to_kcal_dict[key]
 
             series_to_add = []
             for key in updated_diet_df.keys():
@@ -286,11 +296,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 else:
 
                     new_series = InstanciatedSeries(
-                        years, updated_diet_df[key].values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
+                        years, (updated_diet_df[key].values * kg_to_kcal_dict[key]).tolist(), key, InstanciatedSeries.BAR_DISPLAY)
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'food quantity (kg / person / year)',
+            new_chart = TwoAxesInstanciatedChart('years', 'food calories [kcal / person / year]',
                                                  chart_name='Evolution of the diet over time', stacked_bar=True)
 
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
@@ -305,16 +315,41 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-             # ------------------------------------------
+
+            series_to_add = []
+            for key in updated_diet_df.keys():
+
+                if key == 'years':
+                    pass
+                elif key.startswith('total'):
+                    pass
+                else:
+
+                    new_series = InstanciatedSeries(
+                        years, (updated_diet_df[key].values * kg_to_kcal_dict[key] * 100 /total_kcal).tolist(), key, InstanciatedSeries.BAR_DISPLAY)
+
+                    series_to_add.append(new_series)
+
+            new_chart = TwoAxesInstanciatedChart('years', 'food calories proportion [% / person / year]',
+                                                 chart_name='Evolution of the diet proportion over time', stacked_bar=True)
+            # add a fake serie of value before the other serie to keep the same color than in the first graph,
+            # where the line plot of total surface take the first color
+            fake_serie = InstanciatedSeries(
+                years, surface_percentage_df[key].values.tolist() * 0, '', InstanciatedSeries.BAR_DISPLAY)
+
+            new_chart.add_series(fake_serie)
+
+            for serie in series_to_add:
+                new_chart.add_series(serie)
+
+            instanciated_charts.append(new_chart)
+
+            # ------------------------------------------
             # DIET EVOLUTION VARIABLES
             chart_name = "Diet evolution, percentage of red and white meat in a person's diet"
-            starting_diet = self.get_sosdisc_inputs('diet_df')
-            total_diet = starting_diet.values.sum()
-            red_meat_percentage = self.get_sosdisc_inputs('red_meat_percentage')
-            white_meat_percentage = self.get_sosdisc_inputs('white_meat_percentage')
 
-            red_meat_evolution = updated_diet_df['red meat'].values * red_meat_percentage / total_diet
-            white_meat_evolution  = updated_diet_df['white meat'].values * white_meat_percentage / total_diet
+            red_meat_evolution =  self.get_sosdisc_inputs('red_meat_percentage')
+            white_meat_evolution  =  self.get_sosdisc_inputs('white_meat_percentage')
 
             new_chart = TwoAxesInstanciatedChart('years', 'Diet evolution [%]',
                                                  chart_name=chart_name)
@@ -322,11 +357,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             visible_line = True
             ordonate_data = list(red_meat_evolution)
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'percentage of red meat in diet', 'lines', visible_line)
+                years, ordonate_data, 'percentage of red meat calories in diet', 'lines', visible_line)
             new_chart.series.append(new_series)
             ordonate_data = list(white_meat_evolution)
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'percentage of white meat in diet', 'lines', visible_line)
+                years, ordonate_data, 'percentage of white meat calories in diet', 'lines', visible_line)
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
