@@ -100,7 +100,6 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         if 'agri_capital_techno_list' in self._data_in:
             agriculture_techno_list = self.get_sosdisc_inputs(
                 'agri_capital_techno_list')
-            agriculture_techno_list = ['Forest']
             if agriculture_techno_list is not None:
                 energy_techno_dict['Agriculture'] = {'namespace': 'ns_forest',
                                                      'value': agriculture_techno_list}
@@ -112,15 +111,6 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
             # the list could be appended with other capital than energy
             all_non_use_capital_list.extend(full_techno_list)
 
-#         for non_use_capital_tuple in all_non_use_capital_list:
-#             dynamic_inputs[f'non_use_capital'] = {'type': 'dataframe',
-#                                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
-#                                                   'namespace': 'ns_forest',
-#                                                   'unit': 'G$'}
-#             dynamic_inputs[f'{non_use_capital_tuple[0]}.techno_capital'] = {'type': 'dataframe',
-#                                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
-#                                                                                     'namespace': non_use_capital_tuple[1],
-#                                                                                     'unit': 'G$'}
         for non_use_capital_tuple in all_non_use_capital_list:
             dynamic_inputs[f'{non_use_capital_tuple[0]}non_use_capital'] = {'type': 'dataframe',
                                                                             'visibility': SoSDiscipline.SHARED_VISIBILITY,
