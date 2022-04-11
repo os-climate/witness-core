@@ -69,10 +69,11 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                                            'CC_tech': loss_ct})
         non_use_capital_ref = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
                                             'Forest': loss_ref})
-        gamma = 0.5
+        alpha, gamma = 0.5, 0.5
         non_use_capital_obj_ref = 100.
         delta_years = year_end + 1 - year_start
         values_dict = {f'{self.name}.year_start': year_start,
+                       f'{self.name}.alpha': alpha,
                        f'{self.name}.gamma': gamma,
                        f'{self.name}.year_end': year_end,
                        f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
@@ -109,11 +110,11 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                              non_use_capital_df['Sum of non use capital'].values.tolist())
 
         self.assertEqual(non_use_capital_objective,
-                         (1 - gamma) * sum_non_use_capital_th * (year_end - year_start + 1) / non_use_capital_obj_ref / delta_years)
+                         alpha * (1 - gamma) * sum_non_use_capital_th * (year_end - year_start + 1) / non_use_capital_obj_ref / delta_years)
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        #for graph in graph_list:
+        #    graph.to_plotly().show()
