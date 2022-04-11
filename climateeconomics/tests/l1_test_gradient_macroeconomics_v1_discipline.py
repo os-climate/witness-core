@@ -175,7 +175,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint', 
-                                     f'{self.name}.emax_enet_constraint'])
+                                     f'{self.name}.emax_enet_constraint',
+                                     f'{self.name}.delta_capital_objective'])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
 
@@ -232,7 +233,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
-                                     f'{self.name}.emax_enet_constraint'])
+                                     f'{self.name}.emax_enet_constraint',
+                                     f'{self.name}.delta_capital_objective'])
 
     def test_macro_economics_analytic_grad_max_damage(self):
 
@@ -291,7 +293,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
-                                     f'{self.name}.emax_enet_constraint'])
+                                     f'{self.name}.emax_enet_constraint',
+                                     f'{self.name}.delta_capital_objective'])
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
 
@@ -355,7 +358,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
-                                     f'{self.name}.emax_enet_constraint'])
+                                     f'{self.name}.emax_enet_constraint',
+                                     f'{self.name}.delta_capital_objective'])
 
     def test_macro_economics_very_high_emissions(self):
 
@@ -423,7 +427,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
-                                     f'{self.name}.emax_enet_constraint'])
+                                     f'{self.name}.emax_enet_constraint',
+                                     f'{self.name}.delta_capital_objective'])
 
     def test_macro_economics_negativeco2_emissions(self):
 
@@ -492,7 +497,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
-                                     f'{self.name}.emax_enet_constraint'])
+                                     f'{self.name}.emax_enet_constraint',
+                                     f'{self.name}.delta_capital_objective'])
 
     def test_macro_economics_negativeco2_tax(self):
 
@@ -551,7 +557,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                       f'{self.name}.energy_investment',
                                       f'{self.name}.pc_consumption_constraint',
                                       f'{self.name}.global_investment_constraint',
-                                     f'{self.name}.emax_enet_constraint'])
+                                      f'{self.name}.emax_enet_constraint',
+                                      f'{self.name}.delta_capital_objective'])
 
 
 if '__main__' == __name__:
