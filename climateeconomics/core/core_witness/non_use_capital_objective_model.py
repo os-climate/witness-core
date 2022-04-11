@@ -106,3 +106,13 @@ class NonUseCapitalObjective():
         Get techno capital dataframe with all non_use capitals
         '''
         return self.techno_capital_df
+
+    def get_energy_capital_trillion_dollars(self):
+        '''
+        Get energy capital dataframe in trillion dollars
+        The sum is in G$ (1e9 $)
+        '''
+        energy_capital_df = pd.DataFrame({'years': self.years_range,
+                                          'energy_capital': self.techno_capital_df['Sum of techno capital'].values / 1e3})
+
+        return energy_capital_df
