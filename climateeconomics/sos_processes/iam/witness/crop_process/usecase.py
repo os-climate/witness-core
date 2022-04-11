@@ -95,8 +95,14 @@ class Study(StudyManager):
             {"years": years, "population": population})
         population_df.index = years
 
-        self.red_meat_percentage = np.linspace(6.82, 1, year_range)
-        self.white_meat_percentage = np.linspace(13.95, 5, year_range)
+        red_meat_percentage = np.linspace(6.82, 1, year_range)
+        white_meat_percentage = np.linspace(13.95, 5, year_range)
+        self.red_meat_percentage = pd.DataFrame({
+                            'years': years,
+                            'red_meat_percentage': red_meat_percentage})
+        self.white_meat_percentage = pd.DataFrame({
+                                'years': years,
+                                'white_meat_percentage': white_meat_percentage})
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -178,6 +184,7 @@ class Study(StudyManager):
 
         red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
         white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
+
 
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl

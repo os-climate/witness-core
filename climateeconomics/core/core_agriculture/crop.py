@@ -139,8 +139,8 @@ class Crop():
             self.margin = inputs_dict['margin'].loc[inputs_dict['margin']['years']
                                                     <= self.year_end]
         # diet design variables
-        self.red_meat_percentage = inputs_dict['red_meat_percentage']
-        self.white_meat_percentage = inputs_dict['white_meat_percentage']
+        self.red_meat_percentage = inputs_dict['red_meat_percentage']['red_meat_percentage'].values
+        self.white_meat_percentage = inputs_dict['white_meat_percentage']['white_meat_percentage'].values
 
         # invest level from G$ to M$
         self.invest_level = inputs_dict[Crop.INVEST_LEVEL]

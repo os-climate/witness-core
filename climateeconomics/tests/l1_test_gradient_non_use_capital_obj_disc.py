@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
@@ -115,5 +115,6 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital',
                                     f'{self.name}.Agriculture.Forest.non_use_capital',
                                     f'{self.name}.Agriculture.Forest.techno_capital'],
-                            outputs=[f'{self.name}.non_use_capital_objective'],
+                            outputs=[f'{self.name}.non_use_capital_objective',
+                                     f'{self.name}.energy_capital'],
                             derr_approx='complex_step')
