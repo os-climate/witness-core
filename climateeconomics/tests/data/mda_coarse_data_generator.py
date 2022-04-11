@@ -44,6 +44,41 @@ def launch_data_pickle_generation(directory=''):
     energy_list = Energy_Mix_disc.get_sosdisc_inputs(
         'energy_list')
 
+# Inputs
+    mda_coarse_data_energymix_input_dict = {}
+    # Check if the input is a coupling
+    full_inputs = Energy_Mix_disc.get_input_data_names()
+    # For the coupled inputs and outputs, test inputs/outputs on all
+    # namespaces
+    coupled_inputs = []
+    namespaces = [f'{name}.', f'{name}.{model_name}.']
+    for namespace in namespaces:
+        coupled_inputs += [input[len(namespace):] for input in full_inputs if ee.dm.get_data(
+            input, 'coupling')]
+    # Loop on inputs and fill the dict with value and boolean is_coupling
+    for key in Energy_Mix_disc.get_sosdisc_inputs().keys():
+        is_coupling = False
+        if key in coupled_inputs:
+            is_coupling = True
+        mda_coarse_data_energymix_input_dict[key] = {
+            'value': Energy_Mix_disc.get_sosdisc_inputs(key), 'is_coupling': is_coupling}
+    # Output
+    mda_coarse_data_energymix_output_dict = {}
+    full_outputs = Energy_Mix_disc.get_output_data_names()
+    # For the coupled inputs and outputs, test inputs/outputs on all
+    # namespaces
+    coupled_outputs = []
+    namespaces = [f'{name}.', f'{name}.{model_name}.']
+    for namespace in namespaces:
+        coupled_outputs += [output[len(namespace):] for output in full_outputs if ee.dm.get_data(
+            output, 'coupling')]
+    for key in Energy_Mix_disc.get_sosdisc_outputs().keys():
+        is_coupling = False
+        if key in coupled_outputs:
+            is_coupling = True
+        mda_coarse_data_energymix_output_dict[key] = {
+            'value': Energy_Mix_disc.get_sosdisc_outputs(key), 'is_coupling': is_coupling}
+
     # Collect input and output data from each energy and each techno
     mda_coarse_data_streams_input_dict, mda_coarse_data_streams_output_dict = {}, {}
     mda_coarse_data_technologies_input_dict, mda_coarse_data_technologies_output_dict = {}, {}
@@ -217,10 +252,10 @@ def launch_data_pickle_generation(directory=''):
                 mda_coarse_data_technologies_output_dict[techno][key] = {
                     'value': techno_disc.get_sosdisc_outputs(key), 'is_coupling': is_coupling}
 
-    if directory =='':
-        prefix='.'
+    if directory == '':
+        prefix = '.'
     else:
-        prefix=f'./{directory}'
+        prefix = f'./{directory}'
 
     output = open(f'{prefix}/mda_coarse_data_streams_input_dict.pkl', 'wb')
     pickle.dump(mda_coarse_data_streams_input_dict, output)
@@ -230,12 +265,24 @@ def launch_data_pickle_generation(directory=''):
     pickle.dump(mda_coarse_data_streams_output_dict, output)
     output.close()
 
-    output = open(f'{prefix}/mda_coarse_data_technologies_input_dict.pkl', 'wb')
+    output = open(
+        f'{prefix}/mda_coarse_data_technologies_input_dict.pkl', 'wb')
     pickle.dump(mda_coarse_data_technologies_input_dict, output)
     output.close()
 
-    output = open(f'{prefix}/mda_coarse_data_technologies_output_dict.pkl', 'wb')
+    output = open(
+        f'{prefix}/mda_coarse_data_technologies_output_dict.pkl', 'wb')
     pickle.dump(mda_coarse_data_technologies_output_dict, output)
+    output.close()
+
+    output = open(
+        f'{prefix}/mda_coarse_data_energymix_input_dict.pkl', 'wb')
+    pickle.dump(mda_coarse_data_energymix_input_dict, output)
+    output.close()
+
+    output = open(
+        f'{prefix}/mda_coarse_data_energymix_output_dict.pkl', 'wb')
+    pickle.dump(mda_coarse_data_energymix_output_dict, output)
     output.close()
 
 
