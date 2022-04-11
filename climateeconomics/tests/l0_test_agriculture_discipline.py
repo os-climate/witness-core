@@ -65,8 +65,14 @@ class AgricultureTestCase(unittest.TestCase):
                                    'potatoes': 670,
                                    'fruits and vegetables': 624,
                                    }
-        self.red_meat_percentage = np.linspace(6, 1, year_range)
-        self.white_meat_percentage = np.linspace(14, 5, year_range)
+        red_meat_percentage = np.linspace(6, 1, year_range)
+        white_meat_percentage = np.linspace(14, 5, year_range)
+        self.red_meat_percentage = pd.DataFrame({
+                            'years': years,
+                            'red_meat_percentage': red_meat_percentage})
+        self.white_meat_percentage = pd.DataFrame({
+                                'years': years,
+                                'white_meat_percentage': white_meat_percentage})
 
         self.diet_df = pd.DataFrame({'red meat': [11.02],
                                      'white meat': [31.11],

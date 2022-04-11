@@ -75,8 +75,14 @@ class CropTestCase(unittest.TestCase):
                                    'potatoes': 670,
                                    'fruits and vegetables': 624,
                                    }
-        self.red_meat_percentage = np.linspace(6, 1, year_range)
-        self.white_meat_percentage = np.linspace(14, 5, year_range)
+        red_meat_percentage = np.linspace(6, 1, year_range)
+        white_meat_percentage = np.linspace(14, 5, year_range)
+        self.red_meat_percentage = pd.DataFrame({
+                            'years': years,
+                            'red_meat_percentage': red_meat_percentage})
+        self.white_meat_percentage = pd.DataFrame({
+                                'years': years,
+                                'white_meat_percentage': white_meat_percentage})
         self.diet_df = pd.DataFrame({'red meat': [11.02],
                                      'white meat': [31.11],
                                      'milk': [79.27],
@@ -196,5 +202,5 @@ class CropTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
-        #    graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
