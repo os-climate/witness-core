@@ -170,9 +170,9 @@ class Study(StudyManager):
 
         # Design variables:
         self.update_dspace_dict_with(
-            'red_meat_percentage_ctrl', self.red_meat_percentage, lbnd1, ubnd1)
+            'red_meat_percentage_array', self.red_meat_percentage, lbnd1, ubnd1)
         self.update_dspace_dict_with(
-            'white_meat_percentage_ctrl', self.white_meat_percentage, lbnd2, ubnd2)
+            'white_meat_percentage_array', self.white_meat_percentage, lbnd2, ubnd2)
 
     def setup_design_space_ctrl_new(self):
         # Design Space
