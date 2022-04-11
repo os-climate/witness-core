@@ -66,8 +66,12 @@ class CropDiscipline(ClimateEcoDiscipline):
     total_kcal = 414542.4
     red_meat_percentage = default_kg_to_kcal['red meat'] / total_kcal * 100
     white_meat_percentage = default_kg_to_kcal['white meat'] / total_kcal * 100
-    default_red_meat_percentage = np.linspace(red_meat_percentage, 0.3 * red_meat_percentage, year_range)
-    default_white_meat_percentage = np.linspace(white_meat_percentage, 0.3 * white_meat_percentage, year_range)
+    default_red_meat_percentage = pd.DataFrame({
+                            'years': default_years,
+                            'red_meat_percentage': np.linspace(red_meat_percentage, 0.3 * red_meat_percentage, year_range)})
+    default_white_meat_percentage = pd.DataFrame({
+                            'years': default_years,
+                            'white_meat_percentage': np.linspace(white_meat_percentage, 0.3 * white_meat_percentage, year_range)})
 
     # mdpi: according to the NASU recommendations,
     # a fixed value of 0.25 is applied to all crops
@@ -153,8 +157,14 @@ class CropDiscipline(ClimateEcoDiscipline):
         'kg_to_kcal_dict': {'type': 'dict', 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
         'kg_to_m2_dict': {'type': 'dict', 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
         # design variables of changing diet
-        'red_meat_percentage': {'type': 'array', 'default': default_red_meat_percentage, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
-        'white_meat_percentage': {'type': 'array', 'default': default_white_meat_percentage, 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+        'red_meat_percentage': {'type': 'dataframe', 'default': default_red_meat_percentage,
+                                    'dataframe_descriptor': {'years': ('float', None, False),
+                                                          'red_meat_percentage': ('float', [0, 100], True)},
+                                    'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+               'white_meat_percentage': {'type': 'dataframe', 'default': default_white_meat_percentage,
+                                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                          'white_meat_percentage': ('float', [0, 100], True)},
+                                         'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
 
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_agriculture'},
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
@@ -554,11 +564,11 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                  chart_name=chart_name)
 
             visible_line = True
-            ordonate_data = list(red_meat_evolution)
+            ordonate_data = list(red_meat_evolution['red_meat_percentage'].values)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'percentage of red meat calories in diet', 'lines', visible_line)
             new_chart.series.append(new_series)
-            ordonate_data = list(white_meat_evolution)
+            ordonate_data = list(white_meat_evolution['white_meat_percentage'].values)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'percentage of white meat calories in diet', 'lines', visible_line)
             new_chart.series.append(new_series)
