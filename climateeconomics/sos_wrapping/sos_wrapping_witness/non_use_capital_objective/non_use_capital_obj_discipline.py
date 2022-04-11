@@ -46,7 +46,8 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'agri_capital_techno_list': {'type': 'string_list',   'default': [],
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'non_use_capital_obj_ref': {'type': 'float', 'default': 10., 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit':'G$', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
         'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
 
@@ -155,7 +156,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         years = np.arange(inputs_dict['year_start'],
                           inputs_dict['year_end'] + 1)
         non_use_capital_obj_ref = inputs_dict['non_use_capital_obj_ref']
-        gamma = inputs_dict['gamma']
+        alpha, gamma = inputs_dict['alpha'], inputs_dict['gamma']
         outputs_dict = self.get_sosdisc_outputs()
         non_use_capital_df = outputs_dict['non_use_capital_df']
         input_nonusecapital_list = [
@@ -165,7 +166,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
             column_name = [
                 col for col in inputs_dict[non_use_capital].columns if col != 'years'][0]
             self.set_partial_derivative_for_other_types(
-                ('non_use_capital_objective', ), (non_use_capital, column_name), np.ones(len(years)) * (1 - gamma) / non_use_capital_obj_ref / delta_years)
+                ('non_use_capital_objective', ), (non_use_capital, column_name), np.ones(len(years)) * alpha * (1 - gamma) / non_use_capital_obj_ref / delta_years)
 
         input_capital_list = [
             key for key in inputs_dict.keys() if key.endswith('techno_capital')]

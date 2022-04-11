@@ -36,6 +36,7 @@ class NonUseCapitalObjective():
         self.year_start = self.param['year_start']
         self.year_end = self.param['year_end']
         self.non_use_capital_obj_ref = self.param['non_use_capital_obj_ref']
+        self.alpha = self.param['alpha']
         self.gamma = self.param['gamma']
 
     def create_year_range(self):
@@ -86,7 +87,7 @@ class NonUseCapitalObjective():
         Compute objective
         '''
         if 'Sum of non use capital' in self.non_use_capital_df:
-            self.non_use_capital_objective = (1 - self.gamma) * np.asarray(
+            self.non_use_capital_objective = self.alpha * (1 - self.gamma) * np.asarray(
                 [self.non_use_capital_df['Sum of non use capital'].sum()]) / self.non_use_capital_obj_ref / self.delta_years
 
     def get_objective(self):
