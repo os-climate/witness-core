@@ -91,7 +91,8 @@ class MacroEconomics():
         self.employment_power_param = self.param['employment_power_param']
         self.employment_rate_base_value = self.param['employment_rate_base_value']
         self.ref_emax_enet_constraint = self.param['ref_emax_enet_constraint']
-
+        self.usable_capital_ref = self.param['usable_capital_ref']
+        self.capital_percentage = self.param['capital_percentage']
     def create_dataframe(self):
         '''
         Create the dataframe and fill it with values at year_start
@@ -520,6 +521,16 @@ class MacroEconomics():
         self.emax_enet_constraint = - \
             (energy - e_max) / self.ref_emax_enet_constraint
 
+    def compute_delta_capital_objective(self):
+        """
+        Compute delta between capital and a percentage of usable capital
+        """
+        capital = self.economics_df['capital'].values
+        usable_capital = self.usable_capital_df['usable_capital'].values
+        self.delta_capital_objective = (self.capital_percentage*capital - usable_capital) / self.usable_capital_ref
+
+
+
     def compute(self, inputs, damage_prod=False):
         """
         Compute all models for year range
@@ -569,7 +580,7 @@ class MacroEconomics():
         self.compute_global_investment_constraint()
         # COmpute e_max net energy constraint
         self.compute_emax_enet_constraint()
-
+        self.compute_delta_capital_objective()
         return self.economics_df.fillna(0.0), self.energy_investment.fillna(0.0), self.global_investment_constraint, \
             self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint, self.workforce_df, \
             self.usable_capital_df, self.emax_enet_constraint

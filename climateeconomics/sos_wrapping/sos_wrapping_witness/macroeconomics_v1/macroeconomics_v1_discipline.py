@@ -92,6 +92,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3},
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3},
         'ref_emax_enet_constraint': {'type': 'float', 'default': 116e3, 'user_level': 3, 'namespace': 'ns_ref'},
+        'usable_capital_ref': {'type': 'float','unit': 'G$', 'default': 100, 'user_level': 3, 'namespace': 'ns_ref'},
+        'capital_percentage': {'type': 'float', 'default': 0.8, 'user_level': 3}
     }
 
     DESC_OUT = {
@@ -103,7 +105,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'pc_consumption_constraint': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'workforce_df':  {'type': 'dataframe'},
         'usable_capital_df':  {'type': 'dataframe'},
-        'emax_enet_constraint':  {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'}
+        'emax_enet_constraint':  {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'delta_capital_objective': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'}
+
     }
 
     def setup_sos_disciplines(self):
@@ -168,7 +172,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         'CO2_tax_efficiency': co2_tax_efficiency,
                         'co2_invest_limit': co2_invest_limit,
                         'population_df': population_df[['years', 'population']],
-                        'working_age_population_df': working_age_population_df[['years', 'population_1570']]
+                        'working_age_population_df': working_age_population_df[['years', 'population_1570']],
+
                         }
         # Check inputs
         count = len(
@@ -190,7 +195,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        'pc_consumption_constraint': pc_consumption_constraint,
                        'workforce_df': workforce_df,
                        'usable_capital_df': usable_capital_df,
-                       'emax_enet_constraint': emax_enet_constraint}
+                       'emax_enet_constraint': emax_enet_constraint,
+                       'delta_capital_objective': self.macro_model.delta_capital_objective}
 
         self.store_sos_outputs_values(dict_values)
 
@@ -200,19 +206,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         gradiant of coupling variable 
 
         """
-        scaling_factor_energy_production = self.get_sosdisc_inputs(
-            'scaling_factor_energy_production')
-        scaling_factor_energy_investment = self.get_sosdisc_inputs(
-            'scaling_factor_energy_investment')
-        ref_pc_consumption_constraint = self.get_sosdisc_inputs(
-            'ref_pc_consumption_constraint')
-        ref_emax_enet_constraint = self.get_sosdisc_inputs(
-            'ref_emax_enet_constraint')
+        scaling_factor_energy_production, scaling_factor_energy_investment, ref_pc_consumption_constraint, ref_emax_enet_constraint, usable_capital_ref, capital_percentage = self.get_sosdisc_inputs(
+            ['scaling_factor_energy_production', 'scaling_factor_energy_investment', 'ref_pc_consumption_constraint', 'ref_emax_enet_constraint', 'usable_capital_ref', 'capital_percentage'])
+
         year_start = self.get_sosdisc_inputs('year_start')
         year_end = self.get_sosdisc_inputs('year_end')
         time_step = self.get_sosdisc_inputs('time_step')
         nb_years = len(np.arange(year_start, year_end + 1, time_step))
-
+        usable_capital_df = self.get_sosdisc_outputs('usable_capital_df')
 #     Compute gradient for coupling variable co2_emissions_Gt
         denergy_invest, dinvestment = self.macro_model.compute_dinvest_dco2emissions()
         dconsumption = self.macro_model.compute_dconsumption(
@@ -230,7 +231,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('pc_consumption_constraint',), ('co2_emissions_Gt', 'Total CO2 emissions'), - dconsumption_pc / ref_pc_consumption_constraint)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('co2_emissions_Gt', 'Total CO2 emissions'), demaxconstraint)
-
+        self.set_partial_derivative_for_other_types(
+            ('delta_capital_objective',), ('co2_emissions_Gt', 'Total CO2 emissions'),  capital_percentage * dcapital / usable_capital_ref )
         # Compute gradient for coupling variable Total production
         dcapitalu_denergy = self.macro_model.dusablecapital_denergy()
         dgross_output = self.macro_model.dgrossoutput_denergy(
@@ -260,6 +262,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('energy_investment', 'energy_investment'), ('energy_production', 'Total production'), scaling_factor_energy_production * denergy_investment / scaling_factor_energy_investment * 1e3)  # Invest from T$ to G$
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('energy_production', 'Total production'), - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint - demaxconstraint))
+        self.set_partial_derivative_for_other_types(
+            ('delta_capital_objective',), ('energy_production', 'Total production'), scaling_factor_energy_production * (capital_percentage * dcapital - np.identity(nb_years) * 0.8 * usable_capital_df['energy_efficiency'].values / 1000) / usable_capital_ref )
 
 #        Compute gradient for coupling variable damage
         dproductivity = self.macro_model.compute_dproductivity()
@@ -285,6 +289,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('energy_investment', 'energy_investment'), ('damage_df', 'damage_frac_output'), denergy_investment / scaling_factor_energy_investment * 1e3)  # Invest from T$ to G$
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('damage_df', 'damage_frac_output'), demaxconstraint)
+        self.set_partial_derivative_for_other_types(
+            ('delta_capital_objective',), ('damage_df', 'damage_frac_output'),  capital_percentage * dcapital / usable_capital_ref )
 
         # compute gradient for coupling variable population
         dconsumption_pc = self.macro_model.compute_dconsumption_pc_dpopulation()
@@ -319,7 +325,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         demaxconstraint = self.macro_model.demaxconstraint(dcapital)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('working_age_population_df', 'population_1570'), np.dot(demaxconstraint, dworkforce_dworkingagepop))
-
+        self.set_partial_derivative_for_other_types(
+            ('delta_capital_objective',), ('working_age_population_df', 'population_1570'),  np.dot(capital_percentage * dcapital,dworkforce_dworkingagepop) / usable_capital_ref )
         # compute gradients for share_energy_investment
         denergy_investment, denergy_investment_wo_renewable = self.macro_model.compute_denergy_investment_dshare_energy_investement()
         self.set_partial_derivative_for_other_types(
@@ -345,7 +352,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             - dconsumption_pc / ref_pc_consumption_constraint)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('share_energy_investment', 'share_investment'), demaxconstraint)
-
+        self.set_partial_derivative_for_other_types(
+            ('delta_capital_objective',), ('share_energy_investment', 'share_investment'),  capital_percentage * dcapital / usable_capital_ref )
         # compute gradient CO2 Taxes
         denergy_investment = self.macro_model.compute_denergy_investment_dco2_tax()
         self.set_partial_derivative_for_other_types(
@@ -364,7 +372,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         demaxconstraint = self.macro_model.demaxconstraint(dcapital)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('CO2_taxes', 'CO2_tax'),  demaxconstraint)
-
+        self.set_partial_derivative_for_other_types(
+            ('delta_capital_objective',), ('CO2_taxes', 'CO2_tax'),  capital_percentage * dcapital / usable_capital_ref )
         # compute gradient total_share_investment_gdp
         dinvestment = self.macro_model.compute_dinvestment_dtotal_share_of_gdp()
         dnet_output = np.zeros((nb_years, nb_years))
@@ -380,7 +389,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('pc_consumption_constraint',), ('total_investment_share_of_gdp', 'share_investment'), - dconsumption_pc / ref_pc_consumption_constraint)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('total_investment_share_of_gdp', 'share_investment'),  demaxconstraint)
-
+        self.set_partial_derivative_for_other_types(
+            ('delta_capital_objective',), ('total_investment_share_of_gdp', 'share_investment'),  capital_percentage * dcapital / usable_capital_ref )
     def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
