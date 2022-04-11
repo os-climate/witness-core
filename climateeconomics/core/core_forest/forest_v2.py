@@ -168,7 +168,14 @@ class Forest():
         self.compute_biomass_dry_production()
 
         # compute outputs:
-        self.land_use_required['Forest (Gha)'] = self.forest_surface_df['global_forest_surface']
+
+        #compute land_use for energy
+        self.land_use_required['Forest (Gha)'] = self.unmanaged_wood_df['cumulative_surface'] + self.managed_wood_df['cumulative_surface']
+
+        #compute forest constrain evolution: reforestation + deforestation
+        self.forest_surface_df['forest_constraint_evolution'] = self.forest_surface_df['reforestation_surface'] + self.forest_surface_df['deforestation_surface']
+        self.forest_surface_df['initial_unused_forest'] = [self.initial_unsused_forest_surface] * len(self.years)
+
         # techno production in TWh
         self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] = self.biomass_dry_df[
             'biomass_dry_for_energy (Mt)'] * self.biomass_dry_calorific_value
@@ -192,6 +199,8 @@ class Forest():
         self.techno_consumption_woratio[f'{CO2.name} ({self.mass_unit})'] = -self.techno_wood_info['CO2_from_production'] / \
             self.biomass_dry_high_calorific_value * \
             self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})']
+
+
 
     def compute_managed_wood_production(self):
         """
@@ -555,8 +564,7 @@ class Forest():
         d_wood_surface_d_invest = np.identity(number_of_values) * 0
         construction_delay = self.techno_wood_info['construction_delay']
         for i in range(construction_delay, number_of_values):
-            d_wood_surface_d_invest[i][i -
-                                       construction_delay] = 1 / price_per_ha
+            d_wood_surface_d_invest[i][i - construction_delay] = 1 / price_per_ha
 
         return d_wood_surface_d_invest
 

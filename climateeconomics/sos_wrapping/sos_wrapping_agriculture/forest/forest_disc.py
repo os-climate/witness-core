@@ -282,7 +282,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         outputs_dict = {
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
-            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'global_forest_surface']],
+            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'global_forest_surface', 'forest_constraint_evolution', 'initial_unused_forest']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'global_CO2_emission_balance']],
             'managed_wood_df': self.forest_model.managed_wood_df,
             'unmanaged_wood_df': self.forest_model.unmanaged_wood_df,
@@ -351,6 +351,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
             'unmanaged_wood_investment', 'investment'), d_cum_uw_surface_d_invest)
 
+        self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'forest_constraint_evolution'), (
+            Forest.DEFORESTATION_SURFACE, 'deforested_surface'), d_cum_deforestation_d_deforestation_surface)
+        # forest surface vs forest invest
+        self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'forest_constraint_evolution'), (
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_forest_surface_d_invest)
+
         # total capital vs reforestation investment grad
         dcapitaltotal_dinvest = self.forest_model.d_capital_total_d_invest()
         self.set_partial_derivative_for_other_types(('techno_capital', 'Forest'), (
@@ -363,15 +369,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dlostcapital_dinvest)
 
         # land use required
-        # forest surface vs forest invest
-        self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
-            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_forest_surface_d_invest)
-        # forest surface vs deforestation grad
-        self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
-            Forest.DEFORESTATION_SURFACE, 'deforested_surface'), d_cum_deforestation_d_deforestation_surface)
-        # forest surface vs forest invest
-        self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
-            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_forest_surface_d_invest)
+
         # forest surface vs managed wood invest
         self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
             'managed_wood_investment', 'investment'), d_cum_mw_surface_d_invest)
