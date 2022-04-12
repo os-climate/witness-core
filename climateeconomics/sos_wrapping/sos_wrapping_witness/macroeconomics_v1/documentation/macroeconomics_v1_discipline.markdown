@@ -4,6 +4,7 @@
 -  Working age population ($working\_age\_population\_df$): Dataframe with working age population per year in million of people
 - Population df ($population\_df$): Dataframe with total population per year in millions of people
 - Energy Production Quantity ($energy\_production$): Dataframe with Total Final Consumption of energy per year in Pwh
+- Energy capital ($energy\_capital$): Dataframe with the total capital stock dedicated to energy production per year. Unit: trillion dollars. 
 - Share of investment in energy ($share\_energy\_investment$): Share of total investment that goes to energy
 - Total investment share of GDP ($total\_investment\_share\_of\_gdp$): Total share of GDP that is invested
 - Damage to productivity ($damage\_to\_productivity$): If True: apply damage to productivity. if False: Apply damage only to production. 
@@ -23,17 +24,17 @@
 
                     
 ### Time Step 
-The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. The user can choose the year end and the duration of the period (in years) by changing the parameters $year\, end$ and $time \,step$.
+The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
 
 ### Global output
 #### Usable capital 
 Global output is calculated from a production function. Here, it is a different one from DICE model[^1] (Nordhaus, 2017) because we want to include energy as a key element in the production process. One way to do so is by directly including energy production as production factor in the production function. We chose a different option as we wanted to take this aspect into account but not to under consider the importance of labor and capital in the production process. It is the combination of capital and energy that generates the most production. Capital without energy is almost useless. It is mandatory to feed the capital with energy for it to be able to produce output such as having fuel for trucks to transport goods, or electricity for robots in factories.   
-For this reason the notion of usable capital ($Ku$) has been introduced that depends on the capital ($K$) and the net energy output ($En$). 
+For this reason the notion of usable capital ($Ku$) has been introduced that depends on the capital ($K\_ne$) and the net energy output ($En$). 
 Moreover, the capital is not able to absorb more energy that it is built for,  thus the notion of maximum usable energy of capital ($E\_max\_k$) is also introduced. 
-$$Ku=K \cdot \frac{En}{E\_max\_k}$$
-with $K$ the capital stock in trillions dollars and $En$ the net energy supply in TWh.   
+$$Ku=Kne \cdot \frac{En}{E\_max\_k}$$
+with $Kne$ non energy capital stock in trillions dollars (see capital section for more explaination) and $En$ the net energy supply in TWh.   
 The maximum usable energy of capital ($E\_max\_k$) energy evolves with technology evolution as well as the productivity of the capital ($P$):
- $$E\_max\_k = \frac{K}{capital\_utilisation\_ratio \cdot P}$$
+ $$E\_max\_k = \frac{Kne}{capital\_utilisation\_ratio \cdot P}$$
  with $capital\_utilisation\_ratio$ the capital utilisation rate and P the productivity of the capital represented by a logistic function: 
  $$P = min\_value+ \frac{L}{1+e^{-k(year-xo)}}$$
  with L is $energy\_eff\_max$ in the inputs, $min\_value$ is $energy\_eff\_cst$, $xo$ is $energy\_eff\_xzero$, and $k$ $energy\_eff\_k$.  
@@ -53,14 +54,14 @@ The Total factor productivity (TFP) measures the efficiency of the inputs in the
 * The standard DICE ($damage\,to\,productivity$ = $False$) where $A_t$ evolves according to:
 $$A_t = \frac{A_{t-1}}{1-A_{gt-1}}$$ with $A_g$ the productivity growth rate.
 The initial level $A_0$ can ben changed in the inputs ($productivity\_start$),
-$$A_{gt}=A_{g0}exp(-\Delta_a(t-1)time\_step)$$
+$$A_{gt}=A_{g0} \cdot exp(-\Delta_a \cdot (t-1) \cdot time\_step)$$
 and $\Delta_a$ is the percentage growth rate of $A_g$.
 * The “Damage to productivity growth” one ($damage\,to\,productivity$ = $True$) comes from Moyer et al. (2014) [^4]. It applies a fraction of damage $f$ ($frac\_damage\_prod$) to the productivity instead of all damage being applied to output:
-$$A^*_t=(1-f\Omega_t)\frac{A^*_{t-1}}{1-A_{gt-1}}$$ with $A_0 =A^*_0$.  
+$$A^*_t=(1-f\Omega_t) \cdot \frac{A^*_{t-1}}{1-A_{gt-1}}$$ with $A_0 =A^*_0$.  
 and then damage to output $\Omega_{yt}$ becomes: 
 $$\Omega_{yt} = 1- \frac{1- \Omega_t}{1-f\Omega_t}$$
 such that the output net of climate damage is 
-$$Q^*_t = (1-\Omega_{yt})Y_t(K_t, L_t, A_t^{*E}, A^*_t, E_t)$$
+$$Q^*_t = (1-\Omega_{yt}) \cdot Y_t \cdot (Ku_t, L_t)$$
 
 ### Labor force 
 To obtain the labor force we use the population in working age and the employment rate. We defined the population in working age as the population in the 15-70 age range. 
@@ -74,7 +75,9 @@ The employment rate is for now fixed at  $65.9\%$ following International Labour
 ### Capital
 The capital equation is: 
 $$K_t = I_t + (1- \delta )K_{t-1}$$
-with $I_t$ the investment in trillions dollars, and $\delta$ the depreciation rate. Each period the capital stock increases with new investment and decreases with depreciation of past period capital.
+with $I_t$ the investment in trillions dollars, and $\delta$ the depreciation rate. Each period the capital stock increases with new investment and decreases with depreciation of past period capital.  
+The capital is divided into two types: energy capital and non energy capital. Energy capital is the capital dedicated to energy production. The remaining capital stock is then the non-energy capital.   
+The equation above is applied to both energy and non energy capital, the total capital stock being the sum. We apply to non energy capital the depreciation rate in input ($depreciation\_rate$) of this model. For energy capital the depreciation rate depends on the technology, the energy capital is therefore computed in each energy technology model and is an input of the macroeconomics model.  
 
 ### Investment
 Investment is defined using the inputs $share\_energy\_investment$ and $share\_non\_energy\_investment$.
@@ -101,7 +104,7 @@ To obtain the value of the production function parameters we fitted our calculat
 -  Year start, year end and time step 
 - Parameters for production function: output_alpha,  output_gamma
 - parameters for productivity function: productivity_start, productivity_gr_start, decline_rate_tfp
-- Capital at year start in trillion dollars ($capital\_start$)
+- Non Energy capital at year start in trillion dollars ($capital\_start\_non\_energy$)
 - Output at year start $(init\_gross\_output$) in trillion dollars
 - Usable capital parameters: capital_utilisation_ratio, $energy\_eff\_k$, $energy\_eff\_cst$, $energy\_eff\_xzero$, $energy\_eff\_max$
 - Capital depreciation rate 
