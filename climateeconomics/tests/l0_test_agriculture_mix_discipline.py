@@ -154,14 +154,6 @@ class AgricultureMixModelTestCase(unittest.TestCase):
 
         self.co2_taxes = pd.DataFrame(
             {'years': self.years, 'CO2_tax': func(self.years)})
-        # -----------------------------------------------------
-        # Investments related inputs
-        invest_level_crop = np.linspace(0.5, 0.2, year_range)
-        invest_level_forest = np.linspace(0.5, 0.7, year_range)
-        self.invest_level_crop_df = pd.DataFrame({'years': self.years,
-                                                        'invest': invest_level_crop})
-        self.invest_level_forest_df = pd.DataFrame({'years': self.years,
-                                                        'invest': invest_level_forest})
                     
     def test_agriculture_mix_discipline(self):
         '''

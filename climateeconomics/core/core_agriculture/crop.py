@@ -55,7 +55,7 @@ class Crop():
     KG_TO_M2_DICT = 'kg_to_m2_dict'
     OTHER_USE_CROP = 'other_use_crop'
     FOOD_LAND_SURFACE_DF = 'food_land_surface_df'
-    INVEST_LEVEL = 'invest_level'
+    CROP_INVESTMENT = 'crop_investment'
 
     min_value_invest = 1.e-12
 
@@ -68,7 +68,7 @@ class Crop():
         self.hatom2 = 0.0001
         self.m2toha = 10000.
         self.surface_df = None
-        self.scaling_factor_invest_level = None
+        self.scaling_factor_crop_investment = None
         self.product_energy_unit = 'TWh'
         self.mass_unit = 'Mt'
         self.set_data()
@@ -90,12 +90,12 @@ class Crop():
         self.other_use_crop = self.param[Crop.OTHER_USE_CROP]
         self.param_a = self.param['param_a']
         self.param_b = self.param['param_b']
-        self.invest_level = self.param['invest_level']
+        self.crop_investment = self.param['crop_investment']
         self.transport_cost = self.param['transport_cost']
         self.transport_margin = self.param['transport_margin']
         self.data_fuel_dict = self.param['data_fuel_dict']
         self.techno_infos_dict = self.param['techno_infos_dict']
-        self.scaling_factor_invest_level = self.param['scaling_factor_invest_level']
+        self.scaling_factor_crop_investment = self.param['scaling_factor_crop_investment']
         self.scaling_factor_techno_consumption = self.param['scaling_factor_techno_consumption']
         self.scaling_factor_techno_production = self.param['scaling_factor_techno_production']
         self.initial_age_distrib = self.param['initial_age_distrib']
@@ -142,12 +142,12 @@ class Crop():
         self.red_meat_percentage = inputs_dict['red_meat_percentage']['red_meat_percentage'].values
         self.white_meat_percentage = inputs_dict['white_meat_percentage']['white_meat_percentage'].values
 
-        # invest level from G$ to M$
-        self.invest_level = inputs_dict[Crop.INVEST_LEVEL]
-        self.scaling_factor_invest_level = inputs_dict['scaling_factor_invest_level']
-        self.invest_level = inputs_dict['invest_level']
-        self.invest_level['invest'] = self.invest_level['invest'] * \
-            self.scaling_factor_invest_level
+        # crop_investment from G$ to M$
+        self.crop_investment = inputs_dict[Crop.CROP_INVESTMENT]
+        self.scaling_factor_crop_investment = inputs_dict['scaling_factor_crop_investment']
+        self.crop_investment = inputs_dict['crop_investment']
+        self.crop_investment['investment'] = self.crop_investment['investment'] * \
+            self.scaling_factor_crop_investment
         if self.initial_age_distrib['distrib'].sum() > 100.001 or self.initial_age_distrib[
                 'distrib'].sum() < 99.999:
             sum_distrib = self.initial_age_distrib['distrib'].sum()
@@ -392,17 +392,17 @@ class Crop():
         Compute the cost details for crop & price
         """
         # Gather invests in crop for energy input
-        invest_inputs = self.invest_level.loc[self.invest_level['years']
-                                              <= self.cost_details['years'].max()]['invest'].values
+        invest_inputs = self.crop_investment.loc[self.crop_investment['years']
+                                              <= self.cost_details['years'].max()]['investment'].values
 
         # Maximize with smooth exponential
-        #this invest is not used in the price computation
-        self.cost_details['invest'] = compute_func_with_exp_min(
+        #this investment is not used in the price computation
+        self.cost_details['investment'] = compute_func_with_exp_min(
             invest_inputs, self.min_value_invest)
 
         # CAPEX 
         capex_init = self.check_capex_unity(self.techno_infos_dict)
-        self.cost_details['Capex ($/MWh)'] = capex_init * np.ones(len(self.cost_details['invest']))
+        self.cost_details['Capex ($/MWh)'] = capex_init * np.ones(len(self.cost_details['investment']))
 
         # CRF
         self.crf = self.compute_crf(self.techno_infos_dict)
@@ -596,16 +596,16 @@ class Crop():
         Compute the crop production from investment in t
         '''
         prod_before_ystart = pd.DataFrame({'years': np.arange(self.year_start - construction_delay, self.year_start),
-                                           'invest': [0.0]*(construction_delay),
+                                           'investment': [0.0]*(construction_delay),
                                            'Capex ($/MWh)': self.cost_details.loc[self.cost_details[
                                            'years'] == self.year_start, 'Capex ($/MWh)'].values[0]})
 
         production_from_invest = pd.concat(
-            [self.cost_details[['years', 'invest', 'Capex ($/MWh)']], prod_before_ystart], ignore_index=True)
+            [self.cost_details[['years', 'investment', 'Capex ($/MWh)']], prod_before_ystart], ignore_index=True)
 
         production_from_invest.sort_values(by=['years'], inplace=True)
         ## Invest in M$ | Capex in $/MWh | Prod in TWh
-        production_from_invest['prod_from_invest'] = production_from_invest['invest'].values / \
+        production_from_invest['prod_from_invest'] = production_from_invest['investment'].values / \
             production_from_invest[f'Capex ($/MWh)'].values
 
         production_from_invest['years'] += construction_delay
@@ -788,8 +788,8 @@ class Crop():
         #return dproduction_from_dinvest
 
         '''
-               Compute the partial derivative of prod vs invest  and the partial derivative of prod vs capex
-               To compute after the total derivative of prod vs invest = dpprod_dpinvest + dpprod_dpcapex*dcapexdinvest
+               Compute the partial derivative of prod vs investment  and the partial derivative of prod vs capex
+               To compute after the total derivative of prod vs investment = dpprod_dpinvest + dpprod_dpcapex*dcapexdinvest
                with dcapexdinvest already computed for detailed prices
                '''
 
@@ -813,7 +813,7 @@ class Crop():
             dpprod_dpinvest = 1 / self.cost_details[f'Capex ($/MWh)'].values[i] /\
                                                              self.data_fuel_dict['calorific_value']
             is_invest_negative = max(
-                np.sign(self.cost_details['invest'].values[i] + np.finfo(float).eps), 0.0)
+                np.sign(self.cost_details['investment'].values[i] + np.finfo(float).eps), 0.0)
             dprod_list_dinvest_list[:, i] = np.hstack((np.zeros(first_len_zeros),
                                                        np.ones(
                                                            len_non_zeros) * dpprod_dpinvest * is_invest_negative,

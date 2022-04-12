@@ -36,6 +36,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_agriculture': ns_scatter,
                    'ns_public': ns_scatter,
                    'ns_functions': ns_scatter,
+                   'ns_invest': ns_scatter
                    }
 
         mods_dict = {'Agriculture.Forest': 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'

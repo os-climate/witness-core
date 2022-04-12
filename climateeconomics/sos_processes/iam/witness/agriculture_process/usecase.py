@@ -137,42 +137,16 @@ class Study(StudyManager):
         setup_data_list.append(agriculture_input)
 
         red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
-        meat_to_vegetables_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
+        white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
 
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
-        design_space_ctrl_dict['white_meat_percentage_ctrl'] = meat_to_vegetables_ctrl
+        design_space_ctrl_dict['white_meat_percentage_ctrl'] = white_meat_percentage_ctrl
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
         self.dspace = self.setup_design_space_ctrl_new()
         return setup_data_list
-
-    def setup_initial_design_variable(self):
-
-        init_design_var_df = pd.DataFrame(
-            columns=['red_meat_percentage', 'white_meat_percentage'], index=arange(self.year_start, self.year_end + 1, self.time_step))
-
-        init_design_var_df['red_meat_percentage'] = self.red_meat_percentage
-        init_design_var_df['white_meat_percentage'] = self.white_meat_percentage
-
-        return init_design_var_df
-
-    def setup_design_space(self):
-            #-- energy optimization inputs
-            # Design Space
-        dim_a = len(
-            self.red_meat_percentage)
-        lbnd1 = [1.0] * dim_a
-        ubnd1 = [10.0] * dim_a
-        lbnd2 = [5.0] * dim_a
-        ubnd2 = [20.0] * dim_a
-
-        # Design variables:
-        self.update_dspace_dict_with(
-            'red_meat_percentage_array', self.red_meat_percentage, lbnd1, ubnd1)
-        self.update_dspace_dict_with(
-            'white_meat_percentage_array', self.white_meat_percentage, lbnd2, ubnd2)
 
     def setup_design_space_ctrl_new(self):
         # Design Space
