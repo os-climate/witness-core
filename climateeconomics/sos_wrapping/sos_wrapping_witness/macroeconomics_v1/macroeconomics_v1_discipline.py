@@ -415,10 +415,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         economics_df = deepcopy(
             self.get_sosdisc_outputs('economics_detail_df'))
-        co2_invest_limit = deepcopy(
-            self.get_sosdisc_inputs('co2_invest_limit'))
-        workforce_df, capital_utilisation_ratio = deepcopy(
-            self.get_sosdisc_outputs(['workforce_df','capital_utilisation_ratio']))
+        co2_invest_limit, capital_utilisation_ratio = deepcopy(
+            self.get_sosdisc_inputs(['co2_invest_limit', 'capital_utilisation_ratio']))
+        workforce_df  = deepcopy(
+            self.get_sosdisc_outputs('workforce_df'))
 
         if 'output of damage' in chart_list:
 
