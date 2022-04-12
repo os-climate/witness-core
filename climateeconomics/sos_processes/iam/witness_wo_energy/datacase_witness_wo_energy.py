@@ -27,6 +27,7 @@ from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase impo
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import Study as datacase_agriculture
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
+from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 from sos_trades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -173,6 +174,9 @@ class DataStudy():
         setup_data_list = setup_data_list + forest_list
         StudyManager.merge_design_spaces(
             self, [dc_forest.dspace, dc_agriculture.dspace])
+        nb_poles = 8
+        update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
+                                [1.65] * nb_poles , [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
         # constraint land use
 
         # WITNESS
