@@ -283,7 +283,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
             Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'global_forest_surface', 'forest_constraint_evolution']],
-            Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'global_CO2_emission_balance']],
+            Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
             'managed_wood_df': self.forest_model.managed_wood_df,
             'unmanaged_wood_df': self.forest_model.unmanaged_wood_df,
             'biomass_dry_detail_df': self.forest_model.biomass_dry_df,
@@ -382,13 +382,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
             d_deforestation_surface_d_deforestation_surface)
         d_cum_CO2_emitted_d_deforestation_surface = self.forest_model.d_cum(
             d_CO2_emitted_d_deforestation_surface)
-        self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'global_CO2_emission_balance'), (
+        self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), (
             Forest.DEFORESTATION_SURFACE, 'deforested_surface'), d_cum_CO2_emitted_d_deforestation_surface)
 
         # d_CO2 d invest reforestation
         d_cum_CO2_emitted_d_invest_ref = self.forest_model.d_CO2_emitted(
             d_cum_forest_surface_d_invest)
-        self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'global_CO2_emission_balance'), (
+        self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_CO2_emitted_d_invest_ref)
 
         # d_CO2 d invest managed wood
@@ -396,7 +396,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             d_mw_surface_d_invest)
         d_cum_CO2_emitted_d_invest = self.forest_model.d_cum(
             d_CO2_emitted_d_invest)
-        self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'global_CO2_emission_balance'), (
+        self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), (
             'managed_wood_investment', 'investment'), d_cum_CO2_emitted_d_invest)
 
         # d techno_production managed wood invest
@@ -571,7 +571,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             unmanaged_wood_surface = managed_wood_df['CO2_emitted'].values * 0
 
             delta_global = CO2_emissions_df['delta_CO2_emitted'].values
-            global_surface = CO2_emissions_df['global_CO2_emission_balance'].values
+            global_surface = CO2_emissions_df['emitted_CO2_evol_cumulative'].values
 
             new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2 / year]',
                                                  chart_name='Yearly forest delta CO2 emissions', stacked_bar=True)
