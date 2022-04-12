@@ -48,7 +48,6 @@ class AgricultureTestCase(unittest.TestCase):
             {"years": years, "temp_atmo": temperature})
         self.temperature_df.index = years
 
-
         self.default_kg_to_m2 = {'red meat': 360,
                                  'white meat': 16,
                                  'milk': 8.95,
@@ -68,11 +67,11 @@ class AgricultureTestCase(unittest.TestCase):
         red_meat_percentage = np.linspace(6, 1, year_range)
         white_meat_percentage = np.linspace(14, 5, year_range)
         self.red_meat_percentage = pd.DataFrame({
-                            'years': years,
-                            'red_meat_percentage': red_meat_percentage})
+            'years': years,
+            'red_meat_percentage': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-                                'years': years,
-                                'white_meat_percentage': white_meat_percentage})
+            'years': years,
+            'white_meat_percentage': white_meat_percentage})
 
         self.diet_df = pd.DataFrame({'red meat': [11.02],
                                      'white meat': [31.11],
@@ -95,7 +94,7 @@ class AgricultureTestCase(unittest.TestCase):
                       'red_meat_percentage': self.red_meat_percentage,
                       'white_meat_percentage': self.white_meat_percentage,
                       'other_use_agriculture': self.other,
-                      'param_a':  - 0.00833,
+                      'param_a': - 0.00833,
                       'param_b': - 0.04167
                       }
 
@@ -106,7 +105,7 @@ class AgricultureTestCase(unittest.TestCase):
         '''
 
         agriculture = Agriculture(self.param)
-
+        agriculture.apply_percentage(self.param)
         agriculture.compute(self.population_df, self.temperature_df)
 
     def test_agriculture_discipline(self):
@@ -152,5 +151,5 @@ class AgricultureTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
+        # for graph in graph_list:
         #    graph.to_plotly().show()
