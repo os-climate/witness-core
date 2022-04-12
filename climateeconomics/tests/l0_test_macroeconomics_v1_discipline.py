@@ -95,6 +95,15 @@ class MacroDiscTest(unittest.TestCase):
 
         default_CO2_tax = pd.DataFrame(
             {'years': years, 'CO2_tax': 50.0}, index=years)
+        
+        # energy_capital
+        nb_per = len(self.years)
+        energy_capital_year_start = 16.09
+        energy_capital = []
+        energy_capital.append(energy_capital_year_start)
+        for year in np.arange(1, nb_per):
+            energy_capital.append(energy_capital[year - 1] * 1.02)
+        self.energy_capital_df = pd.DataFrame({'years': self.years, 'energy_capital': energy_capital})
 
         # retrieve co2_emissions_gt input
         data_dir = join(dirname(__file__), 'data')
@@ -137,7 +146,8 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.CO2_taxes': default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': co2_emissions_gt,
-                       f'{self.name}.working_age_population_df': working_age_pop_df
+                       f'{self.name}.working_age_population_df': working_age_pop_df, 
+                       f'{self.name}.energy_capital': self.energy_capital_df
                        }
 
         self.ee.dm.set_values_from_dict(values_dict)

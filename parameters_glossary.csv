@@ -52,7 +52,7 @@ birth_rate_upper,Birth rate upper,,Parameter of birth rate equation: maximum val
 cache_file_path,Cache File Path,,Path for the cache file id the option cache type is set to Hdf5Cache.,,
 cache_type,Cache Type,,"Type of cache in GEMS (could be simple, full memory or stored in a Hdf5 file.",,
 calibration_temperature_increase,Calibration temperature increase,,Parameter for climate impact on death rate.,,
-capital_start,Initial level of capital ,trillions $,The level of capital stock at year star (in trillions dollars).,,CC - Costs
+capital_start_non_energy,Initial level of non energy capital stock,trillions $,The level of non energy capital stock at year star (in trillions dollars).,,CC - Costs
 carbon_capture_direct_air_capture_AmineScrubbing_array_mix,Carbon capture direct air capture AmineScrubbing array mix,%,Mix data concerning Amine Scrubbing.,,
 carbon_capture_direct_air_capture_CalciumPotassiumScrubbing_array_mix,Carbon capture direct air capture CalciumPotassiumScrubbing array mix,%,Mix data concerning Calcium Potassium Scrubbin.,,
 carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix,Carbon capture direct air capture DirectAirCaptureTechno array mix,%,Mix data concerning Direct Air Capture.,,
@@ -177,6 +177,7 @@ init_temp_ocean,Initial ocean temperature raise,,"Evolution of the ocean tempera
 init_upper_strata,Initial atmospheric concentration in upper strata,Gtc,Initial atmospheric concentration of carbon in the upper strata of the atmosphere.,,ABATAA - mass
 initial_emissions,Initial emissions,GtCO2,Initial emissions due to deforestation.,,
 initial_raw_energy_price,Initial Raw Energy Price,$/MWh,Initial Raw energy price.,,
+initial_unsused_forest_surface,Other forest surface,Gha,Initial non production forest surface.,,
 invest_ccs_mix,Invest ccs mix,,Investment in the CCS mix.,,
 invest_energy_mix,Energy Mix Investment Coefficients,,Coefficients of energy mix investments (not normalized) to distribute the total investments.,,
 invest_mix,Investment mix,,"For each year, give the weight of the investment in each concerned sector.",,
@@ -324,7 +325,7 @@ employment_power_param,Employment rate recovery param exponent,,,,
 employment_rate_base_value,Base employment rate,,Employment rate value outside of COVID-19 recovery phase. ,,
 pc_consumption_constraint,Per capita consumption constraint,,Per capita consumption constraint.,,
 workforce_df,Workforce data ,million of people,Number of people in the workforce per year.,,
-usable_capital_df,Usable capital data ,,"Usable capital data: contains usable capital in trillion of dollars, e_max value and energy efficiency per year.",,
+capital_df,Capital data ,,"Capital data: contains capital total, non energy capital, usable capital in trillion of dollars, e_max value and energy efficiency per year.",,
 emax_enet_constraint,E_max constraint,,Constraint for E_max. Used for optimization. E_max - Net energy > 0 ,,
 managed_wood_initial_prod,Managed wood initial production,Twh,Initial production of biomass by managed wood technology.,,
 managed_wood_initial_surface,Managed wood initial surface,Gha,Initial surface dedicated to managed wood technology. Default value at 2020 is 1.15Gha.,,
@@ -344,3 +345,4 @@ initial_unsused_forest_surface,Unused forest surface,Gha,Surface of forest that 
 agri_capital_techno_list,Agriculture techno list,,List of technologies of agriculture that lost capital.,,
 techno_capital,Techno Capital,G$,Capital of the considered technology over the year.,,
 non_use_capital,Non use capital,G$,Non use capital of the considered technology.,,
+max_capital_utilisation_ratio,Max capital utilisation ratio,,Maximum rate of utilisation of capital ,,
