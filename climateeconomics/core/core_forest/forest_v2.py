@@ -390,7 +390,7 @@ class Forest():
         self.CO2_emitted_df['global_CO2_captured'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000 + \
             self.managed_wood_df['CO2_emitted']
-        self.CO2_emitted_df['global_CO2_emission_balance'] = self.CO2_emitted_df['global_CO2_emitted'] + \
+        self.CO2_emitted_df['emitted_CO2_evol_cumulative'] = self.CO2_emitted_df['global_CO2_emitted'] + \
             self.CO2_emitted_df['global_CO2_captured']
 
     def compute_biomass_dry_production(self):
