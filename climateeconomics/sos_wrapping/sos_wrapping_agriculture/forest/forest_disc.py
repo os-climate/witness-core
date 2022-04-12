@@ -198,7 +198,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         Forest.MARGIN: {'type': 'dataframe', 'unit': '%', 'namespace': 'ns_witness', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {'years': ('float', None, False),
                                                          'margin': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
-        Forest.UNUSED_FOREST: {'type': 'float', 'unit': 'Gha', 'default': initial_unsused_forest_surface, 'namespace': 'ns_forest'},
+        Forest.UNUSED_FOREST: {'type': 'float', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'default': initial_unsused_forest_surface, 'namespace': 'ns_witness'},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
     }
@@ -282,7 +282,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         outputs_dict = {
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
-            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'global_forest_surface', 'forest_constraint_evolution', 'initial_unused_forest']],
+            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'global_forest_surface', 'forest_constraint_evolution']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'global_CO2_emission_balance']],
             'managed_wood_df': self.forest_model.managed_wood_df,
             'unmanaged_wood_df': self.forest_model.unmanaged_wood_df,
