@@ -32,7 +32,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start = 2020
-        self.year_end = 2100
+        self.year_end = 2050
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.nb_per = round(
@@ -67,7 +67,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.co2_emissions_gt = energy_supply_df.rename(
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
         self.co2_emissions_gt.index = self.years
-        for i in np.arange(2021, 2101): 
+        for i in np.arange(2021, self.year_end+1): 
             emission_vefore =  self.co2_emissions_gt.loc[i-1, 'Total CO2 emissions']
             self.co2_emissions_gt.loc[i,'Total CO2 emissions'] = emission_vefore*(1.02)
         self.default_co2_efficiency = pd.DataFrame(
@@ -110,6 +110,15 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         #Population workforce
         self.working_age_population_df = pd.DataFrame(
             {'years': self.years, 'population_1570': 6300}, index=self.years)
+        
+        # energy_capital
+        nb_per = len(self.years)
+        energy_capital_year_start = 16.09
+        energy_capital = []
+        energy_capital.append(energy_capital_year_start)
+        for year in np.arange(1, nb_per):
+            energy_capital.append(energy_capital[year - 1] * 1.02)
+        self.energy_capital = pd.DataFrame({'years': self.years, 'energy_capital': energy_capital})
 
     def analytic_grad_entry(self):
         return [
@@ -156,7 +165,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
-                       f'{self.name}.working_age_population_df' : self.working_age_population_df
+                       f'{self.name}.working_age_population_df' : self.working_age_population_df, 
+                       f'{self.name}.energy_capital': self.energy_capital
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -170,7 +180,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.co2_emissions_Gt',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.population_df',
-                                    f'{self.name}.working_age_population_df'],
+                                    f'{self.name}.working_age_population_df', 
+                                    f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
@@ -213,7 +224,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
-                       f'{self.name}.working_age_population_df' : self.working_age_population_df
+                       f'{self.name}.working_age_population_df' : self.working_age_population_df,
+                       f'{self.name}.energy_capital': self.energy_capital
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -228,7 +240,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.co2_emissions_Gt',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.population_df',
-                                    f'{self.name}.working_age_population_df'],
+                                    f'{self.name}.working_age_population_df',
+                                    f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
@@ -273,7 +286,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
-                       f'{self.name}.working_age_population_df' : self.working_age_population_df
+                       f'{self.name}.working_age_population_df' : self.working_age_population_df,
+                       f'{self.name}.energy_capital': self.energy_capital
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -288,7 +302,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.co2_emissions_Gt',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.population_df',
-                                    f'{self.name}.working_age_population_df'],
+                                    f'{self.name}.working_age_population_df',
+                                    f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
@@ -338,7 +353,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
-                       f'{self.name}.working_age_population_df' : self.working_age_population_df
+                       f'{self.name}.working_age_population_df' : self.working_age_population_df,
+                       f'{self.name}.energy_capital': self.energy_capital
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -353,7 +369,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.co2_emissions_Gt',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.population_df',
-                                    f'{self.name}.working_age_population_df'],
+                                    f'{self.name}.working_age_population_df', 
+                                    f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
@@ -408,7 +425,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': co2_emissions_gt,
-                       f'{self.name}.working_age_population_df' : self.working_age_population_df
+                       f'{self.name}.working_age_population_df' : self.working_age_population_df,
+                       f'{self.name}.energy_capital': self.energy_capital
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -422,7 +440,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.co2_emissions_Gt',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.population_df',
-                                    f'{self.name}.working_age_population_df'],
+                                    f'{self.name}.working_age_population_df',
+                                    f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
@@ -478,7 +497,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': co2_emissions_gt,
-                       f'{self.name}.working_age_population_df' : self.working_age_population_df
+                       f'{self.name}.working_age_population_df' : self.working_age_population_df,
+                       f'{self.name}.energy_capital': self.energy_capital
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -492,7 +512,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.co2_emissions_Gt',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.population_df',
-                                    f'{self.name}.working_age_population_df'],
+                                    f'{self.name}.working_age_population_df',
+                                    f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
@@ -538,7 +559,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
-                       f'{self.name}.working_age_population_df' : self.working_age_population_df
+                       f'{self.name}.working_age_population_df' : self.working_age_population_df,
+                       f'{self.name}.energy_capital': self.energy_capital
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -552,7 +574,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.co2_emissions_Gt',
                                      f'{self.name}.CO2_taxes',
                                      f'{self.name}.population_df',
-                                     f'{self.name}.working_age_population_df'],
+                                     f'{self.name}.working_age_population_df', 
+                                     f'{self.name}.energy_capital'],
                              outputs=[f'{self.name}.economics_df',
                                       f'{self.name}.energy_investment',
                                       f'{self.name}.pc_consumption_constraint',
