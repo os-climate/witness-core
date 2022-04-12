@@ -29,7 +29,7 @@ import numpy as np
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -98,9 +98,9 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      })
         self.other = np.array(np.linspace(0.102, 0.102, year_range))
 
-        # invest: 1Mha of crop land each year
-        self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 0.381})
+        # investment: 1Mha of crop land each year
+        self.crop_investment = pd.DataFrame(
+            {'years': years, 'investment': np.ones(len(years)) * 0.381})
 
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
@@ -134,13 +134,13 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                       'other_use_crop': self.other,
                       'param_a': - 0.00833,
                       'param_b': - 0.04167,
-                      'invest_level': self.invest_level,
+                      'crop_investment': self.crop_investment,
                       'margin': self.margin,
                       'transport_margin': self.margin,
                       'transport_cost': self.transport_cost,
                       'data_fuel_dict': BiomassDry.data_energy_dict,
                       'techno_infos_dict': CropDiscipline.techno_infos_dict_default,
-                      'scaling_factor_invest_level': 1e3,
+                      'scaling_factor_crop_investment': 1e3,
                       'initial_age_distrib': initial_age_distribution,
                       'initial_production': self.initial_production
                       }
@@ -156,10 +156,10 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_witness': f'{self.name}',
                    'ns_functions': f'{self.name}',
-                   'ns_agriculture': f'{self.name}',
                    'ns_biomass_dry': f'{self.name}',
                    'ns_land_use':f'{self.name}',
-                   'ns_crop':f'{self.name}'}
+                   'ns_crop':f'{self.name}',
+                   'ns_invest':f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -183,7 +183,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.red_meat_percentage': self.red_meat_percentage,
                        f'{self.name}.white_meat_percentage': self.white_meat_percentage,
                        f'{self.name}.{self.model_name}.{Crop.OTHER_USE_CROP}': self.other,
-                       f'{self.name}.invest_level': self.invest_level,
+                       f'{self.name}.crop_investment': self.crop_investment,
                        f'{self.name}.margin': self.margin,
                        f'{self.name}.transport_margin': self.margin,
                        f'{self.name}.transport_cost': self.transport_cost,
@@ -200,7 +200,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.temperature_df',
                                     f'{self.name}.red_meat_percentage',
                                     f'{self.name}.white_meat_percentage',
-                                    f'{self.name}.invest_level',
+                                    f'{self.name}.crop_investment',
                                     ],
                             outputs=[f'{self.name}.total_food_land_surface',
                                      f'{self.name}.land_use_required',
