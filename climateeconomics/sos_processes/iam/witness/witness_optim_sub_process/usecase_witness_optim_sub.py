@@ -163,6 +163,16 @@ class Study(ClimateEconomicsStudyManager):
                                                         'namespace_in': 'ns_witness',
                                                         'namespace_out': 'ns_agriculture'
                                                         }
+        dv_arrays_dict[f'{self.witness_uc.study_name}.share_energy_investment_ctrl'] = dspace_df[f'share_energy_investment_ctrl']['value']
+        design_var_descriptor['share_energy_investment_ctrl'] = {'out_name': 'share_energy_investment',
+                                                        'out_type': 'dataframe',
+                                                        'key': 'share_investment',
+                                                        'index': years,
+                                                        'index_name': 'years',
+                                                        'namespace_in': 'ns_witness',
+                                                        'namespace_out': 'ns_witness'
+                                                        }
+
 
         self.func_df = self.witness_uc.func_df
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df
