@@ -206,8 +206,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         gradiant of coupling variable 
 
         """
-        scaling_factor_energy_production, scaling_factor_energy_investment, ref_pc_consumption_constraint, ref_emax_enet_constraint, usable_capital_ref, capital_percentage = self.get_sosdisc_inputs(
-            ['scaling_factor_energy_production', 'scaling_factor_energy_investment', 'ref_pc_consumption_constraint', 'ref_emax_enet_constraint', 'usable_capital_ref', 'capital_percentage'])
+        scaling_factor_energy_production, scaling_factor_energy_investment, ref_pc_consumption_constraint, ref_emax_enet_constraint, usable_capital_ref, capital_percentage , capital_utilisation_ratio= self.get_sosdisc_inputs(
+            ['scaling_factor_energy_production', 'scaling_factor_energy_investment', 'ref_pc_consumption_constraint', 'ref_emax_enet_constraint', 'usable_capital_ref', 'capital_percentage', 'capital_utilisation_ratio'])
 
         year_start = self.get_sosdisc_inputs('year_start')
         year_end = self.get_sosdisc_inputs('year_end')
@@ -263,7 +263,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('energy_production', 'Total production'), - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint - demaxconstraint))
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_objective',), ('energy_production', 'Total production'), scaling_factor_energy_production * (capital_percentage * dcapital - np.identity(nb_years) * 0.8 * usable_capital_df['energy_efficiency'].values / 1000) / usable_capital_ref )
+            ('delta_capital_objective',), ('energy_production', 'Total production'), scaling_factor_energy_production * (capital_percentage * dcapital - np.identity(nb_years) * capital_utilisation_ratio * usable_capital_df['energy_efficiency'].values / 1000) / usable_capital_ref ) # e_max = capital*1e3/ (capital_utilisation_ratio * energy_efficiency)
 
 #        Compute gradient for coupling variable damage
         dproductivity = self.macro_model.compute_dproductivity()
