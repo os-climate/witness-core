@@ -49,6 +49,7 @@ The model inputs are:
 * **Total food land surface**, food land surface computed in the crop model.
 * **Forest surface**, give the forest surfaces computed in the forest model.
 * **Land-use constraint reference** reference value for the land constraints computation.
+* **Other Forest surface**, the value of non production forests
 
 The model outputs are:
 * **Land demand constraint**, gives the constraints of land demands.

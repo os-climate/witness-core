@@ -177,6 +177,7 @@ init_temp_ocean,Initial ocean temperature raise,,"Evolution of the ocean tempera
 init_upper_strata,Initial atmospheric concentration in upper strata,Gtc,Initial atmospheric concentration of carbon in the upper strata of the atmosphere.,,ABATAA - mass
 initial_emissions,Initial emissions,GtCO2,Initial emissions due to deforestation.,,
 initial_raw_energy_price,Initial Raw Energy Price,$/MWh,Initial Raw energy price.,,
+initial_unsused_forest_surface,Other forest surface,Gha,Initial non production forest surface.,,
 invest_ccs_mix,Invest ccs mix,,Investment in the CCS mix.,,
 invest_energy_mix,Energy Mix Investment Coefficients,,Coefficients of energy mix investments (not normalized) to distribute the total investments.,,
 invest_mix,Investment mix,,"For each year, give the weight of the investment in each concerned sector.",,
