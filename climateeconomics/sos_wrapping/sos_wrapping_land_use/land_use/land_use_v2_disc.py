@@ -47,6 +47,7 @@ class LandUseV2Discipline(SoSDiscipline):
     }
     default_year_start = 2020
     default_year_end = 2050
+    initial_unsused_forest_surface = 4 - 1.25
 
     DESC_IN = {'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
                'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -56,7 +57,8 @@ class LandUseV2Discipline(SoSDiscipline):
                LandUseV2.FOREST_SURFACE_DF: {
                    'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV2.LAND_USE_CONSTRAINT_REF: {
-                   'type': 'float', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
+                   'type': 'float', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+               LandUseV2.UNUSED_FOREST: {'type': 'float', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'default': initial_unsused_forest_surface, 'namespace': 'ns_witness'},
                }
 
     DESC_OUT = {
@@ -69,12 +71,12 @@ class LandUseV2Discipline(SoSDiscipline):
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
 
-    AGRICULTURE_CHARTS = 'Agriculture surface usage (Giga ha)'
-    FOREST_CHARTS = 'Forest usage (Giga ha)'
-    AVAILABLE_FOREST_CHARTS = 'Forests surface evolution (Giga ha)'
-    AVAILABLE_AGRICULTURE_CHARTS = 'Agriculture surface evolution (Giga ha)'
-    AGRICULTURE_FOOD_CHARTS = 'Agriculture usage for food (Giga ha)'
-    GLOBAL_CHARTS = 'Available land surface repartition'
+    AGRICULTURE_CHARTS = 'Agriculture surface usage'
+    FOREST_CHARTS = 'Forest usage'
+    AVAILABLE_FOREST_CHARTS = 'Forests surface evolution'
+    AVAILABLE_AGRICULTURE_CHARTS = 'Agriculture surface evolution'
+    AGRICULTURE_FOOD_CHARTS = 'Agriculture usage for food'
+    GLOBAL_CHARTS = 'Land surface repartition'
 
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
@@ -157,10 +159,6 @@ class LandUseV2Discipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 (LandUseV2.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV2.FOREST_SURFACE_DF, 'forest_constraint_evolution'), model.d_land_demand_constraint_d_deforestation_surface(objective_column),)
 
-        self.set_partial_derivative_for_other_types(
-                (LandUseV2.LAND_DEMAND_CONSTRAINT_DF, LandUseV2.LAND_DEMAND_CONSTRAINT_FOREST),  (LandUseV2.FOREST_SURFACE_DF, 'initial_unused_forest'),
-                                                            model.d_land_demand_constraint_d_deforestation_surface(LandUseV2.LAND_DEMAND_CONSTRAINT_FOREST))
-
 
         # food surface gradient
         self.set_partial_derivative_for_other_types(
@@ -172,8 +170,6 @@ class LandUseV2Discipline(SoSDiscipline):
 
         self.set_partial_derivative_for_other_types(
                 (LandUseV2.LAND_SURFACE_DF, 'Forest (Gha)'),  (LandUseV2.FOREST_SURFACE_DF, 'forest_constraint_evolution'),  np.identity(nb_years))
-        self.set_partial_derivative_for_other_types(
-                (LandUseV2.LAND_SURFACE_DF, 'Forest (Gha)'),  (LandUseV2.FOREST_SURFACE_DF, 'initial_unused_forest'),  np.identity(nb_years))
 
 
         for surface_column in land_surface_df_columns:
@@ -213,7 +209,7 @@ class LandUseV2Discipline(SoSDiscipline):
         demand_df = self.get_sosdisc_inputs(LandUseV2.LAND_DEMAND_DF)
         forest_df = self.get_sosdisc_inputs(LandUseV2.FOREST_SURFACE_DF)
         surface_df = self.get_sosdisc_outputs(LandUseV2.LAND_SURFACE_DETAIL_DF)
-
+        initial_unsused_forest_surface = self.get_sosdisc_inputs(LandUseV2.UNUSED_FOREST)
         init_forest_constraint = self.land_use_model.total_forest_surfaces
         init_agriculture_constraint = self.land_use_model.total_agriculture_surfaces
 
@@ -225,32 +221,47 @@ class LandUseV2Discipline(SoSDiscipline):
             # UnmanagedWood..)
             if demand_df is not None:
 
-                #the available surface of forest is modified by the reforestation and deforestation
-                forest_surfaces = init_forest_constraint + forest_df['forest_constraint_evolution'] - forest_df['initial_unused_forest'] + forest_df['forest_constraint_evolution']
-                forest_surface_series = InstanciatedSeries(years, forest_surfaces.tolist(), 'Available surface', InstanciatedSeries.LINES_DISPLAY)
+                #the total forest surface contains unused forest + delta forest surface + forest technos
+                total_forest_surfaces = init_forest_constraint + forest_df['forest_constraint_evolution']
+                total_forest_surface_series = InstanciatedSeries(years, total_forest_surfaces.tolist(), 'Total Available Forest surface', InstanciatedSeries.LINES_DISPLAY)
 
-                forest_evolution_surfaces = forest_df['forest_constraint_evolution']
-                forest_evolution_surface_series = InstanciatedSeries(years, forest_evolution_surfaces.tolist(), 'Deforestation + reforestation surface', InstanciatedSeries.BAR_DISPLAY)
+                forest_unused_surfaces = [initial_unsused_forest_surface] * len(years)
+                forest_unused_surface_series = InstanciatedSeries(years, forest_unused_surfaces, 'Other forests', InstanciatedSeries.BAR_DISPLAY)
+
+                forest_evolution_surface = forest_df['forest_constraint_evolution']
+                forest_evolution_surface_series = InstanciatedSeries(years, forest_evolution_surface.tolist(), 'Deforestation + reforestation surface', InstanciatedSeries.BAR_DISPLAY)
 
                 series_to_add = []
                 for column in list(demand_df):
-
                     if column in LandUseV2.FOREST_TECHNO:
-
                         new_series = InstanciatedSeries(
                             years, (demand_df[column]).values.tolist(), column.replace('(Gha)', ''), InstanciatedSeries.BAR_DISPLAY)
-
                         series_to_add.append(new_series)
 
-                new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.FOREST_CHARTS,
+                new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.FOREST_CHARTS + ' [Gha]',
                                                      chart_name=LandUseV2Discipline.FOREST_CHARTS, stacked_bar=True)
-                new_chart.add_series(forest_surface_series)
+                new_chart.add_series(total_forest_surface_series)
                 new_chart.add_series(forest_evolution_surface_series)
+                new_chart.add_series(forest_unused_surface_series)
 
                 for serie in series_to_add:
                     new_chart.add_series(serie)
 
                 instanciated_charts.append(new_chart)
+
+                #chart without unused surfaces
+                #the available surface of forest is modified by the reforestation and deforestation
+                #forest_surfaces = init_forest_constraint + forest_df['forest_constraint_evolution'] - initial_unsused_forest_surface
+                #forest_surface_series = InstanciatedSeries(years, forest_surfaces.tolist(), 'Available Forest surface without Other Forests', InstanciatedSeries.LINES_DISPLAY)
+                #new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.FOREST_CHARTS + ' surface [Gha]',
+                #                                     chart_name=LandUseV2Discipline.FOREST_CHARTS + ' without other forests', stacked_bar=True)
+                #new_chart.add_series(forest_surface_series)
+                #new_chart.add_series(forest_evolution_surface_series)
+
+                #for serie in series_to_add:
+                #    new_chart.add_series(serie)
+
+                #instanciated_charts.append(new_chart)
 
         if LandUseV2Discipline.AGRICULTURE_CHARTS in chart_list:
             # ------------------------------------------------------------
@@ -278,7 +289,7 @@ class LandUseV2Discipline(SoSDiscipline):
 
                         series_to_add.append(new_series)
 
-                new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.AGRICULTURE_CHARTS,
+                new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.AGRICULTURE_CHARTS + ' [Gha]',
                                                      chart_name=LandUseV2Discipline.AGRICULTURE_CHARTS, stacked_bar=True)
                 new_chart.add_series(agriculture_surface_series)
 
@@ -327,7 +338,7 @@ class LandUseV2Discipline(SoSDiscipline):
             # Source https://ourworldindata.org/land-use
             earth_surface = [init_forest_constraint + init_agriculture_constraint] * len(years)
             forest_surface_series = InstanciatedSeries(
-                years, earth_surface, 'Available surface', InstanciatedSeries.LINES_DISPLAY)
+                years, earth_surface, 'Available Forest + Crop surface', InstanciatedSeries.LINES_DISPLAY)
 
             series_to_add.append(forest_surface_series)
 
@@ -341,7 +352,7 @@ class LandUseV2Discipline(SoSDiscipline):
 
             series_to_add.append(forest_surface)
 
-            new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.GLOBAL_CHARTS,
+            new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.GLOBAL_CHARTS + ' [Gha]',
                                                  chart_name=LandUseV2Discipline.GLOBAL_CHARTS, stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)
