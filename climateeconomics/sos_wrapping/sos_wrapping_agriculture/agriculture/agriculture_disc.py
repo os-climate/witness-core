@@ -65,11 +65,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     red_meat_percentage = default_kg_to_kcal['red meat'] / total_kcal * 100
     white_meat_percentage = default_kg_to_kcal['white meat'] / total_kcal * 100
     default_red_meat_percentage = pd.DataFrame({
-                            'years': default_years,
-                            'red_meat_percentage': np.linspace(red_meat_percentage, 0.3 * red_meat_percentage, year_range)})
+        'years': default_years,
+        'red_meat_percentage': np.linspace(red_meat_percentage, 0.3 * red_meat_percentage, year_range)})
     default_white_meat_percentage = pd.DataFrame({
-                            'years': default_years,
-                            'white_meat_percentage': np.linspace(white_meat_percentage, 0.3 * white_meat_percentage, year_range)})
+        'years': default_years,
+        'white_meat_percentage': np.linspace(white_meat_percentage, 0.3 * white_meat_percentage, year_range)})
 
     default_other_use = np.linspace(0.102, 0.102, year_range)
     default_diet_df = pd.DataFrame({'red meat': [11.02],
@@ -96,12 +96,12 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                'kg_to_m2_dict': {'type': 'dict', 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
                # design variables of changing diet
                'red_meat_percentage': {'type': 'dataframe', 'default': default_red_meat_percentage,
-                                    'dataframe_descriptor': {'years': ('float', None, False),
-                                                          'red_meat_percentage': ('float', [0, 100], True)},
-                                    'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
+                                       'dataframe_descriptor': {'years': ('float', None, False),
+                                                                'red_meat_percentage': ('float', [0, 100], True)},
+                                       'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
                'white_meat_percentage': {'type': 'dataframe', 'default': default_white_meat_percentage,
                                          'dataframe_descriptor': {'years': ('float', None, False),
-                                                          'white_meat_percentage': ('float', [0, 100], True)},
+                                                                  'white_meat_percentage': ('float', [0, 100], True)},
                                          'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
 
                'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'default': default_other_use, 'namespace': 'ns_agriculture'},
@@ -133,8 +133,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
-        self.agriculture_model.red_meat_percentage = inp_dict['red_meat_percentage']['red_meat_percentage'].values
-        self.agriculture_model.white_meat_percentage = inp_dict['white_meat_percentage']['white_meat_percentage'].values
+
+        self.agriculture_model.apply_percentage(inp_dict)
         #-- compute
         population_df = inp_dict.pop('population_df')
         temperature_df = inp_dict['temperature_df']
@@ -185,14 +185,15 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
 
-        d_surface_d_red_meat_percentage = model.d_surface_d_red_meat_percentage(population_df)
-        d_surface_d_white_meat_percentage = model.d_surface_d_white_meat_percentage(population_df)
+        d_surface_d_red_meat_percentage = model.d_surface_d_red_meat_percentage(
+            population_df)
+        d_surface_d_white_meat_percentage = model.d_surface_d_white_meat_percentage(
+            population_df)
 
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('red_meat_percentage', 'red_meat_percentage'), d_surface_d_red_meat_percentage)
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'), ('white_meat_percentage', 'white_meat_percentage'), d_surface_d_white_meat_percentage)
-
 
     def get_chart_filter_list(self):
 
@@ -292,9 +293,10 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             starting_diet = self.get_sosdisc_inputs('diet_df')
             kg_to_kcal_dict = self.get_sosdisc_inputs('kg_to_kcal_dict')
             total_kcal = 0
-            #compute total kcal
+            # compute total kcal
             for key in starting_diet:
-                total_kcal += starting_diet[key].values[0] * kg_to_kcal_dict[key]
+                total_kcal += starting_diet[key].values[0] * \
+                    kg_to_kcal_dict[key]
 
             series_to_add = []
             for key in updated_diet_df.keys():
@@ -325,7 +327,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-
             series_to_add = []
             for key in updated_diet_df.keys():
 
@@ -336,7 +337,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 else:
 
                     new_series = InstanciatedSeries(
-                        years, (updated_diet_df[key].values * kg_to_kcal_dict[key] * 100 /total_kcal).tolist(), key, InstanciatedSeries.BAR_DISPLAY)
+                        years, (updated_diet_df[key].values * kg_to_kcal_dict[key] * 100 / total_kcal).tolist(), key, InstanciatedSeries.BAR_DISPLAY)
 
                     series_to_add.append(new_series)
 
@@ -358,18 +359,21 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             # DIET EVOLUTION VARIABLES
             chart_name = "Diet evolution, percentage of red and white meat in a person's diet"
 
-            red_meat_evolution =  self.get_sosdisc_inputs('red_meat_percentage')
-            white_meat_evolution  =  self.get_sosdisc_inputs('white_meat_percentage')
+            red_meat_evolution = self.get_sosdisc_inputs('red_meat_percentage')
+            white_meat_evolution = self.get_sosdisc_inputs(
+                'white_meat_percentage')
 
             new_chart = TwoAxesInstanciatedChart('years', 'Diet evolution [%]',
                                                  chart_name=chart_name)
 
             visible_line = True
-            ordonate_data = list(red_meat_evolution['red_meat_percentage'].values)
+            ordonate_data = list(
+                red_meat_evolution['red_meat_percentage'].values)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'percentage of red meat calories in diet', 'lines', visible_line)
             new_chart.series.append(new_series)
-            ordonate_data = list(white_meat_evolution['white_meat_percentage'].values)
+            ordonate_data = list(
+                white_meat_evolution['white_meat_percentage'].values)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'percentage of white meat calories in diet', 'lines', visible_line)
             new_chart.series.append(new_series)
