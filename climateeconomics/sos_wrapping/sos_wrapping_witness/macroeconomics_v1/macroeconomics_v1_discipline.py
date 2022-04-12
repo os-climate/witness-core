@@ -418,8 +418,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             self.get_sosdisc_outputs('economics_detail_df'))
         co2_invest_limit = deepcopy(
             self.get_sosdisc_inputs('co2_invest_limit'))
-        workforce_df = deepcopy(
-            self.get_sosdisc_outputs('workforce_df'))
+        workforce_df, capital_utilisation_ratio = deepcopy(
+            self.get_sosdisc_outputs(['workforce_df','capital_utilisation_ratio']))
 
         if 'output of damage' in chart_list:
 
@@ -589,12 +589,16 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             visible_line = True
             ordonate_data = list(first_serie)
+            percentage_productive_capital_stock = list(first_serie * capital_utilisation_ratio)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Productive Capital Stock', 'lines', visible_line)
             new_chart.series.append(new_series)
             ordonate_data_bis = list(second_serie)
             new_series = InstanciatedSeries(
                 years, ordonate_data_bis, 'Usable capital', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            new_series = InstanciatedSeries(
+                years, percentage_productive_capital_stock, f'{capital_utilisation_ratio * 100}% of Productive Capital Stock', 'lines', visible_line)
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
