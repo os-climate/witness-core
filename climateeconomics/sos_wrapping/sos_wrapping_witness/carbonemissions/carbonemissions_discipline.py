@@ -191,7 +191,8 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['carbon emission', 'sources and sinks']
+        chart_list = ['Carbon emissions',
+                      'Sources and sinks', 'Cumulated CO2 emissions']
         #chart_list = ['sectoral energy carbon emissions cumulated']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -211,48 +212,13 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-        CO2_emissions_df = deepcopy(
-            self.get_sosdisc_outputs('CO2_emissions_detail_df'))
 
-        if 'carbon emission' in chart_list:
+        if 'Carbon emissions' in chart_list:
+            new_chart = self.get_chart_co2_emissions()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
 
-            to_plot = ['total_emissions', 'land_emissions', 'indus_emissions']
-
-            total_emission = CO2_emissions_df['total_emissions']
-            land_emissions = CO2_emissions_df['land_emissions']
-            indus_emissions = CO2_emissions_df['indus_emissions']
-
-            years = list(CO2_emissions_df.index)
-
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-
-            min_value_e, max_value_e = self.get_greataxisrange(total_emission)
-            min_value_l, max_value_l = self.get_greataxisrange(land_emissions)
-            min_value_i, max_value_i = self.get_greataxisrange(indus_emissions)
-            min_value = min(min_value_e, min_value_l, min_value_i)
-            max_value = max(max_value_e, max_value_l, max_value_i)
-
-            chart_name = 'Total carbon emissions'
-
-            new_chart = TwoAxesInstanciatedChart('years', 'carbon emissions (GtCO2)',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value],
-                                                 chart_name)
-
-            for key in to_plot:
-                visible_line = True
-
-                c_emission = list(CO2_emissions_df[key])
-
-                new_series = InstanciatedSeries(
-                    years, c_emission, key, 'lines', visible_line)
-
-                new_chart.series.append(new_series)
-
-            instanciated_charts.append(new_chart)
-
-        if 'sources and sinks' in chart_list:
+        if 'Sources and sinks' in chart_list:
             new_chart = self.get_chart_sources_and_sinks()
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
@@ -261,7 +227,74 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             if new_chart is not None:
                 instanciated_charts.append(new_chart)
 
+        if 'Cumulated CO2 emissions' in chart_list:
+            new_chart = self.get_chart_cumulated_co2_emissions()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
         return instanciated_charts
+
+    def get_chart_co2_emissions(self):
+
+        to_plot = ['total_emissions', 'land_emissions', 'indus_emissions']
+
+        CO2_emissions_df = deepcopy(
+            self.get_sosdisc_outputs('CO2_emissions_detail_df'))
+
+        total_emission = CO2_emissions_df['total_emissions']
+        land_emissions = CO2_emissions_df['land_emissions']
+        indus_emissions = CO2_emissions_df['indus_emissions']
+
+        years = list(CO2_emissions_df.index)
+
+        year_start = years[0]
+        year_end = years[len(years) - 1]
+
+        min_value_e, max_value_e = self.get_greataxisrange(total_emission)
+        min_value_l, max_value_l = self.get_greataxisrange(land_emissions)
+        min_value_i, max_value_i = self.get_greataxisrange(indus_emissions)
+        min_value = min(min_value_e, min_value_l, min_value_i)
+        max_value = max(max_value_e, max_value_l, max_value_i)
+
+        chart_name = 'Total carbon emissions'
+
+        new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions [GtCO2]',
+                                             [year_start - 5, year_end + 5],
+                                             [min_value, max_value],
+                                             chart_name)
+
+        for key in to_plot:
+            visible_line = True
+
+            c_emission = list(CO2_emissions_df[key])
+
+            new_series = InstanciatedSeries(
+                years, c_emission, key, 'lines', visible_line)
+
+            new_chart.series.append(new_series)
+
+        return new_chart
+
+    def get_chart_cumulated_co2_emissions(self):
+
+        CO2_emissions_df = deepcopy(
+            self.get_sosdisc_outputs('CO2_emissions_detail_df'))
+
+        total_emission_cum = CO2_emissions_df['total_emissions'].cumsum()
+
+        years = list(CO2_emissions_df.index)
+
+        chart_name = f'Cumulated carbon emissions since {years[0]}'
+
+        new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (GtCO2)',
+                                             chart_name=chart_name)
+
+        new_series = InstanciatedSeries(
+            years, total_emission_cum.values.tolist(), 'lines')
+
+        new_chart.series.append(new_series)
+
+        return new_chart
 
     def get_chart_sources_and_sinks(self, detailed=False):
 
