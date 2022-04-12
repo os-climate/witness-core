@@ -83,6 +83,11 @@ class Agriculture():
         self.param_a = self.param['param_a']
         self.param_b = self.param['param_b']
 
+    def apply_percentage(self, inp_dict):
+
+        self.red_meat_percentage = inp_dict['red_meat_percentage']['red_meat_percentage'].values
+        self.white_meat_percentage = inp_dict['white_meat_percentage']['white_meat_percentage'].values
+
     def create_dataframe(self):
         '''
         Create the dataframe and fill it with values at year_start
