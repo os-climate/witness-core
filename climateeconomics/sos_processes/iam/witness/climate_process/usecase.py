@@ -24,6 +24,7 @@ import pandas as pd
 import numpy as np
 from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+import matplotlib.pyplot as plt
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
@@ -56,7 +57,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='', execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2200, time_step=1, name='', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.agriculture_name = name
@@ -72,27 +73,26 @@ class Study(StudyManager):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
-        #carbon emissions df 
-        
+        # carbon emissions df
+        cum_start = 460.0 / 44 * 12
 
-        emissions = np.array(np.linspace(36.4, 0, year_range))
-        cum_start = 577.31       
-        emissions_df = pd.DataFrame({"years": years, 'total_emissions': emissions, 
+        emissions = list(np.ones(10) * cum_start / 10.0) + \
+            list(np.array(np.linspace(0, 0, year_range - 10)))
+
+        emissions_df = pd.DataFrame({"years": years, 'total_emissions': emissions,
                                      'cum_total_emissions': np.zeros(year_range)})
         emissions_df.index = years
-        emissions_df.loc[self.year_start, 'cum_total_emissions'] = cum_start
-        for i in years[1:]:
-            emissions_df.loc[i, 'cum_total_emissions'] = emissions_df.loc[i -1, 'cum_total_emissions'] + \
-                                                        emissions_df.loc[i-1, 'total_emissions']
-        print(emissions_df)
+        emissions_df['cum_total_emissions'] = emissions_df['total_emissions'].cumsum()
+#         plt.plot(years, emissions_df['cum_total_emissions'].values)
+#         plt.show()
 
         # private values economics operator model
         climate_input = {}
         climate_input[self.study_name + '.year_start'] = self.year_start
         climate_input[self.study_name + '.year_end'] = self.year_end
 
-        climate_input[self.study_name + 
-                          '.CO2_emissions_df'] = emissions_df
+        climate_input[self.study_name +
+                      '.CO2_emissions_df'] = emissions_df
 
         setup_data_list.append(climate_input)
 
@@ -113,5 +113,5 @@ if '__main__' == __name__:
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
