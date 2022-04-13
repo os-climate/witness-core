@@ -27,6 +27,8 @@ from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase impo
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import Study as datacase_agriculture
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
+from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
+
 from sos_trades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -189,7 +191,12 @@ class DataStudy():
 
         # WITNESS
         # setup objectives
+        self.share_energy_investment_array = asarray([1.65] * len(years))
 
+        share_energy_investment = DataFrame(
+            {'years': years, 'share_investment': self.share_energy_investment_array}, index=years)
+        witness_input[self.study_name +
+                      '.share_energy_investment'] = share_energy_investment
         witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0
@@ -210,6 +217,9 @@ class DataStudy():
 #             "initial.pdf")
 # self.exec_eng.root_process.coupling_structure.graph.export_reduced_graph(
 # "reduced.pdf")
+        nb_poles = 8
+        update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
+                                [1.65] * nb_poles , [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
         setup_data_list.append(witness_input)
 
         return setup_data_list
