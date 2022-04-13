@@ -94,7 +94,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3},
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3},
         'ref_emax_enet_constraint': {'type': 'float', 'default': 116e3, 'user_level': 3, 'namespace': 'ns_ref'},
-        'usable_capital_ref': {'type': 'float','unit': 'G$', 'default': 100, 'user_level': 3, 'namespace': 'ns_ref'},
+        'usable_capital_ref': {'type': 'float','unit': 'G$', 'default': 3.3, 'user_level': 3, 'namespace': 'ns_ref'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
@@ -213,13 +213,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         """
 
-        scaling_factor_energy_production, scaling_factor_energy_investment, ref_pc_consumption_constraint, ref_emax_enet_constraint, usable_capital_ref, capital_ratio = self.get_sosdisc_inputs(
+        scaling_factor_energy_production, scaling_factor_energy_investment, ref_pc_consumption_constraint, ref_emax_enet_constraint, usable_capital_ref_raw, capital_ratio = self.get_sosdisc_inputs(
             ['scaling_factor_energy_production', 'scaling_factor_energy_investment', 'ref_pc_consumption_constraint', 'ref_emax_enet_constraint', 'usable_capital_ref', 'capital_utilisation_ratio'])
         
         year_start = self.get_sosdisc_inputs('year_start')
         year_end = self.get_sosdisc_inputs('year_end')
         time_step = self.get_sosdisc_inputs('time_step')
         nb_years = len(np.arange(year_start, year_end + 1, time_step))
+        usable_capital_ref = usable_capital_ref_raw * nb_years
         capital_df, delta_capital_objective_wo_exp_min = self.get_sosdisc_outputs(['capital_df', 'delta_capital_objective_wo_exp_min'])
         npzeros =  np.zeros((self.macro_model.nb_years, self.macro_model.nb_years))
 #     Compute gradient for coupling variable co2_emissions_Gt
