@@ -35,6 +35,7 @@ class TempChange(object):
         '''
         self.carboncycle_df = None
         self.temperature_objective = None
+        self.ppm_to_gtc = 2.13
         self.set_data(inputs)
         self.create_dataframe()
 
@@ -45,12 +46,18 @@ class TempChange(object):
         self.init_temp_ocean = inputs['init_temp_ocean']
         self.init_temp_atmo = inputs['init_temp_atmo']
         self.eq_temp_impact = inputs['eq_temp_impact']
-        self.init_forcing_nonco = inputs['init_forcing_nonco']
-        self.hundred_forcing_nonco = inputs['hundred_forcing_nonco']
+
+        self.forcing_model = inputs['forcing_model']
+
+        if self.forcing_model == 'DICE':
+            self.init_forcing_nonco = inputs['init_forcing_nonco']
+            self.hundred_forcing_nonco = inputs['hundred_forcing_nonco']
+
         self.climate_upper = inputs['climate_upper']
         self.transfer_upper = inputs['transfer_upper']
         self.transfer_lower = inputs['transfer_lower']
         self.forcing_eq_co2 = inputs['forcing_eq_co2']
+        self.c0_ppm = inputs['pre_indus_concentration_ppm']
         self.lo_tocean = inputs['lo_tocean']
         self.up_tatmo = inputs['up_tatmo']
         self.up_tocean = inputs['up_tocean']
@@ -93,9 +100,10 @@ class TempChange(object):
         self.temperature_df = temperature_df
         return temperature_df
 
-    def compute_exog_forcing(self):
+    def compute_exog_forcing_dice(self):
         """
-        Compute exogenous forcing for other greenhouse gases
+        Compute exogenous forcing for other greenhouse gases following DICE model
+        linear increase of exogenous forcing following a given scenario
         """
 
         exog_forcing = np.linspace(
@@ -110,10 +118,11 @@ class TempChange(object):
         """
         atmo_conc = self.carboncycle_df['atmo_conc']
 
-        exog_forcing = self.compute_exog_forcing()
+        if self.forcing_model == 'DICE':
+            exog_forcing = self.compute_exog_forcing_dice()
 
-        forcing = self.forcing_eq_co2 * \
-            np.log(atmo_conc / 588.) / np.log(2) + exog_forcing
+        forcing = self.forcing_eq_co2 / np.log(2) * \
+            np.log(atmo_conc / (self.c0_ppm * self.ppm_to_gtc)) + exog_forcing
 
         self.temperature_df['forcing'] = forcing
 
@@ -161,11 +170,8 @@ class TempChange(object):
         atmo_conc = self.carboncycle_df['atmo_conc'].values * \
             self.scale_factor_carbon_cycle
 
-        d_forcing = np.identity(len(years),) * 0
-        for i in range(0, len(years)):
-            if atmo_conc[i] > 0:
-                d_forcing[i, i] = (self.forcing_eq_co2 /
-                                   (np.log(2) * self.carboncycle_df['atmo_conc'].values[i]))
+        d_forcing = np.identity(len(years)) * self.forcing_eq_co2 / \
+            (np.log(2) * self.carboncycle_df['atmo_conc'].values)
 
         return d_forcing
 

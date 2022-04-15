@@ -48,13 +48,12 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2},
         'eq_temp_impact': {'type': 'float', 'default': 3.1, 'user_level': 3},
-        'init_forcing_nonco': {'type': 'float', 'default': 0.83, 'user_level': 2},
-        # default is mean value of ssps database
-        'hundred_forcing_nonco': {'type': 'float', 'default': 1.1422, 'user_level': 2},
+        'forcing_model': {'type': 'string', 'default': 'DICE', 'possible_values': ['DICE', 'Myhre', 'Etminan', 'Meinshausen']},
         'climate_upper': {'type': 'float', 'default': 0.1005, 'user_level': 3},
         'transfer_upper': {'type': 'float', 'default': 0.088, 'user_level': 3},
         'transfer_lower': {'type': 'float', 'default': 0.025, 'user_level': 3},
-        'forcing_eq_co2': {'type': 'float', 'default': 3.6813, 'user_level': 3},
+        'forcing_eq_co2': {'type': 'float', 'default': 3.74, 'user_level': 3},
+        'pre_indus_concentration_ppm': {'type': 'float', 'default': 278., 'user_level': 3},
         'lo_tocean': {'type': 'float', 'default': -1.0, 'user_level': 3},
         'up_tatmo': {'type': 'float', 'default': 12.0, 'user_level': 3},
         'up_tocean': {'type': 'float', 'default': 20.0, 'user_level': 3},
@@ -82,9 +81,19 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
     _maturity = 'Research'
 
-    # def init_model(self):
-    ''' model instantiation '''
-    #    return TempChange()
+    def setup_sos_disciplines(self):
+        dynamic_inputs = {}
+
+        if 'forcing_model' in self._data_in:
+            forcing_model = self.get_sosdisc_inputs('forcing_model')
+            if forcing_model == 'DICE':
+
+                dynamic_inputs['init_forcing_nonco'] = {
+                    'type': 'float', 'default': 0.83, 'user_level': 2}
+                dynamic_inputs['hundred_forcing_nonco'] = {
+                    'type': 'float', 'default': 1.1422, 'user_level': 2}
+
+        self.add_inputs(dynamic_inputs)
 
     def init_execution(self):
         in_dict = self.get_sosdisc_inputs()
