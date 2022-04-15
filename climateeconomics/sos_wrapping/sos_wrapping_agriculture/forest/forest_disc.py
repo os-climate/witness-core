@@ -268,9 +268,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 continue
             techno_production[column] = techno_production[column].values / \
                 inputs_dict['scaling_factor_techno_production']
-        #Scale production Mt -> Gt
+        # Scale production Mt -> Gt
         techno_consumption = deepcopy(self.forest_model.techno_consumption)
-        techno_consumption_woratio = deepcopy(self.forest_model.techno_consumption_woratio)
+        techno_consumption_woratio = deepcopy(
+            self.forest_model.techno_consumption_woratio)
         for column in techno_consumption.columns:
             if column == 'years':
                 continue
@@ -406,13 +407,17 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_biomass_wood_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(
             d_cum_mw_surface_d_invest, wood_percentage, wood_percentage_for_energy, managed_wood_part)
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('managed_wood_investment', 'investment'),
-            (d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest) * calorific_value / scaling_factor_techno_production)
+                                                    (d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest) * calorific_value / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('managed_wood_investment', 'investment'),
-            -CO2_from_production / high_calorific_value * (d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest) \
-            * calorific_value / scaling_factor_techno_consumption)
+                                                    -CO2_from_production / high_calorific_value *
+                                                    (d_biomass_residues_d_mw_invest +
+                                                     d_biomass_wood_d_mw_invest)
+                                                    * calorific_value / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), ('managed_wood_investment', 'investment'),
-            -CO2_from_production / high_calorific_value * (d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest) \
-            * calorific_value / scaling_factor_techno_consumption)
+                                                    -CO2_from_production / high_calorific_value *
+                                                    (d_biomass_residues_d_mw_invest +
+                                                     d_biomass_wood_d_mw_invest)
+                                                    * calorific_value / scaling_factor_techno_consumption)
 
         # d techno_production unmanaged wood invest
         unmanaged_wood_part = self.forest_model.unmanaged_wood_part
@@ -421,13 +426,17 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_biomass_wood_d_uw_invest = self.forest_model.d_biomass_prod_d_invest(
             d_cum_uw_surface_d_invest, wood_percentage, wood_percentage_for_energy, unmanaged_wood_part)
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('unmanaged_wood_investment', 'investment'),
-            (d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest) * calorific_value / scaling_factor_techno_production)
+                                                    (d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest) * calorific_value / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('unmanaged_wood_investment', 'investment'),
-            -CO2_from_production / high_calorific_value * (d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest) \
-            * calorific_value / scaling_factor_techno_consumption)
+                                                    -CO2_from_production / high_calorific_value *
+                                                    (d_biomass_residues_d_uw_invest +
+                                                     d_biomass_wood_d_uw_invest)
+                                                    * calorific_value / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), ('unmanaged_wood_investment', 'investment'),
-            -CO2_from_production / high_calorific_value * (d_biomass_residues_d_uw_invest + d_biomass_wood_d_uw_invest) \
-            * calorific_value / scaling_factor_techno_consumption)
+                                                    -CO2_from_production / high_calorific_value *
+                                                    (d_biomass_residues_d_uw_invest +
+                                                     d_biomass_wood_d_uw_invest)
+                                                    * calorific_value / scaling_factor_techno_consumption)
 
         # d techno_prices d managed wood invest
         d_biomass_price_d_mw_invest = self.forest_model.d_biomass_price_d_invest_mw(
@@ -746,14 +755,14 @@ class ForestDiscipline(ClimateEcoDiscipline):
             tehcno_capital_df = self.get_sosdisc_outputs('techno_capital')
             lost_capital_df = self.get_sosdisc_outputs('non_use_capital')
             new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
-                                                 chart_name='Lost capital due to deforestation<br>and reforestation vs total capital', stacked_bar=True)
+                                                 chart_name='Non use capital due to deforestation<br>and reforestation vs total capital', stacked_bar=True)
             total_capital = tehcno_capital_df['Forest']
             lost_capital = lost_capital_df['Forest']
 
             total_capital_series = InstanciatedSeries(
                 years, total_capital.tolist(), 'Total capital', InstanciatedSeries.LINES_DISPLAY)
             lost_capital_series = InstanciatedSeries(
-                years, lost_capital.tolist(), 'Lost capital', InstanciatedSeries.BAR_DISPLAY)
+                years, lost_capital.tolist(), 'Non use capital', InstanciatedSeries.BAR_DISPLAY)
 
             new_chart.add_series(total_capital_series)
             new_chart.add_series(lost_capital_series)
