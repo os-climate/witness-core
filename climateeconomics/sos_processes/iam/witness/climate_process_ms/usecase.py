@@ -44,7 +44,7 @@ class Study(StudyManager):
             scenario_i = f'scenario_{forcing_model}'
             scenario_i = scenario_i.replace('.', ',')
             scenario_list.append(scenario_i)
-            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.TemperatureChange.forcing_model'] = forcing_model
+            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.Temperature.forcing_model'] = forcing_model
 
         values_dict[f'{self.study_name}.scenario_list'] = scenario_list
 
@@ -71,5 +71,5 @@ if '__main__' == __name__:
     graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
                                                       filters, as_json=False)
 
-#    for graph in graph_list:
-#        graph.to_plotly().show()
+    for graph in graph_list:
+        graph.to_plotly().show()

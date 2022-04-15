@@ -77,6 +77,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'temperature_detail_df': {'type': 'dataframe'},
+        'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
         'temperature_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}}
 
     _maturity = 'Research'
@@ -117,6 +118,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         # store output data
         out_dict = {"temperature_detail_df": temperature_df,
                     "temperature_df": temperature_df[['years', 'temp_atmo']],
+                    'forcing_detail_df': self.model.forcing_df,
                     'temperature_objective': temperature_objective}
         self.store_sos_outputs_values(out_dict)
 
@@ -152,7 +154,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['temperature evolution']
+        chart_list = ['temperature evolution', 'Radiative forcing']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -214,4 +216,23 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
+        if 'Radiative forcing' in chart_list:
+
+            forcing_df = self.get_sosdisc_outputs('forcing_detail_df')
+
+            years = forcing_df['years'].values.tolist()
+
+            chart_name = 'Gas Radiative forcing evolution over the years'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Radiative forcing (W.m-2)',
+                                                 chart_name=chart_name)
+
+            for forcing in forcing_df.columns:
+                if forcing != 'years':
+                    new_series = InstanciatedSeries(
+                        years, forcing_df[forcing].values.tolist(), forcing, 'lines')
+
+                new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
         return instanciated_charts
