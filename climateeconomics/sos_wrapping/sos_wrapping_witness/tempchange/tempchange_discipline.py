@@ -48,12 +48,12 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2},
         'eq_temp_impact': {'type': 'float', 'default': 3.1, 'user_level': 3},
-        'forcing_model': {'type': 'string', 'default': 'DICE', 'possible_values': ['DICE', 'Myhre', 'Etminan', 'Meinshausen']},
+        'forcing_model': {'type': 'string', 'default': 'DICE', 'possible_values': ['DICE', 'Myhre', 'Etminan', 'Meinshausen'], 'structuring': True},
         'climate_upper': {'type': 'float', 'default': 0.1005, 'user_level': 3},
         'transfer_upper': {'type': 'float', 'default': 0.088, 'user_level': 3},
         'transfer_lower': {'type': 'float', 'default': 0.025, 'user_level': 3},
         'forcing_eq_co2': {'type': 'float', 'default': 3.74, 'user_level': 3},
-        'pre_indus_concentration_ppm': {'type': 'float', 'default': 278., 'user_level': 3},
+        'pre_indus_co2_concentration_ppm': {'type': 'float', 'default': 278., 'unit': 'ppm', 'user_level': 3},
         'lo_tocean': {'type': 'float', 'default': -1.0, 'user_level': 3},
         'up_tatmo': {'type': 'float', 'default': 12.0, 'user_level': 3},
         'up_tocean': {'type': 'float', 'default': 20.0, 'user_level': 3},
@@ -89,10 +89,16 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             if forcing_model == 'DICE':
 
                 dynamic_inputs['init_forcing_nonco'] = {
-                    'type': 'float', 'default': 0.83, 'user_level': 2}
+                    'type': 'float', 'default': 0.83, 'unit': 'W.m-2', 'user_level': 2}
                 dynamic_inputs['hundred_forcing_nonco'] = {
-                    'type': 'float', 'default': 1.1422, 'user_level': 2}
-
+                    'type': 'float', 'default': 1.1422, 'unit': 'W.m-2', 'user_level': 2}
+            else:
+                # Default values for FAIR : 722 ppm and 273 ppm
+                # Default values for FUND : 790 ppm and 285 ppm
+                dynamic_inputs['pre_indus_ch4_concentration_ppm'] = {
+                    'type': 'float', 'default': 722., 'unit': 'ppm', 'user_level': 2}
+                dynamic_inputs['pre_indus_n2o_concentration_ppm'] = {
+                    'type': 'float', 'default': 273., 'unit': 'ppm', 'user_level': 2}
         self.add_inputs(dynamic_inputs)
 
     def init_execution(self):
