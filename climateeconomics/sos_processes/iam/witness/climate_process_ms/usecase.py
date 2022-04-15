@@ -24,7 +24,7 @@ from sos_trades_core.tools.post_processing.post_processing_factory import PostPr
 
 class Study(StudyManager):
 
-    def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
+    def __init__(self, bspline=False, run_usecase=True, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
@@ -61,7 +61,7 @@ class Study(StudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
+    uc_cls = Study()
     uc_cls.load_data()
     uc_cls.run()
 
