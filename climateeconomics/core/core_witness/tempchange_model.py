@@ -93,37 +93,29 @@ class TempChange(object):
         self.temperature_df = temperature_df
         return temperature_df
 
-    def compute_exog_forcing(self, year):
+    def compute_exog_forcing(self):
         """
         Compute exogenous forcing for other greenhouse gases
         """
-        t = ((year - self.year_start) / self.time_step) + 1
-        period = ((self.year_end - self.year_start) / self.time_step)
-        if t < (period + 1):
-            exog_forcing = self.init_forcing_nonco + \
-                (1. / period) * (self.hundred_forcing_nonco -
-                                 self.init_forcing_nonco) * (t - 1)
-        elif t >= (period + 1):
-            exog_forcing = self.hundred_forcing_nonco
-        self.temperature_df.loc[year, 'exog_forcing'] = exog_forcing
+
+        exog_forcing = np.linspace(
+            self.init_forcing_nonco, self.hundred_forcing_nonco, len(self.years_range))
+
         return exog_forcing
 
-    def compute_forcing(self, year):
+    def compute_forcing(self):
         """
         Compute increase in radiative forcing for t using values at t-1
         (watts per m2 from 1900)
         """
-        atmo_conc = self.carboncycle_df.at[year, 'atmo_conc']
-        temp_df_copy = deepcopy(self.temperature_df)
-        exog_forcing = temp_df_copy.at[year, 'exog_forcing']
-        if atmo_conc <= 0:
-            forcing = exog_forcing
-        else:
-            forcing = self.forcing_eq_co2 * \
-                np.log(atmo_conc / 588.) / np.log(2) + exog_forcing
+        atmo_conc = self.carboncycle_df['atmo_conc']
 
-        self.temperature_df.loc[year, 'forcing'] = forcing
-        return forcing
+        exog_forcing = self.compute_exog_forcing()
+
+        forcing = self.forcing_eq_co2 * \
+            np.log(atmo_conc / 588.) / np.log(2) + exog_forcing
+
+        self.temperature_df['forcing'] = forcing
 
     def compute_temp_atmo(self, year):
         """
@@ -292,11 +284,10 @@ class TempChange(object):
                                             'atmo_conc': in_dict['carboncycle_df']['atmo_conc'].values /
                                             self.scale_factor_carbon_cycle})
         self.carboncycle_df.index = self.carboncycle_df['years'].values
-        self.compute_exog_forcing(self.year_start)
-        self.compute_forcing(self.year_start)
+
+        self.compute_forcing()
+
         for year in self.years_range[1:]:
-            self.compute_exog_forcing(year)
-            self.compute_forcing(year)
             self.compute_temp_atmo(year)
             self.compute_temp_ocean(year)
 
