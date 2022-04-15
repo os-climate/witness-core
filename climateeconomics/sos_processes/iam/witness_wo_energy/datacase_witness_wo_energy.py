@@ -176,7 +176,7 @@ class DataStudy():
             self, [dc_forest.dspace, dc_agriculture.dspace])
         nb_poles = 8
         update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                [1.65] * nb_poles , [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
+                                [1.65] * nb_poles , [1.5] * nb_poles, [5.0] * nb_poles)
         # constraint land use
 
         # WITNESS
