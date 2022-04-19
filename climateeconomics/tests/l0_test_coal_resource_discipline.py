@@ -19,7 +19,6 @@ mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 import unittest
 from os.path import join, dirname
 from pandas import read_csv
-from climateeconomics.core.core_resources.resources_model import ResourceModel
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
 class CoalModelTestCase(unittest.TestCase):
@@ -42,18 +41,10 @@ class CoalModelTestCase(unittest.TestCase):
         self.energy_coal_demand_df= self.energy_coal_demand_df.loc[self.energy_coal_demand_df['years']
                                                                   <= self.year_end]
 
-        self.param = {'All_demand': self.energy_coal_demand_df,
+        self.param = {'resources_demand': self.energy_coal_demand_df,
                       'year_start': self.year_start,
                       'year_end': self.year_end,
                       'production_start': self.production_start}
-
-    def test_Coal_model(self):
-        '''
-        Basique test of land use model
-        Mainly check the overal run without value checks (will be done in another test)
-        '''
-        Coal_use = ResourceModel(self.param)
-        Coal_use.compute(self.energy_coal_demand_df,'coal_resource',2001)
 
     def test_coal_discipline(self):
         ''' 
@@ -65,11 +56,11 @@ class CoalModelTestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
-                   'coal_resource':f'{name}.{model_name}',
+                   'ns_coal_resource':f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_coal_resource.coal_resource_model.coal_resource_disc.CoalDiscipline'
+        mod_path = 'climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc.CoalResourceDiscipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)
@@ -79,7 +70,7 @@ class CoalModelTestCase(unittest.TestCase):
 
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
-                       f'{name}.{model_name}.{ResourceModel.DEMAND}': self.energy_coal_demand_df,
+                       f'{name}.{model_name}.resources_demand': self.energy_coal_demand_df,
                        'production_start': self.production_start
                        }
         ee.load_study_from_input_dict(inputs_dict)
@@ -90,5 +81,5 @@ class CoalModelTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
