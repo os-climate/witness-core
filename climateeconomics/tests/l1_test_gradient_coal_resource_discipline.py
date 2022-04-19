@@ -16,7 +16,6 @@ limitations under the License.
 
 from os.path import join, dirname
 from pandas import read_csv
-from climateeconomics.core.core_resources.resources_model import ResourceModel
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -25,7 +24,7 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
     """
     Coal resource jacobian test class
     """
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -65,12 +64,12 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_witness': f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
-                   'coal_resource': f'{self.name}.{self.model_name}',
+                   'ns_coal_resource': f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_coal_resource.coal_resource_model.coal_resource_disc.CoalDiscipline'
+        mod_path = 'climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc.CoalResourceDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -81,7 +80,7 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.{self.model_name}.{ResourceModel.DEMAND}': self.energy_coal_demand_df
+                       f'{self.name}.{self.model_name}.resources_demand': self.energy_coal_demand_df
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -89,11 +88,11 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coal_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[
-                                f'{self.name}.{self.model_name}.{ResourceModel.DEMAND}'],
-                            outputs=[f'{self.name}.{self.model_name}.{ResourceModel.RESOURCE_STOCK}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.RESOURCE_PRICE}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.USE_STOCK}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.PRODUCTION}'])
+                                f'{self.name}.{self.model_name}.resources_demand'],
+                            outputs=[f'{self.name}.{self.model_name}.resource_stock',
+                                     f'{self.name}.{self.model_name}.resource_price',
+                                     f'{self.name}.{self.model_name}.use_stock',
+                                     f'{self.name}.{self.model_name}.predictable_production'])
         
     def test_coal_resource_damand_variable_analytic_grad(self):
         
@@ -104,12 +103,12 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_witness': f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
-                   'coal_resource':f'{self.name}.{self.model_name}',
+                   'ns_coal_resource':f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_coal_resource.coal_resource_model.coal_resource_disc.CoalDiscipline'
+        mod_path = 'climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc.CoalResourceDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -119,15 +118,16 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.{self.model_name}.{ResourceModel.DEMAND}': self.energy_coal_variable_demand_df
+                       f'{self.name}.{self.model_name}.resources_demand': self.energy_coal_variable_demand_df
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_coal_demand_variable_discipline.pkl', 
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', 
-                            inputs=[f'{self.name}.{self.model_name}.{ResourceModel.DEMAND}'],
-                            outputs=[f'{self.name}.{self.model_name}.{ResourceModel.RESOURCE_STOCK}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.RESOURCE_PRICE}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.USE_STOCK}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.PRODUCTION}'])
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[
+                                f'{self.name}.{self.model_name}.resources_demand'],
+                            outputs=[f'{self.name}.{self.model_name}.resource_stock',
+                                     f'{self.name}.{self.model_name}.resource_price',
+                                     f'{self.name}.{self.model_name}.use_stock',
+                                     f'{self.name}.{self.model_name}.predictable_production'])
