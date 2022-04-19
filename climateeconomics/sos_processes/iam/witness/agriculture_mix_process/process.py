@@ -49,7 +49,8 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_biomass_dry': f'{ns_study}',
                    'ns_land_use': f'{ns_study}',
                    'ns_crop': f'{ns_study}.{ns_agriculture_mix}.{ns_crop}',
-                   'ns_forest': f'{ns_study}.{ns_agriculture_mix}.{ns_forest}'}
+                   'ns_forest': f'{ns_study}.{ns_agriculture_mix}.{ns_forest}',
+                   'ns_invest': f'{ns_study}'}
 
         mods_dict = {}
         agricultureDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture'

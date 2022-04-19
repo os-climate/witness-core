@@ -64,6 +64,8 @@ class Study(EnergyMixStudyManager):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.energy_name = None
         self.bspline = bspline
+        self.nb_poles = 8
+        self.additional_ns = ''
 
     def get_investments(self):
         invest_biomass_dry_mix_dict = {}
@@ -96,27 +98,13 @@ class Study(EnergyMixStudyManager):
         self.energy_prices = pd.DataFrame({'years': years,
                                            'electricity': 16.0})
         year_range = self.year_end - self.year_start + 1
-        population = np.array(
-            [7886.69358, 7966.665211, 8045.375451, 8122.797867, 8198.756532, 8273.083818, 8345.689982, 8416.57613,
-             8485.795919, 8553.312856, 8619.058953, 8683.042395, 8745.257656,
-             8805.680119, 8864.337481, 8921.246891, 8976.395584, 9029.771873, 9081.354412, 9131.121464, 9179.083525,
-             9225.208209, 9269.477788, 9311.832053, 9352.201944, 9390.558602,
-             9426.867911, 9461.124288, 9493.330078, 9523.465887, 9551.506077, 9577.443894, 9601.291404, 9623.075287,
-             9642.80847, 9660.498856, 9676.158366, 9689.826469, 9701.54988,
-             9711.366041, 9719.318272, 9725.419042, 9729.702777, 9732.206794, 9732.922689, 9731.871402, 9729.064465,
-             9724.513081, 9718.249401, 9710.282554, 9700.610324, 9689.251038,
-             9676.243561, 9661.590658, 9645.329918, 9627.498797, 9608.104964, 9587.197508, 9564.828118, 9541.038722,
-             9515.888869, 9489.415825, 9461.693469, 9432.803085, 9402.775341,
-             9371.660258, 9339.478398, 9306.261187, 9272.043294, 9236.831993, 9200.632391, 9163.429244, 9125.227987,
-             9086.036337, 9045.87235, 9004.753844, 8962.700979, 8919.730768,
-             8875.855926, 8831.098444, 8785.553666])
-        temperature = np.array(np.linspace(1.05, 5, year_range))
-        #         temperature = np.array(np.linspace(1.05, 1.05, year_range))
 
+        temperature = np.array(np.linspace(1.05, 5.0, year_range))
         temperature_df = pd.DataFrame(
             {"years": years, "temp_atmo": temperature})
         temperature_df.index = years
 
+        population = np.array(np.linspace(7800.0, 9000.0, year_range))
         population_df = pd.DataFrame(
             {"years": years, "population": population})
         population_df.index = years
@@ -140,10 +128,10 @@ class Study(EnergyMixStudyManager):
                                 'fruits and vegetables': [217.62],
                                 })
         other = np.array(np.linspace(0.102, 0.102, year_range))
-
-        # the value for invest_level is just set as an order of magnitude
-        self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': 1})
+        
+        crop_invest = np.linspace(0.5, 0.25, year_range)
+        self.crop_investment = pd.DataFrame(
+            {'years': years, 'investment': crop_invest})
 
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
@@ -168,8 +156,6 @@ class Study(EnergyMixStudyManager):
             {"years": years, "investment": mw_invest})
         self.uw_invest_df = pd.DataFrame(
             {"years": years, "investment": uw_invest})
-        # define invest mix
-        investment_mix = self.get_investments()
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -187,67 +173,77 @@ class Study(EnergyMixStudyManager):
                        f'{self.study_name}.transport_cost': self.transport,
                        f'{self.study_name}.transport_margin': self.margin,
                        f'{self.study_name}.CO2_taxes': self.co2_taxes,
+                       f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
+                       f'{self.study_name}.{energy_name}.Crop.red_meat_percentage': self.red_meat_percentage,
+                       f'{self.study_name}.{energy_name}.Crop.white_meat_percentage': self.white_meat_percentage,
+                       f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
+                       f'{self.study_name + self.additional_ns}.crop_investment': self.crop_investment,
                        }
         if self.main_study:
-            values_dict.update(
-                {f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
-                 f'{self.study_name}.{energy_name}.red_meat_percentage': self.red_meat_percentage,
-                 f'{self.study_name}.{energy_name}.white_meat_percentage': self.white_meat_percentage,
-                 f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
+            values_dict.update({
                  f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
-                 f'{self.study_name}.forest_investment': self.forest_invest_df,
-                 f'{self.study_name}.managed_wood_investment': self.mw_invest_df,
-                 f'{self.study_name}.unmanaged_wood_investment': self.uw_invest_df,
+                 f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
+                 f'{self.study_name + self.additional_ns}.managed_wood_investment': self.mw_invest_df,
+                 f'{self.study_name + self.additional_ns}.unmanaged_wood_investment': self.uw_invest_df,
                  f'{self.study_name}.population_df': population_df,
                  f'{self.study_name}.temperature_df': temperature_df,
                  })
-
-
-            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[1]:
-                investment_mix_sum = investment_mix.drop(
-                    columns=['years']).sum(axis=1)
-                for techno in self.technologies_list:
-                    invest_level_techno = pd.DataFrame({'years': self.invest_level['years'].values,
-                                                        'invest': self.invest_level['invest'].values * investment_mix[techno].values / investment_mix_sum})
-                    values_dict[f'{self.study_name}.{energy_name}.{techno}.invest_level'] = invest_level_techno
-            else:
-                values_dict[f'{self.study_name}.invest_level'] = self.invest_level
         else:
             self.update_dv_arrays()
 
+        red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
+        white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
+        deforestation_surface_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
+        forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
+        crop_investment_array_mix = np.linspace(1.0, 1.5, self.nb_poles)
+        managed_wood_investment_array_mix = np.linspace(2.0, 3.0, self.nb_poles)
+        unmanaged_wood_investment_array_mix = np.linspace(4.0, 5.0, self.nb_poles)
+
+        design_space_ctrl_dict = {}
+        design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
+        design_space_ctrl_dict['white_meat_percentage_ctrl'] = white_meat_percentage_ctrl
+        design_space_ctrl_dict['deforested_surface_ctrl'] = deforestation_surface_ctrl
+        design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
+        design_space_ctrl_dict['crop_investment_array_mix'] = crop_investment_array_mix
+        design_space_ctrl_dict['managed_wood_investment_array_mix'] = managed_wood_investment_array_mix
+        design_space_ctrl_dict['unmanaged_wood_investment_array_mix'] = unmanaged_wood_investment_array_mix
+
+        design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
+        self.design_space_ctrl = design_space_ctrl
+        self.dspace = self.setup_design_space_ctrl_new()
 
         return [values_dict]
 
-
-
-    def setup_design_space(self):
-            #-- energy optimization inputs
-            # Design Space
-        dim_a = len(
-            self.red_meat_percentage)
-        lbnd1 = [1.0] * dim_a
-        ubnd1 = [10.0] * dim_a
-        lbnd2 = [5.0] * dim_a
-        ubnd2 = [20.0] * dim_a
-
-        # Design variables:
-        self.update_dspace_dict_with(
-            'red_meat_percentage_ctrl', self.red_meat_percentage, lbnd1, ubnd1)
-        self.update_dspace_dict_with(
-            'white_meat_percentage_ctrl', self.white_meat_percentage, lbnd2, ubnd2)
-
     def setup_design_space_ctrl_new(self):
         # Design Space
-        #header = ['variable', 'value', 'lower_bnd', 'upper_bnd']
+        # header = ['variable', 'value', 'lower_bnd', 'upper_bnd']
         ddict = {}
         ddict['dspace_size'] = 0
 
-        # Design variables:
+        # Design variables
+        # -----------------------------------------
+        # Crop related
         update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
                                 list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles, [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
                                 list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        update_dspace_dict_with(ddict, 'crop_investment_array_mix',
+                                list(self.design_space_ctrl['crop_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        
+        # -----------------------------------------
+        # Forest related
+        update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
+                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
+        update_dspace_dict_with(ddict, 'forest_investment_array_mix',
+                                list(self.design_space_ctrl['forest_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        
+        update_dspace_dict_with(ddict, 'managed_wood_investment_array_mix',
+                                list(self.design_space_ctrl['managed_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        
+        update_dspace_dict_with(ddict, 'unmanaged_wood_investment_array_mix',
+                                list(self.design_space_ctrl['unmanaged_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        
         return ddict
 
 if '__main__' == __name__:
