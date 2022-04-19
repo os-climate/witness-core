@@ -24,7 +24,7 @@ import numpy as np
 from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.core.core_resources.all_resources_model import AllResourceModel
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -33,6 +33,7 @@ AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 
+RESOURCE_LIST=ResourceMixModel.RESOURCE_LIST
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
     ''' type(value) has to be ndarray
@@ -65,39 +66,15 @@ class Study(ClimateEconomicsStudyManager):
 
         setup_data_list = []
 
-        # input of year start and year end:
-        coal_input = {}
-        coal_input[self.study_name + '.year_start'] = self.year_start
-        coal_input[self.study_name + '.year_end'] = self.year_end
-
-        oil_input = {}
-        oil_input[self.study_name + '.year_start'] = self.year_start
-        oil_input[self.study_name + '.year_end'] = self.year_end
-
-        gas_input = {}
-        gas_input[self.study_name + '.year_start'] = self.year_start
-        gas_input[self.study_name + '.year_end'] = self.year_end
-
-        uranium_input = {}
-        uranium_input[self.study_name + '.year_start'] = self.year_start
-        uranium_input[self.study_name + '.year_end'] = self.year_end
-
-        resource_input = {}
-        resource_input[self.study_name + '.year_start'] = self.year_start
-        resource_input[self.study_name + '.year_end'] = self.year_end
 
         year_range = self.year_end - self.year_start
         years = arange(self.year_start, self.year_end + 1, 1)
 
         global_data_dir = join(Path(__file__).parents[4], 'data')
 
-        setup_data_list.append(coal_input)
-        setup_data_list.append(oil_input)
-        setup_data_list.append(gas_input)
-        setup_data_list.append(uranium_input)
-
         # ALL_RESOURCE
-        modeled_resources = AllResourceModel.RESOURCE_LIST
+        resource_input = {}
+        modeled_resources = ResourceMixModel.RESOURCE_LIST
         non_modeled_resource_price = pd.DataFrame({'years': years})
         resources_CO2_emissions = pd.DataFrame({'years': years})
         for resource in ResourceGlossary.GlossaryDict.values():
@@ -112,6 +89,8 @@ class Study(ClimateEconomicsStudyManager):
                        '.non_modeled_resource_price'] = non_modeled_resource_price
         resource_input[self.study_name + self.all_resource_name +
                        '.resources_CO2_emissions'] = resources_CO2_emissions
+        resource_input[f'{self.study_name}.year_start'] = self.year_start
+        resource_input[f'{self.study_name}.year_end'] = self.year_end
         setup_data_list.append(resource_input)
         data_dir_resource = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
@@ -123,7 +102,9 @@ class Study(ClimateEconomicsStudyManager):
         resource_demand = resource_demand.loc[resource_demand['years']
                                               <= self.year_end]
         resource_input[self.study_name +
-                       self.all_resource_name + '.All_Demand'] = resource_demand
+                       self.all_resource_name + '.resources_demand'] = resource_demand
+        resource_input[self.study_name +
+                       self.all_resource_name + '.resources_demand_woratio'] = resource_demand
         setup_data_list.append(resource_input)
 
         return setup_data_list

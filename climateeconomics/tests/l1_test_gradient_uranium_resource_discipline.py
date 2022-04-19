@@ -18,7 +18,6 @@ import unittest
 from os.path import join, dirname
 
 import pandas as pd
-from climateeconomics.core.core_resources.resources_model import ResourceModel
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -26,7 +25,7 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
     """
     Uranium resource jacobian test class
     """
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -66,12 +65,12 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_witness': f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
-                   'uranium_resource':f'{self.name}.{self.model_name}',
+                   'ns_uranium_resource':f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_uranium_resource.uranium_resource_model.uranium_resource_disc.UraniumDiscipline'
+        mod_path = 'climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc.UraniumResourceDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -81,18 +80,18 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.{self.model_name}.{ResourceModel.DEMAND}': self.energy_uranium_demand_df
+                       f'{self.name}.{self.model_name}.resources_demand': self.energy_uranium_demand_df
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]  
         
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_uranium_discipline.pkl', 
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', 
-                            inputs=[f'{self.name}.{self.model_name}.{ResourceModel.DEMAND}'],
-                            outputs=[f'{self.name}.{self.model_name}.{ResourceModel.RESOURCE_STOCK}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.RESOURCE_PRICE}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.USE_STOCK}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.PRODUCTION}'])
+                            inputs=[f'{self.name}.{self.model_name}.resources_demand'],
+                            outputs=[f'{self.name}.{self.model_name}.resource_stock',
+                                     f'{self.name}.{self.model_name}.resource_price',
+                                     f'{self.name}.{self.model_name}.use_stock',
+                                     f'{self.name}.{self.model_name}.predictable_production'])
     
     def test_uranium_variable_demand_resource_analytic_grad(self):
         
@@ -103,12 +102,12 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_witness': f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
-                   'uranium_resource':f'{self.name}.{self.model_name}',
+                   'ns_uranium_resource':f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_uranium_resource.uranium_resource_model.uranium_resource_disc.UraniumDiscipline'
+        mod_path = 'climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc.UraniumResourceDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -118,15 +117,15 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.{self.model_name}.{ResourceModel.DEMAND}': self.energy_uranium_variable_demand_df
+                       f'{self.name}.{self.model_name}.resources_demand': self.energy_uranium_variable_demand_df
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]  
         
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_uranium_demand_variable_discipline.pkl', 
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', 
-                            inputs=[f'{self.name}.{self.model_name}.{ResourceModel.DEMAND}'],
-                            outputs=[f'{self.name}.{self.model_name}.{ResourceModel.RESOURCE_STOCK}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.RESOURCE_PRICE}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.USE_STOCK}',
-                                     f'{self.name}.{self.model_name}.{ResourceModel.PRODUCTION}'])
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.{self.model_name}.resources_demand'],
+                            outputs=[f'{self.name}.{self.model_name}.resource_stock',
+                                     f'{self.name}.{self.model_name}.resource_price',
+                                     f'{self.name}.{self.model_name}.use_stock',
+                                     f'{self.name}.{self.model_name}.predictable_production'])
