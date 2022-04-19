@@ -25,6 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -79,7 +80,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.temperature_obj_option': temperature_obj_option}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         # self.ee.execute()
 

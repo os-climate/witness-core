@@ -16,7 +16,7 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from copy import deepcopy
-
+from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 
 class MacroEconomics():
     '''
@@ -532,8 +532,9 @@ class MacroEconomics():
         """
         ne_capital = self.capital_df['non_energy_capital'].values
         usable_capital = self.capital_df['usable_capital'].values
-        self.delta_capital_objective = (self.capital_utilisation_ratio * ne_capital - usable_capital) / self.usable_capital_ref
-
+        ref_usable_capital = self.usable_capital_ref * self.nb_years
+        self.delta_capital_objective_wo_exp_min = (self.capital_utilisation_ratio * ne_capital - usable_capital) / ref_usable_capital
+        self.delta_capital_objective = compute_func_with_exp_min(self.delta_capital_objective_wo_exp_min, 1e-15)
     def compute(self, inputs, damage_prod=False):
         """
         Compute all models for year range

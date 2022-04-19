@@ -88,7 +88,7 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.ineq_constraints': [],
 
                              # optimization parameters:
-                             f'{ns}.{self.optim_name}.max_iter': 500,
+                             f'{ns}.{self.optim_name}.max_iter': 800,
                              f'{ns}.warm_start': True,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
                              # SLSQP, NLOPT_SLSQP
@@ -96,11 +96,14 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.formulation': 'DisciplinaryOpt',
                              f'{ns}.{self.optim_name}.differentiation_method': 'user',
                              f'{ns}.{self.optim_name}.algo_options': {"ftol_rel": 3e-16,
-                                                                      "normalize_design_space": False,
-                                                                      "maxls": 2 * dspace_size,
+                                                                      "ftol_abs": 3e-16,
+                                                                      "normalize_design_space": True,
+                                                                      "maxls": 3 * dspace_size,
                                                                       "maxcor": dspace_size,
-                                                                      "pg_tol": 1.e-8,
-                                                                      "max_iter": 500,
+                                                                      "pg_tol": 1e-16,
+                                                                      "xtol_rel": 1e-16,
+                                                                      "xtol_abs": 1e-16,
+                                                                      "max_iter": 700,
                                                                       "disp": 30},
 
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-10,

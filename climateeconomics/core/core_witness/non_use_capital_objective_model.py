@@ -113,7 +113,11 @@ class NonUseCapitalObjective():
         Get energy capital dataframe in trillion dollars
         The sum is in G$ (1e9 $)
         '''
+        if 'Sum of techno capital' in self.techno_capital_df:
+            sum_techno_capital = self.techno_capital_df['Sum of techno capital'].values / 1e3
+        else:
+            sum_techno_capital = 0.0
         energy_capital_df = pd.DataFrame({'years': self.years_range,
-                                          'energy_capital': self.techno_capital_df['Sum of techno capital'].values / 1e3})
+                                          'energy_capital': sum_techno_capital})
 
         return energy_capital_df

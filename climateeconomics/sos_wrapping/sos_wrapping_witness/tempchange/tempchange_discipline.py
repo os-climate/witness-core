@@ -48,13 +48,12 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2},
         'eq_temp_impact': {'type': 'float', 'default': 3.1, 'user_level': 3},
-        'init_forcing_nonco': {'type': 'float', 'default': 0.83, 'user_level': 2},
-        # default is mean value of ssps database
-        'hundred_forcing_nonco': {'type': 'float', 'default': 1.1422, 'user_level': 2},
+        'forcing_model': {'type': 'string', 'default': 'DICE', 'possible_values': ['DICE', 'Myhre', 'Etminan', 'Meinshausen'], 'structuring': True},
         'climate_upper': {'type': 'float', 'default': 0.1005, 'user_level': 3},
         'transfer_upper': {'type': 'float', 'default': 0.088, 'user_level': 3},
         'transfer_lower': {'type': 'float', 'default': 0.025, 'user_level': 3},
-        'forcing_eq_co2': {'type': 'float', 'default': 3.6813, 'user_level': 3},
+        'forcing_eq_co2': {'type': 'float', 'default': 3.74, 'user_level': 3},
+        'pre_indus_co2_concentration_ppm': {'type': 'float', 'default': 278., 'unit': 'ppm', 'user_level': 3},
         'lo_tocean': {'type': 'float', 'default': -1.0, 'user_level': 3},
         'up_tatmo': {'type': 'float', 'default': 12.0, 'user_level': 3},
         'up_tocean': {'type': 'float', 'default': 20.0, 'user_level': 3},
@@ -78,13 +77,30 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'temperature_detail_df': {'type': 'dataframe'},
+        'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
         'temperature_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}}
 
     _maturity = 'Research'
 
-    # def init_model(self):
-    ''' model instantiation '''
-    #    return TempChange()
+    def setup_sos_disciplines(self):
+        dynamic_inputs = {}
+
+        if 'forcing_model' in self._data_in:
+            forcing_model = self.get_sosdisc_inputs('forcing_model')
+            if forcing_model == 'DICE':
+
+                dynamic_inputs['init_forcing_nonco'] = {
+                    'type': 'float', 'default': 0.83, 'unit': 'W.m-2', 'user_level': 2}
+                dynamic_inputs['hundred_forcing_nonco'] = {
+                    'type': 'float', 'default': 1.1422, 'unit': 'W.m-2', 'user_level': 2}
+            else:
+                # Default values for FAIR : 722 ppm and 273 ppm
+                # Default values for FUND : 790 ppm and 285 ppm
+                dynamic_inputs['pre_indus_ch4_concentration_ppm'] = {
+                    'type': 'float', 'default': 722., 'unit': 'ppm', 'user_level': 2}
+                dynamic_inputs['pre_indus_n2o_concentration_ppm'] = {
+                    'type': 'float', 'default': 273., 'unit': 'ppm', 'user_level': 2}
+        self.add_inputs(dynamic_inputs)
 
     def init_execution(self):
         in_dict = self.get_sosdisc_inputs()
@@ -102,6 +118,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         # store output data
         out_dict = {"temperature_detail_df": temperature_df,
                     "temperature_df": temperature_df[['years', 'temp_atmo']],
+                    'forcing_detail_df': self.model.forcing_df,
                     'temperature_objective': temperature_objective}
         self.store_sos_outputs_values(out_dict)
 
@@ -137,7 +154,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['temperature evolution']
+        chart_list = ['temperature evolution', 'Radiative forcing']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -199,4 +216,23 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
+        if 'Radiative forcing' in chart_list:
+
+            forcing_df = self.get_sosdisc_outputs('forcing_detail_df')
+
+            years = forcing_df['years'].values.tolist()
+
+            chart_name = 'Gas Radiative forcing evolution over the years'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Radiative forcing (W.m-2)',
+                                                 chart_name=chart_name)
+
+            for forcing in forcing_df.columns:
+                if forcing != 'years':
+                    new_series = InstanciatedSeries(
+                        years, forcing_df[forcing].values.tolist(), forcing, 'lines')
+
+                new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
         return instanciated_charts

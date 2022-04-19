@@ -34,7 +34,9 @@ class TempChange(object):
         Constructor
         '''
         self.carboncycle_df = None
+        self.forcing_df = None
         self.temperature_objective = None
+        self.ppm_to_gtc = 2.13
         self.set_data(inputs)
         self.create_dataframe()
 
@@ -45,12 +47,21 @@ class TempChange(object):
         self.init_temp_ocean = inputs['init_temp_ocean']
         self.init_temp_atmo = inputs['init_temp_atmo']
         self.eq_temp_impact = inputs['eq_temp_impact']
-        self.init_forcing_nonco = inputs['init_forcing_nonco']
-        self.hundred_forcing_nonco = inputs['hundred_forcing_nonco']
+
+        self.forcing_model = inputs['forcing_model']
+
+        if self.forcing_model == 'DICE':
+            self.init_forcing_nonco = inputs['init_forcing_nonco']
+            self.hundred_forcing_nonco = inputs['hundred_forcing_nonco']
+        else:
+            self.ch4_conc_init_ppm = inputs['pre_indus_ch4_concentration_ppm']
+            self.n2o_conc_init_ppm = inputs['pre_indus_n2o_concentration_ppm']
+
         self.climate_upper = inputs['climate_upper']
         self.transfer_upper = inputs['transfer_upper']
         self.transfer_lower = inputs['transfer_lower']
         self.forcing_eq_co2 = inputs['forcing_eq_co2']
+        self.c0_ppm = inputs['pre_indus_co2_concentration_ppm']
         self.lo_tocean = inputs['lo_tocean']
         self.up_tatmo = inputs['up_tatmo']
         self.up_tocean = inputs['up_tocean']
@@ -91,39 +102,158 @@ class TempChange(object):
                            'temp_ocean'] = self.init_temp_ocean
         temperature_df.loc[self.year_start, 'temp_atmo'] = self.init_temp_atmo
         self.temperature_df = temperature_df
+
+        self.forcing_df = DataFrame({'years': self.years_range})
         return temperature_df
 
-    def compute_exog_forcing(self, year):
+    def compute_exog_forcing_dice(self):
         """
-        Compute exogenous forcing for other greenhouse gases
+        Compute exogenous forcing for other greenhouse gases following DICE model
+        linear increase of exogenous forcing following a given scenario
         """
-        t = ((year - self.year_start) / self.time_step) + 1
-        period = ((self.year_end - self.year_start) / self.time_step)
-        if t < (period + 1):
-            exog_forcing = self.init_forcing_nonco + \
-                (1. / period) * (self.hundred_forcing_nonco -
-                                 self.init_forcing_nonco) * (t - 1)
-        elif t >= (period + 1):
-            exog_forcing = self.hundred_forcing_nonco
-        self.temperature_df.loc[year, 'exog_forcing'] = exog_forcing
+
+        exog_forcing = np.linspace(
+            self.init_forcing_nonco, self.hundred_forcing_nonco, len(self.years_range))
+
+        self.forcing_df['CH4 and N20 forcing'] = exog_forcing
         return exog_forcing
 
-    def compute_forcing(self, year):
+    def compute_exog_forcing_myhre(self, atmo_conc):
+        """
+        Compute exogenous forcing for CH4 and N2O gases following Myhre model
+        Myhre et al, 1998, JGR, doi: 10.1029/98GL01908
+        Myhre model can be found in FUND, MAGICC and FAIR IAM models
+
+        in FUND 0.036 * 1.4(np.sqrt(ch4_conc) - np.sqrt(ch4_conc_init))
+        in FAIR 0.036 (np.sqrt(ch4_conc) -*np.sqrt(ch4_conc_init))
+
+        we suppose that ch4 concentration and n2o cocnentration are varying the same way as co2_concentration
+        We use ppm unit to compute this forcing as in FAIR and FUND
+        """
+        ch4_conc = atmo_conc / self.ppm_to_gtc * self.ch4_conc_init_ppm / self.c0_ppm
+        n2o_conc = atmo_conc / self.ppm_to_gtc * self.n2o_conc_init_ppm / self.c0_ppm
+
+        def MN(c1, c2):
+            return 0.47 * np.log(1 + 2.01e-5 * (c1 * c2)**(0.75) +
+                                 5.31e-15 * c1 * (c1 * c2)**(1.52))
+
+        exog_forcing = 0.036 * (np.sqrt(ch4_conc) - np.sqrt(self.ch4_conc_init_ppm)) - (
+            MN(ch4_conc, self.n2o_conc_init_ppm) - MN(self.ch4_conc_init_ppm, self.n2o_conc_init_ppm)) + \
+            0.12 * (np.sqrt(n2o_conc) - np.sqrt(self.n2o_conc_init_ppm)) - (
+            MN(self.ch4_conc_init_ppm, n2o_conc) - MN(self.ch4_conc_init_ppm, self.n2o_conc_init_ppm))
+
+        self.forcing_df['CH4 and N20 forcing'] = exog_forcing
+        return exog_forcing
+
+    def compute_forcing_etminan(self, atmo_conc):
+        """
+        Compute exogenous forcing for other greenhouse gases following DICE model
+        linear increase of exogenous forcing following a given scenario
+        """
+
+        ch4_conc = atmo_conc / self.ppm_to_gtc * self.ch4_conc_init_ppm / self.c0_ppm
+        n2o_conc = atmo_conc / self.ppm_to_gtc * self.n2o_conc_init_ppm / self.c0_ppm
+        atmo_conc_ppm = atmo_conc / self.ppm_to_gtc
+
+        co2mean = 0.5 * (atmo_conc / self.ppm_to_gtc + self.c0_ppm)
+        ch4mean = 0.5 * (ch4_conc + self.ch4_conc_init_ppm)
+        n2omean = 0.5 * (n2o_conc + self.n2o_conc_init_ppm)
+
+        co2_forcing = (-2.4e-7 * (atmo_conc_ppm - self.c0_ppm)**2 + 7.2e-4 * np.fabs(atmo_conc_ppm - self.c0_ppm) -
+                       2.1e-4 * n2omean + self.forcing_eq_co2 / np.log(2)) * np.log(atmo_conc_ppm / self.c0_ppm)
+        ch4_forcing = (-1.3e-6 * ch4mean - 8.2e-6 * n2omean + 0.043) * (np.sqrt(n2o_conc) -
+                                                                        np.sqrt(self.n2o_conc_init_ppm))
+        n2o_forcing = (-8.0e-6 * co2mean + 4.2e-6 * n2omean - 4.9e-6 * ch4mean + 0.117) * \
+            (np.sqrt(n2o_conc) - np.sqrt(self.n2o_conc_init_ppm))
+
+        self.forcing_df['CO2 forcing'] = co2_forcing
+        self.forcing_df['CH4 forcing'] = ch4_forcing
+        self.forcing_df['N2O forcing'] = n2o_forcing
+
+        return co2_forcing + ch4_forcing + n2o_forcing
+
+    def compute_forcing_meinshausen(self, atmo_conc):
+        """
+        Compute exogenous forcing for other greenhouse gases following DICE model
+        linear increase of exogenous forcing following a given scenario
+        """
+        a1 = -2.4785e-07
+        b1 = 0.00075906
+        c1 = -0.0021492
+        d1 = 5.2488
+        a2 = -0.00034197
+        b2 = 0.00025455
+        c2 = -0.00024357
+        d2 = 0.12173
+        a3 = -8.9603e-05
+        b3 = -0.00012462
+        d3 = 0.045194
+
+        ch4_conc = atmo_conc / self.ppm_to_gtc * self.ch4_conc_init_ppm / self.c0_ppm
+        n2o_conc = atmo_conc / self.ppm_to_gtc * self.n2o_conc_init_ppm / self.c0_ppm
+        atmo_conc_ppm = atmo_conc / self.ppm_to_gtc
+        Camax = self.c0_ppm - b1 / (2 * a1)
+        # if self.c0_ppm < atmo_conc_ppm <= Camax:  # the most likely case
+        alphap = d1 + a1 * (atmo_conc_ppm - self.c0_ppm)**2 + \
+            b1 * (atmo_conc_ppm - self.c0_ppm)
+
+        alphap[atmo_conc_ppm <= self.c0_ppm] = d1
+        alphap[atmo_conc_ppm >= Camax] = d1 - b1**2 / (4 * a1)
+
+        alphaN2O = c1 * np.sqrt(n2o_conc)
+        co2_forcing = (alphap + alphaN2O) * np.log(atmo_conc_ppm / self.c0_ppm)
+        self.forcing_df['CO2 forcing'] = co2_forcing
+
+        # CH4
+        ch4_forcing = (
+            a3 * np.sqrt(ch4_conc) + b3 * np.sqrt(n2o_conc) + d3) * (np.sqrt(ch4_conc) - np.sqrt(self.ch4_conc_init_ppm))
+
+        self.forcing_df['CH4 forcing'] = ch4_forcing
+        # N2O
+        n2o_forcing = (a2 * np.sqrt(atmo_conc_ppm) + b2 * np.sqrt(n2o_conc) +
+                       c2 * np.sqrt(ch4_conc) + d2) * (np.sqrt(n2o_conc) - np.sqrt(self.n2o_conc_init_ppm))
+
+        self.forcing_df['N2O forcing'] = n2o_forcing
+
+        return co2_forcing + ch4_forcing + n2o_forcing
+
+    def compute_forcing(self):
         """
         Compute increase in radiative forcing for t using values at t-1
         (watts per m2 from 1900)
         """
-        atmo_conc = self.carboncycle_df.at[year, 'atmo_conc']
-        temp_df_copy = deepcopy(self.temperature_df)
-        exog_forcing = temp_df_copy.at[year, 'exog_forcing']
-        if atmo_conc <= 0:
-            forcing = exog_forcing
-        else:
-            forcing = self.forcing_eq_co2 * \
-                np.log(atmo_conc / 588.) / np.log(2) + exog_forcing
+        atmo_conc = self.carboncycle_df['atmo_conc'].values
 
-        self.temperature_df.loc[year, 'forcing'] = forcing
-        return forcing
+        if self.forcing_model == 'DICE':
+
+            exog_forcing = self.compute_exog_forcing_dice()
+            co2_forcing = self.compute_log_co2_forcing(atmo_conc)
+            self.forcing_df['CO2 forcing'] = co2_forcing
+            forcing = co2_forcing + exog_forcing
+
+        elif self.forcing_model == 'Myhre':
+
+            exog_forcing = self.compute_exog_forcing_myhre(atmo_conc)
+            co2_forcing = self.compute_log_co2_forcing(atmo_conc)
+            self.forcing_df['CO2 forcing'] = co2_forcing
+            forcing = co2_forcing + exog_forcing
+
+        elif self.forcing_model == 'Etminan':
+
+            forcing = self.compute_forcing_etminan(atmo_conc)
+
+        elif self.forcing_model == 'Meinshausen':
+
+            forcing = self.compute_forcing_meinshausen(atmo_conc)
+
+        self.temperature_df['forcing'] = forcing
+
+    def compute_log_co2_forcing(self, atmo_conc):
+
+        co2_forcing = self.forcing_eq_co2 / np.log(2) * \
+            np.log(atmo_conc / (self.c0_ppm * self.ppm_to_gtc))
+
+        return co2_forcing
 
     def compute_temp_atmo(self, year):
         """
@@ -169,11 +299,8 @@ class TempChange(object):
         atmo_conc = self.carboncycle_df['atmo_conc'].values * \
             self.scale_factor_carbon_cycle
 
-        d_forcing = np.identity(len(years),) * 0
-        for i in range(0, len(years)):
-            if atmo_conc[i] > 0:
-                d_forcing[i, i] = (self.forcing_eq_co2 /
-                                   (np.log(2) * self.carboncycle_df['atmo_conc'].values[i]))
+        d_forcing = np.identity(len(years)) * self.forcing_eq_co2 / \
+            (np.log(2) * self.carboncycle_df['atmo_conc'].values)
 
         return d_forcing
 
@@ -292,11 +419,10 @@ class TempChange(object):
                                             'atmo_conc': in_dict['carboncycle_df']['atmo_conc'].values /
                                             self.scale_factor_carbon_cycle})
         self.carboncycle_df.index = self.carboncycle_df['years'].values
-        self.compute_exog_forcing(self.year_start)
-        self.compute_forcing(self.year_start)
+
+        self.compute_forcing()
+
         for year in self.years_range[1:]:
-            self.compute_exog_forcing(year)
-            self.compute_forcing(year)
             self.compute_temp_atmo(year)
             self.compute_temp_ocean(year)
 
