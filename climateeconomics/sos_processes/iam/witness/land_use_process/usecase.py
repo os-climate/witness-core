@@ -119,28 +119,6 @@ class Study(StudyManager):
         self.setup_design_space_ctrl()
         return setup_data_list
 
-    def setup_initial_design_variable(self):
-
-        init_design_var_df = pd.DataFrame(
-            columns=['percentage'], index=arange(self.year_start, self.year_end + 1, self.time_step))
-
-        init_design_var_df['percentage'] = self.livestock_usage_factor_df['percentage']
-
-        return init_design_var_df
-
-    def setup_design_space(self):
-            #-- energy optimization inputs
-            # Design Space
-        dim_a = self.nb_poles
-        lbnd1 = [0.0] * dim_a
-        ubnd1 = [100.0] * dim_a
-
-        # Design variables:
-        self.update_dspace_dict_with(
-            'livestock_usage_factor_array', self.design_space_ctrl['livestock_usage_factor_ctrl'].values, lbnd1, ubnd1)
-
-        #dspace = DataFrame(ddict)
-
     def setup_design_space_ctrl(self):
             #-- energy optimization inputs
             # Design Space

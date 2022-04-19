@@ -93,9 +93,9 @@ class CropTestCase(unittest.TestCase):
                                      })
         self.other = np.array(np.linspace(0.102, 0.102, year_range))
 
-        # invest: 1Mha of crop land each year
-        self.invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 0.381})
+        # investment: 1Mha of crop land each year
+        self.crop_investment = pd.DataFrame(
+            {'years': years, 'investment': np.ones(len(years)) * 0.381})
              
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
@@ -125,13 +125,13 @@ class CropTestCase(unittest.TestCase):
                       'other_use_crop': self.other,
                       'param_a':  - 0.00833,
                       'param_b': - 0.04167,
-                      'invest_level': self.invest_level,
+                      'crop_investment': self.crop_investment,
                       'margin': self.margin,
                       'transport_margin': self.margin,
                       'transport_cost': self.transport_cost,
                       'data_fuel_dict': BiomassDry.data_energy_dict,
                       'techno_infos_dict': CropDiscipline.techno_infos_dict_default,
-                      'scaling_factor_invest_level': 1e3,
+                      'scaling_factor_crop_investment': 1e3,
                       'scaling_factor_techno_consumption': 1e3,
                       'scaling_factor_techno_production': 1e3,
                       'initial_age_distrib': initial_age_distribution,
@@ -164,7 +164,8 @@ class CropTestCase(unittest.TestCase):
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_biomass_dry': f'{name}.{model_name}',
                    'ns_land_use':f'{name}.{model_name}',
-                   'ns_crop':f'{name}.{model_name}'}
+                   'ns_crop':f'{name}.{model_name}',
+                   'ns_invest':f'{name}.{model_name}'}
 
         ee.ns_manager.add_ns_def(ns_dict)
 
@@ -187,7 +188,7 @@ class CropTestCase(unittest.TestCase):
                        f'{name}.{model_name}.white_meat_percentage': self.white_meat_percentage,
                        f'{name}.{model_name}.{Crop.OTHER_USE_CROP}': self.other,
                        f'{name}.{model_name}.temperature_df': self.temperature_df,
-                       f'{name}.{model_name}.invest_level': self.invest_level,
+                       f'{name}.{model_name}.crop_investment': self.crop_investment,
                        f'{name}.{model_name}.margin': self.margin,
                        f'{name}.{model_name}.transport_margin': self.margin,
                        f'{name}.{model_name}.transport_cost': self.transport_cost,
