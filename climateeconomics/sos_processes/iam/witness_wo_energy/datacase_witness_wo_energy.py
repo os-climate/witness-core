@@ -222,7 +222,7 @@ class DataStudy():
                         'ns_functions', 'ns_functions', 'ns_functions', 'ns_witness','ns_functions', 'ns_functions'])
         list_ftype.extend(
             [OBJECTIVE,  OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1.0,  0.0, 1.0, 0.0, 1.0, 1.0, 0.0])
+        list_weight.extend([1.0,  0.0, 1.0, 0.0, 1.0, 0.0, 1.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM,  AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
