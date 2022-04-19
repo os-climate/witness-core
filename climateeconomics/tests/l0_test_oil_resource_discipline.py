@@ -13,13 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pandas as pd
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
 import unittest
 from os.path import join, dirname
 from pandas import read_csv
-from climateeconomics.core.core_resources.resources_model import ResourceModel
+from climateeconomics.core.core_resources.models.oil_resource.oil_resource_model import OilResourceModel
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
 class OilModelTestCase(unittest.TestCase):
@@ -42,18 +44,10 @@ class OilModelTestCase(unittest.TestCase):
         self.energy_oil_demand_df= self.energy_oil_demand_df.loc[self.energy_oil_demand_df['years']
                                                                   <= self.year_end]
 
-        self.param = {'All_Demand': self.energy_oil_demand_df,
+        self.param = {'resources_demand': self.energy_oil_demand_df,
                       'year_start': self.year_start,
                       'year_end': self.year_end,
                       'production_start': self.production_start}
-
-    def test_Oil_model(self):
-        '''
-        Basique test of land use model
-        Mainly check the overal run without value checks (will be done in another test)
-        '''
-        Oil_use = ResourceModel(self.param)
-        Oil_use.compute(self.energy_oil_demand_df,'oil_resource',2012)
 
     def test_oil_discipline(self):
         ''' 
@@ -65,11 +59,11 @@ class OilModelTestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
-                   'oil_resource': f'{name}.{model_name}',
+                   'ns_oil_resource': f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_resources.sos_wrapping_oil_resource.oil_resource_model.oil_resource_disc.OilDiscipline'
+        mod_path = 'climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc.OilResourceDiscipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)
@@ -79,7 +73,7 @@ class OilModelTestCase(unittest.TestCase):
 
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
-                       f'{name}.{model_name}.{ResourceModel.DEMAND}': self.energy_oil_demand_df,
+                       f'{name}.{model_name}.resources_demand': self.energy_oil_demand_df,
                        'production_start': self.production_start
                        }
         ee.load_study_from_input_dict(inputs_dict)
@@ -90,5 +84,5 @@ class OilModelTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        #for graph in graph_list:
+        #    graph.to_plotly().show()
