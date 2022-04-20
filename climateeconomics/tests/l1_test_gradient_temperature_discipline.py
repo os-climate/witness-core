@@ -78,7 +78,8 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.time_step': 1,
                        f'{self.name}.carboncycle_df': carboncycle_df,
                        f'{self.name}.alpha': 0.5,
-                       f'{self.name}.temperature_obj_option': temperature_obj_option}
+                       f'{self.name}.temperature_obj_option': temperature_obj_option,
+                       f'{self.name}.{self.model_name}.forcing_model': 'DICE'}
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -88,3 +89,183 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_{temperature_obj_option}.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
                             outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], derr_approx='complex_step')
+
+    def test_03_temperature_discipline_analytic_grad_myhre(self):
+
+        self.model_name = 'temperature'
+        ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_ref': f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange.tempchange_discipline.TempChangeDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        data_dir = join(dirname(__file__), 'data')
+        carboncycle_df_all = read_csv(
+            join(data_dir, 'carbon_cycle_data_onestep.csv'))
+
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
+        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        # put manually the index
+        years = np.arange(2020, 2101, 1)
+        carboncycle_df.index = years
+
+        values_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2100,
+                       f'{self.name}.time_step': 1,
+                       f'{self.name}.carboncycle_df': carboncycle_df,
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{self.model_name}.forcing_model': 'Myhre', }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        # self.ee.execute()
+
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_Myhre.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
+                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], derr_approx='complex_step')
+
+    def _test_04_temperature_discipline_analytic_grad_etminan(self):
+
+        self.model_name = 'temperature'
+        ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_ref': f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange.tempchange_discipline.TempChangeDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        data_dir = join(dirname(__file__), 'data')
+        carboncycle_df_all = read_csv(
+            join(data_dir, 'carbon_cycle_data_onestep.csv'))
+
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
+        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        # put manually the index
+        years = np.arange(2020, 2101, 1)
+        carboncycle_df.index = years
+
+        values_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2100,
+                       f'{self.name}.time_step': 1,
+                       f'{self.name}.carboncycle_df': carboncycle_df,
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{self.model_name}.forcing_model': 'Etminan', }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        # self.ee.execute()
+
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_etminan.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
+                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], derr_approx='complex_step')
+
+    def test_05_temperature_discipline_analytic_grad_meinshausen(self):
+
+        self.model_name = 'temperature'
+        ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_ref': f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange.tempchange_discipline.TempChangeDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        data_dir = join(dirname(__file__), 'data')
+        carboncycle_df_all = read_csv(
+            join(data_dir, 'carbon_cycle_data_onestep.csv'))
+
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
+        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        # put manually the index
+        years = np.arange(2020, 2101, 1)
+        carboncycle_df.index = years
+
+        values_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2100,
+                       f'{self.name}.time_step': 1,
+                       f'{self.name}.carboncycle_df': carboncycle_df,
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{self.model_name}.forcing_model': 'Meinshausen', }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        # self.ee.execute()
+
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_Meinshausen.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
+                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], derr_approx='complex_step')
+
+    def _test_06_temperature_discipline_analytic_grad_etminan_lower_atmo_conc(self):
+
+        self.model_name = 'temperature'
+        ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_ref': f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange.tempchange_discipline.TempChangeDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        data_dir = join(dirname(__file__), 'data')
+        carboncycle_df_all = read_csv(
+            join(data_dir, 'carbon_cycle_data_onestep.csv'))
+
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
+        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        # put manually the index
+        years = np.arange(2020, 2101, 1)
+        carboncycle_df.index = years
+
+        values_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2100,
+                       f'{self.name}.time_step': 1,
+                       f'{self.name}.carboncycle_df': carboncycle_df,
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{self.model_name}.forcing_model': 'Etminan',
+                       f'{self.name}.{self.model_name}.pre_indus_co2_concentration_ppm': 41000.}
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        # self.ee.execute()
+
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_etminan_lower.pkl', discipline=disc_techno, step=1e-10, inputs=[f'{self.name}.carboncycle_df'],
+                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], output_column='CO2 forcing', derr_approx='finite_differences')
+
+
+if '__main__' == __name__:
+    cls = TemperatureJacobianDiscTest()
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    cls.setUp()
+    cls.test_04_temperature_discipline_analytic_grad_etminan()
