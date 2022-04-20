@@ -136,9 +136,9 @@ class Study(StudyManager):
                           '.temperature_df'] = temperature_df
 
 
-        # invest: 1Mha of crop land each year
-        invest_level = pd.DataFrame(
-            {'years': years, 'invest': np.ones(len(years)) * 0.381})
+        # investment: 1Mha of crop land each year
+        crop_investment = pd.DataFrame(
+            {'years': years, 'investment': np.ones(len(years)) * 0.381})
 
         margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
@@ -164,7 +164,7 @@ class Study(StudyManager):
                                                              2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                              3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
         agriculture_input[self.study_name +
-                          '.invest_level'] = invest_level
+                          '.crop_investment'] = crop_investment
         agriculture_input[self.study_name +
                           '.margin'] = margin
         agriculture_input[self.study_name +
@@ -194,32 +194,6 @@ class Study(StudyManager):
         self.design_space_ctrl = design_space_ctrl
         self.dspace = self.setup_design_space_ctrl_new()
         return setup_data_list
-
-    def setup_initial_design_variable(self):
-
-        init_design_var_df = pd.DataFrame(
-            columns=['red_meat_percentage', 'white_meat_percentage'], index=arange(self.year_start, self.year_end + 1, self.time_step))
-
-        init_design_var_df['red_meat_percentage'] = self.red_meat_percentage
-        init_design_var_df['white_meat_percentage'] = self.white_meat_percentage
-
-        return init_design_var_df
-
-    def setup_design_space(self):
-            #-- energy optimization inputs
-            # Design Space
-        dim_a = len(
-            self.red_meat_percentage)
-        lbnd1 = [1.0] * dim_a
-        ubnd1 = [10.0] * dim_a
-        lbnd2 = [5.0] * dim_a
-        ubnd2 = [20.0] * dim_a
-
-        # Design variables:
-        self.update_dspace_dict_with(
-            'red_meat_percentage_array', self.red_meat_percentage, lbnd1, ubnd1)
-        self.update_dspace_dict_with(
-            'white_meat_percentage_array', self.white_meat_percentage, lbnd2, ubnd2)
 
     def setup_design_space_ctrl_new(self):
         # Design Space

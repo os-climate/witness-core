@@ -111,27 +111,6 @@ class Study(StudyManager):
         self.dspace = self.setup_design_space_ctrl_new()
         return setup_data_list
 
-    def setup_initial_design_variable(self):
-
-        init_design_var_df = pd.DataFrame(
-            columns=['deforested_surface'], index=arange(self.year_start, self.year_end + 1, self.time_step))
-
-        init_design_var_df['deforested_surface'] = self.deforestation_surface['deforested_surface']
-
-        return init_design_var_df
-
-    def setup_design_space(self):
-        #-- energy optimization inputs
-        # Design Space
-        dim_a = len(
-            self.deforestation_surface['deforested_surface'].values)
-        lbnd1 = [0.0] * dim_a
-        ubnd1 = [100.0] * dim_a
-
-        # Design variables:
-        self.update_dspace_dict_with(
-            'deforested_surface_array', self.deforestation_surface['deforested_surface'].values, lbnd1, ubnd1)
-
     def setup_design_space_ctrl_new(self):
         # Design Space
         # header = ['variable', 'value', 'lower_bnd', 'upper_bnd']
