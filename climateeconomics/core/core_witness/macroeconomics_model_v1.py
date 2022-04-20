@@ -79,7 +79,7 @@ class MacroEconomics():
         self.co2_tax_efficiency = self.param['CO2_tax_efficiency']
         self.scaling_factor_energy_investment = self.param['scaling_factor_energy_investment']
         self.alpha = self.param['alpha']
-
+        self.delta_capital_cons_limit = self.param['delta_capital_cons_limit']
         if self.co2_tax_efficiency is not None:
             if 'years' in self.co2_tax_efficiency:
                 self.co2_tax_efficiency.index = self.co2_tax_efficiency['years']
@@ -551,8 +551,8 @@ class MacroEconomics():
         ne_capital = self.capital_df['non_energy_capital'].values
         usable_capital = self.capital_df['usable_capital'].values
         ref_usable_capital = self.usable_capital_ref * self.nb_years
-        self.delta_capital_objective_wo_exp_min = (self.capital_utilisation_ratio * ne_capital - usable_capital) / ref_usable_capital
-        self.delta_capital_objective = compute_func_with_exp_min(self.delta_capital_objective_wo_exp_min, 1e-15)
+        delta_capital = (self.capital_utilisation_ratio * ne_capital - usable_capital)
+        self.delta_capital_cons = (self.delta_capital_cons_limit - np.sign(delta_capital) * np.sqrt(compute_func_with_exp_min(delta_capital**2, 1e-15))) / ref_usable_capital
 
 
     def compute(self, inputs, damage_prod=False):
@@ -607,6 +607,7 @@ class MacroEconomics():
         self.compute_emax_enet_constraint()
         self.compute_delta_capital_objective()
         self.compute_delta_capital_objective_with_alpha()
+        self.compute_delta_capital_constraint()
         return self.economics_df.fillna(0.0), self.energy_investment.fillna(0.0), self.global_investment_constraint, \
             self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint, self.workforce_df, \
             self.capital_df, self.emax_enet_constraint

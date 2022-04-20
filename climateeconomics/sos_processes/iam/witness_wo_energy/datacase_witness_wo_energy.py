@@ -222,7 +222,7 @@ class DataStudy():
                         'ns_functions', 'ns_functions', 'ns_functions', 'ns_witness','ns_functions', 'ns_functions'])
         list_ftype.extend(
             [OBJECTIVE,  OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1.0,  0.0, 1.0, 0.0, 1.0, 0.0, 1.0])
+        list_weight.extend([1.0,  0.0, 1.0, 0.0, 1.0, 0.0, 0.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM,  AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
@@ -274,6 +274,15 @@ class DataStudy():
         list_weight.append(0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
+
+        list_var.append('delta_capital_objective_weighted')
+        list_parent.append('')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(-1.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
+
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
