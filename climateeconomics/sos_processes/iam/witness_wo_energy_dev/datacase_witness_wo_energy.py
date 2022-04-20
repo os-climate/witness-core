@@ -125,7 +125,7 @@ class DataStudy():
                                                            index=[2017, 2018, 2019])
 
         witness_input[self.study_name +
-                      '.agri_capital_techno_list'] = datacase_agriculture_mix.agri_techo_list
+                      '.agri_capital_techno_list'] = ['Forest']
 
         CO2_emitted_forest = pd.DataFrame()
         # GtCO2

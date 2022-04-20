@@ -93,7 +93,7 @@ class Study(EnergyMixStudyManager):
         return biomass_dry_mix_invest_df
 
     def setup_usecase(self):
-        self.agri_techo_list = ['Forest']
+
         agriculture_mix = 'AgricultureMix'
         energy_name = f'{agriculture_mix}'
         years = np.arange(self.year_start, self.year_end + 1)
