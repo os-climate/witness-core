@@ -140,6 +140,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('temperature_df', 'temp_atmo'),  ('carboncycle_df', 'atmo_conc'), d_tempatmo_d_atmoconc,)
 
+        for forcing_name, d_forcing_datmo_conc in self.model.d_forcing_datmo_conc_dict.items():
+            self.set_partial_derivative_for_other_types(
+                ('forcing_detail_df', forcing_name),  ('carboncycle_df', 'atmo_conc'), np.identity(len(d_forcing_datmo_conc)) * d_forcing_datmo_conc,)
+
         # dtao => derivative temp atmo obj
         # dac => derivative atmo conc
         # dta => derivative temp atmo
