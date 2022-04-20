@@ -100,7 +100,7 @@ By default, it is set to 0.102ha/person to represent around of 800 millions of h
 - **residue_percentage_for_energy**: residue percentage for energy, at 0.1 by default
 - **crop_residue_price_percent_dif**: ratio between the average price of residue price (23$/t) on average crop price (60$/t), 38% by default.
 - **construction_delay**: laps of time before the first harvest, at 1 year by default
-- **invest_level**: investment for crops for energy
+- **crop_investment**: investment for crops for energy
 - **initial_production**: crop production for energy in 2020
 
 The model outputs are:

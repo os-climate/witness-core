@@ -23,13 +23,14 @@ from sos_trades_core.execution_engine.func_manager.func_manager import FunctionM
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
-from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase import Study as datacase_landuse
-from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import Study as datacase_agriculture
+from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as datacase_agriculture_mix
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 
 from sos_trades_core.study_manager.study_manager import StudyManager
+from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
@@ -160,19 +161,14 @@ class DataStudy():
 
         #-- load data from land use
         dc_landuse = datacase_landuse(
-            self.year_start, self.year_end, self.time_step, name='.Land.Land_Use_V1', extra_name='.EnergyMix')
+            self.year_start, self.year_end, self.time_step, name='.Land_Use_V2', extra_name='.EnergyMix')
         dc_landuse.study_name = self.study_name
 
         #-- load data from agriculture
-        dc_agriculture = datacase_agriculture(
-            self.year_start, self.year_end, self.time_step, name='.Land.Agriculture')
-        dc_agriculture.study_name = self.study_name
-
-        #-- load data from forest
-
-        dc_forest = datacase_forest(
-            self.year_start, self.year_end, self.time_step, name='.Land.Forest')
-        dc_forest.study_name = self.study_name
+        dc_agriculture_mix = datacase_agriculture_mix(
+            self.year_start, self.year_end, self.time_step)
+        dc_agriculture_mix.additional_ns = '.InvestmentDistribution'
+        dc_agriculture_mix.study_name = self.study_name
 
         resource_input_list = dc_resource.setup_usecase()
         setup_data_list = setup_data_list + resource_input_list
@@ -180,15 +176,13 @@ class DataStudy():
         land_use_list = dc_landuse.setup_usecase()
         setup_data_list = setup_data_list + land_use_list
 
-        agriculture_list = dc_agriculture.setup_usecase()
+        agriculture_list = dc_agriculture_mix.setup_usecase()
         setup_data_list = setup_data_list + agriculture_list
-
-        forest_list = dc_forest.setup_usecase()
-        setup_data_list = setup_data_list + forest_list
-        StudyManager.merge_design_spaces(
-            self, [dc_forest.dspace, dc_agriculture.dspace])
-        # constraint land use
-
+        self.dspace_size = dc_agriculture_mix.dspace.pop('dspace_size')
+        self.dspace.update(dc_agriculture_mix.dspace)
+        nb_poles = 8
+        update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
+                                [1.65] * nb_poles , [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
         # WITNESS
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
@@ -208,7 +202,7 @@ class DataStudy():
         witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
-        witness_input[f'{self.study_name}.is_dev'] = False
+        witness_input[f'{self.study_name}.is_dev'] = True
         #witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
 #         self.exec_eng.dm.export_couplings(
 #             in_csv=True, f_name='couplings.csv')

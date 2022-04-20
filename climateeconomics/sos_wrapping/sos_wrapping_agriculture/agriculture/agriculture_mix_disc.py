@@ -45,7 +45,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
                                   'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
-
+    name = 'AgricultureMix'
     energy_name = BiomassDry.name
 
     # -- add specific techno outputs to this

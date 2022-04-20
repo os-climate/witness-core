@@ -221,46 +221,8 @@ class Study(StudyManager):
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
-        self.dspace = self.setup_design_space_ctrl_new()
+
         return setup_data_list
-
-    def setup_initial_design_variable(self):
-
-        init_design_var_df = pd.DataFrame(
-            columns=['deforested_surface', 'forest_investment'], index=arange(self.year_start, self.year_end + 1, self.time_step))
-
-        init_design_var_df['deforested_surface'] = self.deforestation_surface['deforested_surface']
-        init_design_var_df['forest_investment'] = self.forest_invest_df['forest_investment']
-
-        return init_design_var_df
-
-    def setup_design_space(self):
-        #-- energy optimization inputs
-        # Design Space
-        dim_a = len(
-            self.deforestation_surface['deforested_surface'].values)
-        lbnd1 = [0.0] * dim_a
-        ubnd1 = [100.0] * dim_a
-
-        # Design variables:
-        self.update_dspace_dict_with(
-            'deforested_surface_array', self.deforestation_surface['deforested_surface'].values, lbnd1, ubnd1)
-        self.update_dspace_dict_with(
-            'forest_investment_array', self.forest_invest_df['forest_investment'].values, lbnd1, ubnd1)
-
-    def setup_design_space_ctrl_new(self):
-        # Design Space
-        # header = ['variable', 'value', 'lower_bnd', 'upper_bnd']
-        ddict = {}
-        ddict['dspace_size'] = 0
-
-        # Design variables:
-        update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
-                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
-
-        update_dspace_dict_with(ddict, 'forest_investment_array_mix',
-                                list(self.design_space_ctrl['forest_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
-        return ddict
 
 
 if '__main__' == __name__:

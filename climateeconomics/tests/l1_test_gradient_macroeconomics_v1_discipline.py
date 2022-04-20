@@ -166,7 +166,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df, 
-                       f'{self.name}.energy_capital': self.energy_capital
+                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.alpha': 0.5
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -187,7 +188,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint', 
                                      f'{self.name}.emax_enet_constraint',
-                                     f'{self.name}.delta_capital_objective'])
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted'])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
 
@@ -225,7 +227,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital
+                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.alpha': 0.5
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -247,7 +250,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     f'{self.name}.delta_capital_objective'])
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted'])
 
     def test_macro_economics_analytic_grad_max_damage(self):
 
@@ -287,7 +291,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital
+                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.alpha': 0.5
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -309,7 +314,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     f'{self.name}.delta_capital_objective'])
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted'])
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
 
@@ -354,7 +360,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital
+                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.alpha': 0.5
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -376,7 +383,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     f'{self.name}.delta_capital_objective'])
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted'])
 
     def test_macro_economics_very_high_emissions(self):
 
@@ -426,7 +434,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital
+                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.alpha': 0.5
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -447,7 +456,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     f'{self.name}.delta_capital_objective'])
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted'])
 
     def test_macro_economics_negativeco2_emissions(self):
 
@@ -498,7 +508,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital
+                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.alpha': 0.5
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -519,7 +530,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     f'{self.name}.delta_capital_objective'])
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted'])
 
     def test_macro_economics_negativeco2_tax(self):
 
@@ -560,7 +572,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital
+                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.alpha': 0.5
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -581,7 +594,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                       f'{self.name}.pc_consumption_constraint',
                                       f'{self.name}.global_investment_constraint',
                                       f'{self.name}.emax_enet_constraint',
-                                      f'{self.name}.delta_capital_objective'])
+                                      f'{self.name}.delta_capital_objective',
+                                      f'{self.name}.delta_capital_objective_weighted'])
 
 
 if '__main__' == __name__:
