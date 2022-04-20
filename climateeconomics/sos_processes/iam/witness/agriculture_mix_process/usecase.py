@@ -26,6 +26,8 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS,
 
 DEFAULT_TECHNOLOGIES_LIST = ['Crop', 'Forest']
 TECHNOLOGIES_LIST_FOR_OPT = ['Crop', 'Forest']
+
+
 def update_dspace_with(dspace_dict, name, value, lower, upper):
     ''' type(value) has to be ndarray
     '''
@@ -91,6 +93,7 @@ class Study(EnergyMixStudyManager):
         return biomass_dry_mix_invest_df
 
     def setup_usecase(self):
+        self.agri_techo_list = ['Forest']
         agriculture_mix = 'AgricultureMix'
         energy_name = f'{agriculture_mix}'
         years = np.arange(self.year_start, self.year_end + 1)
@@ -112,12 +115,11 @@ class Study(EnergyMixStudyManager):
         red_meat_percentage = np.linspace(6.82, 1, year_range)
         white_meat_percentage = np.linspace(13.95, 5, year_range)
         self.red_meat_percentage = pd.DataFrame({
-                            'years': years,
-                            'red_meat_percentage': red_meat_percentage})
+            'years': years,
+            'red_meat_percentage': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-                                'years': years,
-                                'white_meat_percentage': white_meat_percentage})
-
+            'years': years,
+            'white_meat_percentage': white_meat_percentage})
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -128,7 +130,7 @@ class Study(EnergyMixStudyManager):
                                 'fruits and vegetables': [217.62],
                                 })
         other = np.array(np.linspace(0.102, 0.102, year_range))
-        
+
         crop_invest = np.linspace(0.5, 0.25, year_range)
         self.crop_investment = pd.DataFrame(
             {'years': years, 'investment': crop_invest})
@@ -181,13 +183,13 @@ class Study(EnergyMixStudyManager):
                        }
         if self.main_study:
             values_dict.update({
-                 f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
-                 f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
-                 f'{self.study_name + self.additional_ns}.managed_wood_investment': self.mw_invest_df,
-                 f'{self.study_name + self.additional_ns}.unmanaged_wood_investment': self.uw_invest_df,
-                 f'{self.study_name}.population_df': population_df,
-                 f'{self.study_name}.temperature_df': temperature_df,
-                 })
+                f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
+                f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
+                f'{self.study_name + self.additional_ns}.managed_wood_investment': self.mw_invest_df,
+                f'{self.study_name + self.additional_ns}.unmanaged_wood_investment': self.uw_invest_df,
+                f'{self.study_name}.population_df': population_df,
+                f'{self.study_name}.temperature_df': temperature_df,
+            })
         else:
             self.update_dv_arrays()
 
@@ -196,8 +198,10 @@ class Study(EnergyMixStudyManager):
         deforestation_surface_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
         forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
         crop_investment_array_mix = np.linspace(1.0, 1.5, self.nb_poles)
-        managed_wood_investment_array_mix = np.linspace(2.0, 3.0, self.nb_poles)
-        unmanaged_wood_investment_array_mix = np.linspace(4.0, 5.0, self.nb_poles)
+        managed_wood_investment_array_mix = np.linspace(
+            2.0, 3.0, self.nb_poles)
+        unmanaged_wood_investment_array_mix = np.linspace(
+            4.0, 5.0, self.nb_poles)
 
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
@@ -229,7 +233,7 @@ class Study(EnergyMixStudyManager):
                                 list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'crop_investment_array_mix',
                                 list(self.design_space_ctrl['crop_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        
+
         # -----------------------------------------
         # Forest related
         update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
@@ -237,14 +241,15 @@ class Study(EnergyMixStudyManager):
 
         update_dspace_dict_with(ddict, 'forest_investment_array_mix',
                                 list(self.design_space_ctrl['forest_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        
+
         update_dspace_dict_with(ddict, 'managed_wood_investment_array_mix',
                                 list(self.design_space_ctrl['managed_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        
+
         update_dspace_dict_with(ddict, 'unmanaged_wood_investment_array_mix',
                                 list(self.design_space_ctrl['unmanaged_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        
+
         return ddict
+
 
 if '__main__' == __name__:
     uc_cls = Study(main_study=True,
