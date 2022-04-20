@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -181,7 +181,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.co2_emissions_Gt',
                                     f'{self.name}.CO2_taxes',
                                     f'{self.name}.population_df',
-                                    f'{self.name}.working_age_population_df', 
+                                    f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
                                      f'{self.name}.energy_investment',
@@ -189,7 +189,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.global_investment_constraint', 
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
-                                     f'{self.name}.delta_capital_objective_weighted'])
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint'])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
 
@@ -251,7 +252,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
-                                     f'{self.name}.delta_capital_objective_weighted'])
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint'])
 
     def test_macro_economics_analytic_grad_max_damage(self):
 
@@ -315,7 +317,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
-                                     f'{self.name}.delta_capital_objective_weighted'])
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint'])
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
 
@@ -384,7 +387,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
-                                     f'{self.name}.delta_capital_objective_weighted'])
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint'])
 
     def test_macro_economics_very_high_emissions(self):
 
@@ -457,7 +461,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
-                                     f'{self.name}.delta_capital_objective_weighted'])
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint'])
 
     def test_macro_economics_negativeco2_emissions(self):
 
@@ -531,7 +536,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
-                                     f'{self.name}.delta_capital_objective_weighted'])
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint'])
 
     def test_macro_economics_negativeco2_tax(self):
 
@@ -595,7 +601,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                       f'{self.name}.global_investment_constraint',
                                       f'{self.name}.emax_enet_constraint',
                                       f'{self.name}.delta_capital_objective',
-                                      f'{self.name}.delta_capital_objective_weighted'])
+                                      f'{self.name}.delta_capital_objective_weighted',
+                                      f'{self.name}.delta_capital_constraint'])
 
 
 if '__main__' == __name__:
