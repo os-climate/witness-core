@@ -27,8 +27,7 @@ def post_processing_filters(execution_engine, namespace):
 
     chart_list = ['Temperature per scenario', 'Forcing per scenario']
 
-    scatter_scenario = 'optimization scenarios'
-    namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
+    namespace_w = execution_engine.study_name
     scenario_key = execution_engine.dm.get_data_id(
         f'{namespace_w}.scenario_list')
     scenario_list = execution_engine.dm.data_dict[scenario_key][DataManager.VALUE]
