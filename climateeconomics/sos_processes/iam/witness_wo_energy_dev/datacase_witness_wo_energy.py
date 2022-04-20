@@ -124,6 +124,9 @@ class DataStudy():
                                                             'energy_investment_before_year_start': [1924, 1927, 1935]},
                                                            index=[2017, 2018, 2019])
 
+        witness_input[self.study_name +
+                      '.agri_capital_techno_list'] = datacase_agriculture_mix.agri_techo_list
+
         CO2_emitted_forest = pd.DataFrame()
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
@@ -182,7 +185,7 @@ class DataStudy():
         self.dspace.update(dc_agriculture_mix.dspace)
         nb_poles = 8
         update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                [1.65] * nb_poles , [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
+                                [1.65] * nb_poles, [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
         # WITNESS
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
@@ -213,7 +216,7 @@ class DataStudy():
 # "reduced.pdf")
         nb_poles = 8
         update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                [1.65] * nb_poles , [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
+                                [1.65] * nb_poles, [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
         setup_data_list.append(witness_input)
 
         return setup_data_list
