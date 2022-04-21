@@ -33,32 +33,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
-    def analytic_grad_entry(self):
-        return [
-            self._test_All_resource_discipline_analytic_grad
-        ]
-
-    def test_All_resource_discipline_analytic_grad(self):
-
         self.model_name = 'all_resource'
-        ns_dict = {'ns_public': f'{self.name}',
-                   'ns_coal_resource': f'{self.name}.{self.model_name}',
-                   'ns_oil_resource': f'{self.name}.{self.model_name}',
-                   'ns_natural_gas_resource': f'{self.name}.{self.model_name}',
-                   'ns_uranium_resource': f'{self.name}.{self.model_name}',
-                   'ns_resource': f'{self.name}.{self.model_name}',
-                   }
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.core.core_resources.resource_mix.resource_mix_disc.ResourceMixDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes(True)
 
         data_dir = join(dirname(__file__), 'data')
         self.oil_production_df = read_csv(
@@ -101,8 +76,57 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         self.year_start = 2020
         self.year_end = 2100
-        years = np.arange(self.year_start, self.year_end + 1, 1)
-        year_range = self.year_end - self.year_start + 1
+        self.years = np.arange(self.year_start, self.year_end + 1, 1)
+        self.year_range = self.year_end - self.year_start + 1
+
+        self.values_dict = {f'{self.name}.year_start': self.year_start,
+                            f'{self.name}.year_end': self.year_end,
+                            f'{self.name}.{self.model_name}.resources_demand': self.all_demand,
+                            f'{self.name}.{self.model_name}.resources_demand_woratio': self.all_demand,
+                            f'{self.name}.{self.model_name}.oil_resource.predictable_production': self.oil_production_df,
+                            f'{self.name}.{self.model_name}.oil_resource.resource_stock': self.oil_stock_df,
+                            f'{self.name}.{self.model_name}.oil_resource.resource_price': self.oil_price_df,
+                            f'{self.name}.{self.model_name}.oil_resource.use_stock': self.oil_use_df,
+                            f'{self.name}.{self.model_name}.natural_gas_resource.predictable_production': self.gas_production_df,
+                            f'{self.name}.{self.model_name}.natural_gas_resource.resource_stock': self.gas_stock_df,
+                            f'{self.name}.{self.model_name}.natural_gas_resource.resource_price': self.gas_price_df,
+                            f'{self.name}.{self.model_name}.natural_gas_resource.use_stock': self.gas_use_df,
+                            f'{self.name}.{self.model_name}.coal_resource.predictable_production': self.coal_production_df,
+                            f'{self.name}.{self.model_name}.coal_resource.resource_stock': self.coal_stock_df,
+                            f'{self.name}.{self.model_name}.coal_resource.resource_price': self.coal_price_df,
+                            f'{self.name}.{self.model_name}.coal_resource.use_stock': self.coal_use_df,
+                            f'{self.name}.{self.model_name}.uranium_resource.predictable_production': self.uranium_production_df,
+                            f'{self.name}.{self.model_name}.uranium_resource.resource_stock': self.uranium_stock_df,
+                            f'{self.name}.{self.model_name}.uranium_resource.resource_price': self.uranium_price_df,
+                            f'{self.name}.{self.model_name}.uranium_resource.use_stock': self.uranium_use_df,
+                            f'{self.name}.{self.model_name}.{ResourceMixModel.NON_MODELED_RESOURCE_PRICE}': self.non_modeled_resource_df
+                            }
+
+        self.ns_dict = {'ns_public': f'{self.name}',
+                        'ns_coal_resource': f'{self.name}.{self.model_name}',
+                        'ns_oil_resource': f'{self.name}.{self.model_name}',
+                        'ns_natural_gas_resource': f'{self.name}.{self.model_name}',
+                        'ns_uranium_resource': f'{self.name}.{self.model_name}',
+                        'ns_resource': f'{self.name}.{self.model_name}',
+                        }
+
+    def analytic_grad_entry(self):
+        return [
+            self._test_All_resource_discipline_analytic_grad
+        ]
+
+    def test_All_resource_discipline_analytic_grad(self):
+
+        self.ee.ns_manager.add_ns_def(self.ns_dict)
+
+        mod_path = 'climateeconomics.core.core_resources.resource_mix.resource_mix_disc.ResourceMixDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes(True)
 
         values_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,

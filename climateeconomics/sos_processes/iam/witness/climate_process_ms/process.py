@@ -57,7 +57,7 @@ class ProcessBuilder(BaseProcessBuilder):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         multi_scenario = self.ee.factory.create_very_simple_multi_scenario_builder(
-            scatter_scenario_name, 'scenario_list', builder_cdf_list, autogather=True, gather_node='Post-processing')
+            scatter_scenario_name, 'scenario_list', builder_cdf_list, autogather=False)
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
                                                                                 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_climate_ms.post_processing_climate')
