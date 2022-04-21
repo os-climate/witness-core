@@ -226,7 +226,7 @@ class LandUseV2Discipline(SoSDiscipline):
                 total_forest_surface_series = InstanciatedSeries(years, total_forest_surfaces.tolist(), 'Total Available Forest surface', InstanciatedSeries.LINES_DISPLAY)
 
                 forest_unused_surfaces = [initial_unsused_forest_surface] * len(years)
-                forest_unused_surface_series = InstanciatedSeries(years, forest_unused_surfaces, 'Other forests', InstanciatedSeries.BAR_DISPLAY)
+                forest_unused_surface_series = InstanciatedSeries(years, forest_unused_surfaces, 'Other forests (protected and for services)', InstanciatedSeries.BAR_DISPLAY)
 
                 forest_evolution_surface = forest_df['forest_constraint_evolution']
                 forest_evolution_surface_series = InstanciatedSeries(years, forest_evolution_surface.tolist(), 'Deforestation + reforestation surface', InstanciatedSeries.BAR_DISPLAY)
@@ -234,8 +234,11 @@ class LandUseV2Discipline(SoSDiscipline):
                 series_to_add = []
                 for column in list(demand_df):
                     if column in LandUseV2.FOREST_TECHNO:
+                        legend = column.replace(' (Gha)', '')
+                        if legend == "Forest":
+                            legend = 'Forest for wood production'
                         new_series = InstanciatedSeries(
-                            years, (demand_df[column]).values.tolist(), column.replace('(Gha)', ''), InstanciatedSeries.BAR_DISPLAY)
+                            years, (demand_df[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
                         series_to_add.append(new_series)
 
                 new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.FOREST_CHARTS + ' [Gha]',
