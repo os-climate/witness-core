@@ -117,5 +117,6 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.Agriculture.Forest.non_use_capital',
                                     f'{self.name}.Agriculture.Forest.techno_capital'],
                             outputs=[f'{self.name}.non_use_capital_objective',
+                                     f'{self.name}.non_use_capital_cons',
                                      f'{self.name}.energy_capital'],
                             derr_approx='complex_step')
