@@ -128,7 +128,7 @@ class ResourceModel():
         #Initialize stocks df
         for resource_type in self.sub_resource_list:
             self.resource_stock[resource_type] = np.zeros(len(self.years))
-            self.use_stock[resource_type] = np.insert(np.zeros(len(self.years)-1),0,self.resource_year_start_data.loc[0, resource_type])
+            self.use_stock[resource_type] = np.insert(np.zeros(len(self.years)-1), 0, self.resource_year_start_data.loc[0, resource_type])
         #Select only the right resource demand and convert the demand unit if needed
         self.resource_demand = self.resources_demand[['years', self.resource_name]]
         self.convert_demand(self.resource_demand)

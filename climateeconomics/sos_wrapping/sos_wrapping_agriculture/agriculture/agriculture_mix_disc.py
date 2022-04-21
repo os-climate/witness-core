@@ -32,7 +32,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fa-solid fa-wheat',
+        'icon': 'fas fa-tractor fa-fw',
         'version': '',
     }
 
