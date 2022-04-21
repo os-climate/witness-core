@@ -137,10 +137,9 @@ class TempChange(object):
             return 0.47 * np.log(1 + 2.01e-5 * (c1 * c2)**(0.75) +
                                  5.31e-15 * c1 * (c1 * c2)**(1.52))
 
-        exog_forcing = 0.036 * (np.sqrt(ch4_conc) - np.sqrt(self.ch4_conc_init_ppm)) - (
-            MN(ch4_conc, self.n2o_conc_init_ppm) - MN(self.ch4_conc_init_ppm, self.n2o_conc_init_ppm)) + \
-            0.12 * (np.sqrt(n2o_conc) - np.sqrt(self.n2o_conc_init_ppm)) - (
-            MN(self.ch4_conc_init_ppm, n2o_conc) - MN(self.ch4_conc_init_ppm, self.n2o_conc_init_ppm))
+        exog_forcing = 0.036 * (np.sqrt(ch4_conc) - np.sqrt(self.ch4_conc_init_ppm)) - MN(ch4_conc, self.n2o_conc_init_ppm) + \
+            0.12 * (np.sqrt(n2o_conc) - np.sqrt(self.n2o_conc_init_ppm)) - MN(self.ch4_conc_init_ppm, n2o_conc) \
+            + 2 * MN(self.ch4_conc_init_ppm, self.n2o_conc_init_ppm)
 
         self.forcing_df['CH4 and N20 forcing'] = exog_forcing
         return exog_forcing

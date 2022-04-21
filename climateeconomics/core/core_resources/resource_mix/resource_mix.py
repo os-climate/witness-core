@@ -190,13 +190,21 @@ class ResourceMixModel():
                                                                  list(ResourceMixModel.NON_MODELED_RESOURCE_LIST))
 
     def compute_ratio(self):
-        """ Compute ratios
-        """
+        '''! Computes the demand_ratio dataframe.
+        The ratio is calculated using the resource_use and demand WITHOUT the ratio applied
+        The value of the ratio is capped to 100.0
+        '''
+
         for resource in self.resource_list:
-            # compute ratio production and usable resource VS demand:
+            # Use with ratio
+            resource_use = deepcopy(self.all_resource_use[resource].values)
+            use_limited = compute_func_with_exp_min(
+                np.array(resource_use), 1.0e-10)
+            # Demand without ratio
+            demand_woratio = deepcopy(self.resources_demand_woratio[resource].values)
             demand_limited = compute_func_with_exp_min(
-                np.array(self.resources_demand_woratio[resource].values), 1.0e-10)
-            self.all_resource_ratio_usable_demand[resource] = self.all_resource_use[resource].values / demand_limited
+                np.array(demand_woratio), 1.0e-10)
+            self.all_resource_ratio_usable_demand[resource] = np.minimum(use_limited / demand_limited, 1.0) * 100.0
 
     def get_derivative_all_resource(self, inputs_dict, resource_type):
         """ Compute derivative of total stock regarding year demand
@@ -218,6 +226,12 @@ class ResourceMixModel():
     def get_derivative_ratio(self, inputs_dict, resource_type, grad_use, output_dict):
 
         resource_use = output_dict[ResourceMixModel.All_RESOURCE_USE][resource_type]
+        # Use with ratio
+        resource_use = deepcopy(self.all_resource_use[resource_type].values)
+        use_limited = compute_func_with_exp_min(
+            np.array(resource_use), 1.0e-10)
+        d_use_limited = compute_dfunc_with_exp_min(
+            np.array(resource_use), 1.0e-10)
         demand = inputs_dict['resources_demand_woratio'][resource_type]
         demand_limited = compute_func_with_exp_min(
             demand.values, 1.0e-10)
@@ -227,8 +241,8 @@ class ResourceMixModel():
             np.linspace(-1, -1, len(inputs_dict['resources_demand_woratio'].index)))
         # pylint: disable=unsubscriptable-object
         grad_use_ratio_on_demand = (
-            resource_use * d_demand_limited.T[0] / (demand_limited**2)).values * identity_neg
-        grad_use_ratio_on_use = grad_use / (demand_limited)
+            use_limited * d_demand_limited.T[0] / (demand_limited**2)) * identity_neg * 100.
+        grad_use_ratio_on_use = d_use_limited * grad_use / (demand_limited) * 100.
 
         return grad_use_ratio_on_use, grad_use_ratio_on_demand
 
