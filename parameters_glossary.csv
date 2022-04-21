@@ -332,7 +332,7 @@ managed_wood_initial_surface,Managed wood initial surface,Gha,Initial surface de
 managed_wood_invest_before_year_start,Managed wood investment before year start,G$,Investment in managed wood technology before year start.,,
 managed_wood_investment,Managed wood investment,G$,Investment in managed wood over the years.,,
 unmanaged_wood_initial_prod,Unmanaged wood initial production,Twh,Initial production of biomass by unmanaged wood technology.,,
-unmanaged_wood_initial_surface,Unmanaged wood initial surface,Gha,Initial surface dedicated to unmanaged wood technology. Default value at 2020 is 1.15Gha.,,
+unmanaged_wood_initial_surface,Unmanaged wood initial surface,Gha,Initial surface dedicated to unmanaged wood technology. Default value at 2020 is 0.1Gha.,,
 unmanaged_wood_invest_before_year_start,Unmanaged wood investment before year start,G$,Investment in unmanaged wood technology before year start.,,
 unmanaged_wood_investment,Unmanaged wood investment,G$,Investment in unmanaged wood over the years.,,
 managed_wood_df,Managed wood data,,Different data and result computed about managed wood.,,
