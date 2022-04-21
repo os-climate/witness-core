@@ -96,10 +96,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3},
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3},
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3},
-        'ref_emax_enet_constraint': {'type': 'float', 'default': 116e3, 'user_level': 3, 'namespace': 'ns_ref'},
-        'usable_capital_ref': {'type': 'float','unit': 'G$', 'default': 0.3, 'user_level': 3, 'namespace': 'ns_ref'},
+        'ref_emax_enet_constraint': {'type': 'float', 'default': 60e3, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,'namespace': 'ns_ref'},
+        'usable_capital_ref': {'type': 'float','unit': 'G$', 'default': 0.3, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,'namespace': 'ns_ref'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'delta_capital_cons_limit': {'type': 'float','unit': 'G$', 'default': 50, 'user_level': 3, 'namespace': 'ns_ref'},
+        'delta_capital_cons_limit': {'type': 'float','unit': 'G$', 'default': 50, 'user_level': 3,'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
     }
 
     DESC_OUT = {
