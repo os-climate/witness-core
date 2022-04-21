@@ -236,7 +236,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                     new_series = InstanciatedSeries(
                         years, forcing_df[forcing].values.tolist(), forcing, 'lines')
 
-                new_chart.series.append(new_series)
+                    new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
         return instanciated_charts

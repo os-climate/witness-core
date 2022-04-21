@@ -14,9 +14,9 @@ Different anthropogenic emissions are impacting the climate change and these imp
 
 Temperature response by component for total anthropogenic emissions for a 1-year pulse.
 
-![](RF_temp.PNG)
+![](Rf_temp.PNG)
 
-In the above figure, Longer and higher temperature responses to gas emission increases are due to CO2, CH4 and N2O emissions. Consequently, the majority of climate IAM models compute radiative forcing of these three grenhouse gases, respectively CO2, CH4 and N2O molecules. 
+In the above figure, Longer and higher temperature responses to gas emission increases are due to CO2, CH4 and N2O emissions. Consequently, the majority of climate IAM models compute radiative forcing of these three greenhouse gases, respectively CO2, CH4 and N2O molecules. 
 
 ### DICE Radiative forcing model
 
@@ -52,8 +52,9 @@ The model of Etminan [^7] is an improved version of the Myhre model especially f
 
 $$RF_{CO2,t} = \eta_{CO2,Etminan}(\ln(C_{CO2}^t) - ln(C_{CO2}^{1750}))$$
 
-with : 
-$$\eta_{CO2,Etminan} = -2.4.10^{-7} (C_{CO2}^t - C_{CO2}^{1750})^2 + 7.2.10^{-4} abs(C_{CO2}^t - C_{CO2}^{1750}) \\ -2.1.10^{-4} * n2o_{mean} + \frac{\eta}{np.log(2)} $$
+with :
+ 
+$$ \eta_{CO2,Etminan} = -2.4.10^{-7} (C_{CO2}^t - C_{CO2}^{1750})^2 + 7.2.10^{-4} abs(C_{CO2}^t - C_{CO2}^{1750}) \\ -2.1.10^{-4} * n2o_{mean} + \frac{\eta}{np.log(2)} $$
 
 $$n2o_{mean}= \frac{1}{2}(C_{N2O}^t + C_{N2O}^{1750})$$
 
