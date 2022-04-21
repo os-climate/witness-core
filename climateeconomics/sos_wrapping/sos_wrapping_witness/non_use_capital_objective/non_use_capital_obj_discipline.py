@@ -50,6 +50,10 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
         'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
+        'non_use_capital_cons_ref': {'type': 'float', 'default': 20000., 'unit': 'G$', 'user_level': 2,
+                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
+                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
     }
     DESC_OUT = {
@@ -57,6 +61,8 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         'non_use_capital_df': {'type': 'dataframe'},
         'techno_capital_df': {'type': 'dataframe'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'non_use_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+
     }
 
     def setup_sos_disciplines(self):
@@ -139,11 +145,13 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         non_use_capital_df = self.model.get_non_use_capital_df()
         techno_capital_df = self.model.get_techno_capital_df()
         energy_capital = self.model.get_energy_capital_trillion_dollars()
+        non_use_capital_cons = self.model.get_constraint()
         # store output data
         dict_values = {'non_use_capital_df': non_use_capital_df,
                        'techno_capital_df': techno_capital_df,
                        'energy_capital': energy_capital,
-                       'non_use_capital_objective': non_use_capital_objective}
+                       'non_use_capital_objective': non_use_capital_objective,
+                       'non_use_capital_cons': non_use_capital_cons}
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
@@ -157,6 +165,8 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                           inputs_dict['year_end'] + 1)
         non_use_capital_obj_ref = inputs_dict['non_use_capital_obj_ref']
         alpha, gamma = inputs_dict['alpha'], inputs_dict['gamma']
+        non_use_capital_cons_ref = inputs_dict['non_use_capital_cons_ref']
+
         outputs_dict = self.get_sosdisc_outputs()
         non_use_capital_df = outputs_dict['non_use_capital_df']
         input_nonusecapital_list = [
@@ -167,7 +177,8 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                 col for col in inputs_dict[non_use_capital].columns if col != 'years'][0]
             self.set_partial_derivative_for_other_types(
                 ('non_use_capital_objective', ), (non_use_capital, column_name), np.ones(len(years)) * alpha * (1 - gamma) / non_use_capital_obj_ref / delta_years)
-
+            self.set_partial_derivative_for_other_types(
+                ('non_use_capital_cons', ), (non_use_capital, column_name), - np.ones(len(years))  / non_use_capital_cons_ref / delta_years)
         input_capital_list = [
             key for key in inputs_dict.keys() if key.endswith('techno_capital')]
 

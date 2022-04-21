@@ -31,6 +31,7 @@ class NonUseCapitalObjective():
         self.non_use_capital_objective = np.array([0.0])
         self.non_use_capital_df = None
         self.techno_capital_df = None
+        self.non_use_capital_cons = np.array([0.0])
 
     def set_data(self):
         self.year_start = self.param['year_start']
@@ -38,6 +39,9 @@ class NonUseCapitalObjective():
         self.non_use_capital_obj_ref = self.param['non_use_capital_obj_ref']
         self.alpha = self.param['alpha']
         self.gamma = self.param['gamma']
+        self.non_use_capital_cons_limit = self.param['non_use_capital_cons_limit']
+        self.non_use_capital_cons_ref = self.param['non_use_capital_cons_ref']
+
 
     def create_year_range(self):
         '''
@@ -60,6 +64,7 @@ class NonUseCapitalObjective():
         self.techno_capital_df = self.agreggate_and_compute_sum(
             'techno_capital', inputs_dict)
         self.compute_objective()
+        self.compute_constraint()
 
     def agreggate_and_compute_sum(self, name, inputs_dict):
         '''
@@ -87,14 +92,28 @@ class NonUseCapitalObjective():
         Compute objective
         '''
         if 'Sum of non use capital' in self.non_use_capital_df:
-            self.non_use_capital_objective = self.alpha * (1 - self.gamma) * np.asarray(
-                [self.non_use_capital_df['Sum of non use capital'].sum()]) / self.non_use_capital_obj_ref / self.delta_years
+            self.non_use_capital_objective_wo_ponderation = np.asarray(
+                [self.non_use_capital_df['Sum of non use capital'].sum()]) / self.delta_years
+            self.non_use_capital_objective = self.alpha * (1 - self.gamma) * self.non_use_capital_objective_wo_ponderation / self.non_use_capital_obj_ref
+
+    def compute_constraint(self):
+        '''
+        Compute constraint
+        '''
+        if 'Sum of non use capital' in self.non_use_capital_df:
+            self.non_use_capital_cons = (self.non_use_capital_cons_limit - self.non_use_capital_objective_wo_ponderation) / self.non_use_capital_cons_ref
 
     def get_objective(self):
         '''
         Get non_use capital objective
         '''
         return self.non_use_capital_objective
+
+    def get_constraint(self):
+        '''
+        Get non_use capital constraint
+        '''
+        return self.non_use_capital_cons
 
     def get_non_use_capital_df(self):
         '''
