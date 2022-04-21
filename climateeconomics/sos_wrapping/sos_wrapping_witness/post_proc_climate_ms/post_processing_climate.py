@@ -133,13 +133,17 @@ def post_processings(execution_engine, namespace, filters):
                 f'{namespace_w}.{scenario}.Temperature.forcing_detail_df')
             for col in forcing_df.columns:
                 if col not in ['years', 'CO2 forcing']:
-                    forcing_dict[f'{col} {scenario}'] = forcing_df[col].values.tolist(
-                    )
+                    if f'{col} {scenario}' in forcing_dict:
+                        forcing_dict[f'other RF {scenario}'] += forcing_df[col].values
+                    else:
+                        forcing_dict[f'other RF {scenario}'] = forcing_df[col].values
                     if scenario in selected_scenarios:
                         selected_scenarios_other.append(f'{col} {scenario}')
             years = forcing_df['years'].values.tolist(
             )
-        new_chart = get_scenario_comparison_chart(years, forcing_dict,
+        forcing_dict_in_list = {key: value.tolist()
+                                for key, value in forcing_dict.items()}
+        new_chart = get_scenario_comparison_chart(years, forcing_dict_in_list,
                                                   chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios_other)
 
