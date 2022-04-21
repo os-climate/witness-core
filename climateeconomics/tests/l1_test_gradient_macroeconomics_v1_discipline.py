@@ -137,7 +137,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}'}
+                   'ns_functions': f'{self.name}',
+                   'ns_ref':f'{self.name}' }
         
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -198,7 +199,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}'}
+                   'ns_functions': f'{self.name}',
+                   'ns_ref':f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
@@ -261,7 +263,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}'}
+                   'ns_functions': f'{self.name}',
+                   'ns_ref':f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
@@ -326,7 +329,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}'}
+                   'ns_functions': f'{self.name}',
+                   'ns_ref':f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline'
@@ -396,7 +400,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}'}
+                   'ns_functions': f'{self.name}',
+                   'ns_ref':f'{self.name}'}
         
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -470,7 +475,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}'}
+                   'ns_functions': f'{self.name}',
+                   'ns_ref':f'{self.name}'}
         
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -545,7 +551,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}'}
+                   'ns_functions': f'{self.name}',
+                   'ns_ref':f'{self.name}'}
         
         self.ee.ns_manager.add_ns_def(ns_dict)
 
