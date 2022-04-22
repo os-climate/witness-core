@@ -65,7 +65,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'CO2_emissions_detail_df': {
-            'type': 'dataframe', 'unit': 'Gha', 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'unit': 'GtCO2', 'namespace': 'ns_forest'},
         Forest.DEFORESTED_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         Forest.CO2_EMITTED_FOREST_DF: {
@@ -206,7 +206,5 @@ class ForestDiscipline(ClimateEcoDiscipline):
             new_chart.add_series(graph_series)
 
             instanciated_charts.append(new_chart)
-
-
 
         return instanciated_charts
