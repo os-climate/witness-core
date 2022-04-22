@@ -75,7 +75,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'CO2_emissions_detail_df': {'type': 'dataframe'},
+        'CO2_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
         'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'co2_emissions_Gt': {'type': 'dataframe', 'visibility': 'Shared',
                              'namespace': 'ns_energy_mix', 'unit': 'Gt'}
