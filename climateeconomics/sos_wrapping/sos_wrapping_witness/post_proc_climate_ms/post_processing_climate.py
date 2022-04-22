@@ -133,12 +133,12 @@ def post_processings(execution_engine, namespace, filters):
                 f'{namespace_w}.{scenario}.Temperature.forcing_detail_df')
             for col in forcing_df.columns:
                 if col not in ['years', 'CO2 forcing']:
-                    if f'{col} {scenario}' in forcing_dict:
+                    if f'other RF {scenario}' in forcing_dict:
                         forcing_dict[f'other RF {scenario}'] += forcing_df[col].values
                     else:
                         forcing_dict[f'other RF {scenario}'] = forcing_df[col].values
                     if scenario in selected_scenarios:
-                        selected_scenarios_other.append(f'{col} {scenario}')
+                        selected_scenarios_other.append(f'other RF {scenario}')
             years = forcing_df['years'].values.tolist(
             )
         forcing_dict_in_list = {key: value.tolist()
