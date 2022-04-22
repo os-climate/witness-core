@@ -72,36 +72,39 @@ class Study(StudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
-        
-        #SSP1 
+
+        # SSP1
 #         emissions_image_df = pd.DataFrame({
 #             'year': [2020, 2030, 2040, 2050, 2060, 2070, 2080, 2090, 2100],
 #             'emissions': [40.069004, 42.653234, 43.778496, 42.454758, 41.601928, 39.217532, 33.392294, 28.618414, 24.612914]})
-        #SSP3 
+        # SSP3
 #         emissions_image_df = pd.DataFrame({
 #             'year': [2020, 2030, 2040, 2050, 2060, 2070, 2080, 2090, 2100],
 #             'emissions': [48.502707, 55.000887, 59.877305, 64.001363, 67.962295, 71.792666, 75.571458, 80.137183, 85.214966]})
-        #SSP5 
+        # SSP5
 #         emissions_image_df = pd.DataFrame({
 #             'year': [2020, 2030, 2040, 2050, 2060, 2070, 2080, 2090, 2100],
 #             'emissions': [44.610389, 56.726452, 69.861617, 84.436466, 101.301616, 117.499826, 129.499348, 130.397532, 126.097683]})
-#         
+#
 #        f2 = interp1d(emissions_image_df['year'], emissions_image_df['emissions'])
-        #Find values for 2020, 2050 and concat dfs 
+        # Find values for 2020, 2050 and concat dfs
 #         emissions = f2(years)
 #         emissions_df = pd.DataFrame({'years': years, 'total_emissions':emissions, 'cum_total_emissions': np.zeros(year_range)})
 #         emissions_df.index = years
 #         # carbon emissions df
-        cum_start = 460.0 / 44 * 12
- 
-        emissions = list(np.ones(10) * cum_start / 10.0) + \
-            list(np.array(np.linspace(0, 0, year_range - 10)))
- 
-       
+
+        # 460 bnT during 10 years
+#         cum_start = 460.0 / 44 * 12
+#
+#         emissions = list(np.ones(10) * cum_start / 10.0) + \
+#             list(np.array(np.linspace(0, 0, year_range - 10)))
+
+        emissions = list(np.linspace(38.3, 0, 10)) + \
+            list(np.zeros(year_range - 10))
         emissions_df = pd.DataFrame({"years": years, 'total_emissions': emissions,
                                      'cum_total_emissions': np.zeros(year_range)})
         emissions_df.index = years
-        #missing here the initial level of cumulated emissions
+        # missing here the initial level of cumulated emissions
         emissions_df['cum_total_emissions'] = emissions_df['total_emissions'].cumsum()
 #         plt.plot(years, emissions_df['total_emissions'].values)
 #         plt.show()
