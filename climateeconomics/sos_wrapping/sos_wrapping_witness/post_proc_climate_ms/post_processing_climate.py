@@ -19,6 +19,7 @@ from sos_trades_core.tools.post_processing.pareto_front_optimal_charts.instancia
     InstantiatedParetoFrontOptimalChart
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sos_trades_core.execution_engine.data_manager import DataManager
+from copy import deepcopy
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -129,8 +130,8 @@ def post_processings(execution_engine, namespace, filters):
         forcing_dict = {}
         selected_scenarios_other = []
         for scenario in scenario_list:
-            forcing_df = execution_engine.dm.get_value(
-                f'{namespace_w}.{scenario}.Temperature.forcing_detail_df')
+            forcing_df = deepcopy(execution_engine.dm.get_value(
+                f'{namespace_w}.{scenario}.Temperature.forcing_detail_df'))
             for col in forcing_df.columns:
                 if col not in ['years', 'CO2 forcing']:
                     if f'other RF {scenario}' in forcing_dict:
