@@ -15,8 +15,8 @@ The model's inputs are therefore:
 
 For each year, the available forest and agricultural surface is computed with deforestation and reforestation inputs, and a constraint is calculated for each such as:
 
-$$Agriculture\_demand\_constraint = (available\_agriculture\_surface - ( - forest\_surface\_evolution \\ + surface\_used\_for\_food + surface\_for\_energy))\\ / land\_use\_constraint\_ref$$
-$$Forest\_demand\_constraint = (available\_forest\_surface - (forest\_surface\_evolution + surface\_for\_energy \\ + other\_forests))\\ / land\_use\_constraint\_ref$$
+$$Agriculture\_demand\_constraint = (available\_agriculture\_surface - forest\_surface\_evolution - \\ (surface\_used\_for\_food + surface\_for\_energy))\\ / land\_use\_constraint\_ref$$
+$$Forest\_demand\_constraint = (available\_forest\_surface + forest\_surface\_evolution - (surface\_for\_energy \\ + other\_forests))\\ / land\_use\_constraint\_ref$$
 
 So that the optimizer will try to minimize the absolute value of the constraint to solve the optimization problem.
 
