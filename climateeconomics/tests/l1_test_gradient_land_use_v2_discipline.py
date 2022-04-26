@@ -86,7 +86,7 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
 
         self.forest_surface_df['years'] = years
         # Gha
-        self.forest_surface_df['forest_constraint_evolution'] = np.linspace(-0.5, 0, year_range)
+        self.forest_surface_df['forest_constraint_evolution'] = np.linspace(1, -1, year_range)
 
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
