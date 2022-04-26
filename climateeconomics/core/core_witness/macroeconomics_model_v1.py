@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 
 class MacroEconomics():
     '''
@@ -552,8 +553,10 @@ class MacroEconomics():
         usable_capital = self.capital_df['usable_capital'].values
         ref_usable_capital = self.usable_capital_ref * self.nb_years
         delta_capital = (self.capital_utilisation_ratio * ne_capital - usable_capital)
-        self.delta_capital_cons = (self.delta_capital_cons_limit - np.sign(delta_capital) * np.sqrt(compute_func_with_exp_min(delta_capital**2, 1e-15))) / ref_usable_capital
-
+        #self.delta_capital_cons = (self.delta_capital_cons_limit - np.sign(delta_capital) * np.sqrt(compute_func_with_exp_min(delta_capital**2, 1e-15))) / ref_usable_capital
+        self.delta_capital_cons = compute_delta_constraint(value=usable_capital, goal=self.capital_utilisation_ratio * ne_capital,
+                                                           tolerable_delta=self.delta_capital_cons_limit,
+                                                           delta_type='hardmin', reference_value=ref_usable_capital)
 
     def compute(self, inputs, damage_prod=False):
         """

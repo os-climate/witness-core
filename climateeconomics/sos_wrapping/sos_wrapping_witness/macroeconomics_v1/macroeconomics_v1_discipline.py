@@ -22,7 +22,7 @@ import pandas as pd
 import numpy as np
 from copy import deepcopy
 from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-
+from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     "Macroeconomics discipline for WITNESS"
@@ -239,7 +239,15 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dconsumption_pc = self.macro_model.compute_dconsumption_pc(dconsumption)
         dcapital = self.macro_model.dcapital(npzeros)
         demaxconstraint = self.macro_model.demaxconstraint(dcapital)
-        ddelta_capital_objective_dco2_emissions =  (capital_ratio * dcapital / usable_capital_ref) *  compute_dfunc_with_exp_min( delta_capital_objective_wo_exp_min, 1e-15)
+        ddelta_capital_objective_dco2_emissions = (capital_ratio * dcapital / usable_capital_ref) * compute_dfunc_with_exp_min(delta_capital_objective_wo_exp_min, 1e-15)
+        ne_capital = self.macro_model.capital_df['non_energy_capital'].values
+        usable_capital = self.macro_model.capital_df['usable_capital'].values
+        ref_usable_capital = self.macro_model.usable_capital_ref * self.macro_model.nb_years
+        delta_capital_cons_limit = self.macro_model.delta_capital_cons_limit
+        ddelta_capital_cons_dusable_capital, ddelta_capital_cons_dgoal = compute_ddelta_constraint(
+            value=usable_capital, goal=capital_ratio * ne_capital,
+            tolerable_delta=delta_capital_cons_limit, delta_type='hardmin', reference_value=ref_usable_capital)
+        ddelta_capital_cons=ddelta_capital_cons_dusable_capital * dcapital
         self.set_partial_derivative_for_other_types(
             ('energy_investment', 'energy_investment'),
             ('co2_emissions_Gt', 'Total CO2 emissions'), denergy_invest / scaling_factor_energy_investment * 1e3)  # Invest from T$ to G$
@@ -253,9 +261,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('delta_capital_objective',), ('co2_emissions_Gt', 'Total CO2 emissions'), ddelta_capital_objective_dco2_emissions)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',), ('co2_emissions_Gt', 'Total CO2 emissions'),  alpha * ddelta_capital_objective_dco2_emissions)
-        ddelta_capital_cons = self.compute_ddelta_capital_cons(ddelta_capital_objective_dco2_emissions * usable_capital_ref , delta_capital_objective_wo_exp_min * usable_capital_ref)
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_constraint',), ('co2_emissions_Gt', 'Total CO2 emissions'), -ddelta_capital_cons / usable_capital_ref)
+            ('delta_capital_constraint',), ('co2_emissions_Gt', 'Total CO2 emissions'), ddelta_capital_cons)
+
         # Compute gradient for coupling variable Total production
         dcapitalu_denergy = self.macro_model.dusablecapital_denergy()
         dgross_output = self.macro_model.dgrossoutput_denergy(dcapitalu_denergy)
@@ -286,10 +294,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',), ('energy_production', 'Total production'),
             alpha * ddelta_capital_objective_denergy_production)
-        ddelta_capital_cons = self.compute_ddelta_capital_cons(scaling_factor_energy_production * (capital_ratio * dcapital - np.identity(nb_years) * capital_ratio * capital_df['energy_efficiency'].values / 1000) , delta_capital_objective_wo_exp_min * usable_capital_ref)
-
+        ddelta_capital_cons2 = self.compute_ddelta_capital_cons(scaling_factor_energy_production * (capital_ratio * dcapital - np.identity(nb_years) * capital_ratio * capital_df['energy_efficiency'].values / 1000) , delta_capital_objective_wo_exp_min * usable_capital_ref)
+        ddelta_capital_cons_dusable_capital, ddelta_capital_cons_dgoal = compute_ddelta_constraint(
+            value=usable_capital, goal=capital_ratio * ne_capital,
+            tolerable_delta=delta_capital_cons_limit, delta_type='hardmin', reference_value=ref_usable_capital)
+        ddelta_capital_cons = np.dot(ddelta_capital_cons_dusable_capital, (dcapitalu_denergy - dcapital * capital_ratio))* scaling_factor_energy_production
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_constraint',), ('energy_production', 'Total production'), - ddelta_capital_cons / usable_capital_ref )
+            ('delta_capital_constraint',), ('energy_production', 'Total production'), ddelta_capital_cons)
 #        Compute gradient for coupling variable damage
         dproductivity = self.macro_model.compute_dproductivity()
         dgross_output = self.macro_model.dgross_output_ddamage(dproductivity)
@@ -318,8 +329,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',), ('damage_df', 'damage_frac_output'),  alpha * ddelta_capital_objective_ddamage_df )
         ddelta_capital_cons = self.compute_ddelta_capital_cons(capital_ratio * dcapital , delta_capital_objective_wo_exp_min * usable_capital_ref)
+        ddelta_capital_cons_dusable_capital, ddelta_capital_cons_dgoal = compute_ddelta_constraint(
+            value=usable_capital, goal=capital_ratio * ne_capital,
+            tolerable_delta=delta_capital_cons_limit, delta_type='hardmin', reference_value=ref_usable_capital)
+        ddelta_capital_cons = np.dot(ddelta_capital_cons_dusable_capital, -dcapital * capital_ratio)
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_constraint',), ('damage_df', 'damage_frac_output'), - ddelta_capital_cons / usable_capital_ref )
+            ('delta_capital_constraint',), ('damage_df', 'damage_frac_output'), ddelta_capital_cons)
         # compute gradient for coupling variable population
         dconsumption_pc = self.macro_model.compute_dconsumption_pc_dpopulation()
         self.set_partial_derivative_for_other_types(
@@ -358,8 +373,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',), ('working_age_population_df', 'population_1570'), alpha * ddelta_capital_objective_dworking_age_pop_df )
         ddelta_capital_cons = self.compute_ddelta_capital_cons(np.dot(capital_ratio * dcapital,dworkforce_dworkingagepop) , delta_capital_objective_wo_exp_min * usable_capital_ref)
+        ddelta_capital_cons_dusable_capital, ddelta_capital_cons_dgoal = compute_ddelta_constraint(
+            value=usable_capital, goal=capital_ratio * ne_capital,
+            tolerable_delta=delta_capital_cons_limit, delta_type='hardmin', reference_value=ref_usable_capital)
+        ddelta_capital_cons = np.dot(ddelta_capital_cons_dusable_capital, np.dot(dcapital * capital_ratio, dworkforce_dworkingagepop))
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_constraint',), ('working_age_population_df', 'population_1570'), - ddelta_capital_cons / usable_capital_ref )
+            ('delta_capital_constraint',), ('working_age_population_df', 'population_1570'), - ddelta_capital_cons)
         # compute gradients for share_energy_investment
         denergy_investment, denergy_investment_wo_renewable = self.macro_model.compute_denergy_investment_dshare_energy_investement()
         self.set_partial_derivative_for_other_types(
@@ -388,8 +407,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',), ('share_energy_investment', 'share_investment'),  alpha * ddelta_capital_objective_dshare_energy )
         ddelta_capital_cons = self.compute_ddelta_capital_cons(capital_ratio * dcapital , delta_capital_objective_wo_exp_min * usable_capital_ref)
+        ddelta_capital_cons_dusable_capital, ddelta_capital_cons_dgoal = compute_ddelta_constraint(
+            value=usable_capital, goal=capital_ratio * ne_capital,
+            tolerable_delta=delta_capital_cons_limit, delta_type='hardmin', reference_value=ref_usable_capital)
+        ddelta_capital_cons = np.dot(ddelta_capital_cons_dusable_capital, -dcapital * capital_ratio)
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_constraint',), ('share_energy_investment', 'share_investment'), - ddelta_capital_cons / usable_capital_ref )
+            ('delta_capital_constraint',), ('share_energy_investment', 'share_investment'), ddelta_capital_cons)
         # compute gradient CO2 Taxes
         denergy_investment = self.macro_model.compute_denergy_investment_dco2_tax()
         self.set_partial_derivative_for_other_types(
@@ -414,8 +437,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',), ('CO2_taxes', 'CO2_tax'), alpha * ddelta_capital_objective_dco2_tax )
         ddelta_capital_cons = self.compute_ddelta_capital_cons(ddelta_capital_objective_dco2_tax * usable_capital_ref , delta_capital_objective_wo_exp_min * usable_capital_ref)
+        ddelta_capital_cons_dusable_capital, ddelta_capital_cons_dgoal = compute_ddelta_constraint(
+            value=usable_capital, goal=capital_ratio * ne_capital,
+            tolerable_delta=delta_capital_cons_limit, delta_type='hardmin', reference_value=ref_usable_capital)
+        ddelta_capital_cons = np.dot(ddelta_capital_cons_dusable_capital, -dcapital * capital_ratio)
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_constraint',), ('CO2_taxes', 'CO2_tax'), - ddelta_capital_cons / usable_capital_ref )
+            ('delta_capital_constraint',), ('CO2_taxes', 'CO2_tax'), ddelta_capital_cons)
         # compute gradient total_share_investment_gdp
         dinvestment, dne_invest = self.macro_model.compute_dinvestment_dtotal_share_of_gdp()
         dnet_output = np.zeros((nb_years, nb_years))
@@ -437,8 +464,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',), ('total_investment_share_of_gdp', 'share_investment'),  alpha * ddelta_capital_objective_dtotal_invest )
         ddelta_capital_cons = self.compute_ddelta_capital_cons( capital_ratio * dcapital , delta_capital_objective_wo_exp_min * usable_capital_ref)
+        ddelta_capital_cons_dusable_capital, ddelta_capital_cons_dgoal = compute_ddelta_constraint(
+            value=usable_capital, goal=capital_ratio * ne_capital,
+            tolerable_delta=delta_capital_cons_limit, delta_type='hardmin', reference_value=ref_usable_capital)
+        ddelta_capital_cons = np.dot(ddelta_capital_cons_dusable_capital, -dcapital * capital_ratio)
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_constraint',), ('total_investment_share_of_gdp', 'share_investment'), - ddelta_capital_cons / usable_capital_ref )
+            ('delta_capital_constraint',), ('total_investment_share_of_gdp', 'share_investment'), ddelta_capital_cons)
+
     def compute_ddelta_capital_cons(self, ddelta, delta_wo_exp_min):
         '''
         Compute ddelta capital constraint

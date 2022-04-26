@@ -47,7 +47,6 @@ class UraniumResourceModel(ResourceModel):
     bcm_to_Mt = 1 / 1.379
     kU_to_Mt = 10 ** -6
 
-    #To convert from 1E6 oil_barrel to Mt
     conversion_factor = 1 / kU_to_Mt
 
     def convert_demand(self, demand):
