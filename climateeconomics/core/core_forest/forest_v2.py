@@ -174,7 +174,6 @@ class Forest():
 
         #compute forest constrain evolution: reforestation + deforestation
         self.forest_surface_df['forest_constraint_evolution'] = self.forest_surface_df['reforestation_surface'] + self.forest_surface_df['deforestation_surface']
-        self.forest_surface_df['initial_unused_forest'] = [self.initial_unsused_forest_surface] * len(self.years)
 
         # techno production in TWh
         self.techno_production[f'{BiomassDry.name} ({BiomassDry.unit})'] = self.biomass_dry_df[
