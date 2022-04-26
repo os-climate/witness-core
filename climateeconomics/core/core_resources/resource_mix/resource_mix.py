@@ -196,15 +196,16 @@ class ResourceMixModel():
         '''
 
         for resource in self.resource_list:
-            # Use with ratio
-            resource_use = deepcopy(self.all_resource_use[resource].values)
-            use_limited = compute_func_with_exp_min(
-                np.array(resource_use), 1.0e-10)
+            # Available resources
+            available_resource = deepcopy(self.all_resource_stock[resource].values)+\
+                                 deepcopy(self.all_resource_production[resource].values)
+            available_resource_limited = compute_func_with_exp_min(
+                np.array(available_resource), 1.0e-10)
             # Demand without ratio
             demand_woratio = deepcopy(self.resources_demand_woratio[resource].values)
             demand_limited = compute_func_with_exp_min(
                 np.array(demand_woratio), 1.0e-10)
-            self.all_resource_ratio_usable_demand[resource] = np.minimum(use_limited / demand_limited, 1.0) * 100.0
+            self.all_resource_ratio_usable_demand[resource] = np.minimum(available_resource_limited / demand_limited, 1.0) * 100.0
 
     def get_derivative_all_resource(self, inputs_dict, resource_type):
         """ Compute derivative of total stock regarding year demand
@@ -223,28 +224,36 @@ class ResourceMixModel():
                          len(inputs_dict[f'{resource_type}.resource_price'].index))
         return grad_price, grad_use, grad_stock
 
-    def get_derivative_ratio(self, inputs_dict, resource_type, grad_use, output_dict):
+    def get_derivative_ratio(self, inputs_dict, resource_type, output_dict):
 
-        resource_use = output_dict[ResourceMixModel.All_RESOURCE_USE][resource_type]
+        resource_stock = output_dict[ResourceMixModel.ALL_RESOURCE_STOCK][resource_type]
+        resource_production = output_dict[ResourceMixModel.ALL_RESOURCE_PRODUCTION][resource_type]
         # Use with ratio
-        resource_use = deepcopy(self.all_resource_use[resource_type].values)
-        use_limited = compute_func_with_exp_min(
-            np.array(resource_use), 1.0e-10)
-        d_use_limited = compute_dfunc_with_exp_min(
-            np.array(resource_use), 1.0e-10)
+        available_resource = resource_stock + resource_production
+        available_resource_limited = compute_func_with_exp_min(
+            np.array(available_resource), 1.0e-10)
+        d_available_resource_limited = compute_dfunc_with_exp_min(
+            np.array(available_resource), 1.0e-10)
         demand = inputs_dict['resources_demand_woratio'][resource_type]
         demand_limited = compute_func_with_exp_min(
             demand.values, 1.0e-10)
         d_demand_limited = compute_dfunc_with_exp_min(
             demand.values, 1.0e-10)
-        identity_neg = np.diag(
-            np.linspace(-1, -1, len(inputs_dict['resources_demand_woratio'].index)))
-        # pylint: disable=unsubscriptable-object
-        grad_use_ratio_on_demand = (
-            use_limited * d_demand_limited.T[0] / (demand_limited**2)) * identity_neg * 100.
-        grad_use_ratio_on_use = d_use_limited * grad_use / (demand_limited) * 100.
 
-        return grad_use_ratio_on_use, grad_use_ratio_on_demand
+        # If prod < cons, set the identity element for the given year to
+        # the corresponding value
+        d_ratio_d_stock = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
+                                     np.where(available_resource_limited <= demand_limited,
+                                              d_available_resource_limited / demand_limited,
+                                              0.0)
+
+        d_ratio_d_demand = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
+                                     np.where(available_resource_limited <= demand_limited,
+                                              -available_resource_limited * d_demand_limited /
+                                              demand_limited ** 2,
+                                              0.0)
+
+        return d_ratio_d_stock, d_ratio_d_demand
 
     def get_co2_emissions(self, years, resource_list, non_modeled_resource_list):
         '''Function to create a dataframe with the CO2 emissions for all the ressources
@@ -253,7 +262,6 @@ class ResourceMixModel():
         '''
         # Create a dataframe
         resources_CO2_emissions = pd.DataFrame({'years': years})
-
 
         for resource in non_modeled_resource_list + resource_list:
             if resource in self.CO2_emissions_dict.keys():

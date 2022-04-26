@@ -158,23 +158,24 @@ class ResourceMixDiscipline(SoSDiscipline):
         for resource_type in resource_list:
             grad_price, grad_use, grad_stock = self.all_resource_model.get_derivative_all_resource(
                 inputs_dict, resource_type)
-            grad_use_ratio_on_use, grad_use_ratio_on_demand = self.all_resource_model.get_derivative_ratio(
-                inputs_dict, resource_type, grad_use, output_dict)
+            grad_ratio_on_stock, grad_ratio_on_demand = self.all_resource_model.get_derivative_ratio(
+                inputs_dict, resource_type, output_dict)
 
             for types in inputs_dict[f'{resource_type}.use_stock']:
                 if types != 'years':
                     self.set_partial_derivative_for_other_types(
                         (ResourceMixModel.All_RESOURCE_USE, resource_type), (f'{resource_type}.use_stock', types), grad_use)
-                    self.set_partial_derivative_for_other_types(
-                        (ResourceMixModel.RATIO_USABLE_DEMAND, resource_type), (f'{resource_type}.use_stock', types), grad_use_ratio_on_use)
 
             self.set_partial_derivative_for_other_types((ResourceMixModel.RATIO_USABLE_DEMAND, resource_type), (
-                'resources_demand_woratio', resource_type), grad_use_ratio_on_demand)
+                'resources_demand_woratio', resource_type), grad_ratio_on_demand)
 
             for types in inputs_dict[f'{resource_type}.resource_stock']:
                 if types != 'years':
                     self.set_partial_derivative_for_other_types(
                         (ResourceMixModel.ALL_RESOURCE_STOCK, resource_type), (f'{resource_type}.resource_stock', types), grad_stock)
+                    self.set_partial_derivative_for_other_types(
+                        (ResourceMixModel.RATIO_USABLE_DEMAND, resource_type),
+                        (f'{resource_type}.resource_stock', types), grad_ratio_on_stock * grad_stock)
 
             self.set_partial_derivative_for_other_types(
                 (ResourceMixModel.ALL_RESOURCE_PRICE, resource_type), (f'{resource_type}.resource_price', 'price'), grad_price)
