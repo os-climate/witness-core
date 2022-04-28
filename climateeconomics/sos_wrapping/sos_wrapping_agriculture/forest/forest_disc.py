@@ -144,11 +144,11 @@ class ForestDiscipline(ClimateEcoDiscipline):
     mw_initial_production = 1.25 * 0.92 * \
         density_per_ha * mean_density * biomass_cal_val / \
         years_between_harvest / (1 - recycle_part)  # in Twh
-    uw_initial_surface = 1.25 * 0.92
+    mw_initial_surface = 1.25 * 0.92
     uw_initial_production = 1.25 * 0.08 * \
         density_per_ha * mean_density * biomass_cal_val / \
         years_between_harvest / (1 - recycle_part)
-    mw_initial_surface = 1.25 * 0.08
+    uw_initial_surface = 1.25 * 0.08
     initial_unsused_forest_surface = 4 - 1.25
 
     DESC_IN = {
