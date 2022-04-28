@@ -200,7 +200,7 @@ class ResourceMixDiscipline(SoSDiscipline):
 
             stock_df = self.get_sosdisc_outputs(
                 ResourceMixModel.ALL_RESOURCE_STOCK)
-            years = stock_df.index.values.tolist()
+            years = stock_df['years'].values.tolist()
             price_df = self.get_sosdisc_outputs(
                 ResourceMixModel.ALL_RESOURCE_PRICE)
             use_stock_df = self.get_sosdisc_outputs(
