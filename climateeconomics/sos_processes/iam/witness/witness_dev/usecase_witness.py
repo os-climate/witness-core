@@ -25,6 +25,7 @@ from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
@@ -145,13 +146,13 @@ if '__main__' == __name__:
 
     uc_cls.run()
 
-#     ppf = PostProcessingFactory()
-#     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-#         if disc.sos_name == 'Land_Use':
-#             filters = ppf.get_post_processing_filters_by_discipline(
-#                 disc)
-#             graph_list = ppf.get_post_processing_by_discipline(
-#                 disc, filters, as_json=False)
-#
-#             for graph in graph_list:
-#                 graph.to_plotly().show()
+    # ppf = PostProcessingFactory()
+    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    #     if disc.sos_name == 'Resources':
+    #         filters = ppf.get_post_processing_filters_by_discipline(
+    #             disc)
+    #         graph_list = ppf.get_post_processing_by_discipline(
+    #             disc, filters, as_json=False)
+    #
+    #         for graph in graph_list:
+    #             graph.to_plotly().show()
