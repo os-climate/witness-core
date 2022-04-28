@@ -153,9 +153,8 @@ class LandUseV2():
         self.land_demand_constraint_df[self.LAND_DEMAND_CONSTRAINT_AGRICULTURE] = ([self.total_agriculture_surfaces] * self.nb_years +
                                                                                    self.land_surface_df['Added Agriculture (Gha)'].values -
                                                                                    self.land_surface_df['Agriculture total (Gha)'].values) / self.ref_land_use_constraint
-        self.land_demand_constraint_df[self.LAND_DEMAND_CONSTRAINT_FOREST] = ([self.total_forest_surfaces] * self.nb_years +
-                                                                              self.land_surface_df['Added Forest (Gha)'].values -
-                                                                              self.initial_unsused_forest_surface - demand_forest) / self.ref_land_use_constraint
+        self.land_demand_constraint_df[self.LAND_DEMAND_CONSTRAINT_FOREST] = (self.total_forest_surfaces -
+                                                                               self.initial_unsused_forest_surface - demand_forest) / self.ref_land_use_constraint
 
     def get_derivative(self, objective_column, demand_column):
         """ Compute derivative of land demand objective regarding land demand
@@ -257,8 +256,8 @@ class LandUseV2():
         if objective_column == self.LAND_DEMAND_CONSTRAINT_AGRICULTURE:
             d_land_demand_constraint_d_deforestation_surface = -np.identity(number_of_values) / self.ref_land_use_constraint
 
-        elif objective_column == self.LAND_DEMAND_CONSTRAINT_FOREST:
-            d_land_demand_constraint_d_deforestation_surface = np.identity(number_of_values) / self.ref_land_use_constraint
+        #elif objective_column == self.LAND_DEMAND_CONSTRAINT_FOREST:
+        #    d_land_demand_constraint_d_deforestation_surface = np.identity(number_of_values) / self.ref_land_use_constraint
 
         return d_land_demand_constraint_d_deforestation_surface
 
