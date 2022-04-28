@@ -214,19 +214,19 @@ class ResourceMixDiscipline(SoSDiscipline):
 
             # two charts for stock evolution and price evolution
             stock_chart = TwoAxesInstanciatedChart('years', 'stocks (Mt)',
-                                                   chart_name='Resources stocks through the years', stacked_bar=False)
+                                                   chart_name='Resources stocks through the years', stacked_bar=True)
             price_chart = TwoAxesInstanciatedChart('years', 'price ($/t)',
-                                                   chart_name='Resource price through the years', stacked_bar=False)
+                                                   chart_name='Resource price through the years', stacked_bar=True)
             use_stock_chart = TwoAxesInstanciatedChart('years', 'resource use (Mt) ',
-                                                       chart_name='Resource use through the years', stacked_bar=False)
+                                                       chart_name='Resource use through the years', stacked_bar=True)
             production_chart = TwoAxesInstanciatedChart('years',
                                                         'resource production (Mt)',
                                                         chart_name='Resource production through the years',
-                                                        stacked_bar=False)
+                                                        stacked_bar=True)
             ratio_use_demand_chart = TwoAxesInstanciatedChart(
-                'years', 'ratio usable stock / demand ', chart_name='ratio usable stock and prod on demand through the years', stacked_bar=False)
+                'years', 'ratio usable stock / demand ', chart_name='ratio usable stock and prod on demand through the years', stacked_bar=True)
             resource_demand_chart = TwoAxesInstanciatedChart(
-                'years', 'demand (Mt)', chart_name='resource demand through the years', stacked_bar=False)
+                'years', 'demand (Mt)', chart_name='resource demand through the years', stacked_bar=True)
             for resource_kind in stock_df:
                 if resource_kind != 'years':
                     stock_serie = InstanciatedSeries(

@@ -171,10 +171,10 @@ class ResourceDiscipline(SoSDiscipline):
     def get_stock_charts(self, stock_df, use_stock_df):
         stock_chart = TwoAxesInstanciatedChart('years', f'maximum stocks [{self.stock_unit}]',
                                                chart_name=f'{self.resource_name} stocks through the years',
-                                               stacked_bar=False)
+                                               stacked_bar=True)
         use_stock_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} use [{self.stock_unit}]',
                                                    chart_name=f'{self.resource_name} use per subtypes through the years',
-                                                   stacked_bar=False)
+                                                   stacked_bar=True)
         use_stock_cumulated_chart = TwoAxesInstanciatedChart('years',
                                                              f'{self.resource_name} use per Subtypes [{self.stock_unit}]',
                                                              chart_name=f'{self.resource_name} use through the years',
@@ -195,7 +195,7 @@ class ResourceDiscipline(SoSDiscipline):
     def get_price_charts(self, price_df):
         price_chart = TwoAxesInstanciatedChart('Years', f'price [{self.price_unit}]',
                                                chart_name=f'{self.resource_name} price through the years',
-                                               stacked_bar=False)
+                                               stacked_bar=True)
         price_serie = InstanciatedSeries(
             list(price_df['years']), (price_df['price']).values.tolist(), f'{self.resource_name} price', InstanciatedSeries.LINES_DISPLAY)
 
@@ -209,7 +209,7 @@ class ResourceDiscipline(SoSDiscipline):
                                            <= year_start]
         production_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} production per subtypes [{self.prod_unit}]',
                                                     chart_name=f'{self.resource_name} production per subtypes through the years',
-                                                    stacked_bar=False)
+                                                    stacked_bar=True)
         production_cumulated_chart = TwoAxesInstanciatedChart('Years', f'{self.resource_name} production [{self.prod_unit}]',
                                                               chart_name=f'{self.resource_name} production through the years',
                                                               stacked_bar=True)
@@ -217,11 +217,11 @@ class ResourceDiscipline(SoSDiscipline):
         model_production_cumulated_chart = TwoAxesInstanciatedChart('years',
                                                                     f'Comparison between model and real {self.resource_name} production [{self.prod_unit}]',
                                                                     chart_name=f'{self.resource_name} production through the years',
-                                                                    stacked_bar=False)
+                                                                    stacked_bar=True)
         past_production_chart = TwoAxesInstanciatedChart('years',
                                                          f'{self.resource_name} past production [{self.prod_unit}]',
                                                          chart_name=f'{self.resource_name} past production through the years',
-                                                         stacked_bar=False)
+                                                         stacked_bar=True)
         sub_resource_list = [col for col in production_df.columns if col != 'years']
         for sub_resource_type in sub_resource_list:
             production_serie = InstanciatedSeries(
