@@ -205,7 +205,7 @@ class ResourceMixModel():
             demand_woratio = deepcopy(self.resources_demand_woratio[resource].values)
             demand_limited = compute_func_with_exp_min(
                 np.array(demand_woratio), 1.0e-10)
-            self.all_resource_ratio_usable_demand[resource] = np.minimum(available_resource_limited / demand_limited, 1.0) * 100.0
+            self.all_resource_ratio_usable_demand[resource] = np.minimum(np.maximum(available_resource_limited / demand_limited, 1E-15), 1.0) * 100.0
 
     def get_derivative_all_resource(self, inputs_dict, resource_type):
         """ Compute derivative of total stock regarding year demand
@@ -243,12 +243,12 @@ class ResourceMixModel():
         # If prod < cons, set the identity element for the given year to
         # the corresponding value
         d_ratio_d_stock = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
-                                     np.where(available_resource_limited <= demand_limited,
+                                     np.where((available_resource_limited <= demand_limited) * (available_resource_limited/demand_limited>1E-15),
                                               d_available_resource_limited / demand_limited,
                                               0.0)
 
         d_ratio_d_demand = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
-                                     np.where(available_resource_limited <= demand_limited,
+                                     np.where((available_resource_limited <= demand_limited) * (available_resource_limited/demand_limited>1E-15),
                                               -available_resource_limited * d_demand_limited /
                                               demand_limited ** 2,
                                               0.0)
