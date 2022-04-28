@@ -98,7 +98,7 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.algo_options': {"ftol_rel": 3e-16,
                                                                       "ftol_abs": 3e-16,
                                                                       "normalize_design_space": True,
-                                                                      "maxls": 3 * dspace_size,
+                                                                      "max_ls_step_nb": 3 * dspace_size,
                                                                       "maxcor": dspace_size,
                                                                       "pg_tol": 1e-16,
                                                                       "xtol_rel": 1e-16,
