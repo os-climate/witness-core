@@ -150,6 +150,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         years_between_harvest / (1 - recycle_part)
     uw_initial_surface = 1.25 * 0.08
     initial_unsused_forest_surface = 4 - 1.25
+    #reforestation costs: 10k$/ha of land and 3800$/ha to plant trees
 
     DESC_IN = {
         Forest.YEAR_START: {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -164,7 +165,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': initial_emissions,
                                        'namespace': 'ns_forest', },
         Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000, 'namespace': 'ns_forest'},
-        Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 3800, 'namespace': 'ns_forest'},
+        Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 13800, 'namespace': 'ns_forest'},
         Forest.REFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                           'dataframe_descriptor': {'years': ('float', None, False),
                                                                    'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
