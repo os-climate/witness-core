@@ -86,7 +86,7 @@ class Study(StudyManager):
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
-        reforestation_cost_per_ha = 3800
+        reforestation_cost_per_ha = 13800
 
         wood_density = 600.0  # kg/m3
         residues_density = 200.0  # kg/m3
