@@ -191,7 +191,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
                                      f'{self.name}.delta_capital_objective_weighted',
-                                     f'{self.name}.delta_capital_constraint'])
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
 
@@ -255,7 +256,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
                                      f'{self.name}.delta_capital_objective_weighted',
-                                     f'{self.name}.delta_capital_constraint'])
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_analytic_grad_max_damage(self):
 
@@ -321,7 +323,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
                                      f'{self.name}.delta_capital_objective_weighted',
-                                     f'{self.name}.delta_capital_constraint'])
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
 
@@ -392,7 +395,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
                                      f'{self.name}.delta_capital_objective_weighted',
-                                     f'{self.name}.delta_capital_constraint'])
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_very_high_emissions(self):
 
@@ -467,7 +471,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
                                      f'{self.name}.delta_capital_objective_weighted',
-                                     f'{self.name}.delta_capital_constraint'])
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_negativeco2_emissions(self):
 
@@ -543,7 +548,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
                                      f'{self.name}.delta_capital_objective_weighted',
-                                     f'{self.name}.delta_capital_constraint'])
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_negativeco2_tax(self):
 
@@ -609,7 +615,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                       f'{self.name}.emax_enet_constraint',
                                       f'{self.name}.delta_capital_objective',
                                       f'{self.name}.delta_capital_objective_weighted',
-                                      f'{self.name}.delta_capital_constraint'])
+                                      f'{self.name}.delta_capital_constraint',
+                                      f'{self.name}.delta_capital_constraint_dc'])
 
 
 if '__main__' == __name__:
