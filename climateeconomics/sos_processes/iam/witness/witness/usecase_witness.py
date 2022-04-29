@@ -101,7 +101,7 @@ class Study(ClimateEconomicsStudyManager):
             self.merge_design_spaces([dspace_energy, dc_witness.dspace])
         else:
             dc_witness = datacase_witness_dev(
-                self.year_start, self.year_end, self.time_step)
+                self.year_start, self.year_end, self.time_step, techno_dict=self.techno_dict)
             dc_witness.study_name = self.study_name
 
             witness_input_list = dc_witness.setup_usecase()

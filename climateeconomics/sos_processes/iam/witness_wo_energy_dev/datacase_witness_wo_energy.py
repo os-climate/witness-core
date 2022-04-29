@@ -22,14 +22,12 @@ from pathlib import Path
 from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as datacase_agriculture_mix
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
-from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 
-from sos_trades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -39,11 +37,12 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 
 
 class DataStudy():
-    def __init__(self, year_start=2020, year_end=2100, time_step=1):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, techno_dict=DEFAULT_TECHNO_DICT):
         self.study_name = 'default_name'
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
+        self.techno_dict = techno_dict
         self.study_name_wo_extra_name = self.study_name
         self.dspace = {}
         self.dspace['dspace_size'] = 0
@@ -169,7 +168,7 @@ class DataStudy():
 
         #-- load data from agriculture
         dc_agriculture_mix = datacase_agriculture_mix(
-            self.year_start, self.year_end, self.time_step)
+            self.year_start, self.year_end, self.time_step, self.techno_dict)
         dc_agriculture_mix.additional_ns = '.InvestmentDistribution'
         dc_agriculture_mix.study_name = self.study_name
 

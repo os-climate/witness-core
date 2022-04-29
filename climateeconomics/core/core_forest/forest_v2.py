@@ -159,7 +159,7 @@ class Forest():
         self.sumup_global_surface_data()
         # check deforestation limit
         self.check_deforestation_limit()
-        # compute cpaital and lost capital
+        # compute capital and lost capital
         self.compute_lost_capital()
         # sum up global CO2 data
         self.compute_global_CO2_production()
