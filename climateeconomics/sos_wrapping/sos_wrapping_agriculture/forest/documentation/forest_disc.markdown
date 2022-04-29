@@ -15,7 +15,7 @@ The forest model takes the following data as inputs:
 - **CO2_per_ha**, the quantity of CO2 captured by 1 hectare of forest during one year. Unit is kgCO2/ha/year. Default value is 4000kgC02/ha/year [^1].
 As forest captures 16 Gt of CO2 per year, reducing forest by 1% results in a deficit of CO2 captured of 160 Mt. The value of 4000kgCO2/year/ha is coherent with these data.
 - **Initial CO2 emissions**, CO2 emissions in GtCO2 due to deforestation at the first year of the study. Default value is 3.21 GtCO2 at 2020, which is the value found at [^2].
-- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 3800 $/ha [^3].
+- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 13800 $/ha (10k$/ha for land cost and 3800$/ha to plant trees) [^3].
 - **reforestation_investment**, the quantity of money dedicated to reforestation each year in billions of $.
 - **wood tehcno dict**, data use to compute price and production of biomass for managed wood and unmanaged wood.
 - **managed wood initial prod**, which is the production of biomass by managed wood at the first year of the study. Unit is TWh.
