@@ -20,7 +20,7 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_COARSE_TECHNO_DICT_ccs_2, DEFAULT_COARSE_TECHNO_DICT_ccs_3
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
@@ -568,7 +568,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        techno_dict = DEFAULT_COARSE_TECHNO_DICT_ccs_3
+        techno_dict = DEFAULT_TECHNO_DICT
 
         builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
@@ -642,7 +642,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
     def test_07_gradient_all_disciplines_on_crashed_x(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        techno_dict = DEFAULT_COARSE_TECHNO_DICT_ccs_3
+        techno_dict = DEFAULT_TECHNO_DICT
 
         builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
