@@ -2,6 +2,7 @@
 # Copyright (c) 2021 Airbus SAS.
 # All rights reserved.
 
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sos_trades_core.study_manager.study_manager import StudyManager
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
@@ -129,15 +130,6 @@ class Study(ClimateEconomicsStudyManager):
 
 
         if self.process_level == 'dev':
-            dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = dspace_df[f'crop_investment_array_mix']['value']
-            design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
-                                                        'out_type': 'dataframe',
-                                                        'key': 'investment',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_invest'
-                                                        }
             dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']
             design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
                                                         'out_type': 'dataframe',
@@ -147,24 +139,34 @@ class Study(ClimateEconomicsStudyManager):
                                                         'namespace_in': 'ns_witness',
                                                         'namespace_out': 'ns_invest'
                                                         }
-            dv_arrays_dict[f'{self.witness_uc.study_name}.managed_wood_investment_array_mix'] = dspace_df[f'managed_wood_investment_array_mix']['value']
-            design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
-                                                        'out_type': 'dataframe',
-                                                        'key': 'investment',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_invest'
-                                                        }
-            dv_arrays_dict[f'{self.witness_uc.study_name}.unmanaged_wood_investment_array_mix'] = dspace_df[f'unmanaged_wood_investment_array_mix']['value']
-            design_var_descriptor['unmanaged_wood_investment_array_mix'] = {'out_name': 'unmanaged_wood_investment',
-                                                        'out_type': 'dataframe',
-                                                        'key': 'investment',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_invest'
-                                                        }
+            if BiomassDry.name in self.techno_dict:
+                dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = dspace_df[f'crop_investment_array_mix']['value']
+                design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
+                                                            'out_type': 'dataframe',
+                                                            'key': 'investment',
+                                                            'index': years,
+                                                            'index_name': 'years',
+                                                            'namespace_in': 'ns_witness',
+                                                            'namespace_out': 'ns_invest'
+                                                            }
+                dv_arrays_dict[f'{self.witness_uc.study_name}.managed_wood_investment_array_mix'] = dspace_df[f'managed_wood_investment_array_mix']['value']
+                design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
+                                                            'out_type': 'dataframe',
+                                                            'key': 'investment',
+                                                            'index': years,
+                                                            'index_name': 'years',
+                                                            'namespace_in': 'ns_witness',
+                                                            'namespace_out': 'ns_invest'
+                                                            }
+                dv_arrays_dict[f'{self.witness_uc.study_name}.unmanaged_wood_investment_array_mix'] = dspace_df[f'unmanaged_wood_investment_array_mix']['value']
+                design_var_descriptor['unmanaged_wood_investment_array_mix'] = {'out_name': 'unmanaged_wood_investment',
+                                                            'out_type': 'dataframe',
+                                                            'key': 'investment',
+                                                            'index': years,
+                                                            'index_name': 'years',
+                                                            'namespace_in': 'ns_witness',
+                                                            'namespace_out': 'ns_invest'
+                                                            }
             dv_arrays_dict[f'{self.witness_uc.study_name}.deforested_surface_ctrl'] = dspace_df[f'deforested_surface_ctrl']['value']
             design_var_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforestation_surface',
                                                             'out_type': 'dataframe',

@@ -19,6 +19,7 @@ import scipy.interpolate as sc
 from numpy import asarray, arange, array
 
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS,\
@@ -57,13 +58,14 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 
 class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, technologies_list=TECHNOLOGIES_LIST_FOR_OPT,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, techno_dict=DEFAULT_TECHNO_DICT, technologies_list=TECHNOLOGIES_LIST_FOR_OPT,
                  bspline=True,  main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
         super().__init__(__file__, technologies_list=technologies_list,
                          main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
+        self.techno_dict = techno_dict
         self.energy_name = None
         self.bspline = bspline
         self.nb_poles = 8
@@ -208,9 +210,10 @@ class Study(EnergyMixStudyManager):
         design_space_ctrl_dict['white_meat_percentage_ctrl'] = white_meat_percentage_ctrl
         design_space_ctrl_dict['deforested_surface_ctrl'] = deforestation_surface_ctrl
         design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
-        design_space_ctrl_dict['crop_investment_array_mix'] = crop_investment_array_mix
-        design_space_ctrl_dict['managed_wood_investment_array_mix'] = managed_wood_investment_array_mix
-        design_space_ctrl_dict['unmanaged_wood_investment_array_mix'] = unmanaged_wood_investment_array_mix
+        if BiomassDry.name in self.techno_dict:
+            design_space_ctrl_dict['crop_investment_array_mix'] = crop_investment_array_mix
+            design_space_ctrl_dict['managed_wood_investment_array_mix'] = managed_wood_investment_array_mix
+            design_space_ctrl_dict['unmanaged_wood_investment_array_mix'] = unmanaged_wood_investment_array_mix
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
@@ -231,22 +234,22 @@ class Study(EnergyMixStudyManager):
                                 list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles, [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
                                 list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        update_dspace_dict_with(ddict, 'crop_investment_array_mix',
-                                list(self.design_space_ctrl['crop_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
-        # -----------------------------------------
-        # Forest related
         update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
                                 list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-
+        # -----------------------------------------
+        # Invests
         update_dspace_dict_with(ddict, 'forest_investment_array_mix',
                                 list(self.design_space_ctrl['forest_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        if BiomassDry.name in self.techno_dict:
+            update_dspace_dict_with(ddict, 'crop_investment_array_mix',
+                                    list(self.design_space_ctrl['crop_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False,)
+            
+            update_dspace_dict_with(ddict, 'managed_wood_investment_array_mix',
+                                    list(self.design_space_ctrl['managed_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False)
 
-        update_dspace_dict_with(ddict, 'managed_wood_investment_array_mix',
-                                list(self.design_space_ctrl['managed_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-
-        update_dspace_dict_with(ddict, 'unmanaged_wood_investment_array_mix',
-                                list(self.design_space_ctrl['unmanaged_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+            update_dspace_dict_with(ddict, 'unmanaged_wood_investment_array_mix',
+                                    list(self.design_space_ctrl['unmanaged_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False,)
 
         return ddict
 
