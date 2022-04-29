@@ -17,7 +17,7 @@ from os.path import join
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT, DEFAULT_MIN_TECH_DICT, DEFAULT_TECHNO_DICT_DEV, DEFAULT_MIN_TECH_DEV_DICT
+from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.tests.witness_jacobian_disc_test import WitnessJacobianDiscTest
 
 
