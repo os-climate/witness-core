@@ -17,7 +17,7 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 from climateeconomics.core.core_witness.carbon_emissions_model import CarbonEmissions
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from climateeconomics.core.core_forest.forest import Forest
+from climateeconomics.core.core_forest.forest_v1 import Forest
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from copy import deepcopy
 import pandas as pd

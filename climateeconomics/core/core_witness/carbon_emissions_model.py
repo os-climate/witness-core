@@ -15,7 +15,7 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from climateeconomics.core.core_forest.forest import Forest
+from climateeconomics.core.core_forest.forest_v1 import Forest
 
 
 class CarbonEmissions():
