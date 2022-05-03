@@ -58,12 +58,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             chain_builders_energy.pop(i_disc_to_pop)
         chain_builders.extend(chain_builders_energy)
 
-        if self.process_level != 'dev':
-            land_use_path = 'climateeconomics.sos_wrapping.sos_wrapping_land_use.land_use.land_use_disc.LandUseDiscipline'
-            chain_builders_land_use = self.ee.factory.get_builder_from_module(
-                'Land_Use', land_use_path)
-            chain_builders.append(chain_builders_land_use)
-
         # Update namespace regarding land use and energy mix coupling
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    'ns_functions': f'{self.ee.study_name}.EnergyMix',
