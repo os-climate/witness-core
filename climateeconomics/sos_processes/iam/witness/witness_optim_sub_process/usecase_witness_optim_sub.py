@@ -150,7 +150,7 @@ class Study(ClimateEconomicsStudyManager):
                                                             'index': years,
                                                             'index_name': 'years',
                                                             'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_invest'
+                                                            'namespace_out': 'ns_crop'
                                                             }
             if 'ManagedWood' in self.agri_techno_list:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.managed_wood_investment_array_mix'] = dspace_df[f'managed_wood_investment_array_mix']['value']
@@ -160,7 +160,7 @@ class Study(ClimateEconomicsStudyManager):
                                                             'index': years,
                                                             'index_name': 'years',
                                                             'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_invest'
+                                                            'namespace_out': 'ns_forest'
                                                             }
             if 'UnmanagedWood' in self.agri_techno_list:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.unmanaged_wood_investment_array_mix'] = dspace_df[f'unmanaged_wood_investment_array_mix']['value']
@@ -170,7 +170,7 @@ class Study(ClimateEconomicsStudyManager):
                                                             'index': years,
                                                             'index_name': 'years',
                                                             'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_invest'
+                                                            'namespace_out': 'ns_forest'
                                                             }
             dv_arrays_dict[f'{self.witness_uc.study_name}.deforested_surface_ctrl'] = dspace_df[f'deforested_surface_ctrl']['value']
             design_var_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforestation_surface',

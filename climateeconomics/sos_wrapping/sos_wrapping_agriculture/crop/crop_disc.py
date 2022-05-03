@@ -173,7 +173,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',
                     'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
                                             'investment': ('float',  None, True)},
-                    'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_invest'},
+                    'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop'},
         'scaling_factor_crop_investment': {'type': 'float', 'default': 1e3, 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
