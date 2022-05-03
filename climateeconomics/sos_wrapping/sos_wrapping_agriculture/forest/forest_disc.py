@@ -141,14 +141,14 @@ class ForestDiscipline(ClimateEcoDiscipline):
     # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
     # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
     # 92% of the production come from managed wood. 8% from unmanaged wood
-    mw_initial_production = 1.25 * 0.92 * \
+    mw_initial_production = round(1.25 * 0.92 * \
         density_per_ha * mean_density * biomass_cal_val / \
-        years_between_harvest / (1 - recycle_part)  # in Twh
-    mw_initial_surface = 1.25 * 0.92
-    uw_initial_production = 1.25 * 0.08 * \
+        years_between_harvest / (1 - recycle_part), 6)  # in Twh
+    mw_initial_surface = round(1.25 * 0.92, 6)
+    uw_initial_production = round(1.25 * 0.08 * \
         density_per_ha * mean_density * biomass_cal_val / \
-        years_between_harvest / (1 - recycle_part)
-    uw_initial_surface = 1.25 * 0.08
+        years_between_harvest / (1 - recycle_part), 6)
+    uw_initial_surface = round(1.25 * 0.08, 6)
     initial_unsused_forest_surface = 4 - 1.25
     #reforestation costs: 10k$/ha of land and 3800$/ha to plant trees
 
