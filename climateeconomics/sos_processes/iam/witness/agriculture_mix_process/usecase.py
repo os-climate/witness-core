@@ -158,11 +158,11 @@ class Study(StudyManager):
             f'{self.study_name}.{energy_name}.Crop.red_meat_percentage': self.red_meat_percentage,
             f'{self.study_name}.{energy_name}.Crop.white_meat_percentage': self.white_meat_percentage,
             f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
-            f'{self.study_name + self.additional_ns}.crop_investment': self.crop_investment,
+            f'{self.study_name}.{energy_name}.Crop.crop_investment': self.crop_investment,
             f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
-            f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
-            f'{self.study_name + self.additional_ns}.managed_wood_investment': self.mw_invest_df,
-            f'{self.study_name + self.additional_ns}.unmanaged_wood_investment': self.uw_invest_df,
+            f'{self.study_name + self.additional_ns}.Forest.forest_investment': self.forest_invest_df,
+            f'{self.study_name}.{energy_name}.Forest.managed_wood_investment': self.mw_invest_df,
+            f'{self.study_name}.{energy_name}.Forest.unmanaged_wood_investment': self.uw_invest_df,
             f'{self.study_name}.population_df': population_df,
             f'{self.study_name}.temperature_df': temperature_df
             }
