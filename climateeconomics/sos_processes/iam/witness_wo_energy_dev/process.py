@@ -40,7 +40,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_agriculture': ns_scatter,
                    'ns_forest': ns_scatter}
 
-        mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics_v1.macroeconomics_v1_discipline.MacroeconomicsDiscipline',
+        mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
                      'Carbon_emissions': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline',
                      'Damage': 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline',

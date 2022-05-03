@@ -39,7 +39,9 @@ class MacroDiscTest(unittest.TestCase):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
-                   'ns_public': f'{self.name}'}
+                   'ns_public': f'{self.name}',
+                   'ns_functions': f'{self.name}',
+                   'ns_ref': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -63,9 +65,9 @@ class MacroDiscTest(unittest.TestCase):
             (year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
         # Energy invest divided by 1e2 (scaling factor invest)
-        energy_invest = np.asarray([0.026] * nb_per)
+        energy_invest = np.asarray([2.6] * nb_per)
 
-        total_invest = np.asarray([25.0] * nb_per)
+        total_invest = np.asarray([27.0] * nb_per)
         total_invest = DataFrame(
             {'years': years, 'share_investment': total_invest})
         share_energy_investment = DataFrame(
@@ -75,15 +77,18 @@ class MacroDiscTest(unittest.TestCase):
         # then IEA data*0.91 (WEO 2020 stated) until 2040 then invented. 0.91 =
         # ratio net brut in 2020
         # Energy production divided by 1e3 (scaling factor production)
+        brut_net = 1/1.45
+        #prepare energy df  
         energy_outlook = pd.DataFrame({
-            'years': [2010, 2017, 2018, 2019, 2020, 2025, 2030, 2040, 2050, 2060, 2100],
-            'energy_demand': [141.057, 153.513, 157.366, 158.839, 158.839 * 0.94, 174.058 * 0.91, 183.234136 * 0.91,
-                              198.699708 * 0.91, 220.000 * 0.91, 250.000 * 0.91, 300.000 * 0.91]})
-        f2 = interp1d(energy_outlook['years'], energy_outlook['energy_demand'])
-        energy_supply = f2(self.years)
-        energy_supply_df = pd.DataFrame(
-            {'years': self.years, 'Total production': energy_supply})
+            'year': [2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
+            'energy': [149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
+        f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
+        #Find values for 2020, 2050 and concat dfs 
+        energy_supply = f2(np.arange(year_start, year_end+1))
+        energy_supply_values = energy_supply * brut_net 
+        energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
         energy_supply_df.index = self.years
+        energy_supply_df.loc[2021, 'Total production'] = 116.1036348
 
         self.damage_df = pd.DataFrame({'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
                                        'base_carbon_price': np.zeros(self.nb_per)})
@@ -91,6 +96,15 @@ class MacroDiscTest(unittest.TestCase):
 
         default_CO2_tax = pd.DataFrame(
             {'years': years, 'CO2_tax': 50.0}, index=years)
+        
+        # energy_capital
+        nb_per = len(self.years)
+        energy_capital_year_start = 16.09
+        energy_capital = []
+        energy_capital.append(energy_capital_year_start)
+        for year in np.arange(1, nb_per):
+            energy_capital.append(energy_capital[year - 1] * 1.02)
+        self.energy_capital_df = pd.DataFrame({'years': self.years, 'energy_capital': energy_capital})
 
         # retrieve co2_emissions_gt input
         data_dir = join(dirname(__file__), 'data')
@@ -99,6 +113,9 @@ class MacroDiscTest(unittest.TestCase):
         population_df = read_csv(
             join(global_data_dir, 'population_df.csv'))
         population_df.index = years
+        working_age_pop_df = read_csv(
+            join(data_dir, 'workingage_population_df.csv'))
+        working_age_pop_df.index = years
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
         energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020][[
@@ -109,6 +126,7 @@ class MacroDiscTest(unittest.TestCase):
         co2_emissions_gt.index = years
         default_co2_efficiency = pd.DataFrame(
             {'years': years, 'CO2_tax_efficiency': 40.0}, index=years)
+    
 
         # out dict definition
         values_dict = {f'{self.name}.year_start': year_start,
@@ -129,6 +147,8 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.CO2_taxes': default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': co2_emissions_gt,
+                       f'{self.name}.working_age_population_df': working_age_pop_df, 
+                       f'{self.name}.energy_capital': self.energy_capital_df
                        }
 
         self.ee.dm.set_values_from_dict(values_dict)
@@ -138,5 +158,5 @@ class MacroDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
