@@ -602,6 +602,20 @@ class TestGlobalEnergyValues(unittest.TestCase):
         print('Coal generation raw production error : ', error_geoth_prod, ' %',
               f'IEA :{energy_production_coalgen_iea} TWh vs WITNESS :{computed_coalgen_production} TWh')
 
+        elec_oilgen_prod = self.ee.dm.get_value(
+            f'{self.name}.{self.energymixname}.electricity.OilGen.techno_production')
+        computed_oilgen_production = elec_oilgen_prod['electricity (TWh)'].loc[
+            elec_oilgen_prod['years'] == 2020].values[0] * 1000.0
+        energy_production_oilgen_iea = 747  # TWh
+        error_oil_prod = np.abs(
+            energy_production_oilgen_iea - computed_oilgen_production) / energy_production_oilgen_iea * 100.0
+        # we compare in TWh and must be near 10% of error
+#         self.assertLessEqual(error_solarpv_prod,
+#                              10.0)
+
+        print('Oil generation raw production error : ', error_oil_prod, ' %',
+              f'IEA :{energy_production_oilgen_iea} TWh vs WITNESS :{computed_oilgen_production} TWh')
+
         elec_gt_prod = self.ee.dm.get_value(
             f'{self.name}.{self.energymixname}.electricity.GasTurbine.techno_production')
         elec_cgt_prod = self.ee.dm.get_value(
@@ -841,12 +855,19 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
         oil_elec_plants = 1591.67  # TWh
 
-        print('oil to electricity plants not implemented corresponds to ',
-              oil_elec_plants / liquid_fuel_raw_prod * 100.0, ' % of total raw liquid fuel production : ', oil_elec_plants, ' TWh')
+        # elec plants needs
+        elec_plants_oil = self.ee.dm.get_value(f'{self.name}.{self.energymixname}.electricity.energy_consumption')[
+            'fuel.liquid_fuel (TWh)'][0] * 1000.0
+
+        error_oil_cons = np.abs(
+            oil_elec_plants - elec_plants_oil) / oil_elec_plants * 100.0
+
+        print('Liquid fuel consumption from elec error : ', error_oil_cons, ' %',
+              f'IEA :{oil_elec_plants} TWh vs WITNESS :{elec_plants_oil} TWh')
 
         print('----------------- Total production -------------------')
 
-        total_raw_prod_iea = 183316  # TWh
+        total_raw_prod_iea = 173340  # TWh
         total_raw_prod = energy_production['Total production'][0]
         error_total_raw_prod = np.abs(
             total_raw_prod_iea - total_raw_prod) / total_raw_prod_iea * 100.0
@@ -1005,5 +1026,5 @@ if '__main__' == __name__:
     t0 = time.time()
     cls = TestGlobalEnergyValues()
     cls.setUp()
-    cls.test_02_check_global_co2_emissions_values()
+    cls.test_03_check_net_production_values()
     print(f'Time : {time.time() - t0} s')
