@@ -403,13 +403,13 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             data_to_plot_dict = {
                 'Total production': total_production}
 
-            years = list(economics_df.index)
+            # years = list(economics_df.index)
 
-            year_start = years[0]
-            year_end = years[len(years) - 1]
+            # year_start = years[0]
+            # year_end = years[len(years) - 1]
 
-            min_value, max_value = self.get_greataxisrange(
-                economics_df[to_plot])
+            # min_value, max_value = self.get_greataxisrange(
+            #     economics_df[to_plot])
 
             chart_name = 'Energy supply'
 
