@@ -22,6 +22,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from sos_trades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
@@ -37,7 +38,8 @@ WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT, process_level='dev'):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT, agri_techno_list=COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+                 process_level='dev'):
 
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -52,7 +54,7 @@ class Study(ClimateEconomicsStudyManager):
         self.process_level = process_level
         self.witness_uc = witness_optim_sub_usecase(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level, agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
     def setup_process(self):

@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_MODEL_LIST
 from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
     INVEST_DISCIPLINE_OPTIONS
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import TECHNOLOGIES_LIST_FOR_OPT
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 import re
 
@@ -24,20 +24,19 @@ class ProcessBuilder(EnergyProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'Agriculture Mix - Biomass Dry Mix',
+        'label': 'Agriculture Mix',
         'description': '',
         'category': '',
         'version': '',
     }
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
-        self.techno_list = TECHNOLOGIES_LIST_FOR_OPT
+        self.model_list = AGRI_MIX_MODEL_LIST
 
     def get_builders(self):
 
         ns_study = self.ee.study_name
 
-        biomass_dry_name = BiomassDry.name
         ns_agriculture_mix = 'AgricultureMix'
         ns_crop = 'Crop'
         ns_forest = 'Forest'
@@ -55,15 +54,14 @@ class ProcessBuilder(EnergyProcessBuilder):
         mods_dict = {}
         agricultureDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture'
         mods_dict[f'{ns_agriculture_mix}'] = agricultureDiscPath + '.agriculture_mix_disc.AgricultureMixDiscipline'
-        for techno_name in self.techno_list:
+        for model_name in self.model_list:
             #technoDiscPath = self.get_techno_disc_path(techno_name,agricultureDiscPath)
             # fix just while crop and forest are not in the right folder
-            if techno_name == "Crop":
+            if model_name == "Crop":
                 technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'
-            elif techno_name == "Forest":
+            elif model_name == "Forest":
                 technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
-            mods_dict[f'{ns_agriculture_mix}.{techno_name}'] = technoDiscPath
-            print(technoDiscPath)
+            mods_dict[f'{ns_agriculture_mix}.{model_name}'] = technoDiscPath
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 

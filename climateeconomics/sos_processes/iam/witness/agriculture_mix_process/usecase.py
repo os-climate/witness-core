@@ -19,15 +19,12 @@ import scipy.interpolate as sc
 from numpy import asarray, arange, array
 
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from energy_models.core.energy_mix_study_manager import EnergyMixStudyManager
+from sos_trades_core.study_manager.study_manager import StudyManager
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS,\
-    INVEST_DISCIPLINE_DEFAULT
 
-DEFAULT_TECHNOLOGIES_LIST = ['Crop', 'Forest']
-TECHNOLOGIES_LIST_FOR_OPT = ['Crop', 'Forest']
-
+AGRI_MIX_MODEL_LIST = ['Crop', 'Forest']
+AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = ['ManagedWood', 'UnmanagedWood', 'CropEnergy']
+COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = []
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
     ''' type(value) has to be ndarray
@@ -41,7 +38,6 @@ def update_dspace_with(dspace_dict, name, value, lower, upper):
     dspace_dict['lower_bnd'].append(lower)
     dspace_dict['upper_bnd'].append(upper)
     dspace_dict['dspace_size'] += len(value)
-
 
 def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_elem=None, enable_variable=True):
     if not isinstance(lower, (list, np.ndarray)):
@@ -57,49 +53,24 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
     dspace_dict['dspace_size'] += len(value)
 
 
-class Study(EnergyMixStudyManager):
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, techno_dict=DEFAULT_TECHNO_DICT, technologies_list=TECHNOLOGIES_LIST_FOR_OPT,
-                 bspline=True,  main_study=True, execution_engine=None, invest_discipline=INVEST_DISCIPLINE_DEFAULT):
-        super().__init__(__file__, technologies_list=technologies_list,
-                         main_study=main_study, execution_engine=execution_engine, invest_discipline=invest_discipline)
+class Study(StudyManager):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT, 
+                 model_list=AGRI_MIX_MODEL_LIST):
+        super().__init__(__file__, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
-        self.techno_dict = techno_dict
+        self.techno_list = agri_techno_list
+        self.model_list = model_list
         self.energy_name = None
-        self.bspline = bspline
         self.nb_poles = 8
         self.additional_ns = ''
-
-    def get_investments(self):
-        invest_biomass_dry_mix_dict = {}
-        l_ctrl = np.arange(0, 8)
-
-        if 'Forest' in self.technologies_list:
-            invest_biomass_dry_mix_dict['Forest'] = [
-                (1 + 0.03)**i for i in l_ctrl]
-
-        if 'Crop' in self.technologies_list:
-            invest_biomass_dry_mix_dict['Crop'] = np.array([
-                1.0, 1.0, 0.8, 0.6, 0.4, 0.4, 0.4, 0.4])
-
-        if self.bspline:
-            invest_biomass_dry_mix_dict['years'] = self.years
-
-            for techno in self.technologies_list:
-                invest_biomass_dry_mix_dict[techno], _ = self.invest_bspline(
-                    invest_biomass_dry_mix_dict[techno], len(self.years))
-
-        biomass_dry_mix_invest_df = pd.DataFrame(invest_biomass_dry_mix_dict)
-
-        return biomass_dry_mix_invest_df
 
     def setup_usecase(self):
 
         agriculture_mix = 'AgricultureMix'
         energy_name = f'{agriculture_mix}'
         years = np.arange(self.year_start, self.year_end + 1)
-        # reference_data_name = 'Reference_aircraft_data'
         self.energy_prices = pd.DataFrame({'years': years,
                                            'electricity': 16.0})
         year_range = self.year_end - self.year_start + 1
@@ -133,10 +104,6 @@ class Study(EnergyMixStudyManager):
                                 })
         other = np.array(np.linspace(0.102, 0.102, year_range))
 
-        crop_invest = np.linspace(0.5, 0.25, year_range)
-        self.crop_investment = pd.DataFrame(
-            {'years': years, 'investment': crop_invest})
-
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
@@ -154,13 +121,22 @@ class Study(EnergyMixStudyManager):
 
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
-        mw_invest = np.linspace(1, 4, year_range)
-        uw_invest = np.linspace(0, 1, year_range)
-        self.mw_invest_df = pd.DataFrame(
-            {"years": years, "investment": mw_invest})
-        self.uw_invest_df = pd.DataFrame(
-            {"years": years, "investment": uw_invest})
 
+        if 'CropEnergy' in self.techno_list:
+            crop_invest = np.linspace(0.5, 0.25, year_range)
+        else:
+            crop_invest = [0] * year_range
+        if 'ManagedWood' in self.techno_list:
+            mw_invest = np.linspace(1, 4, year_range)
+        else:
+            mw_invest = [0] * year_range
+        if 'UnmanagedWood' in self.techno_list:
+            uw_invest = np.linspace(0, 1, year_range)
+        else:
+            uw_invest = [0] * year_range
+        self.uw_invest_df = pd.DataFrame({"years": years, "investment": uw_invest})
+        self.mw_invest_df = pd.DataFrame({"years": years, "investment": mw_invest})
+        self.crop_investment = pd.DataFrame({'years': years, 'investment': crop_invest})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -170,30 +146,26 @@ class Study(EnergyMixStudyManager):
         self.co2_taxes = pd.DataFrame(
             {'years': years, 'CO2_tax': func(years)})
 
-        values_dict = {f'{self.study_name}.year_start': self.year_start,
-                       f'{self.study_name}.year_end': self.year_end,
-                       f'{self.study_name}.{energy_name}.technologies_list': self.technologies_list,
-                       f'{self.study_name}.margin': self.margin,
-                       f'{self.study_name}.transport_cost': self.transport,
-                       f'{self.study_name}.transport_margin': self.margin,
-                       f'{self.study_name}.CO2_taxes': self.co2_taxes,
-                       f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
-                       f'{self.study_name}.{energy_name}.Crop.red_meat_percentage': self.red_meat_percentage,
-                       f'{self.study_name}.{energy_name}.Crop.white_meat_percentage': self.white_meat_percentage,
-                       f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
-                       f'{self.study_name + self.additional_ns}.crop_investment': self.crop_investment,
-                       }
-        if self.main_study:
-            values_dict.update({
-                f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
-                f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
-                f'{self.study_name + self.additional_ns}.managed_wood_investment': self.mw_invest_df,
-                f'{self.study_name + self.additional_ns}.unmanaged_wood_investment': self.uw_invest_df,
-                f'{self.study_name}.population_df': population_df,
-                f'{self.study_name}.temperature_df': temperature_df,
-            })
-        else:
-            self.update_dv_arrays()
+        values_dict = {
+            f'{self.study_name}.year_start': self.year_start,
+            f'{self.study_name}.year_end': self.year_end,
+            f'{self.study_name}.{energy_name}.technologies_list': self.model_list,
+            f'{self.study_name}.margin': self.margin,
+            f'{self.study_name}.transport_cost': self.transport,
+            f'{self.study_name}.transport_margin': self.margin,
+            f'{self.study_name}.CO2_taxes': self.co2_taxes,
+            f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
+            f'{self.study_name}.{energy_name}.Crop.red_meat_percentage': self.red_meat_percentage,
+            f'{self.study_name}.{energy_name}.Crop.white_meat_percentage': self.white_meat_percentage,
+            f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
+            f'{self.study_name + self.additional_ns}.crop_investment': self.crop_investment,
+            f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
+            f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
+            f'{self.study_name + self.additional_ns}.managed_wood_investment': self.mw_invest_df,
+            f'{self.study_name + self.additional_ns}.unmanaged_wood_investment': self.uw_invest_df,
+            f'{self.study_name}.population_df': population_df,
+            f'{self.study_name}.temperature_df': temperature_df
+            }
 
         red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
         white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
@@ -210,9 +182,12 @@ class Study(EnergyMixStudyManager):
         design_space_ctrl_dict['white_meat_percentage_ctrl'] = white_meat_percentage_ctrl
         design_space_ctrl_dict['deforested_surface_ctrl'] = deforestation_surface_ctrl
         design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
-        if BiomassDry.name in self.techno_dict:
+
+        if 'CropEnergy' in self.techno_list:
             design_space_ctrl_dict['crop_investment_array_mix'] = crop_investment_array_mix
+        if 'ManagedWood' in self.techno_list:
             design_space_ctrl_dict['managed_wood_investment_array_mix'] = managed_wood_investment_array_mix
+        if 'UnmanagedWood' in self.techno_list:
             design_space_ctrl_dict['unmanaged_wood_investment_array_mix'] = unmanaged_wood_investment_array_mix
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
@@ -241,13 +216,13 @@ class Study(EnergyMixStudyManager):
         # Invests
         update_dspace_dict_with(ddict, 'forest_investment_array_mix',
                                 list(self.design_space_ctrl['forest_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        if BiomassDry.name in self.techno_dict:
+        if 'CropEnergy' in self.techno_list:
             update_dspace_dict_with(ddict, 'crop_investment_array_mix',
                                     list(self.design_space_ctrl['crop_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False,)
-            
+        if 'ManagedWood' in self.techno_list:    
             update_dspace_dict_with(ddict, 'managed_wood_investment_array_mix',
                                     list(self.design_space_ctrl['managed_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False)
-
+        if 'UnmanagedWood' in self.techno_list:
             update_dspace_dict_with(ddict, 'unmanaged_wood_investment_array_mix',
                                     list(self.design_space_ctrl['unmanaged_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False,)
 
@@ -255,8 +230,7 @@ class Study(EnergyMixStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(main_study=True,
-                   technologies_list=DEFAULT_TECHNOLOGIES_LIST)
+    uc_cls = Study()
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
