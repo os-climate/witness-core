@@ -12,6 +12,7 @@ from sos_trades_core.execution_engine.func_manager.func_manager_disc import Func
 import pandas as pd
 import numpy as np
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
@@ -28,7 +29,8 @@ EXTRA_NAME = "WITNESS"
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, process_level='val'):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+                 process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -43,10 +45,11 @@ class Study(ClimateEconomicsStudyManager):
         self.bspline = bspline
         self.invest_discipline = invest_discipline
         self.techno_dict = techno_dict
+        self.agri_techno_list = agri_techno_list
         self.process_level = process_level
         self.witness_uc = witness_usecase(
             self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level, agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
     def setup_usecase(self):
@@ -139,7 +142,7 @@ class Study(ClimateEconomicsStudyManager):
                                                         'namespace_in': 'ns_witness',
                                                         'namespace_out': 'ns_invest'
                                                         }
-            if BiomassDry.name in self.techno_dict:
+            if 'CropEnergy' in self.agri_techno_list:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = dspace_df[f'crop_investment_array_mix']['value']
                 design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
                                                             'out_type': 'dataframe',
@@ -149,6 +152,7 @@ class Study(ClimateEconomicsStudyManager):
                                                             'namespace_in': 'ns_witness',
                                                             'namespace_out': 'ns_invest'
                                                             }
+            if 'ManagedWood' in self.agri_techno_list:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.managed_wood_investment_array_mix'] = dspace_df[f'managed_wood_investment_array_mix']['value']
                 design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
                                                             'out_type': 'dataframe',
@@ -158,6 +162,7 @@ class Study(ClimateEconomicsStudyManager):
                                                             'namespace_in': 'ns_witness',
                                                             'namespace_out': 'ns_invest'
                                                             }
+            if 'UnmanagedWood' in self.agri_techno_list:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.unmanaged_wood_investment_array_mix'] = dspace_df[f'unmanaged_wood_investment_array_mix']['value']
                 design_var_descriptor['unmanaged_wood_investment_array_mix'] = {'out_name': 'unmanaged_wood_investment',
                                                             'out_type': 'dataframe',
