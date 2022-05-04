@@ -187,12 +187,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.economics_df',
                                      f'{self.name}.energy_investment',
                                      f'{self.name}.pc_consumption_constraint',
-                                     f'{self.name}.global_investment_constraint', 
+                                     f'{self.name}.global_investment_constraint',
                                      f'{self.name}.emax_enet_constraint',
                                      f'{self.name}.delta_capital_objective',
                                      f'{self.name}.delta_capital_objective_weighted',
                                      f'{self.name}.delta_capital_constraint',
-                                     f'{self.name}.delta_capital_constraint_dc'])
+                                     f'{self.name}.delta_capital_constraint_dc',
+                                     f'{self.name}.delta_capital_lintoquad'])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
 
@@ -266,7 +267,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   'ns_ref': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'

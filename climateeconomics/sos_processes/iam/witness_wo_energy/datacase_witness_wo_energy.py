@@ -31,10 +31,12 @@ from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase impo
 from sos_trades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
+EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
-
+AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
+AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 class DataStudy():
     def __init__(self, year_start=2020, year_end=2100, time_step=1):
@@ -275,13 +277,13 @@ class DataStudy():
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 
-        list_var.extend(['delta_capital_constraint', 'delta_capital_constraint_dc'])
-        list_parent.extend(['invests_constraints', 'invests_constraints'])
-        list_ns.extend(['ns_functions', 'ns_functions'])
-        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        list_weight.extend([-1.0, 0.0])
+        list_var.extend(['delta_capital_constraint', 'delta_capital_constraint_dc', 'delta_capital_lintoquad'])
+        list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints'])
+        list_ns.extend(['ns_functions', 'ns_functions', 'ns_functions'])
+        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, EQ_CONSTRAINT])
+        list_weight.extend([-1.0, 0.0, 0.0])
         list_aggr_type.extend([
-            AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
+            AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_LIN_TO_QUAD])
 
         list_var.append('non_use_capital_cons')
         list_parent.append('invests_constraints')
