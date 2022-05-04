@@ -90,7 +90,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     # reference :
     # https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
-    years_between_harvest = 20
+    years_between_harvest = 25
 
     recycle_part = 0.52  # 52%
 #     mean_calorific_value = BiomassDryTechnoDiscipline.data_energy_dict[
@@ -247,8 +247,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
     FOREST_CHARTS = 'Forest chart'
 
     def init_execution(self):
-        inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+
+        param = self.get_sosdisc_inputs()
 
         self.forest_model = Forest(param)
 

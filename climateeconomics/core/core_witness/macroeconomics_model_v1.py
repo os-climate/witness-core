@@ -566,6 +566,22 @@ class MacroEconomics():
                                                            tolerable_delta=self.delta_capital_cons_limit,
                                                            delta_type='hardmin', reference_value=ref_usable_capital)
 
+    def compute_delta_capital_lin_to_quad_constraint(self):
+        """
+        Compute delta between capital and a percentage of usable capital using the lin_to_quad method.
+        Through this implementation, there is a hard limit (quadratic increase) if:
+         (usable_capital - self.capital_utilisation_ratio * ne_capital)>delta_capital_eq_cons_limit
+        which corresponds to the case: energy > e_max * self.max_capital_utilisation_ratio + eps
+        and a linear increase going away from zero otherwise
+        """
+        ne_capital = self.capital_df['non_energy_capital'].values
+        usable_capital = self.capital_df['usable_capital'].values
+        ref_usable_capital = self.usable_capital_ref * self.nb_years
+        tolerable_delta = 0.15 * ne_capital
+        self.delta_capital_lintoquad = compute_delta_constraint(value=usable_capital, goal=self.capital_utilisation_ratio * ne_capital,
+                                                           tolerable_delta=tolerable_delta,
+                                                           delta_type='normal', reference_value=ref_usable_capital)
+
     def compute(self, inputs, damage_prod=False):
         """
         Compute all models for year range
@@ -620,6 +636,7 @@ class MacroEconomics():
         self.compute_delta_capital_objective_with_alpha()
         self.compute_delta_capital_constraint()
         self.compute_delta_capital_constraint_dc()
+        self.compute_delta_capital_lin_to_quad_constraint()
         return self.economics_df.fillna(0.0), self.energy_investment.fillna(0.0), self.global_investment_constraint, \
             self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint, self.workforce_df, \
             self.capital_df, self.emax_enet_constraint

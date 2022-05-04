@@ -81,7 +81,8 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
         'production_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}, 
+        'detailed_capital_df':{'type': 'dataframe'}
     }
 
     def setup_sos_disciplines(self):
@@ -114,7 +115,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
    
         industrial_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                         'energy_production': energy_production,
-                       'investment': investment, 
+                       'sector_investment': investment, 
                        'workforce_df': workforce_df}
         # Model execution
         production_df, capital_df, productivity_df = self.industrial_model.compute(industrial_inputs)
@@ -122,17 +123,48 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         # Store output data
         dict_values = {'productivity_df': productivity_df,
                        'production_df': production_df[['years', 'output']],
-                       'capital_df': capital_df
+                       'capital_df': capital_df[['years', 'capital', 'usable_capital']],
+                       'detailed_capital_df' : capital_df
                        }
 
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
-        """ 
+        """
         Compute jacobian for each coupling variable 
         gradiant of coupling variable 
-
+        inputs: - energy
+                - investment
+                - damage 
+                - workforce
+        outputs: - capital 
+                - usable capital 
+                - output 
         """
+        scaling_factor_energy_production = self.get_sosdisc_inputs('scaling_factor_energy_production')
+        #Gradients wrt energy
+        dcapitalu_denergy = self.industrial_model.dusablecapital_denergy()
+        doutput_denergy = self.industrial_model.doutput_denergy(dcapitalu_denergy)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output'), ('energy_production', 'Total production'), scaling_factor_energy_production * doutput_denergy)
+        self.set_partial_derivative_for_other_types(
+            ('capital_df', 'usable_capital'), ('energy_production', 'Total production'), scaling_factor_energy_production * dcapitalu_denergy)
+        
+        #gradients wrt workforce 
+        doutput_dworkforce = self.industrial_model.compute_doutput_dworkforce()
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output'), ('workforce_df', 'workforce'), doutput_dworkforce)
+        
+        #gradients wrt damage: 
+        dproductivity_ddamage = self.industrial_model.dproductivity_ddamage()
+        doutput_ddamage = self.industrial_model.doutput_ddamage(dproductivity_ddamage)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output'), ('damage_df', 'damage_frac_output'), doutput_ddamage)
+        
+        #gradients wrt invest
+        dcapital_dinvest = self.industrial_model.dcapital_dinvest()
+        self.set_partial_derivative_for_other_types(
+            ('capital_df', 'capital'), ('sector_investment', 'investment'), dcapital_dinvest)
 
     def get_chart_filter_list(self):
 
