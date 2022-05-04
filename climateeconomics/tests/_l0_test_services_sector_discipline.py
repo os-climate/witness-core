@@ -63,7 +63,7 @@ class ServicesDiscTest(unittest.TestCase):
         nb_per = round((year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
        
-        # retrieve co2_emissions_gt input
+        # input
         data_dir = join(dirname(__file__), 'data')
         global_data_dir = join(dirname(dirname(__file__)), 'data')
 
