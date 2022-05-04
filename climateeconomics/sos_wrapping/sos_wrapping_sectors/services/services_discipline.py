@@ -48,8 +48,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         'year_end': {'type': 'int', 'default': 2100,  'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
         'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
         'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2},
-        'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'default':84.2,
-                              'namespace': 'ns_witness', 'user_level': 2},
+        #'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'default':84.2, 'user_level': 2},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 281.2092, 'user_level': 2}, 
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2},
@@ -81,7 +80,8 @@ class ServicesDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
         'production_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}, 
+        'detailed_capital_df':{'type': 'dataframe'}
     }
 
     def setup_sos_disciplines(self):
@@ -109,12 +109,12 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
         damage_df = param['damage_df']
         energy_production = param['energy_production']
-        investment = param['sector_investment']
+        sector_investment = param['sector_investment']
         workforce_df = param['workforce_df']
    
         services_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                         'energy_production': energy_production,
-                       'investment': investment, 
+                       'sector_investment': sector_investment, 
                        'workforce_df': workforce_df}
         # Model execution
         production_df, capital_df, productivity_df = self.services_model.compute(services_inputs)
@@ -122,7 +122,8 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         # Store output data
         dict_values = {'productivity_df': productivity_df,
                        'production_df': production_df[['years', 'output']],
-                       'capital_df': capital_df
+                       'capital_df': capital_df[['years', 'capital', 'usable_capital']],
+                       'detailed_capital_df' : capital_df
                        }
 
         self.store_sos_outputs_values(dict_values)
@@ -131,9 +132,40 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         """ 
         Compute jacobian for each coupling variable 
         gradiant of coupling variable 
-
+        inputs: - energy
+                - investment
+                - damage 
+                - workforce
+        outputs: - capital 
+                - usable capital 
+                - output 
         """
+        scaling_factor_energy_production = self.get_sosdisc_inputs('scaling_factor_energy_production')
+        #Gradients wrt energy
+        dcapitalu_denergy = self.services_model.dusablecapital_denergy()
+        doutput_denergy = self.services_model.doutput_denergy(dcapitalu_denergy)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output'), ('energy_production', 'Total production'), scaling_factor_energy_production * doutput_denergy)
+        self.set_partial_derivative_for_other_types(
+            ('capital_df', 'usable_capital'), ('energy_production', 'Total production'), scaling_factor_energy_production * dcapitalu_denergy)
+        
+        #gradients wrt workforce 
+        doutput_dworkforce = self.services_model.compute_doutput_dworkforce()
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output'), ('workforce_df', 'workforce'), doutput_dworkforce)
+        
+        #gradients wrt damage: 
+        dproductivity_ddamage = self.services_model.dproductivity_ddamage()
+        doutput_ddamage = self.services_model.doutput_ddamage(dproductivity_ddamage)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output'), ('damage_df', 'damage_frac_output'), doutput_ddamage)
+        
+        #gradients wrt invest
+        dcapital_dinvest = self.services_model.dcapital_dinvest()
+        self.set_partial_derivative_for_other_types(
+            ('capital_df', 'capital'), ('sector_investment', 'investment'), dcapital_dinvest)
 
+        
     def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific

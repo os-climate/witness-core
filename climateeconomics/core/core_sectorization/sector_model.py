@@ -50,7 +50,7 @@ class SectorModel():
         self.nb_years = len(self.years_range)
 
         self.productivity_start = inputs_dict['productivity_start']
-        self.init_gross_output = inputs_dict['init_gross_output']
+        #self.init_gross_output = inputs_dict['init_gross_output']
         self.capital_start = inputs_dict['capital_start']
         self.productivity_gr_start = inputs_dict['productivity_gr_start']
         self.decline_rate_tfp = inputs_dict['decline_rate_tfp']
@@ -88,7 +88,7 @@ class SectorModel():
         """
         Set couplings inputs with right index, scaling... 
         """
-        self.investment_df = inputs['investment']
+        self.investment_df = inputs['sector_investment']
         self.investment_df.index = self.investment_df['years'].values
         #scale energy production
         self.energy_production = inputs['energy_production'].copy(deep=True)
@@ -149,7 +149,7 @@ class SectorModel():
             pass
         else: 
             # Capital 
-            investment = self.investment_df.at[year - self.time_step, 'investment']
+            investment = self.investment_df.loc[year - self.time_step, 'investment']
             capital = self.capital_df.at[year - self.time_step, 'capital']
             capital_a = capital * (1 - self.depreciation_capital) + investment
             self.capital_df.loc[year, 'capital'] = capital_a
@@ -235,7 +235,119 @@ class SectorModel():
         self.production_df = self.production_df.fillna(0.0)
         self.capital_df = self.capital_df.fillna(0.0)
         self.productivity_df = self.productivity_df.fillna(0.0)
-        
+
         return self.production_df, self.capital_df, self.productivity_df
 
+    def compute_doutput_dworkforce(self):
+        """ Gradient for output output wrt workforce
+        output = productivity * (alpha * capital_u**gamma + (1-alpha)* (working_pop)**gamma)**(1/gamma) 
+        """
+        years = self.years_range
+        nb_years = len(years)
+        alpha = self.output_alpha
+        gamma = self.output_gamma
+        doutput = np.identity(nb_years)
+        working_pop = self.workforce_df['workforce'].values
+        capital_u = self.capital_df['usable_capital'].values
+        productivity = self.productivity_df['productivity'].values
+        # output = f(g(x)) with f = productivity*g**(1/gamma) a,d g= alpha * capital_u**gamma + (1-alpha)* (working_pop)**gamma
+        # f'(g) = productivity*(1/gamma)*g**(1/gamma -1)
+        # g'(workingpop) = (1-alpha)*gamma*workingpop**(gamma-1)
+        # f'(g(x)) = f'(g)*g'(x)
+        # first line stays at zero since derivatives of initial values are zero
+        g = alpha * capital_u**gamma + (1 - alpha) * (working_pop)**gamma
+        g_prime = (1 - alpha) * gamma * working_pop**(gamma - 1)
+        f_prime = productivity * (1 / gamma) * g * g_prime
+        doutput *= f_prime
+        return doutput
+    
+    def dusablecapital_denergy(self):
+        """ Gradient of usable capital wrt energy 
+        usable_capital = capital * (energy / e_max)  
+        """
+        #derivative: capital/e_max
+        nb_years = self.nb_years
+        # Inputs
+        capital = self.capital_df['capital'].values
+        e_max = self.capital_df['e_max'].values
+        dusablecapital_denergy = np.identity(nb_years)
+        dusablecapital_denergy *= capital / e_max
+        return dusablecapital_denergy
+    
+    def doutput_denergy(self, dcapitalu_denergy):
+        years = self.years_range
+        nb_years = len(years)
+        alpha = self.output_alpha
+        gamma = self.output_gamma
+        doutput_dcap = np.identity(nb_years)
+        working_pop = self.workforce_df['workforce'].values
+        capital_u = self.capital_df['usable_capital'].values
+        productivity = self.productivity_df['productivity'].values
+        # Derivative of output wrt capital
+        # output = f(g(x)) with f = productivity*g**(1/gamma) a,d g= alpha * capital_u**gamma + (1-alpha)* (working_pop)**gamma
+        # f'(g) = productivity*(1/gamma)*g**(1/gamma -1)
+        # g'(capital) = alpha*gamma*capital**(gamma-1)
+        # f'(g(x)) = f'(g)*g'(x)
+        g = alpha * capital_u**gamma + (1 - alpha) * (working_pop)**gamma
+        g_prime = alpha * gamma * capital_u**(gamma - 1)
+        f_prime = productivity * (1 / gamma) * g * g_prime
+        doutput_dcap *= f_prime
+        # Then doutput = doutput_d_prod * dproductivity
+        doutput = np.dot(dcapitalu_denergy, doutput_dcap)
+        return doutput
+    
+    def dproductivity_ddamage(self):
+        """gradient for productivity for damage_df
+        Args:
+            output: gradient
+        """
+        years = np.arange(self.year_start,
+                          self.year_end + 1, self.time_step)
+        nb_years = len(years)
+        p_productivity_gr = self.productivity_df['productivity_growth_rate'].values
+        p_productivity = self.productivity_df['productivity'].values
+
+        # derivative matrix initialization
+        d_productivity = np.zeros((nb_years, nb_years))
+        if self.damage_to_productivity == True:
+
+            # first line stays at zero since derivatives of initial values are
+            # zero
+            for i in range(1, nb_years):
+                d_productivity[i, i] = (1 - self.frac_damage_prod * self.damefrac.at[years[i], 'damage_frac_output']) * \
+                                    d_productivity[i - 1, i] / (1 - p_productivity_gr[i - 1]) - self.frac_damage_prod * \
+                                    p_productivity[i - 1] / (1 - p_productivity_gr[i - 1])
+                for j in range(1, i):
+                    d_productivity[i, j] = (1 - self.frac_damage_prod * self.damefrac.at[years[i], 'damage_frac_output']) * \
+                                            d_productivity[i - 1, j] / (1 - p_productivity_gr[i - 1] )
+
+        return d_productivity
+    
+    def doutput_ddamage(self, dproductivity):
+        years = self.years_range
+        nb_years = len(years)
+        alpha = self.output_alpha
+        gamma = self.output_gamma
+        doutput_dprod = np.identity(nb_years)
+        working_pop = self.workforce_df['workforce'].values
+        capital_u = self.capital_df['usable_capital'].values
+        # Derivative of output wrt productivity
+        doutput_dprod *= (alpha * capital_u**gamma + (1 - alpha)
+                          * (working_pop)**gamma)**(1 / gamma)
+        # Then doutput = doutput_d_prod * dproductivity
+        doutput = np.dot(doutput_dprod, dproductivity)
+        return doutput
+        
+    def dcapital_dinvest(self):
+        """ Compute derivative of capital wrt investments. 
+        """
+        nb_years = self.nb_years
+        #capital depends on invest from year before. diagonal k-1
+        dcapital = np.eye(nb_years, k=-1)
+        for i in range(0, nb_years-1):
+            for j in range(0, i + 1):
+                dcapital[i + 1, j] += dcapital[i, j] * (1 - self.depreciation_capital)  
+
+        return dcapital
+       
 
