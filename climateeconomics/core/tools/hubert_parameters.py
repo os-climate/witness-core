@@ -14,13 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from os.path import join, dirname
+
+from scipy.fftpack import diff
+from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import CopperResourceModel
 import numpy as np
 import pandas as pd
 
-def compute_Hubbert_regression(past_production, production_years, regression_start, resource_type):
+
+resource_name = CopperResourceModel.resource_name
+Q_inf_th = 2851.691
+past_production = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_production_data.csv'))
+production_start = 1925
+production_years = np.arange(production_start, 2101)
+past_production_years = np.arange(production_start, 2021)
+
+def compute_Hubbert_parameters(past_production, production_years, regression_start, resource_type):
     
     '''
-    Compute Hubbert Regression Curve from past production
+    Compute Hubbert parameters from past production
     '''
     # initialization
     past_production_years=past_production['years']
@@ -44,6 +56,7 @@ def compute_Hubbert_regression(past_production, production_years, regression_sta
     cumulative_sample = cumulative_production.loc[
         cumulative_production['years'] >= regression_start]
     
+    
 
     ratio_sample = ratio_P_by_Q.loc[ratio_P_by_Q['years'] >= regression_start]
 
@@ -57,20 +70,19 @@ def compute_Hubbert_regression(past_production, production_years, regression_sta
     # model from the start of the exploitation to the end)
     Q_inf = -1 * (w / fit[0])
 
+    return Q_inf
 
-    tho = 0  # year of resource peak
+year_regression = 1925
 
-    # compute of all the possible values of Tho according to Q and P and
-    # take the mean values
-    for ind in cumulative_sample.index:
-        tho = tho + np.log((Q_inf / cumulative_sample.loc[ind, resource_type] - 1) * np.exp(
-            cumulative_sample.loc[ind, 'years'] * w)) * (1 / w)
-    tho = tho / len(cumulative_sample.index)
+difference = 1000
 
-    # compute hubbert curve values
-    predictable_production = []
-    for year in production_years:
-        predictable_production += [Q_inf * w * (
-                (1 / (np.exp((-(w / 2)) * (tho - year)) + np.exp((w / 2) * (tho - year)))) ** 2),]
-    
-    return predictable_production
+for evolving_year in past_production_years :
+    Q_inf = compute_Hubbert_parameters(past_production, production_years, evolving_year, 'copper')
+    if abs(Q_inf_th - Q_inf) < difference :
+        difference = abs (Q_inf_th - Q_inf)
+        year_regression = evolving_year
+print("l'année de régression est : ")
+print (year_regression)
+
+print("et la différence entre Q_inf et Q_inf_th est de ")
+print (difference)

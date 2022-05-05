@@ -131,3 +131,4 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
                                      f'{self.name}.{self.model_name}.predictable_production'])
+                    

@@ -37,4 +37,4 @@ Stock is yearly updated, it rises if the demand is lower than the extraction, an
 ### References 
 
 [^1]: US Geological Survey, Copper - "Hubbert math" (2020) - Retrieved from: 'https://pubs.usgs.gov/periodicals/mcs2022/mcs2022-copper.pdf'
-[^2] Branco W.Schipper, Hsiu-ChuanLin, Marco A.Meloni, KjellWansleeben, ReinoutHeijungs, Estervan der Voet - Estimating global copper demand until 2100 with regression and stock dynamics - Retrieved from : 'https://www.sciencedirect.com/science/article/pii/S0921344918300041'
+[^2]: Branco W.Schipper, Hsiu-ChuanLin, Marco A.Meloni, KjellWansleeben, ReinoutHeijungs, Estervan der Voet - Estimating global copper demand until 2100 with regression and stock dynamics - Retrieved from : 'https://www.sciencedirect.com/science/article/pii/S0921344918300041'

@@ -13,12 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+'''
+mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
+'''
 import unittest
 from os.path import join, dirname
 from pandas import read_csv
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
-class UraniumModelTestCase(unittest.TestCase):
+class CopperModelTestCase(unittest.TestCase):
 
     def setUp(self):
         '''
@@ -26,39 +29,38 @@ class UraniumModelTestCase(unittest.TestCase):
         '''
         self.year_start = 2020
         self.year_end = 2100
-        self.production_start=1970
-
+        self.production_start=1974
         data_dir = join(dirname(__file__), 'data')
 
-        self.energy_uranium_demand_df = read_csv(
+        self.energy_copper_demand_df = read_csv(
             join(data_dir, 'all_demand_from_energy_mix.csv'))
         # part to adapt lenght to the year range
-
-        self.energy_uranium_demand_df = self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df['years']
+       
+        self.energy_copper_demand_df = self.energy_copper_demand_df.loc[self.energy_copper_demand_df['years']
                                                                     >= self.year_start]
-        self.energy_uranium_demand_df= self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df['years']
+        self.energy_copper_demand_df= self.energy_copper_demand_df.loc[self.energy_copper_demand_df['years']
                                                                   <= self.year_end]
 
-        self.param = {'resources_demand': self.energy_uranium_demand_df,
+        self.param = {'resources_demand': self.energy_copper_demand_df,
                       'year_start': self.year_start,
                       'year_end': self.year_end,
                       'production_start': self.production_start}
 
-    def test_uranium_discipline(self):
+    def test_copper_discipline(self):
         ''' 
         Check discipline setup and run
         '''
         name = 'Test'
-        model_name = 'uranium_use'
+        model_name = 'copper_resource'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
-                   'ns_uranium_resource': f'{name}.{model_name}',
+                   'ns_copper_resource':f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc.UraniumResourceDiscipline'
+        mod_path = 'climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc.CopperResourceDiscipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)
@@ -68,8 +70,9 @@ class UraniumModelTestCase(unittest.TestCase):
 
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
-                       f'{name}.{model_name}.resources_demand': self.energy_uranium_demand_df,
-                       'production_start': self.production_start}
+                       f'{name}.{model_name}.resources_demand': self.energy_copper_demand_df,
+                       'production_start': self.production_start
+                       }
         ee.load_study_from_input_dict(inputs_dict)
 
         ee.execute()
@@ -78,7 +81,8 @@ class UraniumModelTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
-        #    graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
+
 if __name__ =="__main__" :
     unittest.main()
