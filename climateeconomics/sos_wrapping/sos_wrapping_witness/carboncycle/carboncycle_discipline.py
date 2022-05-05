@@ -43,9 +43,9 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
 
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 2020, 'possible_values': years, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'time_step': {'type': 'int', 'default': 1, 'unit': 'year per period', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'conc_lower_strata': {'type': 'int', 'default': 1720, 'unit': 'Gtc', 'user_level': 2},
         'conc_upper_strata': {'type': 'int', 'default': 360, 'unit': 'Gtc', 'user_level': 2},
         'conc_atmo': {'type': 'int', 'default': 588, 'unit': 'Gtc', 'user_level': 2},

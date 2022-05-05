@@ -48,23 +48,23 @@ class ForestDiscipline(ClimateEcoDiscipline):
     deforestation_limit = 1000
     initial_emissions = 3.21
 
-    DESC_IN = {Forest.YEAR_START: {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               Forest.YEAR_END: {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               Forest.TIME_STEP: {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
+    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                Forest.DEFORESTATION_SURFACE: {'type': 'dataframe', 'unit': 'Mha',
-                                              'dataframe_descriptor': {'years': ('float', None, False),
-                                                                       'deforested_surface': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                                      'dataframe_descriptor': {'years': ('float', None, False),
+                                                                               'deforested_surface': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                                      'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                Forest.LIMIT_DEFORESTATION_SURFACE: {'type': 'float', 'unit': 'Mha', 'default': deforestation_limit,
-                                                    'namespace': 'ns_forest', },
+                                                            'namespace': 'ns_forest', },
                Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': initial_emissions,
-                                              'namespace': 'ns_forest', },
+                                                      'namespace': 'ns_forest', },
                Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000, 'namespace': 'ns_forest'},
                Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 3800, 'namespace': 'ns_forest'},
                Forest.REFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
-                                                 'dataframe_descriptor': {'years': ('float', None, False),
-                                                                          'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
+                                                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                                                  'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
                }
 
     DESC_OUT = {

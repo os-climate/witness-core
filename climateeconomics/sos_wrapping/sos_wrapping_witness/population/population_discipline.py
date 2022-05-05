@@ -55,9 +55,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         join(global_data_dir, 'climate_additional_deaths_V2.csv'))
     # ADD DICTIONARY OF VALUES FOR DEATH RATE
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'default': 2020, 'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'default': 2100, 'namespace': 'ns_witness'},
-        'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'population_start': {'type': 'dataframe', 'default': pop_init_df},
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
