@@ -19,8 +19,6 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
 
-import pandas as pd
-from copy import deepcopy
 from climateeconomics.core.core_witness.policy_model import PolicyModel
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 
@@ -51,7 +49,7 @@ class PolicyDiscipline(SoSDiscipline):
     }
 
     DESC_OUT = {
-        'CO2_taxes': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'CO2_taxes': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '$/tCO2'}
 
     }
 

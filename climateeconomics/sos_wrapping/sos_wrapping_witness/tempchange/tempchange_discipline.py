@@ -75,8 +75,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'temperature_detail_df': {'type': 'dataframe'},
+        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
+        'temperature_detail_df': {'type': 'dataframe', 'unit': 'degree Celsius'},
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
         'temperature_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}}
 

@@ -57,7 +57,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         'lo_mat': {'type': 'float', 'default': 10, 'user_level': 2},
         'lo_mu': {'type': 'float', 'default': 100, 'user_level': 2},
         'lo_ml': {'type': 'float', 'default': 1000, 'user_level': 2},
-        'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
         'ppm_ref': {'type': 'float', 'default': 280, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'rockstrom_constraint_ref': {'type': 'float', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
@@ -74,9 +74,9 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'carboncycle_detail_df': {'type': 'dataframe'},
-        'ppm_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'ppm_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''},
+        'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''},
+        'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''}
     }
 
     def init_execution(self):
