@@ -84,5 +84,7 @@ class OilModelTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
+        # for graph in graph_list:
         #    graph.to_plotly().show()
+if __name__ =="__main__" :
+    unittest.main()

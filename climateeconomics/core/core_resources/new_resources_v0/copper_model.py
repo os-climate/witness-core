@@ -23,7 +23,7 @@ class CopperModel :
 
 
     def __init__(self, param):
-        self.copper_demand = pd.DataFrame() #DataFrame avec la demande par année en cuivre
+       
         self.param = param
         self.set_data()
         
@@ -99,7 +99,7 @@ class CopperModel :
         copper_extraction = self.copper_prod.loc[year, 'Extraction']
 
         if year == self.year_start :
-            remainig_copper = self.initial_copper_reserve #self.INITIAL_RESERVE['default']
+            remainig_copper = self.initial_copper_reserve 
        
         else :
             remainig_copper = self.copper_reserve.loc[year -1, 'Reserve']
@@ -138,7 +138,7 @@ class CopperModel :
         extraction = self.copper_prod.at[year, 'Extraction']
         copper_demand = self.copper_demand.at[year, 'Demand'] 
 
-        # Stock of the previous year with the extracted minerals, to which we remove the copper demand
+        # Stock of the previous year plus the extracted minerals, to which we remove the copper demand
         #If the demand is too much and exceeds the stock, then there is no more stock
         new_stock = old_stock + extraction - copper_demand
     
@@ -151,7 +151,7 @@ class CopperModel :
         else :
             self.copper_stock.at[year, 'Stock'] = new_stock
                                     
-            #if there is still stock, it means the demand was satified
+            #if there is still stock, it means the demand was satisfied
             self.copper_prod.at[year, 'World Production'] = copper_demand
         
         if year == self.year_start :

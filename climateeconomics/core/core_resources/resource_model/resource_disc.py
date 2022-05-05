@@ -44,6 +44,7 @@ class ResourceDiscipline(SoSDiscipline):
     default_year_start = 2020
     default_year_end = 2050
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
+
     prod_unit='Mt'
     stock_unit='Mt'
     price_unit='$/Mt'
@@ -53,7 +54,7 @@ class ResourceDiscipline(SoSDiscipline):
     DESC_IN = {'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+               'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
                }
 
     DESC_OUT = {}
@@ -85,6 +86,7 @@ class ResourceDiscipline(SoSDiscipline):
             'resource_price': self.resource_model.resource_price,
             'use_stock': self.resource_model.use_stock,
             'predictable_production': self.resource_model.predictable_production,
+            'recycled_production': self.resource_model.recycled_production
         }
 
         #-- store outputs
@@ -128,7 +130,7 @@ class ResourceDiscipline(SoSDiscipline):
 
         chart_filters = []
 
-        chart_list = ['Stock', 'Price', 'Production']
+        chart_list = ['Stock', 'Price', 'Production', 'Recycling']
 
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -139,7 +141,7 @@ class ResourceDiscipline(SoSDiscipline):
     def get_post_processing_list(self, chart_filters=None):
 
         instanciated_charts = []
-        chart_list = ['Stock', 'Price', 'Production']
+        chart_list = ['Stock', 'Price', 'Production', 'Recycling']
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
@@ -149,7 +151,9 @@ class ResourceDiscipline(SoSDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         outputs_dict = self.get_sosdisc_outputs()
         year_start = inputs_dict['year_start']
+        year_end = inputs_dict['year_end']
         production_start = inputs_dict['production_start']
+        number_of_subtypes = 0
         if 'Stock' in chart_list:
             stock_df = outputs_dict['resource_stock']
             use_stock_df = outputs_dict['use_stock']
@@ -164,33 +168,52 @@ class ResourceDiscipline(SoSDiscipline):
             past_production_df = inputs_dict['resource_production_data']
             production_charts = self.get_production_charts(
                 production_df, past_production_df, year_start, production_start)
-            instanciated_charts.extend(production_charts)
+            instanciated_charts.extend(production_charts)        
+            sub_resource_list = [col for col in list(production_df.columns) if col != 'years']
+            number_of_subtypes = len(sub_resource_list)
+
+        if 'Recycling' in chart_list and number_of_subtypes < 2:
+            recycling_df = outputs_dict['recycled_production']
+            #production_df = outputs_dict['predictable_production']
+            use_stock_df = outputs_dict['use_stock']
+            # use_stock_df = use_stock_df.loc[use_stock_df['years'] >= year_start]
+            # use_stock_df = use_stock_df.loc[use_stock_df['years'] <= year_end]
+            recycling_charts = self.get_recycling_charts(recycling_df, use_stock_df)
+            instanciated_charts.extend(recycling_charts)
+        
 
         return instanciated_charts
 
     def get_stock_charts(self, stock_df, use_stock_df):
+
+        sub_resource_list = [col for col in stock_df.columns if col != 'years']
         stock_chart = TwoAxesInstanciatedChart('years', f'maximum stocks [{self.stock_unit}]',
                                                chart_name=f'{self.resource_name} stocks through the years',
                                                stacked_bar=True)
-        use_stock_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} use [{self.stock_unit}]',
+        if len(sub_resource_list) > 1 :
+            use_stock_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} use [{self.stock_unit}]',
                                                    chart_name=f'{self.resource_name} use per subtypes through the years',
                                                    stacked_bar=True)
         use_stock_cumulated_chart = TwoAxesInstanciatedChart('years',
-                                                             f'{self.resource_name} use per Subtypes [{self.stock_unit}]',
-                                                             chart_name=f'{self.resource_name} use through the years',
-                                                             stacked_bar=True)
-        sub_resource_list = [col for col in stock_df.columns if col != 'years']
+                                                        f'{self.resource_name} use per Subtypes [{self.stock_unit}]',
+                                                        chart_name=f'{self.resource_name} use through the years',
+                                                        stacked_bar=True)
+        
         for sub_resource_type in sub_resource_list:
             stock_serie = InstanciatedSeries(
                 list(stock_df['years']), (stock_df[sub_resource_type]).values.tolist(), sub_resource_type, InstanciatedSeries.LINES_DISPLAY)
             stock_chart.add_series(stock_serie)
 
             use_stock_serie = InstanciatedSeries(
-                list(stock_df['years']), (use_stock_df[sub_resource_type]).values.tolist(), sub_resource_type, InstanciatedSeries.BAR_DISPLAY)
-            use_stock_chart.add_series(use_stock_serie)
+                list(use_stock_df['years']), (use_stock_df[sub_resource_type]).values.tolist(), sub_resource_type, InstanciatedSeries.BAR_DISPLAY)
+            if len(sub_resource_list) > 1 :    
+                use_stock_chart.add_series(use_stock_serie)
             use_stock_cumulated_chart.add_series(use_stock_serie)
 
-        return [stock_chart, use_stock_chart, use_stock_cumulated_chart]
+        list_of_charts = [stock_chart, use_stock_cumulated_chart]
+        if len(sub_resource_list) > 1 :  
+            list_of_charts.insert(1, use_stock_chart)
+        return list_of_charts
 
     def get_price_charts(self, price_df):
         price_chart = TwoAxesInstanciatedChart('Years', f'price [{self.price_unit}]',
@@ -203,11 +226,14 @@ class ResourceDiscipline(SoSDiscipline):
         return [price_chart,]
 
     def get_production_charts(self, production_df, past_production_df, year_start, production_start):
+        sub_resource_list = [col for col in production_df.columns if col != 'years']
+        
         past_production_cut = past_production_df.loc[past_production_df['years']
                                                      >= production_start]
         production_cut = production_df.loc[production_df['years']
                                            <= year_start]
-        production_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} production per subtypes [{self.prod_unit}]',
+        if len(sub_resource_list) > 1 :
+            production_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} production per subtypes [{self.prod_unit}]',
                                                     chart_name=f'{self.resource_name} production per subtypes through the years',
                                                     stacked_bar=True)
         production_cumulated_chart = TwoAxesInstanciatedChart('Years', f'{self.resource_name} production [{self.prod_unit}]',
@@ -222,12 +248,13 @@ class ResourceDiscipline(SoSDiscipline):
                                                          f'{self.resource_name} past production [{self.prod_unit}]',
                                                          chart_name=f'{self.resource_name} past production through the years',
                                                          stacked_bar=True)
-        sub_resource_list = [col for col in production_df.columns if col != 'years']
+        
         for sub_resource_type in sub_resource_list:
             production_serie = InstanciatedSeries(
                 list(production_df['years']), (production_df[sub_resource_type]).values.tolist(), sub_resource_type,
                 InstanciatedSeries.BAR_DISPLAY)
-            production_chart.add_series(production_serie)
+            if len(sub_resource_list)>1:
+                production_chart.add_series(production_serie)
             production_cumulated_chart.add_series(production_serie)
             production_cut_series = InstanciatedSeries(
                 list(production_df['years']), (production_cut[sub_resource_type]).values.tolist(), sub_resource_type + ' predicted production',
@@ -243,4 +270,26 @@ class ResourceDiscipline(SoSDiscipline):
                 past_production_cut_series)
             model_production_cumulated_chart.add_series(
                 production_cut_series)
-        return [production_chart, past_production_chart, model_production_cumulated_chart, production_cumulated_chart]
+        list_of_charts = [past_production_chart, model_production_cumulated_chart, production_cumulated_chart]
+        if len(sub_resource_list) > 1:
+            list_of_charts.insert(0, production_chart)
+        return list_of_charts
+    
+
+    def get_recycling_charts(self, recycling_df, use_stock_df ):
+        recycling_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} recycling [{self.stock_unit}]',
+                                                   chart_name=f'{self.resource_name} recycled quantity through the years',
+                                                   stacked_bar=False)
+        
+        
+        sub_resource_list = [col for col in recycling_df.columns if col != 'years']
+        for sub_resource_type in sub_resource_list:
+            recycling_serie = InstanciatedSeries(
+                list(recycling_df['years']), (recycling_df[sub_resource_type]).values.tolist(), f'{self.resource_name} recycled quantity', InstanciatedSeries.BAR_DISPLAY)
+            used_stock_serie = InstanciatedSeries(
+                list(use_stock_df['years']), use_stock_df[sub_resource_type].values.tolist(), f'{self.resource_name} extracted quantity', InstanciatedSeries.BAR_DISPLAY)
+
+
+        recycling_chart.add_series(recycling_serie)
+        recycling_chart.add_series(used_stock_serie)
+        return [recycling_chart]
