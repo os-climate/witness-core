@@ -23,7 +23,6 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
-from energy_models.core import scenario
 
 
 def post_processing_filters(execution_engine, namespace):

@@ -37,6 +37,7 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_public': f'{self.name}',
                    'ns_energy': f'{self.name}.EnergyMix',
                    'ns_ref': f'{self.name}',
                    'ns_ccs': f'{self.name}.CCUS',
