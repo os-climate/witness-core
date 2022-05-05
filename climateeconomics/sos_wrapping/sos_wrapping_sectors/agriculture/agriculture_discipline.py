@@ -24,6 +24,7 @@ from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_m
 from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
+
 class AgricultureDiscipline(ClimateEcoDiscipline):
     "Agriculture sector discpline"
 
@@ -44,11 +45,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     years = np.arange(2020, 2101)
     DESC_IN = {
         'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'year_start': {'type': 'int', 'default': 2020,  'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'default': 2100,  'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
-        'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2},
-        'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'default':8.8085,
+        'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'default': 8.8085,
                               'namespace': 'ns_witness', 'user_level': 2},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 6.9244, 'user_level': 2},
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
@@ -68,21 +69,21 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'damage_to_productivity': {'type': 'bool'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2},
         'sector_investment': {'type': 'dataframe', 'unit': '%', 'dataframe_descriptor': {'years': ('float', None, False),
-                                                                                                     'investment': ('float', None, True)}, 'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        
+                                                                                         'investment': ('float', None, True)}, 'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+
         # energy_production stored in PetaWh for coupling variables scaling
         'energy_production': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'PWh', 'namespace': 'ns_energy_mix'},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2},
-        }
+    }
 
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
         'production_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'detailed_capital_df':{'type': 'dataframe'}
+        'detailed_capital_df': {'type': 'dataframe'}
     }
 
     def setup_sos_disciplines(self):
@@ -94,10 +95,10 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         Update all default dataframes with years 
         '''
         if 'year_start' in self._data_in:
-            year_start, year_end = self.get_sosdisc_inputs(['year_start', 'year_end'])
+            year_start, year_end = self.get_sosdisc_inputs(
+                ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
 
-            
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
@@ -112,19 +113,20 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         energy_production = param['energy_production']
         sector_investment = param['sector_investment']
         workforce_df = param['workforce_df']
-   
+
         agriculture_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
-                        'energy_production': energy_production,
-                       'sector_investment': sector_investment, 
-                       'workforce_df': workforce_df}
+                              'energy_production': energy_production,
+                              'sector_investment': sector_investment,
+                              'workforce_df': workforce_df}
         # Model execution
-        production_df, capital_df, productivity_df = self.agriculture_model.compute(agriculture_inputs)
+        production_df, capital_df, productivity_df = self.agriculture_model.compute(
+            agriculture_inputs)
 
         # Store output data
         dict_values = {'productivity_df': productivity_df,
                        'production_df': production_df[['years', 'output']],
                        'capital_df': capital_df[['years', 'capital', 'usable_capital']],
-                       'detailed_capital_df' : capital_df
+                       'detailed_capital_df': capital_df
                        }
 
         self.store_sos_outputs_values(dict_values)
@@ -141,27 +143,30 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 - usable capital 
                 - output 
         """
-        scaling_factor_energy_production = self.get_sosdisc_inputs('scaling_factor_energy_production')
-        #Gradients wrt energy
+        scaling_factor_energy_production = self.get_sosdisc_inputs(
+            'scaling_factor_energy_production')
+        # Gradients wrt energy
         dcapitalu_denergy = self.agriculture_model.dusablecapital_denergy()
-        doutput_denergy = self.agriculture_model.doutput_denergy(dcapitalu_denergy)
+        doutput_denergy = self.agriculture_model.doutput_denergy(
+            dcapitalu_denergy)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('energy_production', 'Total production'), scaling_factor_energy_production * doutput_denergy)
         self.set_partial_derivative_for_other_types(
             ('capital_df', 'usable_capital'), ('energy_production', 'Total production'), scaling_factor_energy_production * dcapitalu_denergy)
-        
-        #gradients wrt workforce 
+
+        # gradients wrt workforce
         doutput_dworkforce = self.agriculture_model.compute_doutput_dworkforce()
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('workforce_df', 'workforce'), doutput_dworkforce)
-        
-        #gradients wrt damage: 
+
+        # gradients wrt damage:
         dproductivity_ddamage = self.agriculture_model.dproductivity_ddamage()
-        doutput_ddamage = self.agriculture_model.doutput_ddamage(dproductivity_ddamage)
+        doutput_ddamage = self.agriculture_model.doutput_ddamage(
+            dproductivity_ddamage)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('damage_df', 'damage_frac_output'), doutput_ddamage)
-        
-        #gradients wrt invest
+
+        # gradients wrt invest
         dcapital_dinvest = self.agriculture_model.dcapital_dinvest()
         self.set_partial_derivative_for_other_types(
             ('capital_df', 'capital'), ('sector_investment', 'investment'), dcapital_dinvest)
@@ -173,10 +178,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['sector output', 'investment','Output growth rate', 'energy supply',
-                      'usable capital','capital', 'employment_rate', 'workforce', 'productivity', 'energy efficiency', 'e_max']
+        chart_list = ['sector output', 'investment', 'Output growth rate', 'energy supply',
+                      'usable capital', 'capital', 'employment_rate', 'workforce', 'productivity', 'energy efficiency', 'e_max']
         # First filter to deal with the view : program or actor
-        chart_filters.append(ChartFilter('Charts', chart_list, chart_list, 'charts'))
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
 
         return chart_filters
 
@@ -193,11 +199,12 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        production_df =self.get_sosdisc_outputs('production_df')
+        production_df = self.get_sosdisc_outputs('production_df')
         capital_df = self.get_sosdisc_outputs('capital_df')
         productivity_df = self.get_sosdisc_outputs('productivity_df')
         workforce_df = self.get_sosdisc_inputs('workforce_df')
-        capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
+        capital_utilisation_ratio = self.get_sosdisc_inputs(
+            'capital_utilisation_ratio')
 
         if 'sector output' in chart_list:
 
@@ -220,7 +227,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             visible_line = True
             ordonate_data = list(to_plot)
             new_series = InstanciatedSeries(
-                    years, ordonate_data, 'world output [trillion $]', 'lines', visible_line)
+                years, ordonate_data, 'world output [trillion $]', 'lines', visible_line)
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
@@ -252,7 +259,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             visible_line = True
             ordonate_data = list(first_serie)
-            percentage_productive_capital_stock = list(first_serie * capital_utilisation_ratio)
+            percentage_productive_capital_stock = list(
+                first_serie * capital_utilisation_ratio)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Productive Capital Stock', 'lines', visible_line)
             new_chart.series.append(new_series)
@@ -283,7 +291,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                                  chart_name, stacked_bar=True)
             visible_line = True
             ordonate_data = list(serie)
-            new_series = InstanciatedSeries(years, ordonate_data, 'Service capital stock', InstanciatedSeries.BAR_DISPLAY)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Service capital stock', InstanciatedSeries.BAR_DISPLAY)
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
@@ -293,7 +302,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
 
-            min_value, max_value = self.get_greataxisrange(workforce_df['workforce'])
+            min_value, max_value = self.get_greataxisrange(
+                workforce_df['workforce'])
 
             chart_name = 'Workforce'
 
@@ -304,8 +314,9 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             visible_line = True
             ordonate_data = list(workforce_df['workforce'])
-            new_series = InstanciatedSeries( years, ordonate_data, 'Workforce', 'lines', visible_line)
-    
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Workforce', 'lines', visible_line)
+
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -320,8 +331,9 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
 
-            min_value, max_value = self.get_greataxisrange(productivity_df[to_plot])
-            
+            min_value, max_value = self.get_greataxisrange(
+                productivity_df[to_plot])
+
             chart_name = 'Total Factor Productivity'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Total Factor Productivity [no unit]',
@@ -331,7 +343,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             ordonate_data = list(productivity_df['productivity'])
             visible_line = True
 
-            new_series = InstanciatedSeries(years, ordonate_data, 'Total Factor productivity', 'lines', visible_line)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Total Factor productivity', 'lines', visible_line)
 
             new_chart.series.append(new_series)
 

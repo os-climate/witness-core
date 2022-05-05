@@ -45,9 +45,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         {'years': years, 'CO2_tax': CO2_tax}, index=years)
 
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 2020, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_damag_int': {'type': 'float', 'default': 0.0, 'user_level': 3},
         'damag_int': {'type': 'float', 'default': 0.0, 'user_level': 3},
         'damag_quad': {'type': 'float', 'default': 0.0022, 'user_level': 3},

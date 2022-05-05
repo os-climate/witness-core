@@ -153,9 +153,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
     # reforestation costs: 10k$/ha of land and 3800$/ha to plant trees
 
     DESC_IN = {
-        Forest.YEAR_START: {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        Forest.YEAR_END: {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-        Forest.TIME_STEP: {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         Forest.DEFORESTATION_SURFACE: {'type': 'dataframe', 'unit': 'Mha',
                                        'dataframe_descriptor': {'years': ('float', None, False),
                                                                 'deforested_surface': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,

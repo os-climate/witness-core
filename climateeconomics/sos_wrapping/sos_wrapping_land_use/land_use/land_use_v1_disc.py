@@ -25,6 +25,7 @@ from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plo
 import os
 import pandas as pd
 from copy import deepcopy
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class LandUseV1Discipline(SoSDiscipline):
@@ -47,10 +48,10 @@ class LandUseV1Discipline(SoSDiscipline):
     default_year_start = 2020
     default_year_end = 2050
 
-    DESC_IN = {'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                LandUseV1.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
-                                          'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
+                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
                LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV1.DEFORESTED_SURFACE_DF: {
                    'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
