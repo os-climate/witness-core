@@ -33,6 +33,7 @@ class TemperatureDiscTest(unittest.TestCase):
 
         self.model_name = 'temperature'
         ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

@@ -33,6 +33,7 @@ class UtilityDiscTest(unittest.TestCase):
 
         self.model_name = 'utility'
         ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_public': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 

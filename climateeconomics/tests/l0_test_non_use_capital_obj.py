@@ -34,6 +34,7 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         self.model_name = 'non_use_capital'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy': f'{self.name}.EnergyMix',
+                   'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}',
                    'ns_ccs': f'{self.name}.CCUS',
                    'ns_agriculture': f'{self.name}.Agriculture',
@@ -116,5 +117,5 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
+        # for graph in graph_list:
         #    graph.to_plotly().show()
