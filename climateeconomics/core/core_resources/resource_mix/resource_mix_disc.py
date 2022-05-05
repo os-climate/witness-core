@@ -26,6 +26,7 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class ResourceMixDiscipline(SoSDiscipline):
@@ -67,8 +68,8 @@ class ResourceMixDiscipline(SoSDiscipline):
         {'price': 7.33, 'production': 1.0, 'stock': 1.0},
     }
 
-    DESC_IN = {'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'resource_list': {'type': 'string_list', 'default': ResourceMixModel.RESOURCE_LIST, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource', 'editable': False, 'structuring': True},
                ResourceMixModel.NON_MODELED_RESOURCE_PRICE: {'type': 'dataframe', 'unit': '$/t', 'namespace': 'ns_resource'},
                'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
