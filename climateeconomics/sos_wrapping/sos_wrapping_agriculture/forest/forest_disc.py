@@ -141,16 +141,16 @@ class ForestDiscipline(ClimateEcoDiscipline):
     # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
     # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
     # 92% of the production come from managed wood. 8% from unmanaged wood
-    mw_initial_production = round(1.25 * 0.92 * \
-        density_per_ha * mean_density * biomass_cal_val / \
-        years_between_harvest / (1 - recycle_part), 6)  # in Twh
+    mw_initial_production = round(1.25 * 0.92 *
+                                  density_per_ha * mean_density * biomass_cal_val /
+                                  years_between_harvest / (1 - recycle_part), 6)  # in Twh
     mw_initial_surface = round(1.25 * 0.92, 6)
-    uw_initial_production = round(1.25 * 0.08 * \
-        density_per_ha * mean_density * biomass_cal_val / \
-        years_between_harvest / (1 - recycle_part), 6)
+    uw_initial_production = round(1.25 * 0.08 *
+                                  density_per_ha * mean_density * biomass_cal_val /
+                                  years_between_harvest / (1 - recycle_part), 6)
     uw_initial_surface = round(1.25 * 0.08, 6)
     initial_unsused_forest_surface = 4 - 1.25
-    #reforestation costs: 10k$/ha of land and 3800$/ha to plant trees
+    # reforestation costs: 10k$/ha of land and 3800$/ha to plant trees
 
     DESC_IN = {
         Forest.YEAR_START: {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
@@ -226,17 +226,17 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': '-', 'namespace': 'ns_forest'},
 
         'techno_production': {
-            'type': 'dataframe', 'unit': 'TWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'unit': 'TWh or Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'techno_prices': {
             'type': 'dataframe', 'unit': '$/MWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'techno_consumption': {
-            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest', 'unit': 'TWh or Mt'},
         'techno_consumption_woratio': {
-            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest', 'unit': 'TWh or Mt'},
         'land_use_required': {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'CO2_emissions': {
-            'type': 'dataframe', 'unit': 'kgCO2/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+            'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_forest'},
         'techno_capital': {
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
