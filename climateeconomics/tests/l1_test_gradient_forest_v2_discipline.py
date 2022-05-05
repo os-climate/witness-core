@@ -24,8 +24,8 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    # np.set_printoptions(threshold=np.inf)
+    #     AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #     np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
 
@@ -45,7 +45,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_agriculture': f'{self.name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}
-                   
+
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
@@ -138,7 +138,9 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {"years": years, "transport": transport})
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
-        self.initial_unsused_forest_surface = 4 - 1.25
+        self.initial_protected_forest_surface = 4 * 0.21
+        self.initial_unsused_forest_surface = 4 - \
+            1.25 - self.initial_protected_forest_surface
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
@@ -154,13 +156,10 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{self.name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
-                       f'{self.name}.{model_name}.unmanaged_wood_initial_prod': self.uw_initial_production,
-                       f'{self.name}.{model_name}.unmanaged_wood_initial_surface': 1.25 * 0.08,
-                       f'{self.name}.{model_name}.unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
-                       f'{self.name}.{model_name}.unmanaged_wood_investment': self.mw_invest_df,
                        f'{self.name}.transport_cost': self.transport_df,
                        f'{self.name}.margin': self.margin,
                        f'{self.name}.{model_name}.initial_unsused_forest_surface': self.initial_unsused_forest_surface,
+                       f'{self.name}.{model_name}.protected_forest_surface': self.initial_protected_forest_surface,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
@@ -170,7 +169,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{Forest.DEFORESTATION_SURFACE}',
                                     f'{self.name}.Forest.{Forest.REFORESTATION_INVESTMENT}',
                                     f'{self.name}.Forest.managed_wood_investment',
-                                    f'{self.name}.Forest.unmanaged_wood_investment'
                                     ],
                             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
                                      f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
@@ -182,5 +180,5 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.Forest.CO2_emissions',
                                      f'{self.name}.Forest.techno_capital',
                                      f'{self.name}.Forest.non_use_capital'
-                            ]
+                                     ]
                             )

@@ -33,7 +33,7 @@ class ForestTestCase(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.year_start = 2020
-        self.year_end = 2055
+        self.year_end = 2100
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
@@ -113,7 +113,7 @@ class ForestTestCase(unittest.TestCase):
             density_per_ha * mean_density * 3.6 / \
             years_between_harvest / (1 - recycle_part)
 
-        mw_invest = np.linspace(1, 4, year_range)
+        mw_invest = np.linspace(500, 800, year_range)
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
@@ -121,7 +121,9 @@ class ForestTestCase(unittest.TestCase):
             {"years": years, "transport": transport})
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
-        self.initial_unsused_forest_surface = 4 - 1.25
+        self.initial_protected_forest_surface = 4 * 0.21
+        self.initial_unsused_forest_surface = 4 - \
+            1.25 - self.initial_protected_forest_surface
 
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
@@ -143,7 +145,8 @@ class ForestTestCase(unittest.TestCase):
                       'unmanaged_wood_investment': self.mw_invest_df,
                       'transport_cost': self.transport_df,
                       'margin': self.margin,
-                      'initial_unsused_forest_surface': self.initial_unsused_forest_surface,
+                      'initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
+                      'protected_forest_surface': self.initial_protected_forest_surface,
                       'scaling_factor_techno_consumption': 1e3,
                       'scaling_factor_techno_production': 1e3,
                       }
@@ -172,7 +175,7 @@ class ForestTestCase(unittest.TestCase):
                    'ns_forest': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_invest': f'{name}.{model_name}'}
-                   
+
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
@@ -198,14 +201,10 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
-                       f'{name}.{model_name}.unmanaged_wood_initial_prod': self.uw_initial_production,
-                       f'{name}.{model_name}.unmanaged_wood_initial_surface': 1.25 * 0.08,
-                       f'{name}.{model_name}.unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
-                       f'{name}.{model_name}.unmanaged_wood_investment': self.mw_invest_df,
                        f'{name}.{model_name}.transport_cost': self.transport_df,
                        f'{name}.{model_name}.margin': self.margin,
-                       f'{name}.{model_name}.initial_unsused_forest_surface': self.initial_unsused_forest_surface,
-
+                       f'{name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
+                       f'{name}.{model_name}.protected_forest_surface': self.initial_protected_forest_surface,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
@@ -216,5 +215,5 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
