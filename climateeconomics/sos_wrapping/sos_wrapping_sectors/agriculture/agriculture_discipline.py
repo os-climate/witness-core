@@ -127,7 +127,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         # Store output data
         dict_values = {'productivity_df': productivity_df,
-                       'production_df': production_df[['years', 'output']],
+                       'production_df': production_df[['years', 'output', 'output_net_of_damage']],
                        'capital_df': capital_df[['years', 'capital', 'usable_capital']],
                        'detailed_capital_df': capital_df, 
                        'emax_enet_constraint': emax_enet_constraint
@@ -155,10 +155,12 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
      
         # Gradients wrt energy
         dcapitalu_denergy = self.agriculture_model.dusablecapital_denergy()
-        doutput_denergy = self.agriculture_model.doutput_denergy(
-            dcapitalu_denergy)
+        doutput_denergy = self.agriculture_model.doutput_denergy(dcapitalu_denergy)
+        dnetoutput_denergy = self.agriculture_model.dnetoutput(doutput_denergy)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('energy_production', 'Total production'), scaling_factor_energy_production * doutput_denergy)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output_net_of_damage'), ('energy_production', 'Total production'), scaling_factor_energy_production * dnetoutput_denergy)
         self.set_partial_derivative_for_other_types(
             ('capital_df', 'usable_capital'), ('energy_production', 'Total production'), scaling_factor_energy_production * dcapitalu_denergy)
         self.set_partial_derivative_for_other_types(
@@ -167,15 +169,19 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         # gradients wrt workforce
         doutput_dworkforce = self.agriculture_model.compute_doutput_dworkforce()
+        dnetoutput_dworkforce = self.agriculture_model.dnetoutput(doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('workforce_df', 'workforce'), doutput_dworkforce)
-
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output_net_of_damage'), ('workforce_df', 'workforce'), dnetoutput_dworkforce)
         # gradients wrt damage:
         dproductivity_ddamage = self.agriculture_model.dproductivity_ddamage()
-        doutput_ddamage = self.agriculture_model.doutput_ddamage(
-            dproductivity_ddamage)
+        doutput_ddamage = self.agriculture_model.doutput_ddamage(dproductivity_ddamage)
+        dnetoutput_ddamage = self.agriculture_model.dnetoutput_ddamage(doutput_ddamage)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('damage_df', 'damage_frac_output'), doutput_ddamage)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output_net_of_damage'), ('damage_df', 'damage_frac_output'), dnetoutput_ddamage)
 
         # gradients wrt invest
         dcapital_dinvest = self.agriculture_model.dcapital_dinvest()

@@ -78,7 +78,7 @@ class SectorModel():
         self.years = np.arange(self.year_start, self.year_end + 1)
         default_index = self.years
         self.capital_df = pd.DataFrame(index=default_index,columns=['years','energy_efficiency', 'e_max', 'capital', 'usable_capital'])
-        self.production_df = pd.DataFrame(index=default_index,columns=['years','output'])
+        self.production_df = pd.DataFrame(index=default_index,columns=['years','output', 'output_net_of_damage'])
         self.productivity_df = pd.DataFrame(index=default_index,columns=['years','productivity_growth_rate', 'productivity'])
         self.production_df['years'] = self.years
         self.capital_df['years'] = self.years
@@ -217,6 +217,26 @@ class SectorModel():
 
         return output
     
+    def compute_output_net_of_damage(self, year):
+        """
+        Output net of damages, trillions USD
+        """
+        damage_to_productivity = self.damage_to_productivity
+        damefrac = self.damage_df.at[year, 'damage_frac_output']
+        gross_output = self.production_df.at[year,'output']
+#        if damage_to_productivity == True :
+#            D = 1 - damefrac
+#            damage_to_output = D/(1-self.frac_damage_prod*(1-D))
+#            output_net_of_d = gross_output * damage_to_output
+#            damtoprod = D/(1-self.frac_damage_prod*(1-D))
+        if damage_to_productivity == True:
+            damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
+            output_net_of_d = (1 - damage) * gross_output
+        else:
+            output_net_of_d = gross_output * (1 - damefrac)
+        self.production_df.loc[year, 'output_net_of_damage'] = output_net_of_d
+        return output_net_of_d
+    
     ### CONSTRAINTS ###
     def compute_emax_enet_constraint(self):
         """ Equation for Emax constraint 
@@ -241,6 +261,7 @@ class SectorModel():
             self.compute_emax(year)
             self.compute_usable_capital(year)
             self.compute_gross_output(year)
+            self.compute_output_net_of_damage(year)
             # capital t+1 :
             self.compute_capital(year+1)
         self.production_df = self.production_df.fillna(0.0)
@@ -328,11 +349,11 @@ class SectorModel():
             # first line stays at zero since derivatives of initial values are
             # zero
             for i in range(1, nb_years):
-                d_productivity[i, i] = (1 - self.frac_damage_prod * self.damefrac.at[years[i], 'damage_frac_output']) * \
+                d_productivity[i, i] = (1 - self.frac_damage_prod * self.damage_df.at[years[i], 'damage_frac_output']) * \
                                     d_productivity[i - 1, i] / (1 - p_productivity_gr[i - 1]) - self.frac_damage_prod * \
                                     p_productivity[i - 1] / (1 - p_productivity_gr[i - 1])
                 for j in range(1, i):
-                    d_productivity[i, j] = (1 - self.frac_damage_prod * self.damefrac.at[years[i], 'damage_frac_output']) * \
+                    d_productivity[i, j] = (1 - self.frac_damage_prod * self.damage_df.at[years[i], 'damage_frac_output']) * \
                                             d_productivity[i - 1, j] / (1 - p_productivity_gr[i - 1] )
 
         return d_productivity
@@ -375,5 +396,56 @@ class SectorModel():
         demax = np.dot(demax, dcapital)
         demaxconstraint_demax = demax * self. max_capital_utilisation_ratio / self.ref_emax_enet_constraint
         return demaxconstraint_demax
-       
+    
+    def dnetoutput(self, doutput):
+        """ Compute the derivatives of net output using derivatives of gross output
+         if damage_to_productivity == True:
+            damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
+            output_net_of_d = (1 - damage) * gross_output
+        else:
+            output_net_of_d = gross_output * (1 - damefrac)
+        """
+        damefrac = self.damage_df['damage_frac_output'].values
+        if self.damage_to_productivity == True:
+            dnet_output =(1 - damefrac) / (1 - self.frac_damage_prod * damefrac) * doutput
+        else:
+            dnet_output = (1 - damefrac) * doutput
+        return dnet_output
+    
+    def dnetoutput_ddamage(self, doutput):
+        """ Compute the derivatives of net output wrt damage using derivatives of gross output
+         if damage_to_productivity == True:
+            damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
+            output_net_of_d = (1 - damage) * gross_output
+        else:
+            output_net_of_d = gross_output * (1 - damefrac)
+        """
+        frac = self.frac_damage_prod
+        years = self.years_range
+        nb_years = len(years)
+        dnet_output = np.zeros((nb_years, nb_years))
+        for i in range(0, nb_years):
+            output = self.production_df.at[years[i], 'output']
+            damefrac = self.damage_df.at[years[i], 'damage_frac_output']
+            for j in range(0, i + 1):
+                if i == j:
+                    if self.damage_to_productivity == True:
+                        dnet_output[i, j] = (frac - 1) / ((frac * damefrac - 1)**2) * output + \
+                            (1 - damefrac) / (1 - frac *damefrac) * doutput[i, j]
+                    else:
+                        dnet_output[i, j] = - output + (1 - damefrac) * doutput[i, j]
+                else:
+                    if self.damage_to_productivity == True:
+                        dnet_output[i, j] = (1 - damefrac) / (1 - frac * damefrac) * doutput[i, j]
+                    else:
+                        dnet_output[i, j] = (1 - damefrac) * doutput[i, j]
+#         if self.damage_to_productivity == True: 
+#             dnet_output = (frac - 1) / ((frac * damefrac - 1)**2) * output + \
+#                             np.dot((1 - damefrac) / (1 - frac * damefrac), doutput)
+#         else: 
+#             dnet_output = (1-damefrac) * doutput - output 
 
+        return dnet_output 
+    
+    
+    

@@ -75,6 +75,7 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         self.damage_df = pd.DataFrame({'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
                                        'base_carbon_price': np.zeros(self.nb_per)})
         self.damage_df.index = self.years
+        self.damage_df['damage_frac_output'] = 1e-2 
         
         
     def analytic_grad_entry(self):
@@ -105,7 +106,7 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.time_step': self.time_step,
-                       f'{self.name}.{self.model_name}.damage_to_productivity': False,
+                       f'{self.name}.{self.model_name}.damage_to_productivity': True,
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.energy_production': self.energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
@@ -117,11 +118,11 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_services_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',threshold=1e-16,
                             inputs=[f'{self.name}.energy_production',
                                     f'{self.name}.damage_df',
                                     f'{self.name}.workforce_df',
                                     f'{self.name}.sector_investment'],
                             outputs=[f'{self.name}.production_df', 
-                                     f'{self.name}.capital_df', 
+                                     f'{self.name}.capital_df',
                                      f'{self.name}.emax_enet_constraint'])
