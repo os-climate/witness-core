@@ -23,7 +23,6 @@ from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import
 
 from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -34,18 +33,21 @@ AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
+DEFAULT_TECHNO_DICT = DEFAULT_TECHNO_DICT_DEV
+DEFAULT_TECHNO_DICT['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
 
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT_DEV, process_level='dev'):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
+                 techno_dict=DEFAULT_TECHNO_DICT,
+                 process_level='dev'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
         self.bspline = bspline
         self.invest_discipline = invest_discipline
-        techno_dict['biomass_dry']={'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
         self.techno_dict = techno_dict
         self.process_level = process_level
         self.dc_energy = datacase_energy(
