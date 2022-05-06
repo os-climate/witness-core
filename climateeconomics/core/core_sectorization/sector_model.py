@@ -67,6 +67,7 @@ class SectorModel():
         self.capital_utilisation_ratio = inputs_dict['capital_utilisation_ratio']
         self.max_capital_utilisation_ratio = inputs_dict['max_capital_utilisation_ratio']
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
+        self.ref_emax_enet_constraint = inputs_dict['ref_emax_enet_constraint']
         
         self.init_dataframes()
 
@@ -216,6 +217,16 @@ class SectorModel():
 
         return output
     
+    ### CONSTRAINTS ###
+    def compute_emax_enet_constraint(self):
+        """ Equation for Emax constraint 
+        """
+        e_max = self.capital_df['e_max'].values
+        energy = self.energy_production['Total production'].values
+        self.emax_enet_constraint = - \
+            (energy - e_max * self.max_capital_utilisation_ratio) / self.ref_emax_enet_constraint
+    
+    #RUN
     def compute(self, inputs):
         """
         Compute all models for year range
@@ -235,8 +246,11 @@ class SectorModel():
         self.production_df = self.production_df.fillna(0.0)
         self.capital_df = self.capital_df.fillna(0.0)
         self.productivity_df = self.productivity_df.fillna(0.0)
+        self.compute_emax_enet_constraint()
 
-        return self.production_df, self.capital_df, self.productivity_df
+        return self.production_df, self.capital_df, self.productivity_df, self.emax_enet_constraint
+    
+    ### GRADIENTS ###
 
     def compute_doutput_dworkforce(self):
         """ Gradient for output output wrt workforce
@@ -349,5 +363,17 @@ class SectorModel():
                 dcapital[i + 1, j] += dcapital[i, j] * (1 - self.depreciation_capital)  
 
         return dcapital
+    
+    def demaxconstraint(self, dcapital):
+        """ Compute derivative of e_max and emax constraint using derivative of capital. 
+        For all inputs that impacts e_max through capital 
+        """
+        #e_max = capital*1e3/ (capital_utilisation_ratio * energy_efficiency)
+        energy_efficiency = self.capital_df['energy_efficiency'].values
+        demax = np.identity(self.nb_years)
+        demax *= 1e3 / (self.capital_utilisation_ratio * energy_efficiency)
+        demax = np.dot(demax, dcapital)
+        demaxconstraint_demax = demax * self. max_capital_utilisation_ratio / self.ref_emax_enet_constraint
+        return demaxconstraint_demax
        
 

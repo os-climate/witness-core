@@ -84,7 +84,7 @@ class IndustrialJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_services_analytic_grad(self):
 
-        self.model_name = 'Services'
+        self.model_name = 'Industry'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -123,4 +123,5 @@ class IndustrialJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.workforce_df',
                                     f'{self.name}.sector_investment'],
                             outputs=[f'{self.name}.production_df', 
-                                     f'{self.name}.capital_df'])
+                                     f'{self.name}.capital_df',
+                                     f'{self.name}.emax_enet_constraint'])
