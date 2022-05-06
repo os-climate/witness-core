@@ -17,6 +17,7 @@ limitations under the License.
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from climateeconomics.core.core_witness.non_use_capital_objective_model import NonUseCapitalObjective
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
@@ -54,7 +55,9 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         'non_use_capital_cons_ref': {'type': 'float', 'default': 20000., 'unit': 'G$', 'user_level': 2,
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
-                                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        ### WIP is_dev to remove once its validated on dev processes
+        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
 
     }
     DESC_OUT = {
@@ -73,21 +76,26 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
 
         # Recover the full techno list to get all non_use capital by energy mix
         energy_techno_dict = {}
+        if 'is_dev' in self._data_in:
+            is_dev = self.get_sosdisc_inputs('is_dev')
         if 'energy_list' in self._data_in:
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
-                    dynamic_inputs[f'{energy}.technologies_list'] = {'type': 'string_list',
-                                                                     'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                     'namespace': 'ns_energy',
-                                                                     'structuring': True}
+                    if energy == BiomassDry.name and is_dev == True:
+                        pass
+                    else:
+                        dynamic_inputs[f'{energy}.technologies_list'] = {'type': 'string_list',
+                                                                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                        'namespace': 'ns_energy',
+                                                                        'structuring': True}
 
-                    if f'{energy}.technologies_list' in self._data_in:
-                        techno_list = self.get_sosdisc_inputs(
-                            f'{energy}.technologies_list')
-                        if techno_list is not None:
-                            energy_techno_dict[energy] = {'namespace': 'ns_energy',
-                                                          'value': techno_list}
+                        if f'{energy}.technologies_list' in self._data_in:
+                            techno_list = self.get_sosdisc_inputs(
+                                f'{energy}.technologies_list')
+                            if techno_list is not None:
+                                energy_techno_dict[energy] = {'namespace': 'ns_energy',
+                                                            'value': techno_list}
         if 'ccs_list' in self._data_in:
             ccs_list = self.get_sosdisc_inputs('ccs_list')
             if ccs_list is not None:
