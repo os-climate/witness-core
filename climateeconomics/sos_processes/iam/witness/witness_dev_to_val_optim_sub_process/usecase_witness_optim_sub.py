@@ -25,11 +25,14 @@ OPTIM_NAME = "WITNESS_MDO"
 COUPLING_NAME = "WITNESS_Eval"
 EXTRA_NAME = "WITNESS"
 
+DEFAULT_TECHNO_DICT = DEFAULT_TECHNO_DICT_DEV
+DEFAULT_TECHNO_DICT['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
+
 
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT_DEV, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=[],
                  process_level='dev'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -44,7 +47,6 @@ class Study(ClimateEconomicsStudyManager):
         self.ccs_mix_name = 'CCUS'
         self.bspline = bspline
         self.invest_discipline = invest_discipline
-        techno_dict['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
         self.techno_dict = techno_dict
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level
