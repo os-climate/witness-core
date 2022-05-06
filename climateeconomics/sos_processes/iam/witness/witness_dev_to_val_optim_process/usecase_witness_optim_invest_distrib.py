@@ -33,11 +33,13 @@ FUNC_DF = FunctionManagerDisc.FUNC_DF
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 
+DEFAULT_TECHNO_DICT = DEFAULT_TECHNO_DICT_DEV
+DEFAULT_TECHNO_DICT['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
 
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT_DEV, process_level='dev'):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, process_level='dev'):
 
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -48,7 +50,6 @@ class Study(ClimateEconomicsStudyManager):
         self.extra_name = EXTRA_NAME
         self.bspline = bspline
         self.invest_discipline = invest_discipline
-        techno_dict['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
         self.techno_dict = techno_dict
         self.process_level = process_level
         self.witness_uc = witness_optim_sub_usecase(
