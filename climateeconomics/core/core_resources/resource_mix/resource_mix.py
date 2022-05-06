@@ -98,8 +98,9 @@ class ResourceMixModel():
         Init dataframes with years
         '''
         self.years = np.arange(self.year_start, self.year_end + 1)
-        empty_dict={'years': self.years}
-        empty_dict.update({f'{resource}': np.zeros(len(self.years)) for resource in self.resource_list})
+        empty_dict = {'years': self.years}
+        empty_dict.update({f'{resource}': np.zeros(len(self.years))
+                           for resource in self.resource_list})
         self.all_resource_stock = pd.DataFrame(empty_dict)
         self.all_resource_price = pd.DataFrame(empty_dict)
         self.all_resource_use = pd.DataFrame(empty_dict)
@@ -113,7 +114,15 @@ class ResourceMixModel():
         '''
 
         self.resources_demand = inputs_dict['resources_demand']
+        self.resources_demand = self.resources_demand.loc[self.resources_demand['years']
+                                                          >= self.year_start]
+        self.resources_demand = self.resources_demand.loc[self.resources_demand['years']
+                                                          <= self.year_end]
         self.resources_demand_woratio = inputs_dict['resources_demand_woratio']
+        self.resources_demand_woratio = self.resources_demand_woratio.loc[self.resources_demand_woratio['years']
+                                                                          >= self.year_start]
+        self.resources_demand_woratio = self.resources_demand_woratio.loc[self.resources_demand_woratio['years']
+                                                                          <= self.year_end]
         self.resource_list = inputs_dict['resource_list']
         self.init_dataframes()
 
@@ -162,13 +171,13 @@ class ResourceMixModel():
                         data_frame_use[types]
             # conversion in Mt of the different resource:
             self.all_resource_production[resource] = self.all_resource_production[resource] * \
-                                                     self.conversion_dict[resource]['production']
+                self.conversion_dict[resource]['production']
             self.all_resource_stock[resource] = self.all_resource_stock[resource] * \
-                                                self.conversion_dict[resource]['stock']
+                self.conversion_dict[resource]['stock']
             self.all_resource_use[resource] = self.all_resource_use[resource] * \
-                                              self.conversion_dict[resource]['stock']
+                self.conversion_dict[resource]['stock']
             self.all_resource_price[resource] = self.all_resource_price[resource] * \
-                                                self.conversion_dict[resource]['price']
+                self.conversion_dict[resource]['price']
 
     def compute(self, inputs_dict):
 
@@ -197,15 +206,17 @@ class ResourceMixModel():
 
         for resource in self.resource_list:
             # Available resources
-            available_resource = deepcopy(self.all_resource_stock[resource].values)+\
-                                 deepcopy(self.all_resource_production[resource].values)
+            available_resource = deepcopy(self.all_resource_stock[resource].values) +\
+                deepcopy(self.all_resource_production[resource].values)
             available_resource_limited = compute_func_with_exp_min(
                 np.array(available_resource), 1.0e-10)
             # Demand without ratio
-            demand_woratio = deepcopy(self.resources_demand_woratio[resource].values)
+            demand_woratio = deepcopy(
+                self.resources_demand_woratio[resource].values)
             demand_limited = compute_func_with_exp_min(
                 np.array(demand_woratio), 1.0e-10)
-            self.all_resource_ratio_usable_demand[resource] = np.minimum(np.maximum(available_resource_limited / demand_limited, 1E-15), 1.0) * 100.0
+            self.all_resource_ratio_usable_demand[resource] = np.minimum(
+                np.maximum(available_resource_limited / demand_limited, 1E-15), 1.0) * 100.0
 
     def get_derivative_all_resource(self, inputs_dict, resource_type):
         """ Compute derivative of total stock regarding year demand
@@ -214,14 +225,14 @@ class ResourceMixModel():
         grad_use = pd.DataFrame()
         grad_price = pd.DataFrame()
         grad_stock = self.conversion_dict[resource_type]['stock'] * \
-                     np.identity(
-                         len(inputs_dict[f'{resource_type}.resource_stock'].index))
+            np.identity(
+            len(inputs_dict[f'{resource_type}.resource_stock'].index))
         grad_use = self.conversion_dict[resource_type]['stock'] * \
-                     np.identity(
-                         len(inputs_dict[f'{resource_type}.use_stock'].index))
+            np.identity(
+            len(inputs_dict[f'{resource_type}.use_stock'].index))
         grad_price = self.conversion_dict[resource_type]['price'] * \
-                     np.identity(
-                         len(inputs_dict[f'{resource_type}.resource_price'].index))
+            np.identity(
+            len(inputs_dict[f'{resource_type}.resource_price'].index))
         return grad_price, grad_use, grad_stock
 
     def get_derivative_ratio(self, inputs_dict, resource_type, output_dict):
@@ -243,15 +254,15 @@ class ResourceMixModel():
         # If prod < cons, set the identity element for the given year to
         # the corresponding value
         d_ratio_d_stock = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
-                                     np.where((available_resource_limited <= demand_limited) * (available_resource_limited/demand_limited>1E-15),
-                                              d_available_resource_limited / demand_limited,
-                                              0.0)
+            np.where((available_resource_limited <= demand_limited) * (available_resource_limited / demand_limited > 1E-15),
+                     d_available_resource_limited / demand_limited,
+                     0.0)
 
         d_ratio_d_demand = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
-                                     np.where((available_resource_limited <= demand_limited) * (available_resource_limited/demand_limited>1E-15),
-                                              -available_resource_limited * d_demand_limited /
-                                              demand_limited ** 2,
-                                              0.0)
+            np.where((available_resource_limited <= demand_limited) * (available_resource_limited / demand_limited > 1E-15),
+                     -available_resource_limited * d_demand_limited /
+                     demand_limited ** 2,
+                     0.0)
 
         return d_ratio_d_stock, d_ratio_d_demand
 
