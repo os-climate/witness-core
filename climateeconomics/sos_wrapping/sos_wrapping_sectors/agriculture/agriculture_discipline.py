@@ -38,37 +38,36 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '',
+        'icon': 'fa-solid fa-building-wheat',
         'version': '',
     }
     _maturity = 'Research'
-    years = np.arange(2020, 2101)
+    
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2},
-        'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'default': 8.8085,
-                              'namespace': 'ns_witness', 'user_level': 2},
-        'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 6.9244, 'user_level': 2},
+        'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2, 'unit': '-'},
+        #'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'default':84.2, 'user_level': 2},
+        'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 281.2092, 'user_level': 2},
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2},
-        'decline_rate_tfp': {'type': 'float', 'default': 0.02387787, 'user_level': 3},
+        'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2, 'unit': '-'},
+        'decline_rate_tfp': {'type': 'float', 'default': 0.02387787, 'user_level': 3, 'unit': '-'},
         # Usable capital
-        'capital_utilisation_ratio':  {'type': 'float', 'default': 0.8, 'user_level': 3},
-        'max_capital_utilisation_ratio': {'type': 'float', 'default': 0.95, 'user_level': 3},
-        'energy_eff_k':  {'type': 'float', 'default': 0.05085, 'user_level': 3},
-        'energy_eff_cst': {'type': 'float', 'default': 0.9835, 'user_level': 3},
-        'energy_eff_xzero': {'type': 'float', 'default': 2012.8327, 'user_level': 3},
-        'energy_eff_max': {'type': 'float', 'default': 3.5165, 'user_level': 3},
+        'capital_utilisation_ratio':  {'type': 'float', 'default': 0.8, 'user_level': 3, 'unit': '-'},
+        'max_capital_utilisation_ratio': {'type': 'float', 'default': 0.95, 'user_level': 3, 'unit': '-'},
+        'energy_eff_k':  {'type': 'float', 'default': 0.05085, 'user_level': 3, 'unit': '-'},
+        'energy_eff_cst': {'type': 'float', 'default': 0.9835, 'user_level': 3, 'unit': '-'},
+        'energy_eff_xzero': {'type': 'float', 'default': 2012.8327, 'user_level': 3, 'unit': '-'},
+        'energy_eff_max': {'type': 'float', 'default': 3.5165, 'user_level': 3, 'unit': '-'},
         # Production function param
-        'output_alpha': {'type': 'float', 'default': 0.86537, 'user_level': 2},
-        'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2},
-        'depreciation_capital': {'type': 'float', 'default': 0.06, 'user_level': 2},
+        'output_alpha': {'type': 'float', 'default': 0.86537, 'user_level': 2, 'unit': '-'},
+        'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '-'},
+        'depreciation_capital': {'type': 'float', 'default': 0.058, 'user_level': 2, 'unit': '-'},
         'damage_to_productivity': {'type': 'bool'},
-        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2},
-        'sector_investment': {'type': 'dataframe', 'unit': '%', 'dataframe_descriptor': {'years': ('float', None, False),
+        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2, 'unit': '-'},
+        'sector_investment': {'type': 'dataframe', 'unit': 'trillions $', 'dataframe_descriptor': {'years': ('float', None, False),
                                                                                          'investment': ('float', None, True)}, 'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
 
         # energy_production stored in PetaWh for coupling variables scaling
@@ -76,15 +75,19 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
-        'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2},
+        'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2, 'unit': '-'},
+        'ref_emax_enet_constraint': {'type': 'float', 'default': 60e3, 'user_level': 3, 
+                                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref', 'unit': '-'}
     }
 
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
-        'production_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'detailed_capital_df': {'type': 'dataframe'}
+        'production_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'trillions $'},
+        'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness','unit': 'trillions $'},
+        'detailed_capital_df': {'type': 'dataframe', 'unit': 'trillions $'}, 
+        'emax_enet_constraint':  {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
     }
+
 
     def setup_sos_disciplines(self):
 
@@ -119,14 +122,15 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                               'sector_investment': sector_investment,
                               'workforce_df': workforce_df}
         # Model execution
-        production_df, capital_df, productivity_df = self.agriculture_model.compute(
+        production_df, capital_df, productivity_df, emax_enet_constraint = self.agriculture_model.compute(
             agriculture_inputs)
 
         # Store output data
         dict_values = {'productivity_df': productivity_df,
                        'production_df': production_df[['years', 'output']],
                        'capital_df': capital_df[['years', 'capital', 'usable_capital']],
-                       'detailed_capital_df': capital_df
+                       'detailed_capital_df': capital_df, 
+                       'emax_enet_constraint': emax_enet_constraint
                        }
 
         self.store_sos_outputs_values(dict_values)
@@ -143,8 +147,12 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 - usable capital 
                 - output 
         """
-        scaling_factor_energy_production = self.get_sosdisc_inputs(
-            'scaling_factor_energy_production')
+        scaling_factor_energy_production, ref_emax_enet_constraint = self.get_sosdisc_inputs(['scaling_factor_energy_production','ref_emax_enet_constraint'])
+        year_start = self.get_sosdisc_inputs('year_start')
+        year_end = self.get_sosdisc_inputs('year_end')
+        time_step = self.get_sosdisc_inputs('time_step')
+        nb_years = len(np.arange(year_start, year_end + 1, time_step))
+     
         # Gradients wrt energy
         dcapitalu_denergy = self.agriculture_model.dusablecapital_denergy()
         doutput_denergy = self.agriculture_model.doutput_denergy(
@@ -153,6 +161,9 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             ('production_df', 'output'), ('energy_production', 'Total production'), scaling_factor_energy_production * doutput_denergy)
         self.set_partial_derivative_for_other_types(
             ('capital_df', 'usable_capital'), ('energy_production', 'Total production'), scaling_factor_energy_production * dcapitalu_denergy)
+        self.set_partial_derivative_for_other_types(
+            ('emax_enet_constraint',),('energy_production', 'Total production'), - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint))
+
 
         # gradients wrt workforce
         doutput_dworkforce = self.agriculture_model.compute_doutput_dworkforce()
@@ -168,8 +179,12 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         # gradients wrt invest
         dcapital_dinvest = self.agriculture_model.dcapital_dinvest()
+        demax_cstrt_dinvest = self.agriculture_model.demaxconstraint(dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
             ('capital_df', 'capital'), ('sector_investment', 'investment'), dcapital_dinvest)
+        self.set_partial_derivative_for_other_types(
+            ('emax_enet_constraint',), ('sector_investment', 'investment'), demax_cstrt_dinvest)
+
 
     def get_chart_filter_list(self):
 
