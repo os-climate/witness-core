@@ -55,12 +55,12 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         join(global_data_dir, 'climate_additional_deaths_V2.csv'))
     # ADD DICTIONARY OF VALUES FOR DEATH RATE
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'default': 2020, 'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'default': 2100, 'namespace': 'ns_witness'},
-        'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'population_start': {'type': 'dataframe', 'default': pop_init_df},
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3},
         'calibration_temperature_increase': {'type': 'float', 'default': 2.5, 'user_level': 3},
         'theta': {'type': 'float', 'default': 2, 'user_level': 3},
@@ -88,7 +88,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
-                          'namespace': 'ns_witness'},
+                                      'namespace': 'ns_witness'},
         'population_detail_df': {'type': 'dataframe'},
         'birth_rate_df': {'type': 'dataframe'},
         'death_rate_dict': {'type': 'dict'},
@@ -119,10 +119,10 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         population_df['population'] = population_df['population'] / \
             self.model.million
         population_detail_df['population_1570'] = working_age_population_df['population_1570']
-        working_age_population_df['population_1570'] = working_age_population_df['population_1570']/ self.model.million
+        working_age_population_df['population_1570'] = working_age_population_df['population_1570'] / self.model.million
         # store output data
         out_dict = {"population_df": population_df,
-                    "working_age_population_df":working_age_population_df,
+                    "working_age_population_df": working_age_population_df,
                     "population_detail_df": population_detail_df,
                     "birth_rate_df": birth_rate_df,
                     "death_rate_dict": death_rate_dict,
@@ -144,13 +144,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('working_age_population_df', 'population_1570'), ('economics_df', 'output_net_of_d'), d_working_pop_d_output / self.model.million)
 
-
         d_pop_d_temp, d_working_pop_d_temp = self.model.compute_d_pop_d_temp()
         self.set_partial_derivative_for_other_types(
             ('population_df', 'population'), ('temperature_df', 'temp_atmo'), d_pop_d_temp / self.model.million)
         self.set_partial_derivative_for_other_types(
             ('working_age_population_df', 'population_1570'), ('temperature_df', 'temp_atmo'), d_working_pop_d_temp / self.model.million)
-
 
     def get_chart_filter_list(self):
 

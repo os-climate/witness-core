@@ -44,9 +44,9 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
     _maturity = 'Research'
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 2020, 'possible_values': years, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'time_step': {'type': 'int', 'default': 1, 'unit': 'years per period', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_gr_sigma': {'type': 'float', 'default': -0.0152, 'user_level': 2},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001, 'user_level': 2},
         'init_indus_emissions': {'type': 'float', 'default': 34, 'unit': 'GtCO2 per year', 'user_level': 2},
@@ -57,8 +57,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2},
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2},
         #'co2_emissions_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': 'Shared', 'namespace': 'ns_energy_mix'},
-        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
-                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'min_co2_objective': {'type': 'float', 'default': -1000., 'unit': 'GtCO2', 'user_level': 2},
@@ -74,9 +73,9 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
     }
     DESC_OUT = {
-        'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
         'CO2_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
-        'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''},
         'co2_emissions_Gt': {'type': 'dataframe', 'visibility': 'Shared',
                              'namespace': 'ns_energy_mix', 'unit': 'Gt'}
     }

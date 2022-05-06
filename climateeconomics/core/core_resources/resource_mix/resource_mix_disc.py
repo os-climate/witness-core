@@ -26,6 +26,7 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class ResourceMixDiscipline(SoSDiscipline):
@@ -56,23 +57,25 @@ class ResourceMixDiscipline(SoSDiscipline):
             1.0, 1.0, len(ratio_available_resource_default.index))
     default_conversion_dict = {
         UraniumResourceDiscipline.resource_name:
-             {'price': (1 / 0.001102) * 0.907185, 'production': 10 ** -6, 'stock': 10 ** -6},
+        {'price': (1 / 0.001102) * 0.907185,
+         'production': 10 ** -6, 'stock': 10 ** -6},
         CoalResourceDiscipline.resource_name:
-             {'price': 0.907185, 'production': 1.0, 'stock': 1.0},
+        {'price': 0.907185, 'production': 1.0, 'stock': 1.0},
         NaturalGasResourceDiscipline.resource_name:
-             {'price': 1.379 * 35310700 * 10 ** -6, 'production': 1 / 1.379, 'stock': 1 / 1.379},
+        {'price': 1.379 * 35310700 * 10 ** -6,
+         'production': 1 / 1.379, 'stock': 1 / 1.379},
         OilResourceDiscipline.resource_name:
-             {'price': 7.33, 'production': 1.0, 'stock': 1.0},
+        {'price': 7.33, 'production': 1.0, 'stock': 1.0},
     }
 
-    DESC_IN = {'year_start': {'type': 'int', 'default': default_year_start, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
-               'year_end': {'type': 'int', 'default': default_year_end, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'resource_list': {'type': 'string_list', 'default': ResourceMixModel.RESOURCE_LIST, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource', 'editable': False, 'structuring': True},
                ResourceMixModel.NON_MODELED_RESOURCE_PRICE: {'type': 'dataframe', 'unit': '$/t', 'namespace': 'ns_resource'},
                'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
-                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'resources_demand_woratio': {'type': 'dataframe', 'unit': 'Mt',
-                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+                                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'conversion_dict': {'type': 'dict', 'unit': '[-]', 'default': default_conversion_dict, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
                }
 
@@ -80,14 +83,14 @@ class ResourceMixDiscipline(SoSDiscipline):
         ResourceMixModel.ALL_RESOURCE_STOCK: {
             'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRICE: {
-            'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+            'type': 'dataframe', 'unit': '$/t', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
         ResourceMixModel.All_RESOURCE_USE: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.RATIO_USABLE_DEMAND: {'type': 'dataframe', 'default': ratio_available_resource_default, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
         ResourceMixModel.ALL_RESOURCE_DEMAND: {'type': 'dataframe', 'unit': '-',
                                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
         ResourceMixModel.ALL_RESOURCE_CO2_EMISSIONS: {
-            'type': 'dataframe', 'unit': '[$/t]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+            'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
     }
 
     def init_execution(self):
@@ -102,10 +105,14 @@ class ResourceMixDiscipline(SoSDiscipline):
         if 'resource_list' in self._data_in:
             resource_list = self.get_sosdisc_inputs('resource_list')
             for resource in resource_list:
-                dynamic_inputs[f'{resource}.resource_price'] = {'type': 'dataframe'}
-                dynamic_inputs[f'{resource}.resource_stock'] = {'type': 'dataframe'}
-                dynamic_inputs[f'{resource}.use_stock'] = {'type': 'dataframe'}
-                dynamic_inputs[f'{resource}.predictable_production'] = {'type': 'dataframe'}
+                dynamic_inputs[f'{resource}.resource_price'] = {
+                    'type': 'dataframe', 'unit': '$/t'}
+                dynamic_inputs[f'{resource}.resource_stock'] = {
+                    'type': 'dataframe', 'unit': 'Mt'}
+                dynamic_inputs[f'{resource}.use_stock'] = {
+                    'type': 'dataframe', 'unit': 'Mt'}
+                dynamic_inputs[f'{resource}.predictable_production'] = {
+                    'type': 'dataframe', 'unit': 'Mt'}
             self.add_inputs(dynamic_inputs)
         # self.add_outputs(dynamic_outputs)
 
@@ -119,7 +126,8 @@ class ResourceMixDiscipline(SoSDiscipline):
         #-- compute
         self.all_resource_model.compute(inputs_dict)
 
-        years = np.arange(inputs_dict['year_start'], inputs_dict['year_end'] + 1)
+        years = np.arange(inputs_dict['year_start'],
+                          inputs_dict['year_end'] + 1)
 
         outputs_dict = {
             ResourceMixModel.ALL_RESOURCE_STOCK: self.all_resource_model.all_resource_stock.reset_index(),

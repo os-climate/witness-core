@@ -86,6 +86,7 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         # atmo_conc
         self.model_name = 'carboncycle'
         ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

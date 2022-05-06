@@ -39,10 +39,10 @@ class ResourceModel():
     General implementation of a resource model, to be inherited by specific models for each type of resource
     """
 
-    resource_name='resource'
+    resource_name = 'resource'
 
-    #Units conversion
-    conversion_factor=1.0
+    # Units conversion
+    conversion_factor = 1.0
     oil_barrel_to_tonnes = 6.84
     bcm_to_Mt = 1 / 1.379
     kU_to_Mt = 10 ** -6
@@ -74,14 +74,24 @@ class ResourceModel():
         self.year_start = inputs_dict['year_start']  # year start
         self.year_end = inputs_dict['year_end']  # year end
         self.production_start = inputs_dict['production_start']
-        self.production_years = np.arange(self.production_start, self.year_end+1)
+        self.production_years = np.arange(
+            self.production_start, self.year_end + 1)
+        self.stock_start = inputs_dict['stock_start']
         self.resources_demand = inputs_dict['resources_demand']
+
+        self.resource_consumed_data = inputs_dict['resource_consumed_data']
+        self.lifespan = inputs_dict['lifespan']
+        self.recycled_rate = inputs_dict['recycled_rate']
         self.resource_data = inputs_dict['resource_data']
         self.resource_production_data = inputs_dict['resource_production_data']
         self.resource_price_data = inputs_dict['resource_price_data']
-        self.resource_year_start_data = inputs_dict['resource_year_start_data']
         self.init_dataframes()
-        self.sub_resource_list = [col for col in list(self.resource_production_data.columns) if col != 'years']
+        self.sub_resource_list = [col for col in list(
+            self.resource_production_data.columns) if col != 'years']
+
+        # self.resource_consumed_dict ={}
+        # for resource_type in self.sub_resource_list :
+        #     self.resource_consumed_dict[f'{resource_type}_consumption'] = inputs_dict['resource_consumed_data'][f'{resource_type}_consumption'].values
 
     def init_dataframes(self):
         '''
@@ -90,14 +100,18 @@ class ResourceModel():
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.predictable_production = pd.DataFrame(
             {'years': np.arange(self.production_start, self.year_end + 1, 1)})
+        self.recycled_production = pd.DataFrame(
+            {'years': self.years})
         self.total_consumption = pd.DataFrame(
             {'years': self.years})
         self.resource_stock = pd.DataFrame(
             {'years': self.years})
         self.resource_price = pd.DataFrame(
             {'years': self.years})
+
+        # 'years' : self.years if lifespan is null
         self.use_stock = pd.DataFrame(
-            {'years': self.years})
+            {'years': np.insert(self.years, 0, np.arange(self.year_start - self.lifespan, self.year_start, 1))})
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -105,8 +119,14 @@ class ResourceModel():
         '''
 
         self.resources_demand = inputs_dict['resources_demand']
+        # re adapt the dataframe to the length of the simulation
+        self.resources_demand = self.resources_demand.loc[self.resources_demand['years']
+                                                          >= self.year_start]
+        self.resources_demand = self.resources_demand.loc[self.resources_demand['years']
+                                                          <= self.year_end]
         self.init_dataframes()
-        self.sub_resource_list = [col for col in list(self.resource_production_data.columns) if col != 'years']
+        self.sub_resource_list = [col for col in list(
+            self.resource_production_data.columns) if col != 'years']
 
     def compute(self):
 
@@ -125,66 +145,106 @@ class ResourceModel():
                 self.resource_production_data, self.production_years, self.production_start, resource_type)
 
     def compute_stock(self):
-        #Initialize stocks df
+        # Initialize stocks df
         for resource_type in self.sub_resource_list:
-            self.resource_stock[resource_type] = np.zeros(len(self.years))
-            self.use_stock[resource_type] = np.insert(np.zeros(len(self.years)-1), 0, self.resource_year_start_data.loc[0, resource_type])
-        #Select only the right resource demand and convert the demand unit if needed
-        self.resource_demand = self.resources_demand[['years', self.resource_name]]
+            self.resource_stock[resource_type] = np.insert(
+                np.zeros(len(self.years) - 1), 0, self.stock_start)
+            # Concat what was consumed in the past years and what will be
+            # consumed (needed for recycled materials calculations)
+            self.use_stock[resource_type] = np.insert(np.zeros(len(
+                self.years) - 1), 0, self.resource_consumed_data[f'{resource_type}_consumption'])
+            self.recycled_production[resource_type] = np.insert(np.zeros(len(self.years) - 1), 0,
+                                                                self.resource_consumed_data[f'{resource_type}_consumption'].values[0] * self.recycled_rate)
+
+        # Select only the right resource demand and convert the demand unit if
+        # needed
+
+        self.resource_demand = self.resources_demand[[
+            'years', self.resource_name]]
+
         self.convert_demand(self.resource_demand)
-        #Sort the resource type by ascending price
-        ascending_price_resource_list=list(self.resource_price_data.sort_values(by=['price'])['resource_type'])
+
+        # Sort the resource type by ascending price
+        ascending_price_resource_list = list(
+            self.resource_price_data.sort_values(by=['price'])['resource_type'])
+        # If needed, get the global demand from the energy demand
+        self.get_global_demand(self.resource_demand)
         # Turn dataframes into dict of np array for faster computation time
         resource_demand_dict = self.resource_demand.to_dict()
         predictable_production_dict = self.predictable_production.to_dict()
         resource_stock_dict = self.resource_stock.to_dict()
         use_stock_dict = self.use_stock.to_dict()
+        recycled_production_dict = self.recycled_production.to_dict()
 
-        # compute of stock per year (stock = 0 at year 0)
+        # compute of stock per year (stock = 0 at year 0, no longer true for
+        # copper)
         for year_demand in self.years[1:]:
             total_stock = 0.0
-            demand = resource_demand_dict[self.resource_name][year_demand - resource_demand_dict['years'][0]]
+            demand = resource_demand_dict[self.resource_name][year_demand -
+                                                              resource_demand_dict['years'][0]]
+
             # we take in priority the less expensive resource
             for resource_type in ascending_price_resource_list:
                 total_stock = total_stock + \
-                              predictable_production_dict[resource_type][year_demand - predictable_production_dict['years'][0]]
+                    predictable_production_dict[resource_type][year_demand -
+                                                               predictable_production_dict['years'][0]]
 
             # chek if the stock is not empty this year:
             if total_stock > 0:
                 for resource_type in ascending_price_resource_list:
+                    # compute recycled quantity of the different resources
+                    self.compute_recycling(
+                        year_demand, resource_type, recycled_production_dict, use_stock_dict)
                     # while demand is not satisfied we use extracted and stocked
                     # resource, if there is resource in excess we stock it
                     if demand.real > 0:
-                        available_resource = resource_stock_dict[resource_type][year_demand -1 - resource_stock_dict['years'][0]] + \
-                                predictable_production_dict[resource_type][year_demand - predictable_production_dict['years'][0]] - demand
+                        available_resource = resource_stock_dict[resource_type][year_demand - 1 - resource_stock_dict['years'][0]] + \
+                            predictable_production_dict[resource_type][year_demand - predictable_production_dict['years'][0]] + \
+                            recycled_production_dict[resource_type][year_demand -
+                                                                    recycled_production_dict['years'][0]] - demand
                         if available_resource.real >= 0:
                             resource_stock_dict[resource_type][year_demand - resource_stock_dict['years'][0]] = \
                                 resource_stock_dict[resource_type][year_demand - 1 - resource_stock_dict['years'][0]] + \
-                                predictable_production_dict[resource_type][year_demand - predictable_production_dict['years'][0]] - demand
-                            use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]] = demand
+                                predictable_production_dict[resource_type][year_demand - predictable_production_dict['years'][0]] + \
+                                recycled_production_dict[resource_type][year_demand -
+                                                                        recycled_production_dict['years'][0]] - demand
+                            use_stock_dict[resource_type][year_demand -
+                                                          use_stock_dict['years'][0]] = demand
                             demand = 0
 
                         # if there is not enough resource we use all the
                         # resource we have and we don't answer all the demand
                         else:
-                            resource_stock_dict[resource_type][year_demand - resource_stock_dict['years'][0]] = 0
+                            resource_stock_dict[resource_type][year_demand -
+                                                               resource_stock_dict['years'][0]] = 0
                             use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]] = \
                                 predictable_production_dict[resource_type][year_demand - predictable_production_dict['years'][0]] + \
-                                resource_stock_dict[resource_type][year_demand - 1 - resource_stock_dict['years'][0]]
-                            demand = demand - use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]]
+                                resource_stock_dict[resource_type][year_demand - 1 - resource_stock_dict['years'][0]] + \
+                                recycled_production_dict[resource_type][year_demand -
+                                                                        recycled_production_dict['years'][0]]
+                            demand = demand - \
+                                use_stock_dict[resource_type][year_demand -
+                                                              use_stock_dict['years'][0]]
 
                     else:
                         resource_stock_dict[resource_type][year_demand - resource_stock_dict['years'][0]] = \
                             resource_stock_dict[resource_type][year_demand - 1 - resource_stock_dict['years'][0]] + \
-                            predictable_production_dict[resource_type][year_demand - predictable_production_dict['years'][0]]
-                        use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]]=0
+                            predictable_production_dict[resource_type][year_demand -
+                                                                       predictable_production_dict['years'][0]]
+                        use_stock_dict[resource_type][year_demand -
+                                                      use_stock_dict['years'][0]] = 0
             # if the stock is empty we just use what we produced this year
             else:
-                resource_stock_dict[resource_type][year_demand - resource_stock_dict['years'][0]] = 0
-                use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]] = 0
-        self.predictable_production = pd.DataFrame.from_dict(predictable_production_dict)
-        self.resource_stock= pd.DataFrame.from_dict(resource_stock_dict)
+                resource_stock_dict[resource_type][year_demand -
+                                                   resource_stock_dict['years'][0]] = 0
+                use_stock_dict[resource_type][year_demand -
+                                              use_stock_dict['years'][0]] = 0
+        self.predictable_production = pd.DataFrame.from_dict(
+            predictable_production_dict)
+        self.resource_stock = pd.DataFrame.from_dict(resource_stock_dict)
         self.use_stock = pd.DataFrame.from_dict(use_stock_dict)
+        self.recycled_production = pd.DataFrame.from_dict(
+            recycled_production_dict)
 
     def compute_price(self):
 
@@ -199,7 +259,7 @@ class ResourceModel():
         # we compute the total consumption of one resource
         for resource_type in self.sub_resource_list:
             self.total_consumption['production'] = self.use_stock[resource_type] + \
-                                                             self.total_consumption['production']
+                self.total_consumption['production']
         # Turn dataframes into dict of np array for faster computation time
         resource_price_dict = self.resource_price.to_dict()
         resource_price_data_dict = self.resource_price_data.to_dict()
@@ -208,13 +268,16 @@ class ResourceModel():
 
         # we divide each resource use by the total consumption to have the
         # proportion and we multiply by the price
-        ascending_price_resource_list = list(self.resource_price_data.sort_values(by=['price'])['resource_type'])
+        ascending_price_resource_list = list(
+            self.resource_price_data.sort_values(by=['price'])['resource_type'])
         for resource_type in ascending_price_resource_list:
-            mask_1=np.array([val for val in use_stock_dict[resource_type].values()])>=0
-            mask_2=np.array([val for val in total_consumption_dict['production'].values()])!= 0
+            mask_1 = np.array(
+                [val for val in use_stock_dict[resource_type].values()]) >= 0
+            mask_2 = np.array(
+                [val for val in total_consumption_dict['production'].values()]) != 0
             resource_type_price_idx = list(resource_price_data_dict['resource_type'].keys())[
                 list(resource_price_data_dict['resource_type'].values()).index(resource_type)]
-            for year in np.array([val for val in resource_price_dict['years'].values()])[(mask_1*mask_2)]:
+            for year in np.array([val for val in resource_price_dict['years'].values()])[(mask_1 * mask_2)]:
                 resource_price_dict['price'][year - resource_price_dict['years'][0]] = \
                     resource_price_dict['price'][year - resource_price_dict['years'][0]] + \
                     use_stock_dict[resource_type][year - use_stock_dict['years'][0]] / \
@@ -228,6 +291,19 @@ class ResourceModel():
         '''
         pass
 
+    def compute_recycling(self, year_demand, resource_type, recycled_production_dict, use_stock_dict):
+        # infrastructures have a certain lifespan, so the recycled materials
+        # obtained each are those used a lifespan ago, multiplied by a
+        # recycle-rate
+        recycled_production_dict[resource_type][year_demand - recycled_production_dict['years'][0]] = \
+            use_stock_dict[resource_type][year_demand - self.lifespan -
+                                          use_stock_dict['years'][0]] * self.recycled_rate
+
+    def get_global_demand(self, demand):
+        '''
+        To be overloaded in specific resource models
+        '''
+        pass
 
     def get_derivative_resource(self):
         """ Compute derivative of stock, used stock and price regarding demand
@@ -237,14 +313,15 @@ class ResourceModel():
         year_start = self.year_start
         year_end = self.year_end
         nb_years = self.year_end - self.year_start + 1
-        ascending_price_resource_list = list(self.resource_price_data.sort_values(by=['price'])['resource_type'])
+        ascending_price_resource_list = list(
+            self.resource_price_data.sort_values(by=['price'])['resource_type'])
         # Turn dataframes into dict of np array for faster computation time
-        resource_demand_dict=self.resource_demand.to_dict()
-        predictable_production_dict=self.predictable_production.to_dict()
+        resource_demand_dict = self.resource_demand.to_dict()
+        predictable_production_dict = self.predictable_production.to_dict()
         resource_stock_dict = self.resource_stock.to_dict()
-        resource_price_data_dict=self.resource_price_data.to_dict()
-        total_consumption_dict=self.total_consumption.to_dict()
-        use_stock_dict=self.use_stock.to_dict()
+        resource_price_data_dict = self.resource_price_data.to_dict()
+        total_consumption_dict = self.total_consumption.to_dict()
+        use_stock_dict = self.use_stock.to_dict()
 
         # # ------------------------------------------------
         # # init gradient dict of matrix transmitted to discipline
@@ -276,30 +353,32 @@ class ResourceModel():
             total_stock = 0
             # # ------------------------------------------------
             # # dealing with units
-            demand = resource_demand_dict[self.resource_name][year_demand - resource_demand_dict['years'][0]]
+            demand = resource_demand_dict[self.resource_name][year_demand -
+                                                              resource_demand_dict['years'][0]]
 
             for resource_type in ascending_price_resource_list:
                 total_stock = total_stock + predictable_production_dict[resource_type][
-                              year_demand - predictable_production_dict['years'][0]]
+                    year_demand - predictable_production_dict['years'][0]]
 
             # check if the stock is not empty this year
             if total_stock > 0:
                 for resource_type in ascending_price_resource_list:
                     if demand > 0:
                         if resource_stock_dict[resource_type][year_demand - 1 - resource_stock_dict['years'][0]] \
-                                    + predictable_production_dict[resource_type][
+                            + predictable_production_dict[resource_type][
                                 year_demand - predictable_production_dict['years'][0]] \
-                                    - demand >= 0 and resource_stock_dict[resource_type][
+                            - demand >= 0 and resource_stock_dict[resource_type][
                                 year_demand - resource_stock_dict['years'][0]] > 0:
 
-                            # # ------------------------------------------------
+                            # # -----------------------------------------------
                             # # stock of resource_type and production are sufficient to fulfill demand
                             # # so we remove demand from stock and resource type use is the demand
 
                             # stock at year_demand depends on demand at year if stock is not zero, if demand is not zero
                             # and if the stock was not zero after this year (by recursivity, stock is stock at year n
                             # minus stock at year n-1 which is stock at year n-2 and so on, so the stock at year n depends
-                            # on all previous year unless the stock is empty at a given year)
+                            # on all previous year unless the stock is empty at
+                            # a given year)
                             for year in range(year_start + 1, year_demand + 1):
                                 if resource_stock_dict[resource_type][
                                     year - resource_stock_dict['years'][0]] > 0 and \
@@ -315,13 +394,14 @@ class ResourceModel():
                                 # resource use depends on previous year demand if at the year considered demand is not zero
                                 # and if we stored resource type without demand
                                 elif resource_demand_dict[self.resource_name][year - resource_demand_dict['years'][0]] != 0 and year in year_stock[resource_type]:
-                                    grad_use[resource_type][year_demand - year_start, year - year_start] = grad_demand
+                                    grad_use[resource_type][year_demand -
+                                                            year_start, year - year_start] = grad_demand
 
                             demand = 0
                             grad_demand = 0
                             year_stock[resource_type] = []
                         else:
-                            # # ------------------------------------------------
+                            # # -----------------------------------------------
                             # # stock of resource_type + production are not sufficient to fulfill demand
                             # # so we use all the stock we had at previous year and the current year production
                             # # and remove it from the demand
@@ -330,7 +410,9 @@ class ResourceModel():
                             no_stock_year[resource_type] = year_demand
                             grad_use[resource_type][year_demand - year_start] = grad_stock[resource_type][
                                 year_demand - year_start - 1]
-                            demand = demand - use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]]
+                            demand = demand - \
+                                use_stock_dict[resource_type][year_demand -
+                                                              use_stock_dict['years'][0]]
                             # if no stock at previous year grad_demand = 0
                             if resource_stock_dict[resource_type][
                                     year_demand - 1 - resource_stock_dict['years'][0]] > 0:
@@ -346,7 +428,8 @@ class ResourceModel():
             # # ------------------------------------------------
             # # total consumption -> use stock + production
             for resource_type in ascending_price_resource_list:
-                grad_total_consumption[year_demand - year_start] += grad_use[resource_type][year_demand - year_start]
+                grad_total_consumption[year_demand -
+                                       year_start] += grad_use[resource_type][year_demand - year_start]
             # # ------------------------------------------------
             # # price is u/v function with u = use and v = total consumption
             for resource_type in ascending_price_resource_list:
@@ -355,13 +438,13 @@ class ResourceModel():
                     # # price is u/v function with u = use and v = total consumption
                     # # price gradient is (u'v - uv') / v^2
                     if total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]] != 0:
-                        resource_type_price_idx=list(resource_price_data_dict['resource_type'].keys())[
+                        resource_type_price_idx = list(resource_price_data_dict['resource_type'].keys())[
                             list(resource_price_data_dict['resource_type'].values()).index(resource_type)]
                         grad_price[year_demand - year_start, year - year_start] += \
                             resource_price_data_dict['price'][resource_type_price_idx]\
-                            * (grad_use[resource_type][year_demand - year_start, year - year_start]\
-                            * total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]\
-                            - use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]]\
-                            * grad_total_consumption[year_demand - year_start, year - year_start])\
+                            * (grad_use[resource_type][year_demand - year_start, year - year_start]
+                               * total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]
+                               - use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]]
+                               * grad_total_consumption[year_demand - year_start, year - year_start])\
                             / (total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]) ** 2
         return grad_stock, grad_price, grad_use

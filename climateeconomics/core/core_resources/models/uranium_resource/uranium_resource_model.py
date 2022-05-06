@@ -64,6 +64,8 @@ class UraniumResourceModel(ResourceModel):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.predictable_production = pd.DataFrame(
             {'years': np.arange(self.production_start, self.year_end + 1, 1)})
+        self.recycled_production = pd.DataFrame(
+            {'years': self.years})
         self.total_consumption = pd.DataFrame(
             {'years': self.years})
         self.resource_stock = pd.DataFrame(

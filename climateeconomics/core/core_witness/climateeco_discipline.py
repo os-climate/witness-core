@@ -15,11 +15,20 @@ limitations under the License.
 '''
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 
+
 class ClimateEcoDiscipline(SoSDiscipline):
     """
     Climate Economics Discipline
     """
 
+    YEAR_START_DESC_IN = {'type': 'int', 'default': 2020,
+                          'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public'}
+    YEAR_END_DESC_IN = {'type': 'int', 'default': 2100,
+                        'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public'}
+    TIMESTEP_DESC_IN = {'type': 'int', 'default': 1, 'unit': 'year per period',
+                        'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}
+    ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
+                     'user_level': 1, 'unit': '-'}
     # ontology information
     _ontology_data = {
         'label': 'WITNESS Climate Economics Model',
@@ -33,6 +42,7 @@ class ClimateEcoDiscipline(SoSDiscipline):
         'icon': '',
         'version': '',
     }
+
     def get_greataxisrange(self, serie):
         """
         Get the lower and upper bound of axis for graphs 
@@ -43,31 +53,24 @@ class ClimateEcoDiscipline(SoSDiscipline):
         max_value = serie.values.max()
         min_range = self.get_value_axis(min_value, 'min')
         max_range = self.get_value_axis(max_value, 'max')
-        
+
         return min_range, max_range
-    
+
     def get_value_axis(self, value, min_or_max):
         """
         if min: if positive returns 0, if negative returns 1.1*value
         if max: if positive returns is 1.1*value, if negative returns 0
         """
         if min_or_max == 'min':
-            if value >=0:
+            if value >= 0:
                 value_out = 0
-            else: 
-                value_out = value*1.1
-        
+            else:
+                value_out = value * 1.1
+
         elif min_or_max == "max":
             if value >= 0:
-                value_out = value*1.1
-            else: 
-                value_out = 0 
-            
-        return value_out 
-            
-            
-            
-        
-        
-        
-    
+                value_out = value * 1.1
+            else:
+                value_out = 0
+
+        return value_out

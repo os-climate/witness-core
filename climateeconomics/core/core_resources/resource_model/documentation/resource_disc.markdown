@@ -5,10 +5,10 @@ It gives in output the resource mean price per year, the predictable production 
 the quantity of resource used each year in order to answer the demand, the production in excess which is stocked for the future need.
 To calculate all this dataframe the model takes in input the demand and the past production data of each resource subtypes.
 With these data we can calculate the Hubbert curves used in prediction of production.
-The prediction on resource production shows when the addition of production and stocks will no longer be able to answer the annual demand.
+The prediction on resource production shows when the addition of production, stocks and potential recycled production will no longer be able to answer the annual demand.
 Stocks are calculated with the production excess. Each year the model puts, in the stock, all the production not used in the year. 
 The model uses as a priority the resource subtypes which are the less expensive, then it stocks the more expensive one if there is production in excess.
-The price is calculate as the mean value of all the extraction price. It takes each subtype price and calculate according to each subtype proportion the resulting price.
+The price is calculated as the mean value of all the extraction price. It takes each subtype price and calculate according to each subtype proportion the resulting price.
 
 ### Hubbert model for resource production prediction [^1]
 

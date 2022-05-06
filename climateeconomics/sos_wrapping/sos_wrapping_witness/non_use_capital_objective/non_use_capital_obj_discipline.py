@@ -19,6 +19,7 @@ from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilte
 import numpy as np
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from climateeconomics.core.core_witness.non_use_capital_objective_model import NonUseCapitalObjective
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
@@ -40,20 +41,20 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
     _maturity = 'Research'
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 2020, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'agri_capital_techno_list': {'type': 'string_list',   'default': [],
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit':'G$', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit': 'G$', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
         'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
         'non_use_capital_cons_ref': {'type': 'float', 'default': 20000., 'unit': 'G$', 'user_level': 2,
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
     }
     DESC_OUT = {
@@ -178,7 +179,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('non_use_capital_objective', ), (non_use_capital, column_name), np.ones(len(years)) * alpha * (1 - gamma) / non_use_capital_obj_ref / delta_years)
             self.set_partial_derivative_for_other_types(
-                ('non_use_capital_cons', ), (non_use_capital, column_name), - np.ones(len(years))  / non_use_capital_cons_ref / delta_years)
+                ('non_use_capital_cons', ), (non_use_capital, column_name), - np.ones(len(years)) / non_use_capital_cons_ref / delta_years)
         input_capital_list = [
             key for key in inputs_dict.keys() if key.endswith('techno_capital')]
 

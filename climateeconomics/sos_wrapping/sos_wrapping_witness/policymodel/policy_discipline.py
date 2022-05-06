@@ -19,10 +19,9 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
 
-import pandas as pd
-from copy import deepcopy
 from climateeconomics.core.core_witness.policy_model import PolicyModel
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class PolicyDiscipline(SoSDiscipline):
@@ -44,14 +43,14 @@ class PolicyDiscipline(SoSDiscipline):
 
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 2020, 'possible_values': years, 'unit': 'year', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'default': 2100, 'possible_values': years, 'unit': 'year', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
     }
 
     DESC_OUT = {
-        'CO2_taxes': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'CO2_taxes': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '$/tCO2'}
 
     }
 

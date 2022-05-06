@@ -42,9 +42,9 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     }
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'possible_values': years, 'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'possible_values': years, 'namespace': 'ns_witness'},
-        'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2},
         'eq_temp_impact': {'type': 'float', 'default': 3.1, 'user_level': 3},
@@ -58,8 +58,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'up_tatmo': {'type': 'float', 'default': 12.0, 'user_level': 3},
         'up_tocean': {'type': 'float', 'default': 20.0, 'user_level': 3},
         'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
-                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'temperature_obj_option': {'type': 'string',
@@ -75,8 +74,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'temperature_detail_df': {'type': 'dataframe'},
+        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
+        'temperature_detail_df': {'type': 'dataframe', 'unit': 'degree Celsius'},
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
         'temperature_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}}
 

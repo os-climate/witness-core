@@ -44,6 +44,9 @@ class UraniumResourceDiscipline(ResourceDiscipline):
     default_regression_start = 2015
     default_uranium_accessibility = 'recoverable'
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
+    default_stock_start = 0.0
+    default_recycled_rate = 0.0
+    default_lifespan = 0
     resource_name = UraniumResourceModel.resource_name
 
     prod_unit = 't'
@@ -54,7 +57,7 @@ class UraniumResourceDiscipline(ResourceDiscipline):
     default_resource_data=pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_data.csv'))
     default_resource_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_production_data.csv'))
     default_resource_price_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_price_data.csv'))
-    default_resource_year_start_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_year_start_data.csv'))
+    default_resource_consumed_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_consumed_data.csv'))
 
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '[-]', 'default': default_resource_data,
@@ -66,12 +69,15 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                                                                 'price': ('float', None, False),
                                                                 'unit': ('string', None, False)},
                                        'namespace': 'ns_uranium_resource'},
-               'resource_year_start_data': {'type': 'dataframe', 'unit': '[-]', 'default': default_resource_year_start_data,
+               'resource_consumed_data': {'type': 'dataframe', 'unit': '[t]', 'default': default_resource_consumed_data,
                                             'user_level': 2, 'namespace': 'ns_uranium_resource'},
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',
                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_uranium_resource'},
                'regression_start': {'type': 'int', 'default': default_regression_start, 'unit': '[-]',
                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_uranium_resource'},
+               'stock_start': {'type': 'float', 'default': default_stock_start, 'unit': '[Mt]'},
+               'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'unit': '[-]'},
+               'lifespan': {'type': 'int', 'default': default_lifespan, 'unit': '[-]'},
                }
 
     DESC_IN.update(ResourceDiscipline.DESC_IN)
@@ -81,6 +87,8 @@ class UraniumResourceDiscipline(ResourceDiscipline):
         'resource_price': {'type': 'dataframe', 'unit': '$/k', },
         'use_stock': {'type': 'dataframe', 'unit': 't', },
         'predictable_production': {'type': 'dataframe', 'unit': 't',},
+        'recycled_production' : {
+            'type': 'dataframe', 'unit': 't'}
     }
     DESC_OUT.update(ResourceDiscipline.DESC_OUT)
 

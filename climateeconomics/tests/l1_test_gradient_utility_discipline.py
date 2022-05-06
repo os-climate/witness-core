@@ -36,6 +36,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         self.year_range = self.year_end - self.year_start
 
         ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_public': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_ref': f'{self.name}'}
         self.ee = ExecutionEngine(self.name)
