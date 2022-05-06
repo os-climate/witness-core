@@ -123,4 +123,5 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.workforce_df',
                                     f'{self.name}.sector_investment'],
                             outputs=[f'{self.name}.production_df', 
-                                     f'{self.name}.capital_df'])
+                                     f'{self.name}.capital_df',
+                                     f'{self.name}.emax_enet_constraint'])
