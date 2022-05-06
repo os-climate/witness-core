@@ -86,7 +86,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         'production_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'trillions $'},
         'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness','unit': 'trillions $'},
         'detailed_capital_df': {'type': 'dataframe', 'unit': 'trillions $'}, 
-        'emax_enet_constraint':  {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'emax_enet_constraint':  {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'}
     }
 
     def setup_sos_disciplines(self):
@@ -126,7 +126,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
 
         # Store output data
         dict_values = {'productivity_df': productivity_df,
-                       'production_df': production_df[['years', 'output']],
+                       'production_df': production_df[['years', 'output', 'output_net_of_damage']],
                        'capital_df': capital_df[['years', 'capital', 'usable_capital']],
                        'detailed_capital_df': capital_df, 
                        'emax_enet_constraint': emax_enet_constraint
@@ -155,8 +155,12 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         # Gradients wrt energy
         dcapitalu_denergy = self.services_model.dusablecapital_denergy()
         doutput_denergy = self.services_model.doutput_denergy(dcapitalu_denergy)
+        dnetoutput_denergy = self.services_model.dnetoutput(doutput_denergy)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('energy_production', 'Total production'), scaling_factor_energy_production * doutput_denergy)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output_net_of_damage'), ('energy_production', 'Total production'), scaling_factor_energy_production * dnetoutput_denergy) 
+           
         self.set_partial_derivative_for_other_types(
             ('capital_df', 'usable_capital'), ('energy_production', 'Total production'), scaling_factor_energy_production * dcapitalu_denergy)
         self.set_partial_derivative_for_other_types(
@@ -164,15 +168,21 @@ class ServicesDiscipline(ClimateEcoDiscipline):
 
         # gradients wrt workforce
         doutput_dworkforce = self.services_model.compute_doutput_dworkforce()
+        dnetoutput_dworkforce = self.services_model.dnetoutput(doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('workforce_df', 'workforce'), doutput_dworkforce)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output_net_of_damage'), ('workforce_df', 'workforce'), dnetoutput_dworkforce)
 
         # gradients wrt damage:
         dproductivity_ddamage = self.services_model.dproductivity_ddamage()
         doutput_ddamage = self.services_model.doutput_ddamage(dproductivity_ddamage)
+        dnetoutput_ddamage = self.services_model.dnetoutput_ddamage(doutput_ddamage)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('damage_df', 'damage_frac_output'), doutput_ddamage)
-
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output_net_of_damage'), ('damage_df', 'damage_frac_output'), dnetoutput_ddamage)
+        
         # gradients wrt invest
         dcapital_dinvest = self.services_model.dcapital_dinvest()
         demax_cstrt_dinvest = self.services_model.demaxconstraint(dcapital_dinvest)

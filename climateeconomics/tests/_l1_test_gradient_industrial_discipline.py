@@ -82,7 +82,7 @@ class IndustrialJacobianDiscTest(AbstractJacobianUnittest):
             self.test_services_analytic_grad
         ]
 
-    def test_services_analytic_grad(self):
+    def test_industry_analytic_grad(self):
 
         self.model_name = 'Industry'
         ns_dict = {'ns_witness': f'{self.name}',

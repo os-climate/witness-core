@@ -128,7 +128,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
         # Store output data
         dict_values = {'productivity_df': productivity_df,
-                       'production_df': production_df[['years', 'output']],
+                       'production_df': production_df[['years', 'output', 'output_net_of_damage']],
                        'capital_df': capital_df[['years', 'capital', 'usable_capital']],
                        'detailed_capital_df': capital_df,
                        'emax_enet_constraint': emax_enet_constraint
@@ -147,6 +147,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         outputs: - capital 
                 - usable capital 
                 - output 
+                - net output
         """
         scaling_factor_energy_production, ref_emax_enet_constraint = self.get_sosdisc_inputs(['scaling_factor_energy_production','ref_emax_enet_constraint'])
         year_start = self.get_sosdisc_inputs('year_start')
@@ -156,10 +157,12 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
      
         # Gradients wrt energy
         dcapitalu_denergy = self.industrial_model.dusablecapital_denergy()
-        doutput_denergy = self.industrial_model.doutput_denergy(
-            dcapitalu_denergy)
+        doutput_denergy = self.industrial_model.doutput_denergy(dcapitalu_denergy)
+        dnetoutput_denergy = self.industrial_model.dnetoutput(doutput_denergy)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('energy_production', 'Total production'), scaling_factor_energy_production * doutput_denergy)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output_net_of_damage'), ('energy_production', 'Total production'), scaling_factor_energy_production * dnetoutput_denergy)
         self.set_partial_derivative_for_other_types(
             ('capital_df', 'usable_capital'), ('energy_production', 'Total production'), scaling_factor_energy_production * dcapitalu_denergy)
         self.set_partial_derivative_for_other_types(
@@ -167,15 +170,20 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
         # gradients wrt workforce
         doutput_dworkforce = self.industrial_model.compute_doutput_dworkforce()
+        dnetoutput_dworkforce = self.industrial_model.dnetoutput(doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('workforce_df', 'workforce'), doutput_dworkforce)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output_net_of_damage'), ('workforce_df', 'workforce'), dnetoutput_dworkforce)
 
         # gradients wrt damage:
         dproductivity_ddamage = self.industrial_model.dproductivity_ddamage()
-        doutput_ddamage = self.industrial_model.doutput_ddamage(
-            dproductivity_ddamage)
+        doutput_ddamage = self.industrial_model.doutput_ddamage(dproductivity_ddamage)
+        dnetoutput_ddamage = self.industrial_model.dnetoutput_ddamage(doutput_ddamage)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output'), ('damage_df', 'damage_frac_output'), doutput_ddamage)
+        self.set_partial_derivative_for_other_types(
+            ('production_df', 'output_net_of_damage'), ('damage_df', 'damage_frac_output'), dnetoutput_ddamage)
 
         # gradients wrt invest
         dcapital_dinvest = self.industrial_model.dcapital_dinvest()
@@ -219,30 +227,46 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         workforce_df = self.get_sosdisc_inputs('workforce_df')
         capital_utilisation_ratio = self.get_sosdisc_inputs(
             'capital_utilisation_ratio')
-
+            
         if 'sector output' in chart_list:
 
-            to_plot = production_df['output']
+            to_plot = ['output', 'output_net_of_damage']
+            #economics_df = discipline.get_sosdisc_outputs('economics_df')
+
+            legend = {'output': 'sector gross output',
+                      'output_net_of_damage': 'world output net of damage'}
 
             years = list(production_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
 
-            min_value, max_value = self.get_greataxisrange(to_plot)
+            max_values = {}
+            min_values = {}
+            for key in to_plot:
+                min_values[key], max_values[key] = self.get_greataxisrange(
+                   production_df[to_plot])
 
-            chart_name = 'industrial sector economics output'
+            min_value = min(min_values.values())
+            max_value = max(max_values.values())
+
+            chart_name = 'Industry sector economics output'
 
             new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
 
-            visible_line = True
-            ordonate_data = list(to_plot)
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'world output [trillion $]', 'lines', visible_line)
-            new_chart.series.append(new_series)
+            for key in to_plot:
+                visible_line = True
+
+                ordonate_data = list(production_df[key])
+
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, legend[key], 'lines', visible_line)
+
+                new_chart.series.append(new_series)
+
             instanciated_charts.append(new_chart)
 
         if 'usable capital' in chart_list:
