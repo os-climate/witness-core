@@ -67,7 +67,7 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         non_use_capital_ft = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
                                            'FischerTropsch': loss_ft})
         non_use_capital_ct = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
-                                           'CC_tech': loss_ct})
+                                           'direct_air_capture.AmineScrubbing': loss_ct})
         non_use_capital_ref = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
                                             'Forest': loss_ref})
         alpha, gamma = 0.5, 0.5
@@ -83,13 +83,13 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                        f'{self.name}.agri_capital_techno_list': ['Forest'],
                        f'{self.name}.EnergyMix.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
-                       f'{self.name}.CCUS.carbon_capture.technologies_list': ['CC_tech'],
-                       f'{self.name}.CCUS.carbon_capture.CC_tech.non_use_capital': non_use_capital_ct,
+                       f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing'],
+                       f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.non_use_capital': non_use_capital_ct,
                        f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital': non_use_capital_fg,
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital': non_use_capital_ub,
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital': non_use_capital_rf,
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital': non_use_capital_ft,
-                       f'{self.name}.CCUS.carbon_capture.CC_tech.techno_capital': non_use_capital_ct,
+                       f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_capital': non_use_capital_ct,
                        f'{self.name}.EnergyMix.methane.FossilGas.techno_capital': non_use_capital_fg,
                        f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': non_use_capital_ub,
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': non_use_capital_rf,
