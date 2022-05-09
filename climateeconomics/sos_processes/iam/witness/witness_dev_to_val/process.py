@@ -18,6 +18,8 @@ from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
+DEFAULT_TECHNO_DICT = DEFAULT_TECHNO_DICT_DEV
+DEFAULT_TECHNO_DICT['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
@@ -60,7 +62,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        techno_dict = DEFAULT_TECHNO_DICT_DEV
+        techno_dict = DEFAULT_TECHNO_DICT
 
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
