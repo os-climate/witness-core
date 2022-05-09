@@ -51,7 +51,7 @@ class Study(ClimateEconomicsStudyManager):
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}' \
                         f'.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.{self.tempchange_name}.temperature_end_constraint_ref'] = dict_limit_values[scenario_name] / 2
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 1
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 3
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
 
@@ -65,10 +65,10 @@ class Study(ClimateEconomicsStudyManager):
             # no CO2 obejctive in this formulation
             default_func_df.loc[default_func_df['variable'] == 'CO2_objective', 'weight'] = 0.0
 
-            if scenario != 'SSP5-8,5':
+            if scenario != 'scenario_temperature_SSP5-8,5':
                 # if scenario is not SSP5, constraint on temperature is activated
                 default_func_df.loc[default_func_df['variable'] == 'temperature_constraint', 'weight'] = -1.0
-            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}' \
+            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario}.{witness_ms_usecase.optim_name}' \
                         f'.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.FunctionsManager.function_df'] = default_func_df
             for dict_data in scenarioData:
                 values_dict.update(dict_data)
