@@ -71,13 +71,16 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         'scale_factor_atmo_conc': {'type': 'float', 'default': 1e-2, 'unit': '-', 'user_level': 2, 'visibility': 'Shared',
                                    'namespace': 'ns_witness'},
+        'temperature_end_constraint_limit': {'type': 'float', 'default': 1.5, 'unit': 'deg','user_level': 2},
+        'temperature_end_constraint_ref': {'type': 'float', 'default': 3., 'unit': 'deg', 'user_level': 2},
     }
 
     DESC_OUT = {
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
         'temperature_detail_df': {'type': 'dataframe', 'unit': 'degree Celsius'},
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
-        'temperature_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}}
+        'temperature_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'temperature_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}}
 
     _maturity = 'Research'
 
@@ -118,7 +121,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         out_dict = {"temperature_detail_df": temperature_df,
                     "temperature_df": temperature_df[['years', 'temp_atmo']],
                     'forcing_detail_df': self.model.forcing_df,
-                    'temperature_objective': temperature_objective}
+                    'temperature_objective': temperature_objective,
+                    'temperature_constraint': self.model.temperature_end_constraint}
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):
@@ -135,10 +139,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         """
         d_tempatmo_d_atmoconc, d_tempocean_d_atmoconc = self.model.compute_d_temp_atmo()
         d_tempatmoobj_d_temp_atmo = self.model.compute_d_temp_atmo_objective()
-
+        temperature_constraint_ref = self.get_sosdisc_inputs('temperature_end_constraint_ref')
         self.set_partial_derivative_for_other_types(
             ('temperature_df', 'temp_atmo'),  ('carboncycle_df', 'atmo_conc'), d_tempatmo_d_atmoconc,)
-
+        self.set_partial_derivative_for_other_types(
+            ('temperature_constraint', ),  ('carboncycle_df', 'atmo_conc'), -d_tempatmo_d_atmoconc[-1]/temperature_constraint_ref,)
         for forcing_name, d_forcing_datmo_conc in self.model.d_forcing_datmo_conc_dict.items():
             self.set_partial_derivative_for_other_types(
                 ('forcing_detail_df', forcing_name),  ('carboncycle_df', 'atmo_conc'), np.identity(len(d_forcing_datmo_conc)) * d_forcing_datmo_conc,)
