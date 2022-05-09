@@ -23,7 +23,7 @@ from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from scipy.interpolate import interp1d
 
 
-class industrialDiscTest(unittest.TestCase):
+class IndustrialDiscTest(unittest.TestCase):
     '''
     Economic Manufacturer static model test case
     '''
@@ -36,7 +36,7 @@ class industrialDiscTest(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
 
     def test_execute(self):
-        self.model_name = 'Industrial'
+        self.model_name = 'Industry'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -120,5 +120,5 @@ class industrialDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-        for graph in graph_list:
-            graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()

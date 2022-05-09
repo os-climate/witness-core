@@ -48,21 +48,21 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'init_damag_int': {'type': 'float', 'default': 0.0, 'user_level': 3},
-        'damag_int': {'type': 'float', 'default': 0.0, 'user_level': 3},
-        'damag_quad': {'type': 'float', 'default': 0.0022, 'user_level': 3},
-        'damag_expo': {'type': 'float', 'default': 2.0, 'user_level': 3},
+        'init_damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
+        'damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
+        'damag_quad': {'type': 'float', 'default': 0.0022, 'unit': '-', 'user_level': 3},
+        'damag_expo': {'type': 'float', 'default': 2.0, 'unit': '-', 'user_level': 3},
         'tipping_point': {'type': 'bool', 'default': True},
         'tp_a1': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 20.46, 'user_level': 3},
         'tp_a2': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 2, 'user_level': 3},
         'tp_a3': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.081, 'user_level': 3},
         'tp_a4': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.754, 'user_level': 3},
-        'frac_damage_prod': {'type': 'float', 'default': 0.30, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
+        'frac_damage_prod': {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
         'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                        'namespace': 'ns_ref', 'user_level': 2},
-        'damage_constraint_factor': {'type': 'array', 'user_level': 2}
+        'damage_constraint_factor': {'type': 'array', 'unit': '-', 'user_level': 2}
     }
 
     DESC_OUT = {

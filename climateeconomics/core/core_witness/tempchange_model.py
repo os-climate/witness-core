@@ -36,6 +36,7 @@ class TempChange(object):
         self.carboncycle_df = None
         self.forcing_df = None
         self.temperature_objective = None
+        self.temperature_end_constraint = None
         self.ppm_to_gtc = 2.13
         self.set_data(inputs)
         self.create_dataframe()
@@ -78,6 +79,9 @@ class TempChange(object):
             self.carboncycle_df = pd.DataFrame({'years': inputs['carboncycle_df']['years'].values,
                                                 'atmo_conc': inputs['carboncycle_df']['atmo_conc'].values /
                                                 self.scale_factor_carbon_cycle})
+
+        self.temperature_end_constraint_limit = inputs['temperature_end_constraint_limit']
+        self.temperature_end_constraint_ref = inputs['temperature_end_constraint_ref']
 
     def create_dataframe(self):
         '''
@@ -295,6 +299,13 @@ class TempChange(object):
         self.temperature_df.loc[year, 'temp_ocean'] = min(
             temp_ocean, self.up_tocean)
         return temp_ocean
+
+    def compute_temperature_year_end_constraint(self):
+        """
+        Compute temperature constraint
+        """
+        temp_ocean_year_end = self.temperature_df.at[self.year_end, 'temp_atmo']
+        self.temperature_end_constraint = np.array([(self.temperature_end_constraint_limit - temp_ocean_year_end)/self.temperature_end_constraint_ref])
 
     ######### GRADIENTS ########
 
@@ -619,5 +630,5 @@ class TempChange(object):
         else:
             raise ValueError(
                 f'temperature_obj_option = "{self.temperature_obj_option}" is not one of the allowed value : {TempChange.LAST_TEMPERATURE_OBJECTIVE} or {TempChange.INTEGRAL_OBJECTIVE}')
-
+        self.compute_temperature_year_end_constraint()
         return self.temperature_df.fillna(0.0), self.temperature_objective

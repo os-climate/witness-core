@@ -220,11 +220,10 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         production_df = self.get_sosdisc_outputs('production_df')
-        capital_df = self.get_sosdisc_outputs('capital_df')
+        capital_df = self.get_sosdisc_outputs('detailed_capital_df')
         productivity_df = self.get_sosdisc_outputs('productivity_df')
         workforce_df = self.get_sosdisc_inputs('workforce_df')
-        capital_utilisation_ratio = self.get_sosdisc_inputs(
-            'capital_utilisation_ratio')
+        capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
 
         if 'sector output' in chart_list:
 

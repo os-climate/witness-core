@@ -276,6 +276,13 @@ class DataStudy():
         list_weight.append(0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
+        list_var.append('temperature_constraint')
+        list_parent.append('')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(0.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
 
         list_var.extend(['delta_capital_constraint', 'delta_capital_constraint_dc', 'delta_capital_lintoquad'])
         list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints'])
