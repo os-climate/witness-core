@@ -54,8 +54,20 @@ class ResourceMixModel():
     ALL_RESOURCE_RATIO_PROD_DEMAND = 'all_resource_ratio_prod_demand'
     ALL_RESOURCE_CO2_EMISSIONS = 'resources_CO2_emissions'
     NON_MODELED_RESOURCE_PRICE = 'non_modeled_resource_price'
-    RESOURCE_LIST = [OilResourceDiscipline.resource_name, UraniumResourceDiscipline.resource_name,
-                     NaturalGasResourceDiscipline.resource_name, CoalResourceDiscipline.resource_name]
+    RESOURCE_DISC_LIST = [OilResourceDiscipline, UraniumResourceDiscipline,
+                          NaturalGasResourceDiscipline, CoalResourceDiscipline]
+
+    RESOURCE_LIST = [disc.resource_name for disc in RESOURCE_DISC_LIST]
+
+    RESOURCE_PROD_UNIT = {
+        disc.resource_name: disc.prod_unit for disc in RESOURCE_DISC_LIST}
+
+    RESOURCE_STOCK_UNIT = {
+        disc.resource_name: disc.stock_unit for disc in RESOURCE_DISC_LIST}
+
+    RESOURCE_PRICE_UNIT = {
+        disc.resource_name: disc.price_unit for disc in RESOURCE_DISC_LIST}
+
     NON_MODELED_RESOURCE_LIST = list(
         set([resource['name'] for resource in ResourceGlossary.GlossaryDict.values()]).symmetric_difference(set(RESOURCE_LIST)))
 

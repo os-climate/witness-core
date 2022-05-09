@@ -51,12 +51,15 @@ class CoalResourceDiscipline(ResourceDiscipline):
     stock_unit = 'Mt'
     price_unit = '$/MCF'
 
-    #Get default data for resource
-    default_resource_data=pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_data.csv'))
-    default_resource_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_production_data.csv'))
-    default_resource_price_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_price_data.csv'))
-    default_resource_consumed_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_consumed_data.csv'))
-
+    # Get default data for resource
+    default_resource_data = pd.read_csv(
+        join(dirname(__file__), f'../resources_data/{resource_name}_data.csv'))
+    default_resource_production_data = pd.read_csv(join(
+        dirname(__file__), f'../resources_data/{resource_name}_production_data.csv'))
+    default_resource_price_data = pd.read_csv(
+        join(dirname(__file__), f'../resources_data/{resource_name}_price_data.csv'))
+    default_resource_consumed_data = pd.read_csv(
+        join(dirname(__file__), f'../resources_data/{resource_name}_consumed_data.csv'))
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '[-]', 'default': default_resource_data,
                                  'user_level': 2, 'namespace': 'ns_coal_resource'},
@@ -68,9 +71,9 @@ class CoalResourceDiscipline(ResourceDiscipline):
                                                                 'unit': ('string', None, False)},
                                        'namespace': 'ns_coal_resource'},
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[million_barrels]', 'default': default_resource_consumed_data,
-                                            'user_level': 2,'dataframe_descriptor': {'years': ('float', None, False),
-                                                                                     'sub_bituminous_and_lignite_consumption': ('float', None, False),
-                                                                                     'bituminous_and_anthracite_consumption': ('float', None, False)}},
+                                          'user_level': 2, 'dataframe_descriptor': {'years': ('float', None, False),
+                                                                                    'sub_bituminous_and_lignite_consumption': ('float', None, False),
+                                                                                    'bituminous_and_anthracite_consumption': ('float', None, False)}},
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',
                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_coal_resource'},
                'stock_start': {'type': 'float', 'default': default_stock_start, 'unit': '[Mt]'},
@@ -82,15 +85,15 @@ class CoalResourceDiscipline(ResourceDiscipline):
 
     DESC_OUT = {
         'resource_stock': {
-            'type': 'dataframe', 'unit': 'Mt'},
+            'type': 'dataframe', 'unit': stock_unit},
         'resource_price': {
-            'type': 'dataframe', 'unit': '$/t'},
+            'type': 'dataframe', 'unit': price_unit},
         'use_stock': {
-            'type': 'dataframe', 'unit': 'Mt'},
+            'type': 'dataframe', 'unit': stock_unit},
         'predictable_production': {
-            'type': 'dataframe', 'unit': 'Mt'},
-        'recycled_production' : {
-            'type': 'dataframe', 'unit': 'Mt'}
+            'type': 'dataframe', 'unit': prod_unit},
+        'recycled_production': {
+            'type': 'dataframe', 'unit': prod_unit}
     }
     DESC_OUT.update(ResourceDiscipline.DESC_OUT)
 
