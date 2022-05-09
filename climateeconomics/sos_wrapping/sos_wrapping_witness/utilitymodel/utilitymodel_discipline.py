@@ -44,7 +44,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
+        'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
         'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
         'welfare_obj_option': {'type': 'string', 'default': 'welfare', 'possible_values': ['last_utility', 'welfare'], 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
