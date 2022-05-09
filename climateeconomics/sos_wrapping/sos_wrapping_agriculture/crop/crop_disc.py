@@ -168,7 +168,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                   'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
 
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop'},
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree celsius'},
+        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
         'param_a': {'type': 'float', 'default': - 0.00833, 'user_level': 3},
         'param_b': {'type': 'float', 'default': - 0.04167, 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',

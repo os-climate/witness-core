@@ -21,6 +21,7 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from climateeconomics.core.core_witness.non_use_capital_objective_model import NonUseCapitalObjective
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 
 class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
@@ -44,19 +45,19 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'energy_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
-        'ccs_list': {'type': 'string_list', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
+        'energy_list': {'type': 'string_list', 'default': EnergyMix.energy_list, 'possible_values': EnergyMix.energy_list, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
+        'ccs_list': {'type': 'string_list', 'possible_values': EnergyMix.ccs_list, 'default': EnergyMix.ccs_list, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'agri_capital_techno_list': {'type': 'string_list',   'default': [],
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit': 'G$', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
+        'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
         'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
         'non_use_capital_cons_ref': {'type': 'float', 'default': 20000., 'unit': 'G$', 'user_level': 2,
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        ### WIP is_dev to remove once its validated on dev processes
+                                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        # WIP is_dev to remove once its validated on dev processes
         'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'}
 
     }
@@ -86,16 +87,18 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                         pass
                     else:
                         dynamic_inputs[f'{energy}.technologies_list'] = {'type': 'string_list',
-                                                                        'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                        'namespace': 'ns_energy',
-                                                                        'structuring': True}
+                                                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                         'namespace': 'ns_energy',
+                                                                         'structuring': True,
+                                                                         'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
+                                                                         'default': EnergyMix.stream_class_dict[energy].default_techno_list}
 
                         if f'{energy}.technologies_list' in self._data_in:
                             techno_list = self.get_sosdisc_inputs(
                                 f'{energy}.technologies_list')
                             if techno_list is not None:
                                 energy_techno_dict[energy] = {'namespace': 'ns_energy',
-                                                            'value': techno_list}
+                                                              'value': techno_list}
         if 'ccs_list' in self._data_in:
             ccs_list = self.get_sosdisc_inputs('ccs_list')
             if ccs_list is not None:
@@ -103,7 +106,9 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                     dynamic_inputs[f'{ccs}.technologies_list'] = {'type': 'string_list',
                                                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                   'namespace': 'ns_ccs',
-                                                                  'structuring': True}
+                                                                  'structuring': True,
+                                                                  'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
+                                                                  'default': EnergyMix.stream_class_dict[ccs].default_techno_list}
 
                     if f'{ccs}.technologies_list' in self._data_in:
                         techno_list = self.get_sosdisc_inputs(
