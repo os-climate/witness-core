@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -89,7 +89,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_{temperature_obj_option}.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], derr_approx='complex_step')
+                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
 
     def test_03_temperature_discipline_analytic_grad_myhre(self):
 
@@ -133,7 +133,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_Myhre.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], derr_approx='complex_step')
+                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective',  f'{self.name}.temperature_constraint'], derr_approx='complex_step')
 
     def _test_04_temperature_discipline_analytic_grad_etminan(self):
 
@@ -177,7 +177,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_etminan.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], derr_approx='complex_step')
+                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
 
     def test_05_temperature_discipline_analytic_grad_meinshausen(self):
 
@@ -221,7 +221,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_Meinshausen.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], derr_approx='complex_step')
+                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
 
     def _test_06_temperature_discipline_analytic_grad_etminan_lower_atmo_conc(self):
 
@@ -266,7 +266,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_etminan_lower.pkl', discipline=disc_techno, step=1e-10, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.temperature_df', f'{self.name}.temperature_objective'], output_column='CO2 forcing', derr_approx='finite_differences')
+                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], output_column='CO2 forcing', derr_approx='finite_differences')
 
 
 if '__main__' == __name__:
