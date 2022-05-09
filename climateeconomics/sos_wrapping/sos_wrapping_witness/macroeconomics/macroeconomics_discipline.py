@@ -67,8 +67,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'output_alpha': {'type': 'float', 'default': 0.86537, 'user_level': 2},
         'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2},
         'depreciation_capital': {'type': 'float', 'default': 0.07, 'user_level': 2},
-        'init_rate_time_pref': {'type': 'float', 'default': 0.0, 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'conso_elasticity': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
+        'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'conso_elasticity': {'type': 'float', 'default': 1.45, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
         # Lower and upper bounds
         'lo_capital': {'type': 'float', 'unit': 'trillions $', 'default': 1.0, 'user_level': 3},
         'lo_conso': {'type': 'float', 'unit': 'trillions $', 'default': 2.0, 'user_level': 3},
