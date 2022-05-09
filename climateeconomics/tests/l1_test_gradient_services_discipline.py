@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class ServicesJacobianDiscTest(AbstractJacobianUnittest):
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -80,7 +80,8 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         
     def analytic_grad_entry(self):
         return [
-            self.test_services_analytic_grad
+            self.test_services_analytic_grad,
+            self.test_services_withotudamagetoproductivity
         ]
 
     def test_services_analytic_grad(self):
@@ -118,7 +119,51 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_services_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',threshold=1e-16,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            inputs=[f'{self.name}.energy_production',
+                                    f'{self.name}.damage_df',
+                                    f'{self.name}.workforce_df',
+                                    f'{self.name}.sector_investment'],
+                            outputs=[f'{self.name}.production_df', 
+                                     f'{self.name}.capital_df',
+                                     f'{self.name}.emax_enet_constraint'])
+        
+    def test_services_withotudamagetoproductivity(self):
+
+        self.model_name = 'Services'
+        ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_energy_mix': f'{self.name}',
+                   'ns_public': f'{self.name}',
+                   'ns_functions': f'{self.name}',
+                   'ns_ref':f'{self.name}' }
+        
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.time_step': self.time_step,
+                       f'{self.name}.{self.model_name}.damage_to_productivity': False,
+                       f'{self.name}.frac_damage_prod': 0.3,
+                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.damage_df': self.damage_df,
+                       f'{self.name}.workforce_df': self.workforce_df,
+                       f'{self.name}.sector_investment': self.total_invest,
+                       f'{self.name}.alpha': 0.5
+                       }
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_services_discipline_withoutdamage.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.energy_production',
                                     f'{self.name}.damage_df',
                                     f'{self.name}.workforce_df',

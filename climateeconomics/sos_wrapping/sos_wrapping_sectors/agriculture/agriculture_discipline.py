@@ -174,6 +174,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             ('production_df', 'output'), ('workforce_df', 'workforce'), doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
             ('production_df', 'output_net_of_damage'), ('workforce_df', 'workforce'), dnetoutput_dworkforce)
+        
         # gradients wrt damage:
         dproductivity_ddamage = self.agriculture_model.dproductivity_ddamage()
         doutput_ddamage = self.agriculture_model.doutput_ddamage(dproductivity_ddamage)
@@ -222,6 +223,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         production_df = self.get_sosdisc_outputs('production_df')
         capital_df = self.get_sosdisc_outputs('capital_df')
+        capital_detail_df = self.get_sosdisc_outputs('detailed_capital_df')
         productivity_df = self.get_sosdisc_outputs('productivity_df')
         workforce_df = self.get_sosdisc_inputs('workforce_df')
         capital_utilisation_ratio = self.get_sosdisc_inputs(
@@ -373,7 +375,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         if 'energy efficiency' in chart_list:
 
-            to_plot = ['energy_efficiency']
+            to_plot = capital_detail_df['energy_efficiency']
             #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(capital_df.index)
@@ -381,8 +383,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
 
-            min_value, max_value = self.get_greataxisrange(
-                capital_df[to_plot])
+            min_value, max_value = self.get_greataxisrange(to_plot)
 
             chart_name = 'Capital energy efficiency over the years'
 
@@ -391,15 +392,15 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                                  [min_value, max_value],
                                                  chart_name)
 
-            for key in to_plot:
-                visible_line = True
+        
+            visible_line = True
 
-                ordonate_data = list(capital_df[key])
+            ordonate_data = list(to_plot)
 
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, key, 'lines', visible_line)
+            new_series = InstanciatedSeries(
+                    years, ordonate_data, 'Energy efficiency', 'lines', visible_line)
 
-                new_chart.series.append(new_series)
+            new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 
@@ -414,7 +415,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 scaling_factor_energy_production
             #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
-            years = list(capital_df.index)
+            years = list(capital_detail_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -422,7 +423,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             max_values = {}
             min_values = {}
             min_values['e_max'], max_values['e_max'] = self.get_greataxisrange(
-                capital_df[to_plot])
+                capital_detail_df[to_plot])
             min_values['energy'], max_values['energy'] = self.get_greataxisrange(
                 total_production)
 
@@ -436,7 +437,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                                  [min_value, max_value], chart_name)
             visible_line = True
 
-            ordonate_data = list(capital_df[to_plot])
+            ordonate_data = list(capital_detail_df[to_plot])
             ordonate_data_enet = list(total_production)
 
             new_series = InstanciatedSeries(
