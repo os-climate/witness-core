@@ -25,7 +25,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Optimization Sub-Process',
+        'label': 'WITNESS Dev to Val Optimization Sub-Process',
         'description': '',
         'category': '',
         'version': '',
