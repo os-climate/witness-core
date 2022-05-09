@@ -51,7 +51,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1, 'structuring': True},
         'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit': 'G$', 'user_level': 2, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
-        'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
+        'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
         'non_use_capital_cons_ref': {'type': 'float', 'default': 20000., 'unit': 'G$', 'user_level': 2,
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
@@ -90,8 +90,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                                                                          'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                          'namespace': 'ns_energy',
                                                                          'structuring': True,
-                                                                         'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list,
-                                                                         'default': EnergyMix.stream_class_dict[energy].default_techno_list}
+                                                                         'possible_values': EnergyMix.stream_class_dict[energy].default_techno_list}
 
                         if f'{energy}.technologies_list' in self._data_in:
                             techno_list = self.get_sosdisc_inputs(
@@ -107,8 +106,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                                                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                   'namespace': 'ns_ccs',
                                                                   'structuring': True,
-                                                                  'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list,
-                                                                  'default': EnergyMix.stream_class_dict[ccs].default_techno_list}
+                                                                  'possible_values': EnergyMix.stream_class_dict[ccs].default_techno_list}
 
                     if f'{ccs}.technologies_list' in self._data_in:
                         techno_list = self.get_sosdisc_inputs(

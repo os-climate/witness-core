@@ -69,7 +69,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'temperature_change_ref': {'type': 'float', 'default': 0.2, 'unit': 'deg', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                    'namespace': 'ns_ref', 'user_level': 2},
 
-        'scale_factor_atmo_conc': {'type': 'float', 'default': 1e-2, 'user_level': 2, 'visibility': 'Shared',
+        'scale_factor_atmo_conc': {'type': 'float', 'default': 1e-2, 'unit': '-', 'user_level': 2, 'visibility': 'Shared',
                                    'namespace': 'ns_witness'},
     }
 
