@@ -63,7 +63,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'scale_factor_atmo_conc': {'type': 'float', 'default': 0.01, 'user_level': 2, 'visibility': 'Shared',
+        'scale_factor_atmo_conc': {'type': 'float', 'default': 0.01, 'unit': '-', 'user_level': 2, 'visibility': 'Shared',
                                    'namespace': 'ns_witness'},
         'minimum_ppm_limit': {'type': 'float', 'default': 250, 'user_level': 2},
         'minimum_ppm_constraint_ref': {'type': 'float', 'default': 10, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
