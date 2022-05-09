@@ -106,13 +106,13 @@ class ResourceMixDiscipline(SoSDiscipline):
             resource_list = self.get_sosdisc_inputs('resource_list')
             for resource in resource_list:
                 dynamic_inputs[f'{resource}.resource_price'] = {
-                    'type': 'dataframe', 'unit': '$/t'}
+                    'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PRICE_UNIT[resource]}
                 dynamic_inputs[f'{resource}.resource_stock'] = {
-                    'type': 'dataframe', 'unit': 'Mt'}
+                    'type': 'dataframe', 'unit':  ResourceMixModel.RESOURCE_STOCK_UNIT[resource]}
                 dynamic_inputs[f'{resource}.use_stock'] = {
-                    'type': 'dataframe', 'unit': 'Mt'}
+                    'type': 'dataframe', 'unit':  ResourceMixModel.RESOURCE_STOCK_UNIT[resource]}
                 dynamic_inputs[f'{resource}.predictable_production'] = {
-                    'type': 'dataframe', 'unit': 'Mt'}
+                    'type': 'dataframe', 'unit':  ResourceMixModel.RESOURCE_PROD_UNIT[resource]}
             self.add_inputs(dynamic_inputs)
         # self.add_outputs(dynamic_outputs)
 
