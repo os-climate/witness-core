@@ -1,4 +1,5 @@
 from copy import deepcopy
+import math
 from os.path import join, dirname
 import random as rd
 from tkinter import Y
@@ -7,6 +8,22 @@ from matplotlib import use
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+
+
+def sigmoid(ratio):
+    x= -20*ratio +10
+    print(x)
+    
+    sig = 1/ (1 + math.exp(-x))
+   
+    return sig*5*10057 +10057
+  
+p1 = sigmoid(0)
+p2 = sigmoid(1)
+p3 = sigmoid(0.5)
+print("les valeurs sont :  0 1 et 0.5")
+print([p1, p2, p3])
 
 coal_name=ResourceGlossary.Coal['name']
 copper_name=ResourceGlossary.Copper['name']
@@ -25,7 +42,7 @@ coal_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{
 
 use_stock = pd.DataFrame(
             {'years': np.insert(years, 0, np.arange(year_start - lifespan, year_start, 1))})
-print(use_stock)
+#print(use_stock)
 # copper_dict = copper.to_dict()
 # print(copper_dict['copper_consumption'].values)
 
@@ -33,7 +50,7 @@ copper_sub_resource_list = [col for col in list(copper_production_data.columns) 
 copper_dict = {}
 for resource_type in copper_sub_resource_list:
     use_stock[resource_type] = np.insert(np.zeros(len(years)-1), 0, copper[f'{resource_type}_consumption'])
-print(use_stock['copper'])
+#print(use_stock['copper'])
 
 coal_sub_resource_list = [col for col in list(coal_production_data.columns) if col != 'years']
 coal_dict = {}
@@ -41,7 +58,7 @@ for resource_type in coal_sub_resource_list:
     
     coal_dict[resource_type] = coal[f'{resource_type}_consumption'].values
 
-print (coal_dict)    
+#print (coal_dict)    
 
 
 """copper_oui= copper.to_dict()

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import math
 import numpy as np
 import pandas as pd
 from os.path import join, dirname
@@ -71,6 +72,13 @@ class CopperResourceModel(ResourceModel):
         energy_demand = self.sectorisation_dict['power_generation']
         self.resource_demand=demand
         self.resource_demand[self.resource_name]=demand[self.resource_name] * (100 / energy_demand)
+
+    def sigmoid(self,ratio):
+            x= -20*ratio +10
+            
+            sig = 1/ (1 + math.exp(-x))
+        
+            return sig*5*10057 +10057
     
     def compute_price(self):
         
@@ -90,15 +98,13 @@ class CopperResourceModel(ResourceModel):
         demand_limited = compute_func_with_exp_min(
             np.array(demand), 1.0e-10)
         
-        self.ratio_usable_demand = np.minimum(np.maximum(available_resource_limited / demand_limited, 1E-15), 1.0) 
-
-
+        self.ratio_usable_demand = np.minimum(np.maximum(available_resource_limited / demand_limited, 1E-15), 1.0)
 
         for year_cost in self.years[1:] : 
             #if for 2 years straight the demand is too high the prices rise
             if self.ratio_usable_demand[year_cost - self.year_start] < 1 and self.ratio_usable_demand[year_cost - self.year_start -1] < 1 :
                 resource_price_dict['price'][year_cost - resource_price_dict['years'][0]] = \
-                    resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_rise
+                    min(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start]), resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_rise)
             # if, after the prices rise, the production can answer the demand, the prices decrease, but less than they rose
             elif self.ratio_usable_demand[year_cost - self.year_start] == 1 and self.ratio_usable_demand[year_cost - self.year_start -1] == 1 and resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] != self.resource_price_data.loc[0, 'price']: 
                 resource_price_dict['price'][year_cost - resource_price_dict['years'][0]] = \
@@ -110,5 +116,4 @@ class CopperResourceModel(ResourceModel):
 
         self.resource_price= pd.DataFrame.from_dict(resource_price_dict)
        
-            
-    
+        
