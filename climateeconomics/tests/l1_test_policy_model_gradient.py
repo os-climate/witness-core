@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class PolicyDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -61,7 +61,10 @@ class PolicyDiscTest(AbstractJacobianUnittest):
             {'years': years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.CO2_damage_price': CO2_damage}
+                       f'{self.name}.CO2_damage_price': CO2_damage,
+                       f'{self.name}.ccs_price_percentage': 50.,
+                       f'{self.name}.co2_damage_price_percentage': 70.
+                       }
 
         self.ee.dm.set_values_from_dict(values_dict)
         disc = self.ee.dm.get_disciplines_with_name(
@@ -94,7 +97,10 @@ class PolicyDiscTest(AbstractJacobianUnittest):
             {'years': years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.CO2_damage_price': CO2_damage}
+                       f'{self.name}.CO2_damage_price': CO2_damage,
+                       f'{self.name}.ccs_price_percentage': 50.,
+                       f'{self.name}.co2_damage_price_percentage': 70.
+                       }
 
         self.ee.dm.set_values_from_dict(values_dict)
         disc = self.ee.dm.get_disciplines_with_name(
@@ -127,7 +133,10 @@ class PolicyDiscTest(AbstractJacobianUnittest):
             {'years': years, 'CO2_damage_price': np.linspace(-300, -700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.CO2_damage_price': CO2_damage}
+                       f'{self.name}.CO2_damage_price': CO2_damage,
+                       f'{self.name}.ccs_price_percentage': 50.,
+                       f'{self.name}.co2_damage_price_percentage': 60.
+                       }
 
         self.ee.dm.set_values_from_dict(values_dict)
         disc = self.ee.dm.get_disciplines_with_name(
