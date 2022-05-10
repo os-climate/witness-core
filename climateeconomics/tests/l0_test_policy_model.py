@@ -55,7 +55,9 @@ class PolicyDiscTest(unittest.TestCase):
             {'years': years, 'CO2_damage_price': np.linspace(345.5, 433.2,  len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.CO2_damage_price': CO2_damage}
+                       f'{self.name}.CO2_damage_price': CO2_damage,
+                       f'{self.name}.ccs_price_percentage': 50.,
+                       f'{self.name}.co2_damage_price_percentage': 50.}
 
         self.ee.dm.set_values_from_dict(values_dict)
 

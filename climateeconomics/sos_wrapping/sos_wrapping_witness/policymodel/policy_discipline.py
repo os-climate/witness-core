@@ -47,6 +47,12 @@ class PolicyDiscipline(SoSDiscipline):
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'ccs_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
+                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                   'namespace': 'ns_ref', 'user_level': 2},
+        'co2_damage_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
+                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                   'namespace': 'ns_ref', 'user_level': 2},
     }
 
     DESC_OUT = {
