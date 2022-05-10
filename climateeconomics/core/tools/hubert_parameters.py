@@ -23,11 +23,12 @@ import pandas as pd
 
 
 resource_name = CopperResourceModel.resource_name
-Q_inf_th = 2851.691
+Q_inf_th = 2851.691 #reserve underground + Q(2020)
 past_production = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_production_data.csv'))
 production_start = 1925
 production_years = np.arange(production_start, 2101)
 past_production_years = np.arange(production_start, 2021)
+
 
 def compute_Hubbert_parameters(past_production, production_years, regression_start, resource_type):
     
@@ -76,6 +77,7 @@ year_regression = 1925
 
 difference = 1000
 
+#Goes through all the past years and returns the year of the regression
 for evolving_year in past_production_years :
     Q_inf = compute_Hubbert_parameters(past_production, production_years, evolving_year, 'copper')
     if abs(Q_inf_th - Q_inf) < difference :
