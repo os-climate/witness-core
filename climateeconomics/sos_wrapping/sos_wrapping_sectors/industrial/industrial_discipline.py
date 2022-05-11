@@ -48,38 +48,38 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2, 'unit': '[-]'},
+        'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2, 'unit': '-'},
         #'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'default':84.2, 'user_level': 2},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 281.2092, 'user_level': 2},
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness',
                          'dataframe_descriptor': {'years': ('float', None, False),'workforce': ('float', None, True)}, 'dataframe_edition_locked': False,},
-        'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2, 'unit': '[-]'},
-        'decline_rate_tfp': {'type': 'float', 'default': 0.02387787, 'user_level': 3, 'unit': '[-]'},
+        'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2, 'unit': '-'},
+        'decline_rate_tfp': {'type': 'float', 'default': 0.02387787, 'user_level': 3, 'unit': '-'},
         # Usable capital
-        'capital_utilisation_ratio':  {'type': 'float', 'default': 0.8, 'user_level': 3, 'unit': '[-]'},
-        'max_capital_utilisation_ratio': {'type': 'float', 'default': 0.95, 'user_level': 3, 'unit': '[-]'},
-        'energy_eff_k':  {'type': 'float', 'default': 0.05085, 'user_level': 3, 'unit': '[-]'},
-        'energy_eff_cst': {'type': 'float', 'default': 0.9835, 'user_level': 3, 'unit': '[-]'},
-        'energy_eff_xzero': {'type': 'float', 'default': 2012.8327, 'user_level': 3, 'unit': '[-]'},
-        'energy_eff_max': {'type': 'float', 'default': 3.5165, 'user_level': 3, 'unit': '[-]'},
+        'capital_utilisation_ratio':  {'type': 'float', 'default': 0.8, 'user_level': 3, 'unit': '-'},
+        'max_capital_utilisation_ratio': {'type': 'float', 'default': 0.95, 'user_level': 3, 'unit': '-'},
+        'energy_eff_k':  {'type': 'float', 'default': 0.05085, 'user_level': 3, 'unit': '-'},
+        'energy_eff_cst': {'type': 'float', 'default': 0.9835, 'user_level': 3, 'unit': '-'},
+        'energy_eff_xzero': {'type': 'float', 'default': 2012.8327, 'user_level': 3, 'unit': '-'},
+        'energy_eff_max': {'type': 'float', 'default': 3.5165, 'user_level': 3, 'unit': '-'},
         # Production function param
-        'output_alpha': {'type': 'float', 'default': 0.86537, 'user_level': 2, 'unit': '[-]'},
-        'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '[-]'},
-        'depreciation_capital': {'type': 'float', 'default': 0.058, 'user_level': 2, 'unit': '[-]'},
+        'output_alpha': {'type': 'float', 'default': 0.86537, 'user_level': 2, 'unit': '-'},
+        'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '-'},
+        'depreciation_capital': {'type': 'float', 'default': 0.058, 'user_level': 2, 'unit': '-'},
         'damage_to_productivity': {'type': 'bool'},
-        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2, 'unit': '[-]'},
+        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2, 'unit': '-'},
         'sector_investment': {'type': 'dataframe', 'unit': 'trillions $', 'dataframe_descriptor': {'years': ('float', None, False),
                             'investment': ('float', None, True)}, 'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
 
         # energy_production stored in PetaWh for coupling variables scaling
         'energy_production': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'PWh', 'namespace': 'ns_energy_mix',  
                               'dataframe_descriptor': {'years': ('float', None, False),'Total production': ('float', None, True)}, 'dataframe_edition_locked': False},
-        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '[-]'},
+        'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
-        'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2, 'unit': '[-]'},
+        'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2, 'unit': '-'},
         'ref_emax_enet_constraint': {'type': 'float', 'default': 60e3, 'user_level': 3, 
-                                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref', 'unit': '[-]'}
+                                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref', 'unit': '-'}
     }
 
     DESC_OUT = {
@@ -252,7 +252,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Industry sector economics output'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion dollars]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -290,7 +290,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Productive capital stock and usable capital for production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+            new_chart = TwoAxesInstanciatedChart('years', 'Capital stock [trillion dollars]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -323,7 +323,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Industrial capital stock per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+            new_chart = TwoAxesInstanciatedChart('years', 'Capital stock [Trillion dollars]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name, stacked_bar=True)
@@ -374,7 +374,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Total Factor Productivity'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Total Factor Productivity [no unit]',
+            new_chart = TwoAxesInstanciatedChart('years', 'Total Factor Productivity [-]',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value, max_value], chart_name)
 
@@ -403,7 +403,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Capital energy efficiency over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'no unit',
+            new_chart = TwoAxesInstanciatedChart('years', 'Capital energy efficiency [-]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -448,7 +448,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'E_max value and Net Energy'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Twh',
+            new_chart = TwoAxesInstanciatedChart('years', '[Twh]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value], chart_name)
             visible_line = True
