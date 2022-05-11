@@ -56,7 +56,6 @@ class PolicyModel():
 
         CO2_damage_price_array = self.co2_damage_price_percentage * self.CO2_damage_price['CO2_damage_price'].values
         CCS_price_array = self.ccs_price_percentage * self.CCS_price['ccs_price_per_tCO2'].values
-        print(self.ccs_price_percentage)
         dsmooth = get_dsmooth_dvariable_vect(
             np.array([CO2_damage_price_array, CCS_price_array, 0.0 * CCS_price_array]).T)
         l_CO2, l_CCS =self.co2_damage_price_percentage * dsmooth.T[0], self.ccs_price_percentage * dsmooth.T[1]
