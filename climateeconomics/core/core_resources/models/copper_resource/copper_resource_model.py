@@ -108,7 +108,7 @@ class CopperResourceModel(ResourceModel):
             # if, after the prices rise, the production can answer the demand, the prices decrease, but less than they rose
             elif self.ratio_usable_demand[year_cost - self.year_start] == 1 and self.ratio_usable_demand[year_cost - self.year_start -1] == 1 and resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] != self.resource_price_data.loc[0, 'price']: 
                 resource_price_dict['price'][year_cost - resource_price_dict['years'][0]] = \
-                    resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_decrease
+                    max(resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_decrease, resource_price_dict['price'][0])
             #if the price is at its minimum (initial value) and the demand is answered to, the prices stay the same
             else : 
                 resource_price_dict['price'][year_cost - resource_price_dict['years'][0]] = \
