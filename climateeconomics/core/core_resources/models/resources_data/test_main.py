@@ -19,11 +19,11 @@ def sigmoid(ratio):
    
     return sig*5*10057 +10057
   
-p1 = sigmoid(0)
-p2 = sigmoid(1)
-p3 = sigmoid(0.5)
-print("les valeurs sont :  0 1 et 0.5")
-print([p1, p2, p3])
+# p1 = sigmoid(0)
+# p2 = sigmoid(1)
+# p3 = sigmoid(0.5)
+# print("les valeurs sont :  0 1 et 0.5")
+# print([p1, p2, p3])
 
 coal_name=ResourceGlossary.Coal['name']
 copper_name=ResourceGlossary.Copper['name']
@@ -37,14 +37,18 @@ new_stock = 47
 copper = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_consumed_data.csv')) #pd.read_csv(join(dirname(__file__),'copper_resource_consumed_data.csv')) ou : pd.DataFrame(columns= ['years' , 'copper_consumption' ])
 copper_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_production_data.csv'))
 
+copper_dict = copper.to_dict()
+
+# print("la conso là")
+# print(copper_consumed_dict['copper_consumption'])
+
 coal = pd.read_csv(join(dirname(__file__), f'../resources_data/{coal_name}_consumed_data.csv'))
 coal_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{coal_name}_production_data.csv'))
 
 use_stock = pd.DataFrame(
             {'years': np.insert(years, 0, np.arange(year_start - lifespan, year_start, 1))})
-#print(use_stock)
-# copper_dict = copper.to_dict()
-# print(copper_dict['copper_consumption'].values)
+print(copper_dict['copper_consumption'])
+print(copper_['copper_consumption'] * 1000)
 
 copper_sub_resource_list = [col for col in list(copper_production_data.columns) if col != 'years']
 copper_dict = {}
