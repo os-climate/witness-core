@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    #     AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     #     np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
@@ -40,10 +40,11 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
     def test_forest_analytic_grad(self):
 
         model_name = 'Forest'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   'ns_agriculture': f'{self.name}',
+        ns_dict = {'ns_public': f'{self.name}',
+                   'ns_witness': f'{self.name}',
+                   'ns_functions': f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
+                   'ns_agriculture': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -71,6 +72,9 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         forest_invest = np.linspace(2, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
+        deforest_invest = np.linspace(10, 1, year_range)
+        self.deforest_invest_df = pd.DataFrame(
+            {"years": years, "investment": deforest_invest})
         self.reforestation_cost_per_ha = 13800
 
         wood_density = 600.0  # kg/m3
@@ -146,11 +150,13 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.time_step': 1,
                        f'{self.name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
-                       f'{self.name}.{Forest.DEFORESTATION_SURFACE}': self.deforestation_surface_df,
+                       f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
+                       f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
                        f'{self.name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
+                       f'{self.name}.{model_name}.managed_wood_initial_prod': self.managed_wood_techno_dict,
                        f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
                        f'{self.name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
@@ -158,17 +164,18 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{self.name}.transport_cost': self.transport_df,
                        f'{self.name}.margin': self.margin,
-                       f'{self.name}.{model_name}.initial_unsused_forest_surface': self.initial_unsused_forest_surface,
+                       f'{self.name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
                        f'{self.name}.{model_name}.protected_forest_surface': self.initial_protected_forest_surface,
                        }
+
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-                            inputs=[f'{self.name}.{Forest.DEFORESTATION_SURFACE}',
-                                    f'{self.name}.Forest.{Forest.REFORESTATION_INVESTMENT}',
-                                    f'{self.name}.Forest.managed_wood_investment',
+                            inputs=[f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
+                                    f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
+                                    f'{self.name}.{model_name}.managed_wood_investment',
                                     ],
                             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
                                      f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
