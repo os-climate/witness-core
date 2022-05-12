@@ -287,17 +287,17 @@ class ResourceDiscipline(SoSDiscipline):
         return list_of_charts
 
     def get_recycling_charts(self, recycling_df, use_stock_df):
-        recycling_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} recycling [{self.stock_unit}]',
-                                                   chart_name=f'{self.resource_name} recycled quantity through the years',
+        recycling_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} recycling and used stock [{self.stock_unit}]',
+                                                   chart_name=f'{self.resource_name} recycled quantity compared to used quantity through the years',
                                                    stacked_bar=False)
 
         sub_resource_list = [
             col for col in recycling_df.columns if col != 'years']
         for sub_resource_type in sub_resource_list:
             recycling_serie = InstanciatedSeries(
-                list(recycling_df['years']), (recycling_df[sub_resource_type]).values.tolist(), f'{self.resource_name} recycled quantity', InstanciatedSeries.BAR_DISPLAY)
+                list(recycling_df['years']), (recycling_df[sub_resource_type]).values.tolist(), f'{self.resource_name} recycled quantity', InstanciatedSeries.LINES_DISPLAY)
             used_stock_serie = InstanciatedSeries(
-                list(use_stock_df['years']), use_stock_df[sub_resource_type].values.tolist(), f'{self.resource_name} extracted quantity', InstanciatedSeries.BAR_DISPLAY)
+                list(use_stock_df['years']), use_stock_df[sub_resource_type].values.tolist(), f'{self.resource_name} extracted quantity', InstanciatedSeries.LINES_DISPLAY)
 
         recycling_chart.add_series(recycling_serie)
         recycling_chart.add_series(used_stock_serie)
