@@ -304,6 +304,8 @@ class Forest():
             self.biomass_dry_df['deforestation_for_energy']
         self.biomass_dry_df['deforestation_price_per_ton'] = density_per_ha * mean_density / \
             (1 - recycle_part) / self.deforest_cost_per_ha
+        self.biomass_dry_df['deforestation_price_per_MWh'] = self.biomass_dry_df['deforestation_price_per_ton'] / \
+            self.biomass_dry_calorific_value
 
     def sumup_global_surface_data(self):
         """
