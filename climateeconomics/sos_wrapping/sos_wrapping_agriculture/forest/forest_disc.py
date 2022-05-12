@@ -308,6 +308,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.forest_model.compute(inputs_dict)
         wood_techno_dict = inputs_dict['wood_techno_dict']
         mw_price_per_ha = wood_techno_dict['managed_wood_price_per_ha']
+        deforest_price_per_ha = inputs_dict['deforestation_cost_per_ha']
         wood_percentage_for_energy = wood_techno_dict['wood_percentage_for_energy']
         residue_percentage_for_energy = wood_techno_dict['residue_percentage_for_energy']
         residue_percentage = wood_techno_dict['residue_density_percentage']
@@ -414,12 +415,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
 
         # d biomass price d deforest invest
-        d_biomass_price_d_mw_invest = self.forest_model.d_biomass_price_d_invest_mw(
-            mw_price_per_ha)
+        d_biomass_price_d_invest_deforest = self.forest_model.d_biomass_price_d_invest_deforest(
+            d_biomass_prod_d_deforestation)
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (
-            'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
+            Forest.DEFORESTATION_INVESTMENT, 'investment'), d_biomass_price_d_invest_deforest)
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (
-            'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
+            Forest.DEFORESTATION_INVESTMENT, 'investment'), d_biomass_price_d_invest_deforest)
 
     def get_chart_filter_list(self):
 
