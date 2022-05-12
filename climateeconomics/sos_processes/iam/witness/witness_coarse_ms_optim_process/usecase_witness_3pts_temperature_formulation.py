@@ -67,11 +67,14 @@ class Study(ClimateEconomicsStudyManager):
 
             if scenario != 'scenario_temperature_SSP5-8,5':
                 # if scenario is not SSP5, constraint on temperature is activated
-                default_func_df.loc[default_func_df['variable'] == 'temperature_constraint', 'weight'] = -1.0
+                default_func_df.loc[default_func_df['variable'] == 'temperature_constraint', 'weight'] = -2.0
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario}.{witness_ms_usecase.optim_name}' \
                         f'.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.FunctionsManager.function_df'] = default_func_df
             for dict_data in scenarioData:
                 values_dict.update(dict_data)
+            values_dict[
+                    f'{self.study_name}.{self.scatter_scenario}.{scenario}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.alpha'] = 1.
+
         year_start = scenarioUseCase.year_start
         year_end = scenarioUseCase.year_end
         years = np.arange(year_start, year_end + 1)
