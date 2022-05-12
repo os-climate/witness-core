@@ -319,9 +319,10 @@ class ResourceModel():
         resource_demand_dict = self.resource_demand.to_dict()
         predictable_production_dict = self.predictable_production.to_dict()
         resource_stock_dict = self.resource_stock.to_dict()
-        resource_price_data_dict = self.resource_price_data.to_dict()
-        total_consumption_dict = self.total_consumption.to_dict()
+        # # # resource_price_data_dict = self.resource_price_data.to_dict()
+        # # # total_consumption_dict = self.total_consumption.to_dict()
         use_stock_dict = self.use_stock.to_dict()
+        recycled_production_dict = self.recycled_production.to_dict()
 
         # # ------------------------------------------------
         # # init gradient dict of matrix transmitted to discipline
@@ -329,19 +330,19 @@ class ResourceModel():
         # # price matrix
         # # resource production is NOT dependent of demand since it is calculated with Hubbert regression
         grad_stock = {}
-        grad_price = np.identity(nb_years) * 0
+        grad_price =  np.identity(nb_years) * 0
         grad_use = {}
         # # ------------------------------------------------
         # # init useful containers for calculation
         # # no_stock_year contains the last year at which there is no stock
         # # year_stock contains years at which we stored resource without demand
         # # grad_demand is used for resource use gradient calculation
-        # # grad_total_consumption is used for price gradient calculation
+        # # # # # grad_total_consumption is used for price gradient calculation
         # # coef_conversion is the demand multiplier for units
         grad_demand = 0
         no_stock_year = {}
         year_stock = {}
-        grad_total_consumption = np.identity(nb_years) * 0
+        # # # grad_total_consumption = np.identity(nb_years) * 0
         for resource_type in self.sub_resource_list:
             grad_stock[resource_type] = np.identity(nb_years) * 0
             grad_use[resource_type] = np.identity(nb_years) * 0
@@ -367,6 +368,8 @@ class ResourceModel():
                         if resource_stock_dict[resource_type][year_demand - 1 - resource_stock_dict['years'][0]] \
                             + predictable_production_dict[resource_type][
                                 year_demand - predictable_production_dict['years'][0]] \
+                            + recycled_production_dict[resource_type][year_demand -
+                                                                        recycled_production_dict['years'][0]] \
                             - demand >= 0 and resource_stock_dict[resource_type][
                                 year_demand - resource_stock_dict['years'][0]] > 0:
 
@@ -425,26 +428,78 @@ class ResourceModel():
                         grad_stock[resource_type][year_demand - year_start] = grad_stock[resource_type][
                             year_demand - year_start - 1]
                         year_stock[resource_type].append(year_demand)
-            # # ------------------------------------------------
-            # # total consumption -> use stock + production
-            for resource_type in ascending_price_resource_list:
-                grad_total_consumption[year_demand -
-                                       year_start] += grad_use[resource_type][year_demand - year_start]
-            # # ------------------------------------------------
-            # # price is u/v function with u = use and v = total consumption
-            for resource_type in ascending_price_resource_list:
-                for year in range(year_start + 1, year_end + 1):
-                    # # ------------------------------------------------
-                    # # price is u/v function with u = use and v = total consumption
-                    # # price gradient is (u'v - uv') / v^2
-                    if total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]] != 0:
-                        resource_type_price_idx = list(resource_price_data_dict['resource_type'].keys())[
-                            list(resource_price_data_dict['resource_type'].values()).index(resource_type)]
-                        grad_price[year_demand - year_start, year - year_start] += \
-                            resource_price_data_dict['price'][resource_type_price_idx]\
-                            * (grad_use[resource_type][year_demand - year_start, year - year_start]
-                               * total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]
-                               - use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]]
-                               * grad_total_consumption[year_demand - year_start, year - year_start])\
-                            / (total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]) ** 2
+            # # # # # ------------------------------------------------
+            # # # # # total consumption -> use stock + production
+            # # # for resource_type in ascending_price_resource_list:
+            # # #     grad_total_consumption[year_demand -
+            # # #                            year_start] += grad_use[resource_type][year_demand - year_start]
+            # # # # # ------------------------------------------------
+            # # # # # price is u/v function with u = use and v = total consumption
+            # # # for resource_type in ascending_price_resource_list:
+            # # #     for year in range(year_start + 1, year_end + 1):
+            # # #         # # ------------------------------------------------
+            # # #         # # price is u/v function with u = use and v = total consumption
+            # # #         # # price gradient is (u'v - uv') / v^2
+            # # #         if total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]] != 0:
+            # # #             resource_type_price_idx = list(resource_price_data_dict['resource_type'].keys())[
+            # # #                 list(resource_price_data_dict['resource_type'].values()).index(resource_type)]
+            # # #             grad_price[year_demand - year_start, year - year_start] += \
+            # # #                 resource_price_data_dict['price'][resource_type_price_idx]\
+            # # #                 * (grad_use[resource_type][year_demand - year_start, year - year_start]
+            # # #                    * total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]
+            # # #                    - use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]]
+            # # #                    * grad_total_consumption[year_demand - year_start, year - year_start])\
+            # # #                 / (total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]) ** 2
+
+            grad_price = self.get_grad_price(year_start, year_end, nb_years, year_demand, grad_use, grad_price)
+
         return grad_stock, grad_price, grad_use
+
+
+    def get_grad_price (self, year_start, year_end, nb_years, year_demand, grad_use, grad_price):
+
+        ascending_price_resource_list = list(
+            self.resource_price_data.sort_values(by=['price'])['resource_type'])
+
+        # Turn dataframes into dict of np array for faster computation time
+        resource_price_data_dict = self.resource_price_data.to_dict()
+        total_consumption_dict = self.total_consumption.to_dict()
+        use_stock_dict = self.use_stock.to_dict()
+
+        # # # # ------------------------------------------------
+        # # # # init gradient dict of matrix transmitted to discipline
+        # # # # dict of matrix, one per resource_type -> ex. for Oil: {'heavy': [...], 'medium': [...]..
+        # # # # price matrix
+        # # # grad_price = np.identity(nb_years) * 0
+
+        # # ------------------------------------------------
+        # # init useful containers for calculation
+        # # grad_total_consumption is used for price gradient calculation
+        grad_total_consumption = np.identity(nb_years) * 0
+
+        # # ------------------------------------------------
+        # # total consumption -> use stock + production
+        for resource_type in ascending_price_resource_list:
+            grad_total_consumption[year_demand -
+                                    year_start] += grad_use[resource_type][year_demand - year_start]
+
+        # # ------------------------------------------------
+        # # price is u/v function with u = use and v = total consumption
+        for resource_type in ascending_price_resource_list:
+            for year in range(year_start + 1, year_end + 1):
+                # # ------------------------------------------------
+                # # price is u/v function with u = use and v = total consumption
+                # # price gradient is (u'v - uv') / v^2
+                if total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]] != 0:
+                    resource_type_price_idx = list(resource_price_data_dict['resource_type'].keys())[
+                        list(resource_price_data_dict['resource_type'].values()).index(resource_type)]
+                    grad_price[year_demand - year_start, year - year_start] += \
+                        resource_price_data_dict['price'][resource_type_price_idx]\
+                        * (grad_use[resource_type][year_demand - year_start, year - year_start]
+                            * total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]
+                            - use_stock_dict[resource_type][year_demand - use_stock_dict['years'][0]]
+                            * grad_total_consumption[year_demand - year_start, year - year_start])\
+                        / (total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]) ** 2
+        return grad_price
+        
+        
