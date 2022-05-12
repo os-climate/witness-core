@@ -245,7 +245,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Service sector economics output'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion dollars]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -278,7 +278,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Productive capital stock and usable capital for production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+            new_chart = TwoAxesInstanciatedChart('years', 'Capital stock [Trillion dollars]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -311,7 +311,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Agriculture capital stock per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+            new_chart = TwoAxesInstanciatedChart('years', 'Capital stock [Trillion dollars]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name, stacked_bar=True)
@@ -362,7 +362,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Total Factor Productivity'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Total Factor Productivity [no unit]',
+            new_chart = TwoAxesInstanciatedChart('years', 'Total Factor Productivity [-]',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value, max_value], chart_name)
 
@@ -390,7 +390,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Capital energy efficiency over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'no unit',
+            new_chart = TwoAxesInstanciatedChart('years', 'Capital energy efficiency [-]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -435,7 +435,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'E_max value and Net Energy'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Twh',
+            new_chart = TwoAxesInstanciatedChart('years', '[Twh]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value], chart_name)
             visible_line = True

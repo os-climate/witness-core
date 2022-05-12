@@ -146,7 +146,7 @@ class Agriculture():
         surface_df = self.add_climate_impact(
             food_surface_df_before, temperature_df)
         # add years data
-        surface_df['years'] = self.years
+        surface_df.insert(loc=0, column='years', value=self.years)
 
         self.food_land_surface_df = surface_df
 
@@ -265,7 +265,7 @@ class Agriculture():
             # removed_kcal/3 for each 3 category of vegetable
             if key == 'fruits and vegetables' or key == 'potatoes' or key == 'rice and maize':
                 proportion = self.kcal_diet_df[key] / \
-                    (self.kcal_diet_df['fruits and vegetables'] +
+                    (self.kcal_diet_df['fruits and vegetables'] + 
                      self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
                 changed_diet_df[key] = [starting_diet[key].values[0]] * len(self.years) + \
                     (removed_red_meat_kcal + removed_white_meat_kcal) * \
@@ -311,7 +311,7 @@ class Agriculture():
         # Compute the difference in temperature wrt 2020 reference
         temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
         # Compute reduction in productivity due to increase in temperature
-        pdctivity_reduction = self.param_a * temp**2 + self.param_b * temp
+        pdctivity_reduction = self.param_a * temp ** 2 + self.param_b * temp
         self.prod_reduction = pdctivity_reduction
         self.productivity_evolution = pd.DataFrame(
             {"years": self.years, 'productivity_evolution': pdctivity_reduction})
@@ -371,9 +371,9 @@ class Agriculture():
         b = self.param_b
         land_before = self.food_surface_df_without_climate_change[column_name].values
         # Step 1: Productivity reduction
-        #temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
-        #pdctivity_reduction = self.param_a * temp**2 + self.param_b * temp
-        #=at**2 + at0**2 - 2att0 + bt - bt0
+        # temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
+        # pdctivity_reduction = self.param_a * temp**2 + self.param_b * temp
+        # =at**2 + at0**2 - 2att0 + bt - bt0
         # Derivative wrt t each year:  2at-2at0 +b
         d_productivity_d_temperature = idty * \
             (2 * a * temp - 2 * a * temp_zero + b)
@@ -382,7 +382,7 @@ class Agriculture():
             a * temp_zero - 2 * a * temp - b
         # Step 2:d_climate_d_productivity for each t: land = land_before * (1 -
         # productivity)
-        d_land_d_productivity = - idty * land_before
+        d_land_d_productivity = -idty * land_before
         d_food_land_surface_d_temperature = d_land_d_productivity.dot(
             d_productivity_d_temperature)
 
@@ -399,7 +399,7 @@ class Agriculture():
         # vegetable surface
         red_meat_diet_grad = self.kcal_diet_df['total'] / 100 / \
             self.kg_to_kcal_dict['red meat'] * kg_food_to_surface['red meat']
-        removed_red_kcal = - self.kcal_diet_df['total'] / 100
+        removed_red_kcal = -self.kcal_diet_df['total'] / 100
 
         vegetables_column_names = [
             'fruits and vegetables', 'potatoes', 'rice and maize']
@@ -408,7 +408,7 @@ class Agriculture():
         for vegetable_name in vegetables_column_names:
 
             proportion = self.kcal_diet_df[vegetable_name] / \
-                (self.kcal_diet_df['fruits and vegetables'] +
+                (self.kcal_diet_df['fruits and vegetables'] + 
                  self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
             sub_total_surface_grad = sub_total_surface_grad + removed_red_kcal * proportion / \
                 self.kg_to_kcal_dict[vegetable_name] * \
@@ -433,7 +433,7 @@ class Agriculture():
         white_meat_diet_grad = self.kcal_diet_df['total'] / 100 / \
             self.kg_to_kcal_dict['white meat'] * \
             kg_food_to_surface['white meat']
-        removed_white_kcal = - self.kcal_diet_df['total'] / 100
+        removed_white_kcal = -self.kcal_diet_df['total'] / 100
 
         vegetables_column_names = [
             'fruits and vegetables', 'potatoes', 'rice and maize']
@@ -442,7 +442,7 @@ class Agriculture():
         for vegetable_name in vegetables_column_names:
 
             proportion = self.kcal_diet_df[vegetable_name] / \
-                (self.kcal_diet_df['fruits and vegetables'] +
+                (self.kcal_diet_df['fruits and vegetables'] + 
                  self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
             sub_total_surface_grad = sub_total_surface_grad + removed_white_kcal * proportion / \
                 self.kg_to_kcal_dict[vegetable_name] * \
