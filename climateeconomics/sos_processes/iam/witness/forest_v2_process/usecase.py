@@ -79,10 +79,6 @@ class Study(StudyManager):
 
         CO2_per_ha = 4000
 
-        self.deforestation_surface = np.linspace(10, 5, year_range)
-        deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": self.deforestation_surface})
-
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
@@ -114,7 +110,6 @@ class Study(StudyManager):
                             'wood_residue_colorific_value': 4.356,
                             'Opex_percentage': 0.045,
                             'managed_wood_price_per_ha': 14872,  # 13047,
-                            'unmanaged_wood_price_per_ha': 11500,  # 10483,
                             'Price_per_ha_unit': 'euro/ha',
                             'full_load_hours': 8760.0,
                             'euro_dollar': 1.1447,  # in 2019, date of the paper
@@ -134,7 +129,7 @@ class Study(StudyManager):
                             'recycle_part': recycle_part,
                             'construction_delay': construction_delay,
                             'WACC': 0.07,
-                            # 1 tonne of tree absorbs 1.8t of CO2 in one
+                            # 1 ton of tree absorbs 1.8t of CO2 in one
                             # year
                             # for a tree of 50 year, for 6.2tCO2/ha/year
                             # it should be 3.49
@@ -142,14 +137,10 @@ class Study(StudyManager):
                             'CO2_from_production_unit': 'kg/kg'
                             }
         invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
+            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
         mw_initial_production = 1.25 * 0.92 * \
             density_per_ha * mean_density * 3.6 / \
             years_between_harvest / (1 - recycle_part)  # in Twh
-
-        uw_initial_production = 1.25 * 0.08 * \
-            density_per_ha * mean_density * 3.6 / \
-            years_between_harvest / (1 - recycle_part)
 
         mw_invest = np.linspace(1, 4, year_range)
         mw_invest_df = pd.DataFrame(
@@ -160,7 +151,14 @@ class Study(StudyManager):
         margin = np.linspace(1.1, 1.1, year_range)
         margin_df = pd.DataFrame(
             {"years": years, "margin": margin})
-        initial_unsused_forest_surface = 4 - 1.25
+        initial_protected_forest_surface = 4 * 0.21
+        initial_unmanaged_forest_surface = 4 - \
+            1.25 - initial_protected_forest_surface
+
+        deforest_invest = np.linspace(10, 1, year_range)
+        deforest_invest_df = pd.DataFrame(
+            {"years": years, "investment": deforest_invest})
+        deforestation_cost_per_ha = 10500
 
         # values of model
         forest_input = {}
@@ -179,8 +177,6 @@ class Study(StudyManager):
                      '.reforestation_cost_per_ha'] = reforestation_cost_per_ha
 
         forest_input[self.study_name +
-                     '.deforestation_surface'] = deforestation_surface_df
-        forest_input[self.study_name +
                      '.forest_investment'] = self.forest_invest_df
 
         forest_input[self.study_name + self.forest_name +
@@ -194,21 +190,18 @@ class Study(StudyManager):
                      '.managed_wood_invest_before_year_start'] = invest_before_year_start
         forest_input[self.study_name +
                      '.managed_wood_investment'] = mw_invest_df
-        forest_input[self.study_name + self.forest_name +
-                     '.unmanaged_wood_initial_prod'] = uw_initial_production
-        # 1.15 = 1.25 * 0.08
-        forest_input[self.study_name + self.forest_name +
-                     '.unmanaged_wood_initial_surface'] = 0.1
-        forest_input[self.study_name + self.forest_name +
-                     '.unmanaged_wood_invest_before_year_start'] = invest_before_year_start
-        forest_input[self.study_name +
-                     '.unmanaged_wood_investment'] = mw_invest_df
         forest_input[self.study_name +
                      '.transport_cost'] = transport_df
         forest_input[self.study_name +
                      '.margin'] = margin_df
         forest_input[self.study_name + self.forest_name +
-                     '.initial_unsused_forest_surface'] = initial_unsused_forest_surface
+                     '.protected_forest_surface'] = initial_protected_forest_surface
+        forest_input[self.study_name + self.forest_name +
+                     '.initial_unmanaged_forest_surface'] = initial_unmanaged_forest_surface
+        forest_input[self.study_name + self.forest_name +
+                     '.deforestation_cost_per_ha'] = deforestation_cost_per_ha
+        forest_input[self.study_name +
+                     '.deforestation_investment'] = deforest_invest_df
 
         setup_data_list.append(forest_input)
 
@@ -228,7 +221,7 @@ class Study(StudyManager):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
-    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 

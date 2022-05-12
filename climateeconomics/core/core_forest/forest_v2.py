@@ -31,7 +31,6 @@ class Forest():
     YEAR_END = 'year_end'
     TIME_STEP = 'time_step'
     LIMIT_DEFORESTATION_SURFACE = 'limit_deforestation_surface'
-    DEFORESTATION_SURFACE = 'deforestation_surface'
     CO2_PER_HA = 'CO2_per_ha'
     INITIAL_CO2_EMISSIONS = 'initial_emissions'
     REFORESTATION_INVESTMENT = 'forest_investment'
