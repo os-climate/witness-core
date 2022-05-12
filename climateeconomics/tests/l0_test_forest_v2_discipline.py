@@ -33,7 +33,7 @@ class ForestTestCase(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.year_start = 2020
-        self.year_end = 2100
+        self.year_end = 2050
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
@@ -45,7 +45,7 @@ class ForestTestCase(unittest.TestCase):
         self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
-        forest_invest = np.linspace(2, 10, year_range)
+        forest_invest = np.linspace(1, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
         self.reforestation_cost_per_ha = 3800
@@ -113,7 +113,7 @@ class ForestTestCase(unittest.TestCase):
             density_per_ha * mean_density * 3.6 / \
             years_between_harvest / (1 - recycle_part)
 
-        mw_invest = np.linspace(500, 800, year_range)
+        mw_invest = np.linspace(1000, 1500, year_range)
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
@@ -125,10 +125,17 @@ class ForestTestCase(unittest.TestCase):
         self.initial_unsused_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
+        deforest_invest = np.linspace(10, 1, year_range)
+        self.deforest_invest_df = pd.DataFrame(
+            {"years": years, "investment": deforest_invest})
+
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
                       'time_step': self.time_step,
-                      Forest.DEFORESTATION_SURFACE: self.deforestation_surface_df,
+                      # Forest.DEFORESTATION_SURFACE:
+                      # self.deforestation_surface_df,
+                      Forest.DEFORESTATION_INVESTMENT: self.deforest_invest_df,
+                      Forest.DEFORESTATION_COST_PER_HA: 8000,
                       Forest.LIMIT_DEFORESTATION_SURFACE: self.limit_deforestation_surface,
                       Forest.CO2_PER_HA: self.CO2_per_ha,
                       Forest.INITIAL_CO2_EMISSIONS: self.initial_emissions,
@@ -190,7 +197,8 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.year_end': self.year_end,
                        f'{name}.time_step': 1,
                        f'{name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
-                       f'{name}.{model_name}.{Forest.DEFORESTATION_SURFACE}': self.deforestation_surface_df,
+                       f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
+                       f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
                        f'{name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
