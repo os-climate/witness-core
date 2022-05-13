@@ -129,15 +129,16 @@ class DataStudy():
         witness_input[self.study_name +
                       '.agri_capital_techno_list'] = ['Forest']
 
-        CO2_emitted_forest = pd.DataFrame()
+        CO2_emitted_land = pd.DataFrame()
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
-        cum_emission = np.cumsum(emission_forest) + 3.21
-        CO2_emitted_forest['years'] = years
-        CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
-        CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
+        cum_emission = np.cumsum(emission_forest)
+        CO2_emitted_land['Crop'] = np.zeros(len(years))
+        CO2_emitted_land['Forest'] = cum_emission
+
+
         witness_input[self.study_name +
-                      '.CO2_emitted_forest_df'] = CO2_emitted_forest
+                      '.CO2_land_emissions'] = CO2_emitted_land
 
         self.CO2_tax = np.asarray([50.] * len(years))
 

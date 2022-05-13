@@ -52,6 +52,9 @@ Biomass is converted to energy through various processes, including:
 * Chemical conversion to produce liquid fuels
 * Biological conversion to produce liquid and gaseous fuels
 
+## CO2 emissions
+CO2 emissions of Crop and Forest are agregated into one dataframe that is then sent to the carbon emission model
+
 ## References
 
 [^1]: The World Bank Group, Overview, Last Updated: Apr 01 2022, online resource: https://www.worldbank.org/en/topic/agriculture/overview#1

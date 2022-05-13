@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.core.core_agriculture.crop import Crop,\
     OrderOfMagnitude
@@ -108,7 +109,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         'Opex_percentage_for_residue_only': 0.15,
         # CO2 from production from tractor is taken
         # into account into the energy net factor
-        'CO2_from_production': - 0.425 * 44.01 / 12.0,  # same as biomass_dry
+        # land CO2 absorption is static and set in carbonemission model
+        'CO2_from_production': 0.0,
         'CO2_from_production_unit': 'kg/kg',
         'elec_demand': 0,
         'elec_demand_unit': 'kWh/kWh',
@@ -177,7 +179,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                             'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop'},
         'scaling_factor_crop_investment': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_witness'},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                            'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
@@ -217,9 +219,11 @@ class CropDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop', 'unit': 'TWh or Mt'},
         'land_use_required': {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        # emissions from production that goes into energy mix
         'CO2_emissions': {
-            'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_crop'},
+            'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        # crop land emissions
+        'CO2_land_emission_df': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
     }
 
     CROP_CHARTS = 'crop and diet charts'
@@ -275,6 +279,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             'techno_consumption': techno_consumption,
             'techno_consumption_woratio': techno_consumption_woratio,
             'CO2_emissions': self.crop_model.CO2_emissions,
+            'CO2_land_emission_df': self.crop_model.CO2_land_emissions
         }
 
         #-- store outputs

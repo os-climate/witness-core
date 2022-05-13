@@ -49,6 +49,7 @@ class CopperResourceModel(ResourceModel):
     def configure_parameters(self, inputs_dict):
         super().configure_parameters(inputs_dict)
         self.sectorisation_dict = inputs_dict['sectorisation']
+        self.resource_max_price = inputs_dict['resource_max_price']
         
     
 
@@ -61,7 +62,7 @@ class CopperResourceModel(ResourceModel):
     conversion_factor = 1
     #Average copper price rise and decrease
     price_rise = 1.494
-    price_decrease = 0.8
+    price_decrease = 0.95
     
 
     def convert_demand(self, demand):
@@ -73,12 +74,17 @@ class CopperResourceModel(ResourceModel):
         self.resource_demand=demand
         self.resource_demand[self.resource_name]=demand[self.resource_name] * (100 / energy_demand)
 
-    def sigmoid(self,ratio):
+    def sigmoid(self, ratio, sigmoid_min ):
+            '''
+            function sigmoid redefined for the ratio :
+            sigmoid([-10;10])->[0;1] becomes sigmoid([1;0])->[sigmoid_min, resource_max_price] (ratio = 1 matches sigmoids' lower bound, and ratio = 0 matches sigmoid's upper bound)
+            '''
             x= -20*ratio +10
             
             sig = 1/ (1 + math.exp(-x))
         
-            return sig*5*10057 +10057
+            # return sig*(self.resource_max_price-10057) + 10057
+            return sig*(self.resource_max_price-sigmoid_min) + sigmoid_min
     
     def compute_price(self):
         
@@ -99,12 +105,15 @@ class CopperResourceModel(ResourceModel):
             np.array(demand), 1.0e-10)
         
         self.ratio_usable_demand = np.minimum(np.maximum(available_resource_limited / demand_limited, 1E-15), 1.0)
-
+     
         for year_cost in self.years[1:] : 
             #if for 2 years straight the demand is too high the prices rise
             if self.ratio_usable_demand[year_cost - self.year_start] < 1 and self.ratio_usable_demand[year_cost - self.year_start -1] < 1 :
                 resource_price_dict['price'][year_cost - resource_price_dict['years'][0]] = \
-                    min(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start]), resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_rise)
+                    min(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start], resource_price_dict['price'][year_cost - 1- resource_price_dict['years'][0]] ), \
+                         resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_rise)
+                    # max(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start], resource_price_dict['price'][year_cost - 1- resource_price_dict['years'][0]] ),\
+                    #  resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]])
             # if, after the prices rise, the production can answer the demand, the prices decrease, but less than they rose
             elif self.ratio_usable_demand[year_cost - self.year_start] == 1 and self.ratio_usable_demand[year_cost - self.year_start -1] == 1 and resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] != self.resource_price_data.loc[0, 'price']: 
                 resource_price_dict['price'][year_cost - resource_price_dict['years'][0]] = \
@@ -115,5 +124,10 @@ class CopperResourceModel(ResourceModel):
                     resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]]
 
         self.resource_price= pd.DataFrame.from_dict(resource_price_dict)
+
        
-        
+    def get_grad_price (self, year_start, year_end, nb_years, year_demand, grad_use, grad_price):
+        # Turn dataframes into dict of np array for faster computation time
+        resource_price_data_dict = self.resource_price_data.to_dict()
+        total_consumption_dict = self.total_consumption.to_dict()
+        use_stock_dict = self.use_stock.to_dict()   

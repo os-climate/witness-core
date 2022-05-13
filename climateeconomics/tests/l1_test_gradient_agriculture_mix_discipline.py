@@ -29,7 +29,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     def setUp(self):
         self.test_name = 'Test'
         self.ee = ExecutionEngine(self.test_name)
@@ -48,7 +48,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_agriculture': f'{self.test_name}',
                    'ns_energy_study': f'{self.test_name}',
                    'ns_public': f'{self.test_name}',
-                   'ns_witness': f'{self.test_name}',}
+                   'ns_witness': f'{self.test_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -158,6 +158,13 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         self.CO2_emissions_forest = pd.DataFrame(
             {'years': self.years, 'Forest': CO2_emissions})
 
+        CO2_emitted_land = pd.DataFrame()
+        emission_forest = np.linspace(0.04, 0.04, len(self.years))
+        cum_emission = np.cumsum(emission_forest) + 3.21
+        CO2_emitted_land['years'] = self.years
+        CO2_emitted_land['emitted_CO2_evol_cumulative'] = cum_emission
+
+
         land_use_required = np.linspace(4, 3.5, year_range)
         self.land_use_required_forest = pd.DataFrame(
             {'years': self.years, 'Forest (Gha)': land_use_required})
@@ -188,6 +195,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.test_name}.{disc_name}.Crop.techno_production': self.techno_production_crop,
                        f'{self.test_name}.{disc_name}.Crop.techno_prices': self.techno_prices_crop,
                        f'{self.test_name}.{disc_name}.Crop.CO2_emissions': self.CO2_emissions_crop,
+                       f'{self.test_name}.{disc_name}.Crop.CO2_land_emission_df': CO2_emitted_land,
                        f'{self.test_name}.{disc_name}.Crop.land_use_required': self.land_use_required_crop,
                        f'{self.test_name}.{disc_name}.Forest.techno_consumption': self.techno_consumption_forest,
                        f'{self.test_name}.{disc_name}.Forest.techno_consumption_woratio': self.techno_consumption_woratio_forest,
@@ -195,6 +203,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.test_name}.{disc_name}.Forest.techno_prices': self.techno_prices_forest,
                        f'{self.test_name}.{disc_name}.Forest.CO2_emissions': self.CO2_emissions_forest,
                        f'{self.test_name}.{disc_name}.Forest.land_use_required': self.land_use_required_forest,
+                       f'{self.test_name}.{disc_name}.Forest.CO2_land_emission_df': CO2_emitted_land,
                        f'{self.test_name}.technologies_list': self.technology_list,
                        f'{self.test_name}.CO2_taxes': self.co2_taxes
                       }
@@ -205,18 +214,20 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.sos_disciplines[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_mix_discipline.pkl', discipline=disc_techno,
                             step=1e-15, derr_approx='complex_step',
-                            inputs=[f'{self.test_name}.{disc_name}.Crop.techno_consumption', 
+                            inputs=[f'{self.test_name}.{disc_name}.Crop.techno_consumption',
                                     f'{self.test_name}.{disc_name}.Crop.techno_consumption_woratio',
                                     f'{self.test_name}.{disc_name}.Crop.techno_production',
                                     f'{self.test_name}.{disc_name}.Crop.techno_prices',
                                     f'{self.test_name}.{disc_name}.Crop.CO2_emissions',
                                     f'{self.test_name}.{disc_name}.Crop.land_use_required',
-                                    f'{self.test_name}.{disc_name}.Forest.techno_consumption', 
+                                    f'{self.test_name}.{disc_name}.Crop.CO2_land_emission_df',
+                                    f'{self.test_name}.{disc_name}.Forest.techno_consumption',
                                     f'{self.test_name}.{disc_name}.Forest.techno_consumption_woratio',
                                     f'{self.test_name}.{disc_name}.Forest.techno_production',
                                     f'{self.test_name}.{disc_name}.Forest.techno_prices',
                                     f'{self.test_name}.{disc_name}.Forest.CO2_emissions',
                                     f'{self.test_name}.{disc_name}.Forest.land_use_required',
+                                    f'{self.test_name}.{disc_name}.Forest.CO2_land_emission_df',
                                     ],
                             outputs=[f'{self.test_name}.{disc_name}.CO2_emissions',
                                     f'{self.test_name}.{disc_name}.CO2_per_use',
@@ -224,5 +235,6 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.test_name}.{disc_name}.energy_consumption',
                                     f'{self.test_name}.{disc_name}.energy_consumption_woratio',
                                     f'{self.test_name}.{disc_name}.energy_production',
-                                    f'{self.test_name}.{disc_name}.land_use_required'
+                                    f'{self.test_name}.{disc_name}.land_use_required',
+                                    f'{self.test_name}.CO2_land_emissions'
                             ])

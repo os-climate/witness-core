@@ -38,7 +38,7 @@ import matplotlib.pyplot as plt
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as Studycoarse
 from climateeconomics.sos_processes.iam.witness.witness_optim_process.usecase_witness_optim import Study as StudyMDO
-from climateeconomics.sos_processes.iam.witness.witness_dev_ms_process.usecase_witness_dev_ms import Study as Witness_ms_study
+from climateeconomics.sos_processes.iam.witness.witness_dev_ms_process._usecase_witness_dev_ms import Study as Witness_ms_study
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -874,69 +874,69 @@ class TestScatter(unittest.TestCase):
             print(stat)
         tracemalloc.stop()
 
-    def test_08_mda_coupling_perfos_configure(self):
-
-        self.name = 'Test'
-        self.ee = ExecutionEngine(self.name)
-        repo = 'climateeconomics.sos_processes.iam.witness'
-        builder = self.ee.factory.get_builder_from_process(
-            repo, 'witness_dev_ms_process')
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-        self.ee.configure()
-
-        usecase = Witness_ms_study(execution_engine=self.ee)
-        usecase.study_name = self.name
-        values_dict = usecase.setup_usecase()
-        self.ee.load_study_from_input_dict(values_dict)
-
-        profil = cProfile.Profile()
-        profil.enable()
-        self.ee.configure()
-        profil.disable()
-
-        result = StringIO()
-
-        nb_var = len(self.ee.dm.data_id_map)
-        print('Total Var nbr:', nb_var)
-
-        ps = pstats.Stats(profil, stream=result)
-        ps.sort_stats('cumulative')
-        ps.print_stats(1000)
-        result = result.getvalue()
-        # chop the string into a csv-like buffer
-        result = 'ncalls' + result.split('ncalls')[-1]
-        result = '\n'.join([','.join(line.rstrip().split(None, 5))
-                            for line in result.split('\n')])
-
-        with open(join(dirname(__file__), f'configure_perfos.csv'), 'w+') as f:
-            # f = open(result.rsplit('.')[0] + '.csv', 'w')
-            f.write(result)
-            f.close()
-
-        df = pd.read_csv(join(dirname(__file__), f'configure_perfos.csv'))
-        df['Type'] = 'other'
-        df.loc[df['filename:lineno(function)'].str.contains('mda.py'), 'Type'] = 'mda'
-        df.loc[df['filename:lineno(function)'].str.contains('dependency_graph.py'), 'Type'] = 'dependency_graph'
-        df.loc[df['filename:lineno(function)'].str.contains('coupling_structure'), 'Type'] = 'coupling_structure'
-        df.loc[df['filename:lineno(function)'].str.contains('__create_graph'), 'Type'] = '__create_graph'
-        df.loc[df['filename:lineno(function)'].str.contains('__create_condensed_graph'), 'Type'] = '__create_condensed_graph'
-        df.loc[df['filename:lineno(function)'].str.contains('get_disciplines_couplings'), 'Type'] = 'get_disciplines_couplings'
-        df.loc[df['filename:lineno(function)'].str.contains('__get_leaves'), 'Type'] = '__get_leaves'
-        df.loc[df['filename:lineno(function)'].str.contains('__get_ordered_scc'), 'Type'] = '__get_ordered_scc'
-        df.loc[df['filename:lineno(function)'].str.contains('get_execution_sequence'), 'Type'] = 'get_execution_sequence'
-        df.loc[df['filename:lineno(function)'].str.contains('strongly_coupled_disciplines'), 'Type'] = 'strongly_coupled_disciplines'
-        df.loc[df['filename:lineno(function)'].str.contains('weakly_coupled_disciplines'), 'Type'] = 'weakly_coupled_disciplines'
-        df.loc[df['filename:lineno(function)'].str.contains('strong_couplings'), 'Type'] = 'strong_couplings'
-        df.loc[df['filename:lineno(function)'].str.contains('weak_couplings'), 'Type'] = 'weak_couplings'
-        df.loc[df['filename:lineno(function)'].str.contains('get_all_couplings'), 'Type'] = 'get_all_couplings'
-        df.loc[df['filename:lineno(function)'].str.contains('find_discipline'), 'Type'] = 'find_discipline'
-
-        total_time = df['tottime'].sum()
-        grp = df.groupby('Type').sum().reset_index()
-        grp['ratio'] = grp['tottime']/total_time
-
-        print(grp[['Type', 'tottime', 'ratio']])
+    # def test_08_mda_coupling_perfos_configure(self):
+    #
+    #     self.name = 'Test'
+    #     self.ee = ExecutionEngine(self.name)
+    #     repo = 'climateeconomics.sos_processes.iam.witness'
+    #     builder = self.ee.factory.get_builder_from_process(
+    #         repo, 'witness_dev_ms_process')
+    #
+    #     self.ee.factory.set_builders_to_coupling_builder(builder)
+    #     self.ee.configure()
+    #
+    #     usecase = Witness_ms_study(execution_engine=self.ee)
+    #     usecase.study_name = self.name
+    #     values_dict = usecase.setup_usecase()
+    #     self.ee.load_study_from_input_dict(values_dict)
+    #
+    #     profil = cProfile.Profile()
+    #     profil.enable()
+    #     self.ee.configure()
+    #     profil.disable()
+    #
+    #     result = StringIO()
+    #
+    #     nb_var = len(self.ee.dm.data_id_map)
+    #     print('Total Var nbr:', nb_var)
+    #
+    #     ps = pstats.Stats(profil, stream=result)
+    #     ps.sort_stats('cumulative')
+    #     ps.print_stats(1000)
+    #     result = result.getvalue()
+    #     # chop the string into a csv-like buffer
+    #     result = 'ncalls' + result.split('ncalls')[-1]
+    #     result = '\n'.join([','.join(line.rstrip().split(None, 5))
+    #                         for line in result.split('\n')])
+    #
+    #     with open(join(dirname(__file__), f'configure_perfos.csv'), 'w+') as f:
+    #         # f = open(result.rsplit('.')[0] + '.csv', 'w')
+    #         f.write(result)
+    #         f.close()
+    #
+    #     df = pd.read_csv(join(dirname(__file__), f'configure_perfos.csv'))
+    #     df['Type'] = 'other'
+    #     df.loc[df['filename:lineno(function)'].str.contains('mda.py'), 'Type'] = 'mda'
+    #     df.loc[df['filename:lineno(function)'].str.contains('dependency_graph.py'), 'Type'] = 'dependency_graph'
+    #     df.loc[df['filename:lineno(function)'].str.contains('coupling_structure'), 'Type'] = 'coupling_structure'
+    #     df.loc[df['filename:lineno(function)'].str.contains('__create_graph'), 'Type'] = '__create_graph'
+    #     df.loc[df['filename:lineno(function)'].str.contains('__create_condensed_graph'), 'Type'] = '__create_condensed_graph'
+    #     df.loc[df['filename:lineno(function)'].str.contains('get_disciplines_couplings'), 'Type'] = 'get_disciplines_couplings'
+    #     df.loc[df['filename:lineno(function)'].str.contains('__get_leaves'), 'Type'] = '__get_leaves'
+    #     df.loc[df['filename:lineno(function)'].str.contains('__get_ordered_scc'), 'Type'] = '__get_ordered_scc'
+    #     df.loc[df['filename:lineno(function)'].str.contains('get_execution_sequence'), 'Type'] = 'get_execution_sequence'
+    #     df.loc[df['filename:lineno(function)'].str.contains('strongly_coupled_disciplines'), 'Type'] = 'strongly_coupled_disciplines'
+    #     df.loc[df['filename:lineno(function)'].str.contains('weakly_coupled_disciplines'), 'Type'] = 'weakly_coupled_disciplines'
+    #     df.loc[df['filename:lineno(function)'].str.contains('strong_couplings'), 'Type'] = 'strong_couplings'
+    #     df.loc[df['filename:lineno(function)'].str.contains('weak_couplings'), 'Type'] = 'weak_couplings'
+    #     df.loc[df['filename:lineno(function)'].str.contains('get_all_couplings'), 'Type'] = 'get_all_couplings'
+    #     df.loc[df['filename:lineno(function)'].str.contains('find_discipline'), 'Type'] = 'find_discipline'
+    #
+    #     total_time = df['tottime'].sum()
+    #     grp = df.groupby('Type').sum().reset_index()
+    #     grp['ratio'] = grp['tottime']/total_time
+    #
+    #     print(grp[['Type', 'tottime', 'ratio']])
 
 
 if '__main__' == __name__:

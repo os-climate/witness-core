@@ -53,3 +53,4 @@ class CoalResourceModel(ResourceModel):
     def convert_demand(self, demand):
         self.resource_demand=demand
         self.resource_demand[self.resource_name]=demand[self.resource_name]
+    

@@ -37,9 +37,6 @@ class ForestTestCase(unittest.TestCase):
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
-        deforestation_surface = np.array(np.linspace(10, 1, year_range))
-        self.deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
         # Mha
         self.limit_deforestation_surface = 1000
@@ -55,7 +52,7 @@ class ForestTestCase(unittest.TestCase):
         residue_density_m3_per_ha = 46.5
         # average of 360 and 600 divided by 5
         wood_density_m3_per_ha = 96
-        construction_delay = 3
+        construction_delay = 20
         wood_residue_price_percent_dif = 0.34
         wood_percentage_for_energy = 0.48
         residue_percentage_for_energy = 0.48
@@ -76,7 +73,6 @@ class ForestTestCase(unittest.TestCase):
                                          'wood_residue_colorific_value': 4.356,
                                          'Opex_percentage': 0.045,
                                          'managed_wood_price_per_ha': 14872,  # 13047,
-                                         'unmanaged_wood_price_per_ha': 11500,  # 10483,
                                          'Price_per_ha_unit': 'euro/ha',
                                          'full_load_hours': 8760.0,
                                          'euro_dollar': 1.1447,  # in 2019, date of the paper
@@ -104,16 +100,12 @@ class ForestTestCase(unittest.TestCase):
                                          'CO2_from_production_unit': 'kg/kg'
                                          }
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
+            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
         self.mw_initial_production = 1.25 * 0.92 * \
             density_per_ha * mean_density * 3.6 / \
             years_between_harvest / (1 - recycle_part)  # in Twh
 
-        self.uw_initial_production = 1.25 * 0.08 * \
-            density_per_ha * mean_density * 3.6 / \
-            years_between_harvest / (1 - recycle_part)
-
-        mw_invest = np.linspace(1000, 1500, year_range)
+        mw_invest = np.linspace(10, 15, year_range)
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
@@ -132,8 +124,6 @@ class ForestTestCase(unittest.TestCase):
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
                       'time_step': self.time_step,
-                      # Forest.DEFORESTATION_SURFACE:
-                      # self.deforestation_surface_df,
                       Forest.DEFORESTATION_INVESTMENT: self.deforest_invest_df,
                       Forest.DEFORESTATION_COST_PER_HA: 8000,
                       Forest.LIMIT_DEFORESTATION_SURFACE: self.limit_deforestation_surface,
@@ -146,10 +136,6 @@ class ForestTestCase(unittest.TestCase):
                       'managed_wood_initial_surface': 1.25 * 0.92,
                       'managed_wood_invest_before_year_start': self.invest_before_year_start,
                       'managed_wood_investment': self.mw_invest_df,
-                      'unmanaged_wood_initial_prod': self.uw_initial_production,
-                      'unmanaged_wood_initial_surface': 1.25 * 0.08,
-                      'unmanaged_wood_invest_before_year_start': self.invest_before_year_start,
-                      'unmanaged_wood_investment': self.mw_invest_df,
                       'transport_cost': self.transport_df,
                       'margin': self.margin,
                       'initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
