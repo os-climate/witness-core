@@ -107,7 +107,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         # + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
                         # 1USD = 0,87360 euro in 2019
                         'managed_wood_price_per_ha': 13047,
-                        'unmanaged_wood_price_per_ha': 10483,
                         'Price_per_ha_unit': 'euro/ha',
                         'full_load_hours': 8760.0,
                         'euro_dollar': 1.1447,  # in 2019, date of the paper
@@ -145,9 +144,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                   density_per_ha * mean_density * biomass_cal_val /
                                   years_between_harvest / (1 - recycle_part), 6)  # in Twh
     mw_initial_surface = round(1.25 * 0.92, 6)
-    uw_initial_production = round(1.25 * 0.08 *
-                                  density_per_ha * mean_density * biomass_cal_val /
-                                  years_between_harvest / (1 - recycle_part), 6)
 
     # protected forest are 21% of total forest
     # https://research.wri.org/gfr/forest-designation-indicators/protected-forests
@@ -308,6 +304,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.forest_model.compute(inputs_dict)
         wood_techno_dict = inputs_dict['wood_techno_dict']
         mw_price_per_ha = wood_techno_dict['managed_wood_price_per_ha']
+        deforest_price_per_ha = inputs_dict['deforestation_cost_per_ha']
         wood_percentage_for_energy = wood_techno_dict['wood_percentage_for_energy']
         residue_percentage_for_energy = wood_techno_dict['residue_percentage_for_energy']
         residue_percentage = wood_techno_dict['residue_density_percentage']
@@ -414,12 +411,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
 
         # d biomass price d deforest invest
-        d_biomass_price_d_mw_invest = self.forest_model.d_biomass_price_d_invest_mw(
-            mw_price_per_ha)
+        d_biomass_price_d_invest_deforest = self.forest_model.d_biomass_price_d_invest_deforest(
+            d_biomass_prod_d_deforestation)
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (
-            'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
+            Forest.DEFORESTATION_INVESTMENT, 'investment'), d_biomass_price_d_invest_deforest)
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (
-            'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
+            Forest.DEFORESTATION_INVESTMENT, 'investment'), d_biomass_price_d_invest_deforest)
 
     def get_chart_filter_list(self):
 
@@ -623,6 +620,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             new_chart.add_series(mn_residues_series)
             new_chart.add_series(mn_wood_series)
+            new_chart.add_series(deforestation_series)
             new_chart.add_series(biomass_dry_energy_series)
             instanciated_charts.append(new_chart)
 
@@ -652,14 +650,18 @@ class ForestDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart('years', 'Price [$/MWh]',
                                                  chart_name='Biomass dry price evolution', stacked_bar=True)
             mw_price = biomass_dry_df['managed_wood_price_per_MWh']
+            deforestation_price = biomass_dry_df['deforestation_price_per_MWh']
             average_price = biomass_dry_df['price_per_MWh']
 
             mw_price_series = InstanciatedSeries(
                 years, mw_price.tolist(), 'Managed wood', InstanciatedSeries.LINES_DISPLAY)
             average_price_series = InstanciatedSeries(
                 years, average_price.tolist(), 'Biomass dry', InstanciatedSeries.LINES_DISPLAY)
+            deforestation_price_series = InstanciatedSeries(
+                years, deforestation_price.tolist(), 'Deforestation', InstanciatedSeries.LINES_DISPLAY)
 
             new_chart.add_series(mw_price_series)
+            new_chart.add_series(deforestation_price_series)
             new_chart.add_series(average_price_series)
             instanciated_charts.append(new_chart)
 
@@ -667,14 +669,18 @@ class ForestDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart('years', 'Price [$/ton]',
                                                  chart_name='Biomass dry price evolution', stacked_bar=True)
             mw_price = biomass_dry_df['managed_wood_price_per_ton']
+            deforestation_price = biomass_dry_df['deforestation_price_per_ton']
             average_price = biomass_dry_df['price_per_ton']
 
             mw_price_series = InstanciatedSeries(
                 years, mw_price.tolist(), 'Managed wood', InstanciatedSeries.LINES_DISPLAY)
             average_price_series = InstanciatedSeries(
                 years, average_price.tolist(), 'Biomass dry', InstanciatedSeries.LINES_DISPLAY)
+            deforestation_price_series = InstanciatedSeries(
+                years, deforestation_price.tolist(), 'Deforestation', InstanciatedSeries.LINES_DISPLAY)
 
             new_chart.add_series(mw_price_series)
+            new_chart.add_series(deforestation_price_series)
             new_chart.add_series(average_price_series)
             instanciated_charts.append(new_chart)
 

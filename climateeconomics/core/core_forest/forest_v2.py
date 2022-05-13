@@ -31,7 +31,6 @@ class Forest():
     YEAR_END = 'year_end'
     TIME_STEP = 'time_step'
     LIMIT_DEFORESTATION_SURFACE = 'limit_deforestation_surface'
-    DEFORESTATION_SURFACE = 'deforestation_surface'
     CO2_PER_HA = 'CO2_per_ha'
     INITIAL_CO2_EMISSIONS = 'initial_emissions'
     REFORESTATION_INVESTMENT = 'forest_investment'
@@ -304,6 +303,8 @@ class Forest():
             self.biomass_dry_df['deforestation_for_energy']
         self.biomass_dry_df['deforestation_price_per_ton'] = density_per_ha * mean_density / \
             (1 - recycle_part) / self.deforest_cost_per_ha
+        self.biomass_dry_df['deforestation_price_per_MWh'] = self.biomass_dry_df['deforestation_price_per_ton'] / \
+            self.biomass_dry_calorific_value
 
     def sumup_global_surface_data(self):
         """
@@ -378,7 +379,8 @@ class Forest():
             self.managed_wood_df['biomass_production (Mt)'] + self.biomass_dry_df['deforestation (Mt)'])
 
         self.biomass_dry_df['price_per_ton'] = self.biomass_dry_df['managed_wood_price_per_ton'] * self.managed_wood_part + \
-            self.biomass_dry_df['deforestation (Mt)'] * self.deforestation_part
+            self.biomass_dry_df['deforestation_price_per_ton'] * \
+            self.deforestation_part
 
         self.biomass_dry_df['managed_wood_price_per_MWh'] = self.biomass_dry_df['managed_wood_price_per_ton'] / \
             self.biomass_dry_calorific_value
@@ -612,7 +614,7 @@ class Forest():
                                 dprod_dinvest) / biomass_prod**2 / self.biomass_dry_calorific_value
 
         derivate = self.biomass_dry_df['managed_wood_price_per_ton'].values * d_mwpart_d_mw_invest - \
-            self.biomass_dry_df['deforestation (Mt)'].values * \
+            self.biomass_dry_df['deforestation_price_per_ton'].values * \
             d_mwpart_d_mw_invest
         # shift needed due to construction delay
         for i in range(construction_delay, number_of_values):
@@ -621,7 +623,7 @@ class Forest():
 
         return res
 
-    def d_biomass_price_d_invest_deforest(self, price_per_ha):
+    def d_biomass_price_d_invest_deforest(self, dprod_dinvest_deforest):
         """
         compute derivate of biomass price by invest in deforestation
         price = mw_price * mw_part + deforest_price * deforest_part
@@ -630,42 +632,23 @@ class Forest():
         --> (u/v)' = (u'v - uv') / v^2
         and deforest_part = (1-mw_part)
         """
-        number_of_values = (self.year_end - self.year_start + 1)
-        construction_delay = self.techno_wood_info['construction_delay']
-        d_wood_surface_d_invest = np.zeros(
-            (number_of_values, number_of_values))
-        res = np.zeros((number_of_values, number_of_values))
-        for i in range(0, number_of_values):
-            d_wood_surface_d_invest[i][i] = 1 / price_per_ha
-        deriv_2 = self.d_cum(d_wood_surface_d_invest)
-        d_surf_d_invest = deriv_2
+        wood_percentage_for_energy = self.techno_wood_info['wood_percentage_for_energy']
 
-        density = self.techno_wood_info['density']
-        density_per_ha = self.techno_wood_info['density_per_ha']
-        years_between_harvest = self.techno_wood_info['years_between_harvest']
-        recycle_part = self.techno_wood_info['recycle_part']
-        # compute d_prod_dinvest. total production is taken into account :
-        # energy + non energy
-        dprod_dinvest = d_surf_d_invest * density_per_ha * density / \
-            years_between_harvest / \
-            (1 - recycle_part)
+        dprod_dinvest = dprod_dinvest_deforest / wood_percentage_for_energy
 
-        mw_prod = self.managed_wood_df['biomass_production (Mt)'].values
-        biomass_prod = self.managed_wood_df['biomass_production (Mt)'].values + \
+        deforest_prod = self.biomass_dry_df['deforestation (Mt)'].values
+        biomass_prod = self.managed_wood_df['biomass_production (Mt)'] .values + \
             self.biomass_dry_df['deforestation (Mt)'].values
         # (u/v)' = (u'v - uv') / v^2
-        d_mwpart_d_mw_invest = (dprod_dinvest * biomass_prod - mw_prod *
-                                dprod_dinvest) / biomass_prod**2 / self.biomass_dry_calorific_value
+        d_deforestpart_d_deforest_invest = (
+            dprod_dinvest * biomass_prod - deforest_prod * dprod_dinvest) / biomass_prod**2 / self.biomass_dry_calorific_value
 
-        derivate = self.biomass_dry_df['managed_wood_price_per_ton'].values * d_mwpart_d_mw_invest - \
-            self.biomass_dry_df['deforestation (Mt)'].values * \
-            d_mwpart_d_mw_invest
-        # shift needed due to construction delay
-        for i in range(construction_delay, number_of_values):
-            for j in range(construction_delay, i + 1):
-                res[i, j - construction_delay] = derivate[i, i]
+        # final result : price = price_def * def_part + mw_price * (1-def_part)
+        derivate = self.biomass_dry_df['deforestation_price_per_ton'].values * d_deforestpart_d_deforest_invest - \
+            self.biomass_dry_df['managed_wood_price_per_ton'].values * \
+            d_deforestpart_d_deforest_invest
 
-        return res
+        return derivate
 
     def d_biomass_prod_d_deforestation_invest(self, d_deforest_surf_d_deforest_invest):
         """
