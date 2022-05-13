@@ -188,7 +188,7 @@ class Study(StudyManager):
                      '.managed_wood_initial_surface'] = 1.15
         forest_input[self.study_name + self.forest_name +
                      '.managed_wood_invest_before_year_start'] = invest_before_year_start
-        forest_input[self.study_name +
+        forest_input[self.study_name + self.forest_name +
                      '.managed_wood_investment'] = mw_invest_df
         forest_input[self.study_name +
                      '.transport_cost'] = transport_df
@@ -200,7 +200,7 @@ class Study(StudyManager):
                      '.initial_unmanaged_forest_surface'] = initial_unmanaged_forest_surface
         forest_input[self.study_name + self.forest_name +
                      '.deforestation_cost_per_ha'] = deforestation_cost_per_ha
-        forest_input[self.study_name +
+        forest_input[self.study_name + self.forest_name +
                      '.deforestation_investment'] = deforest_invest_df
 
         setup_data_list.append(forest_input)
