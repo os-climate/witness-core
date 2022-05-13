@@ -39,7 +39,6 @@ class Study(ClimateEconomicsStudyManager):
         # Set public values at a specific namespace
         witness_ms_usecase.study_name = f'{self.study_name}.{self.scatter_scenario}'
         dict_limit_values = {'SSP1-1,9': 1.5 , 'SSP2-4,5': 2.7, 'SSP5-8,5': 10. }
-        #dict_func_df =
         values_dict = {}
         scenario_list = []
         scenarios_list = ['SSP1-1,9', 'SSP2-4,5', 'SSP5-8,5']
