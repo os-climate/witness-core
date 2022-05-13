@@ -38,7 +38,7 @@ import matplotlib.pyplot as plt
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as Studycoarse
 from climateeconomics.sos_processes.iam.witness.witness_optim_process.usecase_witness_optim import Study as StudyMDO
-from climateeconomics.sos_processes.iam.witness.witness_dev_ms_process.usecase_witness_dev_ms import Study as Witness_ms_study
+from climateeconomics.sos_processes.iam.witness.witness_dev_ms_process._usecase_witness_dev_ms import Study as Witness_ms_study
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
 
