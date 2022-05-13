@@ -27,7 +27,7 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 
 class AgricultureDiscipline(ClimateEcoDiscipline):
     "Agriculture sector discpline"
-
+    
     # ontology information
     _ontology_data = {
         'label': 'Agriculture sector WITNESS Model',
@@ -42,6 +42,10 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     _maturity = 'Research'
+    
+    sector_name = 'agriculture'
+    prod_cap_unit = '1e12$'
+    
 
     DESC_IN = {
         'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
@@ -49,7 +53,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2, 'unit': '-'},
-        #'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'default':84.2, 'user_level': 2},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 281.2092, 'user_level': 2},
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2, 'unit': '-'},
@@ -85,6 +88,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'production_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'trillions $'},
         'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'trillions $'},
         'detailed_capital_df': {'type': 'dataframe', 'unit': 'trillions $'},
+        'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint':  {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
     }
 
@@ -121,7 +125,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                               'sector_investment': sector_investment,
                               'workforce_df': workforce_df}
         # Model execution
-        production_df, capital_df, productivity_df, emax_enet_constraint = self.agriculture_model.compute(
+        production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint = self.agriculture_model.compute(
             agriculture_inputs)
 
         # Store output data
@@ -129,6 +133,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                        'production_df': production_df[['years', 'output', 'output_net_of_damage']],
                        'capital_df': capital_df[['years', 'capital', 'usable_capital']],
                        'detailed_capital_df': capital_df,
+                       'growth_rate_df': growth_rate_df,
                        'emax_enet_constraint': emax_enet_constraint
                        }
 
@@ -203,7 +208,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['sector output', 'investment', 'Output growth rate', 'energy supply',
+        chart_list = ['sector output', 'investment', 'output growth',
                       'usable capital', 'capital', 'employment_rate', 'workforce', 'productivity', 'energy efficiency', 'e_max']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -229,8 +234,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         capital_detail_df = self.get_sosdisc_outputs('detailed_capital_df')
         productivity_df = self.get_sosdisc_outputs('productivity_df')
         workforce_df = self.get_sosdisc_inputs('workforce_df')
-        capital_utilisation_ratio = self.get_sosdisc_inputs(
-            'capital_utilisation_ratio')
+        capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
+        growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
 
         if 'sector output' in chart_list:
 
@@ -454,50 +459,24 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
-        if 'Energy_supply' in chart_list:
-            to_plot = ['Total production']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
+        if 'output growth' in chart_list:
 
-            legend = {
-                'Total production': 'energy supply with oil production from energy model'}
-
-            #inputs = discipline.get_sosdisc_inputs()
-            #energy_production = inputs.pop('energy_production')
-            energy_production = deepcopy(
-                self.get_sosdisc_inputs('energy_production'))
-            scaling_factor_energy_production = self.get_sosdisc_inputs(
-                'scaling_factor_energy_production')
-            total_production = energy_production['Total production'] * \
-                scaling_factor_energy_production
-
-            data_to_plot_dict = {
-                'Total production': total_production}
-
-            # years = list(economics_df.index)
-
-            # year_start = years[0]
-            # year_end = years[len(years) - 1]
-
-            # min_value, max_value = self.get_greataxisrange(
-            #     economics_df[to_plot])
-
-            chart_name = 'Energy supply'
-
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $]',
+            to_plot = ['net_output_growth_rate']
+            years = list(growth_rate_df.index)
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+            min_value, max_value = self.get_greataxisrange(growth_rate_df[to_plot])
+            chart_name = 'Net output growth rate over years'
+            new_chart = TwoAxesInstanciatedChart('years', ' growth rate [-]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
-
             for key in to_plot:
                 visible_line = True
-
-                ordonate_data = list(data_to_plot_dict[key])
-
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'lines', visible_line)
-
+                ordonate_data = list(growth_rate_df[key])
+                new_series = InstanciatedSeries(years, ordonate_data, key, 'lines', visible_line)
                 new_chart.series.append(new_series)
-
+                
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
