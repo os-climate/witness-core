@@ -29,7 +29,7 @@ from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEcon
 
 class Study(StudyManager):
 
-    def __init__(self, year_start = 2020, year_end = 2250, time_step=1, execution_engine=None):
+    def __init__(self, year_start = 2020, year_end = 2280, time_step=1, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.year_start = year_start
