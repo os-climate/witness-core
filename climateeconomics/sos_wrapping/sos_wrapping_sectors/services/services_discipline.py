@@ -42,13 +42,16 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     _maturity = 'Research'
+    
+    sector_name = 'services'
+    prod_cap_unit = '1e12$'
+    
     DESC_IN = {
         'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2, 'unit': '-'},
-        #'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'default':84.2, 'user_level': 2},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 281.2092, 'user_level': 2},
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness',
                          'dataframe_descriptor': {'years': ('float', None, False),'workforce': ('float', None, True)}, 'dataframe_edition_locked': False,},
@@ -86,6 +89,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         'production_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'trillions $'},
         'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness','unit': 'trillions $'},
         'detailed_capital_df': {'type': 'dataframe', 'unit': 'trillions $'}, 
+        'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint':  {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'}
     }
 
@@ -122,13 +126,14 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                            'sector_investment': sector_investment,
                            'workforce_df': workforce_df}
         # Model execution
-        production_df, capital_df, productivity_df, emax_enet_constraint = self.services_model.compute(services_inputs)
+        production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint = self.services_model.compute(services_inputs)
 
         # Store output data
         dict_values = {'productivity_df': productivity_df,
                        'production_df': production_df[['years', 'output', 'output_net_of_damage']],
                        'capital_df': capital_df[['years', 'capital', 'usable_capital']],
                        'detailed_capital_df': capital_df, 
+                       'growth_rate_df': growth_rate_df,
                        'emax_enet_constraint': emax_enet_constraint
                        }
 
@@ -198,7 +203,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['sector output', 'investment', 'Output growth rate', 'energy supply',
+        chart_list = ['sector output', 'investment', 'output growth', 'energy supply',
                       'usable capital', 'capital', 'employment_rate', 'workforce', 'productivity', 'energy efficiency', 'e_max']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -223,6 +228,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         capital_df = self.get_sosdisc_outputs('detailed_capital_df')
         productivity_df = self.get_sosdisc_outputs('productivity_df')
         workforce_df = self.get_sosdisc_inputs('workforce_df')
+        growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
         capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
 
         if 'sector output' in chart_list:
@@ -492,6 +498,26 @@ class ServicesDiscipline(ClimateEcoDiscipline):
 
                 new_chart.series.append(new_series)
 
+            instanciated_charts.append(new_chart)
+        
+        if 'output growth' in chart_list:
+
+            to_plot = ['net_output_growth_rate']
+            years = list(growth_rate_df.index)
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+            min_value, max_value = self.get_greataxisrange(growth_rate_df[to_plot])
+            chart_name = 'Net output growth rate over years'
+            new_chart = TwoAxesInstanciatedChart('years', ' growth rate [-]',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
+                                                 chart_name)
+            for key in to_plot:
+                visible_line = True
+                ordonate_data = list(growth_rate_df[key])
+                new_series = InstanciatedSeries(years, ordonate_data, key, 'lines', visible_line)
+                new_chart.series.append(new_series)
+                
             instanciated_charts.append(new_chart)
 
         return instanciated_charts

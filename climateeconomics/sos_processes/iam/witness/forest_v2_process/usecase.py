@@ -57,7 +57,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Forest', execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Agriculture.Forest', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.forest_name = name
@@ -188,7 +188,7 @@ class Study(StudyManager):
                      '.managed_wood_initial_surface'] = 1.15
         forest_input[self.study_name + self.forest_name +
                      '.managed_wood_invest_before_year_start'] = invest_before_year_start
-        forest_input[self.study_name +
+        forest_input[self.study_name + self.forest_name +
                      '.managed_wood_investment'] = mw_invest_df
         forest_input[self.study_name +
                      '.transport_cost'] = transport_df
@@ -200,7 +200,7 @@ class Study(StudyManager):
                      '.initial_unmanaged_forest_surface'] = initial_unmanaged_forest_surface
         forest_input[self.study_name + self.forest_name +
                      '.deforestation_cost_per_ha'] = deforestation_cost_per_ha
-        forest_input[self.study_name +
+        forest_input[self.study_name + self.forest_name +
                      '.deforestation_investment'] = deforest_invest_df
 
         setup_data_list.append(forest_input)

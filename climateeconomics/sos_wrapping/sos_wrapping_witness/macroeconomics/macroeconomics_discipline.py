@@ -624,9 +624,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     def get_post_processing_list(self, chart_filters=None):
 
-        # For the outputs, making a graph for tco vs year for each range and for specific
-        # value of ToT with a shift of five year between then
-
         instanciated_charts = []
 
         # Overload default value with chart filter

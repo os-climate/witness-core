@@ -83,8 +83,8 @@ class CopperResourceModel(ResourceModel):
             
             sig = 1/ (1 + math.exp(-x))
         
-            return sig*(self.resource_max_price-10057) + 10057
-            #return sig*(self.resource_max_price-sigmoid_min) + sigmoid_min
+            # return sig*(self.resource_max_price-10057) + 10057
+            return sig*(self.resource_max_price-sigmoid_min) + sigmoid_min
     
     def compute_price(self):
         
@@ -110,10 +110,10 @@ class CopperResourceModel(ResourceModel):
             #if for 2 years straight the demand is too high the prices rise
             if self.ratio_usable_demand[year_cost - self.year_start] < 1 and self.ratio_usable_demand[year_cost - self.year_start -1] < 1 :
                 resource_price_dict['price'][year_cost - resource_price_dict['years'][0]] = \
-                    max(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start], resource_price_dict['price'][year_cost - 1- resource_price_dict['years'][0]] ),\
-                     resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]])
-                    # min(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start], resource_price_dict['price'][year_cost - 1- resource_price_dict['years'][0]] ), \
-                    #      resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_rise)
+                    min(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start], resource_price_dict['price'][year_cost - 1- resource_price_dict['years'][0]] ), \
+                         resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_rise)
+                    # max(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start], resource_price_dict['price'][year_cost - 1- resource_price_dict['years'][0]] ),\
+                    #  resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]])
             # if, after the prices rise, the production can answer the demand, the prices decrease, but less than they rose
             elif self.ratio_usable_demand[year_cost - self.year_start] == 1 and self.ratio_usable_demand[year_cost - self.year_start -1] == 1 and resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] != self.resource_price_data.loc[0, 'price']: 
                 resource_price_dict['price'][year_cost - resource_price_dict['years'][0]] = \
