@@ -37,6 +37,7 @@ class SectorModel():
         self.capital_df = None
         self.production_df = None
         self.workforce_df = None
+        self.growth_rate_df = None
         
     def configure_parameters(self, inputs_dict):
         '''
@@ -80,9 +81,11 @@ class SectorModel():
         self.capital_df = pd.DataFrame(index=default_index,columns=['years','energy_efficiency', 'e_max', 'capital', 'usable_capital'])
         self.production_df = pd.DataFrame(index=default_index,columns=['years','output', 'output_net_of_damage'])
         self.productivity_df = pd.DataFrame(index=default_index,columns=['years','productivity_growth_rate', 'productivity'])
+        self.growth_rate_df = pd.DataFrame(index=default_index,columns=['years','net_output_growth_rate'])
         self.production_df['years'] = self.years
         self.capital_df['years'] = self.years
         self.productivity_df['years'] = self.years
+        self.growth_rate_df['years'] = self.years
         self.capital_df.loc[self.year_start, 'capital'] = self.capital_start
     
     def set_coupling_inputs(self, inputs):
@@ -237,6 +240,23 @@ class SectorModel():
         self.production_df.loc[year, 'output_net_of_damage'] = output_net_of_d
         return output_net_of_d
     
+    def compute_output_growth_rate(self, year):
+        """ Compute output growth rate for every year for the year before: 
+        output_growth_rate(t-1) = (output(t) - output(t-1))/output(t-1)
+        for the last year we put the value of the previous year to avoid a 0 
+        """
+        if year == self.year_start: 
+            pass
+        else: 
+            output = self.production_df.at[year - self.time_step,'output_net_of_damage']
+            output_a = self.production_df.at[year, 'output_net_of_damage']
+            output = max(1e-6, output)
+            output_growth = ((output_a - output) / output) / self.time_step
+            self.growth_rate_df.loc[year - self.time_step, 'net_output_growth_rate'] = output_growth
+        #For the last year put the vale of the year before 
+        if year == self.year_end: 
+            self.growth_rate_df.loc[year, 'net_output_growth_rate'] = output_growth
+    
     ### CONSTRAINTS ###
     def compute_emax_enet_constraint(self):
         """ Equation for Emax constraint 
@@ -262,6 +282,7 @@ class SectorModel():
             self.compute_usable_capital(year)
             self.compute_gross_output(year)
             self.compute_output_net_of_damage(year)
+            self.compute_output_growth_rate(year)
             # capital t+1 :
             self.compute_capital(year+1)
         self.production_df = self.production_df.fillna(0.0)
@@ -269,7 +290,7 @@ class SectorModel():
         self.productivity_df = self.productivity_df.fillna(0.0)
         self.compute_emax_enet_constraint()
 
-        return self.production_df, self.capital_df, self.productivity_df, self.emax_enet_constraint
+        return self.production_df, self.capital_df, self.productivity_df, self.growth_rate_df, self.emax_enet_constraint
     
     ### GRADIENTS ###
 
