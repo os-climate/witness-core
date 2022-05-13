@@ -69,7 +69,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         # Ref in 2020 is around 34 Gt, the objective is normalized with this
         # reference
-        Forest.CO2_EMITTED_FOREST_DF: {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
 
     }
     DESC_OUT = {
@@ -131,7 +131,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         d_indus_emissions_d_gross_output, d_cum_indus_emissions_d_gross_output, d_cum_indus_emissions_d_total_CO2_emitted = self.emissions_model.compute_d_indus_emissions()
         d_CO2_obj_d_total_emission = self.emissions_model.compute_d_CO2_objective()
         dobjective_exp_min = self.emissions_model.compute_dobjective_with_exp_min()
-        d_total_emissions_C02_emitted_forest = self.emissions_model.compute_d_land_emissions()
+        d_total_emissions_C02_emitted_land = self.emissions_model.compute_d_land_emissions()
         columns_sources = self.get_sosdisc_inputs(
             'CO2_emissions_by_use_sources').columns
         # fill jacobians
@@ -174,14 +174,19 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('CO2_objective',), ('economics_df', 'gross_output'), dobjective_exp_min * d_CO2_obj_d_total_emission.dot(d_indus_emissions_d_gross_output))
 
-        self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  np.identity(len(years)))
 
-        self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'cum_total_emissions'), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'),  d_total_emissions_C02_emitted_forest)
+        #land emissions
+        CO2_land_emissions = inputs_dict['CO2_land_emissions']
+        for column in CO2_land_emissions.columns:
+            if column != "years":
+                self.set_partial_derivative_for_other_types(
+                    ('CO2_emissions_df', 'total_emissions'), ('CO2_land_emissions', column),  np.identity(len(years)))
 
-        self.set_partial_derivative_for_other_types(
-            ('CO2_objective',), (Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), dobjective_exp_min * d_CO2_obj_d_total_emission)
+                self.set_partial_derivative_for_other_types(
+                    ('CO2_emissions_df', 'cum_total_emissions'), ('CO2_land_emissions', column),  d_total_emissions_C02_emitted_land)
+
+                self.set_partial_derivative_for_other_types(
+                    ('CO2_objective',), ('CO2_land_emissions', column), dobjective_exp_min * d_CO2_obj_d_total_emission)
 
     def get_chart_filter_list(self):
 

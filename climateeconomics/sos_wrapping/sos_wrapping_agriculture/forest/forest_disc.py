@@ -126,11 +126,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         'recycle_part': recycle_part,
                         'construction_delay': construction_delay,
                         'WACC': 0.07,
-                        # 1 tonne of tree absorbs 1.8t of CO2 in one
-                        # year
-                        # for a tree of 50 year, for 6.2tCO2/ha/year
-                        # it should be 3.49
-                        'CO2_from_production': - 0.425 * 44.01 / 12.0,
+                        # CO2 from production from tractor is taken
+                        # into account into the energy net factor
+                        # land CO2 absorption is computed in land_emission with the CO2_per_ha parameter
+                        'CO2_from_production': 0.0,
                         'CO2_from_production_unit': 'kg/kg'}
 
 # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
@@ -213,7 +212,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'namespace': 'ns_witness'},
         Forest.CO2_EMITTED_FOREST_DF: {
             'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_witness'},
+            'namespace': 'ns_forest'},
+        'CO2_land_emission_df': {
+            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+            'namespace': 'ns_forest'},
         Forest.BIOMASS_DRY_DF: {
             'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_witness'},
@@ -283,6 +285,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
             Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'global_forest_surface', 'forest_constraint_evolution']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
+            'CO2_land_emission_df': self.forest_model.CO2_emitted_df[['emitted_CO2_evol_cumulative']],
             'managed_wood_df': self.forest_model.managed_wood_df,
             #'unmanaged_wood_df': self.forest_model.unmanaged_wood_df,
             'biomass_dry_detail_df': self.forest_model.biomass_dry_df,
@@ -370,10 +373,15 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'),
             d_cum_CO2_emitted_d_deforestation_surface)
+        self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
+            Forest.DEFORESTATION_INVESTMENT, 'investment'),
+            d_cum_CO2_emitted_d_deforestation_surface)
 
         # d_CO2 d invest reforestation
         d_cum_CO2_emitted_d_invest_ref = self.forest_model.d_CO2_emitted(
             d_cum_forest_surface_d_invest)
+        self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_CO2_emitted_d_invest_ref)
         self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_CO2_emitted_d_invest_ref)
 

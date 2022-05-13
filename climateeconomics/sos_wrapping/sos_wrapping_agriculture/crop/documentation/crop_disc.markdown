@@ -111,6 +111,7 @@ The model outputs are:
 * **final diet**, gives the diet evolution over the years, in kg/person/year, for each type of food.
 * **Total food land surface**, gives the total amount of land needed for food, in Gha.
 * **CO2 Emissions**: CO2 emissions from crop production and residues for energy sector
+* **CO2 land Emissions**:  CO2 land emissions from crop that will be transferred to the carbon emission model
 * **Required land surface**: Surface of crop energy and food land
 * **biomass dry production**: crop production for energy sector with residues for energy sector
 * **biomass dry prices**: detailed of prices
