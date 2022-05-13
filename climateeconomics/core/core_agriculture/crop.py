@@ -130,6 +130,7 @@ class Crop():
         self.techno_consumption = pd.DataFrame({'years': self.years})
         self.techno_consumption_woratio = pd.DataFrame({'years': self.years})
         self.CO2_emissions = pd.DataFrame({'years': self.years})
+        self.CO2_land_emissions = pd.DataFrame({'years': self.years})
         self.updated_diet_df = pd.DataFrame({'years': self.years})
 
     def configure_parameters_update(self, inputs_dict):
@@ -657,6 +658,9 @@ class Crop():
         # Add CO2 from production + C02 from input energies
         self.CO2_emissions['Crop'] = self.CO2_emissions['production'] + \
             co2_emissions_frominput_energies
+
+        #to do: compute CO2 emissions from crop with delta CO2 emissions + absorptions cumulated
+        self.CO2_land_emissions['emitted_CO2_evol_cumulative'] = np.zeros(len(self.years))
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 

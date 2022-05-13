@@ -178,7 +178,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{model_name}.managed_wood_investment',
                                     ],
                             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-                                     f'{self.name}.{Forest.CO2_EMITTED_FOREST_DF}',
+                                     f'{self.name}.Forest.{Forest.CO2_EMITTED_FOREST_DF}',
                                      f'{self.name}.Forest.techno_production',
                                      f'{self.name}.Forest.techno_prices',
                                      f'{self.name}.Forest.techno_consumption',

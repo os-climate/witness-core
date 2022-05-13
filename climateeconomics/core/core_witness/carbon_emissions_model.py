@@ -47,7 +47,7 @@ class CarbonEmissions():
         self.beta = self.param['beta']
         self.total_emissions_ref = self.param['total_emissions_ref']
         self.min_co2_objective = self.param['min_co2_objective']
-        self.CO2_emitted_forest_df = self.param[Forest.CO2_EMITTED_FOREST_DF]
+        self.CO2_land_emissions = self.param['CO2_land_emissions']
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
         self.gtco2_to_gtc = 44 / 12
@@ -164,7 +164,12 @@ class CarbonEmissions():
         '''
         Compute emissions from land for t
         '''
-        land_emissions = self.CO2_emitted_forest_df['emitted_CO2_evol_cumulative'][year]
+        # sum all sectors emissions
+        land_emissions = 0
+        for column in self.CO2_land_emissions.columns:
+            if column != 'years':
+                land_emissions += self.CO2_land_emissions.loc[year, column]
+
         self.CO2_emissions_df.loc[year, 'land_emissions'] = land_emissions
         return land_emissions
 
@@ -374,9 +379,9 @@ class CarbonEmissions():
         self.co2_emissions_ccus_Gt.index = self.co2_emissions_ccus_Gt[
             'years'].values
 
-        self.CO2_emitted_forest_df = self.inputs_models['CO2_emitted_forest_df'].copy(
+        self.CO2_land_emissions = self.inputs_models['CO2_land_emissions'].copy(
             deep=True)
-        self.CO2_emitted_forest_df.index = self.CO2_emitted_forest_df['years'].values
+        self.CO2_land_emissions.index = self.co2_emissions_ccus_Gt['years'].values
         self.compute_total_CO2_emissions()
         # Iterate over years
         for year in self.years_range:
