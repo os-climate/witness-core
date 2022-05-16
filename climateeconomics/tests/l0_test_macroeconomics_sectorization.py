@@ -54,9 +54,9 @@ class MacroeconomicsTestCase(unittest.TestCase):
         gdp_agri = gdp_serie * 6.775773/100
         gdp_indus = gdp_serie * 28.4336/100
         gdp_service = gdp_serie * 64.79/100
-        self.prod_agri = DataFrame({'years':self. years,'output': gdp_agri, 'net_output': gdp_agri*0.995})
-        self.prod_indus = DataFrame({'years':self. years,'output': gdp_indus, 'net_output': gdp_indus*0.995})
-        self.prod_service = DataFrame({'years':self. years,'output': gdp_service, 'net_output': gdp_service*0.995})
+        self.prod_agri = DataFrame({'years':self. years,'output': gdp_agri, 'output_net_of_damage': gdp_agri*0.995})
+        self.prod_indus = DataFrame({'years':self. years,'output': gdp_indus, 'output_net_of_damage': gdp_indus*0.995})
+        self.prod_service = DataFrame({'years':self. years,'output': gdp_service, 'output_net_of_damage': gdp_service*0.995})
         cap_agri = capital_serie * 0.018385
         cap_indus = capital_serie * 0.234987
         cap_service = capital_serie * 0.74662
@@ -96,12 +96,12 @@ class MacroeconomicsTestCase(unittest.TestCase):
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.total_investment_share_of_gdp': self.total_invest, 
-                       f'{name}.{model_name}.agriculture.production_df': self.prod_agri,
-                       f'{name}.{model_name}.services.production_df': self.prod_service,
-                       f'{name}.{model_name}.industry.production_df': self.prod_indus,
-                       f'{name}.{model_name}.industry.capital_df': self.cap_indus_df,
-                       f'{name}.{model_name}.services.capital_df': self.cap_service_df,
-                       f'{name}.{model_name}.agriculture.capital_df':self.cap_agri_df,
+                       f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
+                       f'{name}.{model_name}.Services.production_df': self.prod_service,
+                       f'{name}.{model_name}.Industry.production_df': self.prod_indus,
+                       f'{name}.{model_name}.Industry.capital_df': self.cap_indus_df,
+                       f'{name}.{model_name}.Services.capital_df': self.cap_service_df,
+                       f'{name}.{model_name}.Agriculture.capital_df':self.cap_agri_df,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
