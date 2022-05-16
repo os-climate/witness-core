@@ -106,9 +106,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         #Gradient wrt each sector production df: same for all sectors 
         grad_netoutput, grad_invest = self.macro_model.get_derivative_sectors()
         for sector in sector_list:
-            self.set_partial_derivative_for_other_types(('economics_df', 'net_output'), (f'{sector}.production_df', 'net_output'), grad_netoutput)
+            self.set_partial_derivative_for_other_types(('economics_df', 'net_output'), (f'{sector}.production_df', 'output_net_of_damage'), grad_netoutput)
 
-            self.set_partial_derivative_for_other_types(('investment_df', 'investment'), (f'{sector}.production_df', 'net_output'), grad_invest)
+            self.set_partial_derivative_for_other_types(('investment_df', 'investment'), (f'{sector}.production_df', 'output_net_of_damage'), grad_invest)
         # Gradient wrt share investment 
         grad_invest_share = self.macro_model.get_derivative_dinvest_dshare()
         self.set_partial_derivative_for_other_types(
@@ -260,7 +260,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             
             for sector in sector_list: 
                 production_df = self.get_sosdisc_inputs(f'{sector}.production_df')
-                sector_output = production_df['net_output'].values
+                sector_output = production_df['output_net_of_damage'].values
                 share = (sector_output/output)*100
                 visible_line = True
                 ordonate_data = list(share)

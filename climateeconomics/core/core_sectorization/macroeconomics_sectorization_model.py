@@ -75,7 +75,7 @@ class MacroeconomicsModel():
                 arr_type_ucapital = 'complex128'
             if 'complex128' in [inputs[f'{sector}.production_df']['output'].dtype]:
                 arr_type_output = 'complex128'
-            if 'complex128' in [inputs[f'{sector}.production_df']['net_output'].dtype]:
+            if 'complex128' in [inputs[f'{sector}.production_df']['output_net_of_damage'].dtype]:
                 arr_type_netoutput = 'complex128'
                 
         self.sum_output = np.zeros(self.nb_years, dtype= arr_type_output)
@@ -109,7 +109,7 @@ class MacroeconomicsModel():
             self.sum_capital += capital_df['capital'].values
             self.sum_u_capital += capital_df['usable_capital'].values
             self.sum_output += production_df['output'].values
-            self.sum_net_output += production_df['net_output'].values
+            self.sum_net_output += production_df['output_net_of_damage'].values
             
     def compute_investment(self):
         """ Compute total investement available 
