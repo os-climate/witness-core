@@ -38,7 +38,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fa-solid fa-industry-windows',
+        'icon': 'fas fa-industry fa-fw',
         'version': '',
     }
     _maturity = 'Research'

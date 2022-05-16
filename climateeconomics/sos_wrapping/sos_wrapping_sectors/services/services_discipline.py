@@ -38,7 +38,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': '<fa-solid fa-building-user',
+        'icon': 'fa-solid fa-building-user',
         'version': '',
     }
     _maturity = 'Research'
