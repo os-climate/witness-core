@@ -65,7 +65,6 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         if 'technologies_list' in self._data_in:
             techno_list = self.get_sosdisc_inputs('technologies_list')
             if techno_list is not None:
-                techno_list = self.get_sosdisc_inputs('technologies_list')
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.CO2_land_emission_df'] = {
                         'type': 'dataframe', 'unit': 'GtCO2'}
@@ -77,6 +76,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         CO2_emitted_crop_df = self.get_sosdisc_inputs('Crop.CO2_land_emission_df')
         CO2_emitted_forest_df = self.get_sosdisc_inputs('Forest.CO2_land_emission_df')
         CO2_emissions_land_use_df = pd.DataFrame()
+        CO2_emissions_land_use_df['years'] = CO2_emitted_crop_df['years']
         CO2_emissions_land_use_df['Crop'] = CO2_emitted_crop_df['emitted_CO2_evol_cumulative']
         CO2_emissions_land_use_df['Forest'] = CO2_emitted_forest_df['emitted_CO2_evol_cumulative']
         # -- store in one output
@@ -106,7 +106,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         CO2_emissions_land_use_df = self.get_sosdisc_outputs('CO2_land_emissions')
         year_start = self.get_sosdisc_inputs('year_start')
         year_end = self.get_sosdisc_inputs('year_end')
-        year_list = np.arange(year_start, year_end+1)
+        year_list = np.arange(year_start, year_end+1).tolist()
         for column in CO2_emissions_land_use_df.columns:
             techno_emissions = CO2_emissions_land_use_df[column]
             serie = InstanciatedSeries(year_list, techno_emissions.tolist(), column, 'bar')
