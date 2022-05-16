@@ -74,7 +74,7 @@ class CopperResourceModel(ResourceModel):
         self.resource_demand=demand
         self.resource_demand[self.resource_name]=demand[self.resource_name] * (100 / energy_demand)
 
-    def sigmoid(self, ratio, sigmoid_min ):
+    def sigmoid(self, ratio, sigmoid_min ): 
             '''
             function sigmoid redefined for the ratio :
             sigmoid([-10;10])->[0;1] becomes sigmoid([1;0])->[sigmoid_min, resource_max_price] (ratio = 1 matches sigmoids' lower bound, and ratio = 0 matches sigmoid's upper bound)
@@ -85,6 +85,7 @@ class CopperResourceModel(ResourceModel):
         
             # return sig*(self.resource_max_price-10057) + 10057
             return sig*(self.resource_max_price-sigmoid_min) + sigmoid_min
+            #return sig
     
     def compute_price(self):
         
@@ -111,7 +112,8 @@ class CopperResourceModel(ResourceModel):
             if self.ratio_usable_demand[year_cost - self.year_start] < 1 and self.ratio_usable_demand[year_cost - self.year_start -1] < 1 :
                 resource_price_dict['price'][year_cost - resource_price_dict['years'][0]] = \
                     min(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start], resource_price_dict['price'][year_cost - 1- resource_price_dict['years'][0]] ), \
-                         resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_rise)
+                          resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]] * self.price_rise)
+                    # # # self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start]) #Test des gradients : il manque en argument de sig : , resource_price_dict['price'][year_cost - 1- resource_price_dict['years'][0]]
                     # max(self.sigmoid(self.ratio_usable_demand[year_cost - self.year_start], resource_price_dict['price'][year_cost - 1- resource_price_dict['years'][0]] ),\
                     #  resource_price_dict['price'][year_cost -1 - resource_price_dict['years'][0]])
             # if, after the prices rise, the production can answer the demand, the prices decrease, but less than they rose
@@ -126,8 +128,44 @@ class CopperResourceModel(ResourceModel):
         self.resource_price= pd.DataFrame.from_dict(resource_price_dict)
 
        
-    def get_grad_price (self, year_start, year_end, nb_years, year_demand, grad_use, grad_price):
+    def get_d_price_d_demand (self, year_start, year_end, nb_years, year_demand, grad_use, grad_price):
         # Turn dataframes into dict of np array for faster computation time
         resource_price_data_dict = self.resource_price_data.to_dict()
-        total_consumption_dict = self.total_consumption.to_dict()
-        use_stock_dict = self.use_stock.to_dict()   
+        demand = deepcopy(self.resource_demand[self.resource_name].values)      
+        demand_limited = compute_func_with_exp_min(
+            np.array(demand), 1.0e-10)
+        available_resource = deepcopy(self.use_stock[self.sub_resource_list[0]].values[self.lifespan:])  
+        available_resource_limited = compute_func_with_exp_min(
+            np.array(available_resource), 1.0e-10)   
+
+        #price rise
+        # # # if self.ratio_usable_demand[year_demand - self.year_start] < 1 and self.ratio_usable_demand[year_demand - self.year_start -1] < 1 :
+        # # #     if self.sigmoid(self.ratio_usable_demand[year_demand - self.year_start], resource_price_data_dict['price'][year_demand - 1- resource_price_data_dict['years'][0]] )\
+        # # #         < resource_price_data_dict['price'][year_demand -1 - resource_price_data_dict['years'][0]] * self.price_rise:
+                #calcul de la sigmoi dégueu
+        for year in range(year_start + 1, year_demand + 1):
+            exp = math.exp(20 * available_resource_limited[year_demand - year_start] / demand_limited[year_demand - year_start] -10)
+            grad_price[year_demand - year_start, year - year_start] += 1 / (1 + exp)**2 * exp * 20 \
+                * grad_use['copper'][year_demand - year_start, year - year_start] / demand_limited[year_demand - year_start]
+            
+            if year == year_demand :
+                grad_price[year_demand - year_start, year - year_start] -=  1 / (1 + exp)**2 * exp * 20 \
+                    * available_resource_limited[year_demand - year_start] / (demand_limited[year_demand - year_start])
+        # # #     else : 
+        # # #         #dérivée tranquille
+        # # #         for year in range(year_start + 1, year_demand + 1):
+        # # #             pass
+        # # # #price decrease
+        # # # elif self.ratio_usable_demand[year_demand - self.year_start] == 1 and self.ratio_usable_demand[year_demand - self.year_start -1] == 1 \
+        # # #     and resource_price_data_dict['price'][year_demand -1 - resource_price_data_dict['years'][0]] != self.resource_price_data.loc[0, 'price']: 
+        # # #     if resource_price_data_dict['price'][year_demand -1 - resource_price_data_dict['years'][0]] * self.price_decrease > resource_price_data_dict['price'][0] :
+        # # #         for year in range(year_start + 1, year_demand + 1):
+        # # #             pass
+        # # #     else : #à effacer car sera nul
+        # # #         for year in range(year_start + 1, year_demand + 1):
+        # # #             pass
+        # # # else : 
+        # # #     for year in range(year_start + 1, year_demand + 1):
+        # # #             pass
+       
+        return grad_price
