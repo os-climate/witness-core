@@ -106,7 +106,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         CO2_emissions_land_use_df = self.get_sosdisc_outputs('CO2_land_emissions')
         year_start = self.get_sosdisc_inputs('year_start')
         year_end = self.get_sosdisc_inputs('year_end')
-        year_list = np.arange(year_start, year_end+1)
+        year_list = np.arange(year_start, year_end+1).tolist()
         for column in CO2_emissions_land_use_df.columns:
             techno_emissions = CO2_emissions_land_use_df[column]
             serie = InstanciatedSeries(year_list, techno_emissions.tolist(), column, 'bar')
