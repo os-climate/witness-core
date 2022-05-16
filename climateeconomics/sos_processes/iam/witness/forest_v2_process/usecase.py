@@ -133,7 +133,7 @@ class Study(StudyManager):
                             # year
                             # for a tree of 50 year, for 6.2tCO2/ha/year
                             # it should be 3.49
-                            'CO2_from_production': - 0.425 * 44.01 / 12.0,
+                            'CO2_from_production':0.0,
                             'CO2_from_production_unit': 'kg/kg'
                             }
         invest_before_year_start = pd.DataFrame(
