@@ -23,9 +23,11 @@ To fit the curve with the maximum reserve estimated by US Geological Survey we a
 We start with the price of 2020.
 If the demand is higher than what is available for 2 years straight, the price rises.
 It rises according to a sigmoid function :
-![](Sigmoid.PNG)
+$$f(x) = \frac{1}{1+e^{-x}}$$
 
-with the ratio used_stock/demand as the argument. Ratio = 1 (demand fully answered) means x = -10 and ratio = 0 (nothing can be used) means x = 10. The upper bound is a constant (default is 50000), the lower bound is the price the previous year.
+![](sigmoid.PNG)
+
+with the ratio used_stock/demand as the argument. Ratio = 1 (demand fully answered) means x = -10 and ratio = 0 (nothing can be used) means x = 10. The upper bound is a constant (default is 50000), the lower bound is the price of the previous year.
 If after a recent raise, the demand is satisfied for 2 years straight, the price decreases (default : 0.95 * price previous year).
 If the demand is answered to and the price is still 2020's, it can't go lower, therefore is maintained.
 

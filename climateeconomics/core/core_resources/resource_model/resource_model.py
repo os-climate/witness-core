@@ -451,12 +451,12 @@ class ResourceModel():
             # # #                    * grad_total_consumption[year_demand - year_start, year - year_start])\
             # # #                 / (total_consumption_dict['production'][year_demand - total_consumption_dict['years'][0]]) ** 2
 
-            grad_price = self.get_grad_price(year_start, year_end, nb_years, year_demand, grad_use, grad_price)
+            grad_price = self.get_d_price_d_demand(year_start, year_end, nb_years, year_demand, grad_use, grad_price)
 
         return grad_stock, grad_price, grad_use
 
 
-    def get_grad_price (self, year_start, year_end, nb_years, year_demand, grad_use, grad_price):
+    def get_d_price_d_demand (self, year_start, year_end, nb_years, year_demand, grad_use, grad_price):
 
         ascending_price_resource_list = list(
             self.resource_price_data.sort_values(by=['price'])['resource_type'])
