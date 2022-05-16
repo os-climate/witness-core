@@ -406,8 +406,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_biomass_prod_d_deforestation = self.forest_model.d_biomass_prod_d_deforestation_invest(
             d_deforestation_surface_d_deforestation_investment)
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
-                                                    d_biomass_prod_d_deforestation * calorific_value /
-                                                    scaling_factor_techno_production)
+                                                    d_biomass_prod_d_deforestation * calorific_value / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
                                                     -CO2_from_production / high_calorific_value *
                                                     d_biomass_prod_d_deforestation * calorific_value / scaling_factor_techno_consumption)
@@ -428,7 +427,37 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_biomass_price_d_invest_deforest)
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (
-            Forest.DEFORESTATION_INVESTMENT, 'investment'), d_biomass_price_d_invest_deforest)
+            Forest.DEFORESTATION_INVESTMENT, 'investment'),
+            d_biomass_price_d_invest_deforest)
+
+        # d managed_wood_surface d reforestation invest
+        d_mw_surf_d_reforest_invest = self.forest_model.d_managed_wood_surf_d_invest_reforestation(
+            d_cum_forest_surface_d_invest)
+        d_wood_prod_d_forest_invest = self.forest_model.d_biomass_prod_d_invest_reforestation(
+            d_mw_surf_d_reforest_invest, wood_percentage, wood_percentage_for_energy)
+        d_residue_prod_d_forest_invest = self.forest_model.d_biomass_prod_d_invest_reforestation(
+            d_mw_surf_d_reforest_invest, residue_percentage, wood_percentage_for_energy)
+#         self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
+#             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_mw_surf_d_reforest_invest)
+#         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+#                                                     (d_wood_prod_d_forest_invest + d_residue_prod_d_forest_invest) * calorific_value /
+#                                                     scaling_factor_techno_production)
+#         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+#                                                     -CO2_from_production / high_calorific_value *
+#                                                     (d_wood_prod_d_forest_invest + d_residue_prod_d_forest_invest) * calorific_value / scaling_factor_techno_consumption)
+#         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+#                                                     -CO2_from_production / high_calorific_value *
+#                                                     (d_wood_prod_d_forest_invest + d_residue_prod_d_forest_invest) * calorific_value / scaling_factor_techno_consumption)
+
+        # d price d invest reforestation
+#         dprice_dreforest_invest = self.forest_model.d_biomass_price_d_invest_reforestation(
+#             mw_price_per_ha, (d_wood_prod_d_forest_invest + d_residue_prod_d_forest_invest) * calorific_value /
+#             scaling_factor_techno_production)
+#         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (
+#             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dprice_dreforest_invest)
+#         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (
+#             Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+#             dprice_dreforest_invest)
 
     def get_chart_filter_list(self):
 
