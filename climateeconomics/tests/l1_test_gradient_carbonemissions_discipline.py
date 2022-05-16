@@ -26,7 +26,7 @@ from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
 
 class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
@@ -111,7 +111,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.economics_df': economics_df_y,
                        f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
-                       f'{self.name}.CO2_emitted_forest_df': CO2_emitted_forest,
+                       f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,
                        f'{self.name}.CO2_emissions_by_use_sinks': CO2_emissions_by_use_sinks,
@@ -124,7 +124,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.economics_df',
                                     f'{self.name}.CO2_emissions_by_use_sources',
-                                    f'{self.name}.CO2_emitted_forest_df',
+                                    f'{self.name}.CO2_land_emissions',
                                     f'{self.name}.CO2_emissions_by_use_sinks', f'{self.name}.co2_emissions_needed_by_energy_mix', f'{self.name}.co2_emissions_ccus_Gt'],
                             outputs=[f'{self.name}.CO2_emissions_df',
                                      f'{self.name}.CO2_objective', f'{self.name}.co2_emissions_Gt'])
@@ -197,7 +197,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.economics_df': economics_df_y,
                        f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
-                       f'{self.name}.CO2_emitted_forest_df': CO2_emitted_forest,
+                       f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,
                        f'{self.name}.CO2_emissions_by_use_sinks': CO2_emissions_by_use_sinks,
@@ -210,7 +210,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.economics_df',
                                     f'{self.name}.CO2_emissions_by_use_sources',
-                                    f'{self.name}.CO2_emitted_forest_df',
+                                    f'{self.name}.CO2_land_emissions',
                                     f'{self.name}.CO2_emissions_by_use_sinks', f'{self.name}.co2_emissions_needed_by_energy_mix', f'{self.name}.co2_emissions_ccus_Gt'],
                             outputs=[f'{self.name}.CO2_emissions_df',
                                      f'{self.name}.CO2_objective', f'{self.name}.co2_emissions_Gt'])
