@@ -43,18 +43,18 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     }
     _maturity = 'Research'
     
-    sector_name = 'agriculture'
+    sector_name = 'Agriculture'
     prod_cap_unit = '1e12$'
     
 
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
+        'damage_df': {'type': 'dataframe', 'unit': 'G$'},
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2, 'unit': '-'},
-        'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 281.2092, 'user_level': 2},
-        'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 6.92448579, 'user_level': 2},
+        'workforce_df': {'type': 'dataframe', 'unit': 'millions of people'},
         'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 0.02387787, 'user_level': 3, 'unit': '-'},
         # Usable capital
@@ -68,13 +68,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'output_alpha': {'type': 'float', 'default': 0.86537, 'user_level': 2, 'unit': '-'},
         'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '-'},
         'depreciation_capital': {'type': 'float', 'default': 0.058, 'user_level': 2, 'unit': '-'},
-        'damage_to_productivity': {'type': 'bool'},
+        'damage_to_productivity': {'type': 'bool', 'default': True, 'unit': '-'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-', 'default': 0.3, 'user_level': 2, 'unit': '-'},
         'sector_investment': {'type': 'dataframe', 'unit': 'trillions $', 'dataframe_descriptor': {'years': ('float', None, False),
-                                                                                                   'investment': ('float', None, True)}, 'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
+                                                                                                   'investment': ('float', None, True)}, 'dataframe_edition_locked': False},
 
         # energy_production stored in PetaWh for coupling variables scaling
-        'energy_production': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'PWh', 'namespace': 'ns_energy_mix'},
+        'energy_production': {'type': 'dataframe','unit': 'PWh'},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1},
@@ -85,11 +85,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
-        'production_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'trillions $'},
-        'capital_df':  {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'trillions $'},
+        'production_df': {'type': 'dataframe', 'unit': 'trillions $'},
+        'capital_df':  {'type': 'dataframe', 'unit': 'trillions $'},
         'detailed_capital_df': {'type': 'dataframe', 'unit': 'trillions $'},
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
-        'emax_enet_constraint':  {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'emax_enet_constraint':  {'type': 'array'},
     }
 
     def setup_sos_disciplines(self):

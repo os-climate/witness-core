@@ -106,10 +106,10 @@ class AgricultureDiscTest(unittest.TestCase):
                        f'{self.name}.year_end': year_end,
                        f'{self.name}.time_step': time_step,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
-                       f'{self.name}.sector_investment': total_invest,
-                       f'{self.name}.energy_production': energy_supply_df,
-                       f'{self.name}.damage_df': self.damage_df,
-                       f'{self.name}.workforce_df': workforce_df, 
+                       f'{self.name}.{self.model_name}.sector_investment': total_invest,
+                       f'{self.name}.{self.model_name}.energy_production': energy_supply_df,
+                       f'{self.name}.{self.model_name}.damage_df': self.damage_df,
+                       f'{self.name}.{self.model_name}.workforce_df': workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 6.718 #2019 value for test 
                        }
 
