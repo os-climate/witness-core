@@ -52,7 +52,7 @@ class ForestTestCase(unittest.TestCase):
         residue_density_m3_per_ha = 46.5
         # average of 360 and 600 divided by 5
         wood_density_m3_per_ha = 96
-        construction_delay = 20
+        construction_delay = 10
         wood_residue_price_percent_dif = 0.34
         wood_percentage_for_energy = 0.48
         residue_percentage_for_energy = 0.48
@@ -105,7 +105,7 @@ class ForestTestCase(unittest.TestCase):
             density_per_ha * mean_density * 3.6 / \
             years_between_harvest / (1 - recycle_part)  # in Twh
 
-        mw_invest = np.linspace(10, 15, year_range)
+        mw_invest = np.linspace(100000, 15000, year_range)
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
@@ -209,5 +209,5 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
