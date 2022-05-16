@@ -285,7 +285,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
             Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'global_forest_surface', 'forest_constraint_evolution']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
-            'CO2_land_emission_df': self.forest_model.CO2_emitted_df[['emitted_CO2_evol_cumulative']],
+            'CO2_land_emission_df': self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
             'managed_wood_df': self.forest_model.managed_wood_df,
             #'unmanaged_wood_df': self.forest_model.unmanaged_wood_df,
             'biomass_dry_detail_df': self.forest_model.biomass_dry_df,
