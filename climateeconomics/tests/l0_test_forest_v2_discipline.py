@@ -105,7 +105,7 @@ class ForestTestCase(unittest.TestCase):
             density_per_ha * mean_density * 3.6 / \
             years_between_harvest / (1 - recycle_part)  # in Twh
 
-        mw_invest = np.linspace(100000, 15000, year_range)
+        mw_invest = np.linspace(10, 15, year_range)
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
