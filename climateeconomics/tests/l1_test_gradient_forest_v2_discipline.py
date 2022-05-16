@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     #     np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
@@ -320,7 +320,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
-
                             inputs=[
             f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
             f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
