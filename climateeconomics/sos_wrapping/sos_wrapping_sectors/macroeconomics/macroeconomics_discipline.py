@@ -41,7 +41,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fas fa-industry fa-fw',
+        'icon': 'fa-solid fa-city',
         'version': '',
     }
 
