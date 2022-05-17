@@ -132,4 +132,4 @@ To obtain the value of the production function parameters we fitted our calculat
 
 [^9]: International Labour Organization, ILOSTAT database. Data retrieved on February 8, 2022.
 
-[^10]: International Energy Agency, World total final consumption by source. Available at: https://www.iea.org/reports/key-world-energy-statistics-2020/final-consumption. Data retrieved on February 25, 2022. 
+[^10]: IEA 2022; World total final consumption by source, https://www.iea.org/reports/key-world-energy-statistics-2020/final-consumption, License: CC BY 4.0. 

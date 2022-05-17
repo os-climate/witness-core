@@ -13,6 +13,12 @@ from climateeconomics.sos_processes.iam.witness.witness_dev.usecase_witness impo
 class TestGlobalEnergyValues(unittest.TestCase):
     """
     This test class has the objective to test order of magnitude of some key values in energy models in 2020
+    All the data are taken either from ourworldindata:
+        Hannah Ritchie, Max Roser and Pablo Rosado (2020) - "Energy". Published online at OurWorldInData.org.
+        Retrieved from: 'https://ourworldindata.org/energy' [Online Resource]
+    Or from IEA:
+        Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019,
+        License: CC BY 4.0.
     """
 
     def setUp(self):
@@ -317,7 +323,9 @@ class TestGlobalEnergyValues(unittest.TestCase):
 
     def test_03_check_net_production_values(self):
         '''
-        Test order of magnitude of net energy production with values from Energy Balances IEA 2019
+        Test order of magnitude of net energy production with values from Energy Balances IEA 2019:
+        Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019,
+        License: CC BY 4.0.
 
         '''
         self.ee.execute()
@@ -886,7 +894,8 @@ class TestGlobalEnergyValues(unittest.TestCase):
     def test_04_check_prices_values(self):
         '''
         Test order of magnitude of prices
-
+        Source: IEA 2022, Data Tables, https://www.iea.org/data-and-statistics/data-tables?country=WORLD&energy=Balances&year=2019,
+        License: CC BY 4.0.
         '''
         self.ee.execute()
 

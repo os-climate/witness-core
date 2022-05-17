@@ -55,4 +55,4 @@ Data implemented in the coal demand csv.
 [^2]: Höök, M., Zittel, W., Schindler, J. & Aleklett, K. - "Global coal production outlooks based on a logistic model" (2010) Fuel, Vol. 89, Issue 11: 3546-3558 - Published online at 'http://dx.doi.org/10.1016/j.fuel.2010.06.013' - Retrieved from: 'https://www.diva-portal.org/smash/get/diva2:329110/FULLTEXT01.pdf'
 [^3]: BP - Statistical Review of World Energy (2021) - Retrieved from: 'https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2021-full-report.pdf'
 [^4]: U.S. Energy Information Administration - "Coal explained" (2021) - Retrieved from: 'https://www.eia.gov/energyexplained/coal/prices-and-outlook.php'
-[^5]: International Energy Agency - "World Energy Balances" (2020) - Retrieved from: 'https://www.iea.org/data-and-statistics/charts/world-coal-final-consumption-by-sector-2018'
+[^5]: IEA 2022; World Energy Balances, https://www.iea.org/data-and-statistics/charts/world-coal-final-consumption-by-sector-2018, License: CC BY 4.0.
