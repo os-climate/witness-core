@@ -77,6 +77,7 @@ class MacroDiscTest(unittest.TestCase):
         # then IEA data*0.91 (WEO 2020 stated) until 2040 then invented. 0.91 =
         # ratio net brut in 2020
         # Energy production divided by 1e3 (scaling factor production)
+        # source for IEA energy outlook: IEA 2022; World energy outlook 2020, https://www.iea.org/reports/world-energy-outlook-2020, License: CC BY 4.0.
         brut_net = 1/1.45
         #prepare energy df  
         energy_outlook = pd.DataFrame({

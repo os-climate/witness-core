@@ -18,7 +18,9 @@ where $$\sigma_{g\, t-1} = \sigma_{g\, t-2}(1+ \sigma_{d1})^{time\,step}$$ and $
 #### Energy Emissions
 Energy Emissions is an input coming from the energy model. 
 ### Land emissions
-Land emissions are from deforestation. Trees absorb a certain quantity of CO2. When trees are cut, CO2 is not absorbed anymore. This emission comes from forest model.
+Land emissions are from agriculture mix process. It contains emissions from forests (CO2 absorption by trees and CO2 emissions from deforestation)
+and emissions from crops (CO2 balance emissions from farming).
+
 ### CO2 objective
 
 A "CO2 objective" is calculated and set as an output of the model, based on the CO2 emissions:

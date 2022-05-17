@@ -340,10 +340,10 @@ class LandUseV2Discipline(SoSDiscipline):
 
                 # Create native plotly chart
                 chart_name = f'Global land use (Gha) in {year}'
-                land_use_IEA_chart = InstantiatedPlotlyNativeChart(
+                land_use_chart = InstantiatedPlotlyNativeChart(
                     fig=fig, chart_name=chart_name)
 
-                instanciated_charts.append(land_use_IEA_chart)
+                instanciated_charts.append(land_use_chart)
 
             series_to_add = []
             # ------------------

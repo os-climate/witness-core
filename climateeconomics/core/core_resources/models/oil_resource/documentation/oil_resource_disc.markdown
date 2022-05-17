@@ -55,5 +55,5 @@ Data implemented in the oil demand csv.
 [^2]: Eni S.p.A. - "World Oil Review 2020" - Retrieved from: 'https://www.eni.com/assets/documents/eng/scenari-energetici/WORLD-OIL-REVIEW-2020-vol1.pdf'
 [^3]: Wikipedia - Retrieved from: 'https://fr.wikipedia.org/wiki/Pic_p%C3%A9trolier'
 [^4]: BP - Statistical Review of World Energy (2021) - Retrieved from: 'https://www.bp.com/content/dam/bp/business-sites/en/global/corporate/pdfs/energy-economics/statistical-review/bp-stats-review-2021-full-report.pdf'
-[^5]: IEA - "Oil Market Report - December 2019" - Retrieved from: 'https://www.iea.org/reports/oil-market-report-december-2019
-[^6]: IEA - "World oil final consumption by sector" (2018) - Retrieved from: 'https://www.iea.org/data-and-statistics/charts/world-oil-final-consumption-by-sector-2018'
+[^5]: IEA 2022; Oil Market Report - December 2019, https://www.iea.org/reports/oil-market-report-december-2019, License: CC BY 4.0.
+[^6]: IEA 2022; World oil final consumption by sector, https://www.iea.org/data-and-statistics/charts/world-oil-final-consumption-by-sector-2018, License: CC BY 4.0.
