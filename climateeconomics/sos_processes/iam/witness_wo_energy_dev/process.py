@@ -50,10 +50,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 
-        chain_builders_resource = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'resources_process')
-        builder_list.extend(chain_builders_resource)
-
         chain_builders_landuse = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'land_use_v2_process')
         builder_list.extend(chain_builders_landuse)
@@ -68,7 +64,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    'ns_functions': f'{self.ee.study_name}.EnergyMix',
-                   'ns_resource ': f'{self.ee.study_name}.EnergyMix',
                    'ns_ref': f'{self.ee.study_name}.NormalizationReferences'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
