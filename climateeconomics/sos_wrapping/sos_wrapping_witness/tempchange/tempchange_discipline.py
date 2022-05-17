@@ -48,7 +48,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2, 'unit': '°C'},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'default': 3.1, 'user_level': 3},
-        'forcing_model': {'type': 'string', 'default': 'Meinshausen', 'possible_values': ['DICE', 'Myhre', 'Etminan', 'Meinshausen'], 'structuring': True},
+        'forcing_model': {'type': 'string', 'default': 'DICE', 'possible_values': ['DICE', 'Myhre', 'Etminan', 'Meinshausen'], 'structuring': True},
         'climate_upper': {'type': 'float', 'default': 0.1005, 'user_level': 3, 'unit': '-'},
         'transfer_upper': {'type': 'float', 'default': 0.088, 'user_level': 3, 'unit': '-'},
         'transfer_lower': {'type': 'float', 'default': 0.025, 'user_level': 3, 'unit': '-'},
