@@ -263,7 +263,7 @@ class DataStudy():
         list_parent.append('')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
+        list_weight.append(0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 
@@ -288,7 +288,7 @@ class DataStudy():
         list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints'])
         list_ns.extend(['ns_functions', 'ns_functions', 'ns_functions'])
         list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, EQ_CONSTRAINT])
-        list_weight.extend([-1.0, 0.0, 0.0])
+        list_weight.extend([0.0, 0.0, -1.0])
         list_aggr_type.extend([
             AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_LIN_TO_QUAD])
 
