@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from copy import deepcopy
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_resources.resource_model.resource_model import ResourceModel
@@ -83,6 +84,8 @@ class ResourceDiscipline(SoSDiscipline):
 
         self.resource_model.compute()
 
+       
+
         outputs_dict = {
             'resource_stock': self.resource_model.resource_stock,
             'resource_price': self.resource_model.resource_price,
@@ -93,6 +96,7 @@ class ResourceDiscipline(SoSDiscipline):
 
         #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
+        
 
     def compute_sos_jacobian(self):
         """
@@ -191,14 +195,14 @@ class ResourceDiscipline(SoSDiscipline):
     def get_stock_charts(self, stock_df, use_stock_df):
 
         sub_resource_list = [col for col in stock_df.columns if col != 'years']
-        stock_chart = TwoAxesInstanciatedChart('years', f'maximum stocks [{self.stock_unit}]',
+        stock_chart = TwoAxesInstanciatedChart('Years', f'maximum stocks [{self.stock_unit}]',
                                                chart_name=f'{self.resource_name} stocks through the years',
                                                stacked_bar=True)
         if len(sub_resource_list) > 1:
-            use_stock_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} use [{self.stock_unit}]',
+            use_stock_chart = TwoAxesInstanciatedChart('Years', f'{self.resource_name} use [{self.stock_unit}]',
                                                        chart_name=f'{self.resource_name} use per subtypes through the years',
                                                        stacked_bar=True)
-        use_stock_cumulated_chart = TwoAxesInstanciatedChart('years',
+        use_stock_cumulated_chart = TwoAxesInstanciatedChart('Years',
                                                              f'{self.resource_name} use per Subtypes [{self.stock_unit}]',
                                                              chart_name=f'{self.resource_name} use through the years',
                                                              stacked_bar=True)
@@ -238,18 +242,18 @@ class ResourceDiscipline(SoSDiscipline):
         production_cut = production_df.loc[production_df['years']
                                            <= year_start]
         if len(sub_resource_list) > 1:
-            production_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} production per subtypes [{self.prod_unit}]',
+            production_chart = TwoAxesInstanciatedChart('Years', f'{self.resource_name} production per subtypes [{self.prod_unit}]',
                                                         chart_name=f'{self.resource_name} production per subtypes through the years',
                                                         stacked_bar=True)
         production_cumulated_chart = TwoAxesInstanciatedChart('Years', f'{self.resource_name} production [{self.prod_unit}]',
                                                               chart_name=f'{self.resource_name} production through the years',
                                                               stacked_bar=True)
 
-        model_production_cumulated_chart = TwoAxesInstanciatedChart('years',
+        model_production_cumulated_chart = TwoAxesInstanciatedChart('Years',
                                                                     f'Comparison between model and real {self.resource_name} production [{self.prod_unit}]',
                                                                     chart_name=f'{self.resource_name} production through the years',
                                                                     stacked_bar=True)
-        past_production_chart = TwoAxesInstanciatedChart('years',
+        past_production_chart = TwoAxesInstanciatedChart('Years',
                                                          f'{self.resource_name} past production [{self.prod_unit}]',
                                                          chart_name=f'{self.resource_name} past production through the years',
                                                          stacked_bar=True)
@@ -287,7 +291,7 @@ class ResourceDiscipline(SoSDiscipline):
         return list_of_charts
 
     def get_recycling_charts(self, recycling_df, use_stock_df):
-        recycling_chart = TwoAxesInstanciatedChart('years', f'{self.resource_name} recycling and used stock [{self.stock_unit}]',
+        recycling_chart = TwoAxesInstanciatedChart('Years', f'{self.resource_name} recycling and used stock [{self.stock_unit}]',
                                                    chart_name=f'{self.resource_name} recycled quantity compared to used quantity through the years',
                                                    stacked_bar=False)
 

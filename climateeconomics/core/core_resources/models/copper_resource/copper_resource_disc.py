@@ -69,6 +69,7 @@ class CopperResourceDiscipline(ResourceDiscipline):
     default_resource_consumed_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_consumed_data.csv'))
 
 
+
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '[-]', 'default': default_resource_data,
                                  'user_level': 2, 'namespace': 'ns_copper_resource'},
                'resource_production_data': {'type': 'dataframe', 'unit': '[Mt]', 'optional': True,
