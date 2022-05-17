@@ -74,6 +74,17 @@ class UraniumResourceModel(ResourceModel):
             {'years': self.years})
         self.use_stock = pd.DataFrame(
             {'years': self.years})
+        
+        '''
+        Set the index as the years
+        '''
+        self.predictable_production.index = self.predictable_production['years'] 
+        self.recycled_production.index = self.recycled_production['years'] 
+        self.total_consumption.index = self.total_consumption['years'] 
+        self.resource_stock.index = self.resource_stock['years'] 
+        self.resource_price.index = self.resource_price['years']
+        self.use_stock.index = self.use_stock['years'] 
+
 
     def configure_parameters_update(self, inputs_dict):
         self.regression_start = inputs_dict['regression_start']
