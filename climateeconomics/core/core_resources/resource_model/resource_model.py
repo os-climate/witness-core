@@ -78,7 +78,6 @@ class ResourceModel():
             self.production_start, self.year_end + 1)
         self.stock_start = inputs_dict['stock_start']
         self.resources_demand = inputs_dict['resources_demand']
-        self.resources_demand.index = self.resources_demand['years']
         self.resource_consumed_data = inputs_dict['resource_consumed_data']
         self.lifespan = inputs_dict['lifespan']
         self.recycled_rate = inputs_dict['recycled_rate']
