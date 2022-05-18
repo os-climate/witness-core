@@ -29,7 +29,7 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
     """
     np.set_printoptions(threshold=np.inf)
 
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
