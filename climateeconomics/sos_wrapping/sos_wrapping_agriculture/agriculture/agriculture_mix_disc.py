@@ -43,7 +43,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_agriculture',
                                      'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'unit': 'defined in dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
@@ -51,7 +51,8 @@ class AgricultureMixDiscipline(EnergyDiscipline):
     energy_name = BiomassDry.name
 
     # -- add specific techno outputs to this
-    DESC_OUT = {'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}}
+    DESC_OUT = {'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2',
+                                       'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}}
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
     def init_execution(self):
@@ -73,14 +74,17 @@ class AgricultureMixDiscipline(EnergyDiscipline):
     def run(self):
         EnergyDiscipline.run(self)
         # -- get CO2 emissions inputs
-        CO2_emitted_crop_df = self.get_sosdisc_inputs('Crop.CO2_land_emission_df')
-        CO2_emitted_forest_df = self.get_sosdisc_inputs('Forest.CO2_land_emission_df')
+        CO2_emitted_crop_df = self.get_sosdisc_inputs(
+            'Crop.CO2_land_emission_df')
+        CO2_emitted_forest_df = self.get_sosdisc_inputs(
+            'Forest.CO2_land_emission_df')
         CO2_emissions_land_use_df = pd.DataFrame()
         CO2_emissions_land_use_df['years'] = CO2_emitted_crop_df['years']
         CO2_emissions_land_use_df['Crop'] = CO2_emitted_crop_df['emitted_CO2_evol_cumulative']
         CO2_emissions_land_use_df['Forest'] = CO2_emitted_forest_df['emitted_CO2_evol_cumulative']
         # -- store in one output
-        self.store_sos_outputs_values({'CO2_land_emissions': CO2_emissions_land_use_df})
+        self.store_sos_outputs_values(
+            {'CO2_land_emissions': CO2_emissions_land_use_df})
 
     def compute_sos_jacobian(self):
         """
@@ -103,14 +107,16 @@ class AgricultureMixDiscipline(EnergyDiscipline):
 
         technology_list = self.get_sosdisc_inputs('technologies_list')
 
-        CO2_emissions_land_use_df = self.get_sosdisc_outputs('CO2_land_emissions')
+        CO2_emissions_land_use_df = self.get_sosdisc_outputs(
+            'CO2_land_emissions')
         year_start = self.get_sosdisc_inputs('year_start')
         year_end = self.get_sosdisc_inputs('year_end')
-        year_list = np.arange(year_start, year_end+1).tolist()
+        year_list = np.arange(year_start, year_end + 1).tolist()
         for column in CO2_emissions_land_use_df.columns:
             if column != 'years':
                 techno_emissions = CO2_emissions_land_use_df[column]
-                serie = InstanciatedSeries(year_list, techno_emissions.tolist(), column, 'bar')
+                serie = InstanciatedSeries(
+                    year_list, techno_emissions.tolist(), column, 'bar')
                 new_chart.series.append(serie)
 
         new_charts.append(new_chart)
