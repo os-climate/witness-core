@@ -354,3 +354,5 @@ detailed_capital_df,Detailed Capital df ,,"Capital, usable capital, energy effic
 capital_df,Capital df,T$,Capital and usable capital per year. ,,
 productivity_df,Productivity df,,Productivity and productivity growth rate over years. ,,
 sector_investment,Sector investment df,T$,Investment in sector per year. ,,
+historical_gdp,Historical output ,T$,Dataframe with historical data for output in T$ used for fitting of production functions,,
+historical_capital,Historical capital,T$,Dataframe with historical data for capital in T$ used for fitting of production functions,,

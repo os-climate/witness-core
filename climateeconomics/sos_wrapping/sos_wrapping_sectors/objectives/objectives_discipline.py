@@ -88,9 +88,9 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
             sector_list = self.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.capital_df'] = {
-                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector]}
+                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
                 dynamic_inputs[f'{sector}.production_df'] = {
-                    'type': 'dataframe', 'unit':  MacroeconomicsModel.SECTORS_OUT_UNIT[sector]}
+                    'type': 'dataframe', 'unit':  MacroeconomicsModel.SECTORS_OUT_UNIT[sector], 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
 
             self.add_inputs(dynamic_inputs)
 
@@ -169,7 +169,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                  chart_name)
             visible_line = True
             new_series = InstanciatedSeries(
-                    years, list(ref), 'historical data', 'lines', visible_line)
+                    years, list(ref), 'historical data', 'scatter', visible_line)
             new_chart.series.append(new_series)
             new_series = InstanciatedSeries(
                     years, list(simu), 'simulated values', 'lines', visible_line)

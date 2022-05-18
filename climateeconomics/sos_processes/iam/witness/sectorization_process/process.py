@@ -28,15 +28,18 @@ class ProcessBuilder(BaseProcessBuilder):
     }
     def get_builders(self):
 
-        ns_scatter = self.ee.study_name + '.Macroeconomics'
+        ns_poulpe = self.ee.study_name + '.Macroeconomics'
+        ns_scatter = self.ee.study_name 
 
         ns_dict = {'ns_witness': ns_scatter,
+                   'ns_macro': ns_poulpe,
                    'ns_public': ns_scatter,
                    'ns_functions': ns_scatter,
                    'ns_ref': ns_scatter
                    }
 
-        mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
+        mods_dict = {'Objectives': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.objectives.objectives_discipline.ObjectivesDiscipline',
+                     'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      'Macroeconomics.Services': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline.ServicesDiscipline' ,
                      'Macroeconomics.Agriculture':'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline',
                      'Macroeconomics.Industry':'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'

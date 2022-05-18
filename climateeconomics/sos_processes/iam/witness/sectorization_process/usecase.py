@@ -57,10 +57,11 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='', execution_engine=None):
+    def __init__(self, year_start=2000, year_end=2020, time_step=1, name='', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.macro_name = '.Macroeconomics'
+        self.obj_name = '.Objectives'
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -78,9 +79,9 @@ class Study(StudyManager):
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
 
         total_workforce_df = pd.read_csv(join(data_dir, 'workingage_population_df.csv'))
-        total_workforce_df.index = years
         #multiply ageworking pop by employment rate 
         workforce = total_workforce_df['population_1570']* 0.659 
+        workforce = workforce[:self.nb_per]
         workforce_df_agri = pd.DataFrame({'years': years, 'workforce': workforce * 0.274})
         workforce_df_services = pd.DataFrame({'years': years, 'workforce': workforce * 0.509})
         workforce_df_indus = pd.DataFrame({'years': years, 'workforce': workforce * 0.217})
@@ -98,8 +99,8 @@ class Study(StudyManager):
         #Energy
         brut_net = 1/1.45
         energy_outlook = pd.DataFrame({
-            'year': [2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
-            'energy': [149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
+            'year': [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
+            'energy': [118.112,134.122 ,149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
         f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
         #Find values for 2020, 2050 and concat dfs 
         energy_supply = f2(np.arange(self.year_start, self.year_end+1))
@@ -116,7 +117,11 @@ class Study(StudyManager):
         share_invest = np.asarray([27.0] * self.nb_per)
         share_invest = pd.DataFrame({'years':years, 'share_investment': share_invest})
         share_invest_df = share_invest
-
+        
+        historical_gdp = pd.DataFrame({'years': years, 'Agriculture': invest_serie*50 , 'Industry': invest_serie*101,
+                                                'Services': invest_serie*150, 'total': invest_serie * 301})
+        historical_capital = pd.DataFrame({'years': years, 'Agriculture': invest_serie*50 , 'Industry': invest_serie*101,
+                                                'Services': invest_serie*150, 'total': invest_serie * 301})
         sect_input = {}
         sect_input[self.study_name + '.year_start'] = self.year_start
         sect_input[self.study_name + '.year_end'] = self.year_end
@@ -137,8 +142,10 @@ class Study(StudyManager):
         sect_input[self.study_name + self.macro_name +'.Agriculture.damage_df'] = damage_df
         sect_input[self.study_name + self.macro_name +'.Services.damage_df'] = damage_df
         
-        sect_input[self.study_name + self.macro_name +'.total_investment_share_of_gdp'] = share_invest_df
+        sect_input[self.study_name + '.total_investment_share_of_gdp'] = share_invest_df
         
+        sect_input[self.study_name + self.obj_name + '.historical_gdp'] = historical_gdp
+        sect_input[self.study_name + self.obj_name + '.historical_capital'] = historical_capital
 
         setup_data_list.append(sect_input)
 
