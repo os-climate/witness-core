@@ -59,8 +59,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         'utility_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'welfare_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'min_utility_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        'welfare_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'min_utility_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
     def init_execution(self):
