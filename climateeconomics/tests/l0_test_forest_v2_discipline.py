@@ -42,7 +42,7 @@ class ForestTestCase(unittest.TestCase):
         self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
-        forest_invest = np.linspace(1, 10, year_range)
+        forest_invest = np.linspace(2, 15, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
         self.reforestation_cost_per_ha = 3800

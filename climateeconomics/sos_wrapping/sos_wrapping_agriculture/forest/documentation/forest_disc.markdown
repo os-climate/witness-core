@@ -11,24 +11,22 @@ The forest model takes the following data as inputs:
 - **year_end**, the final year of the study. Default is 2100.
 - **time_step**, the number of year between two data computation. Default is 1.
 - **limit_deforestation_surface**, the maximum surface in Mha which can be deforested during the study.
-- **deforestation_surface**, forest surface removed by year in Mha. Default is set to 10Mha per year (2020 value).
-- **CO2_per_ha**, the quantity of CO2 captured by 1 hectare of forest during one year. Unit is kgCO2/ha/year. Default value is 4000kgC02/ha/year [^1].
+- **deforestation_investment**, the money invested in the deforestation. Unit is G$.
+- **deforestation_cost_per_ha**, the average price to deforest 1ha of land. Unit is $/ha. Default value is 12000$/ha [^1].
+- **CO2_per_ha**, the quantity of CO2 captured by 1 hectare of forest during one year. Unit is kgCO2/ha/year. Default value is 4000kgC02/ha/year [^2].
 As forest captures 16 Gt of CO2 per year, reducing forest by 1% results in a deficit of CO2 captured of 160 Mt. The value of 4000kgCO2/year/ha is coherent with these data.
-- **Initial CO2 emissions**, CO2 emissions in GtCO2 due to deforestation at the first year of the study. Default value is 3.21 GtCO2 at 2020, which is the value found at [^2].
-- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 13800 $/ha (10k$/ha for land cost and 3800$/ha to plant trees) [^3].
+- **Initial CO2 emissions**, CO2 emissions in GtCO2 due to deforestation at the first year of the study. Default value is 3.21 GtCO2 at 2020, which is the value found at [^3].
+- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 13800 $/ha (10k$/ha for land cost and 3800$/ha to plant trees) [^4].
 - **reforestation_investment**, the quantity of money dedicated to reforestation each year in billions of $.
 - **wood tehcno dict**, data use to compute price and production of biomass for managed wood and unmanaged wood.
 - **managed wood initial prod**, which is the production of biomass by managed wood at the first year of the study. Unit is TWh.
 - **managed wood initial surface**, which is the surface dedicated to managed wood, at the first year of the study. Unit is Gha. Default is 1.15Gha, at 2020.
 - **managed wood invest before year start**, which are the investments made into managed wood that impact the first years of the study. Unit is G$.
 - **managed wood investment**, which are the investment made into managed wood over the years. Unit is G$.
-- **unmanaged wood initial prod**, which is the production of biomass by unmanaged wood at the first year of the study. Unit is TWh.
-- **unmanaged wood initial surface**, which is the surface dedicated to unmanaged wood, at the first year of the study. Unit is Gha. Default is 1.15Gha, at 2020.
-- **unmanaged wood invest before year start**, which are the investments made into unmanaged wood that impact the first years of the study. Unit is G$.
-- **unmanaged wood investment**, which are the investment made into unmanaged wood over the years. Unit is G$.
 - **transport cost**, which is the cost of transport of biomass. Unit is $/ton.
 - **margin**, factor applied to the total cost of biomass to represent the commercial margin.
-- **unused_forest_surface**, the initial surface of forest that is not used for energy or industrial purpose. As 1.25Gha of forest are used and there are 4Gha of forest, the unused surface is 2.75Gha.
+- **protected_forest**, the surface of protected forest. Unit is Gha. Protected forest represents 21% of the global 4Hha forest surface, that is to say 0.84Gha.
+- **unmanaged_forest_surface**, the initial surface of forest that is not used for energy or industrial purpose. As 1.25Gha of forest are used, 0.84Gha are protected, and there are 4Gha of forest, the unused surface is 1.91Gha.
  
 The outputs of the model are:
 
@@ -36,8 +34,8 @@ The outputs of the model are:
 - **forest_surface_detail_df**, giving detailed data about forest surface evolution over the year. Unit is Gha.
 - **CO2_emitted_df**, gives evolution of CO2 captured by forest in GtCO2.
 - **CO2_emissions_detail_df**, gives detailed data about CO2 emitted by forest activities. Unit is GtCO2.
+- **CO2_land_emission_df**, gives informations about computed land emissions. Unit is GtCO2.
 - **managed_wood_df**, gives data about managed wood prodution.
-- **unmanaged_wood_df**, gives data about unmanaged wood production.
 - **biomass_dry_detail_df**, gives detailed data about biomass dry production.
 - **biomass_dry_df**, gives major data about biomass dry production.
 - **techno_capital**, which represents the total capital allocated to the reforestation technology, in G$.
@@ -74,13 +72,17 @@ Deforestation also produces biomass.
 
 ## Managed wood
 
-Managed wood defines all the forest under management plan in order to produce biomass on a long term period. As said previously, managed wood will take existing and unmanaged forest and apply management planto it.
+Managed wood defines all the forest under management plan in order to produce biomass on a long term period. As said previously, managed wood will take existing and unmanaged forest and apply management plan to it.
 
 **Surface of forest**
-Each year, a certain amount of money is invested into managed wood or unmanaged wood. This is an input data of the model. Knowing the price per ha (in **wood tehcno dict**) the surface added each year can be deduced by
+Each year, a certain amount of money is invested into managed wood. This is an input data of the model. Knowing the price per ha (in **wood techno dict**) the surface added each year can be deduced by
 $$Added\_surface = investment / price\_per\_ha$$
 This price per ha take into account planting tree, preparing ground, harvesting and other activities linked to wood management.
 By adding the surface of forest planting each year, the cumulative surface is computed, which represent the total of managed or unmanaged wood added since the first year of the study.
+
+As managed wood convert unmanaged forest into managed one, what happend if there is not enough unmanaged forest left ?
+In that case all the available surface is taken as managed, with the application of the following ratio :
+$$ratio = available\_unmanaged\_surface / theoric\_managed\_added\_surface$$
 
 **Biomass production**
 The quantity of biomass produced by 1 ha is given by
@@ -94,7 +96,10 @@ recycle : the percentage of biomass that comes from recycling
 Knowing the surface of managed wood we can deduced the quantity of biomass produced.
 
 **Biomass price**
-For managed wood and unmanaged wood, the cost per ha is spread over the year using crf. Then the cost of transport is added and margin is applied.
+Biomass is produced by managed forest and by deforestation. Each of these technics has its own price. As a result, the average price of biomass is the weighted average of managed wood and deforestation price.
+$$biomass\_price = managed\_wood\_price * managed\_wood\_part + deforestation\_price * deforestation\_part$$
+with deforestation\_part = deforestation\_production / total\_biomass\_production
+managed\_wood\_part = managed\_wood\_production / total\_biomass\_production
 
 
 ## Evolution of CO2 captured
@@ -112,6 +117,7 @@ In this model, the quantity of CO2 captured by ha of forest is assumed to be the
 
 ## References
 
-[^1]: World Resources Institute, Forests Absorb Twice As Much Carbon As They Emit Each Year, January 21, 2021 By Nancy Harris and David Gibbs, found online at https://www.wri.org/insights/forests-absorb-twice-much-carbon-they-emit-each-year
-[^2]: Our World In Data, Global CO2 emissions from fossil fuels and land use change, found online at https://ourworldindata.org/co2-emissions
-[^3]: Agriculture and Food Development Authority, Reforestation, found online at https://www.teagasc.ie/crops/forestry/advice/establishment/reforestation/
+[^1]: LawnStarter, Pricing Guide: How much does it cost to clear land ?, found online at https://www.lawnstarter.com/blog/cost/clear-land-price/#:~:text=Expect%20to%20pay%20between%20%24733,higher%20your%20bill%20will%20be.
+[^2]: World Resources Institute, Forests Absorb Twice As Much Carbon As They Emit Each Year, January 21, 2021 By Nancy Harris and David Gibbs, found online at https://www.wri.org/insights/forests-absorb-twice-much-carbon-they-emit-each-year
+[^3]: Our World In Data, Global CO2 emissions from fossil fuels and land use change, found online at https://ourworldindata.org/co2-emissions
+[^4]: Agriculture and Food Development Authority, Reforestation, found online at https://www.teagasc.ie/crops/forestry/advice/establishment/reforestation/
