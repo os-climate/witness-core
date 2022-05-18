@@ -75,7 +75,8 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         
         model_name = 'Macroeconomics'
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness':  f'{self.name}'}
+                   'ns_witness':  f'{self.name}', 
+                   'ns_macro': f'{self.name}.{model_name}'}
         
         self.ee.ns_manager.add_ns_def(ns_dict)
 

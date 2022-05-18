@@ -72,7 +72,7 @@ class Study(ClimateEconomicsStudyManager):
 
         # design space WITNESS
         dspace_df = self.witness_uc.dspace
-
+        self.func_df = self.witness_uc.func_df
         # df_xvect = pd.read_pickle('df_xvect.pkl')
         # df_xvect.columns = [df_xvect.columns[0]]+[col.split('.')[-1] for col in df_xvect.columns[1:]]
         # dspace_df_xvect=pd.DataFrame({'variable':df_xvect.columns, 'value':df_xvect.drop(0).values[0]})

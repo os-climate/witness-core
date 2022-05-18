@@ -73,9 +73,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             sector_list = self.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.capital_df'] = {
-                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector]}
+                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
                 dynamic_inputs[f'{sector}.production_df'] = {
-                    'type': 'dataframe', 'unit':  MacroeconomicsModel.SECTORS_OUT_UNIT[sector]}
+                    'type': 'dataframe', 'unit':  MacroeconomicsModel.SECTORS_OUT_UNIT[sector], 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
 
             self.add_inputs(dynamic_inputs)
 
@@ -89,7 +89,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         #-- compute
         economics_df, investment_df = self.macro_model.compute(inputs_dict)
 
-        outputs_dict = {'economics_df': economics_df[['years','net_output']],
+        outputs_dict = {'economics_df': economics_df[['years','net_output', 'capital']],
                         'investment_df': investment_df, 
                         'economics_detail_df': economics_df}
 
@@ -107,6 +107,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         grad_netoutput, grad_invest = self.macro_model.get_derivative_sectors()
         for sector in sector_list:
             self.set_partial_derivative_for_other_types(('economics_df', 'net_output'), (f'{sector}.production_df', 'output_net_of_damage'), grad_netoutput)
+            self.set_partial_derivative_for_other_types(('economics_df', 'capital'), (f'{sector}.capital_df', 'capital'), grad_netoutput)
 
             self.set_partial_derivative_for_other_types(('investment_df', 'investment'), (f'{sector}.production_df', 'output_net_of_damage'), grad_invest)
         # Gradient wrt share investment 

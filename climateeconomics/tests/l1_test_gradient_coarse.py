@@ -625,7 +625,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             join(dirname(__file__), 'data/mda_coarse_data_energymix_input_dict.pkl'), 'rb')
         mda_data_input_dict = pickle.load(pkl_file)
         pkl_file.close()
-
+        #mda_data_input_dict['renewable.energy_production']['value']['renewable'] = 1e-16
         namespace = f'{self.name}'
         inputs_dict = {}
         coupled_inputs = []
@@ -657,10 +657,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0]
+
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 

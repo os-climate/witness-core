@@ -18,7 +18,7 @@ import pandas as pd
 from os.path import join, dirname
 
 from sos_trades_core.study_manager.study_manager import StudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import Study as witness_optim_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_process.usecase_witness_optim import Study as witness_optim_usecase
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 
@@ -40,7 +40,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict = {}
         scenario_list = []
-        alpha_list = np.linspace(0, 125, 5, endpoint=True)
+        alpha_list = np.linspace(0, 125, 6, endpoint=True)
         for alpha_i in alpha_list:
             scenario_i = f'scenario_policy={alpha_i}%'
             scenario_i = scenario_i.replace('.', ',')
@@ -49,7 +49,7 @@ class Study(ClimateEconomicsStudyManager):
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.ccs_price_percentage'] = alpha_i
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 5
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 6
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
 
