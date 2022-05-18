@@ -58,7 +58,7 @@ class LandUseV2Discipline(SoSDiscipline):
                LandUseV2.FOREST_SURFACE_DF: {
                    'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV2.LAND_USE_CONSTRAINT_REF: {
-                   'type': 'float', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
                LandUseV2.UNUSED_FOREST: {'type': 'float', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'default': initial_unsused_forest_surface, 'namespace': 'ns_witness'},
                }
 
