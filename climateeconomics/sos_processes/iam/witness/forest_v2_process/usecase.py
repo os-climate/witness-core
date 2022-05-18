@@ -133,7 +133,7 @@ class Study(StudyManager):
                             # year
                             # for a tree of 50 year, for 6.2tCO2/ha/year
                             # it should be 3.49
-                            'CO2_from_production':0.0,
+                            'CO2_from_production': 0.0,
                             'CO2_from_production_unit': 'kg/kg'
                             }
         invest_before_year_start = pd.DataFrame(
@@ -152,8 +152,6 @@ class Study(StudyManager):
         margin_df = pd.DataFrame(
             {"years": years, "margin": margin})
         initial_protected_forest_surface = 4 * 0.21
-        initial_unmanaged_forest_surface = 4 - \
-            1.25 - initial_protected_forest_surface
 
         deforest_invest = np.linspace(10, 1, year_range)
         deforest_invest_df = pd.DataFrame(
@@ -197,20 +195,21 @@ class Study(StudyManager):
         forest_input[self.study_name + self.forest_name +
                      '.protected_forest_surface'] = initial_protected_forest_surface
         forest_input[self.study_name + self.forest_name +
-                     '.initial_unmanaged_forest_surface'] = initial_unmanaged_forest_surface
-        forest_input[self.study_name + self.forest_name +
                      '.deforestation_cost_per_ha'] = deforestation_cost_per_ha
         forest_input[self.study_name + self.forest_name +
                      '.deforestation_investment'] = deforest_invest_df
 
         setup_data_list.append(forest_input)
 
-        deforestation_surface_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
+        deforestation_investment_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
         forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
+        managed_wood_investment_array_mix = np.linspace(
+            5.0, 8.0, self.nb_poles)
 
         design_space_ctrl_dict = {}
-        design_space_ctrl_dict['deforested_surface_ctrl'] = deforestation_surface_ctrl
+        design_space_ctrl_dict['deforestation_investment_ctrl'] = deforestation_investment_ctrl
         design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
+        design_space_ctrl_dict['managed_wood_investment_array_mix'] = managed_wood_investment_array_mix
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
