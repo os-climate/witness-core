@@ -192,7 +192,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'data_fuel_dict': {'type': 'dict', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                            'namespace': 'ns_biomass_dry', 'default': BiomassDry.data_energy_dict,
                            'unit': 'defined in dict'},
-        'techno_infos_dict': {'type': 'dict',
+        'techno_infos_dict': {'type': 'dict', 'unit': 'defined in dict',
                               'default': techno_infos_dict_default},
         'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
         'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
