@@ -83,7 +83,8 @@ class MacroeconomicsTestCase(unittest.TestCase):
         model_name = 'Macreconomics'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness':  f'{name}'}
+                   'ns_witness':  f'{name}', 
+                   'ns_macro': f'{name}.{model_name}' }
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
