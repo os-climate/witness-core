@@ -144,6 +144,10 @@ class Study(StudyManager):
             {"years": years, "investment": mw_invest})
         self.crop_investment = pd.DataFrame(
             {'years': years, 'investment': crop_invest})
+        deforest_invest = np.linspace(10, 1, year_range)
+        deforest_invest_df = pd.DataFrame(
+            {"years": years, "investment": deforest_invest})
+
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -169,14 +173,10 @@ class Study(StudyManager):
             f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
             f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
             f'{self.study_name}.{energy_name}.Forest.managed_wood_investment': self.mw_invest_df,
-            f'{self.study_name}.{energy_name}.Forest.unmanaged_wood_investment': self.uw_invest_df,
+            f'{self.study_name}.{energy_name}.Forest.deforestation_investment': deforest_invest_df,
             f'{self.study_name}.population_df': population_df,
             f'{self.study_name}.temperature_df': temperature_df
         }
-        dc_forest = datacase_forest(
-            self.year_start, self.year_end, time_step=1, name='.AgricultureMix.Forest')
-        dc_forest.study_name = self.study_name
-        forest_input_list = dc_forest.setup_usecase()
 
         red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
         white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
@@ -205,7 +205,7 @@ class Study(StudyManager):
         self.design_space_ctrl = design_space_ctrl
         self.dspace = self.setup_design_space_ctrl_new()
 
-        return ([values_dict] + forest_input_list)
+        return ([values_dict])
 
     def setup_design_space_ctrl_new(self):
         # Design Space

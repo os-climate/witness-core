@@ -239,27 +239,43 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         if 'sector output' in chart_list:
 
-            to_plot = production_df['output']
+            to_plot = ['output', 'output_net_of_damage']
+            #economics_df = discipline.get_sosdisc_outputs('economics_df')
+
+            legend = {'output': 'sector gross output',
+                      'output_net_of_damage': 'world output net of damage'}
 
             years = list(production_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
 
-            min_value, max_value = self.get_greataxisrange(to_plot)
+            max_values = {}
+            min_values = {}
+            for key in to_plot:
+                min_values[key], max_values[key] = self.get_greataxisrange(
+                   production_df[to_plot])
 
-            chart_name = 'Service sector economics output'
+            min_value = min(min_values.values())
+            max_value = max(max_values.values())
+
+            chart_name = 'Agriculture sector economics output'
 
             new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion dollars]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
 
-            visible_line = True
-            ordonate_data = list(to_plot)
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'world output [trillion $]', 'lines', visible_line)
-            new_chart.series.append(new_series)
+            for key in to_plot:
+                visible_line = True
+
+                ordonate_data = list(production_df[key])
+
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, legend[key], 'lines', visible_line)
+
+                new_chart.series.append(new_series)
+
             instanciated_charts.append(new_chart)
 
         if 'usable capital' in chart_list:

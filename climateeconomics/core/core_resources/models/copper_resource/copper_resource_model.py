@@ -99,7 +99,7 @@ class CopperResourceModel(ResourceModel):
         # self.use_stock = self.use_stock.loc[self.use_stock['years']>= self.year_start]
         # self.use_stock= self.use_stock.loc[self.use_stock['years']<= self.year_end]
 
-        available_resource = deepcopy(self.use_stock[self.sub_resource_list[0]].values[self.lifespan:])  
+        available_resource = deepcopy(self.use_stock[self.sub_resource_list[0]].values)  
         available_resource_limited = compute_func_with_exp_min(
             np.array(available_resource), 1.0e-10)
       
@@ -144,7 +144,7 @@ class CopperResourceModel(ResourceModel):
             np.array(demand), 1.0e-10)
         # self.use_stock = self.use_stock.loc[self.use_stock['years']>= self.year_start]
         # self.use_stock= self.use_stock.loc[self.use_stock['years']<= self.year_end]
-        available_resource = deepcopy(self.use_stock[self.sub_resource_list[0]].values[self.lifespan:])  
+        available_resource = deepcopy(self.use_stock[self.sub_resource_list[0]].values)  
         available_resource_limited = compute_func_with_exp_min(
             np.array(available_resource), 1.0e-10)   
 
