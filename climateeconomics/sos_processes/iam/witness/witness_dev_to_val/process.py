@@ -14,12 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from copy import deepcopy
 
-DEFAULT_TECHNO_DICT = DEFAULT_TECHNO_DICT_DEV
-DEFAULT_TECHNO_DICT['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
+
+DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
+streams_to_add=[]
+technos_to_add = ['Methanation', 'PlasmaCracking', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis', 'BiogasFired',
+                  'OilGen', 'BiomassFired', 'flue_gas_capture.ChilledAmmoniaProcess', 'flue_gas_capture.CO2Membranes',
+                  'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption', 'BiomassBuryingFossilization',
+                  'DeepOceanInjection', 'EnhancedOilRecovery', 'PureCarbonSolidStorage']
+for key in DEFAULT_TECHNO_DICT_DEV.keys():
+    if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
+        DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
+    for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
+        if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
+            DEFAULT_TECHNO_DICT[key]['value']+=[value,]
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
@@ -31,7 +43,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         'version': '',
     }
 
-    def __init__(self, ee, process_level='dev'):
+    def __init__(self, ee, process_level='val'):
         WITNESSSubProcessBuilder.__init__(
             self, ee)
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
@@ -47,18 +59,18 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         chain_builders_witness_val = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam', 'witness_wo_energy')
         i_disc_to_pop, i_disc_to_add = [], []
-        for i, disc in enumerate(chain_builders_witness_dev):
-            if 'Agriculture' in disc.sos_name or 'Land' in disc.sos_name:
-                i_disc_to_pop += [i,]
         for i, disc in enumerate(chain_builders_witness_val):
-            if 'Land' in disc.sos_name:
+            if 'Resources' in disc.sos_name:
+                i_disc_to_pop += [i,]
+        for i, disc in enumerate(chain_builders_witness_dev):
+            if 'Resources' in disc.sos_name:
                 i_disc_to_add += [i,]
         i_disc_to_pop.sort(reverse=True)
         for i in i_disc_to_pop:
-            chain_builders_witness_dev.pop(i)
+            chain_builders_witness_val.pop(i)
         for i in i_disc_to_add:
-            chain_builders_witness_dev.append(chain_builders_witness_val[i])
-        chain_builders.extend(chain_builders_witness_dev)
+            chain_builders_witness_val.append(chain_builders_witness_dev[i])
+        chain_builders.extend(chain_builders_witness_val)
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
@@ -68,11 +80,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
             techno_dict=techno_dict, invest_discipline=self.invest_discipline)
 
-        if self.process_level == 'dev':
-            for i, disc in enumerate(chain_builders_energy):
-                if disc.sos_name == 'Resources':
-                    i_disc_to_pop = i
-            chain_builders_energy.pop(i_disc_to_pop)
+        i_disc_to_pop = []
+        for i, disc in enumerate(chain_builders_energy):
+            if disc.sos_name == 'Resources':
+                i_disc_to_pop += [i,]
+        i_disc_to_pop.sort(reverse=True)
+        for i in i_disc_to_pop:
+            chain_builders_energy.pop(i)
         chain_builders.extend(chain_builders_energy)
 
         # Update namespace regarding land use and energy mix coupling

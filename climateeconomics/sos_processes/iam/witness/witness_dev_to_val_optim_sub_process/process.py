@@ -20,7 +20,6 @@ from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INV
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
-
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
     # ontology information
