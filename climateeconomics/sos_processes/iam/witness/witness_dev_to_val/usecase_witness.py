@@ -132,11 +132,11 @@ class Study(ClimateEconomicsStudyManager):
         # setup objectives
         self.func_df = pd.concat(
             [dc_witness_val.setup_objectives(), dc_witness_val.setup_constraints(), self.dc_energy.setup_constraints(), self.dc_energy.setup_objectives(), land_use_df_constraint])
-        self.func_df.loc['variable'=='invest_sum_cons']['weight']=0.0
-        self.func_df.loc['variable' == 'delta_capital_constraint']['weight'] = 0.0
-        self.func_df.loc['variable' == 'emax_enet_constraint']['weight'] = 0.0
-        self.func_df.loc['variable' == 'delta_capital_lintoquad']['weight'] = -1.0
-        self.func_df.loc['variable' == 'invest_sum_eq_cons']['weight'] = -1.0
+        self.func_df.loc[self.func_df['variable']=='invest_sum_cons']['weight']=0.0
+        self.func_df.loc[self.func_df['variable'] == 'delta_capital_constraint']['weight'] = 0.0
+        self.func_df.loc[self.func_df['variable'] == 'emax_enet_constraint']['weight'] = 0.0
+        self.func_df.loc[self.func_df['variable'] == 'delta_capital_lintoquad']['weight'] = -1.0
+        self.func_df.loc[self.func_df['variable'] == 'invest_sum_eq_cons']['weight'] = -1.0
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
         self.dict_technos = self.dc_energy.dict_technos
