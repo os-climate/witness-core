@@ -27,7 +27,7 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
     """
     Copper resource jacobian test class
     """
-    np.set_printoptions(threshold=np.inf)
+    #np.set_printoptions(threshold=np.inf)
 
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
@@ -41,8 +41,10 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2220
-        self.year_end = 2260
+        self.year_start = 2020
+        self.year_end = 2100
+
+        self.lifespan =5
 
         data_dir = join(dirname(__file__), 'data')
 
@@ -50,6 +52,8 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=['years','copper_resource'])
         self.energy_copper_variable_demand_df = read_csv(
             join(data_dir, 'all_demand_variable.csv'), usecols=['years','copper_resource'])
+        self.consumed_copper_df = read_csv(
+            join(data_dir, 'copper_resource_consumed_data.csv'))
         # part to adapt lenght to the year range
         
 
@@ -88,7 +92,10 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_copper_demand_df,
+                       # f'{self.name}.{self.model_name}.lifespan': self.lifespan,
+                       # f'{self.name}.{self.model_name}.resource_consumed_data' : self.consumed_copper_df,
                        }
+                       
         self.ee.load_study_from_input_dict(inputs_dict)
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
@@ -98,8 +105,8 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
                                 f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                      #f'{self.name}.{self.model_name}.resource_price',
-                                     #f'{self.name}.{self.model_name}.use_stock',
-                                     #f'{self.name}.{self.model_name}.predictable_production'
+                                     f'{self.name}.{self.model_name}.use_stock',
+                                     f'{self.name}.{self.model_name}.predictable_production'
                                      ])
         
     def _test_copper_resource_damand_variable_analytic_grad(self):
@@ -126,7 +133,9 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.{self.model_name}.resources_demand': self.energy_copper_variable_demand_df
+                       f'{self.name}.{self.model_name}.resources_demand': self.energy_copper_variable_demand_df,
+                       f'{self.name}.{self.model_name}.lifespan': self.lifespan,
+                       f'{self.name}.{self.model_name}.resource_consumed_data' : self.consumed_copper_df,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -137,8 +146,8 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
                                 f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                     # # #  f'{self.name}.{self.model_name}.resource_price',
-                                    # # #  f'{self.name}.{self.model_name}.use_stock',
-                                    # # #  f'{self.name}.{self.model_name}.predictable_production'
+                                     f'{self.name}.{self.model_name}.use_stock',
+                                     f'{self.name}.{self.model_name}.predictable_production'
                                     ])
                     
 if __name__ =="__main__" :
