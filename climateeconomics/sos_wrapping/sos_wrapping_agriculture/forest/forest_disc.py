@@ -107,7 +107,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         # + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
                         # 1USD = 0,87360 euro in 2019
                         'managed_wood_price_per_ha': 13047,
-                        'Price_per_ha_unit': 'euro/ha',
+                        'Price_per_ha_unit': '$/ha',
                         'full_load_hours': 8760.0,
                         'euro_dollar': 1.1447,  # in 2019, date of the paper
                         'percentage_production': 0.52,
@@ -128,7 +128,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         'WACC': 0.07,
                         # CO2 from production from tractor is taken
                         # into account into the energy net factor
-                        # land CO2 absorption is computed in land_emission with the CO2_per_ha parameter
+                        # land CO2 absorption is computed in land_emission with
+                        # the CO2_per_ha parameter
                         'CO2_from_production': 0.0,
                         'CO2_from_production_unit': 'kg/kg'}
 
@@ -332,7 +333,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             d_forest_surface_d_invest)
         d_mw_surface_d_invest = self.forest_model.d_wood_techno_surface_d_invest(
             mw_price_per_ha)
-        d_cum_mw_surface_d_invest = self.forest_model.d_cum(
+        d_cum_mw_surface_d_invest = self.forest_model.d_cum_managed_forest(
             d_mw_surface_d_invest)
 
         # forest surface vs deforestation grad
@@ -364,6 +365,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
         # forest surface vs managed wood invest
         self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
             'managed_wood_investment', 'investment'), d_cum_mw_surface_d_invest)
+
+        d_land_use_d_deforest_invest = self.forest_model.d_mw_surf_d_deforest_invest()
+        self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
+            Forest.DEFORESTATION_INVESTMENT, 'investment'), d_land_use_d_deforest_invest)
 
         # d_CO2 d deforestation
         d_CO2_emitted_d_deforestation_surface = self.forest_model.d_CO2_emitted(
@@ -405,14 +410,19 @@ class ForestDiscipline(ClimateEcoDiscipline):
         # d biomass prod d deforestation invest
         d_biomass_prod_d_deforestation = self.forest_model.d_biomass_prod_d_deforestation_invest(
             d_deforestation_surface_d_deforestation_investment)
+        d_biomass_residues_d_deforest_invest = self.forest_model.d_biomass_prod_d_invest(
+            d_land_use_d_deforest_invest, residue_percentage, residue_percentage_for_energy)
+        d_biomass_wood_d_deforest_invest = self.forest_model.d_biomass_prod_d_invest(
+            d_land_use_d_deforest_invest, wood_percentage, wood_percentage_for_energy)
+        B = d_biomass_residues_d_deforest_invest + d_biomass_wood_d_deforest_invest
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
-                                                    d_biomass_prod_d_deforestation * calorific_value / scaling_factor_techno_production)
+                                                    (d_biomass_prod_d_deforestation + B) * calorific_value / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
                                                     -CO2_from_production / high_calorific_value *
-                                                    d_biomass_prod_d_deforestation * calorific_value / scaling_factor_techno_consumption)
+                                                    (d_biomass_prod_d_deforestation + B) * calorific_value / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
                                                     -CO2_from_production / high_calorific_value *
-                                                    d_biomass_prod_d_deforestation * calorific_value / scaling_factor_techno_consumption)
+                                                    (d_biomass_prod_d_deforestation + B) * calorific_value / scaling_factor_techno_consumption)
         # d biomass price d MW invest
         d_biomass_price_d_mw_invest = self.forest_model.d_biomass_price_d_invest_mw(
             mw_price_per_ha)
@@ -422,8 +432,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'managed_wood_investment', 'investment'), d_biomass_price_d_mw_invest)
 
         # d biomass price d deforest invest
-        d_biomass_price_d_invest_deforest = self.forest_model.d_biomass_price_d_invest_deforest(
-            d_biomass_prod_d_deforestation)
+        d_biomass_price_d_invest_deforest = self.forest_model.d_biomass_price_d_invest_deforest_limit(
+            d_biomass_prod_d_deforestation, B)
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_biomass_price_d_invest_deforest)
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (
@@ -436,28 +446,23 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_wood_prod_d_forest_invest = self.forest_model.d_biomass_prod_d_invest_reforestation(
             d_mw_surf_d_reforest_invest, wood_percentage, wood_percentage_for_energy)
         d_residue_prod_d_forest_invest = self.forest_model.d_biomass_prod_d_invest_reforestation(
-            d_mw_surf_d_reforest_invest, residue_percentage, wood_percentage_for_energy)
-#         self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
-#             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_mw_surf_d_reforest_invest)
-#         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
-#                                                     (d_wood_prod_d_forest_invest + d_residue_prod_d_forest_invest) * calorific_value /
-#                                                     scaling_factor_techno_production)
-#         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
-#                                                     -CO2_from_production / high_calorific_value *
-#                                                     (d_wood_prod_d_forest_invest + d_residue_prod_d_forest_invest) * calorific_value / scaling_factor_techno_consumption)
-#         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
-#                                                     -CO2_from_production / high_calorific_value *
-#                                                     (d_wood_prod_d_forest_invest + d_residue_prod_d_forest_invest) * calorific_value / scaling_factor_techno_consumption)
+            d_mw_surf_d_reforest_invest, residue_percentage,
+            wood_percentage_for_energy)
+        d_biomass_prod_d_reforest_invest = d_wood_prod_d_forest_invest + \
+            d_residue_prod_d_forest_invest
 
-        # d price d invest reforestation
-#         dprice_dreforest_invest = self.forest_model.d_biomass_price_d_invest_reforestation(
-#             mw_price_per_ha, (d_wood_prod_d_forest_invest + d_residue_prod_d_forest_invest) * calorific_value /
-#             scaling_factor_techno_production)
-#         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (
-#             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dprice_dreforest_invest)
-#         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (
-#             Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
-#             dprice_dreforest_invest)
+        d_land_use_d_deforest_invest = self.forest_model.d_mw_surf_d_deforest_invest()
+        self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_mw_surf_d_reforest_invest)
+
+        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+                                                    d_biomass_prod_d_reforest_invest * calorific_value / scaling_factor_techno_production)
+        self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+                                                    -CO2_from_production / high_calorific_value *
+                                                    d_biomass_prod_d_reforest_invest * calorific_value / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+                                                    -CO2_from_production / high_calorific_value *
+                                                    d_biomass_prod_d_reforest_invest * calorific_value / scaling_factor_techno_consumption)
 
     def get_chart_filter_list(self):
 
@@ -726,20 +731,26 @@ class ForestDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             # capital graph
-            tehcno_capital_df = self.get_sosdisc_outputs('techno_capital')
+            techno_capital_df = self.get_sosdisc_outputs('techno_capital')
             lost_capital_df = self.get_sosdisc_outputs('non_use_capital')
             new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
                                                  chart_name='Non use capital due to deforestation<br>and reforestation vs total capital', stacked_bar=True)
-            total_capital = tehcno_capital_df['Forest']
-            lost_capital = lost_capital_df['Forest']
+            total_capital = techno_capital_df['Forest']  # + \
+            # techno_capital_df['Managed_wood']
+            lost_capital_forest = lost_capital_df['Forest']
+            #lost_capital_mw = lost_capital_df['Managed_wood']
 
             total_capital_series = InstanciatedSeries(
                 years, total_capital.tolist(), 'Total capital', InstanciatedSeries.LINES_DISPLAY)
-            lost_capital_series = InstanciatedSeries(
-                years, lost_capital.tolist(), 'Non use capital', InstanciatedSeries.BAR_DISPLAY)
+            lost_capital_forest_series = InstanciatedSeries(
+                years, lost_capital_forest.tolist(), 'Non use capital Forest', InstanciatedSeries.BAR_DISPLAY)
+#             lost_capital_mw_series = InstanciatedSeries(
+# years, lost_capital_mw.tolist(), 'Non use capital Managed wood',
+# InstanciatedSeries.BAR_DISPLAY)
 
             new_chart.add_series(total_capital_series)
-            new_chart.add_series(lost_capital_series)
+            new_chart.add_series(lost_capital_forest_series)
+            # new_chart.add_series(lost_capital_mw_series)
             instanciated_charts.append(new_chart)
 
         return instanciated_charts

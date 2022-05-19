@@ -173,7 +173,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
             new_series = InstanciatedSeries(
                     years, list(simu), 'simulated values', 'lines', visible_line)
-
+            new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
         
         if 'Total capital' in chart_list:

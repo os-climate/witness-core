@@ -144,6 +144,10 @@ class Study(StudyManager):
             {"years": years, "investment": mw_invest})
         self.crop_investment = pd.DataFrame(
             {'years': years, 'investment': crop_invest})
+        deforest_invest = np.linspace(10, 1, year_range)
+        deforest_invest_df = pd.DataFrame(
+            {"years": years, "investment": deforest_invest})
+
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -169,18 +173,14 @@ class Study(StudyManager):
             f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
             f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
             f'{self.study_name}.{energy_name}.Forest.managed_wood_investment': self.mw_invest_df,
-            f'{self.study_name}.{energy_name}.Forest.unmanaged_wood_investment': self.uw_invest_df,
+            f'{self.study_name}.{energy_name}.Forest.deforestation_investment': deforest_invest_df,
             f'{self.study_name}.population_df': population_df,
             f'{self.study_name}.temperature_df': temperature_df
         }
-        dc_forest = datacase_forest(
-            self.year_start, self.year_end, time_step=1, name='.AgricultureMix.Forest')
-        dc_forest.study_name = self.study_name
-        forest_input_list = dc_forest.setup_usecase()
 
         red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
         white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
-        deforestation_surface_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
+        deforestation_investment_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
         forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
         crop_investment_array_mix = np.linspace(1.0, 1.5, self.nb_poles)
         managed_wood_investment_array_mix = np.linspace(
@@ -191,7 +191,7 @@ class Study(StudyManager):
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
         design_space_ctrl_dict['white_meat_percentage_ctrl'] = white_meat_percentage_ctrl
-        design_space_ctrl_dict['deforested_surface_ctrl'] = deforestation_surface_ctrl
+        design_space_ctrl_dict['deforestation_investment_ctrl'] = deforestation_investment_ctrl
         design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
 
         if 'CropEnergy' in self.techno_list:
@@ -205,7 +205,7 @@ class Study(StudyManager):
         self.design_space_ctrl = design_space_ctrl
         self.dspace = self.setup_design_space_ctrl_new()
 
-        return ([values_dict] + forest_input_list)
+        return ([values_dict])
 
     def setup_design_space_ctrl_new(self):
         # Design Space
@@ -221,8 +221,8 @@ class Study(StudyManager):
         update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
                                 list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
-        update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
-                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        update_dspace_dict_with(ddict, 'deforestation_investment_ctrl',
+                                list(self.design_space_ctrl['deforestation_investment_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         # -----------------------------------------
         # Invests
         update_dspace_dict_with(ddict, 'forest_investment_array_mix',

@@ -21,9 +21,10 @@ from climateeconomics.sos_processes.iam.witness.witness_dev_to_val_optim_sub_pro
 from climateeconomics.sos_processes.iam.witness.witness_dev_to_val_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from sos_trades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from copy import deepcopy
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -33,8 +34,18 @@ FUNC_DF = FunctionManagerDisc.FUNC_DF
 EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 
-DEFAULT_TECHNO_DICT = DEFAULT_TECHNO_DICT_DEV
-DEFAULT_TECHNO_DICT['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
+DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
+streams_to_add=[]
+technos_to_add = ['Methanation', 'PlasmaCracking', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis', 'BiogasFired',
+                  'OilGen', 'BiomassFired', 'flue_gas_capture.ChilledAmmoniaProcess', 'flue_gas_capture.CO2Membranes',
+                  'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption', 'BiomassBuryingFossilization',
+                  'DeepOceanInjection', 'EnhancedOilRecovery', 'PureCarbonSolidStorage']
+for key in DEFAULT_TECHNO_DICT_DEV.keys():
+    if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
+        DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
+    for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
+        if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
+            DEFAULT_TECHNO_DICT[key]['value']+=[value,]
 
 class Study(ClimateEconomicsStudyManager):
 

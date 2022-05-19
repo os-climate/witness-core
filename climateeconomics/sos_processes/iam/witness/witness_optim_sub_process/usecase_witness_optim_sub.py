@@ -29,7 +29,8 @@ EXTRA_NAME = "WITNESS"
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[
+                     2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -81,169 +82,158 @@ class Study(ClimateEconomicsStudyManager):
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = dspace_df[f'{energy}.{energy_wo_dot}_array_mix']['value']
                 design_var_descriptor[f'{energy}.{energy_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                            'out_type': 'dataframe',
-                                                                            'key': f'{energy}',
-                                                                            'index': years,
-                                                                            'index_name': 'years',
-                                                                            'namespace_in': 'ns_energy_mix',
-                                                                            'namespace_out': 'ns_invest'
-                                                                            }
+                                                                                'out_type': 'dataframe',
+                                                                                'key': f'{energy}',
+                                                                                'index': years,
+                                                                                'index_name': 'years',
+                                                                                'namespace_in': 'ns_energy_mix',
+                                                                                'namespace_out': 'ns_invest'
+                                                                                }
 
             for technology in self.witness_uc.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[
                     f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                                                             'out_type': 'dataframe',
-                                                                                                             'key': f'{energy}.{technology}',
-                                                                                                             'index': years,
-                                                                                                             'index_name': 'years',
-                                                                                                             'namespace_in': 'ns_energy_mix',
-                                                                                                             'namespace_out': 'ns_invest'
-                                                                                                             }
+                                                                                                                 'out_type': 'dataframe',
+                                                                                                                 'key': f'{energy}.{technology}',
+                                                                                                                 'index': years,
+                                                                                                                 'index_name': 'years',
+                                                                                                                 'namespace_in': 'ns_energy_mix',
+                                                                                                                 'namespace_out': 'ns_invest'
+                                                                                                                 }
 
         for ccs in self.witness_uc.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = dspace_df[f'{ccs}.{ccs_wo_dot}_array_mix']['value']
                 design_var_descriptor[f'{ccs}.{ccs_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                      'out_type': 'dataframe',
-                                                                      'key': f'{ccs}',
-                                                                      'index': years,
-                                                                      'index_name': 'years',
-                                                                      'namespace_in': 'ns_ccs',
-                                                                      'namespace_out': 'ns_invest'
-                                                                      }
+                                                                          'out_type': 'dataframe',
+                                                                          'key': f'{ccs}',
+                                                                          'index': years,
+                                                                          'index_name': 'years',
+                                                                          'namespace_in': 'ns_ccs',
+                                                                          'namespace_out': 'ns_invest'
+                                                                          }
 
             for technology in self.witness_uc.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[
                     f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                                                       'out_type': 'dataframe',
-                                                                                                       'key': f'{ccs}.{technology}',
-                                                                                                       'index': years,
-                                                                                                       'index_name': 'years',
-                                                                                                       'namespace_in': 'ns_ccs',
-                                                                                                       'namespace_out': 'ns_invest'
-                                                                                                       }
+                                                                                                           'out_type': 'dataframe',
+                                                                                                           'key': f'{ccs}.{technology}',
+                                                                                                           'index': years,
+                                                                                                           'index_name': 'years',
+                                                                                                           'namespace_in': 'ns_ccs',
+                                                                                                           'namespace_out': 'ns_invest'
+                                                                                                           }
 
         if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
             dv_arrays_dict[f'{self.witness_uc.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array']['value']
 
-
         if self.process_level == 'dev':
             dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']
             design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
-                                                        'out_type': 'dataframe',
-                                                        'key': 'forest_investment',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_invest'
-                                                        }
+                                                                    'out_type': 'dataframe',
+                                                                    'key': 'forest_investment',
+                                                                    'index': years,
+                                                                    'index_name': 'years',
+                                                                    'namespace_in': 'ns_witness',
+                                                                    'namespace_out': 'ns_invest'
+                                                                    }
             if 'CropEnergy' in self.agri_techno_list:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = dspace_df[f'crop_investment_array_mix']['value']
                 design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
-                                                            'out_type': 'dataframe',
-                                                            'key': 'investment',
-                                                            'index': years,
-                                                            'index_name': 'years',
-                                                            'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_crop'
-                                                            }
+                                                                      'out_type': 'dataframe',
+                                                                      'key': 'investment',
+                                                                      'index': years,
+                                                                      'index_name': 'years',
+                                                                      'namespace_in': 'ns_witness',
+                                                                      'namespace_out': 'ns_crop'
+                                                                      }
             if 'ManagedWood' in self.agri_techno_list:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.managed_wood_investment_array_mix'] = dspace_df[f'managed_wood_investment_array_mix']['value']
                 design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
-                                                            'out_type': 'dataframe',
-                                                            'key': 'investment',
-                                                            'index': years,
-                                                            'index_name': 'years',
-                                                            'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_forest'
-                                                            }
-            if 'UnmanagedWood' in self.agri_techno_list:
-                dv_arrays_dict[f'{self.witness_uc.study_name}.unmanaged_wood_investment_array_mix'] = dspace_df[f'unmanaged_wood_investment_array_mix']['value']
-                design_var_descriptor['unmanaged_wood_investment_array_mix'] = {'out_name': 'unmanaged_wood_investment',
-                                                            'out_type': 'dataframe',
-                                                            'key': 'investment',
-                                                            'index': years,
-                                                            'index_name': 'years',
-                                                            'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_forest'
-                                                            }
-            dv_arrays_dict[f'{self.witness_uc.study_name}.deforested_surface_ctrl'] = dspace_df[f'deforested_surface_ctrl']['value']
-            design_var_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforestation_surface',
-                                                            'out_type': 'dataframe',
-                                                            'key': 'deforested_surface',
-                                                            'index': years,
-                                                            'index_name': 'years',
-                                                            'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_witness'}
+                                                                              'out_type': 'dataframe',
+                                                                              'key': 'investment',
+                                                                              'index': years,
+                                                                              'index_name': 'years',
+                                                                              'namespace_in': 'ns_witness',
+                                                                              'namespace_out': 'ns_forest'
+                                                                              }
+            dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_array_mix'] = dspace_df[f'deforestation_investment_array_mix']['value']
+            design_var_descriptor['deforestation_investment_array_mix'] = {'out_name': 'deforestation_investment',
+                                                                           'out_type': 'dataframe',
+                                                                           'key': 'investment',
+                                                                           'index': years,
+                                                                           'index_name': 'years',
+                                                                           'namespace_in': 'ns_witness',
+                                                                           'namespace_out': 'ns_forest'
+                                                                           }
             dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = dspace_df[f'red_meat_percentage_ctrl']['value']
             design_var_descriptor['red_meat_percentage_ctrl'] = {'out_name': 'red_meat_percentage',
-                                                        'out_type': 'dataframe',
-                                                            'key': 'red_meat_percentage',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_crop'
-                                                        }
+                                                                 'out_type': 'dataframe',
+                                                                 'key': 'red_meat_percentage',
+                                                                 'index': years,
+                                                                 'index_name': 'years',
+                                                                 'namespace_in': 'ns_witness',
+                                                                 'namespace_out': 'ns_crop'
+                                                                 }
             dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_percentage_ctrl'] = dspace_df[f'white_meat_percentage_ctrl']['value']
             design_var_descriptor['white_meat_percentage_ctrl'] = {'out_name': 'white_meat_percentage',
-                                                            'out_type': 'dataframe',
-                                                            'key': 'white_meat_percentage',
-                                                            'index': years,
-                                                            'index_name': 'years',
-                                                            'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_crop'
-                                                            }
+                                                                   'out_type': 'dataframe',
+                                                                   'key': 'white_meat_percentage',
+                                                                   'index': years,
+                                                                   'index_name': 'years',
+                                                                   'namespace_in': 'ns_witness',
+                                                                   'namespace_out': 'ns_crop'
+                                                                   }
         else:
             dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']
             design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
-                                                        'out_type': 'dataframe',
-                                                        'key': 'forest_investment',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_invest'
-                                                        }
+                                                                    'out_type': 'dataframe',
+                                                                    'key': 'forest_investment',
+                                                                    'index': years,
+                                                                    'index_name': 'years',
+                                                                    'namespace_in': 'ns_witness',
+                                                                    'namespace_out': 'ns_invest'
+                                                                    }
             dv_arrays_dict[f'{self.witness_uc.study_name}.deforested_surface_ctrl'] = dspace_df[f'deforested_surface_ctrl']['value']
             design_var_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforestation_surface',
-                                                            'out_type': 'dataframe',
-                                                            'key': 'deforested_surface',
-                                                            'index': years,
-                                                            'index_name': 'years',
-                                                            'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_witness'}
+                                                                'out_type': 'dataframe',
+                                                                'key': 'deforested_surface',
+                                                                'index': years,
+                                                                'index_name': 'years',
+                                                                'namespace_in': 'ns_witness',
+                                                                'namespace_out': 'ns_witness'}
             dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = dspace_df[f'red_meat_percentage_ctrl']['value']
             design_var_descriptor['red_meat_percentage_ctrl'] = {'out_name': 'red_meat_percentage',
-                                                        'out_type': 'dataframe',
-                                                            'key': 'red_meat_percentage',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_agriculture'
-                                                        }
+                                                                 'out_type': 'dataframe',
+                                                                 'key': 'red_meat_percentage',
+                                                                 'index': years,
+                                                                 'index_name': 'years',
+                                                                 'namespace_in': 'ns_witness',
+                                                                 'namespace_out': 'ns_agriculture'
+                                                                 }
             dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_percentage_ctrl'] = dspace_df[f'white_meat_percentage_ctrl']['value']
             design_var_descriptor['white_meat_percentage_ctrl'] = {'out_name': 'white_meat_percentage',
-                                                            'out_type': 'dataframe',
-                                                            'key': 'white_meat_percentage',
-                                                            'index': years,
-                                                            'index_name': 'years',
-                                                            'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_agriculture'
-                                                            }
+                                                                   'out_type': 'dataframe',
+                                                                   'key': 'white_meat_percentage',
+                                                                   'index': years,
+                                                                   'index_name': 'years',
+                                                                   'namespace_in': 'ns_witness',
+                                                                   'namespace_out': 'ns_agriculture'
+                                                                   }
         dv_arrays_dict[f'{self.witness_uc.study_name}.share_energy_investment_ctrl'] = dspace_df[f'share_energy_investment_ctrl']['value']
         design_var_descriptor['share_energy_investment_ctrl'] = {'out_name': 'share_energy_investment',
-                                                        'out_type': 'dataframe',
-                                                        'key': 'share_investment',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_witness'
-                                                        }
-
+                                                                 'out_type': 'dataframe',
+                                                                 'key': 'share_investment',
+                                                                 'index': years,
+                                                                 'index_name': 'years',
+                                                                 'namespace_in': 'ns_witness',
+                                                                 'namespace_out': 'ns_witness'
+                                                                 }
 
         self.func_df = self.witness_uc.func_df
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df

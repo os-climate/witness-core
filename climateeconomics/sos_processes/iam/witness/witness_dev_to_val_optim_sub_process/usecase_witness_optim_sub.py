@@ -11,10 +11,11 @@ from sos_trades_core.execution_engine.func_manager.func_manager_disc import Func
 
 import pandas as pd
 import numpy as np
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from copy import deepcopy
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -25,15 +26,24 @@ OPTIM_NAME = "WITNESS_MDO"
 COUPLING_NAME = "WITNESS_Eval"
 EXTRA_NAME = "WITNESS"
 
-DEFAULT_TECHNO_DICT = DEFAULT_TECHNO_DICT_DEV
-DEFAULT_TECHNO_DICT['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
-
+DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
+streams_to_add=[]
+technos_to_add = ['Methanation', 'PlasmaCracking', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis', 'BiogasFired',
+                  'OilGen', 'BiomassFired', 'flue_gas_capture.ChilledAmmoniaProcess', 'flue_gas_capture.CO2Membranes',
+                  'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption', 'BiomassBuryingFossilization',
+                  'DeepOceanInjection', 'EnhancedOilRecovery', 'PureCarbonSolidStorage']
+for key in DEFAULT_TECHNO_DICT_DEV.keys():
+    if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
+        DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
+    for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
+        if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
+            DEFAULT_TECHNO_DICT[key]['value']+=[value,]
 
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=[],
-                 process_level='dev'):
+                 process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end

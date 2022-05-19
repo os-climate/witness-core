@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     #     np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
@@ -37,7 +37,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             self.test_forest_analytic_grad
         ]
 
-    def test_forest_analytic_grad(self):
+    def _test_forest_analytic_grad(self):
 
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
@@ -213,7 +213,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
-        deforestation_surface = np.array(np.linspace(10, 1, year_range))
+        deforestation_surface = np.array(np.linspace(4, 4, year_range))
         self.deforestation_surface_df = pd.DataFrame(
             {"years": years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
@@ -246,7 +246,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         mean_density = wood_percentage * wood_density + \
             residue_percentage * residues_density
-        years_between_harvest = 20
+        years_between_harvest = 25
 
         recycle_part = 0.52  # 52%
         self.managed_wood_techno_dict = {'maturity': 5,
@@ -281,7 +281,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             density_per_ha * mean_density * 3.6 / \
             years_between_harvest / (1 - recycle_part)  # in Twh
 
-        mw_invest = np.linspace(4000, 9800, year_range)
+        mw_invest = np.linspace(10000, 10000, year_range)
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
@@ -318,7 +318,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl',
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline_2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[
             f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
