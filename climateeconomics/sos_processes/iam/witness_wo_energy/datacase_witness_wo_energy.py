@@ -217,16 +217,16 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective',  'temperature_objective', 'CO2_objective', 'ppm_objective', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted'])
+            ['welfare_objective',  'temperature_objective', 'CO2_objective', 'ppm_objective', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted', 'negative_welfare_objective'])
         list_parent.extend(['utility_objective',
-                            'CO2_obj', 'CO2_obj', 'CO2_obj', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted'])
+                            'CO2_obj', 'CO2_obj', 'CO2_obj', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted', 'utility_objective'])
         list_ns.extend(['ns_functions',
-                        'ns_functions', 'ns_functions', 'ns_functions', 'ns_witness','ns_functions', 'ns_functions'])
+                        'ns_functions', 'ns_functions', 'ns_functions', 'ns_witness','ns_functions', 'ns_functions', 'ns_functions'])
         list_ftype.extend(
-            [OBJECTIVE,  OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1.0,  0.0, 1.0, 0.0, 0.0, 0.0, 0.0])
+            [OBJECTIVE,  OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
+        list_weight.extend([0.0,  0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM,  AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM,  AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
