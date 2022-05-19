@@ -18,6 +18,8 @@ limitations under the License.
 # Copyright (C) 2020 Airbus SAS.
 # All rights reserved.
 from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import GHGemissionsDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline import IndusemissionsDiscipline
 
 
 class ProcessBuilder(BaseProcessBuilder):
@@ -42,7 +44,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
                      'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
-                     'Carbon_emissions': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline',
                      'Damage': 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline',
                      'Temperature_change': 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange.tempchange_discipline.TempChangeDiscipline',
                      'Utility': 'climateeconomics.sos_wrapping.sos_wrapping_witness.utilitymodel.utilitymodel_discipline.UtilityModelDiscipline',
@@ -82,4 +83,13 @@ class ProcessBuilder(BaseProcessBuilder):
             mods_dict, ns_dict=ns_dict)
         builder_list.extend(non_use_capital_list)
 
+        '''
+        Add emissions disciplines
+        '''
+        mods_dict = {GHGemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline',
+                     IndusemissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline.IndusemissionsDiscipline'
+                     }
+        non_use_capital_list = self.create_builder_list(
+            mods_dict, ns_dict=ns_dict)
+        builder_list.extend(non_use_capital_list)
         return builder_list
