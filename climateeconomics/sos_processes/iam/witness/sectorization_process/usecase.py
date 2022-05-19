@@ -158,7 +158,7 @@ if '__main__' == __name__:
     # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
-
+    
     ppf = PostProcessingFactory()
     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
         filters = ppf.get_post_processing_filters_by_discipline(
