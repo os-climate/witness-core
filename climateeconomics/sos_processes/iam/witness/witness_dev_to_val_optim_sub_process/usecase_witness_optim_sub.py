@@ -28,7 +28,7 @@ EXTRA_NAME = "WITNESS"
 
 DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
 streams_to_add=[]
-technos_to_add = ['Methanation', 'PlasmaCracking', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis', 'BiogasFired',
+technos_to_add = ['PlasmaCracking', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis', 'BiogasFired',
                   'OilGen', 'BiomassFired', 'flue_gas_capture.ChilledAmmoniaProcess', 'flue_gas_capture.CO2Membranes',
                   'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption', 'BiomassBuryingFossilization',
                   'DeepOceanInjection', 'EnhancedOilRecovery', 'PureCarbonSolidStorage']
@@ -36,8 +36,11 @@ for key in DEFAULT_TECHNO_DICT_DEV.keys():
     if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
         DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
     for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
-        if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
-            DEFAULT_TECHNO_DICT[key]['value']+=[value,]
+        try:
+            if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
+                DEFAULT_TECHNO_DICT[key]['value']+=[value,]
+        except:
+            pass
 
 class Study(ClimateEconomicsStudyManager):
 
