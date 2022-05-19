@@ -60,6 +60,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'utility_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'welfare_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'negative_welfare_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'min_utility_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
@@ -89,11 +90,12 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             raise ValueError('obj_option = ' + str(obj_option) + ' not in ' +
                              str(self.DESC_IN['welfare_obj_option']['possible_values']))
         min_utility_objective = self.utility_m.compute_min_utility_objective()
-
+        negative_welfare_objective = self.utility_m.compute_negative_welfare_objective()
         # store output data
         dict_values = {'utility_df': utility_df,
                        'welfare_objective': welfare_objective,
                        'min_utility_objective': min_utility_objective,
+                       'negative_welfare_objective' : negative_welfare_objective
                        }
         self.store_sos_outputs_values(dict_values)
 
@@ -163,6 +165,18 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
                 ('welfare_objective',), ('energy_mean_price', 'energy_price'), np.dot(d_obj_d_welfare, d_welfare_d_energy_price))
         else:
             pass
+
+        d_neg_obj_d_welfare, x = self.utility_m.compute_gradient_negative_objective()
+        self.set_partial_derivative_for_other_types(
+            ('negative_welfare_objective',), ('population_df', 'population'), np.dot(d_neg_obj_d_welfare, d_welfare_d_population))
+        self.set_partial_derivative_for_other_types(
+            ('negative_welfare_objective',), ('economics_df', 'pc_consumption'),
+            np.dot(d_neg_obj_d_welfare, d_welfare_d_pc_consumption))
+        self.set_partial_derivative_for_other_types(
+            ('negative_welfare_objective',), ('energy_mean_price', 'energy_price'),
+            np.dot(d_neg_obj_d_welfare, d_welfare_d_energy_price))
+
+
         d_obj_d_discounted_utility, d_obj_d_period_utility_pc = self.utility_m.compute_gradient_min_utility_objective()
 
         self.set_partial_derivative_for_other_types(

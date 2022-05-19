@@ -168,6 +168,20 @@ class UtilityModel():
             pass
         return welfare_objective
 
+    def compute_negative_welfare_objective(self):
+        """
+        Compute welfare objective as - welfare / init_discounted_utility * n_years
+        """
+        n_years = len(self.years_range)
+
+        init_discounted_utility = self.init_discounted_utility
+        welfare = self.utility_df['welfare'][self.year_end]
+
+        self.welfare = welfare
+        welfare_objective = np.asarray(
+            [ - welfare / (init_discounted_utility * n_years)])
+        return welfare_objective
+
     def compute_min_utility_objective(self):
         """
         Objective function: inputs : alpha, gamma and discounted_utility_ref
@@ -310,6 +324,30 @@ class UtilityModel():
 
         else:
             pass
+
+        return d_obj_d_welfare, d_obj_d_period_utility_pc
+
+    def compute_gradient_negative_objective(self):
+        """
+
+        welfare = welfare / init_discounted_utility*n_years
+
+        """
+        years = self.years_range
+        period_utility_pc_0 = self.init_period_utility_pc
+        period_utility_pc_end = self.utility_df.at[self.year_end,
+                                                   'period_utility_pc']
+        init_discounted_utility = self.init_discounted_utility
+
+        n_years = len(years)
+
+        d_obj_d_period_utility_pc = np.zeros(len(years))
+        d_obj_d_welfare = np.zeros(len(years))
+
+        mask = np.append(np.zeros(len(years) - 1), np.array(1))
+        d_obj_d_welfare = -1.0 * mask /  (init_discounted_utility * n_years)
+
+
 
         return d_obj_d_welfare, d_obj_d_period_utility_pc
 
