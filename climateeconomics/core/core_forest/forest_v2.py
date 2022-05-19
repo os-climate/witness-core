@@ -654,9 +654,9 @@ class Forest():
             wood_or_residues_percentage * percentage_for_energy / \
             years_between_harvest / \
             (1 - recycle_part)
-        for i in range(years_of_impact, number_of_values):
-            for j in range(1, i + 1 - years_of_impact):
-                ddelta_prod_dinvest[i][years_of_impact + j] = 0
+#         for i in range(years_of_impact, number_of_values):
+#             for j in range(1, i + 1 - years_of_impact):
+#                 ddelta_prod_dinvest[i][years_of_impact + j] = 0
 
         return ddelta_prod_dinvest
 

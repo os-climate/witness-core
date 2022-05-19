@@ -37,7 +37,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             self.test_forest_analytic_grad
         ]
 
-    def test_forest_analytic_grad(self):
+    def _test_forest_analytic_grad(self):
 
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
@@ -188,7 +188,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         ]
         )
 
-    def _test_forest_analytic_grad_unmanaged_limit(self):
+    def test_forest_analytic_grad_unmanaged_limit(self):
 
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
@@ -322,7 +322,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[
             f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
-            # f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
+            f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
             f'{self.name}.{model_name}.managed_wood_investment',
         ],
             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
