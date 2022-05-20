@@ -15,10 +15,26 @@ limitations under the License.
 '''
 
 from climateeconomics.sos_processes.iam.witness.witness_dev_to_val_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from copy import deepcopy
 
+DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
+streams_to_add=[]
+technos_to_add = ['PlasmaCracking', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis', 'BiogasFired',
+                  'OilGen', 'BiomassFired', 'flue_gas_capture.ChilledAmmoniaProcess', 'flue_gas_capture.CO2Membranes',
+                  'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption', 'BiomassBuryingFossilization',
+                  'DeepOceanInjection', 'EnhancedOilRecovery', 'PureCarbonSolidStorage']
+for key in DEFAULT_TECHNO_DICT_DEV.keys():
+    if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
+        DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
+    for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
+        try:
+            if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
+                DEFAULT_TECHNO_DICT[key]['value']+=[value,]
+        except:
+            pass
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
@@ -36,11 +52,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        techno_dict = DEFAULT_TECHNO_DICT_DEV
+        techno_dict = DEFAULT_TECHNO_DICT
 
         coupling_builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness_dev_to_val_optim_sub_process',
-            techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], process_level='dev')
+            techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], process_level='val')
 
         # modify namespaces defined in the child process
         for ns in self.ee.ns_manager.ns_list:
