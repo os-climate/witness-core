@@ -80,7 +80,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         co2_emissions_df = self.emissions_model.compute_co2_emissions_for_carbon_cycle()
         dict_values = {'GHG_emissions_detail_df': self.emissions_model.ghg_emissions_df,
-                       'co2_emissions_Gt': self.emissions_model.GHG_total_energy_emissions[['Total CO2 emissions']],
+                       'co2_emissions_Gt': self.emissions_model.GHG_total_energy_emissions[['years', 'Total CO2 emissions']],
                        'CO2_emissions_df': co2_emissions_df,
                        'GWP_emissions': self.emissions_model.gwp_emissions}
 
