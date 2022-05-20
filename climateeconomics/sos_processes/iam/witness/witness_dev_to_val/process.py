@@ -21,11 +21,8 @@ from copy import deepcopy
 
 
 DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
-streams_to_add=[]
-technos_to_add = ['PlasmaCracking', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis', 'BiogasFired',
-                  'OilGen', 'BiomassFired', 'flue_gas_capture.ChilledAmmoniaProcess', 'flue_gas_capture.CO2Membranes',
-                  'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption', 'BiomassBuryingFossilization',
-                  'DeepOceanInjection', 'EnhancedOilRecovery', 'PureCarbonSolidStorage']
+streams_to_add=['fuel.ethanol']
+technos_to_add = ['Methanation', 'BiomassFermentation']
 for key in DEFAULT_TECHNO_DICT_DEV.keys():
     if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
         DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
@@ -63,10 +60,10 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'climateeconomics.sos_processes.iam', 'witness_wo_energy')
         i_disc_to_pop, i_disc_to_add = [], []
         for i, disc in enumerate(chain_builders_witness_val):
-            if 'Resources' in disc.sos_name:
+            if 'name of unwanted disc' in disc.sos_name:
                 i_disc_to_pop += [i,]
         for i, disc in enumerate(chain_builders_witness_dev):
-            if 'Resources' in disc.sos_name:
+            if 'name of wanted disc' in disc.sos_name:
                 i_disc_to_add += [i,]
         i_disc_to_pop.sort(reverse=True)
         for i in i_disc_to_pop:
@@ -83,13 +80,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
             techno_dict=techno_dict, invest_discipline=self.invest_discipline)
 
-        i_disc_to_pop = []
-        for i, disc in enumerate(chain_builders_energy):
-            if disc.sos_name == 'Resources':
-                i_disc_to_pop += [i,]
-        i_disc_to_pop.sort(reverse=True)
-        for i in i_disc_to_pop:
-            chain_builders_energy.pop(i)
         chain_builders.extend(chain_builders_energy)
 
         # Update namespace regarding land use and energy mix coupling
