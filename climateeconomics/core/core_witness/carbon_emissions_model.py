@@ -15,13 +15,14 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from climateeconomics.core.core_forest.forest_v1 import Forest
+from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
 class CarbonEmissions():
     '''
     Used to compute carbon emissions from gross output 
     '''
+    GHG_TYPE_LIST = [N2O.name, 'CO2', 'CH4']
 
     def __init__(self, param):
         '''

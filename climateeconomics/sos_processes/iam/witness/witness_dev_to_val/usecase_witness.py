@@ -35,11 +35,8 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
 DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
-streams_to_add=[]
-technos_to_add = ['PlasmaCracking', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis', 'BiogasFired',
-                  'OilGen', 'BiomassFired', 'flue_gas_capture.ChilledAmmoniaProcess', 'flue_gas_capture.CO2Membranes',
-                  'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption', 'BiomassBuryingFossilization',
-                  'DeepOceanInjection', 'EnhancedOilRecovery', 'PureCarbonSolidStorage']
+streams_to_add=['fuel.ethanol']
+technos_to_add = ['Methanation', 'BiomassFermentation']
 for key in DEFAULT_TECHNO_DICT_DEV.keys():
     if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
         DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
@@ -135,11 +132,6 @@ class Study(ClimateEconomicsStudyManager):
         # setup objectives
         self.func_df = pd.concat(
             [dc_witness_val.setup_objectives(), dc_witness_val.setup_constraints(), self.dc_energy.setup_constraints(), self.dc_energy.setup_objectives(), land_use_df_constraint])
-        self.func_df.loc[self.func_df['variable']=='invest_sum_cons']['weight']=0.0
-        self.func_df.loc[self.func_df['variable'] == 'delta_capital_constraint']['weight'] = 0.0
-        self.func_df.loc[self.func_df['variable'] == 'emax_enet_constraint']['weight'] = 0.0
-        self.func_df.loc[self.func_df['variable'] == 'delta_capital_lintoquad']['weight'] = -1.0
-        self.func_df.loc[self.func_df['variable'] == 'invest_sum_eq_cons']['weight'] = -1.0
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
         self.dict_technos = self.dc_energy.dict_technos
