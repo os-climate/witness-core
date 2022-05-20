@@ -130,7 +130,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         # into account into the energy net factor
                         # land CO2 absorption is computed in land_emission with
                         # the CO2_per_ha parameter
-                        'CO2_from_production': 0.0,
+                        'CO2_from_production': - 0.425 * 44.01 / 12.0,
                         'CO2_from_production_unit': 'kg/kg'}
 
 # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
