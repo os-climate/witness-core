@@ -21,9 +21,10 @@ from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_en
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 
+from copy import deepcopy
 from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
@@ -33,15 +34,28 @@ AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
-DEFAULT_TECHNO_DICT = DEFAULT_TECHNO_DICT_DEV
-DEFAULT_TECHNO_DICT['biomass_dry'] = {'type': 'energy', 'value': ['ManagedWood', 'UnmanagedWood', 'CropEnergy']}
+DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
+streams_to_add=[]
+technos_to_add = ['PlasmaCracking', 'Pyrolysis', 'AutothermalReforming', 'CoElectrolysis', 'BiogasFired',
+                  'OilGen', 'BiomassFired', 'flue_gas_capture.ChilledAmmoniaProcess', 'flue_gas_capture.CO2Membranes',
+                  'flue_gas_capture.PiperazineProcess', 'flue_gas_capture.PressureSwingAdsorption', 'BiomassBuryingFossilization',
+                  'DeepOceanInjection', 'EnhancedOilRecovery', 'PureCarbonSolidStorage']
+for key in DEFAULT_TECHNO_DICT_DEV.keys():
+    if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
+        DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
+    for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
+        try:
+            if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
+                DEFAULT_TECHNO_DICT[key]['value']+=[value,]
+        except:
+            pass
 
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False, execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
                  techno_dict=DEFAULT_TECHNO_DICT,
-                 process_level='dev'):
+                 process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -90,21 +104,21 @@ class Study(ClimateEconomicsStudyManager):
         self.dc_energy.study_name = self.study_name
         self.energy_mda_usecase = self.dc_energy
         # -- load data from witness
-        dc_witness = datacase_witness_dev(
-            self.year_start, self.year_end, self.time_step)
         dc_witness_val = datacase_witness_val(
             self.year_start, self.year_end, self.time_step)
-        dc_witness.study_name = self.study_name
+        dc_witness_dev = datacase_witness_dev(
+            self.year_start, self.year_end, self.time_step)
         dc_witness_val.study_name = self.study_name
+        dc_witness_dev.study_name = self.study_name
 
-        witness_input_list = dc_witness.setup_usecase()
         witness_val_input_list = dc_witness_val.setup_usecase()
-        i_to_pop, i_to_add =[3,2], [2,3,4]
+        witness_dev_input_list = dc_witness_dev.setup_usecase()
+        i_to_pop, i_to_add =[],[]
         for i in i_to_pop:
-            witness_input_list.pop(i)
+            witness_val_input_list.pop(i)
         for i in i_to_add:
-            witness_input_list.append(witness_val_input_list[i])
-        setup_data_list = setup_data_list + witness_input_list
+            witness_val_input_list.append(witness_dev_input_list[i])
+        setup_data_list = setup_data_list + witness_val_input_list
 
         energy_input_list = self.dc_energy.setup_usecase()
         setup_data_list = setup_data_list + energy_input_list
@@ -120,8 +134,12 @@ class Study(ClimateEconomicsStudyManager):
         # WITNESS
         # setup objectives
         self.func_df = pd.concat(
-            [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(), self.dc_energy.setup_objectives(), land_use_df_constraint])
-
+            [dc_witness_val.setup_objectives(), dc_witness_val.setup_constraints(), self.dc_energy.setup_constraints(), self.dc_energy.setup_objectives(), land_use_df_constraint])
+        self.func_df.loc[self.func_df['variable']=='invest_sum_cons']['weight']=0.0
+        self.func_df.loc[self.func_df['variable'] == 'delta_capital_constraint']['weight'] = 0.0
+        self.func_df.loc[self.func_df['variable'] == 'emax_enet_constraint']['weight'] = 0.0
+        self.func_df.loc[self.func_df['variable'] == 'delta_capital_lintoquad']['weight'] = -1.0
+        self.func_df.loc[self.func_df['variable'] == 'invest_sum_eq_cons']['weight'] = -1.0
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
         self.dict_technos = self.dc_energy.dict_technos
@@ -135,7 +153,6 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
             f'{self.study_name}.cache_type': 'SimpleCache',
             f'{self.study_name}.is_dev': False,
-            f'{self.study_name}.agri_capital_techno_list': [],
         }
 
         setup_data_list.append(numerical_values_dict)

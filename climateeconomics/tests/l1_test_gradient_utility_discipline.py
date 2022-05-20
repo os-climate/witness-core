@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class UtilityJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
@@ -93,7 +93,8 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.welfare_objective',
                                      f'{self.name}.min_utility_objective',
-                                     f'{self.name}.utility_df'],
+                                     f'{self.name}.utility_df',
+                                     f'{self.name}.negative_welfare_objective'],
                             derr_approx='complex_step')
 
     def test_02_utility_analytic_grad_last_utility(self):
@@ -111,7 +112,8 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.welfare_objective',
                                      f'{self.name}.min_utility_objective',
-                                     f'{self.name}.utility_df'],
+                                     f'{self.name}.utility_df',
+                                     f'{self.name}.negative_welfare_objective',],
                             derr_approx='complex_step')
 
     def test_03_utility_with_low_economy(self):
@@ -142,5 +144,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.population_df'],
                             outputs=[f'{self.name}.welfare_objective',
                                      f'{self.name}.min_utility_objective',
-                                     f'{self.name}.utility_df'],
+                                     f'{self.name}.utility_df',
+                                     f'{self.name}.negative_welfare_objective'],
                             derr_approx='complex_step')

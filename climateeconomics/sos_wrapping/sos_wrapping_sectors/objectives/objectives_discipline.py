@@ -169,7 +169,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                  chart_name)
             visible_line = True
             new_series = InstanciatedSeries(
-                    years, list(ref), 'historical data', 'scatter', visible_line)
+                    years, list(ref), 'historical data', 'scatter', visible_line, marker_symbol= 'x')
             new_chart.series.append(new_series)
             new_series = InstanciatedSeries(
                     years, list(simu), 'simulated values', 'lines', visible_line)
@@ -200,7 +200,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                  chart_name)
             visible_line = True
             new_series = InstanciatedSeries(
-                    years, list(ref), 'historical data', 'scatter', visible_line)
+                    years, list(ref), 'historical data', 'scatter', visible_line, marker_symbol= 'x')
             new_chart.series.append(new_series)
             new_series = InstanciatedSeries(
                     years, list(simu), 'simulated values', 'lines', visible_line)
@@ -220,7 +220,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 new_chart = TwoAxesInstanciatedChart('years', 'capital stock [T$]',
                                                  chart_name= f'{sector} capital fitting comparison with historical data')
                 new_series = InstanciatedSeries(
-                    years, list(hist_capital_sector), 'historical data', 'scatter', visible_line)
+                    years, list(hist_capital_sector), 'historical data', 'scatter', visible_line, marker_symbol= 'x')
                 new_chart.series.append(new_series)   
                 new_series = InstanciatedSeries(
                     years, list(simu_capital_sector), 'simulated values', 'lines', visible_line)
@@ -230,7 +230,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 new_chart = TwoAxesInstanciatedChart('years', 'output [T$]',
                                                  chart_name= f'{sector} output fitting comparison with historical data')
                 new_series = InstanciatedSeries(
-                    years, list(hist_gdp_sector), 'historical data', 'scatter', visible_line)
+                    years, list(hist_gdp_sector), 'historical data', 'scatter', visible_line, marker_symbol= 'x')
                 new_chart.series.append(new_series)   
                 new_series = InstanciatedSeries(
                     years, list(simu_gdp_sector), 'simulated values', 'lines', visible_line)
