@@ -117,7 +117,7 @@ class ForestTestCase(unittest.TestCase):
         self.initial_unsused_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
-        deforest_invest = np.linspace(10, 1, year_range)
+        deforest_invest = np.linspace(10, 5000, year_range)
         self.deforest_invest_df = pd.DataFrame(
             {"years": years, "investment": deforest_invest})
 
