@@ -343,6 +343,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_forest_surface_d_invest)
 
+        self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
+            'managed_wood_investment', 'investment'), d_cum_mw_surface_d_invest)
+
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'forest_constraint_evolution'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_cum_deforestation_d_deforestation_invest)
         # forest surface vs forest invest
