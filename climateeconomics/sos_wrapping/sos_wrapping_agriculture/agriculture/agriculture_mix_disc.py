@@ -74,17 +74,18 @@ class AgricultureMixDiscipline(EnergyDiscipline):
     def run(self):
         EnergyDiscipline.run(self)
         # -- get CO2 emissions inputs
-        CO2_emitted_crop_df = self.get_sosdisc_inputs(
-            'Crop.CO2_land_emission_df')
-        CO2_emitted_forest_df = self.get_sosdisc_inputs(
-            'Forest.CO2_land_emission_df')
+        CO2_emitted_crop_df = self.get_sosdisc_inputs('Crop.CO2_land_emission_df')
+        CO2_emitted_forest_df = self.get_sosdisc_inputs('Forest.CO2_land_emission_df')
+        
         CO2_emissions_land_use_df = pd.DataFrame()
         CO2_emissions_land_use_df['years'] = CO2_emitted_crop_df['years']
         CO2_emissions_land_use_df['Crop'] = CO2_emitted_crop_df['emitted_CO2_evol_cumulative']
         CO2_emissions_land_use_df['Forest'] = CO2_emitted_forest_df['emitted_CO2_evol_cumulative']
-        # -- store in one output
-        self.store_sos_outputs_values(
-            {'CO2_land_emissions': CO2_emissions_land_use_df})
+
+        outputs_dict = {
+            'CO2_land_emissions': CO2_emissions_land_use_df,
+        }
+        self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
         """
