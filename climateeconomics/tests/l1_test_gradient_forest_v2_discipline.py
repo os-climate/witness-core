@@ -149,7 +149,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
-                       f'{self.name}.{model_name}.managed_wood_initial_prod': self.managed_wood_techno_dict,
                        f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
                        f'{self.name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
@@ -172,16 +171,16 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{model_name}.managed_wood_investment',
         ],
             outputs=[
-                f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-            f'{self.name}.{model_name}.{Forest.CO2_EMITTED_FOREST_DF}',
-            f'{self.name}.Forest.techno_production',
-                                f'{self.name}.Forest.techno_prices',
-                                f'{self.name}.Forest.techno_consumption',
-                                f'{self.name}.Forest.techno_consumption_woratio',
-                                f'{self.name}.Forest.land_use_required',
-                                f'{self.name}.Forest.CO2_emissions',
-                                f'{self.name}.Forest.techno_capital',
-                                f'{self.name}.Forest.non_use_capital'
+                                f'{self.name}.{Forest.FOREST_SURFACE_DF}',
+                                f'{self.name}.{model_name}.CO2_land_emission_df',
+                                #f'{self.name}.Forest.techno_production',
+                                #f'{self.name}.Forest.techno_prices',
+                                #f'{self.name}.Forest.techno_consumption',
+                                #f'{self.name}.Forest.techno_consumption_woratio',
+                                #f'{self.name}.Forest.land_use_required',
+                               # f'{self.name}.Forest.CO2_emissions',
+                                #f'{self.name}.Forest.techno_capital',
+                                #f'{self.name}.Forest.non_use_capital'
         ]
         )
 
@@ -300,7 +299,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
-                       f'{self.name}.{model_name}.managed_wood_initial_prod': self.managed_wood_techno_dict,
                        f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
                        f'{self.name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
@@ -318,19 +316,19 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline_2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[
-            # f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
+            f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
             f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
-            # f'{self.name}.{model_name}.managed_wood_investment',
+            f'{self.name}.{model_name}.managed_wood_investment',
         ],
             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-                     f'{self.name}.{model_name}.{Forest.CO2_EMITTED_FOREST_DF}',
-                     f'{self.name}.Forest.techno_production',
-                     f'{self.name}.Forest.techno_prices',
-                     f'{self.name}.Forest.techno_consumption',
-                     f'{self.name}.Forest.techno_consumption_woratio',
-                     f'{self.name}.Forest.land_use_required',
-                     f'{self.name}.Forest.CO2_emissions',
-                     f'{self.name}.Forest.techno_capital',
-                     f'{self.name}.Forest.non_use_capital'
+                     f'{self.name}.{model_name}.CO2_land_emission_df',
+                     #f'{self.name}.Forest.techno_production',
+                     #f'{self.name}.Forest.techno_prices',
+                     #f'{self.name}.Forest.techno_consumption',
+                     #f'{self.name}.Forest.techno_consumption_woratio',
+                     #f'{self.name}.Forest.land_use_required',
+                     #f'{self.name}.Forest.CO2_emissions',
+                     #f'{self.name}.Forest.techno_capital',
+                     #f'{self.name}.Forest.non_use_capital'
                      ]
         )
