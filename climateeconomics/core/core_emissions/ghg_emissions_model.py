@@ -30,7 +30,6 @@ class GHGEmissions():
         '''
         self.param = param
         self.configure_parameters()
-        self.CO2_objective = None
         self.create_dataframe()
         self.sector_list = ['energy', 'land', 'industry']
 
