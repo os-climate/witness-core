@@ -369,6 +369,7 @@ class Forest():
         compute the global CO2 production in Gt
         """
         # in Gt of CO2
+
         self.CO2_emitted_df['delta_CO2_emitted'] = -self.forest_surface_df['delta_global_forest_surface'] * \
             self.CO2_per_ha / 1000
         self.CO2_emitted_df['delta_CO2_deforestation'] = -self.forest_surface_df['delta_deforestation_surface'] * \
@@ -376,17 +377,21 @@ class Forest():
         self.CO2_emitted_df['delta_CO2_reforestation'] = -self.forest_surface_df['delta_reforestation_surface'] * \
             self.CO2_per_ha / 1000
 
-        self.CO2_emitted_df['CO2_deforestation'] = -self.forest_surface_df['deforestation_surface'] * \
-            self.CO2_per_ha / 1000 + self.initial_emissions
+        # remove CO2 managed surface from global emission because CO2_per_ha from managed forest = 0
+        self.CO2_emitted_df['CO2_deforestation'] = - self.forest_surface_df['deforestation_surface'] * \
+            self.CO2_per_ha / 1000 + self.initial_emissions -  (self.managed_wood_df['cumulative_surface']* \
+                                                                (-self.CO2_per_ha) / 1000) # <0 because managed trees absorb CO2
         self.CO2_emitted_df['CO2_reforestation'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000
         # global sum up
         self.CO2_emitted_df['global_CO2_emitted'] = -self.forest_surface_df['deforestation_surface'] * \
-            self.CO2_per_ha / 1000 + self.initial_emissions
+            self.CO2_per_ha / 1000 + self.initial_emissions  -  (self.managed_wood_df['cumulative_surface']* \
+                                                                (-self.CO2_per_ha) / 1000)
         self.CO2_emitted_df['global_CO2_captured'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000
         self.CO2_emitted_df['emitted_CO2_evol_cumulative'] = self.CO2_emitted_df['global_CO2_emitted'] + \
             self.CO2_emitted_df['global_CO2_captured']
+
 
     def compute_biomass_dry_production(self):
         """
