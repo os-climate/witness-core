@@ -42,7 +42,7 @@ class ForestTestCase(unittest.TestCase):
         self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
-        forest_invest = np.linspace(2, 15, year_range)
+        forest_invest = np.linspace(2, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
         self.reforestation_cost_per_ha = 3800
@@ -105,7 +105,7 @@ class ForestTestCase(unittest.TestCase):
             density_per_ha * mean_density * 3.6 / \
             years_between_harvest / (1 - recycle_part)  # in Twh
 
-        mw_invest = np.linspace(10, 15, year_range)
+        mw_invest = np.linspace(10, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
@@ -116,8 +116,9 @@ class ForestTestCase(unittest.TestCase):
         self.initial_protected_forest_surface = 4 * 0.21
         self.initial_unsused_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
-
-        deforest_invest = np.linspace(10, 5000, year_range)
+        deforest_invest = np.linspace(10, 5, year_range)
+        # case over deforestation
+        #deforest_invest = np.linspace(1000, 5000, year_range)
         self.deforest_invest_df = pd.DataFrame(
             {"years": years, "investment": deforest_invest})
 

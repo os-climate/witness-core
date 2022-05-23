@@ -44,7 +44,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-tree fa-fw',
         'version': '',
     }
-    AGRI_CAPITAL_TECHNO_LIST = ['Forest']
+    AGRI_CAPITAL_TECHNO_LIST = []
     biomass_cal_val = BiomassDry.data_energy_dict[
         'calorific_value']
     default_year_start = 2020
@@ -130,7 +130,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         # into account into the energy net factor
                         # land CO2 absorption is computed in land_emission with
                         # the CO2_per_ha parameter
-                        'CO2_from_production': 0.0,
+                        'CO2_from_production': - 0.425 * 44.01 / 12.0,
                         'CO2_from_production_unit': 'kg/kg'}
 
 # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
@@ -211,9 +211,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
         Forest.FOREST_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_witness'},
-        Forest.CO2_EMITTED_FOREST_DF: {
-            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_forest'},
         'CO2_land_emission_df': {
             'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_forest'},
@@ -241,6 +238,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'techno_capital': {
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'non_use_capital': {
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+        'reforestation_lost_capital': {
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
     }
 
@@ -285,7 +284,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
             Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'global_forest_surface', 'forest_constraint_evolution']],
-            Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
             'CO2_land_emission_df': self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
             'managed_wood_df': self.forest_model.managed_wood_df,
             #'unmanaged_wood_df': self.forest_model.unmanaged_wood_df,
@@ -298,8 +296,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'techno_consumption_woratio': techno_consumption_woratio,
             'land_use_required': self.forest_model.land_use_required,
             'CO2_emissions': self.forest_model.CO2_emissions,
-            'non_use_capital': self.forest_model.lost_capital,
+            'non_use_capital': self.forest_model.non_use_capital,
             'techno_capital': self.forest_model.techno_capital,
+            'reforestation_lost_capital': self.forest_model.lost_capital
         }
         #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -329,6 +328,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_cum_deforestation_d_deforestation_invest = self.forest_model.d_cum(
             d_deforestation_surface_d_deforestation_investment)
         d_forest_surface_d_invest = self.forest_model.d_forestation_surface_d_invest()
+        d_forest_const_d_invest = self.forest_model.d_forest_constraint_d_invest()
         d_cum_forest_surface_d_invest = self.forest_model.d_cum(
             d_forest_surface_d_invest)
         d_mw_surface_d_invest = self.forest_model.d_wood_techno_surface_d_invest(
@@ -341,13 +341,16 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_cum_deforestation_d_deforestation_invest)
         # forest surface vs forest invest
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
-            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_forest_surface_d_invest)
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_forest_surface_d_invest)
+
+        self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
+            'managed_wood_investment', 'investment'), d_mw_surface_d_invest)
 
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'forest_constraint_evolution'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_cum_deforestation_d_deforestation_invest)
         # forest surface vs forest invest
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'forest_constraint_evolution'), (
-            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_forest_surface_d_invest)
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_forest_const_d_invest)
 
         # total capital vs reforestation investment grad
         dcapitaltotal_dinvest = self.forest_model.d_capital_total_d_invest()
@@ -357,44 +360,42 @@ class ForestDiscipline(ClimateEcoDiscipline):
         # lost capital vs reforestation investment grad
         dlostcapital_dinvest = self.forest_model.d_lostcapitald_invest(
             d_forest_surface_d_invest)
-        self.set_partial_derivative_for_other_types(('non_use_capital', 'Forest'), (
+
+        self.set_partial_derivative_for_other_types(('reforestation_lost_capital', 'lost_capital'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dlostcapital_dinvest)
 
         # land use required
 
         # forest surface vs managed wood invest
         self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
-            'managed_wood_investment', 'investment'), d_cum_mw_surface_d_invest)
+            'managed_wood_investment', 'investment'), d_mw_surface_d_invest)
 
         d_land_use_d_deforest_invest = self.forest_model.d_mw_surf_d_deforest_invest()
         self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_land_use_d_deforest_invest)
 
         # d_CO2 d deforestation
-        d_CO2_emitted_d_deforestation_surface = self.forest_model.d_CO2_emitted(
-            d_deforestation_surface_d_deforestation_investment)
-        d_cum_CO2_emitted_d_deforestation_surface = self.forest_model.d_cum(
-            d_CO2_emitted_d_deforestation_surface)
-        self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), (
-            Forest.DEFORESTATION_INVESTMENT, 'investment'),
-            d_cum_CO2_emitted_d_deforestation_surface)
+        d_CO2_emitted_d_deforestation_surface = self.forest_model.d_CO2_emitted(d_deforestation_surface_d_deforestation_investment)
+        d_cum_CO2_emitted_d_deforestation_surface = self.forest_model.d_cum(d_CO2_emitted_d_deforestation_surface)
         self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'),
             d_cum_CO2_emitted_d_deforestation_surface)
 
         # d_CO2 d invest reforestation
-        d_cum_CO2_emitted_d_invest_ref = self.forest_model.d_CO2_emitted(
-            d_cum_forest_surface_d_invest)
+        d_cum_CO2_emitted_d_invest_ref = self.forest_model.d_CO2_emitted( d_forest_const_d_invest)
         self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_CO2_emitted_d_invest_ref)
-        self.set_partial_derivative_for_other_types((Forest.CO2_EMITTED_FOREST_DF, 'emitted_CO2_evol_cumulative'), (
-            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_CO2_emitted_d_invest_ref)
+
+        #d_CO2 d invest managed_wood
+        d_cum_CO2_emitted_d_invest_mw = self.forest_model.d_CO2_emitted( d_mw_surface_d_invest)
+        self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
+            'managed_wood_investment', 'investment'), d_cum_CO2_emitted_d_invest_mw)
 
         # d techno_production managed wood invest
         d_biomass_residues_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(
-            d_cum_mw_surface_d_invest, residue_percentage, residue_percentage_for_energy)
+            d_mw_surface_d_invest, residue_percentage, residue_percentage_for_energy)
         d_biomass_wood_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(
-            d_cum_mw_surface_d_invest, wood_percentage, wood_percentage_for_energy)
+            d_mw_surface_d_invest, wood_percentage, wood_percentage_for_energy)
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('managed_wood_investment', 'investment'),
                                                     (d_biomass_residues_d_mw_invest + d_biomass_wood_d_mw_invest) * calorific_value / scaling_factor_techno_production)
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('managed_wood_investment', 'investment'),
@@ -441,8 +442,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             d_biomass_price_d_invest_deforest)
 
         # d managed_wood_surface d reforestation invest
-        d_mw_surf_d_reforest_invest = self.forest_model.d_managed_wood_surf_d_invest_reforestation(
-            d_cum_forest_surface_d_invest)
+        d_mw_surf_d_reforest_invest = self.forest_model.d_mw_surf_d_reforest_invest()
         d_wood_prod_d_forest_invest = self.forest_model.d_biomass_prod_d_invest_reforestation(
             d_mw_surf_d_reforest_invest, wood_percentage, wood_percentage_for_energy)
         d_residue_prod_d_forest_invest = self.forest_model.d_biomass_prod_d_invest_reforestation(
@@ -732,12 +732,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             # capital graph
             techno_capital_df = self.get_sosdisc_outputs('techno_capital')
-            lost_capital_df = self.get_sosdisc_outputs('non_use_capital')
+            lost_capital_df = self.get_sosdisc_outputs('reforestation_lost_capital')
             new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
                                                  chart_name='Non use capital due to deforestation<br>and reforestation vs total capital', stacked_bar=True)
             total_capital = techno_capital_df['Forest']  # + \
             # techno_capital_df['Managed_wood']
-            lost_capital_forest = lost_capital_df['Forest']
+            lost_capital_forest = lost_capital_df['lost_capital']
             #lost_capital_mw = lost_capital_df['Managed_wood']
 
             total_capital_series = InstanciatedSeries(

@@ -126,7 +126,9 @@ class Forest():
         self.land_use_required = pd.DataFrame({'years': self.years})
         self.CO2_emissions = pd.DataFrame({'years': self.years})
         self.lost_capital = pd.DataFrame({'years': self.years})
+        self.non_use_capital = pd.DataFrame({'years': self.years})
         self.techno_capital = pd.DataFrame({'years': self.years})
+        self.reforestation_lost_capital = pd.DataFrame({'years': self.years})
 
     def compute(self, in_dict):
         """
@@ -151,12 +153,11 @@ class Forest():
         self.forest_surface_df['unmanaged_forest'] = self.initial_unmanaged_forest_surface
         # compute data of each contribution
         self.compute_managed_wood_surface()
-        self.compute_reforestation_deforestation()
+        self.compute_reforestation_deforestation_surface()
+        self.compute_deforestation_biomass()
         self.compute_managed_wood_production()
         # sum up global surface data
         self.sumup_global_surface_data()
-        # check deforestation limit
-        self.check_deforestation_limit()
         # compute capital and lost capital
         self.compute_lost_capital()
         # sum up global CO2 data
@@ -219,7 +220,7 @@ class Forest():
         cumulative_mw = np.cumsum(mw_added)
         self.managed_wood_df['cumulative_surface'] = cumulative_mw + \
             self.managed_wood_initial_surface
-        self.forest_surface_df['unmanaged_forest'] = self.forest_surface_df['unmanaged_forest'] - cumulative_mw
+        #self.forest_surface_df['unmanaged_forest'] = self.forest_surface_df['unmanaged_forest'] - cumulative_mw
 
     def compute_managed_wood_production(self):
         """
@@ -263,16 +264,12 @@ class Forest():
             (self.managed_wood_df['cumulative_surface'] -
              self.managed_wood_initial_surface) * self.CO2_per_ha / 1000
 
-    def compute_reforestation_deforestation(self):
+    def compute_reforestation_deforestation_surface(self):
         """
         compute land use and due to reforestation et deforestation activities
         CO2 is not computed here because surface limit need to be taken into account before.
         """
-        density_per_ha = self.techno_wood_info['density_per_ha']
-        mean_density = self.techno_wood_info['density']
-        years_between_harvest = self.techno_wood_info['years_between_harvest']
-        recycle_part = self.techno_wood_info['recycle_part']
-        wood_percentage_for_energy = self.techno_wood_info['wood_percentage_for_energy']
+
         # forest surface is in Gha, deforestation_surface is in Mha,
         # deforested_surface is in Gha
         self.forest_surface_df['delta_deforestation_surface'] = - \
@@ -315,6 +312,14 @@ class Forest():
 
         self.forest_surface_df['deforestation_surface'] = np.cumsum(
             self.forest_surface_df['delta_deforestation_surface'])
+
+    def compute_deforestation_biomass(self):
+
+        density_per_ha = self.techno_wood_info['density_per_ha']
+        mean_density = self.techno_wood_info['density']
+        years_between_harvest = self.techno_wood_info['years_between_harvest']
+        recycle_part = self.techno_wood_info['recycle_part']
+        wood_percentage_for_energy = self.techno_wood_info['wood_percentage_for_energy']
 
         self.biomass_dry_df['deforestation (Mt)'] = -self.forest_surface_df['delta_deforestation_surface'] * \
             density_per_ha * mean_density / (1 - recycle_part)
@@ -364,6 +369,7 @@ class Forest():
         compute the global CO2 production in Gt
         """
         # in Gt of CO2
+
         self.CO2_emitted_df['delta_CO2_emitted'] = -self.forest_surface_df['delta_global_forest_surface'] * \
             self.CO2_per_ha / 1000
         self.CO2_emitted_df['delta_CO2_deforestation'] = -self.forest_surface_df['delta_deforestation_surface'] * \
@@ -371,17 +377,21 @@ class Forest():
         self.CO2_emitted_df['delta_CO2_reforestation'] = -self.forest_surface_df['delta_reforestation_surface'] * \
             self.CO2_per_ha / 1000
 
-        self.CO2_emitted_df['CO2_deforestation'] = -self.forest_surface_df['deforestation_surface'] * \
-            self.CO2_per_ha / 1000 + self.initial_emissions
+        # remove CO2 managed surface from global emission because CO2_per_ha from managed forest = 0
+        self.CO2_emitted_df['CO2_deforestation'] = - self.forest_surface_df['deforestation_surface'] * \
+            self.CO2_per_ha / 1000 + self.initial_emissions -  (self.managed_wood_df['cumulative_surface']* \
+                                                                (-self.CO2_per_ha) / 1000) # <0 because managed trees absorb CO2
         self.CO2_emitted_df['CO2_reforestation'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000
         # global sum up
         self.CO2_emitted_df['global_CO2_emitted'] = -self.forest_surface_df['deforestation_surface'] * \
-            self.CO2_per_ha / 1000 + self.initial_emissions
+            self.CO2_per_ha / 1000 + self.initial_emissions  -  (self.managed_wood_df['cumulative_surface']* \
+                                                                (-self.CO2_per_ha) / 1000)
         self.CO2_emitted_df['global_CO2_captured'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000
         self.CO2_emitted_df['emitted_CO2_evol_cumulative'] = self.CO2_emitted_df['global_CO2_emitted'] + \
             self.CO2_emitted_df['global_CO2_captured']
+
 
     def compute_biomass_dry_production(self):
         """
@@ -453,7 +463,7 @@ class Forest():
         reforest_surface and deforest_surface are in Gha
         lost_capital is in G$ 
         """
-        self.lost_capital['Forest'] = 0
+        self.lost_capital['lost_capital'] = 0
         self.techno_capital['Forest'] = 0
 #         self.lost_capital['Deforestation'] = 0
 #         self.techno_capital['Deforestation'] = 0
@@ -461,16 +471,17 @@ class Forest():
 
         for element in range(0, len(self.years)):
             if abs(self.forest_surface_df.at[element, 'delta_deforestation_surface']) < self.forest_surface_df.at[element, 'delta_reforestation_surface']:
-                self.lost_capital.loc[element, 'Forest'] = abs(self.forest_surface_df.loc[element,
+                self.lost_capital.loc[element, 'lost_capital'] = abs(self.forest_surface_df.loc[element,
                                                                                           'delta_deforestation_surface']) * self.cost_per_ha
             else:
-                self.lost_capital.loc[element, 'Forest'] = self.forest_surface_df.loc[element,
+                self.lost_capital.loc[element, 'lost_capital'] = self.forest_surface_df.loc[element,
                                                                                       'delta_reforestation_surface'] * self.cost_per_ha
 
         self.techno_capital['Forest'] = self.forest_surface_df['delta_reforestation_surface'] * self.cost_per_ha
 #         self.techno_capital['Managed_wood'] = self.managed_wood_investment['investment']
 #         self.lost_capital['Managed_wood'] = self.managed_wood_investment['investment'] * \
 #             (1 - np.array(self.ratio))
+        self.non_use_capital['Forest'] = 0
 
     def compute_carbon_emissions(self):
         '''
@@ -514,6 +525,7 @@ class Forest():
     # Gradients
     def d_deforestation_surface_d_deforestation_invest(self, ):
         """
+
         Compute gradient of deforestation surface by deforestation_invest (design variable)
         """
         number_of_values = (self.year_end - self.year_start + 1)
@@ -530,75 +542,89 @@ class Forest():
         return d_deforestation_surface_d_forests
     # alternative
 
-    def d_forestation_surface_d_invest(self, ):
+    def d_forestation_surface_d_invest(self):
         """
+
         Compute gradient of reforestation surface by invest (design variable)
         """
         number_of_values = (self.year_end - self.year_start + 1)
-        d_forestation_surface_d_invest = np.identity(number_of_values)
-        for i in range(0, number_of_values):
-            # surface = invest / cost_per_ha if limit is not borken
-            d_forestation_surface_d_invest[i][i] = 1 / self.cost_per_ha
-#             if self.forest_surface_df['global_forest_surface'].values[i] != -self.limit_deforestation_surface / 1000:
-#                 d_forestation_surface_d_invest[i][i] = 1 / self.cost_per_ha
-#             #surface = constant is limit is broken
-#             else:
-#                 d_forestation_surface_d_invest[i][i] = 0
+        d_forestation_surface_d_invest = np.identity(number_of_values) * 0
 
-#     def d_forestation_surface_d_invest(self, ):
-#         """
-#         Compute gradient of reforestation surface by invest (design variable)
-#         """
-#         number_of_values = (self.year_end - self.year_start + 1)
-#         d_forestation_surface_d_invest = np.identity(number_of_values)
-#         for i in range(0, number_of_values):
-#             # surface = invest / cost_per_ha if limit is not borken
-#             d_forestation_surface_d_invest[i][i] = 1 / self.cost_per_ha
-# #             if self.forest_surface_df['global_forest_surface'].values[i] != -self.limit_deforestation_surface / 1000:
-# #                 d_forestation_surface_d_invest[i][i] = 1 / self.cost_per_ha
-# #             #surface = constant is limit is broken
-# #             else:
-# #                 d_forestation_surface_d_invest[i][i] = 0
+        for i in range(0, number_of_values):
+            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
+                if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
+                    pass
+                else:
+                    for j in range(0, i + 1):
+                        d_forestation_surface_d_invest[i][j] = 1 / \
+                            self.cost_per_ha
+            else:
+                for j in range(0, i + 1):
+                    d_forestation_surface_d_invest[i][j] = 1 / \
+                        self.cost_per_ha
 
         return d_forestation_surface_d_invest
 
-    def d_wood_techno_surface_d_invest(self, price_per_ha):
+    def d_forest_constraint_d_invest(self):
         """
-        Compute gradient of managed wood surface by invest
-        Same function for managed wood and unmanaged wood. Only the price_per_ha change.
-        construction delay impact becasue there is a shift of investment impact of construction_delay year.
+
+        Compute gradient of forest constraint by invest (design variable)
         """
         number_of_values = (self.year_end - self.year_start + 1)
-        d_wood_surface_d_invest = np.identity(number_of_values) * 0
-        construction_delay = self.techno_wood_info['construction_delay']
-        for i in range(construction_delay, number_of_values):
-            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
-                d_wood_surface_d_invest[i][i -
-                                           construction_delay] = 1 / price_per_ha
-            else:
-                d_wood_surface_d_invest[i][i -
-                                           construction_delay] = 1 / price_per_ha
+        d_forestation_surface_d_invest = np.identity(number_of_values) * 0
 
-        return d_wood_surface_d_invest
-
-    def d_managed_wood_surf_d_invest_reforestation(self, d_forestation_surface_d_invest):
-        """
-        in the case unmanaged_forest are null, the evolution of managed wood is limited by the evolution of unmanaged forest
-        as a result, managed wood evolve as reforestation and deforestation.
-        """
-
-        number_of_values = (self.year_end - self.year_start + 1)
-        d_wood_surface_d_invest = np.identity(number_of_values) * 0
         for i in range(0, number_of_values):
             if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
-                self.counter += 1
+                if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
+                    d_forestation_surface_d_invest[i] = d_forestation_surface_d_invest[i - 1]
+                else:
+                    for j in range(0, i + 1):
+                        d_forestation_surface_d_invest[i][j] = 1 / \
+                            self.cost_per_ha
+            else:
                 for j in range(0, i + 1):
-                    d_wood_surface_d_invest[i][j] = d_forestation_surface_d_invest[i][i]
+                    d_forestation_surface_d_invest[i][j] = 1 / \
+                        self.cost_per_ha
 
-        return d_wood_surface_d_invest
+        return d_forestation_surface_d_invest
+
+#     def d_wood_techno_surface_d_invest(self, price_per_ha):
+#         """
+#
+#         Compute gradient of managed wood surface by invest
+#         Same function for managed wood and unmanaged wood. Only the price_per_ha change.
+#         construction delay impact becasue there is a shift of investment impact of construction_delay year.
+#         """
+#         number_of_values = (self.year_end - self.year_start + 1)
+#         d_wood_surface_d_invest = np.identity(number_of_values) * 0
+#         construction_delay = self.techno_wood_info['construction_delay']
+#         for i in range(construction_delay, number_of_values):
+#             if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
+#                 pass
+#             else:
+#                 d_wood_surface_d_invest[i][i -
+#                                            construction_delay] = 1 / price_per_ha
+#
+#         return d_wood_surface_d_invest
+
+    def d_wood_techno_surface_d_invest(self, price_per_ha):
+        """
+
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        result = np.identity(number_of_values) * 0
+        construction_delay = self.techno_wood_info['construction_delay']
+        for i in range(construction_delay, number_of_values):
+            if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
+                pass
+            else:
+                for j in range(0, i + 1 - construction_delay):
+                    result[i][j] = 1 / price_per_ha
+        return result
 
     def d_cum(self, derivative):
         """
+
         compute the gradient of a cumulative derivative
         """
         number_of_values = (self.year_end - self.year_start + 1)
@@ -611,13 +637,14 @@ class Forest():
 
     def d_cum_managed_forest(self, derivative):
         """
+
         compute the gradient of a cumulative derivative
         a special function for managed forest is needed due to unmanaged_forest limitation
         """
         number_of_values = (self.year_end - self.year_start + 1)
-        d_cum = np.identity(number_of_values) * 0
+        d_cum = np.identity(number_of_values)
         for i in range(0, number_of_values):
-            if self.ratio.loc[i, 'ratio'] < 1:
+            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
                 pass
             else:
                 d_cum[i] = derivative[i]
@@ -627,6 +654,7 @@ class Forest():
 
     def d_CO2_emitted(self, d_deforestation_surface):
         """
+
         Compute gradient of non_captured_CO2 by deforestation surface
         :param: d_deforestation_surface, derivative of deforestation surface
         CO2_emitted = surface * constant --> d_surface is reused.
@@ -638,6 +666,7 @@ class Forest():
 
     def d_biomass_prod_d_invest(self, d_surf_d_invest, wood_or_residues_percentage, percentage_for_energy):
         """
+
         Compute derivate of biomass production by investment. Biomass production is : mw_residu / un_residu / mw_wood / uw_wood
         prod = surface * density_per_ha * density * wood_or_residues_percentage * percentage_for_energy / years_between_harvest / (1 - recycle_part)
         --> only surface is dependant of invest, the other parameters does not depends of invest.
@@ -659,6 +688,7 @@ class Forest():
 
     def d_biomass_prod_d_invest_reforestation(self, d_surf_d_invest, wood_or_residues_percentage, percentage_for_energy):
         """
+
         Compute derivate of biomass production by investment. Biomass production is : mw_residu / un_residu / mw_wood / uw_wood
         prod = surface * density_per_ha * density * wood_or_residues_percentage * percentage_for_energy / years_between_harvest / (1 - recycle_part)
         --> only surface is dependant of invest, the other parameters does not depends of invest.
@@ -684,6 +714,7 @@ class Forest():
 
     def d_biomass_price_d_invest_mw(self, price_per_ha):
         """
+
         compute derivate of biomass price by invest in managed wood
         price = mw_price * mw_part + deforest_price * deforest_part
         mw_price and deforest_price are independant of invest
@@ -726,44 +757,7 @@ class Forest():
             for j in range(construction_delay, i + 1):
                 res[i, j - construction_delay] = derivate[i, i]
 
-        for i in range(0, number_of_values):
-            if self.ratio.loc[i, 'ratio'] < 1:
-                res[i] = 0
-
         return res
-
-    def d_biomass_price_d_invest_reforestation(self, price_per_ha, dprod_dinvest):
-        """
-        compute derivate of biomass price by invest in managed wood
-        price = mw_price * mw_part + deforest_price * deforest_part
-        mw_price and deforest_price are independant of invest
-        mw_part = mw_prod / (mw_prod + deforest_prod) with mw_prod dependant of invest
-        --> (u/v)' = (u'v - uv') / v^2
-        and deforest_part = (1-mw_part)
-        """
-        number_of_values = (self.year_end - self.year_start + 1)
-        construction_delay = self.techno_wood_info['construction_delay']
-        d_wood_surface_d_invest = np.zeros(
-            (number_of_values, number_of_values))
-        res = np.zeros((number_of_values, number_of_values))
-        mw_prod = self.managed_wood_df['biomass_production (Mt)'].values
-        biomass_prod = self.managed_wood_df['biomass_production (Mt)'].values + \
-            self.biomass_dry_df['deforestation (Mt)'].values
-        # (u/v)' = (u'v - uv') / v^2
-        d_mwpart_d_ref_invest = (dprod_dinvest * biomass_prod - mw_prod *
-                                 dprod_dinvest) / biomass_prod**2
-        # *1e6 to go from MWh to TWh
-        derivate = (self.biomass_dry_df['managed_wood_price_per_MWh'].values * d_mwpart_d_ref_invest -
-                    self.biomass_dry_df['deforestation_price_per_MWh'].values *
-                    d_mwpart_d_ref_invest)
-        # shift needed due to construction delay
-#         for i in range(construction_delay, number_of_values):
-#             for j in range(construction_delay, i + 1):
-#                 #                 if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
-#                 #                     pass
-#                 #                 else:
-#                 res[i, j - construction_delay] = derivate[i, i]
-        return derivate
 
     def d_biomass_price_d_invest_deforest(self, dprod_dinvest_deforest):
         """
@@ -818,7 +812,7 @@ class Forest():
         # final result : price = price_def * def_part + mw_price * (1-def_part)
         derivate = (self.biomass_dry_df['deforestation_price_per_ton'].values * d_deforestpart_d_deforest_invest -
                     self.biomass_dry_df['managed_wood_price_per_ton'].values *
-                    d_deforestpart_d_deforest_invest) / self.ratio['ratio'].values
+                    d_deforestpart_d_deforest_invest)
 #         derivate = (self.biomass_dry_df['deforestation_price_per_ton'].values * d_deforestpart_d_deforest_invest +
 #                     self.biomass_dry_df['managed_wood_price_per_ton'].values *
 #                     d_mwpart_d_deforest_invest)
@@ -827,6 +821,7 @@ class Forest():
 
     def d_biomass_prod_d_deforestation_invest(self, d_deforest_surf_d_deforest_invest):
         """
+
         Compute derivate of biomass prod by deforestation surface
         -self.forest_surface_df['delta_deforestation_surface'] * density_per_ha * mean_density / \
             years_between_harvest / (1 - recycle_part)
@@ -841,26 +836,51 @@ class Forest():
 
     def d_mw_surf_d_deforest_invest(self,):
         """
+
         """
         number_of_values = (self.year_end - self.year_start + 1)
         result = np.identity(number_of_values) * 0
         for i in range(0, number_of_values):
-            if self.ratio.loc[i, 'ratio'] < 1:
-                for j in range(0, i + 1):
-                    result[i][j] = -1 / self.deforest_cost_per_ha
+            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
+                if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
+                    pass
+                else:
+                    for j in range(0, i + 1):
+                        result[i][j] = -1 / self.deforest_cost_per_ha
+        return result
 
+    def d_mw_surf_d_reforest_invest(self,):
+        """
+
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        result = np.identity(number_of_values) * 0
+        for i in range(0, number_of_values):
+            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
+                if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
+                    pass
+                else:
+                    for j in range(0, i + 1):
+                        result[i][j] = 1 / self.cost_per_ha
         return result
 
     def d_capital_total_d_invest(self,):
         """
+
         Compute derivate of capital total of reforestation regarding reforestation_investment
         """
+        number_of_values = (self.year_end - self.year_start + 1)
         dcapital_d_invest = np.identity(len(self.years))
+        for i in range(0, number_of_values):
+            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
+                if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
+                    dcapital_d_invest[i][i] = 0
 
         return dcapital_d_invest
 
     def d_lostcapitald_invest(self, d_delta_reforestation_dinvest):
         """"
+
         compute derivate of lost capital regarding reforestation_investment
         if deforestation_surf < reforestation surf : no dependancies --> derivate is null
         if deforestation_sur > reforestation_surf : derivate is d_delta_reforestation_dinvest * cost_per_ha
@@ -872,20 +892,4 @@ class Forest():
             else:
                 result[element, element] = result[element,
                                                   element] * self.cost_per_ha
-        return result
-
-    def d_lostcapitald_deforestation(self, d_delta_deforestation_d_deforestation):
-        """"
-        compute derivate of lost capital regarding reforestation_investment
-        if deforestation_surf < reforestation surf : d_delta_deforestation_d_deforestation * cost_per_ha
-        if deforestation_sur > reforestation_surf : no dependencies
-        """
-        result = d_delta_deforestation_d_deforestation
-        for element in range(0, len(self.years)):
-            if abs(self.forest_surface_df.at[element, 'delta_deforestation_surface']) > self.forest_surface_df.at[element, 'delta_reforestation_surface']:
-                result[element, element] = 0
-            else:
-                result[element, element] = result[element,
-                                                  element] * self.cost_per_ha
-
         return result

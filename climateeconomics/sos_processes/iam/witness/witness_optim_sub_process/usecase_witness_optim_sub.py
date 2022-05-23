@@ -162,8 +162,8 @@ class Study(ClimateEconomicsStudyManager):
                                                                               'namespace_in': 'ns_witness',
                                                                               'namespace_out': 'ns_forest'
                                                                               }
-            dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_array_mix'] = dspace_df[f'deforestation_investment_array_mix']['value']
-            design_var_descriptor['deforestation_investment_array_mix'] = {'out_name': 'deforestation_investment',
+            dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_ctrl'] = dspace_df[f'deforestation_investment_ctrl']['value']
+            design_var_descriptor['deforestation_investment_ctrl'] = {'out_name': 'deforestation_investment',
                                                                            'out_type': 'dataframe',
                                                                            'key': 'investment',
                                                                            'index': years,

@@ -110,7 +110,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # CO2 from production from tractor is taken
         # into account into the energy net factor
         # land CO2 absorption is static and set in carbonemission model
-        'CO2_from_production': 0.0,
+        'CO2_from_production': - 0.425 * 44.01 / 12.0,
         'CO2_from_production_unit': 'kg/kg',
         'elec_demand': 0,
         'elec_demand_unit': 'kWh/kWh',

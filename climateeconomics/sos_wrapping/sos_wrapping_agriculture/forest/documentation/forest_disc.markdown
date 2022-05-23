@@ -53,7 +53,7 @@ The global forest surface is divided into 3 parts:
 Then, 3 different activities will impact these surfaces taken into account.
 * Reforestation. This activities consists in planting trees, and thus increases the unmanaged forest surface, as the global forest surface.
 * Deforestation. This activities cuts trees and reduce unmanaged forest surface as the global forest surface. Deforestation can not impact protected forest. Deforestation produces biomass as a one-time activities.
-* Managed wood. This activities consists in managing forest to produce biomass regulary on a long term period. Investing in managed wood will increase managed forest surface and decrease unmanaged forest surface. In others words, it takes existing non-managed forests and apply management plan. It can not impact protected forest, and does not impact the global forest surface.
+* Managed wood. This activities consists in managing forest to produce biomass regulary on a long term period. Investing in managed wood will increase managed forest surface and so the global forest surface.
 
 Following paragraphs gives further details about each part of the model.
 
@@ -67,8 +67,10 @@ Deforestation is directly the **deforestation_surface** from the inputs.
 Reforestation is calculated by
 $$Reforestation\_surface = Reforestation\_investment / cost\_per\_ha$$
 
-The cumulative value is the sum of all the forest surface evolution from the first year of the study to the given year of the data.*
+The cumulative value is the sum of all the forest surface evolution from the first year of the study to the given year of the data.
 Deforestation also produces biomass.
+
+The surface deforested is removed from the existing forest surface. It firstly takes out unmanaged surfaces. When there is no more unmanaged trees to cut, managed one are cut. Then, when there is not more managed wood left, nothing is cut, as protected forests can not be impacted.
 
 ## Managed wood
 
@@ -80,9 +82,6 @@ $$Added\_surface = investment / price\_per\_ha$$
 This price per ha take into account planting tree, preparing ground, harvesting and other activities linked to wood management.
 By adding the surface of forest planting each year, the cumulative surface is computed, which represent the total of managed or unmanaged wood added since the first year of the study.
 
-As managed wood convert unmanaged forest into managed one, what happend if there is not enough unmanaged forest left ?
-In that case all the available surface is taken as managed, with the application of the following ratio :
-$$ratio = available\_unmanaged\_surface / theoric\_managed\_added\_surface$$
 
 **Biomass production**
 The quantity of biomass produced by 1 ha is given by

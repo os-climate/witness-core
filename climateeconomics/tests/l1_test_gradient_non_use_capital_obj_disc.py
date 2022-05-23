@@ -24,7 +24,13 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    def analytic_grad_entry(self):
+        return [
+            self.test_01_grad_non_use_capital_objective,
+            self.test_02_grad_non_use_capital_objective_dev
+        ]
 
     def setUp(self):
         self.name = 'Test'
@@ -41,7 +47,8 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_energy': f'{self.name}.EnergyMix',
                    'ns_ref': f'{self.name}',
                    'ns_ccs': f'{self.name}.CCUS',
-                   'ns_forest': f'{self.name}.Agriculture.Forest', }
+                   'ns_forest': f'{self.name}.AgricultureMix.Forest',
+                   'ns_invest': f'{self.name}', }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -53,6 +60,8 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+
+    def test_01_grad_non_use_capital_objective(self):
         year_end = 2100
         year_start = 2020
         loss_fg = 12
@@ -95,19 +104,12 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': non_use_capital_ft,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.gamma': 0.5,
-                       f'{self.name}.Agriculture.Forest.non_use_capital': non_use_capital_ref,
-                       f'{self.name}.Agriculture.Forest.techno_capital': non_use_capital_ref, }
+                       f'{self.name}.AgricultureMix.Forest.non_use_capital': non_use_capital_ref,
+                       f'{self.name}.AgricultureMix.Forest.techno_capital': non_use_capital_ref, }
 
         self.ee.load_study_from_input_dict(values_dict)
 
         self.disc_techno = self.ee.root_process.sos_disciplines[0]
-
-    def analytic_grad_entry(self):
-        return [
-            self.test_01_grad_non_use_capital_objective
-        ]
-
-    def test_01_grad_non_use_capital_objective(self):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_non_use_capital_objective.pkl', discipline=self.disc_techno, step=1e-15,
                             inputs=[f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital',
@@ -115,9 +117,93 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CCUS.carbon_capture.CC_tech.non_use_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital',
-                                    f'{self.name}.Agriculture.Forest.non_use_capital',
-                                    f'{self.name}.Agriculture.Forest.techno_capital'],
+                                    f'{self.name}.AgricultureMix.Forest.non_use_capital',
+                                    f'{self.name}.AgricultureMix.Forest.techno_capital'],
                             outputs=[f'{self.name}.non_use_capital_objective',
                                      f'{self.name}.non_use_capital_cons',
                                      f'{self.name}.energy_capital'],
+                            derr_approx='complex_step')
+
+    def test_02_grad_non_use_capital_objective_dev(self):
+
+        year_end = 2100
+        year_start = 2020
+        year_range = year_end - year_start + 1
+        years = np.arange(year_start, year_end + 1)
+        loss_fg = 12
+        loss_ct = 2
+        loss_ub = 22
+        loss_rf = 16
+        loss_ft = 4
+        loss_ref = 3
+        loss_reforest = 3
+        non_use_capital_fg = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+                                           'FossilGas': loss_fg})
+        non_use_capital_ub = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+                                           'UpgradingBiogas': loss_ub})
+        non_use_capital_rf = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+                                           'Refinery': loss_rf})
+        non_use_capital_ft = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+                                           'FischerTropsch': loss_ft})
+        non_use_capital_ct = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+                                           'CC_tech': loss_ct})
+        non_use_capital_ref = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+                                            'Forest': loss_ref})
+        reforestation_lost_capital = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+                                            'lost_capital': loss_reforest})
+        reforestation_lost_capital_cons_ref = 1
+        reforestation_lost_capital_cons_limit = 10
+
+        forest_invest = np.linspace(5, 8, year_range)
+
+        forest_invest_df = pd.DataFrame(
+            {"years": years, "forest_investment": forest_invest})
+
+        non_use_capital_obj_ref = 100.
+        values_dict = {f'{self.name}.year_start': year_start,
+                       f'{self.name}.year_end': year_end,
+                       f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
+                       f'{self.name}.energy_list': ['fuel.liquid_fuel', 'methane'],
+                       f'{self.name}.ccs_list': ['carbon_capture'],
+                       f'{self.name}.agri_capital_techno_list': ['Forest'],
+                       f'{self.name}.is_dev': True,
+                       f'{self.name}.EnergyMix.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
+                       f'{self.name}.CCUS.carbon_capture.technologies_list': ['CC_tech'],
+                       f'{self.name}.CCUS.carbon_capture.CC_tech.non_use_capital': non_use_capital_ct,
+                       f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital': non_use_capital_fg,
+                       f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital': non_use_capital_ub,
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital': non_use_capital_rf,
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital': non_use_capital_ft,
+                       f'{self.name}.CCUS.carbon_capture.CC_tech.techno_capital': non_use_capital_ct,
+                       f'{self.name}.EnergyMix.methane.FossilGas.techno_capital': non_use_capital_fg,
+                       f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': non_use_capital_ub,
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': non_use_capital_rf,
+                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': non_use_capital_ft,
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.gamma': 0.5,
+                       f'{self.name}.AgricultureMix.Forest.non_use_capital': non_use_capital_ref,
+                       f'{self.name}.AgricultureMix.Forest.techno_capital': non_use_capital_ref,
+                       f'{self.name}.AgricultureMix.Forest.reforestation_lost_capital': reforestation_lost_capital,
+                       f'{self.name}.reforestation_lost_capital_cons_limit': reforestation_lost_capital_cons_limit,
+                       f'{self.name}.reforestation_lost_capital_cons_ref': reforestation_lost_capital_cons_ref,
+                       f'{self.name}.forest_investment': forest_invest_df, }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        self.disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_non_use_capital_objective_dev.pkl', discipline=self.disc_techno, step=1e-15,
+                            inputs=[f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital',
+                                    f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital',
+                                    f'{self.name}.CCUS.carbon_capture.CC_tech.non_use_capital',
+                                    f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital',
+                                    f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital',
+                                    f'{self.name}.AgricultureMix.Forest.non_use_capital',
+                                    f'{self.name}.AgricultureMix.Forest.techno_capital',
+                                    f'{self.name}.AgricultureMix.Forest.reforestation_lost_capital'],
+                            outputs=[f'{self.name}.non_use_capital_objective',
+                                     f'{self.name}.non_use_capital_cons',
+                                     f'{self.name}.energy_capital',
+                                     f'{self.name}.reforestation_lost_capital_cons'],
                             derr_approx='complex_step')
