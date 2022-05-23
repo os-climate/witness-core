@@ -44,7 +44,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-tree fa-fw',
         'version': '',
     }
-    AGRI_CAPITAL_TECHNO_LIST = ['Forest']
+    AGRI_CAPITAL_TECHNO_LIST = []
     biomass_cal_val = BiomassDry.data_energy_dict[
         'calorific_value']
     default_year_start = 2020
@@ -242,6 +242,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'non_use_capital': {
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+        'reforestation_lost_capital': {
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
     }
 
     FOREST_CHARTS = 'Forest chart'
@@ -298,8 +300,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'techno_consumption_woratio': techno_consumption_woratio,
             'land_use_required': self.forest_model.land_use_required,
             'CO2_emissions': self.forest_model.CO2_emissions,
-            'non_use_capital': self.forest_model.lost_capital,
+            'non_use_capital': self.forest_model.non_use_capital,
             'techno_capital': self.forest_model.techno_capital,
+            'reforestation_lost_capital': self.forest_model.lost_capital
         }
         #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -361,8 +364,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
         # lost capital vs reforestation investment grad
         dlostcapital_dinvest = self.forest_model.d_lostcapitald_invest(
             d_forest_surface_d_invest)
-        self.set_partial_derivative_for_other_types(('non_use_capital', 'Forest'), (
-            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dcapitaltotal_dinvest)
+
+        self.set_partial_derivative_for_other_types(('reforestation_lost_capital', 'lost_capital'), (
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dlostcapital_dinvest)
 
         # land use required
 
@@ -735,12 +739,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             # capital graph
             techno_capital_df = self.get_sosdisc_outputs('techno_capital')
-            lost_capital_df = self.get_sosdisc_outputs('non_use_capital')
+            lost_capital_df = self.get_sosdisc_outputs('reforestation_lost_capital')
             new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
                                                  chart_name='Non use capital due to deforestation<br>and reforestation vs total capital', stacked_bar=True)
             total_capital = techno_capital_df['Forest']  # + \
             # techno_capital_df['Managed_wood']
-            lost_capital_forest = lost_capital_df['Forest']
+            lost_capital_forest = lost_capital_df['lost_capital']
             #lost_capital_mw = lost_capital_df['Managed_wood']
 
             total_capital_series = InstanciatedSeries(

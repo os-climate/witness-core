@@ -126,7 +126,9 @@ class Forest():
         self.land_use_required = pd.DataFrame({'years': self.years})
         self.CO2_emissions = pd.DataFrame({'years': self.years})
         self.lost_capital = pd.DataFrame({'years': self.years})
+        self.non_use_capital = pd.DataFrame({'years': self.years})
         self.techno_capital = pd.DataFrame({'years': self.years})
+        self.reforestation_lost_capital = pd.DataFrame({'years': self.years})
 
     def compute(self, in_dict):
         """
@@ -456,7 +458,7 @@ class Forest():
         reforest_surface and deforest_surface are in Gha
         lost_capital is in G$ 
         """
-        self.lost_capital['Forest'] = 0
+        self.lost_capital['lost_capital'] = 0
         self.techno_capital['Forest'] = 0
 #         self.lost_capital['Deforestation'] = 0
 #         self.techno_capital['Deforestation'] = 0
@@ -464,16 +466,17 @@ class Forest():
 
         for element in range(0, len(self.years)):
             if abs(self.forest_surface_df.at[element, 'delta_deforestation_surface']) < self.forest_surface_df.at[element, 'delta_reforestation_surface']:
-                self.lost_capital.loc[element, 'Forest'] = abs(self.forest_surface_df.loc[element,
+                self.lost_capital.loc[element, 'lost_capital'] = abs(self.forest_surface_df.loc[element,
                                                                                           'delta_deforestation_surface']) * self.cost_per_ha
             else:
-                self.lost_capital.loc[element, 'Forest'] = self.forest_surface_df.loc[element,
+                self.lost_capital.loc[element, 'lost_capital'] = self.forest_surface_df.loc[element,
                                                                                       'delta_reforestation_surface'] * self.cost_per_ha
 
         self.techno_capital['Forest'] = self.forest_surface_df['delta_reforestation_surface'] * self.cost_per_ha
 #         self.techno_capital['Managed_wood'] = self.managed_wood_investment['investment']
 #         self.lost_capital['Managed_wood'] = self.managed_wood_investment['investment'] * \
 #             (1 - np.array(self.ratio))
+        self.non_use_capital['Forest'] = 0
 
     def compute_carbon_emissions(self):
         '''
