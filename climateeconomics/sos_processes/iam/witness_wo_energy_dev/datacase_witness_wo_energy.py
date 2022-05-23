@@ -208,6 +208,13 @@ class DataStudy():
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
         witness_input[f'{self.study_name}.is_dev'] = True
+        # 
+
+        GHG_total_energy_emissions = pd.DataFrame({'years': years,
+                                                   'Total CO2 emissions': np.linspace(37., 10., len(years)),
+                                                   'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
+                                                   'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
+        witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
         #witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
 #         self.exec_eng.dm.export_couplings(
 #             in_csv=True, f_name='couplings.csv')
