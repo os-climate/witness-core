@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import matplotlib.pyplot as plt
+
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -21,6 +23,8 @@ from climateeconomics.core.core_agriculture.crop import Crop,\
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
+from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+
 import numpy as np
 import pandas as pd
 from copy import deepcopy
@@ -55,6 +59,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                         'rice and maize': 2.9,
                         'potatoes': 0.9,
                         'fruits and vegetables': 0.8,
+                        'other': 21.4,
                         }
     default_kg_to_kcal = {'red meat': 2566,
                           'white meat': 1860,
@@ -64,6 +69,49 @@ class CropDiscipline(ClimateEcoDiscipline):
                           'potatoes': 670,
                           'fruits and vegetables': 624,
                           }
+
+    # Our World in Data
+    # https://ourworldindata.org/environmental-impacts-of-food#co2-and-greenhouse-gas-emissions
+
+    co2_gwp_100 = 1.0
+    ch4_gwp_100 = 28.0
+    n2o_gwp_100 = 265.0
+
+    ghg_emissions_unit = 'kg/kg'    # in kgCo2eq per kg of food
+    default_ghg_emissions = {'red meat': 32.7,
+                             'white meat': 4.09,
+                             'milk': 1.16,
+                             'eggs': 1.72,
+                             'rice and maize': 1.45,
+                             'potatoes': 0.170,
+                             'fruits and vegetables': 0.372,
+                             'other': 3.44,
+                             }
+
+    # Our World in Data
+    # https://ourworldindata.org/carbon-footprint-food-methane
+    ch4_emissions_unit = 'kg/kg'     # in kgCH4 per kg food
+    # set up as a ratio of total ghg emissions
+    ch4_emissions_ratios = {'red meat': 49/100,
+                            'white meat': 2/20,
+                            'milk': (49.0 + 17.0 + 26.0)/(100 + 33 + 40),     # from red meats
+                            'eggs': 0.0,
+                            'rice and maize': 4/6.5,
+                            'potatoes': 0.0,
+                            'fruits and vegetables': 0.0,  # negligible methane in this category
+                            'other': (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0)/(14 + 24 + 33 + 27 + 29 + 34),
+                            }
+
+    default_ch4_emissions = {}
+    for food in default_ghg_emissions:
+        default_ch4_emissions[food] = (default_ghg_emissions[food]*ch4_emissions_ratios[food]/ch4_gwp_100)
+
+    # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100)/co2_gwp_100
+    co2_emissions_unit = 'kg/kg'    # in kgCo2 per kg food
+    default_co2_emissions = {}
+    for food in default_ghg_emissions:
+        default_co2_emissions[food] = (default_ghg_emissions[food] - default_ch4_emissions[food]*ch4_gwp_100) / co2_gwp_100
+
     year_range = default_year_end - default_year_start + 1
     total_kcal = 414542.4
     red_meat_percentage = default_kg_to_kcal['red meat'] / total_kcal * 100
@@ -196,6 +244,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                               'default': techno_infos_dict_default},
         'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
         'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
+        'co2_emissions_per_kg': {'type': 'dict', 'unit': 'kg/kg', 'default': default_co2_emissions},
+        'ch4_emissions_per_kg': {'type': 'dict', 'unit': 'kg/kg', 'default': default_ch4_emissions},
     }
 
     DESC_OUT = {
@@ -224,6 +274,11 @@ class CropDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         # crop land emissions
         'CO2_land_emission_df': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'CO2_land_emission_detailed': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'CH4_land_emission_df': {'type': 'dataframe', 'unit': 'GtCH4',
+                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'CH4_land_emission_detailed': {'type': 'dataframe', 'unit': 'GtCH4',
+                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
     }
 
     CROP_CHARTS = 'crop and diet charts'
@@ -279,7 +334,11 @@ class CropDiscipline(ClimateEcoDiscipline):
             'techno_consumption': techno_consumption,
             'techno_consumption_woratio': techno_consumption_woratio,
             'CO2_emissions': self.crop_model.CO2_emissions,
-            'CO2_land_emission_df': self.crop_model.CO2_land_emissions
+            'CO2_land_emission_df': self.crop_model.CO2_land_emissions,
+            'CO2_land_emission_detailed': self.crop_model.CO2_land_emissions_detailed,
+            'CH4_land_emission_df': self.crop_model.CH4_land_emissions,
+            'CH4_land_emission_detailed': self.crop_model.CH4_land_emissions_detailed,
+
         }
 
         #-- store outputs
@@ -416,15 +475,73 @@ class CropDiscipline(ClimateEcoDiscipline):
             ('crop_investment', 'investment'),
             dprod_dinvest * scaling_factor_crop_investment * (1 - residue_density_percentage) / density_per_ha * calorific_value)
 
+        # gradient for land emissions
+        for ghg in ['CO2', 'CH4']:
+            dco2_dpop = 0.0
+            dco2_dtemp = 0.0
+            dco2_dred_meat = 0.0
+            dco2_dwhite_meat = 0.0
+            dco2_dinvest = 0.0
+
+            for food in self.get_sosdisc_inputs('co2_emissions_per_kg'):
+                food = food.replace(' (Gt)', '')
+                if food != 'years':
+
+                    dland_emissions_dfood_land_surface = model.compute_dland_emissions_dfood_land_surface_df(food)
+
+                    if food == 'other':
+                        dland_dpop = model.d_other_surface_d_population()
+                    else:
+                        dland_dpop = model.d_land_surface_d_population(f'{food} (Gha)')
+
+                    dland_dtemp = model.d_food_land_surface_d_temperature(temperature_df, f'{food} (Gha)')
+                    d_food_surface_d_red_meat_percentage = \
+                        model.compute_d_food_surface_d_red_meat_percentage(population_df, food)
+                    d_food_surface_d_white_meat_percentage = \
+                        model.compute_d_food_surface_d_white_meat_percentage(population_df, food)
+
+                    dco2_dpop += dland_emissions_dfood_land_surface[ghg]*dland_dpop
+                    dco2_dtemp += dland_emissions_dfood_land_surface[ghg]*dland_dtemp
+                    dco2_dred_meat += dland_emissions_dfood_land_surface[ghg] * d_food_surface_d_red_meat_percentage
+                    dco2_dwhite_meat += dland_emissions_dfood_land_surface[ghg] * d_food_surface_d_white_meat_percentage
+                    if food == 'rice and maize':
+                        dco2_dinvest += dland_emissions_dfood_land_surface[ghg]*dprod_dinvest * \
+                                        scaling_factor_crop_investment * (1 - residue_density_percentage) / \
+                                        density_per_ha * calorific_value
+
+            self.set_partial_derivative_for_other_types(
+                (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
+                ('population_df', 'population'),
+                dco2_dpop)
+
+            self.set_partial_derivative_for_other_types(
+                (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
+                ('temperature_df', 'temp_atmo'),
+                dco2_dtemp)
+
+            self.set_partial_derivative_for_other_types(
+                (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
+                ('red_meat_percentage', 'red_meat_percentage'),
+                dco2_dred_meat)
+
+            self.set_partial_derivative_for_other_types(
+                (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
+                ('white_meat_percentage', 'white_meat_percentage'),
+                dco2_dwhite_meat)
+
+            self.set_partial_derivative_for_other_types(
+                (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
+                ('crop_investment', 'investment'),
+                dco2_dinvest)
+
     def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
 
         chart_filters = []
-
         chart_list = [
-            CropDiscipline.CROP_CHARTS, 'Crop Productivity Evolution', 'Crop Energy']
+            CropDiscipline.CROP_CHARTS, 'Crop Productivity Evolution', 'Crop Energy', 'Crop Emissions']
 
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -769,4 +886,91 @@ class CropDiscipline(ClimateEcoDiscipline):
                     new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
+
+        if 'Crop Emissions' in chart_list:
+
+            # total emissions + by food
+            co2_emissions_df = self.get_sosdisc_outputs('CO2_land_emission_df')
+            co2_emissions_detailed_df = self.get_sosdisc_outputs('CO2_land_emission_detailed')
+            ch4_emissions_df = self.get_sosdisc_outputs('CH4_land_emission_df')
+            ch4_emissions_detailed_df = self.get_sosdisc_outputs('CH4_land_emission_detailed')
+            years = co2_emissions_df['years'].values.tolist()
+
+            co2_crop_emissions = co2_emissions_df['emitted_CO2_evol_cumulative'].values
+            co2_crop_emissions_series = InstanciatedSeries(
+                years, co2_crop_emissions.tolist(), 'Total Crop CO2 Emissions', InstanciatedSeries.BAR_DISPLAY)
+
+            ch4_crop_emissions = ch4_emissions_df['emitted_CH4_evol_cumulative'].values
+            ch4_crop_emissions_series = InstanciatedSeries(
+                years, ch4_crop_emissions.tolist(), 'Total Crop CH4 Emissions', InstanciatedSeries.BAR_DISPLAY)
+
+            # total emissions
+            series_to_add = [co2_crop_emissions_series, ch4_crop_emissions_series]
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Greenhouse Gas Emissions [Gt]',
+                                                 chart_name='Greenhouse Gas Emissions of food and energy production over time',
+                                                stacked_bar=True)
+            for serie in series_to_add:
+                new_chart.add_series(serie)
+            instanciated_charts.append(new_chart)
+
+            # CO2 per food
+            series_to_add = []
+            for key in co2_emissions_detailed_df.columns:
+
+                if key != 'years':
+                    new_series = InstanciatedSeries(
+                        years, (co2_emissions_detailed_df[key]).values.tolist(), key.replace(' (Gt)', ''), InstanciatedSeries.BAR_DISPLAY)
+
+                    series_to_add.append(new_series)
+
+            new_chart = TwoAxesInstanciatedChart('years', 'CO2 Emissions [Gt]',
+                                                 chart_name='CO2 Emissions of food and energy production over time',
+                                                 stacked_bar=True)
+            for serie in series_to_add:
+                new_chart.add_series(serie)
+            instanciated_charts.append(new_chart)
+
+            # CH2 per food
+            series_to_add = []
+            for key in ch4_emissions_detailed_df.columns:
+
+                if key != 'years':
+                    new_series = InstanciatedSeries(
+                        years, (ch4_emissions_detailed_df[key]).values.tolist(), key.replace(' (Gt)', ''), InstanciatedSeries.BAR_DISPLAY)
+
+                    series_to_add.append(new_series)
+
+            new_chart = TwoAxesInstanciatedChart('years', 'CH4 Emissions [Gt]',
+                                                 chart_name='CH4 Emissions of food and energy production over time',
+                                                 stacked_bar=True)
+            for serie in series_to_add:
+                new_chart.add_series(serie)
+
+            instanciated_charts.append(new_chart)
+
+            # CO2 emissions by food (pie chart)
+            years_list = [self.crop_model.year_start, self.crop_model.year_end]
+            food_names = co2_emissions_detailed_df.columns[1:].to_list()
+            for year in years_list:
+                values = [co2_emissions_detailed_df.loc[co2_emissions_detailed_df['years']
+                                                == year][food].values[0] for food in food_names]
+
+                if sum(values) != 0.0:
+                    pie_chart = InstanciatedPieChart(
+                        f'CO2 Emissions of food and energy production in {year}', food_names, values)
+                    instanciated_charts.append(pie_chart)
+
+            # CH4 emissions by food (pie chart)
+            years_list = [self.crop_model.year_start, self.crop_model.year_end]
+            food_names = ch4_emissions_detailed_df.columns[1:].to_list()
+            for year in years_list:
+                values = [ch4_emissions_detailed_df.loc[ch4_emissions_detailed_df['years']
+                                                == year][food].values[0] for food in food_names]
+
+                if sum(values) != 0.0:
+                    pie_chart = InstanciatedPieChart(
+                        f'CH4 Emissions of food and energy production in {year}', food_names, values)
+                    instanciated_charts.append(pie_chart)
+
         return instanciated_charts

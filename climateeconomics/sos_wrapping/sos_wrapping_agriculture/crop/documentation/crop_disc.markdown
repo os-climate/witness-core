@@ -111,7 +111,8 @@ The model outputs are:
 * **final diet**, gives the diet evolution over the years, in kg/person/year, for each type of food.
 * **Total food land surface**, gives the total amount of land needed for food, in Gha.
 * **CO2 Emissions**: CO2 emissions from crop production and residues for energy sector
-* **CO2 land Emissions**:  CO2 land emissions from crop that will be transferred to the carbon emission model
+* **CO2 land Emissions**:  CO2 land emissions from food production and crop energy production that will be transferred to the carbon emission model
+* **CH4 land Emissions**:  COH4 land emissions from food production and crop energy production that will be transferred to the carbon emission model
 * **Required land surface**: Surface of crop energy and food land
 * **biomass dry production**: crop production for energy sector with residues for energy sector
 * **biomass dry prices**: detailed of prices
@@ -185,6 +186,18 @@ $$Productivity\_change = \alpha T^2+bT$$
 $$with~~T_t = temperature_t -temperature_{t=0}$$ 
 By default $\alpha$ and $b$ are respectively set at  -0.00833 and - 0.04167. So that at +2 degrees (above pre industrial level) the decrease in productivity is 5% and 30% at +5 degrees celsius.   
 Then, when temperature rises, the surface required to produce the same amount of food increases by the share of production reduction. 
+
+Greenhouse Gas emissions of food production and crops are computed from ratios of kgCO2eq per kg of food from [^18] and scaled using FAO's food production in 2019 [^20].
+A weighed kgCO2eq per kg of food is then computed for each modelled category of food products (red meat, white meat, etc...)
+![](food-footprints.png)
+
+Resulted greenhouse gas emissions are finally calibrated using OurWorldInData global Food Grenhouse gas emissions [^17]. We consider only emissions from Crops and Livestock as all supply chain and lan use emissions are computed elsewhere. 
+![](How-much-of-GHGs-come-from-food.png)
+
+Note that each of those sources deal with CO3eq emissions of all greenhouse gases. From OurWorldInData: Carbon footprint and methane [^19], we are able to identify the CH4 part in these global GHG emissions and deduce the CO2 emissions part.
+
+
+
 
 ## Results
 This sections aims to describes the results charts.
@@ -276,3 +289,7 @@ Prices are computed with the input parameter crop_residue_price_percent_dif.
 [^14]: Schleussner, C.F., Deryng, D., Muller, C., Elliott, J., Saeed, F., Folberth, C., Liu, W., Wang, X., Pugh, T.A., Thiery, W. and Seneviratne, S.I., 2018. Crop productivity changes in 1.5 C and 2 C worlds under climate sensitivity uncertainty. Environmental Research Letters, 13(6), p.064007.
 [^15]: Manitoba, Crops production costs - 2021, gov.mb.ca/agriculture/farm-management/production-economics/pubs/cop-crop-production.pdf
 [^16]: United States Department of Agriculture, 2016, Harvesting Crop Residue: What’s it worth?, https://www.nrcs.usda.gov/Internet/FSE_DOCUMENTS/nrcseprd1298023.pdf
+[^17]: OurWorldInData: Food Grenhouse gas emissions, https://ourworldindata.org/food-ghg-emissions
+[^18]: OurWorldInData: Environmental impacts of food, https://ourworldindata.org/environmental-impacts-of-food#co2-and-greenhouse-gas-emissions
+[^19]: OurWorldInData: Carbon footprint and methane, https://ourworldindata.org/carbon-footprint-food-methane
+[^20]: Food and Agriculture Organisation, World Statistics, https://www.fao.org/faostat/en/#data/FBS

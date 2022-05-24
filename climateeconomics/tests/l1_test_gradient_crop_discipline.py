@@ -70,6 +70,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                  'rice and maize': 2.9,
                                  'potatoes': 0.88,
                                  'fruits and vegetables': 0.8,
+                                 'other': 21.4,
                                  }
         self.default_kg_to_kcal = {'red meat': 2566,
                                    'white meat': 1860,
@@ -210,5 +211,6 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.techno_consumption_woratio',
                                      f'{self.name}.CO2_emissions',
                                      f'{self.name}.CO2_land_emission_df',
+                                     f'{self.name}.CH4_land_emission_df',
 
                                     ])

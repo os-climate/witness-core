@@ -52,7 +52,10 @@ class AgricultureMixDiscipline(EnergyDiscipline):
 
     # -- add specific techno outputs to this
     DESC_OUT = {'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2',
-                                       'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}}
+                                       'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                'CH4_land_emissions': {'type': 'dataframe', 'unit': 'GtCH4',
+                                       'visibility': EnergyDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+                }
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
     def init_execution(self):
@@ -69,21 +72,30 @@ class AgricultureMixDiscipline(EnergyDiscipline):
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.CO2_land_emission_df'] = {
                         'type': 'dataframe', 'unit': 'GtCO2'}
+                    if techno == 'Crop':
+                        dynamic_inputs[f'{techno}.CH4_land_emission_df'] = {
+                            'type': 'dataframe', 'unit': 'GtCO2'}
+
         self.add_inputs(dynamic_inputs, clean_inputs=False)
 
     def run(self):
         EnergyDiscipline.run(self)
         # -- get CO2 emissions inputs
         CO2_emitted_crop_df = self.get_sosdisc_inputs('Crop.CO2_land_emission_df')
+        CH4_emitted_crop_df = self.get_sosdisc_inputs('Crop.CH4_land_emission_df')
         CO2_emitted_forest_df = self.get_sosdisc_inputs('Forest.CO2_land_emission_df')
         
         CO2_emissions_land_use_df = pd.DataFrame()
+        CH4_emissions_land_use_df = pd.DataFrame()
         CO2_emissions_land_use_df['years'] = CO2_emitted_crop_df['years']
         CO2_emissions_land_use_df['Crop'] = CO2_emitted_crop_df['emitted_CO2_evol_cumulative']
+        CH4_emissions_land_use_df['years'] = CH4_emitted_crop_df['years']
+        CH4_emissions_land_use_df['Crop'] = CH4_emitted_crop_df['emitted_CH4_evol_cumulative']
         CO2_emissions_land_use_df['Forest'] = CO2_emitted_forest_df['emitted_CO2_evol_cumulative']
 
         outputs_dict = {
             'CO2_land_emissions': CO2_emissions_land_use_df,
+            'CH4_land_emissions': CH4_emissions_land_use_df,
         }
         self.store_sos_outputs_values(outputs_dict)
 
@@ -99,9 +111,42 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         for techno in techno_list:
             self.set_partial_derivative_for_other_types(
                 ('CO2_land_emissions', f'{techno}'), (f'{techno}.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), np.identity(np_years))
+            if techno == 'Crop':
+                self.set_partial_derivative_for_other_types(
+                    ('CH4_land_emissions', f'{techno}'), (f'{techno}.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'), np.identity(np_years))
 
     def get_chart_co2_emissions(self):
         new_charts = []
+
+        # all ghg graph
+        chart_name = f'Greenhouse Gas emissions of agriculture lands'
+        new_chart = TwoAxesInstanciatedChart(
+            'years', 'GHG emissions (Gt)', chart_name=chart_name, stacked_bar=True)
+
+        technology_list = self.get_sosdisc_inputs('technologies_list')
+
+        CO2_emissions_land_use_df = self.get_sosdisc_outputs(
+            'CO2_land_emissions')
+        CH4_emissions_land_use_df = self.get_sosdisc_outputs(
+            'CH4_land_emissions')
+        year_start = self.get_sosdisc_inputs('year_start')
+        year_end = self.get_sosdisc_inputs('year_end')
+        year_list = np.arange(year_start, year_end + 1).tolist()
+
+        CO2_emissions_land_use = CO2_emissions_land_use_df.drop('years', axis=1).sum(axis=1).values.tolist()
+        CH4_emissions_land_use = CH4_emissions_land_use_df.drop('years', axis=1).sum(axis=1).values.tolist()
+
+        serie = InstanciatedSeries(
+            year_list, CO2_emissions_land_use, 'CO2 Emissions [GtCO2]', 'bar')
+        new_chart.series.append(serie)
+
+        serie = InstanciatedSeries(
+            year_list, CH4_emissions_land_use, 'CH4 Emissions [GtCH4]', 'bar')
+        new_chart.series.append(serie)
+
+        new_charts.append(new_chart)
+
+        # co2 per crop/forest
         chart_name = f'Comparison of CO2 emissions of agriculture lands'
         new_chart = TwoAxesInstanciatedChart(
             'years', 'CO2 emissions (GtCO2)', chart_name=chart_name, stacked_bar=True)
