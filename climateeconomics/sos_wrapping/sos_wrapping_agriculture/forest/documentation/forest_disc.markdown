@@ -34,7 +34,13 @@ The outputs of the model are:
 - **forest_surface_detail_df**, giving detailed data about forest surface evolution over the year. Unit is Gha.
 - **CO2_emitted_df**, gives evolution of CO2 captured by forest in GtCO2.
 - **CO2_emissions_detail_df**, gives detailed data about CO2 emitted by forest activities. Unit is GtCO2.
-- **CO2_land_emission_df**, gives informations about computed land emissions. Unit is GtCO2.
+- **CO2_land_emission_df**, gives information about computed land emissions. Unit is GtCO2. These emissions are computed with this formula:
+  $$CO2\_land\_emission=Surface_deforestation * CO2\_per\_ha - Surface_reforestation * CO2\_per\_ha + Surface_managed\_wood * 0
+
+Because here land emissions are in delta the formula is:
+$$CO2\_land\_emission=Initial\_CO2\_emissions + Delta_Surface_deforestation * CO2\_per\_ha - Delta_Surface_reforestation * CO2\_per\_ha + Delta\_Surface\_managed\_wood * CO2\_per\_ha$$
+Delta_Surface_managed_wood are emissions from the conversion of unmanaged wood into managed wood (from forest that absorbs CO2 to forests that are carbon neutral).
+ 
 - **managed_wood_df**, gives data about managed wood prodution.
 - **biomass_dry_detail_df**, gives detailed data about biomass dry production.
 - **biomass_dry_df**, gives major data about biomass dry production.
