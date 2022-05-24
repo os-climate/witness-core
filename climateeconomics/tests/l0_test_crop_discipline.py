@@ -66,6 +66,7 @@ class CropTestCase(unittest.TestCase):
                                  'rice and maize': 2.9,
                                  'potatoes': 0.88,
                                  'fruits and vegetables': 0.8,
+                                 'other': 21.4
                                  }
         self.default_kg_to_kcal = {'red meat': 2566,
                                    'white meat': 1860,
@@ -114,6 +115,49 @@ class CropTestCase(unittest.TestCase):
         # energy of all surfaces
         self.initial_production = 4.8 * density_per_ha * 3.6 * energy_crop_percentage   # in TWh
 
+        # Our World in Data
+        # https://ourworldindata.org/environmental-impacts-of-food#co2-and-greenhouse-gas-emissions
+
+        co2_gwp_100 = 1.0
+        ch4_gwp_100 = 28.0
+        n2o_gwp_100 = 265.0
+
+        ghg_emissions_unit = 'kg/kg'  # in kgCo2eq per kg of food
+        default_ghg_emissions = {'red meat': 32.7,
+                                 'white meat': 4.09,
+                                 'milk': 1.16,
+                                 'eggs': 1.72,
+                                 'rice and maize': 1.45,
+                                 'potatoes': 0.170,
+                                 'fruits and vegetables': 0.372,
+                                 'other': 3.44,
+                                 }
+
+        # Our World in Data
+        # https://ourworldindata.org/carbon-footprint-food-methane
+        ch4_emissions_unit = 'kg/kg'  # in kgCH4 per kg food
+        # set up as a ratio of total ghg emissions
+        ch4_emissions_ratios = {'red meat': 49 / 100,
+                                'white meat': 2 / 20,
+                                'milk': (49.0 + 17.0 + 26.0) / (100 + 33 + 40),  # from red meats
+                                'eggs': 0.0,
+                                'rice and maize': 4 / 6.5,
+                                'potatoes': 0.0,
+                                'fruits and vegetables': 0.0,  # negligible methane in this category
+                                'other': (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0) / (14 + 24 + 33 + 27 + 29 + 34),
+                                }
+
+        default_ch4_emissions = {}
+        for food in default_ghg_emissions:
+            default_ch4_emissions[food] = (default_ghg_emissions[food] * ch4_emissions_ratios[food] / ch4_gwp_100)
+
+        # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100)/co2_gwp_100
+        co2_emissions_unit = 'kg/kg'  # in kgCo2 per kg food
+        default_co2_emissions = {}
+        for food in default_ghg_emissions:
+            default_co2_emissions[food] = (default_ghg_emissions[food] - default_ch4_emissions[
+                food] * ch4_gwp_100) / co2_gwp_100
+
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
                       'time_step': self.time_step,
@@ -138,6 +182,8 @@ class CropTestCase(unittest.TestCase):
                       'initial_production': self.initial_production,
                       'red_meat_percentage': self.red_meat_percentage,
                       'white_meat_percentage': self.white_meat_percentage,
+                      'co2_emissions_per_kg': default_co2_emissions,
+                      'ch4_emissions_per_kg': default_ch4_emissions,
                       }
 
     def test_crop_model(self):
