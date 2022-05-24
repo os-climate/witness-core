@@ -130,7 +130,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         # into account into the energy net factor
                         # land CO2 absorption is computed in land_emission with
                         # the CO2_per_ha parameter
-                        'CO2_from_production': - 0.425 * 44.01 / 12.0,
+                        'CO2_from_production':- 0.425 * 44.01 / 12.0,
                         'CO2_from_production_unit': 'kg/kg'}
 
 # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
@@ -389,7 +389,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         #d_CO2 d invest managed_wood
         d_cum_CO2_emitted_d_invest_mw = self.forest_model.d_CO2_emitted( d_mw_surface_d_invest)
         self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
-            'managed_wood_investment', 'investment'), d_cum_CO2_emitted_d_invest_mw)
+            'managed_wood_investment', 'investment'), -d_cum_CO2_emitted_d_invest_mw)
 
         # d techno_production managed wood invest
         d_biomass_residues_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(

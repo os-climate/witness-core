@@ -303,12 +303,10 @@ class Forest():
 
                     sum = np.cumsum(self.managed_wood_df['delta_surface'])
                     # delta is all the managed wood available
-                    self.managed_wood_df.loc[i,
-                                             'delta_surface'] = -(sum[i - 1] + self.managed_wood_initial_surface)
+                    self.managed_wood_df.loc[i, 'delta_surface'] = -(sum[i - 1] + self.managed_wood_initial_surface)
                     self.managed_wood_df.loc[i, 'cumulative_surface'] = 0
                     self.forest_surface_df.loc[i, 'delta_deforestation_surface'] = - \
-                        self.forest_surface_df.loc[i,
-                                                   'delta_reforestation_surface']
+                        self.forest_surface_df.loc[i, 'delta_reforestation_surface']
 
         self.forest_surface_df['deforestation_surface'] = np.cumsum(
             self.forest_surface_df['delta_deforestation_surface'])
@@ -379,14 +377,14 @@ class Forest():
 
         # remove CO2 managed surface from global emission because CO2_per_ha from managed forest = 0
         self.CO2_emitted_df['CO2_deforestation'] = - self.forest_surface_df['deforestation_surface'] * \
-            self.CO2_per_ha / 1000 + self.initial_emissions -  (self.managed_wood_df['cumulative_surface']* \
-                                                                (-self.CO2_per_ha) / 1000) # <0 because managed trees absorb CO2
+            self.CO2_per_ha / 1000 + self.initial_emissions
         self.CO2_emitted_df['CO2_reforestation'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000
+        self.CO2_emitted_df['CO2_managed_wood'] = -(self.managed_wood_df['cumulative_surface']-self.managed_wood_initial_surface)* \
+                                                                (-self.CO2_per_ha) / 1000 # <0 because managed trees absorb CO2
         # global sum up
         self.CO2_emitted_df['global_CO2_emitted'] = -self.forest_surface_df['deforestation_surface'] * \
-            self.CO2_per_ha / 1000 + self.initial_emissions  -  (self.managed_wood_df['cumulative_surface']* \
-                                                                (-self.CO2_per_ha) / 1000)
+            self.CO2_per_ha / 1000 + self.initial_emissions  +  self.CO2_emitted_df['CO2_managed_wood']
         self.CO2_emitted_df['global_CO2_captured'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000
         self.CO2_emitted_df['emitted_CO2_evol_cumulative'] = self.CO2_emitted_df['global_CO2_emitted'] + \

@@ -25,7 +25,7 @@ from climateeconomics.sos_processes.iam.witness.forest_v2_process.usecase import
 
 AGRI_MIX_MODEL_LIST = ['Crop', 'Forest']
 AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = [
-    'ManagedWood', 'UnmanagedWood', 'CropEnergy']
+    'ManagedWood', 'CropEnergy']
 COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = []
 
 
@@ -134,12 +134,7 @@ class Study(StudyManager):
             mw_invest = np.linspace(1, 4, year_range)
         else:
             mw_invest = [0] * year_range
-        if 'UnmanagedWood' in self.techno_list:
-            uw_invest = np.linspace(0, 1, year_range)
-        else:
-            uw_invest = [0] * year_range
-        self.uw_invest_df = pd.DataFrame(
-            {"years": years, "investment": uw_invest})
+
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         self.crop_investment = pd.DataFrame(
@@ -185,8 +180,7 @@ class Study(StudyManager):
         crop_investment_array_mix = np.linspace(1.0, 1.5, self.nb_poles)
         managed_wood_investment_array_mix = np.linspace(
             2.0, 3.0, self.nb_poles)
-        unmanaged_wood_investment_array_mix = np.linspace(
-            4.0, 5.0, self.nb_poles)
+
 
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
@@ -198,8 +192,6 @@ class Study(StudyManager):
             design_space_ctrl_dict['crop_investment_array_mix'] = crop_investment_array_mix
         if 'ManagedWood' in self.techno_list:
             design_space_ctrl_dict['managed_wood_investment_array_mix'] = managed_wood_investment_array_mix
-        if 'UnmanagedWood' in self.techno_list:
-            design_space_ctrl_dict['unmanaged_wood_investment_array_mix'] = unmanaged_wood_investment_array_mix
 
         design_space_ctrl = pd.DataFrame(design_space_ctrl_dict)
         self.design_space_ctrl = design_space_ctrl
@@ -233,9 +225,6 @@ class Study(StudyManager):
         if 'ManagedWood' in self.techno_list:
             update_dspace_dict_with(ddict, 'managed_wood_investment_array_mix',
                                     list(self.design_space_ctrl['managed_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False)
-        if 'UnmanagedWood' in self.techno_list:
-            update_dspace_dict_with(ddict, 'unmanaged_wood_investment_array_mix',
-                                    list(self.design_space_ctrl['unmanaged_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False,)
 
         return ddict
 

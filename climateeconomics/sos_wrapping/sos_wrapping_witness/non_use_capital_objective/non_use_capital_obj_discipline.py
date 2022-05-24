@@ -97,14 +97,14 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                                                                 'default': 20.,
                                                                 'user_level': 2, 
                                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                'namespace': 'ns_forest',
+                                                                'namespace': 'ns_ref',
                                                                 'structuring': True}
                 dynamic_inputs['reforestation_lost_capital_cons_limit'] = {'type': 'float',
                                                                 'unit': 'G$',
                                                                 'default': 40.,
                                                                 'user_level': 2, 
                                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                'namespace': 'ns_forest',
+                                                                'namespace': 'ns_ref',
                                                                 'structuring': True}
         if 'energy_list' in self._data_in:
             energy_list = self.get_sosdisc_inputs('energy_list')
