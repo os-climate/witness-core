@@ -386,11 +386,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_CO2_emitted_d_invest_ref)
 
-        #d_CO2 d invest managed_wood
-        d_cum_CO2_emitted_d_invest_mw = self.forest_model.d_CO2_emitted( d_mw_surface_d_invest)
-        self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
-            'managed_wood_investment', 'investment'), -d_cum_CO2_emitted_d_invest_mw)
-
         # d techno_production managed wood invest
         d_biomass_residues_d_mw_invest = self.forest_model.d_biomass_prod_d_invest(
             d_mw_surface_d_invest, residue_percentage, residue_percentage_for_energy)

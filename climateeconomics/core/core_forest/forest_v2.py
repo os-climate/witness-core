@@ -280,45 +280,44 @@ class Forest():
         # invest in G$, coest_per_ha in $/ha --> Gha
         self.forest_surface_df['delta_reforestation_surface'] = self.forest_investment['forest_investment'].values / self.cost_per_ha
 
-        self.forest_surface_df['deforestation_surface'] = np.cumsum(
-            self.forest_surface_df['delta_deforestation_surface'])
-        self.forest_surface_df['reforestation_surface'] = np.cumsum(
-            self.forest_surface_df['delta_reforestation_surface'])
+        self.forest_surface_df['deforestation_surface'] = np.cumsum(self.forest_surface_df['delta_deforestation_surface'])
+        self.forest_surface_df['reforestation_surface'] = np.cumsum(self.forest_surface_df['delta_reforestation_surface'])
 
 
         for i in range(0, len(self.years)):
-            # if unmanaged forest are empty, managed forest are removed
+            # recompute unmanaged forest cumulated each year
             if i == 0:
                 self.forest_surface_df.loc[i, 'unmanaged_forest'] = self.initial_unmanaged_forest_surface + self.forest_surface_df.loc[i,'delta_reforestation_surface'] + \
                                                                     self.forest_surface_df.loc[i,'delta_deforestation_surface']
             else:
                  self.forest_surface_df.loc[i, 'unmanaged_forest'] = self.forest_surface_df.loc[i-1, 'unmanaged_forest'] + self.forest_surface_df.loc[i,'delta_reforestation_surface'] + \
                                                                     self.forest_surface_df.loc[i,'delta_deforestation_surface']
-
+            # if unmanaged forest are empty, managed forest are removed
             if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
+                # remove managed wood
                 self.managed_wood_df.loc[i, 'delta_surface'] += self.forest_surface_df.loc[i, 'unmanaged_forest']
+                #set unmanaged forest to 0
                 self.forest_surface_df.loc[i, 'unmanaged_forest'] = 0
 
+            # recompute managed forest cumulated each year
             if i > 0:
                 self.managed_wood_df.loc[i, 'cumulative_surface'] = self.managed_wood_df.loc[i-1, 'cumulative_surface']  + \
                     self.managed_wood_df.loc[i, 'delta_surface']
             else:
                 self.managed_wood_df.loc[i, 'cumulative_surface'] += self.managed_wood_df.loc[i, 'delta_surface']
-            #self.managed_wood_df.loc[i, 'delta_surface'] = max(
-            #    self.managed_wood_df.loc[i, 'delta_surface'], -self.managed_wood_df.loc[i, 'cumulative_surface'])
 
-            # if managed forest are empty, nothing is removed
+            # if managed forest are empty, all is removed
             if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
 
                 sum = np.cumsum(self.managed_wood_df['delta_surface'])
                 # delta is all the managed wood available
                 self.managed_wood_df.loc[i, 'delta_surface'] = -(sum[i - 1] + self.managed_wood_initial_surface)
                 self.managed_wood_df.loc[i, 'cumulative_surface'] = 0
-                self.forest_surface_df.loc[i, 'delta_deforestation_surface'] = - \
-                    self.forest_surface_df.loc[i, 'delta_reforestation_surface']
 
-        self.forest_surface_df['deforestation_surface'] = np.cumsum(
-            self.forest_surface_df['delta_deforestation_surface'])
+                #set a limit to deforestation at the forest that have been reforested because there is no other
+                self.forest_surface_df.loc[i, 'delta_deforestation_surface'] = - self.forest_surface_df.loc[i, 'delta_reforestation_surface'] + self.managed_wood_df.loc[i, 'delta_surface']
+
+        self.forest_surface_df['deforestation_surface'] = np.cumsum(self.forest_surface_df['delta_deforestation_surface'])
 
     def compute_deforestation_biomass(self):
 
@@ -546,6 +545,8 @@ class Forest():
 
         return d_deforestation_surface_d_forests
     # alternative
+
+
 
     def d_forestation_surface_d_invest(self):
         """
