@@ -380,11 +380,9 @@ class Forest():
             self.CO2_per_ha / 1000
         self.CO2_emitted_df['CO2_reforestation'] = -self.forest_surface_df['reforestation_surface'] * \
             self.CO2_per_ha / 1000
-        self.CO2_emitted_df['CO2_managed_wood'] = -(self.managed_wood_df['cumulative_surface']-self.managed_wood_initial_surface)* \
-                                                                (-self.CO2_per_ha) / 1000 # <0 because managed trees absorb CO2
         self.CO2_emitted_df['initial_CO2_land_use_change'] = self.initial_emissions
         # global sum up
-        self.CO2_emitted_df['global_CO2_emitted'] = self.CO2_emitted_df['CO2_deforestation'] + self.CO2_emitted_df['initial_CO2_land_use_change']  +  self.CO2_emitted_df['CO2_managed_wood']
+        self.CO2_emitted_df['global_CO2_emitted'] = self.CO2_emitted_df['CO2_deforestation'] + self.CO2_emitted_df['initial_CO2_land_use_change']
         self.CO2_emitted_df['global_CO2_captured'] = self.CO2_emitted_df['CO2_reforestation']
         self.CO2_emitted_df['emitted_CO2_evol_cumulative'] = self.CO2_emitted_df['global_CO2_emitted'] + \
             self.CO2_emitted_df['global_CO2_captured']
