@@ -34,11 +34,17 @@ years = np.arange(year_start, year_end + 1)
 lifespan = 30
 new_stock = 47
 
+print(1 / (1 +2)**2)
+print(1/((1 +2)**2))
+
 copper = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_consumed_data.csv')) #pd.read_csv(join(dirname(__file__),'copper_resource_consumed_data.csv')) ou : pd.DataFrame(columns= ['years' , 'copper_consumption' ])
 copper_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_production_data.csv'))
 
 copper_dict = copper.to_dict()
-
+print("le dico")
+print(copper_dict)
+print("les cles du dico")
+print(list(copper_dict['copper_consumption'].keys()))
 # print("la conso là")
 # print(copper_consumed_dict['copper_consumption'])
 
@@ -47,8 +53,8 @@ coal_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{
 
 use_stock = pd.DataFrame(
             {'years': np.insert(years, 0, np.arange(year_start - lifespan, year_start, 1))})
-print(copper_dict['copper_consumption'])
-print(copper_['copper_consumption'] * 1000)
+# print(copper_dict['copper_consumption'])
+# print(copper_['copper_consumption'] * 1000)
 
 copper_sub_resource_list = [col for col in list(copper_production_data.columns) if col != 'years']
 copper_dict = {}
