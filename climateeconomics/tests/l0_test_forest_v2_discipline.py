@@ -227,8 +227,8 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
     def test_forest_discipline_high_deforestation(self):
         '''
@@ -268,14 +268,14 @@ class ForestTestCase(unittest.TestCase):
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {'years': years, 'investment': np.array([1000.00, 1000.00, 1000.00, 1000.00,
-                                                 1000.00, 1000.00, 1000.00, 1000.00,
-                                                 1000.00, 1000.00, 1000.00, 1000.00,
-                                                 1000.00, 1000.00, 1000.00, 1000.00,
+            {'years': years, 'investment': np.array([4000.00, 4000.00, 4000.00, 4000.00,
+                                                4000.00, 4000.00, 4000.00, 4000.00,
+                                                 4000.00, 4000.00, 4000.00, 4000.00,
                                                  0.00, 0.00, 0.00, 0.00,
-                                                 0.00, 0.00, 1000.00, 1000.00,
-                                                 1000.00, 1000.00, 1000.00, 1000.00,
-                                                 1000.00, 1000.00, 1000.00])})
+                                                 0.00, 0.00, 0.00, 0.00,
+                                                 0.00, 0.00, 0.00, 0.00,
+                                                 0.00, 0.00, 0.00, 0.00,
+                                                 0.00, 0.00, 0.00])})
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.time_step': 1,
@@ -286,7 +286,6 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
-                       f'{name}.{model_name}.managed_wood_initial_prod': self.managed_wood_techno_dict,
                        f'{name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
                        f'{name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
