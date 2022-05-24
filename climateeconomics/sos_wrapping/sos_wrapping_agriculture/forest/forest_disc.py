@@ -573,7 +573,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             delta_deforestation = CO2_emissions_df['delta_CO2_deforestation'].values
             deforestation = CO2_emissions_df['CO2_deforestation'].values
 
-            delta_managed_wood = CO2_emissions_df['CO2_managed_wood'].values
             init_balance = CO2_emissions_df['initial_CO2_land_use_change'].values
 
             delta_global = CO2_emissions_df['delta_CO2_emitted'].values
@@ -604,18 +603,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 years, reforestation.tolist(), 'Reforestation emissions', InstanciatedSeries.BAR_DISPLAY)
             CO2_total_series = InstanciatedSeries(
                 years, global_surface.tolist(), 'Global CO2 balance', InstanciatedSeries.LINES_DISPLAY)
-            CO2_managed_wood_series = InstanciatedSeries(
-                years, delta_managed_wood.tolist(), 'Managed wood emissions', InstanciatedSeries.BAR_DISPLAY)
             CO2_init_balance_serie = InstanciatedSeries(
                 years, init_balance.tolist(), 'initial land use change emissions', InstanciatedSeries.BAR_DISPLAY)
 
             new_chart.add_series(CO2_deforestation_series)
             new_chart.add_series(CO2_reforestation_series)
-            new_chart.add_series(CO2_managed_wood_series)
             new_chart.add_series(CO2_init_balance_serie)
             new_chart.add_series(CO2_total_series)
-            note = {'Managed wood emissions': 'emissions from the conversion of unmanaged forest into managed forest'}
-            new_chart.annotation_upper_left = note
 
             instanciated_charts.append(new_chart)
 
