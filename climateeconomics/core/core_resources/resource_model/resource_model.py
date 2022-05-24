@@ -308,16 +308,15 @@ class ResourceModel():
         '''
         pass
 
-    def compute_derivative_recycling(self, year_demand, resource_type, grad_use, grad_recycling) :
-        """ Compute derivative of reclycling regarding demand
+    def compute_derivative_recycling(self, year_demand, resource_type, grad_use, grad_stock, grad_recycling) :
+        """ 
+        Compute derivative of reclycling regarding demand
         """
-        # recycling depends on all the years preceding current_year - lifespan
-        grad_recycling[resource_type][year_demand - self.year_start]= grad_recycling[resource_type][year_demand- 1 - self.year_start]
-        # Adding the recycling of the current year (year_demand - self.year_start) which depends on the used stock at current_year - lifespan
+        # recycling of the current year (year_demand - self.year_start) which depends on the used stock at current_year - lifespan
         if year_demand - self.lifespan > self.year_start :
-            grad_recycling[resource_type][year_demand - self.year_start, year_demand - self.lifespan - self.year_start] = \
-                grad_use[resource_type][year_demand - self.lifespan - self.year_start, year_demand - self.lifespan - self.year_start] * self.recycled_rate       
-        
+            grad_recycling[resource_type][year_demand - self.year_start] = \
+                grad_use[resource_type][year_demand - self.lifespan - self.year_start] * self.recycled_rate       
+           
         return grad_recycling
         
 
@@ -373,7 +372,7 @@ class ResourceModel():
         # # gradient matrix computation
         for year_demand in range(year_start + 1, year_end + 1):
             total_stock = 0
-            grad_recycling = self.compute_derivative_recycling(year_demand, resource_type, grad_use, grad_recycling)
+            grad_recycling = self.compute_derivative_recycling(year_demand, resource_type, grad_use, grad_stock, grad_recycling)
             # # ------------------------------------------------
             # # dealing with units
             demand = resource_demand_dict[self.resource_name][year_demand] 
@@ -402,7 +401,7 @@ class ResourceModel():
                             # minus stock at year n-1 which is stock at year n-2 and so on, so the stock at year n depends
                             # on all previous year unless the stock is empty at
                             # a given year).  
-                            # Recycling depends on the use_stock of lifespan ago and the years before lifespan
+                            # Recycling depends on the use_stock of lifespan ago 
 
                             
                             for year in range(year_start + 1, year_demand + 1):
@@ -415,7 +414,10 @@ class ResourceModel():
                                     
                                     grad_stock[resource_type][
                                         year_demand - year_start, year - year_start] = - self.conversion_factor 
-                                           
+                                if self.lifespan != 0 :
+                                    if year_demand - self.lifespan > self.year_start and year <year_demand - self.lifespan:
+                                        grad_stock[resource_type][year_demand - year_start, year - year_start]  = \
+                                            grad_stock[resource_type][year_demand -1 - year_start, year - year_start]            
 
                                 if year_demand == year:
                                     grad_use[resource_type][
@@ -426,20 +428,18 @@ class ResourceModel():
                                     grad_use[resource_type][year_demand -
                                                             year_start, year - year_start] = grad_demand 
 
-                            #grad_recycling = self.compute_derivative_recycling(year_demand, resource_type, grad_use, grad_recycling)
                             grad_stock[resource_type][year_demand - year_start] += grad_recycling[resource_type][year_demand - year_start]
                             demand = 0
                             grad_demand = 0
                             year_stock[resource_type] = []
                         else:
                             # # -----------------------------------------------
-                            # # stock of resource_type + production are not sufficient to fulfill demand
+                            # # stock of resource_type + production + recycling are not sufficient to fulfill demand
                             # # so we use all the stock we had at previous year, the current year production, and the current year recycled production
                             # # and remove it from the demand
                             # # then use the next resource type (by ascending order of price)
                             # # we store the no_stock_year, last year at which there is no stock
 
-                            #grad_recycling = self.compute_derivative_recycling(year_demand, resource_type, grad_use, grad_recycling)
                             no_stock_year[resource_type] = year_demand
                             grad_use[resource_type][year_demand - year_start] = grad_stock[resource_type][
                                 year_demand - year_start - 1] 
@@ -456,7 +456,6 @@ class ResourceModel():
                         # # demand is zero or has been fulfilled by cheaper resources types
                         # # stock equal previous year stock + production + recycled production
                         # # we store all years at which we stored resource without demand
-                        #grad_recycling = self.compute_derivative_recycling(year_demand, resource_type, grad_use, grad_recycling)
                         grad_stock[resource_type][year_demand - year_start] = grad_stock[resource_type][
                             year_demand - year_start - 1] 
                         grad_stock[resource_type][year_demand - year_start, year_demand -self.lifespan - year_start] += \
@@ -464,12 +463,12 @@ class ResourceModel():
                         year_stock[resource_type].append(year_demand)
         
 
-            grad_price = self.get_d_price_d_demand(year_start, year_end, nb_years, year_demand, grad_use, grad_price)
-    
-        return grad_stock, grad_price, grad_use
+        grad_price = self.get_d_price_d_demand(year_start, year_end, nb_years, grad_use, grad_price)
+        
+        return grad_stock, grad_price, grad_use, 
 
 
-    def get_d_price_d_demand (self, year_start, year_end, nb_years, year_demand, grad_use, grad_price):
+    def get_d_price_d_demand (self, year_start, year_end, nb_years, grad_use, grad_price):
 
         ascending_price_resource_list = list(
             self.resource_price_data.sort_values(by=['price'])['resource_type'])
@@ -484,29 +483,30 @@ class ResourceModel():
         # # grad_total_consumption is used for price gradient calculation
         grad_total_consumption = np.identity(nb_years) * 0
 
-        # # ------------------------------------------------
-        # # total consumption -> use stock + production
-        for resource_type in ascending_price_resource_list:
-            grad_total_consumption[year_demand -
-                                    year_start] += grad_use[resource_type][year_demand - year_start]
+        for year_demand in range(year_start + 1, year_end + 1):
+            # # ------------------------------------------------
+            # # total consumption -> use stock + production
+            for resource_type in ascending_price_resource_list:
+                grad_total_consumption[year_demand -
+                                        year_start] += grad_use[resource_type][year_demand - year_start]
 
-        # # ------------------------------------------------
-        # # price is u/v function with u = use and v = total consumption
-        for resource_type in ascending_price_resource_list:
-            for year in range(year_start + 1, year_end + 1):
-                # # ------------------------------------------------
-                # # price is u/v function with u = use and v = total consumption
-                # # price gradient is (u'v - uv') / v^2
-                if total_consumption_dict['production'][year_demand] != 0:
-                    resource_type_price_idx = list(resource_price_data_dict['resource_type'].keys())[
-                        list(resource_price_data_dict['resource_type'].values()).index(resource_type)]
-                    grad_price[year_demand - year_start, year - year_start] += \
-                        resource_price_data_dict['price'][resource_type_price_idx]\
-                        * (grad_use[resource_type][year_demand - year_start, year - year_start]
-                            * total_consumption_dict['production'][year_demand]
-                            - use_stock_dict[resource_type][year_demand]
-                            * grad_total_consumption[year_demand - year_start, year - year_start])\
-                        / (total_consumption_dict['production'][year_demand]) ** 2
+            # # ------------------------------------------------
+            # # price is u/v function with u = use and v = total consumption
+            for resource_type in ascending_price_resource_list:
+                for year in range(year_start + 1, year_end + 1):
+                    # # ------------------------------------------------
+                    # # price is u/v function with u = use and v = total consumption
+                    # # price gradient is (u'v - uv') / v^2
+                    if total_consumption_dict['production'][year_demand] != 0:
+                        resource_type_price_idx = list(resource_price_data_dict['resource_type'].keys())[
+                            list(resource_price_data_dict['resource_type'].values()).index(resource_type)]
+                        grad_price[year_demand - year_start, year - year_start] += \
+                            resource_price_data_dict['price'][resource_type_price_idx]\
+                            * (grad_use[resource_type][year_demand - year_start, year - year_start]
+                                * total_consumption_dict['production'][year_demand]
+                                - use_stock_dict[resource_type][year_demand]
+                                * grad_total_consumption[year_demand - year_start, year - year_start])\
+                            / (total_consumption_dict['production'][year_demand]) ** 2
         return grad_price
         
         

@@ -21,15 +21,11 @@ To fit the curve with the maximum reserve estimated by US Geological Survey we a
 ### Extraction Price [^4]
 
 We start with the price of 2020.
-If the demand is higher than what is available for 2 years straight, the price rises.
-It rises according to a sigmoid function :
-$$f(x) = \frac{1}{1+e^{-x}}$$
+The price function is a simplistic function that depends on the ratio use_stock/demand.
+If the demand is fulfilled, ratio = 1 and the price is at its minimum. If nothing can be provided to answer the demand, ratio = 0 and the price is at it's maximum.
+In between, the price follows an affine curve :
+$$price(ratio) = (price\_max - price\_min) (1 - ratio) + price\_min$$
 
-![](Sigmoid_curve.PNG)
-
-with the ratio used_stock/demand as the argument. Ratio = 1 (demand fully answered) means x = -10 and ratio = 0 (nothing can be used) means x = 10. The upper bound is a constant (default is 50000), the lower bound is the price of the previous year.
-If after a recent raise, the demand is satisfied for 2 years straight, the price decreases (default : 0.95 * price previous year).
-If the demand is answered to and the price is still 2020's, it can't go lower, therefore is maintained.
 
 
 ### Other data [^3]
