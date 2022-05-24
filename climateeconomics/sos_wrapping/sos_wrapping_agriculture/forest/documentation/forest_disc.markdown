@@ -34,13 +34,7 @@ The outputs of the model are:
 - **forest_surface_detail_df**, giving detailed data about forest surface evolution over the year. Unit is Gha.
 - **CO2_emitted_df**, gives evolution of CO2 captured by forest in GtCO2.
 - **CO2_emissions_detail_df**, gives detailed data about CO2 emitted by forest activities. Unit is GtCO2.
-- **CO2_land_emission_df**, gives information about computed land emissions. Unit is GtCO2. These emissions are computed with this formula:
-  $$CO2\_land\_emission=Surface_deforestation * CO2\_per\_ha - Surface_reforestation * CO2\_per\_ha + Surface_managed\_wood * 0
-
-Because here land emissions are in delta the formula is:
-$$CO2\_land\_emission=Initial\_CO2\_emissions + Delta_Surface_deforestation * CO2\_per\_ha - Delta_Surface_reforestation * CO2\_per\_ha + Delta\_Surface\_managed\_wood * CO2\_per\_ha$$
-Delta_Surface_managed_wood are emissions from the conversion of unmanaged wood into managed wood (from forest that absorbs CO2 to forests that are carbon neutral).
- 
+- **CO2_land_emission_df**, gives information about computed land emissions. Unit is GtCO2.
 - **managed_wood_df**, gives data about managed wood prodution.
 - **biomass_dry_detail_df**, gives detailed data about biomass dry production.
 - **biomass_dry_df**, gives major data about biomass dry production.
@@ -107,9 +101,12 @@ with deforestation\_part = deforestation\_production / total\_biomass\_productio
 managed\_wood\_part = managed\_wood\_production / total\_biomass\_production
 
 
-## Evolution of CO2 captured
-The evolution of CO2 captured by forest is directly linked to the surface of forest. This evolution of CO2 captured is given by:
-$$CO2\_captured\_evolution = Forest\_surface\_evolution * CO2\_per\_ha$$
+## CO2 emissions
+The land emissions can be computed with this formula:
+$$CO2\_land\_emissions = Surface\_deforestation * CO2\_per\_ha - Surface\_reforestation * CO2\_per\_ha \\+ Surface\_managed\_wood * 0$$
+
+The forest for energy emissions can be computed as following:
+$$CO2\_emissions = CO2(by use biomass) - CO2(captured from growing trees) => 0$$
 
 ## Lost capital
 In order to do not waste money, the model will compute the value called lost capital that will be given to the appropriate model. This concerns reforestation and deforestation activities. As they are opposite activities, it is a waste of money and capital to invest in deforestation and reforestation.
