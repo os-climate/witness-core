@@ -41,7 +41,7 @@ class Study(StudyManager):
         self.obj_name = '.Objectives'
         self.coupling_name = ".Sectorization_Eval"
         self.optim_name = ".SectorsOpt"
-        self.ns_industry = self.study_name + self.optim_name + self.coupling_name + self.macro_name +'.Industry'
+        self.ns_industry = self.study_name + self.optim_name + self.coupling_name  + self.macro_name +'.Industry'
         self.ns_agriculture = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Agriculture'
         self.ns_services = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Services'
         self.year_start = year_start
@@ -86,69 +86,68 @@ class Study(StudyManager):
                                       [1.0], [2.0],[2050.0], [8.0]]}
  
         dspace = pd.DataFrame(dspace_dict)
-        
+
         design_var_descriptor = {'output_alpha_services_in': {'out_name': 'output_alpha','out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_services}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
                                 'prod_gr_start_services_in': {'out_name': 'productivity_gr_start','out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_services}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
                                 'decl_rate_tfp_services_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_services}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
                                 'prod_start_services_in': {'out_name': 'productivity_start', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_services}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
                                 'energy_eff_k_services_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_services}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
                                 'energy_eff_cst_services_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_services}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
                                 'energy_eff_xzero_services_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_services}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
                                 'energy_eff_max_services_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_services}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
                                 'output_alpha_agri_in': {'out_name': 'output_alpha','out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_agriculture}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
                                 'prod_gr_start_agri_in': {'out_name': 'productivity_gr_start','out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_agriculture}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
                                 'decl_rate_tfp_agri_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_agriculture}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
                                 'prod_start_agri_in': {'out_name': 'productivity_start', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_agriculture}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
                                 'energy_eff_k_agri_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_agriculture}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
                                 'energy_eff_cst_agri_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_agriculture}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
                                 'energy_eff_xzero_agri_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_agriculture}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
                                 'energy_eff_max_agri_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_agriculture}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
                                 'output_alpha_indus_in': {'out_name': 'output_alpha','out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_industry}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
                                 'prod_gr_start_indus_in': {'out_name': 'productivity_gr_start','out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_industry}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
                                 'decl_rate_tfp_indus_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_industry}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
                                 'prod_start_indus_in': {'out_name': 'productivity_start', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_industry}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
                                 'energy_eff_k_indus_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_industry}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
                                 'energy_eff_cst_indus_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_industry}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
                                 'energy_eff_xzero_indus_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_industry}'},
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
                                 'energy_eff_max_indus_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 'key': 'value',
-                                                              'namespace_in': f'{ns_above}','namespace_out': f'{self.ns_industry}'},         
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},         
                              }
 
         disc_dict = {}
-        #disc_dict[f'{ns_above}.DesignVariables.design_var_descriptor'] = design_var_descriptor
         disc_dict[f'{ns_coupling}.DesignVariables.design_var_descriptor'] = design_var_descriptor
 
         # Optim inputs
         disc_dict[f'{ns_above}.max_iter'] = 100
         disc_dict[f'{ns_above}.algo'] = "L-BFGS-B"
         disc_dict[f'{ns_above}.design_space'] = dspace
-        #disc_dict[f'{ns_coupling}.design_space'] = dspace
         disc_dict[f'{ns_above}.formulation'] = 'DisciplinaryOpt'
         disc_dict[f'{ns_above}.objective_name'] = 'objective_lagrangian'
         disc_dict[f'{ns_above}.ineq_constraints'] = []
+        disc_dict[f'{ns_above}.eq_constraints'] = []
         disc_dict[f'{ns_above}.algo_options'] = {
             #"maxls": 6,
             #"maxcor": 3,
@@ -185,11 +184,14 @@ class Study(StudyManager):
         
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
-        func_df['variable'] = [ 'error_pib_total', 'error_cap_total']
-        func_df['ftype'] =  [OBJECTIVE,OBJECTIVE]
-        func_df['weight'] = [0.125, 0.125]
-        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM]
-        func_df['namespace'] = ['ns_obj', 'ns_obj']
+        func_df['variable'] = [ 'error_pib_total', 'error_cap_total', 
+                               'Industry.cap_error', 'Agriculture.cap_error', 'Services.cap_error',
+                               'Industry.gdp_error', 'Agriculture.gdp_error', 'Services.gdp_error']
+        func_df['ftype'] =  [OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE]
+        func_df['weight'] = [0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125]
+        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, 
+                              AGGR_TYPE_SUM, AGGR_TYPE_SUM,AGGR_TYPE_SUM, AGGR_TYPE_SUM]
+        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj']
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{self.study_name}{self.optim_name}{self.coupling_name}.{func_mng_name}.'
