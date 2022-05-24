@@ -155,7 +155,7 @@ class ForestTestCase(unittest.TestCase):
 
         forest.compute(self.param)
 
-    def test_forest_discipline(self):
+    def test_forest_discipline_low_deforestation(self):
         '''
         Check discipline setup and run
         '''
@@ -180,6 +180,23 @@ class ForestTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
+        self.year_start = 2020
+        self.year_end = 2050
+        self.time_step = 1
+        years = np.arange(self.year_start, self.year_end + 1, 1)
+        year_range = self.year_end - self.year_start + 1
+        forest_invest = np.linspace(2, 10, year_range)
+        self.forest_invest_df = pd.DataFrame(
+            {"years": years, "forest_investment": forest_invest})
+        
+        mw_invest = np.linspace(10, 10, year_range)
+        self.mw_invest_df = pd.DataFrame(
+            {"years": years, "investment": mw_invest})
+        deforest_invest = np.linspace(10, 5, year_range)
+        # case over deforestation
+        #deforest_invest = np.linspace(1000, 5000, year_range)
+        self.deforest_invest_df = pd.DataFrame(
+            {"years": years, "investment": deforest_invest})
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.time_step': 1,
@@ -210,5 +227,84 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
+
+    def test_forest_discipline_high_deforestation(self):
+        '''
+        Check discipline setup and run
+        '''
+
+        name = 'Test'
+        model_name = 'forest'
+        ee = ExecutionEngine(name)
+        ns_dict = {'ns_public': f'{name}',
+                   'ns_witness': f'{name}.{model_name}',
+                   'ns_functions': f'{name}.{model_name}',
+                   'ns_forest': f'{name}.{model_name}',
+                   'ns_agriculture': f'{name}.{model_name}',
+                   'ns_invest': f'{name}.{model_name}'}
+
+        ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
+        builder = ee.factory.get_builder_from_module(model_name, mod_path)
+
+        ee.factory.set_builders_to_coupling_builder(builder)
+
+        ee.configure()
+        ee.display_treeview_nodes()
+
+        self.year_start = 2020
+        self.year_end = 2050
+        self.time_step = 1
+        years = np.arange(self.year_start, self.year_end + 1, 1)
+        year_range = self.year_end - self.year_start + 1
+        forest_invest = np.linspace(2, 10, year_range)
+        self.forest_invest_df = pd.DataFrame(
+            {"years": years, "forest_investment": forest_invest})
+        
+        mw_invest = np.linspace(300, 10, year_range)
+        self.mw_invest_df = pd.DataFrame(
+            {"years": years, "investment": mw_invest})
+        self.deforest_invest_df = pd.DataFrame(
+            {'years': years, 'investment': np.array([1000.00, 1000.00, 1000.00, 1000.00,
+                                                 1000.00, 1000.00, 1000.00, 1000.00,
+                                                 1000.00, 1000.00, 1000.00, 1000.00,
+                                                 1000.00, 1000.00, 1000.00, 1000.00,
+                                                 0.00, 0.00, 0.00, 0.00,
+                                                 0.00, 0.00, 1000.00, 1000.00,
+                                                 1000.00, 1000.00, 1000.00, 1000.00,
+                                                 1000.00, 1000.00, 1000.00])})
+        inputs_dict = {f'{name}.year_start': self.year_start,
+                       f'{name}.year_end': self.year_end,
+                       f'{name}.time_step': 1,
+                       f'{name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
+                       f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
+                       f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
+                       f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
+                       f'{name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
+                       f'{name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
+                       f'{name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
+                       f'{name}.{model_name}.managed_wood_initial_prod': self.managed_wood_techno_dict,
+                       f'{name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
+                       f'{name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
+                       f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
+                       f'{name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
+                       f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
+                       f'{name}.{model_name}.transport_cost': self.transport_df,
+                       f'{name}.{model_name}.margin': self.margin,
+                       f'{name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
+                       f'{name}.{model_name}.protected_forest_surface': self.initial_protected_forest_surface,
+                       }
+
+        ee.load_study_from_input_dict(inputs_dict)
+
+        ee.execute()
+
+        disc = ee.dm.get_disciplines_with_name(
+            f'{name}.{model_name}')[0]
+        filter = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filter)
+        for graph in graph_list:
+            graph.to_plotly().show()
