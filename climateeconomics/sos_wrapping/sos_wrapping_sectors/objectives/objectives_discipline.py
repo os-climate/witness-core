@@ -70,10 +70,10 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                
                 }
 
-    DESC_OUT = { 'error_pib_total': {'type': 'float', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-                'error_cap_total': {'type': 'float', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-                'sectors_cap_errors': {'type': 'dict', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-                'sectors_gdp_errors': {'type': 'dict', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}   
+    DESC_OUT = { 'error_pib_total': {'type': 'float', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_obj'},
+                'error_cap_total': {'type': 'float', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_obj'},
+                'sectors_cap_errors': {'type': 'dict', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_obj'},
+                'sectors_gdp_errors': {'type': 'dict', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_obj'}   
             }
 
     def init_execution(self):

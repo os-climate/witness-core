@@ -61,7 +61,6 @@ class Study(StudyManager):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.macro_name = '.Macroeconomics'
-        self.obj_name = '.Objectives'
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -117,11 +116,7 @@ class Study(StudyManager):
         share_invest = np.asarray([27.0] * self.nb_per)
         share_invest = pd.DataFrame({'years':years, 'share_investment': share_invest})
         share_invest_df = share_invest
-        
-        historical_gdp = pd.DataFrame({'years': years, 'Agriculture': invest_serie*50 , 'Industry': invest_serie*101,
-                                                'Services': invest_serie*150, 'total': invest_serie * 301})
-        historical_capital = pd.DataFrame({'years': years, 'Agriculture': invest_serie*50 , 'Industry': invest_serie*101,
-                                                'Services': invest_serie*150, 'total': invest_serie * 301})
+
         sect_input = {}
         sect_input[self.study_name + '.year_start'] = self.year_start
         sect_input[self.study_name + '.year_end'] = self.year_end
@@ -143,9 +138,6 @@ class Study(StudyManager):
         sect_input[self.study_name + self.macro_name +'.Services.damage_df'] = damage_df
         
         sect_input[self.study_name + '.total_investment_share_of_gdp'] = share_invest_df
-        
-        sect_input[self.study_name + self.obj_name + '.historical_gdp'] = historical_gdp
-        sect_input[self.study_name + self.obj_name + '.historical_capital'] = historical_capital
 
         setup_data_list.append(sect_input)
 

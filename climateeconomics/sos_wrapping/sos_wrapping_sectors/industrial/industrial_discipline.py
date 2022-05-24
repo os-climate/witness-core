@@ -44,7 +44,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
     _maturity = 'Research'
     
     sector_name = 'Industry'
-    prod_cap_unit = '1e12$'
+    prod_cap_unit = 'T$'
     
     DESC_IN = {
         'damage_df': {'type': 'dataframe', 'unit': 'G$'},
@@ -52,7 +52,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2, 'unit': '-'},
-        'capital_start': {'type': 'float', 'unit': 'trillions $', 'default':88.5051, 'user_level': 2},
+        'capital_start': {'type': 'float', 'unit': 'T$', 'default':88.5051, 'user_level': 2},
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 
                          'dataframe_descriptor': {'years': ('float', None, False),'workforce': ('float', None, True)}, 'dataframe_edition_locked': False,},
         'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2, 'unit': '-'},
@@ -70,7 +70,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         'depreciation_capital': {'type': 'float', 'default': 0.058, 'user_level': 2, 'unit': '-'},
         'damage_to_productivity': {'type': 'bool', 'default': True, 'unit': '-'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2, 'unit': '-'},
-        'sector_investment': {'type': 'dataframe', 'unit': 'trillions $', 'dataframe_descriptor': {'years': ('float', None, False),
+        'sector_investment': {'type': 'dataframe', 'unit': 'T$', 'dataframe_descriptor': {'years': ('float', None, False),
                             'investment': ('float', None, True)}, 'dataframe_edition_locked': False},
 
         # energy_production stored in PetaWh for coupling variables scaling
@@ -78,7 +78,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
                               'dataframe_descriptor': {'years': ('float', None, False),'Total production': ('float', None, True)}, 'dataframe_edition_locked': False},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
-                  'user_level': 1},
+                  'user_level': 1, 'unit':'-'},
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2, 'unit': '-'},
         'ref_emax_enet_constraint': {'type': 'float', 'default': 60e3, 'user_level': 3, 
                                      'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref', 'unit': '-'}
@@ -86,9 +86,9 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
-        'production_df': {'type': 'dataframe', 'unit': 'trillions $'},
-        'capital_df':  {'type': 'dataframe', 'unit': 'trillions $'},
-        'detailed_capital_df': {'type': 'dataframe', 'unit': 'trillions $'}, 
+        'production_df': {'type': 'dataframe', 'unit': 'T$'},
+        'capital_df':  {'type': 'dataframe', 'unit': 'T$'},
+        'detailed_capital_df': {'type': 'dataframe', 'unit': 'T$'}, 
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint':  {'type': 'array'},
     }
