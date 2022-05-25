@@ -54,16 +54,16 @@ class Study(StudyManager):
         
         ns = self.study_name
         ns_coupling = self.study_name + self.optim_name + self.coupling_name
-        ns_above = self.study_name + self.optim_name 
+        ns_optim = self.study_name + self.optim_name 
         #Optim param
         INEQ_CONSTRAINT = FunctionManager.INEQ_CONSTRAINT
         OBJECTIVE = FunctionManager.OBJECTIVE
 
-        dspace_dict = {'variable': ['output_alpha_services_in', 'prod_gr_start_services_in',' decl_rate_tfp_services_in','prod_start_services_in', 
+        dspace_dict = {'variable': ['output_alpha_services_in', 'prod_gr_start_services_in','decl_rate_tfp_services_in','prod_start_services_in', 
                                     'energy_eff_k_services_in', 'energy_eff_cst_services_in', 'energy_eff_xzero_services_in','energy_eff_max_services_in',
-                                    'output_alpha_agri_in', 'prod_gr_start_agri_in',' decl_rate_tfp_agri_in','prod_start_agri_in', 
+                                    'output_alpha_agri_in', 'prod_gr_start_agri_in','decl_rate_tfp_agri_in','prod_start_agri_in', 
                                     'energy_eff_k_agri_in', 'energy_eff_cst_agri_in', 'energy_eff_xzero_agri_in','energy_eff_max_agri_in',
-                                    'output_alpha_indus_in', 'prod_gr_start_indus_in',' decl_rate_tfp_indus_in','prod_start_indus_in', 
+                                    'output_alpha_indus_in', 'prod_gr_start_indus_in','decl_rate_tfp_indus_in','prod_start_indus_in', 
                                     'energy_eff_k_indus_in', 'energy_eff_cst_indus_in', 'energy_eff_xzero_indus_in','energy_eff_max_indus_in',
                                     ],
                        'value': [[0.87], [0.02], [0.02],[0.27], 
@@ -78,62 +78,75 @@ class Study(StudyManager):
                                       [0.0], [0.0],[1900.0], [1.0],
                                       [0.5], [0.001], [0.00001], [0.01],
                                       [0.0], [0.0],[1900.0], [1.0]],
-                       'upper_bnd': [[0.99], [0.2], [0.1],[2],
+                       'upper_bnd': [[0.99], [0.2], [0.1],[2.0],
                                       [1.0], [2.0],[2050.0], [8.0],
-                                      [0.99], [0.2], [0.1],[2],
+                                      [0.99], [0.2], [0.1],[2.0],
                                       [1.0], [2.0],[2050.0], [8.0],
-                                      [0.99], [0.2], [0.1],[2],
-                                      [1.0], [2.0],[2050.0], [8.0]]}
+                                      [0.99], [0.2], [0.1],[2.0],
+                                      [1.0], [2.0],[2050.0], [8.0]],
+                       'enable_variable': [[True], [True], [True], [True],
+                                           [True], [True],[True], [True],
+                                           [True], [True], [True], [True],
+                                           [True], [True],[True], [True],
+                                           [True], [True], [True], [True],
+                                           [True], [True],[True], [True]],
+                       'activated_elem': [[True], [True], [True], [True],
+                                           [True], [True],[True], [True],
+                                           [True], [True], [True], [True],
+                                           [True], [True],[True], [True],
+                                           [True], [True], [True], [True],
+                                           [True], [True],[True], [True]]
+                       }
  
         dspace = pd.DataFrame(dspace_dict)
 
-        design_var_descriptor = {'output_alpha_services_in': {'out_name': 'output_alpha','out_type': 'float', 'key': 'value',
+        design_var_descriptor = {'output_alpha_services_in': {'out_name': 'output_alpha','out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'prod_gr_start_services_in': {'out_name': 'productivity_gr_start','out_type': 'float', 'key': 'value',
+                                'prod_gr_start_services_in': {'out_name': 'productivity_gr_start','out_type': 'float',
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'decl_rate_tfp_services_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 'key': 'value',
+                                'decl_rate_tfp_services_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'prod_start_services_in': {'out_name': 'productivity_start', 'out_type': 'float', 'key': 'value',
+                                'prod_start_services_in': {'out_name': 'productivity_start', 'out_type': 'float',
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'energy_eff_k_services_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_k_services_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'energy_eff_cst_services_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_cst_services_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'energy_eff_xzero_services_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_xzero_services_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'energy_eff_max_services_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_max_services_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'output_alpha_agri_in': {'out_name': 'output_alpha','out_type': 'float', 'key': 'value',
+                                'output_alpha_agri_in': {'out_name': 'output_alpha','out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'prod_gr_start_agri_in': {'out_name': 'productivity_gr_start','out_type': 'float', 'key': 'value',
+                                'prod_gr_start_agri_in': {'out_name': 'productivity_gr_start','out_type': 'float',
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'decl_rate_tfp_agri_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 'key': 'value',
+                                'decl_rate_tfp_agri_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'prod_start_agri_in': {'out_name': 'productivity_start', 'out_type': 'float', 'key': 'value',
+                                'prod_start_agri_in': {'out_name': 'productivity_start', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'energy_eff_k_agri_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_k_agri_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'energy_eff_cst_agri_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_cst_agri_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'energy_eff_xzero_agri_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_xzero_agri_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'energy_eff_max_agri_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_max_agri_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'output_alpha_indus_in': {'out_name': 'output_alpha','out_type': 'float', 'key': 'value',
+                                'output_alpha_indus_in': {'out_name': 'output_alpha','out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'prod_gr_start_indus_in': {'out_name': 'productivity_gr_start','out_type': 'float', 'key': 'value',
+                                'prod_gr_start_indus_in': {'out_name': 'productivity_gr_start','out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'decl_rate_tfp_indus_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 'key': 'value',
+                                'decl_rate_tfp_indus_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'prod_start_indus_in': {'out_name': 'productivity_start', 'out_type': 'float', 'key': 'value',
+                                'prod_start_indus_in': {'out_name': 'productivity_start', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'energy_eff_k_indus_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_k_indus_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'energy_eff_cst_indus_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_cst_indus_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'energy_eff_xzero_indus_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_xzero_indus_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'energy_eff_max_indus_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 'key': 'value',
+                                'energy_eff_max_indus_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 
                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},         
                              }
 
@@ -141,46 +154,47 @@ class Study(StudyManager):
         disc_dict[f'{ns_coupling}.DesignVariables.design_var_descriptor'] = design_var_descriptor
 
         # Optim inputs
-        disc_dict[f'{ns_above}.max_iter'] = 100
-        disc_dict[f'{ns_above}.algo'] = "L-BFGS-B"
-        disc_dict[f'{ns_above}.design_space'] = dspace
-        disc_dict[f'{ns_above}.formulation'] = 'DisciplinaryOpt'
-        disc_dict[f'{ns_above}.objective_name'] = 'objective_lagrangian'
-        disc_dict[f'{ns_above}.ineq_constraints'] = []
-        disc_dict[f'{ns_above}.eq_constraints'] = []
-        disc_dict[f'{ns_above}.algo_options'] = {
+        disc_dict[f'{ns_optim}.max_iter'] = 100
+        disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
+        disc_dict[f'{ns_optim}.design_space'] = dspace
+        disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
+        disc_dict[f'{ns_optim}.objective_name'] = 'objective_lagrangian'
+        disc_dict[f'{ns_optim}.ineq_constraints'] = []
+        disc_dict[f'{ns_optim}.eq_constraints'] = []
+        disc_dict[f'{ns_optim}.algo_options'] = {
             #"maxls": 6,
             #"maxcor": 3,
             "ftol_rel": 1e-15,
         }
         
-        # design var inputs
-        disc_dict[f'{ns_above}.output_alpha_services_in'] = 0.87
-        disc_dict[f'{ns_above}.prod_gr_start_services_in'] = 0.02
-        disc_dict[f'{ns_above}.decl_rate_tfp_services_in'] = 0.02
-        disc_dict[f'{ns_above}.prod_start_services_in'] = 0.27
-        disc_dict[f'{ns_above}.energy_eff_k_services_in'] = 0.05
-        disc_dict[f'{ns_above}.energy_eff_cst_services_in'] = 0.98
-        disc_dict[f'{ns_above}.energy_eff_xzero_services_in'] = 2012.0
-        disc_dict[f'{ns_above}.energy_eff_max_services_in'] = 3.51
+    # design var inputs
+        disc_dict[f'{ns_optim}.output_alpha_services_in'] = 0.87
+        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = 0.02
+        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = 0.02
+        disc_dict[f'{ns_optim}.prod_start_services_in'] = 0.27
+        disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = 0.05
+        disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = 0.98
+        disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = 2012.0
+        disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = 3.51
         
-        disc_dict[f'{ns_above}.output_alpha_agri_in'] = 0.87
-        disc_dict[f'{ns_above}.prod_gr_start_agri_in'] = 0.02
-        disc_dict[f'{ns_above}.decl_rate_tfp_agri_in'] = 0.02
-        disc_dict[f'{ns_above}.prod_start_agri_in'] = 0.27
-        disc_dict[f'{ns_above}.energy_eff_k_agri_in'] = 0.05
-        disc_dict[f'{ns_above}.energy_eff_cst_agri_in'] = 0.98
-        disc_dict[f'{ns_above}.energy_eff_xzero_agri_in'] = 2012.0
-        disc_dict[f'{ns_above}.energy_eff_max_agri_in'] = 3.51
+        disc_dict[f'{ns_optim}.output_alpha_agri_in'] = 0.87
+        disc_dict[f'{ns_optim}.prod_gr_start_agri_in'] = 0.02
+        disc_dict[f'{ns_optim}.decl_rate_tfp_agri_in'] = 0.02
+        disc_dict[f'{ns_optim}.prod_start_agri_in'] = 0.27
+        disc_dict[f'{ns_optim}.energy_eff_k_agri_in'] = 0.05
+        disc_dict[f'{ns_optim}.energy_eff_cst_agri_in'] = 0.98
+        disc_dict[f'{ns_optim}.energy_eff_xzero_agri_in'] = 2012.0
+        disc_dict[f'{ns_optim}.energy_eff_max_agri_in'] = 3.51
         
-        disc_dict[f'{ns_above}.output_alpha_indus_in'] = 0.87
-        disc_dict[f'{ns_above}.prod_gr_start_indus_in'] = 0.02
-        disc_dict[f'{ns_above}.decl_rate_tfp_indus_in'] = 0.02
-        disc_dict[f'{ns_above}.prod_start_indus_in'] = 0.27
-        disc_dict[f'{ns_above}.energy_eff_k_indus_in'] = 0.05
-        disc_dict[f'{ns_above}.energy_eff_cst_indus_in'] = 0.98
-        disc_dict[f'{ns_above}.energy_eff_xzero_indus_in'] = 2012.0
-        disc_dict[f'{ns_above}.energy_eff_max_indus_in'] = 3.51
+        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = 0.87
+        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = 0.02
+        disc_dict[f'{ns_optim}.decl_rate_tfp_indus_in'] = 0.02
+        disc_dict[f'{ns_optim}.prod_start_indus_in'] = 0.27
+        disc_dict[f'{ns_optim}.energy_eff_k_indus_in'] = 0.05
+        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = 0.98
+        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = 2012.0
+        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = 3.51
+
         
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
@@ -194,7 +208,7 @@ class Study(StudyManager):
         func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj']
         func_mng_name = 'FunctionsManager'
 
-        prefix = f'{self.study_name}{self.optim_name}{self.coupling_name}.{func_mng_name}.'
+        prefix = f'{ns_coupling}.{func_mng_name}.'
         values_dict = {}
         values_dict[prefix +FunctionManagerDisc.FUNC_DF] = func_df
 
@@ -215,14 +229,14 @@ class Study(StudyManager):
         witness_sect_uc_data = self.witness_sect_uc.setup_usecase()
         for dict_data in witness_sect_uc_data:
             disc_dict.update(dict_data)
-
+    
         return [disc_dict]
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    # uc_cls.execution_engine.set_debug_mode()
+    #uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+    #uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
     
