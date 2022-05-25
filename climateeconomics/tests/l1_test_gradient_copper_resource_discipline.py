@@ -43,6 +43,7 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         '''
         self.year_start = 2020
         self.year_end = 2100
+    
 
         self.lifespan = 5
 
@@ -105,14 +106,14 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[
                                 f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
-                                     # f'{self.name}.{self.model_name}.resource_price',
+                                     f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
                                      f'{self.name}.{self.model_name}.predictable_production'
 
                                      ])
-
+        
     def _test_copper_resource_damand_variable_analytic_grad(self):
-
+        
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.model_name = 'copper_resource'
@@ -137,8 +138,8 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_copper_variable_demand_df,
-                       f'{self.name}.{self.model_name}.lifespan': self.lifespan,
-                       f'{self.name}.{self.model_name}.resource_consumed_data': self.consumed_copper_df,
+                       #f'{self.name}.{self.model_name}.lifespan': self.lifespan,
+                       #f'{self.name}.{self.model_name}.resource_consumed_data' : self.consumed_copper_df,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -148,7 +149,7 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[
                                 f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
-                                     # # #  f'{self.name}.{self.model_name}.resource_price',
+                                     f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
                                      f'{self.name}.{self.model_name}.predictable_production'
                                      ])

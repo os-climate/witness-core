@@ -70,11 +70,9 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                
                 }
 
-    DESC_OUT = { 'error_pib_total': {'type': 'float', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-                'error_cap_total': {'type': 'float', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-                'sectors_cap_errors': {'type': 'dict', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-                'sectors_gdp_errors': {'type': 'dict', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}   
-            }
+    DESC_OUT = { 'error_pib_total': {'type': 'float', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_obj'},
+                'error_cap_total': {'type': 'float', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_obj'}
+                     }
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -82,7 +80,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
-        #dynamic_outputs = {}
+        dynamic_outputs = {}
 
         if 'sector_list' in self._data_in:
             sector_list = self.get_sosdisc_inputs('sector_list')
@@ -91,8 +89,12 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
                 dynamic_inputs[f'{sector}.production_df'] = {
                     'type': 'dataframe', 'unit':  MacroeconomicsModel.SECTORS_OUT_UNIT[sector], 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
-
+                dynamic_outputs[f'{sector}.gdp_error'] = {
+                    'type': 'float', 'unit': '-','visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_obj'}
+                dynamic_outputs[f'{sector}.cap_error'] = {
+                    'type': 'float', 'unit':  '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_obj'}
             self.add_inputs(dynamic_inputs)
+            self.add_outputs(dynamic_outputs)
 
     def run(self):
 
@@ -103,11 +105,15 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
         #-- compute
         error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors = self.objectives_model.compute_all_errors(inputs_dict)
-
+        
+        #store outputs in a dict
         outputs_dict = { 'error_pib_total': error_pib_total,
-                         'error_cap_total': error_cap_total, 
-                         'sectors_cap_errors': sectors_cap_errors, 
-                         'sectors_gdp_errors': sectors_gdp_errors}
+                         'error_cap_total': error_cap_total}
+        if 'sector_list' in self._data_in:
+            sector_list = self.get_sosdisc_inputs('sector_list')
+            for sector in sector_list:
+                outputs_dict[f'{sector}.gdp_error'] = sectors_gdp_errors[sector]
+                outputs_dict[f'{sector}.cap_error'] = sectors_cap_errors[sector]
 
         #-- store outputs
         self.store_sos_outputs_values(outputs_dict)

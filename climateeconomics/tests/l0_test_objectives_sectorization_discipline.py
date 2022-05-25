@@ -63,7 +63,7 @@ class ObjectivesTestCase(unittest.TestCase):
         self.economics_df = DataFrame({'years':self. years,'capital': capital_serie, 'usable_capital': capital_serie*0.8, 
                                        'output': gdp_serie, 'net_output': gdp_serie*0.995})
         
-        data_dir = join(dirname(__file__), 'data')
+        data_dir = join(dirname(__file__), 'data/sectorization_fitting')
         self.hist_gdp = read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         self.hist_capital = read_csv(join(data_dir, 'hist_capital_sect.csv'))
         
@@ -77,7 +77,8 @@ class ObjectivesTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness':  f'{name}',
-                   'ns_macro': f'{name}.{model_name}'}
+                   'ns_macro': f'{name}.{model_name}',
+                   'ns_obj': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.objectives.objectives_discipline.ObjectivesDiscipline'
@@ -105,8 +106,7 @@ class ObjectivesTestCase(unittest.TestCase):
         ee.execute()
         disc = ee.dm.get_disciplines_with_name(
             f'{name}.{model_name}')[0]
-        error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors = disc.get_sosdisc_outputs(['error_pib_total','error_cap_total', 
-                                                                                                             'sectors_cap_errors', 'sectors_gdp_errors'])
+        error_pib_total, error_cap_total = disc.get_sosdisc_outputs(['error_pib_total','error_cap_total'])
         #print(error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors)
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
