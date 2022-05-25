@@ -56,9 +56,10 @@ class ObjectivesTestCase(unittest.TestCase):
         cap_agri = capital_serie * 0.018385
         cap_indus = capital_serie * 0.234987
         cap_service = capital_serie * 0.74662
-        self.cap_agri_df = DataFrame({'years':self. years,'capital': cap_agri, 'usable_capital': cap_agri*0.8})
-        self.cap_indus_df = DataFrame({'years':self. years,'capital': cap_indus, 'usable_capital': cap_indus*0.8})
-        self.cap_service_df = DataFrame({'years':self. years,'capital': cap_service, 'usable_capital': cap_service*0.8})
+        energy_eff = np.linspace(2, 3, self.nb_per)
+        self.cap_agri_df = DataFrame({'years':self. years,'capital': cap_agri, 'usable_capital': cap_agri*0.8, 'energy_efficiency': energy_eff})
+        self.cap_indus_df = DataFrame({'years':self. years,'capital': cap_indus, 'usable_capital': cap_indus*0.8, 'energy_efficiency': energy_eff})
+        self.cap_service_df = DataFrame({'years':self. years,'capital': cap_service, 'usable_capital': cap_service*0.8, 'energy_efficiency': energy_eff})
         
         self.economics_df = DataFrame({'years':self. years,'capital': capital_serie, 'usable_capital': capital_serie*0.8, 
                                        'output': gdp_serie, 'net_output': gdp_serie*0.995})
@@ -66,6 +67,7 @@ class ObjectivesTestCase(unittest.TestCase):
         data_dir = join(dirname(__file__), 'data/sectorization_fitting')
         self.hist_gdp = read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         self.hist_capital = read_csv(join(data_dir, 'hist_capital_sect.csv'))
+        self.hist_energy = read_csv(join(data_dir, 'hist_energy_sect.csv'))
         
 
     def test_objectives_discipline(self):
@@ -94,12 +96,12 @@ class ObjectivesTestCase(unittest.TestCase):
                        f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
                        f'{name}.{model_name}.Services.production_df': self.prod_service,
                        f'{name}.{model_name}.Industry.production_df': self.prod_indus,
-                       f'{name}.{model_name}.Industry.capital_df': self.cap_indus_df,
-                       f'{name}.{model_name}.Services.capital_df': self.cap_service_df,
-                       f'{name}.{model_name}.Agriculture.capital_df':self.cap_agri_df,
+                       f'{name}.{model_name}.Industry.detailed_capital_df': self.cap_indus_df,
+                       f'{name}.{model_name}.Services.detailed_capital_df': self.cap_service_df,
+                       f'{name}.{model_name}.Agriculture.detailed_capital_df':self.cap_agri_df,
                        f'{name}.{model_name}.historical_gdp': self.hist_gdp,
-                       f'{name}.{model_name}.historical_capital': self.hist_capital
-                       
+                       f'{name}.{model_name}.historical_capital': self.hist_capital,
+                       f'{name}.{model_name}.historical_energy': self.hist_energy
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
@@ -111,4 +113,4 @@ class ObjectivesTestCase(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
 #         for graph in graph_list:
-#           graph.to_plotly().show()
+#             graph.to_plotly().show()
