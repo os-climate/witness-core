@@ -136,7 +136,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
-        self.initial_unsused_forest_surface = 4 - \
+        self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
@@ -156,7 +156,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{self.name}.transport_cost': self.transport_df,
                        f'{self.name}.margin': self.margin,
-                       f'{self.name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
+                       f'{self.name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unmanaged_forest_surface,
                        f'{self.name}.{model_name}.protected_forest_surface': self.initial_protected_forest_surface,
                        }
 
@@ -286,7 +286,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
-        self.initial_unsused_forest_surface = 4 - \
+        self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
@@ -306,7 +306,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{self.name}.transport_cost': self.transport_df,
                        f'{self.name}.margin': self.margin,
-                       f'{self.name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
+                       f'{self.name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unmanaged_forest_surface,
                        f'{self.name}.{model_name}.protected_forest_surface': self.initial_protected_forest_surface,
                        }
 
