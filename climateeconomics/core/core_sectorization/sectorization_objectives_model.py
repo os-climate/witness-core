@@ -52,9 +52,7 @@ class ObjectivesModel():
         self.nb_years = len(self.years_range)
         self.historical_gdp = inputs_dict['historical_gdp']
         self.historical_capital = inputs_dict['historical_capital']
-#         self.data_energy_df = inputs_dict['data_energy_df']
-#         self.data_investments_df = inputs_dict['data_investments_df']
-#         self.data_workforce_df = inputs_dict['data_workforce_df']
+        self.historical_energy = inputs_dict['historical_energy']
    
     def set_coupling_inputs(self, inputs):
         self.economics_df = inputs['economics_df']
@@ -63,7 +61,7 @@ class ObjectivesModel():
         sectors_capital_dfs = {}
         sectors_production_dfs ={}
         for sector in self.SECTORS_LIST:
-            sectors_capital_dfs[sector] = inputs[f'{sector}.capital_df']
+            sectors_capital_dfs[sector] = inputs[f'{sector}.detailed_capital_df']
             sectors_production_dfs[sector] = inputs[f'{sector}.production_df']
         self.sectors_capital_dfs = sectors_capital_dfs
         self.sectors_production_dfs = sectors_production_dfs
@@ -72,19 +70,27 @@ class ObjectivesModel():
         """ For all variables takes predicted values and reference and compute the quadratic error
         """
         self.set_coupling_inputs(inputs)
-        
+        #Initialise a dataframe to store hsitorical energy efficiency per sector
+        self.hist_energy_eff = pd.DataFrame({'years': self.years_range})
+        self.hist_energy_eff['years'] = self.years_range
+       
+        #compute total errors  
         error_pib_total = self.compute_quadratic_error(self.historical_gdp['total'].values, self.economics_df['net_output'].values)
         error_cap_total = self.compute_quadratic_error(self.historical_capital['total'].values, self.economics_df['capital'].values)
         #Per sector
         sectors_cap_errors = {}
         sectors_gdp_errors = {}
+        sectors_energy_eff_errors = {}
+        
         for sector in self.SECTORS_LIST:
             capital_df = self.sectors_capital_dfs[sector]
             production_df = self.sectors_production_dfs[sector]
             sectors_cap_errors[sector] = self.compute_quadratic_error(self.historical_capital[sector].values, capital_df['capital'].values)
             sectors_gdp_errors[sector] = self.compute_quadratic_error(self.historical_capital[sector].values, production_df['output_net_of_damage'].values)
-        
-        return error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors
+            self.compute_hist_energy_efficiency(sector)
+            sectors_energy_eff_errors[sector] = self.compute_quadratic_error(self.hist_energy_eff[sector].values, capital_df['energy_efficiency'].values )
+
+        return error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors, sectors_energy_eff_errors, self.hist_energy_eff
     
     def compute_quadratic_error(self, ref, pred):
         """
@@ -94,4 +100,15 @@ class ObjectivesModel():
         delta_squared = np.square(delta)
         error = np.mean(delta_squared)
         return error
+    
+    def compute_hist_energy_efficiency(self, sector):
+        """
+        Compute historical energy efficiency value: energy in 1e3Twh and capital in T$
+        """
+        energy = self.historical_energy[sector].values 
+        capital = self.historical_capital[sector].values 
+        #compute 
+        energy_eff = capital/energy
+        #and store
+        self.hist_energy_eff[sector] = energy_eff
         
