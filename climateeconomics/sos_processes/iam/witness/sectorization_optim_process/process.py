@@ -33,7 +33,7 @@ class ProcessBuilder(BaseProcessBuilder):
         func_manager_name = "FunctionsManager"
         optim_name = "SectorsOpt"
         objectives_name = "Objectives"
-        macro_name = "Macroeconomcs"
+        macro_name = "Macroeconomics"
 
 
         chain_builders = self.ee.factory.get_builder_from_process(
@@ -63,9 +63,9 @@ class ProcessBuilder(BaseProcessBuilder):
                 ns, optim_name + '.' +coupling_name, after_name=self.ee.study_name)
         
         ns_dict = {'ns_optim': ns_scatter + '.' + optim_name,
-                   'ns_services':  ns_scatter + '.' + optim_name + '.' + coupling_name + macro_name + '.' + '.Services',
-                   'ns_indus':  ns_scatter + '.' + optim_name + '.' + coupling_name + macro_name + '.' + '.Industry',
-                   'ns_agri':  ns_scatter + '.' + optim_name + '.' + coupling_name + macro_name + '.' + '.Agriculture',
+                   'ns_services':  ns_scatter + '.' + optim_name + '.' + coupling_name + '.' + macro_name + '.Services',
+                   'ns_indus':  ns_scatter + '.' + optim_name + '.' + coupling_name + '.' + macro_name + '.Industry',
+                   'ns_agri':  ns_scatter + '.' + optim_name + '.' + coupling_name + '.' + macro_name + '.Agriculture',
                    'ns_obj': ns_scatter + '.' + optim_name + '.' + coupling_name + '.Objectives',}
         self.ee.ns_manager.add_ns_def(ns_dict)
     
