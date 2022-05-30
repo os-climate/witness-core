@@ -59,7 +59,7 @@ class LandUseV2TestCase(unittest.TestCase):
             columns=['years',
                      'forest_constraint_evolution'])
 
-        initial_unsused_forest_surface = (4 - 1.25)
+        initial_unmanaged_forest_surface = (4 - 1.25)
 
         self.forest_surface_df['years'] = years
         # Gha
@@ -71,7 +71,7 @@ class LandUseV2TestCase(unittest.TestCase):
                       'total_food_land_surface': self.total_food_land_surface,
                       'forest_surface_df': self.forest_surface_df,
                       'land_use_constraint_ref': 0.01,
-                      'initial_unsused_forest_surface':initial_unsused_forest_surface,
+                      'initial_unmanaged_forest_surface':initial_unmanaged_forest_surface,
                       }
 
     def test_land_use_v2_model(self):

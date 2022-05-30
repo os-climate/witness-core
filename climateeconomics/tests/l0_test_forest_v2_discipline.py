@@ -114,7 +114,7 @@ class ForestTestCase(unittest.TestCase):
         self.margin = pd.DataFrame(
             {'years': years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
-        self.initial_unsused_forest_surface = 4 - \
+        self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
         deforest_invest = np.linspace(10, 5, year_range)
         # case over deforestation
@@ -139,7 +139,7 @@ class ForestTestCase(unittest.TestCase):
                       'managed_wood_investment': self.mw_invest_df,
                       'transport_cost': self.transport_df,
                       'margin': self.margin,
-                      'initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
+                      'initial_unmanaged_forest_surface': self.initial_unmanaged_forest_surface,
                       'protected_forest_surface': self.initial_protected_forest_surface,
                       'scaling_factor_techno_consumption': 1e3,
                       'scaling_factor_techno_production': 1e3,
@@ -215,7 +215,7 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{name}.{model_name}.transport_cost': self.transport_df,
                        f'{name}.{model_name}.margin': self.margin,
-                       f'{name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
+                       f'{name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unmanaged_forest_surface,
                        f'{name}.{model_name}.protected_forest_surface': self.initial_protected_forest_surface,
                        }
 
@@ -227,8 +227,8 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 
     def test_forest_discipline_high_deforestation(self):
         '''
@@ -268,10 +268,10 @@ class ForestTestCase(unittest.TestCase):
         self.mw_invest_df = pd.DataFrame(
             {"years": years, "investment": mw_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {'years': years, 'investment': np.array([4000.00, 4000.00, 4000.00, 4000.00,
-                                                4000.00, 4000.00, 4000.00, 4000.00,
-                                                 4000.00, 4000.00, 4000.00, 4000.00,
-                                                 0.00, 0.00, 0.00, 0.00,
+            {'years': years, 'investment': np.array([2000.00, 2000.00, 2000.00, 2000.00,
+                                                 2000.00, 2000.00, 2000.00, 2000.00,
+                                                 2000.00, 2000.00, 2000.00, 2000.00,
+                                                 2000.00, 2000.00, 2000.00, 2000.00,
                                                  0.00, 0.00, 0.00, 0.00,
                                                  0.00, 0.00, 0.00, 0.00,
                                                  0.00, 0.00, 0.00, 0.00,
@@ -293,7 +293,7 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{name}.{model_name}.transport_cost': self.transport_df,
                        f'{name}.{model_name}.margin': self.margin,
-                       f'{name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unsused_forest_surface,
+                       f'{name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unmanaged_forest_surface,
                        f'{name}.{model_name}.protected_forest_surface': self.initial_protected_forest_surface,
                        }
 
@@ -305,5 +305,5 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
