@@ -26,6 +26,7 @@ from sos_trades_core.execution_engine.func_manager.func_manager_disc import Func
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import Study as witness_sect_usecase
+from gemseo.api import generate_n2_plot
 
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
@@ -159,6 +160,8 @@ class Study(StudyManager):
         disc_dict[f'{ns_optim}.design_space'] = dspace
         disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
         disc_dict[f'{ns_optim}.objective_name'] = 'objective_lagrangian'
+        disc_dict[f'{ns_optim}.differentiation_method'] = 'finite_differences' #complex_step user
+        disc_dict[f'{ns_optim}.fd_step'] = 1.e-6
         disc_dict[f'{ns_optim}.ineq_constraints'] = []
         disc_dict[f'{ns_optim}.eq_constraints'] = []
         disc_dict[f'{ns_optim}.algo_options'] = {
@@ -242,7 +245,10 @@ class Study(StudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    #uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+
     #uc_cls.execution_engine.set_debug_mode()
+#     generate_n2_plot(uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines[0].sos_disciplines)
+#     uc_cls.execution_engine.dm.export_couplings(in_csv=True, f_name='couplings.csv')
     uc_cls.run()
     
