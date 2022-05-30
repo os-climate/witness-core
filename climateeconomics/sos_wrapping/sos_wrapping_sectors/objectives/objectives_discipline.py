@@ -113,7 +113,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
         #-- compute
         error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors, energy_eff_errors, hist_energy_eff = self.objectives_model.compute_all_errors(inputs_dict)
-        
+
         #store outputs in a dict
         outputs_dict = { 'error_pib_total': np.array([error_pib_total]),
                          'error_cap_total': np.array([error_cap_total]), 
