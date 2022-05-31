@@ -66,7 +66,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 'historical_capital': {'type': 'dataframe', 'unit': 'T$', 'dataframe_descriptor': {'years': ('float', None, False),
                                                 'Agriculture': ('float', None, True), 'Industry': ('float', None, True),
                                                 'Services': ('float', None, True), 'total': ('float', None, True)}, 'dataframe_edition_locked': False,},
-                'historical_energy': {'type': 'dataframe', 'unit': 'T$', 'dataframe_descriptor': {'years': ('float', None, False),
+                'historical_energy': {'type': 'dataframe', 'unit': 'PWh', 'dataframe_descriptor': {'years': ('float', None, False),
                                                 'Agriculture': ('float', None, True), 'Industry': ('float', None, True),
                                                 'Services': ('float', None, True), 'total': ('float', None, True)}, 'dataframe_edition_locked': False,},
                 'economics_df':  {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
