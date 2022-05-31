@@ -237,8 +237,7 @@ class Study(StudyManager):
         sect_input[ns_coupling + self.obj_name +  '.historical_capital'] = hist_capital
         sect_input[ns_coupling + self.obj_name +  '.historical_energy'] = hist_energy
         disc_dict.update(sect_input)
-       
-    #TO BE UPDATED WITH RIGHT DATA 
+        
         self.witness_sect_uc.study_name = f'{ns_coupling}'
         witness_sect_uc_data = self.witness_sect_uc.setup_usecase()
         for dict_data in witness_sect_uc_data:
