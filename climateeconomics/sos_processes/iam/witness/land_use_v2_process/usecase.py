@@ -70,17 +70,17 @@ class Study(StudyManager):
         self.total_food_land_surface['total surface (Gha)'] = np.linspace(
             5, 4, year_range)
 
-        initial_unsused_forest_surface = (4 - 1.25)
+        initial_unmanaged_forest_surface = (4 - 1.25)
         self.forest_surface_df = pd.DataFrame(
             index=years,
             columns=['years',
                      'forest_constraint_evolution',
-                     'initial_unused_forest'])
+                     'global_forest_surface'])
 
         self.forest_surface_df['years'] = years
         # Gha
         self.forest_surface_df['forest_constraint_evolution'] = np.linspace(-0.5, 0, year_range)
-        self.forest_surface_df['initial_unused_forest'] = [initial_unsused_forest_surface] * year_range
+        self.forest_surface_df['global_forest_surface'] = [initial_unmanaged_forest_surface] * year_range
 
 
         landuse_input[self.study_name +

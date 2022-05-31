@@ -49,7 +49,7 @@ class LandUseV2():
     LAND_DEMAND_DF = 'land_demand_df'
     YEAR_START = 'year_start'
     YEAR_END = 'year_end'
-    UNUSED_FOREST = 'initial_unsused_forest_surface'
+    INIT_UNMANAGED_FOREST_SURFACE = 'initial_unmanaged_forest_surface'
 
     TOTAL_FOOD_LAND_SURFACE = 'total_food_land_surface'
     FOREST_SURFACE_DF = 'forest_surface_df'
@@ -93,7 +93,7 @@ class LandUseV2():
         self.year_end = self.param[LandUseV2.YEAR_END]
         self.nb_years = self.year_end - self.year_start + 1
         self.ref_land_use_constraint = self.param[LandUseV2.LAND_USE_CONSTRAINT_REF]
-        self.initial_unsused_forest_surface = self.param[LandUseV2.UNUSED_FOREST]
+        self.initial_unmanaged_forest_surface = self.param[LandUseV2.INIT_UNMANAGED_FOREST_SURFACE]
 
     def import_world_surface_data(self):
         curr_dir = os.path.dirname(__file__)
@@ -144,7 +144,7 @@ class LandUseV2():
 
 
         #forest total surface = forest surface computed by forest model + techno on forests
-        self.land_surface_df['Forest (Gha)'] = self.initial_unsused_forest_surface + \
+        self.land_surface_df['Forest (Gha)'] = self.initial_unmanaged_forest_surface + \
                                                self.land_surface_df['Added Forest (Gha)'].values + demand_forest
 
         # Calculate delta for objective
@@ -155,7 +155,7 @@ class LandUseV2():
                                                                                    self.land_surface_df['Agriculture total (Gha)'].values) / self.ref_land_use_constraint
         self.land_demand_constraint_df[self.LAND_DEMAND_CONSTRAINT_FOREST] = ([self.total_forest_surfaces] * self.nb_years +
                                                                               self.land_surface_df['Added Forest (Gha)'].values -
-                                                                              self.initial_unsused_forest_surface - demand_forest) / self.ref_land_use_constraint
+                                                                              self.initial_unmanaged_forest_surface - demand_forest) / self.ref_land_use_constraint
 
     def get_derivative(self, objective_column, demand_column):
         """ Compute derivative of land demand objective regarding land demand

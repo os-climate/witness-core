@@ -107,15 +107,16 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             years = np.arange(year_start, year_end + 1)
 
     def init_execution(self):
-        inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(in_dict=True)
         self.industrial_model = SectorModel()
         self.industrial_model.configure_parameters(param)
 
     def run(self):
         # Get inputs
-        inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(in_dict=True)
+        #configure param
+        self.industrial_model.configure_parameters(param)
+        #coupling df 
         damage_df = param['damage_df']
         energy_production = param['energy_production']
         investment = param['sector_investment']
@@ -258,7 +259,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             chart_name = 'Industry sector economics output'
 
             new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion dollars]',
-                                                 [year_start - 5, year_end + 5],
+                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
 
@@ -296,7 +297,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             chart_name = 'Productive capital stock and usable capital for production'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Capital stock [trillion dollars]',
-                                                 [year_start - 5, year_end + 5],
+                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
 
@@ -329,7 +330,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             chart_name = 'Industrial capital stock per year'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Capital stock [Trillion dollars]',
-                                                 [year_start - 5, year_end + 5],
+                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name, stacked_bar=True)
             visible_line = True
@@ -341,7 +342,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
         if 'workforce' in chart_list:
 
-            years = list(workforce_df.index)
+            years = list(workforce_df['years'])
             year_start = years[0]
             year_end = years[len(years) - 1]
 
@@ -351,7 +352,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             chart_name = 'Workforce'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Number of people [million]',
-                                                 [year_start - 5, year_end + 5],
+                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
 
@@ -380,7 +381,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             chart_name = 'Total Factor Productivity'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Total Factor Productivity [-]',
-                                                 [year_start - 5, year_end + 5], [
+                                                 [year_start, year_end], [
                                                      min_value, max_value], chart_name)
 
             ordonate_data = list(productivity_df['productivity'])
@@ -409,7 +410,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             chart_name = 'Capital energy efficiency over the years'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Capital energy efficiency [-]',
-                                                 [year_start - 5, year_end + 5],
+                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
 
@@ -454,7 +455,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             chart_name = 'E_max value and Net Energy'
 
             new_chart = TwoAxesInstanciatedChart('years', '[Twh]',
-                                                 [year_start - 5, year_end + 5],
+                                                 [year_start, year_end],
                                                  [min_value, max_value], chart_name)
             visible_line = True
 
@@ -502,7 +503,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             chart_name = 'Energy supply'
 
             new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $]',
-                                                 [year_start - 5, year_end + 5],
+                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
 
@@ -527,7 +528,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             min_value, max_value = self.get_greataxisrange(growth_rate_df[to_plot])
             chart_name = 'Net output growth rate over years'
             new_chart = TwoAxesInstanciatedChart('years', ' growth rate [-]',
-                                                 [year_start - 5, year_end + 5],
+                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
             for key in to_plot:

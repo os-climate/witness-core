@@ -179,7 +179,7 @@ init_temp_ocean,Initial ocean temperature raise,,"Evolution of the ocean tempera
 init_upper_strata,Initial atmospheric concentration in upper strata,Gtc,Initial atmospheric concentration of carbon in the upper strata of the atmosphere.,,ABATAA - mass
 initial_emissions,Initial emissions,GtCO2,Initial emissions due to deforestation.,,
 initial_raw_energy_price,Initial Raw Energy Price,$/MWh,Initial Raw energy price.,,
-initial_unsused_forest_surface,Other forest surface,Gha,Initial non production forest surface.,,
+initial_unmanaged_forest_surface,Initial unmanaged forest surface,Gha,Initial unmanaged forest surface.,,
 invest_ccs_mix,Invest ccs mix,,Investment in the CCS mix.,,
 invest_energy_mix,Energy Mix Investment Coefficients,,Coefficients of energy mix investments (not normalized) to distribute the total investments.,,
 invest_mix,Investment mix,,"For each year, give the weight of the investment in each concerned sector.",,
@@ -347,7 +347,6 @@ biomass_dry_detail_df,Biomass Dry detailed data,,Different data about biomass dr
 biomass_dry_df,Biomass dry data,,Important data about biomass dry that are used by other models.,,
 transport_cost,Transport cost,$/ton,Cost of transport of material in $ per tons.,,
 margin,Margin,,Factor applied to the total price to take into account commercial margin.,,
-initial_unsused_forest_surface,Unused forest surface,Gha,Surface of forest that are not used to produce biomass.,,
 agri_capital_techno_list,Agriculture techno list,,List of technologies of agriculture that lost capital.,,
 techno_capital,Techno Capital,G$,Capital of the considered technology over the year.,,
 non_use_capital,Non use capital,G$,Non use capital of the considered technology.,,

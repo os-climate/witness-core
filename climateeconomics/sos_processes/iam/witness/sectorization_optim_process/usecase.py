@@ -26,6 +26,7 @@ from sos_trades_core.execution_engine.func_manager.func_manager_disc import Func
 import matplotlib.pyplot as plt
 from scipy.interpolate import interp1d
 from climateeconomics.sos_processes.iam.witness.sectorization_process.usecase import Study as witness_sect_usecase
+from gemseo.api import generate_n2_plot
 
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
@@ -99,55 +100,58 @@ class Study(StudyManager):
                        }
  
         dspace = pd.DataFrame(dspace_dict)
-
-        design_var_descriptor = {'output_alpha_services_in': {'out_name': 'output_alpha','out_type': 'float', 'index': arange(1), 
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'prod_gr_start_services_in': {'out_name': 'productivity_gr_start','out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'decl_rate_tfp_services_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'prod_start_services_in': {'out_name': 'productivity_start', 'out_type': 'float','index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'energy_eff_k_services_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'energy_eff_cst_services_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'energy_eff_xzero_services_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'energy_eff_max_services_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_services'},
-                                'output_alpha_agri_in': {'out_name': 'output_alpha','out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'prod_gr_start_agri_in': {'out_name': 'productivity_gr_start','out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'decl_rate_tfp_agri_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'prod_start_agri_in': {'out_name': 'productivity_start', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'energy_eff_k_agri_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'energy_eff_cst_agri_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'energy_eff_xzero_agri_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'energy_eff_max_agri_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_agri'},
-                                'output_alpha_indus_in': {'out_name': 'output_alpha','out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'prod_gr_start_indus_in': {'out_name': 'productivity_gr_start','out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'decl_rate_tfp_indus_in': {'out_name': 'decline_rate_tfp','out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'prod_start_indus_in': {'out_name': 'productivity_start', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'energy_eff_k_indus_in': {'out_name': 'energy_eff_k', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'energy_eff_cst_indus_in': {'out_name': 'energy_eff_cst', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'energy_eff_xzero_indus_in': {'out_name': 'energy_eff_xzero', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},
-                                'energy_eff_max_indus_in': {'out_name': 'energy_eff_max', 'out_type': 'float', 'index': arange(1),
-                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_indus'},         
+        
+        services = 'Services.'
+        agri = 'Agriculture.'
+        industry = 'Industry.'
+        design_var_descriptor = {'output_alpha_services_in': {'out_name': services+'output_alpha','out_type': 'float', 'index': arange(1), 
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'prod_gr_start_services_in': {'out_name': services+'productivity_gr_start','out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'decl_rate_tfp_services_in': {'out_name': services+'decline_rate_tfp','out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'prod_start_services_in': {'out_name': services+'productivity_start', 'out_type': 'float','index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_k_services_in': {'out_name': services+'energy_eff_k', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_cst_services_in': {'out_name': services+'energy_eff_cst', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_xzero_services_in': {'out_name': services+'energy_eff_xzero', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_max_services_in': {'out_name': services+'energy_eff_max', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'output_alpha_agri_in': {'out_name': agri+'output_alpha','out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'prod_gr_start_agri_in': {'out_name': agri+'productivity_gr_start','out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'decl_rate_tfp_agri_in': {'out_name': agri+'decline_rate_tfp','out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'prod_start_agri_in': {'out_name': agri+'productivity_start', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_k_agri_in': {'out_name': agri+'energy_eff_k', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_cst_agri_in': {'out_name': agri+'energy_eff_cst', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_xzero_agri_in': {'out_name': agri+'energy_eff_xzero', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_max_agri_in': {'out_name': agri+'energy_eff_max', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'output_alpha_indus_in': {'out_name': industry+'output_alpha','out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'prod_gr_start_indus_in': {'out_name': industry+'productivity_gr_start','out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'decl_rate_tfp_indus_in': {'out_name': industry+'decline_rate_tfp','out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'prod_start_indus_in': {'out_name': industry+'productivity_start', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_k_indus_in': {'out_name': industry+'energy_eff_k', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_cst_indus_in': {'out_name': industry+'energy_eff_cst', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_xzero_indus_in': {'out_name': industry+'energy_eff_xzero', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
+                                'energy_eff_max_indus_in': {'out_name': industry+'energy_eff_max', 'out_type': 'float', 'index': arange(1),
+                                                              'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},         
                              }
 
         disc_dict = {}
@@ -157,14 +161,18 @@ class Study(StudyManager):
         disc_dict[f'{ns_optim}.max_iter'] = 100
         disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
         disc_dict[f'{ns_optim}.design_space'] = dspace
+        disc_dict[f'{ns_optim}.differentiation_method'] = 'complex_step'
         disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
         disc_dict[f'{ns_optim}.objective_name'] = 'objective_lagrangian'
+        disc_dict[f'{ns_optim}.differentiation_method'] = 'finite_differences' #complex_step user
+        disc_dict[f'{ns_optim}.fd_step'] = 1.e-15
         disc_dict[f'{ns_optim}.ineq_constraints'] = []
         disc_dict[f'{ns_optim}.eq_constraints'] = []
         disc_dict[f'{ns_optim}.algo_options'] = {
-            #"maxls": 6,
-            #"maxcor": 3,
+            "maxls_step_nb": 48,
+            "maxcor": 24,
             "ftol_rel": 1e-15,
+            "pg_tol": 1e-8
         }
         
     # design var inputs
@@ -242,7 +250,10 @@ class Study(StudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    #uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
+
     #uc_cls.execution_engine.set_debug_mode()
+#     generate_n2_plot(uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines[0].sos_disciplines)
+#     uc_cls.execution_engine.dm.export_couplings(in_csv=True, f_name='couplings.csv')
     uc_cls.run()
     

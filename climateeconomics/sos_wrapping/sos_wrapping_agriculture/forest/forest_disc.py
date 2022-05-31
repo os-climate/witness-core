@@ -148,7 +148,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
     # protected forest are 21% of total forest
     # https://research.wri.org/gfr/forest-designation-indicators/protected-forests
     initial_protected_forest_surface = 4 * 0.21
-    initial_unsused_forest_surface = 4 - 1.25 - initial_protected_forest_surface
+    initial_unmanaged_forest_surface = 4 - 1.25 - initial_protected_forest_surface
 
     # reforestation costs: 10k$/ha of land and 3800$/ha to plant trees
 
@@ -195,7 +195,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         Forest.MARGIN: {'type': 'dataframe', 'unit': '%', 'namespace': 'ns_witness', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {'years': ('float', None, False),
                                                          'margin': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
-        Forest.UNMANAGED_FOREST: {'type': 'float', 'unit': 'Gha',   'default': initial_unsused_forest_surface,
+        Forest.UNMANAGED_FOREST: {'type': 'float', 'unit': 'Gha',   'default': initial_unmanaged_forest_surface,
                                   'namespace': 'ns_forest'},
         Forest.PROTECTED_FOREST: {'type': 'float', 'unit': 'Gha',   'default': initial_protected_forest_surface,
                                   'namespace': 'ns_forest'},
@@ -286,7 +286,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'global_forest_surface', 'forest_constraint_evolution']],
             'CO2_land_emission_df': self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
             'managed_wood_df': self.forest_model.managed_wood_df,
-            #'unmanaged_wood_df': self.forest_model.unmanaged_wood_df,
             'biomass_dry_detail_df': self.forest_model.biomass_dry_df,
             'biomass_dry_df': self.forest_model.biomass_dry_df[['years', 'price_per_MWh', 'biomass_dry_for_energy (Mt)']],
 

@@ -78,7 +78,7 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
         self.total_food_land_surface['total surface (Gha)'] = np.linspace(
             5, 4, year_range)
 
-        initial_unsused_forest_surface = (4 - 1.25)
+        initial_unmanaged_forest_surface = (4 - 1.25)
         self.forest_surface_df = pd.DataFrame(
             index=years,
             columns=['years',
@@ -93,7 +93,7 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.land_demand_df': land_demand_df,
                        f'{self.name}.total_food_land_surface': self.total_food_land_surface,
                        f'{self.name}.forest_surface_df': self.forest_surface_df,
-                       f'{self.name}.initial_unsused_forest_surface': initial_unsused_forest_surface
+                       f'{self.name}.initial_unmanaged_forest_surface': initial_unmanaged_forest_surface
                        }
         self.ee.dm.set_values_from_dict(values_dict)
 
