@@ -105,7 +105,7 @@ class AgricultureDiscTest(unittest.TestCase):
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
                        f'{self.name}.time_step': time_step,
-                       f'{self.name}.{self.model_name}.damage_to_productivity': True,
+                       f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.{self.model_name}.sector_investment': total_invest,
                        f'{self.name}.{self.model_name}.energy_production': energy_supply_df,
                        f'{self.name}.{self.model_name}.damage_df': self.damage_df,
