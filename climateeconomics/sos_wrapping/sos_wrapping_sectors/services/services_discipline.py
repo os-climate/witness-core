@@ -68,8 +68,10 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         'output_alpha': {'type': 'float', 'default': 0.86537, 'user_level': 2, 'unit': '-'},
         'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '-'},
         'depreciation_capital': {'type': 'float', 'default': 0.058, 'user_level': 2, 'unit': '-'},
-        'damage_to_productivity': {'type': 'bool', 'default': True, 'unit': '-'},
-        'frac_damage_prod': {'type': 'float', 'default': 0.3, 'user_level': 2, 'unit': '-'},
+        'damage_to_productivity': {'type': 'bool', 'default': True, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                    'unit': '-','namespace': 'ns_witness'},
+        'frac_damage_prod': {'type': 'float', 'default': 0.3, 'user_level': 2, 'unit': '-',  
+                             'visibility': 'Shared', 'namespace': 'ns_witness'},
         'sector_investment': {'type': 'dataframe', 'unit': 'T$', 'dataframe_descriptor': {'years': ('float', None, False),
                             'investment': ('float', None, True)}, 'dataframe_edition_locked': False},
 

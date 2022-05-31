@@ -157,7 +157,17 @@ class Study(StudyManager):
         sect_input[self.study_name + self.macro_name +'.Services.damage_df'] = damage_df
         
         sect_input[self.study_name + '.total_investment_share_of_gdp'] = share_invest_df
-
+        
+        if self.year_start == 2000:
+            sect_input[self.study_name + self.macro_name +'.Industry.capital_start'] = 37.15058 
+            sect_input[self.study_name + self.macro_name +'.Agriculture.capital_start'] = 4.035565
+            sect_input[self.study_name + self.macro_name +'.Services.capital_start'] = 139.1369
+            sect_input[self.study_name +'.damage_to_productivity'] = False
+            sect_input[self.study_name + self.macro_name +'.Services.init_output_growth'] = 0
+            sect_input[self.study_name + self.macro_name +'.Agriculture.init_output_growth'] = 0
+            sect_input[self.study_name + self.macro_name +'.Industry.init_output_growth'] = 0
+            
+            
         setup_data_list.append(sect_input)
 
         return setup_data_list
