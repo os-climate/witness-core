@@ -107,15 +107,13 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             years = np.arange(year_start, year_end + 1)
 
     def init_execution(self):
-        inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(in_dict=True)
         self.industrial_model = SectorModel()
         self.industrial_model.configure_parameters(param)
 
     def run(self):
         # Get inputs
-        inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(in_dict=True)
         damage_df = param['damage_df']
         energy_production = param['energy_production']
         investment = param['sector_investment']

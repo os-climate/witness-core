@@ -106,15 +106,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             years = np.arange(year_start, year_end + 1)
 
     def init_execution(self):
-        inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(in_dict=True)
         self.agriculture_model = SectorModel()
         self.agriculture_model.configure_parameters(param)
 
     def run(self):
         # Get inputs
-        inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(in_dict=True)
         damage_df = param['damage_df']
         energy_production = param['energy_production']
         sector_investment = param['sector_investment']
