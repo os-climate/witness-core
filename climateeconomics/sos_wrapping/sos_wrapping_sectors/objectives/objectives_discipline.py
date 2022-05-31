@@ -232,7 +232,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 hist_gdp_sector = historical_gdp[sector]
                 simu_capital_sector_df = self.get_sosdisc_inputs(f'{sector}.detailed_capital_df')
                 simu_capital_sector = simu_capital_sector_df['capital']
-                hist_capital_sector = historical_gdp[sector]
+                hist_capital_sector = historical_capital[sector]
                 hist_energy_eff_sector = hist_energy_efficiency[sector].values
                 simu_energy_eff_sector = simu_capital_sector_df['energy_efficiency']
                 
