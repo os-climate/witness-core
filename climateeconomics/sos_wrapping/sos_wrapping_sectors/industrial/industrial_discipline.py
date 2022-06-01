@@ -67,7 +67,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         # Production function param
         'output_alpha': {'type': 'float', 'default': 0.86537, 'user_level': 2, 'unit': '-'},
         'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '-'},
-        'depreciation_capital': {'type': 'float', 'default': 0.058, 'user_level': 2, 'unit': '-'},
+        'depreciation_capital': {'type': 'float', 'default': 0.075, 'user_level': 2, 'unit': '-'},
         'damage_to_productivity': {'type': 'bool', 'default': True, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                     'unit': '-','namespace': 'ns_witness'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2, 'unit': '-'},
