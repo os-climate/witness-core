@@ -166,11 +166,10 @@ class Study(StudyManager):
         disc_dict[f'{ns_optim}.max_iter'] = 100
         disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
         disc_dict[f'{ns_optim}.design_space'] = dspace
-        #disc_dict[f'{ns_optim}.differentiation_method'] = 'complex_step'
         disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
         disc_dict[f'{ns_optim}.objective_name'] = 'objective_lagrangian'
         disc_dict[f'{ns_optim}.differentiation_method'] = 'finite_differences' #complex_step user
-        disc_dict[f'{ns_optim}.fd_step'] = 1.e-15
+        disc_dict[f'{ns_optim}.fd_step'] = 1.e-6
         disc_dict[f'{ns_optim}.ineq_constraints'] = []
         disc_dict[f'{ns_optim}.eq_constraints'] = []
         disc_dict[f'{ns_optim}.algo_options'] = {
