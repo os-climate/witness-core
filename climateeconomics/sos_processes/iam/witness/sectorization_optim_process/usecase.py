@@ -79,18 +79,18 @@ class Study(StudyManager):
                                       [0.0], [0.0],[1900.0], [1.0],
                                       [0.5], [0.001], [0.00001], [0.01],
                                       [0.0], [0.0],[1900.0], [1.0]],
-                       'upper_bnd': [[0.99], [0.2], [0.1],[2.0],
+                       'upper_bnd': [[0.99], [0.07], [0.1],[2.0],
                                       [1.0], [2.0],[2050.0], [8.0],
-                                      [0.99], [0.2], [0.1],[2.0],
+                                      [0.99], [0.1], [0.1],[2.0],
                                       [1.0], [2.0],[2050.0], [8.0],
-                                      [0.99], [0.2], [0.1],[2.0],
+                                      [0.99], [0.1], [0.1],[2.0],
                                       [1.0], [2.0],[2050.0], [8.0]],
-                       'enable_variable': [[True], [True], [True], [True],
-                                           [True], [True],[True], [True],
-                                           [True], [True], [True], [True],
-                                           [True], [True],[True], [True],
-                                           [True], [True], [True], [True],
-                                           [True], [True],[True], [True]],
+                       'enable_variable': [ True, True, True, True,
+                                           True, True, True, True,
+                                           True, True, True, True,
+                                           True, True, True, True,
+                                           True, True, True, True,
+                                           True, True, True, True],
                        'activated_elem': [[True], [True], [True], [True],
                                            [True], [True],[True], [True],
                                            [True], [True], [True], [True],
@@ -161,7 +161,7 @@ class Study(StudyManager):
         disc_dict[f'{ns_optim}.max_iter'] = 100
         disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
         disc_dict[f'{ns_optim}.design_space'] = dspace
-        disc_dict[f'{ns_optim}.differentiation_method'] = 'complex_step'
+        #disc_dict[f'{ns_optim}.differentiation_method'] = 'complex_step'
         disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
         disc_dict[f'{ns_optim}.objective_name'] = 'objective_lagrangian'
         disc_dict[f'{ns_optim}.differentiation_method'] = 'finite_differences' #complex_step user
