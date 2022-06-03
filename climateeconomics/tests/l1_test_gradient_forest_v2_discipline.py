@@ -24,8 +24,8 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    #     np.set_printoptions(threshold=np.inf)
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
 
@@ -37,7 +37,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             self.test_forest_analytic_grad
         ]
 
-    def _test_forest_analytic_grad(self):
+    def test_forest_analytic_grad(self):
 
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
@@ -173,18 +173,18 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             outputs=[
                                 f'{self.name}.{Forest.FOREST_SURFACE_DF}',
                                 f'{self.name}.{model_name}.CO2_land_emission_df',
-                                #f'{self.name}.Forest.techno_production',
-                                #f'{self.name}.Forest.techno_prices',
-                                #f'{self.name}.Forest.techno_consumption',
-                                #f'{self.name}.Forest.techno_consumption_woratio',
-                                #f'{self.name}.Forest.land_use_required',
-                               # f'{self.name}.Forest.CO2_emissions',
+                                f'{self.name}.Forest.techno_production',
+                                f'{self.name}.Forest.techno_prices',
+                                f'{self.name}.Forest.techno_consumption',
+                                f'{self.name}.Forest.techno_consumption_woratio',
+                                f'{self.name}.Forest.land_use_required',
+                               f'{self.name}.Forest.CO2_emissions',
                                 #f'{self.name}.Forest.techno_capital',
                                 #f'{self.name}.Forest.non_use_capital'
         ]
         )
 
-    def _test_forest_analytic_grad_unmanaged_limit(self):
+    def test_forest_analytic_grad_unmanaged_limit(self):
 
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
@@ -205,7 +205,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         self.year_start = 2020
-        self.year_end = 2035
+        self.year_end = 2030
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
@@ -219,9 +219,10 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         forest_invest = np.linspace(2, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
-        deforest_invest = np.linspace(1000, 5000, year_range)
         self.deforest_invest_df = pd.DataFrame(
-            {"years": years, "investment": deforest_invest})
+            {'years': years, 'investment': np.array([4000.00, 4000.00, 7000.00, 10000.00,
+                                                1000.00, 1000.00, 0000.00, 0000.00,
+                                                 0000.00, 0000.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
 
         wood_density = 600.0  # kg/m3
@@ -321,13 +322,14 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{model_name}.managed_wood_investment',
         ],
             outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
+                     f'{self.name}.Forest.land_use_required',
                      f'{self.name}.{model_name}.CO2_land_emission_df',
-                     #f'{self.name}.Forest.techno_production',
-                     #f'{self.name}.Forest.techno_prices',
-                     #f'{self.name}.Forest.techno_consumption',
-                     #f'{self.name}.Forest.techno_consumption_woratio',
-                     #f'{self.name}.Forest.land_use_required',
-                     #f'{self.name}.Forest.CO2_emissions',
+                     f'{self.name}.Forest.CO2_emissions',
+                     f'{self.name}.Forest.techno_production',
+                     f'{self.name}.Forest.techno_consumption',
+                     f'{self.name}.Forest.techno_consumption_woratio',
+                     f'{self.name}.Forest.techno_prices',
+
                      #f'{self.name}.Forest.techno_capital',
                      #f'{self.name}.Forest.non_use_capital'
                      ]
