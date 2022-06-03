@@ -67,7 +67,7 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         'techno_capital_df': {'type': 'dataframe'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'non_use_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'reforestation_lost_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'forest_lost_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
     }
 
     def setup_sos_disciplines(self):
@@ -80,26 +80,20 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         if 'is_dev' in self._data_in:
             is_dev = self.get_sosdisc_inputs('is_dev')
             if is_dev:
-                dynamic_inputs['reforestation_lost_capital'] = {'type': 'dataframe',
+                dynamic_inputs['forest_lost_capital'] = {'type': 'dataframe',
                                                                 'unit': 'G$',
                                                                 'user_level': 2, 
                                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                 'namespace': 'ns_forest',
                                                                 'structuring': True}
-                dynamic_inputs['forest_investment'] = {'type': 'dataframe',
-                                                                'unit': 'G$',
-                                                                'user_level': 2, 
-                                                                'visibility': SoSDiscipline.SHARED_VISIBILITY,
-                                                                'namespace': 'ns_invest',
-                                                                'structuring': True}
-                dynamic_inputs['reforestation_lost_capital_cons_ref'] = {'type': 'float',
+                dynamic_inputs['forest_lost_capital_cons_ref'] = {'type': 'float',
                                                                 'unit': 'G$',
                                                                 'default': 20.,
                                                                 'user_level': 2, 
                                                                 'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                                                 'namespace': 'ns_ref',
                                                                 'structuring': True}
-                dynamic_inputs['reforestation_lost_capital_cons_limit'] = {'type': 'float',
+                dynamic_inputs['forest_lost_capital_cons_limit'] = {'type': 'float',
                                                                 'unit': 'G$',
                                                                 'default': 40.,
                                                                 'user_level': 2, 
@@ -185,14 +179,14 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         techno_capital_df = self.model.get_techno_capital_df()
         energy_capital = self.model.get_energy_capital_trillion_dollars()
         non_use_capital_cons = self.model.get_constraint()
-        reforestation_lost_capital_cons = self.model.get_reforestation_constraint()
+        forest_lost_capital_cons = self.model.get_reforestation_constraint()
         # store output data
         dict_values = {'non_use_capital_df': non_use_capital_df,
                        'techno_capital_df': techno_capital_df,
                        'energy_capital': energy_capital,
                        'non_use_capital_objective': non_use_capital_objective,
                        'non_use_capital_cons': non_use_capital_cons,
-                       'reforestation_lost_capital_cons': reforestation_lost_capital_cons}
+                       'forest_lost_capital_cons': forest_lost_capital_cons}
 
         self.store_sos_outputs_values(dict_values)
 
@@ -230,9 +224,11 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('energy_capital', 'energy_capital'), (capital, column_name), np.identity(len(years)) / 1.e3)
         if is_dev:
-            reforestation_lost_capital_cons_ref = inputs_dict['reforestation_lost_capital_cons_ref']
+            forest_lost_capital_cons_ref = inputs_dict['forest_lost_capital_cons_ref']
             self.set_partial_derivative_for_other_types(
-                    ('reforestation_lost_capital_cons', ), ('reforestation_lost_capital', 'lost_capital'), - np.ones(len(years)) / reforestation_lost_capital_cons_ref / delta_years)
+                    ('forest_lost_capital_cons', ), ('forest_lost_capital', 'reforestation'), - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
+            self.set_partial_derivative_for_other_types(
+                    ('forest_lost_capital_cons', ), ('forest_lost_capital', 'managed_wood'), - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
 
     def get_chart_filter_list(self):
 
@@ -309,27 +305,25 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
 
         if 'Forest Management Lost Capital' in chart_list and is_dev:
 
-            forest_investment = self.get_sosdisc_inputs('forest_investment')
 
-            reforestation_lost_capital = self.get_sosdisc_inputs('reforestation_lost_capital')
+            forest_lost_capital = self.get_sosdisc_inputs('forest_lost_capital')
 
 
-            years = list(reforestation_lost_capital['years'].values)
+            years = list(forest_lost_capital['years'].values)
 
             chart_name = 'Forest Management Lost Capital'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Total Capital [G$]',
-                                                 chart_name=chart_name)
+                                                 chart_name=chart_name, stacked_bar=True)
 
-            new_series = InstanciatedSeries(
-                years, forest_investment['forest_investment'].values.tolist(), 'Reforestation Capital', 'lines')
+            new_serie_reforest = InstanciatedSeries(
+                years, forest_lost_capital['reforestation'].values.tolist(), 'Reforestation Lost Capital', 'bar')
+            
+            new_serie_managed_wood = InstanciatedSeries(
+                years, forest_lost_capital['managed_wood'].values.tolist(), 'Managed Wood Lost Capital', 'bar')
 
-            new_chart.series.append(new_series)
-
-            new_series = InstanciatedSeries(
-                years, reforestation_lost_capital['lost_capital'].values.tolist(), 'Reforestation Lost Capital', 'bar')
-
-            new_chart.series.append(new_series)
+            new_chart.series.append(new_serie_reforest)
+            new_chart.series.append(new_serie_managed_wood)
             instanciated_charts.append(new_chart)
 
         return instanciated_charts

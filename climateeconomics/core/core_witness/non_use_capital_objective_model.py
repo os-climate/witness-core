@@ -32,7 +32,7 @@ class NonUseCapitalObjective():
         self.non_use_capital_df = None
         self.techno_capital_df = None
         self.non_use_capital_cons = np.array([0.0])
-        self.reforestation_lost_capital_cons = np.array([0.0])
+        self.forest_lost_capital_cons = np.array([0.0])
 
     def set_data(self):
         self.year_start = self.param['year_start']
@@ -44,9 +44,9 @@ class NonUseCapitalObjective():
         self.non_use_capital_cons_ref = self.param['non_use_capital_cons_ref']
         self.is_dev = self.param['is_dev']
         if self.is_dev:
-            self.reforestation_lost_capital_cons_limit = self.param['reforestation_lost_capital_cons_limit']
-            self.reforestation_lost_capital_cons_ref = self.param['reforestation_lost_capital_cons_ref']
-            self.reforestation_lost_capital = self.param['reforestation_lost_capital']
+            self.forest_lost_capital_cons_limit = self.param['forest_lost_capital_cons_limit']
+            self.forest_lost_capital_cons_ref = self.param['forest_lost_capital_cons_ref']
+            self.forest_lost_capital = self.param['forest_lost_capital']
 
 
     def create_year_range(self):
@@ -70,7 +70,7 @@ class NonUseCapitalObjective():
         self.techno_capital_df = self.agreggate_and_compute_sum(
             'techno_capital', inputs_dict)
         if self.is_dev:
-            self.reforestation_lost_capital = inputs_dict['reforestation_lost_capital']
+            self.forest_lost_capital = inputs_dict['forest_lost_capital']
 
         self.compute_objective()
         self.compute_constraint()
@@ -113,8 +113,10 @@ class NonUseCapitalObjective():
             self.non_use_capital_cons = (self.non_use_capital_cons_limit - self.non_use_capital_objective_wo_ponderation) / self.non_use_capital_cons_ref
         
         if self.is_dev:
-            reforestation_lost_capital_wo_ponderation = np.asarray([self.reforestation_lost_capital['lost_capital'].sum()]) / self.delta_years
-            self.reforestation_lost_capital_cons = (self.reforestation_lost_capital_cons_limit - reforestation_lost_capital_wo_ponderation) / self.reforestation_lost_capital_cons_ref
+            reforestation_lost_capital_wo_ponderation = np.asarray([self.forest_lost_capital['reforestation'].sum()]) / self.delta_years
+            managed_wood_lost_capital_wo_ponderation = np.asarray([self.forest_lost_capital['managed_wood'].sum()]) / self.delta_years
+            forest_lost_capital_wo_ponderation = reforestation_lost_capital_wo_ponderation + managed_wood_lost_capital_wo_ponderation
+            self.forest_lost_capital_cons = (self.forest_lost_capital_cons_limit - forest_lost_capital_wo_ponderation) / self.forest_lost_capital_cons_ref
 
     def get_objective(self):
         '''
@@ -132,7 +134,7 @@ class NonUseCapitalObjective():
         '''
         Get reforestation lost capital constraint
         '''
-        return self.reforestation_lost_capital_cons
+        return self.forest_lost_capital_cons
 
     def get_non_use_capital_df(self):
         '''
