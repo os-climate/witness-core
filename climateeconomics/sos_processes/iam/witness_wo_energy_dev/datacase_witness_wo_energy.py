@@ -316,8 +316,8 @@ class DataStudy():
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 
-        list_var.append('reforestation_lost_capital_cons')
-        list_parent.append('reforestation_lost_capital_cons')
+        list_var.append('forest_lost_capital_cons')
+        list_parent.append('forest_lost_capital_cons')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
