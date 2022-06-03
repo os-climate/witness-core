@@ -235,8 +235,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'CO2_emissions': {
             'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_forest'},
-        'forest_capital': {
-            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'forest_lost_capital': {
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
     }
