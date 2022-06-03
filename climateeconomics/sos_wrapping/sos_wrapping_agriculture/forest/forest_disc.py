@@ -235,11 +235,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'CO2_emissions': {
             'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_forest'},
-        'techno_capital': {
+        'forest_capital': {
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
-        'non_use_capital': {
-            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
-        'reforestation_lost_capital': {
+        'forest_lost_capital': {
             'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
     }
 
@@ -295,9 +293,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'techno_consumption_woratio': techno_consumption_woratio,
             'land_use_required': self.forest_model.land_use_required,
             'CO2_emissions': self.forest_model.CO2_emissions,
-            'non_use_capital': self.forest_model.non_use_capital,
-            'techno_capital': self.forest_model.techno_capital,
-            'reforestation_lost_capital': self.forest_model.lost_capital
+            'forest_lost_capital': self.forest_model.forest_lost_capital
         }
         #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -350,11 +346,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
         # forest surface vs forest invest
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'forest_constraint_evolution'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_forest_const_d_invest)
-
-        # total capital vs reforestation investment grad
-        dcapitaltotal_dinvest = self.forest_model.d_capital_total_d_invest()
-        self.set_partial_derivative_for_other_types(('techno_capital', 'Forest'), (
-            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dcapitaltotal_dinvest)
 
         # lost capital vs reforestation investment grad
         dlostcapital_dinvest = self.forest_model.d_lostcapitald_invest(
@@ -511,6 +502,30 @@ class ForestDiscipline(ClimateEcoDiscipline):
             unmanaged_forest = forest_surface_df['unmanaged_forest'].values * 1000
             protected_forest = forest_surface_df['protected_forest_surface'].values * 1000
 
+            # invests graph
+            forest_investment_df = self.get_sosdisc_inputs('forest_investment')
+            managed_wood_investment_df  = self.get_sosdisc_inputs('managed_wood_investment')
+            deforestation_investment_df  = self.get_sosdisc_inputs('deforestation_investment')
+            new_chart = TwoAxesInstanciatedChart('years', 'Investments [G$]',
+                                                 chart_name='Investments in forests activities', stacked_bar=True)
+
+            forest_investment = forest_investment_df['forest_investment']
+            managed_wood_investment = managed_wood_investment_df['investment']
+            deforestation_investment = deforestation_investment_df['investment']
+
+            forest_investment_series = InstanciatedSeries(
+                years, forest_investment.tolist(), 'Reforestation invests', InstanciatedSeries.BAR_DISPLAY)
+            managed_wood_investment_series = InstanciatedSeries(
+                years, managed_wood_investment.tolist(), 'Managed wood invests', InstanciatedSeries.BAR_DISPLAY)
+            deforestation_investment_series = InstanciatedSeries(
+                years, deforestation_investment.tolist(), 'Deforestation invests', InstanciatedSeries.BAR_DISPLAY)
+
+            # new_chart.add_series(total_capital_series)
+            new_chart.add_series(forest_investment_series)
+            new_chart.add_series(managed_wood_investment_series)
+            new_chart.add_series(deforestation_investment_series)
+            instanciated_charts.append(new_chart)
+
             # forest evolution year by year chart
             new_chart = TwoAxesInstanciatedChart('years', 'Yearly delta of forest surface evolution [Mha / year]',
                                                  chart_name='Yearly delta of forest surface evolution', stacked_bar=True)
@@ -527,7 +542,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             new_chart.add_series(deforested_series)
             new_chart.add_series(total_series)
             new_chart.add_series(forested_series)
-            # new_chart.add_series(managed_wood_series)
 
             instanciated_charts.append(new_chart)
 
@@ -550,7 +564,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             new_chart.add_series(unmanaged_forest_series)
             new_chart.add_series(total_series)
-            # new_chart.add_series(forested_series)
             new_chart.add_series(managed_wood_series)
             new_chart.add_series(protected_forest_series)
 
@@ -722,27 +735,22 @@ class ForestDiscipline(ClimateEcoDiscipline):
             new_chart.add_series(average_price_series)
             instanciated_charts.append(new_chart)
 
-            # capital graph
-            techno_capital_df = self.get_sosdisc_outputs('techno_capital')
-            lost_capital_df = self.get_sosdisc_outputs('reforestation_lost_capital')
+            # lost capital graph
+            lost_capital_df = self.get_sosdisc_outputs('forest_lost_capital')
             new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
-                                                 chart_name='Non use capital due to deforestation<br>and reforestation vs total capital', stacked_bar=True)
-            total_capital = techno_capital_df['Forest']  # + \
-            # techno_capital_df['Managed_wood']
-            lost_capital_forest = lost_capital_df['lost_capital']
-            #lost_capital_mw = lost_capital_df['Managed_wood']
+                                                 chart_name='Lost capital due to deforestation<br> vs total capital', stacked_bar=True)
 
-            total_capital_series = InstanciatedSeries(
-                years, total_capital.tolist(), 'Total capital', InstanciatedSeries.LINES_DISPLAY)
-            lost_capital_forest_series = InstanciatedSeries(
-                years, lost_capital_forest.tolist(), 'Non use capital Forest', InstanciatedSeries.BAR_DISPLAY)
-#             lost_capital_mw_series = InstanciatedSeries(
-# years, lost_capital_mw.tolist(), 'Non use capital Managed wood',
-# InstanciatedSeries.BAR_DISPLAY)
+            lost_capital_reforestation = lost_capital_df['reforestation']
+            lost_capital_managed_wood = lost_capital_df['managed_wood']
 
-            new_chart.add_series(total_capital_series)
-            new_chart.add_series(lost_capital_forest_series)
-            # new_chart.add_series(lost_capital_mw_series)
+            lost_capital_reforestation_series = InstanciatedSeries(
+                years, lost_capital_reforestation.tolist(), 'Reforestation lost capital', InstanciatedSeries.BAR_DISPLAY)
+            lost_capital_managed_wood_series = InstanciatedSeries(
+                years, lost_capital_managed_wood.tolist(), 'Managed wood lost capital', InstanciatedSeries.BAR_DISPLAY)
+
+            # new_chart.add_series(total_capital_series)
+            new_chart.add_series(lost_capital_reforestation_series)
+            new_chart.add_series(lost_capital_managed_wood_series)
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
