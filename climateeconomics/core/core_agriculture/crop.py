@@ -134,6 +134,8 @@ class Crop():
         self.CO2_land_emissions_detailed = pd.DataFrame({'years': self.years})
         self.CH4_land_emissions = pd.DataFrame({'years': self.years})
         self.CH4_land_emissions_detailed = pd.DataFrame({'years': self.years})
+        self.N2O_land_emissions = pd.DataFrame({'years': self.years})
+        self.N2O_land_emissions_detailed = pd.DataFrame({'years': self.years})
         self.updated_diet_df = pd.DataFrame({'years': self.years})
 
     def configure_parameters_update(self, inputs_dict):
@@ -162,6 +164,7 @@ class Crop():
         self.temperature_df = inputs_dict['temperature_df']
         self.co2_emissions_per_kg = inputs_dict['co2_emissions_per_kg']
         self.ch4_emissions_per_kg = inputs_dict['ch4_emissions_per_kg']
+        self.n2o_emissions_per_kg = inputs_dict['n2o_emissions_per_kg']
 
     def compute(self):
         ''' 
@@ -669,6 +672,7 @@ class Crop():
 
         self.CO2_land_emissions['emitted_CO2_evol_cumulative'] = 0.0
         self.CH4_land_emissions['emitted_CH4_evol_cumulative'] = 0.0
+        self.N2O_land_emissions['emitted_N2O_evol_cumulative'] = 0.0
         for food in self.co2_emissions_per_kg:
 
             # add crop energy surface for rice and maize
@@ -684,10 +688,17 @@ class Crop():
                                              self.m2toha * 1e9 * 1e-12  # to m^2 and then to GtCo2
             self.CO2_land_emissions[f'emitted_CO2_evol_cumulative'] += self.CO2_land_emissions_detailed[f'{food} (Gt)']
 
+            # CH4
             self.CH4_land_emissions_detailed[f'{food} (Gt)'] = self.ch4_emissions_per_kg[food] / \
                                              self.kg_to_m2_dict[food] * surface* \
                                              self.m2toha * 1e9 * 1e-12  # to m^2 and then to GtCo2
             self.CH4_land_emissions[f'emitted_CH4_evol_cumulative'] += self.CH4_land_emissions_detailed[f'{food} (Gt)']
+
+            # N20
+            self.N2O_land_emissions_detailed[f'{food} (Gt)'] = self.n2o_emissions_per_kg[food] / \
+                                                               self.kg_to_m2_dict[food] * surface * \
+                                                               self.m2toha * 1e9 * 1e-12  # to m^2 and then to GtCo2
+            self.N2O_land_emissions[f'emitted_N2O_evol_cumulative'] += self.N2O_land_emissions_detailed[f'{food} (Gt)']
 
     def get_theoretical_co2_prod(self, unit='kg/kWh'):
         ''' 
@@ -871,7 +882,8 @@ class Crop():
         Compute gradient of co2 land emissions from land surface from food
         '''
         return {'CO2': self.co2_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12,
-                'CH4': self.ch4_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12,}
+                'CH4': self.ch4_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12,
+                'N2O': self.n2o_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12,}
 
     def compute_d_food_surface_d_red_meat_percentage(self, population_df, food):
         """
