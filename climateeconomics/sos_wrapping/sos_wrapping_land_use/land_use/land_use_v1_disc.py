@@ -60,7 +60,7 @@ class LandUseV1Discipline(SoSDiscipline):
                }
 
     DESC_OUT = {
-        LandUseV1.LAND_DEMAND_CONSTRAINT_DF: {
+        LandUseV1.LAND_DEMAND_CONSTRAINT: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         LandUseV1.LAND_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
@@ -96,7 +96,7 @@ class LandUseV1Discipline(SoSDiscipline):
             land_demand_df, total_food_land_surface, deforested_surface_df)
 
         outputs_dict = {
-            LandUseV1.LAND_DEMAND_CONSTRAINT_DF: self.land_use_model.land_demand_constraint_df,
+            LandUseV1.LAND_DEMAND_CONSTRAINT: self.land_use_model.land_demand_constraint,
             LandUseV1.LAND_SURFACE_DETAIL_DF: self.land_use_model.land_surface_df,
             LandUseV1.LAND_SURFACE_DF: self.land_use_model.land_surface_df[[
                 'Agriculture (Gha)', 'Forest (Gha)']],
@@ -120,15 +120,15 @@ class LandUseV1Discipline(SoSDiscipline):
 
         # Retrieve variables
         land_demand_df = model.land_demand_df
-        land_demand_constraint_df = model.land_demand_constraint_df
+        land_demand_constraint = model.land_demand_constraint
         land_surface_df = model.land_surface_df
 
         # build columns
         land_demand_df_columns = list(land_demand_df)
         land_demand_df_columns.remove('years')
 
-        land_demand_constraint_df_columns = list(land_demand_constraint_df)
-        land_demand_constraint_df_columns.remove('years')
+        land_demand_constraint_columns = list(land_demand_constraint)
+        land_demand_constraint_columns.remove('years')
 
         land_surface_df_columns = list(land_surface_df)
         land_surface_df_columns.remove('Agriculture total (Gha)')
@@ -137,16 +137,16 @@ class LandUseV1Discipline(SoSDiscipline):
         land_surface_df_columns.remove('Added Agriculture (Gha)')
         land_surface_df_columns.remove('Deforestation (Gha)')
 
-        for objective_column in land_demand_constraint_df_columns:
+        for objective_column in land_demand_constraint_columns:
             for demand_column in land_demand_df_columns:
                 self.set_partial_derivative_for_other_types(
-                    (LandUseV1.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV1.LAND_DEMAND_DF, demand_column), model.get_derivative(objective_column, demand_column),)
+                    (LandUseV1.LAND_DEMAND_CONSTRAINT, objective_column),  (LandUseV1.LAND_DEMAND_DF, demand_column), model.get_derivative(objective_column, demand_column),)
 
             self.set_partial_derivative_for_other_types(
-                (LandUseV1.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV1.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), model.d_land_demand_constraint_d_food_land_surface(objective_column),)
+                (LandUseV1.LAND_DEMAND_CONSTRAINT, objective_column),  (LandUseV1.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), model.d_land_demand_constraint_d_food_land_surface(objective_column),)
 
             self.set_partial_derivative_for_other_types(
-                (LandUseV1.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV1.DEFORESTED_SURFACE_DF, 'forest_surface_evol'), model.d_land_demand_constraint_d_deforestation_surface(objective_column),)
+                (LandUseV1.LAND_DEMAND_CONSTRAINT, objective_column),  (LandUseV1.DEFORESTED_SURFACE_DF, 'forest_surface_evol'), model.d_land_demand_constraint_d_deforestation_surface(objective_column),)
 
         d_surface_d_population = model.d_land_surface_for_food_d_food_land_surface()
         self.set_partial_derivative_for_other_types(
