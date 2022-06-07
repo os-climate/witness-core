@@ -283,7 +283,7 @@ class DataStudy():
         # -------------------------------------------------
         # e_max_constraint
         list_var.append('emax_enet_constraint')
-        list_parent.append('')
+        list_parent.append('macroeconomics_constraints')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
@@ -293,7 +293,7 @@ class DataStudy():
         # -------------------------------------------------
         # pc_consumption_constraint
         list_var.append('pc_consumption_constraint')
-        list_parent.append('')
+        list_parent.append('macroeconomics_constraints')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(0.0)
@@ -309,7 +309,7 @@ class DataStudy():
             AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_LIN_TO_QUAD])
 
         list_var.append('non_use_capital_cons')
-        list_parent.append('non_use_capital_cons')
+        list_parent.append('invests_constraints')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
@@ -317,7 +317,7 @@ class DataStudy():
             AGGR_TYPE_SMAX)
 
         list_var.append('forest_lost_capital_cons')
-        list_parent.append('forest_lost_capital_cons')
+        list_parent.append('agriculture_constraint')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)

@@ -53,7 +53,7 @@ class LandUseV1():
     TOTAL_FOOD_LAND_SURFACE = 'total_food_land_surface'
     DEFORESTED_SURFACE_DF = 'forest_surface_df'
 
-    LAND_DEMAND_CONSTRAINT_DF = 'land_demand_constraint_df'
+    LAND_DEMAND_CONSTRAINT = 'land_demand_constraint'
     LAND_DEMAND_CONSTRAINT_AGRICULTURE = 'Agriculture demand constraint (Gha)'
     LAND_DEMAND_CONSTRAINT_FOREST = 'Forest demand constraint (Gha)'
 
@@ -87,7 +87,7 @@ class LandUseV1():
         self.import_world_surface_data()
 
         self.set_data()
-        self.land_demand_constraint_df = None
+        self.land_demand_constraint = None
         self.land_surface_df = pd.DataFrame()
         self.land_surface_for_food_df = pd.DataFrame()
 
@@ -114,7 +114,7 @@ class LandUseV1():
         self.land_demand_df = land_demand_df
 
         # Initialize demand objective  dataframe
-        self.land_demand_constraint_df = pd.DataFrame(
+        self.land_demand_constraint = pd.DataFrame(
             {'years': self.land_demand_df['years']})
 
         # # ------------------------------------------------
@@ -164,9 +164,9 @@ class LandUseV1():
         # Calculate delta for objective
         # (Convert value to million Ha)
 
-        self.land_demand_constraint_df[self.LAND_DEMAND_CONSTRAINT_AGRICULTURE] = (self.land_surface_df['Agriculture (Gha)'].values -
+        self.land_demand_constraint[self.LAND_DEMAND_CONSTRAINT_AGRICULTURE] = (self.land_surface_df['Agriculture (Gha)'].values -
                                                                                    demand_crops) / self.ref_land_use_constraint
-        self.land_demand_constraint_df[self.LAND_DEMAND_CONSTRAINT_FOREST] = (self.land_surface_df['Forest (Gha)'].values -
+        self.land_demand_constraint[self.LAND_DEMAND_CONSTRAINT_FOREST] = (self.land_surface_df['Forest (Gha)'].values -
                                                                               demand_forest) / self.ref_land_use_constraint
 
     def get_derivative(self, objective_column, demand_column):

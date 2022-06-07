@@ -57,16 +57,12 @@ class LandUseV2Discipline(SoSDiscipline):
                LandUseV2.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV2.FOREST_SURFACE_DF: {
                    'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-               LandUseV2.LAND_USE_CONSTRAINT_REF: {
-                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               LandUseV2.INIT_UNMANAGED_FOREST_SURFACE: {'type': 'float', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'default': initial_unmanaged_forest_surface, 'namespace': 'ns_witness'},
-               }
+               LandUseV2.LAND_DEMAND_CONSTRAINT_REF: {
+                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},}
 
     DESC_OUT = {
-        LandUseV2.LAND_DEMAND_CONSTRAINT_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        LandUseV2.LAND_SURFACE_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        LandUseV2.LAND_DEMAND_CONSTRAINT: {
+            'type': 'array', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         LandUseV2.LAND_SURFACE_DETAIL_DF: {'type': 'dataframe', 'unit': 'Gha'},
         LandUseV2.LAND_SURFACE_FOR_FOOD_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
@@ -99,11 +95,12 @@ class LandUseV2Discipline(SoSDiscipline):
             land_demand_df, total_food_land_surface, total_forest_surface_df)
 
         outputs_dict = {
-            LandUseV2.LAND_DEMAND_CONSTRAINT_DF: self.land_use_model.land_demand_constraint_df,
+            LandUseV2.LAND_DEMAND_CONSTRAINT: self.land_use_model.land_demand_constraint,
             LandUseV2.LAND_SURFACE_DETAIL_DF: self.land_use_model.land_surface_df,
-            LandUseV2.LAND_SURFACE_DF: self.land_use_model.land_surface_df[[
-                'Agriculture (Gha)', 'Forest (Gha)']],
-            LandUseV2.LAND_SURFACE_FOR_FOOD_DF: self.land_use_model.land_surface_for_food_df
+            # Surface for food used by crop energy techno as input kept output and col name for now but
+            # could be changed later on when a single version of agriculture mix is selected
+            LandUseV2.LAND_SURFACE_FOR_FOOD_DF: self.land_use_model.land_surface_df[[
+                'Food Surface (Gha)']].rename(columns={'Food Surface (Gha)': 'Agriculture total (Gha)'}),
         }
 
         #-- store outputs
@@ -112,71 +109,34 @@ class LandUseV2Discipline(SoSDiscipline):
     def compute_sos_jacobian(self):
         """ 
         Compute jacobian for each coupling variable 
-        gradient of coupling variable to compute: 
-        land_demand_objective_df wrt land_demand_df
+        gradient of coupling variable to compute:
+        land_demand_constraint wrt forest_surface_df
+        land_demand_constraint wrt food_surface_df
+        land_demand_constraint wrt land_demand_df
         """
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        years = np.arange(inputs_dict['year_start'], inputs_dict['year_end']+1)
 
-        #-- compute
-        land_demand_df = inputs_dict['land_demand_df']
-        total_food_land_surface = inputs_dict.pop('total_food_land_surface')
-        total_forest_surface_df = inputs_dict.pop('forest_surface_df')
-        total_forest_surface_df.index = land_demand_df['years']
-        self.land_use_model.compute(
-            land_demand_df, total_food_land_surface, total_forest_surface_df)
-
-        model = self.land_use_model
-
-        # Retrieve variables
-        land_demand_df = model.land_demand_df
-        land_demand_constraint_df = model.land_demand_constraint_df
-        land_surface_df = model.land_surface_df
-
-        # build columns
-        land_demand_df_columns = list(land_demand_df)
-        land_demand_df_columns.remove('years')
-
-        land_demand_constraint_df_columns = list(land_demand_constraint_df)
-        land_demand_constraint_df_columns.remove('years')
-
-        land_surface_df_columns = list(land_surface_df)
-        land_surface_df_columns.remove('Agriculture total (Gha)')
-        land_surface_df_columns.remove('Food Usage (Gha)')
-        land_surface_df_columns.remove('Added Forest (Gha)')
-        land_surface_df_columns.remove('Added Agriculture (Gha)')
-
-        nb_years = len(land_demand_df['years'].values)
-
-        # constraint gradients
-        for objective_column in land_demand_constraint_df_columns:
-            for demand_column in land_demand_df_columns:
-                self.set_partial_derivative_for_other_types(
-                    (LandUseV2.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV2.LAND_DEMAND_DF, demand_column), model.get_derivative(objective_column, demand_column),)
-
-            if objective_column == LandUseV2.LAND_DEMAND_CONSTRAINT_AGRICULTURE:
-                self.set_partial_derivative_for_other_types(
-                    (LandUseV2.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV2.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), model.d_land_demand_constraint_d_food_land_surface())
-
+        # land_surface_for_food_df wrt food_surface_df
+        self.set_partial_derivative_for_other_types(
+            (LandUseV2.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
+            (LandUseV2.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'),
+            np.identity(len(years)))
+        # land_demand_constraint wrt forest_surface_df
+        self.set_partial_derivative_for_other_types(
+            (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.FOREST_SURFACE_DF, 'global_forest_surface'),
+            - np.ones(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
+        # land_demand_constraint wrt food_surface_df
+        self.set_partial_derivative_for_other_types(
+            (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.TOTAL_FOOD_LAND_SURFACE,'total surface (Gha)'),
+            - np.ones(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
+        # land_demand_constraint wrt land_demand_df
+        for techno in LandUseV2.AGRICULTURE_TECHNO+LandUseV2.FOREST_TECHNO:
             self.set_partial_derivative_for_other_types(
-                (LandUseV2.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV2.FOREST_SURFACE_DF, 'forest_constraint_evolution'), model.d_land_demand_constraint_d_deforestation_surface(objective_column),)
-
-        # food surface gradient
-        self.set_partial_derivative_for_other_types(
-            (LandUseV2.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),  (LandUseV2.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), np.identity(nb_years))
-
-        # land_demand surface gradients
-        self.set_partial_derivative_for_other_types(
-            (LandUseV2.LAND_SURFACE_DF, 'Agriculture (Gha)'),  (LandUseV2.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), np.identity(nb_years))
-
-        self.set_partial_derivative_for_other_types(
-            (LandUseV2.LAND_SURFACE_DF, 'Forest (Gha)'),  (LandUseV2.FOREST_SURFACE_DF, 'forest_constraint_evolution'),  np.identity(nb_years))
-
-        for surface_column in land_surface_df_columns:
-            for demand_column in land_demand_df_columns:
-                self.set_partial_derivative_for_other_types(
-                    (LandUseV2.LAND_SURFACE_DF, surface_column),  (LandUseV2.LAND_DEMAND_DF, demand_column), model.d_constraint_d_surface(surface_column, demand_column))
+                (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.LAND_DEMAND_DF, techno),
+                - np.ones(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
 
     def get_chart_filter_list(self):
 
