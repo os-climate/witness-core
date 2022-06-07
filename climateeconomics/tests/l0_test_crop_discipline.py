@@ -136,27 +136,53 @@ class CropTestCase(unittest.TestCase):
         # Our World in Data
         # https://ourworldindata.org/carbon-footprint-food-methane
         ch4_emissions_unit = 'kg/kg'  # in kgCH4 per kg food
+        calibration = 0.134635 / 0.108958
         # set up as a ratio of total ghg emissions
-        ch4_emissions_ratios = {'red meat': 49 / 100,
-                                'white meat': 2 / 20,
-                                'milk': (49.0 + 17.0 + 26.0) / (100 + 33 + 40),  # from red meats
-                                'eggs': 0.0,
-                                'rice and maize': 4 / 6.5,
-                                'potatoes': 0.0,
-                                'fruits and vegetables': 0.0,  # negligible methane in this category
-                                'other': (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0) / (14 + 24 + 33 + 27 + 29 + 34),
+        ch4_emissions_ratios = {'red meat': 49 / 100 * calibration,
+                                'white meat': 2 / 20 * calibration,
+                                'milk': 17.0 / 33 * calibration,
+                                'eggs': 0.0 * calibration,
+                                'rice and maize': 4 / 6.5 * calibration,
+                                'potatoes': 0.0 * calibration,
+                                'fruits and vegetables': 0.0 * calibration,  # negligible methane in this category
+                                'other': (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0) / (
+                                            14 + 24 + 33 + 27 + 29 + 34) * calibration,
                                 }
 
         default_ch4_emissions = {}
         for food in default_ghg_emissions:
             default_ch4_emissions[food] = (default_ghg_emissions[food] * ch4_emissions_ratios[food] / ch4_gwp_100)
 
-        # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100)/co2_gwp_100
+        # FAO Stats
+        # https://www.fao.org/faostat/en/#data/GT
+        n2o_emissions_unit = 'kg/kg'  # in kgN2O per kg food$
+        calibration = 7.332 / 6.0199
+        pastures_emissions = 3.039e-3 * calibration
+        crops_emissions = 1.504e-3 * calibration
+
+        # with land use ratio on n2o emissions
+        default_n2o_emissions = {'red meat': pastures_emissions * 3.0239241372696104 / 0.9959932034220041,
+                                 'white meat': pastures_emissions * 0.3555438662130599 / 0.9959932034220041,
+                                 'milk': pastures_emissions * 0.5564085980770741 / 0.9959932034220041,
+                                 'eggs': pastures_emissions * 0.048096212128271996 / 0.9959932034220041,
+                                 'rice and maize': crops_emissions * 0.2236252183903196 / 0.29719264680276536,
+                                 'potatoes': crops_emissions * 0.023377379498821543 / 0.29719264680276536,
+                                 'fruits and vegetables': crops_emissions * 0.13732524416192043 / 0.29719264680276536,
+                                 'other': crops_emissions * 0.8044427451599999 / 0.29719264680276536,
+                                 }
+
+        # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100 - n2o_emissions * n2o_gwp_100)/co2_gwp_100
         co2_emissions_unit = 'kg/kg'  # in kgCo2 per kg food
-        default_co2_emissions = {}
-        for food in default_ghg_emissions:
-            default_co2_emissions[food] = (default_ghg_emissions[food] - default_ch4_emissions[
-                food] * ch4_gwp_100) / co2_gwp_100
+        calibration = 0.722 / 3.417569
+        default_co2_emissions = {'red meat': 0.0 * calibration,
+                                 'white meat': 0.0 * calibration,
+                                 'milk': 0.0 * calibration,
+                                 'eggs': 0.0 * calibration,
+                                 'rice and maize': 1.45 * calibration,
+                                 'potatoes': 0.170 * calibration,
+                                 'fruits and vegetables': 0.372 * calibration,
+                                 'other': 3.44 * calibration,
+                                 }
 
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
@@ -184,6 +210,7 @@ class CropTestCase(unittest.TestCase):
                       'white_meat_percentage': self.white_meat_percentage,
                       'co2_emissions_per_kg': default_co2_emissions,
                       'ch4_emissions_per_kg': default_ch4_emissions,
+                      'n2o_emissions_per_kg': default_n2o_emissions,
                       }
 
     def test_crop_model(self):
