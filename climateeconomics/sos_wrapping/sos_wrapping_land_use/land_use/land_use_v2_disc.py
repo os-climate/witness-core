@@ -19,6 +19,8 @@ from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilte
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from plotly.colors import qualitative
 from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
@@ -120,16 +122,16 @@ class LandUseV2Discipline(SoSDiscipline):
         # land_demand_constraint wrt forest_surface_df
         self.set_partial_derivative_for_other_types(
             (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.FOREST_SURFACE_DF, 'global_forest_surface'),
-            - np.ones(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
+            - np.identity(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
         # land_demand_constraint wrt food_surface_df
         self.set_partial_derivative_for_other_types(
             (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.TOTAL_FOOD_LAND_SURFACE,'total surface (Gha)'),
-            - np.ones(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
+            - np.identity(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
         # land_demand_constraint wrt land_demand_df
         for techno in LandUseV2.AGRICULTURE_TECHNO+LandUseV2.FOREST_TECHNO:
             self.set_partial_derivative_for_other_types(
                 (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.LAND_DEMAND_DF, techno),
-                - np.ones(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
+                - np.identity(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
 
     def get_chart_filter_list(self):
 
@@ -165,31 +167,47 @@ class LandUseV2Discipline(SoSDiscipline):
         total_forest_surface_df = inputs_dict['forest_surface_df']
         land_surface_detailed = outputs_dict[LandUseV2.LAND_SURFACE_DETAIL_DF]
         land_demand_constraint = outputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT]
+        # Surfaces available
+        total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
+                                    land_surface_detailed['Available Forest Surface (Gha)'].values + \
+                                    land_surface_detailed['Available Shrub Surface (Gha)'])
 
         if 'Land Demand Constraint' in chart_list:
-            if land_surface_detailed is not None and land_demand_constraint is not None:
-                series_to_add = []
-                # Total surface usage
-                for column in list(land_surface_detailed.columns):
-                    if column in ['Total Forest Surface (Gha)', 'Total Agriculture Surface (Gha)']:
-                        legend = column.replace(' (Gha)', '')
-                        new_series = InstanciatedSeries(
-                            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
-                        series_to_add.append(new_series)
-                # Surfaces available
-                total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values+\
-                                       land_surface_detailed['Available Forest Surface (Gha)'].values+\
-                                       land_surface_detailed['Available Shrub Surface (Gha)'])
-                new_series = InstanciatedSeries(
-                    years, total_land_available, 'Total Surface Available', InstanciatedSeries.BAR_DISPLAY)
-                series_to_add.append(new_series)
+            if 'Land Demand Constraint' in chart_list:
+                if land_surface_detailed is not None and land_demand_constraint is not None:
+                    fig = make_subplots(specs=[[{"secondary_y": True}]])
+                    for column in list(land_surface_detailed.columns):
+                        if column in ['Total Forest Surface (Gha)', 'Total Agriculture Surface (Gha)']:
+                            legend = column.replace(' (Gha)', '')
+                            color={'Total Forest Surface (Gha)': qualitative.Dark2[4],
+                                   'Total Agriculture Surface (Gha)': qualitative.Dark2[6]}
+                            fig.add_trace(go.Bar(
+                                x=years,
+                                y=list(land_surface_detailed[column].values),
+                                marker_color=color[column],
+                                opacity=0.7,
+                                name=legend,
+                            ), secondary_y=False)
+                    fig.add_trace(go.Scatter(x=years, y=list(np.ones(len(years))*total_land_available),
+                                             line=dict(color=qualitative.Dark2[7], width=4),
+                                             name='Total Land Available'), secondary_y=False)
+                    fig.add_trace(go.Scatter(
+                        x=years,
+                        y=list(np.maximum(0.0,-land_demand_constraint)),
+                        name="Land Demand Constraint (capped below 0)",
+                        line=dict(color=qualitative.Set1[0], width=4),
+                    ), secondary_y=True)
+                    fig.update_layout(
+                        barmode='stack',)
 
-                new_chart = TwoAxesInstanciatedChart('years', 'Land Demand Constraint',
-                                                     chart_name='Land Demand Constraint', stacked_bar=True)
-                for serie in series_to_add:
-                    new_chart.add_series(serie)
+                    fig.update_yaxes(title_text="Land Surfaces [Gha]", secondary_y=False)
+                    fig.update_yaxes(title_text="(-1) * Land Demand Constraint", secondary_y=True,
+                                     color=qualitative.Set1[0], range=[0,1.1*max(-land_demand_constraint)])
+                    chart_name = f'Land Demand Constraint'
+                    new_chart = InstantiatedPlotlyNativeChart(
+                        fig=fig, chart_name=chart_name)
 
-                instanciated_charts.append(new_chart)
+                    instanciated_charts.append(new_chart)
 
         if 'Detailed Land Usage [Gha]' in chart_list:
             if land_surface_detailed is not None :
