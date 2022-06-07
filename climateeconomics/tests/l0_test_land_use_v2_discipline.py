@@ -63,7 +63,7 @@ class LandUseV2TestCase(unittest.TestCase):
         self.forest_surface_df['years'] = years
         # Gha
         self.forest_surface_df['forest_constraint_evolution'] = np.linspace(1, -1, year_range)
-        self.forest_surface_df['global_forest_surface'] = np.linspace(3.9, 4.1, year_range)
+        self.forest_surface_df['global_forest_surface'] = np.linspace(4.2, 8.1, year_range)
 
         self.param = {'land_demand_df': self.energy_land_demand_df,
                       'year_start': self.year_start,

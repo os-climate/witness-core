@@ -138,11 +138,11 @@ class LandUseV2():
 
         # Calculate the land_use_constraint
         # By comparing the total available land surface to the demands
-        self.land_demand_constraint = np.asarray([(\
+        self.land_demand_constraint = np.asarray((\
             (self.total_agriculture_surfaces + self.total_forest_surfaces + self.total_shrub_surfaces) -\
-            (np.sum(self.land_surface_df['Total Agriculture Surface (Gha)']) +
-             np.sum(self.land_surface_df['Total Forest Surface (Gha)'])))\
-                                      / self.ref_land_use_constraint,])
+            (self.land_surface_df['Total Agriculture Surface (Gha)'] +
+             self.land_surface_df['Total Forest Surface (Gha)']))\
+                                      / self.ref_land_use_constraint)
 
     def __extract_and_convert_superficie(self, category, name):
         '''
