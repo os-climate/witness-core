@@ -57,27 +57,16 @@ class LandUseV2Discipline(SoSDiscipline):
                LandUseV2.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV2.FOREST_SURFACE_DF: {
                    'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-               LandUseV2.LAND_USE_CONSTRAINT_REF: {
-                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-               LandUseV2.INIT_UNMANAGED_FOREST_SURFACE: {'type': 'float', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'default': initial_unmanaged_forest_surface, 'namespace': 'ns_witness'},
-               }
+               LandUseV2.LAND_DEMAND_CONSTRAINT_REF: {
+                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},}
 
     DESC_OUT = {
-        LandUseV2.LAND_DEMAND_CONSTRAINT_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
-        LandUseV2.LAND_SURFACE_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        LandUseV2.LAND_DEMAND_CONSTRAINT: {
+            'type': 'array', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         LandUseV2.LAND_SURFACE_DETAIL_DF: {'type': 'dataframe', 'unit': 'Gha'},
         LandUseV2.LAND_SURFACE_FOR_FOOD_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
-
-    AGRICULTURE_CHARTS = 'Agriculture surface usage'
-    FOREST_CHARTS = 'Forest usage'
-    AVAILABLE_FOREST_CHARTS = 'Forests surface evolution'
-    AVAILABLE_AGRICULTURE_CHARTS = 'Agriculture surface evolution'
-    AGRICULTURE_FOOD_CHARTS = 'Agriculture usage for food'
-    GLOBAL_CHARTS = 'Land surface repartition'
 
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
@@ -99,11 +88,12 @@ class LandUseV2Discipline(SoSDiscipline):
             land_demand_df, total_food_land_surface, total_forest_surface_df)
 
         outputs_dict = {
-            LandUseV2.LAND_DEMAND_CONSTRAINT_DF: self.land_use_model.land_demand_constraint_df,
+            LandUseV2.LAND_DEMAND_CONSTRAINT: self.land_use_model.land_demand_constraint,
             LandUseV2.LAND_SURFACE_DETAIL_DF: self.land_use_model.land_surface_df,
-            LandUseV2.LAND_SURFACE_DF: self.land_use_model.land_surface_df[[
-                'Agriculture (Gha)', 'Forest (Gha)']],
-            LandUseV2.LAND_SURFACE_FOR_FOOD_DF: self.land_use_model.land_surface_for_food_df
+            # Surface for food used by crop energy techno as input kept output and col name for now but
+            # could be changed later on when a single version of agriculture mix is selected
+            LandUseV2.LAND_SURFACE_FOR_FOOD_DF: self.land_use_model.land_surface_df[[
+                'Food Surface (Gha)']].rename(columns={'Food Surface (Gha)': 'Agriculture total (Gha)'}),
         }
 
         #-- store outputs
@@ -112,71 +102,34 @@ class LandUseV2Discipline(SoSDiscipline):
     def compute_sos_jacobian(self):
         """ 
         Compute jacobian for each coupling variable 
-        gradient of coupling variable to compute: 
-        land_demand_objective_df wrt land_demand_df
+        gradient of coupling variable to compute:
+        land_demand_constraint wrt forest_surface_df
+        land_demand_constraint wrt food_surface_df
+        land_demand_constraint wrt land_demand_df
         """
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        years = np.arange(inputs_dict['year_start'], inputs_dict['year_end']+1)
 
-        #-- compute
-        land_demand_df = inputs_dict['land_demand_df']
-        total_food_land_surface = inputs_dict.pop('total_food_land_surface')
-        total_forest_surface_df = inputs_dict.pop('forest_surface_df')
-        total_forest_surface_df.index = land_demand_df['years']
-        self.land_use_model.compute(
-            land_demand_df, total_food_land_surface, total_forest_surface_df)
-
-        model = self.land_use_model
-
-        # Retrieve variables
-        land_demand_df = model.land_demand_df
-        land_demand_constraint_df = model.land_demand_constraint_df
-        land_surface_df = model.land_surface_df
-
-        # build columns
-        land_demand_df_columns = list(land_demand_df)
-        land_demand_df_columns.remove('years')
-
-        land_demand_constraint_df_columns = list(land_demand_constraint_df)
-        land_demand_constraint_df_columns.remove('years')
-
-        land_surface_df_columns = list(land_surface_df)
-        land_surface_df_columns.remove('Agriculture total (Gha)')
-        land_surface_df_columns.remove('Food Usage (Gha)')
-        land_surface_df_columns.remove('Added Forest (Gha)')
-        land_surface_df_columns.remove('Added Agriculture (Gha)')
-
-        nb_years = len(land_demand_df['years'].values)
-
-        # constraint gradients
-        for objective_column in land_demand_constraint_df_columns:
-            for demand_column in land_demand_df_columns:
-                self.set_partial_derivative_for_other_types(
-                    (LandUseV2.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV2.LAND_DEMAND_DF, demand_column), model.get_derivative(objective_column, demand_column),)
-
-            if objective_column == LandUseV2.LAND_DEMAND_CONSTRAINT_AGRICULTURE:
-                self.set_partial_derivative_for_other_types(
-                    (LandUseV2.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV2.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), model.d_land_demand_constraint_d_food_land_surface())
-
+        # land_surface_for_food_df wrt food_surface_df
+        self.set_partial_derivative_for_other_types(
+            (LandUseV2.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
+            (LandUseV2.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'),
+            np.identity(len(years)))
+        # land_demand_constraint wrt forest_surface_df
+        self.set_partial_derivative_for_other_types(
+            (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.FOREST_SURFACE_DF, 'global_forest_surface'),
+            - np.ones(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
+        # land_demand_constraint wrt food_surface_df
+        self.set_partial_derivative_for_other_types(
+            (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.TOTAL_FOOD_LAND_SURFACE,'total surface (Gha)'),
+            - np.ones(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
+        # land_demand_constraint wrt land_demand_df
+        for techno in LandUseV2.AGRICULTURE_TECHNO+LandUseV2.FOREST_TECHNO:
             self.set_partial_derivative_for_other_types(
-                (LandUseV2.LAND_DEMAND_CONSTRAINT_DF, objective_column),  (LandUseV2.FOREST_SURFACE_DF, 'forest_constraint_evolution'), model.d_land_demand_constraint_d_deforestation_surface(objective_column),)
-
-        # food surface gradient
-        self.set_partial_derivative_for_other_types(
-            (LandUseV2.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),  (LandUseV2.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), np.identity(nb_years))
-
-        # land_demand surface gradients
-        self.set_partial_derivative_for_other_types(
-            (LandUseV2.LAND_SURFACE_DF, 'Agriculture (Gha)'),  (LandUseV2.TOTAL_FOOD_LAND_SURFACE, 'total surface (Gha)'), np.identity(nb_years))
-
-        self.set_partial_derivative_for_other_types(
-            (LandUseV2.LAND_SURFACE_DF, 'Forest (Gha)'),  (LandUseV2.FOREST_SURFACE_DF, 'forest_constraint_evolution'),  np.identity(nb_years))
-
-        for surface_column in land_surface_df_columns:
-            for demand_column in land_demand_df_columns:
-                self.set_partial_derivative_for_other_types(
-                    (LandUseV2.LAND_SURFACE_DF, surface_column),  (LandUseV2.LAND_DEMAND_DF, demand_column), model.d_constraint_d_surface(surface_column, demand_column))
+                (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.LAND_DEMAND_DF, techno),
+                - np.ones(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
 
     def get_chart_filter_list(self):
 
@@ -185,8 +138,7 @@ class LandUseV2Discipline(SoSDiscipline):
 
         chart_filters = []
 
-        chart_list = [
-            LandUseV2Discipline.AGRICULTURE_CHARTS, LandUseV2Discipline.FOREST_CHARTS, LandUseV2Discipline.GLOBAL_CHARTS]
+        chart_list = ['Land Demand Constraint', 'Detailed Land Usage [Gha]', 'Surface Type in 2020 [Gha]']
 
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -206,112 +158,60 @@ class LandUseV2Discipline(SoSDiscipline):
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-        demand_df = self.get_sosdisc_inputs(LandUseV2.LAND_DEMAND_DF)
-        forest_df = self.get_sosdisc_inputs(LandUseV2.FOREST_SURFACE_DF)
-        surface_df = self.get_sosdisc_outputs(LandUseV2.LAND_SURFACE_DETAIL_DF)
-        initial_unmanaged_forest_surface = self.get_sosdisc_inputs(
-            LandUseV2.INIT_UNMANAGED_FOREST_SURFACE)
-        init_forest_constraint = self.land_use_model.total_forest_surfaces
-        init_agriculture_constraint = self.land_use_model.total_agriculture_surfaces
+        inputs_dict = self.get_sosdisc_inputs()
+        outputs_dict = self.get_sosdisc_outputs()
+        years = list(np.arange(inputs_dict['year_start'], inputs_dict['year_end']+1))
+        total_food_land_surface = inputs_dict['total_food_land_surface']
+        total_forest_surface_df = inputs_dict['forest_surface_df']
+        land_surface_detailed = outputs_dict[LandUseV2.LAND_SURFACE_DETAIL_DF]
+        land_demand_constraint = outputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT]
 
-        years = demand_df['years'].values.tolist()
-
-        if LandUseV2Discipline.FOREST_CHARTS in chart_list:
-            # ------------------------------------------------------------
-            # FOREST USAGE -> Technologies that uses forest (ManagedWood,
-            # UnmanagedWood..)
-            if demand_df is not None:
-
-                # the total forest surface contains unused forest + delta
-                # forest surface + forest technos
-                total_forest_surfaces = init_forest_constraint + \
-                    forest_df['forest_constraint_evolution']
-                total_forest_surface_series = InstanciatedSeries(years, total_forest_surfaces.tolist(
-                ), 'Total Available Forest surface', InstanciatedSeries.LINES_DISPLAY)
-
-                forest_unused_surfaces = [
-                    initial_unmanaged_forest_surface] * len(years)
-                forest_unused_surface_series = InstanciatedSeries(
-                    years, forest_unused_surfaces, 'Other forests (protected and for services)', InstanciatedSeries.BAR_DISPLAY)
-
-                forest_evolution_surface = forest_df['forest_constraint_evolution']
-                forest_evolution_surface_series = InstanciatedSeries(years, forest_evolution_surface.tolist(
-                ), 'Deforestation + reforestation surface', InstanciatedSeries.BAR_DISPLAY)
-
+        if 'Land Demand Constraint' in chart_list:
+            if land_surface_detailed is not None and land_demand_constraint is not None:
                 series_to_add = []
-                for column in list(demand_df):
-                    if column in LandUseV2.FOREST_TECHNO:
+                # Total surface usage
+                for column in list(land_surface_detailed.columns):
+                    if column in ['Total Forest Surface (Gha)', 'Total Agriculture Surface (Gha)']:
                         legend = column.replace(' (Gha)', '')
-                        if legend == "Forest":
-                            legend = 'Forest for wood production'
                         new_series = InstanciatedSeries(
-                            years, (demand_df[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
+                            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
                         series_to_add.append(new_series)
-
-                new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.FOREST_CHARTS + ' [Gha]',
-                                                     chart_name=LandUseV2Discipline.FOREST_CHARTS, stacked_bar=True)
-                new_chart.add_series(total_forest_surface_series)
-                new_chart.add_series(forest_evolution_surface_series)
-                new_chart.add_series(forest_unused_surface_series)
-
-                for serie in series_to_add:
-                    new_chart.add_series(serie)
-
-                instanciated_charts.append(new_chart)
-
-                # chart without unused surfaces
-                # the available surface of forest is modified by the reforestation and deforestation
-                #forest_surfaces = init_forest_constraint + forest_df['forest_constraint_evolution'] - initial_unmanaged_forest_surface
-                #forest_surface_series = InstanciatedSeries(years, forest_surfaces.tolist(), 'Available Forest surface without Other Forests', InstanciatedSeries.LINES_DISPLAY)
-                # new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.FOREST_CHARTS + ' surface [Gha]',
-                #                                     chart_name=LandUseV2Discipline.FOREST_CHARTS + ' without other forests', stacked_bar=True)
-                # new_chart.add_series(forest_surface_series)
-                # new_chart.add_series(forest_evolution_surface_series)
-
-                # for serie in series_to_add:
-                #    new_chart.add_series(serie)
-
-                # instanciated_charts.append(new_chart)
-
-        if LandUseV2Discipline.AGRICULTURE_CHARTS in chart_list:
-            # ------------------------------------------------------------
-            # AGRICULTURE USAGE -> Technologies that uses agriculture land
-            # (CropEnergy, SolarPV..)
-            if demand_df is not None:
-                # the available surface of agriculture is modified by the
-                # reforestation and deforestation
-                agriculture_surfaces = init_agriculture_constraint - \
-                    forest_df['forest_constraint_evolution']
-                agriculture_surface_series = InstanciatedSeries(
-                    years, agriculture_surfaces.tolist(), 'Total agriculture surface', InstanciatedSeries.LINES_DISPLAY)
-
-                series_to_add = []
-                key = 'Food Usage (Gha)'
-                legend = 'Food usage : Crop & lifestock'
+                # Surfaces available
+                total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values+\
+                                       land_surface_detailed['Available Forest Surface (Gha)'].values+\
+                                       land_surface_detailed['Available Shrub Surface (Gha)'])
                 new_series = InstanciatedSeries(
-                    years, (surface_df[key]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
-
+                    years, total_land_available, 'Total Surface Available', InstanciatedSeries.BAR_DISPLAY)
                 series_to_add.append(new_series)
 
-                for column in list(demand_df):
-
-                    if column in LandUseV2.AGRICULTURE_TECHNO:
-
-                        new_series = InstanciatedSeries(
-                            years, (demand_df[column]).values.tolist(), column.replace('(Gha)', ''), InstanciatedSeries.BAR_DISPLAY)
-
-                        series_to_add.append(new_series)
-
-                new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.AGRICULTURE_CHARTS + ' [Gha]',
-                                                     chart_name=LandUseV2Discipline.AGRICULTURE_CHARTS, stacked_bar=True)
-                new_chart.add_series(agriculture_surface_series)
-
+                new_chart = TwoAxesInstanciatedChart('years', 'Land Demand Constraint',
+                                                     chart_name='Land Demand Constraint', stacked_bar=True)
                 for serie in series_to_add:
                     new_chart.add_series(serie)
 
                 instanciated_charts.append(new_chart)
 
-        if LandUseV2Discipline.GLOBAL_CHARTS in chart_list:
+        if 'Detailed Land Usage [Gha]' in chart_list:
+            if land_surface_detailed is not None :
+                series_to_add = []
+                # Total surface usage
+                for column in list(land_surface_detailed.columns):
+                    if column not in ['Total Forest Surface (Gha)', 'Total Agriculture Surface (Gha)',
+                                      'Available Agriculture Surface (Gha)', 'Available Forest Surface (Gha)',
+                                      'Available Shrub Surface (Gha)']:
+                        legend = column.replace(' (Gha)', '')
+                        new_series = InstanciatedSeries(
+                            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
+                        series_to_add.append(new_series)
+
+                new_chart = TwoAxesInstanciatedChart('years',   'Detailed Land Usage [Gha]',
+                                                     chart_name='Detailed Land Usage [Gha]', stacked_bar=True)
+                for serie in series_to_add:
+                    new_chart.add_series(serie)
+
+                instanciated_charts.append(new_chart)
+
+        if 'Surface Type in 2020 [Gha]' in chart_list:
             # ------------------------------------------------------------
             # GLOBAL LAND USE -> Display surfaces (Ocean, Land, Forest..)
             years_list = [self.get_sosdisc_inputs('year_start')]
@@ -344,33 +244,5 @@ class LandUseV2Discipline(SoSDiscipline):
                     fig=fig, chart_name=chart_name)
 
                 instanciated_charts.append(land_use_chart)
-
-            series_to_add = []
-            # ------------------
-            # Agriculture + forest surface are 92.03 M km^2 => 9.203 Gha.
-            # Source https://ourworldindata.org/land-use
-            earth_surface = [init_forest_constraint +
-                             init_agriculture_constraint] * len(years)
-            forest_surface_series = InstanciatedSeries(
-                years, earth_surface, 'Available Forest + Crop surface', InstanciatedSeries.LINES_DISPLAY)
-
-            series_to_add.append(forest_surface_series)
-
-            agriculture_surface = InstanciatedSeries(
-                years, (surface_df['Agriculture (Gha)']).values.tolist(), 'Agriculture', InstanciatedSeries.BAR_DISPLAY)
-
-            series_to_add.append(agriculture_surface)
-
-            forest_surface = InstanciatedSeries(
-                years, (surface_df['Forest (Gha)']).values.tolist(), 'Forest', InstanciatedSeries.BAR_DISPLAY)
-
-            series_to_add.append(forest_surface)
-
-            new_chart = TwoAxesInstanciatedChart('years', LandUseV2Discipline.GLOBAL_CHARTS + ' [Gha]',
-                                                 chart_name=LandUseV2Discipline.GLOBAL_CHARTS, stacked_bar=True)
-            for serie in series_to_add:
-                new_chart.add_series(serie)
-
-            instanciated_charts.append(new_chart)
 
         return instanciated_charts

@@ -99,12 +99,12 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_land_use_v1_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.land_demand_df',
                                     f'{self.name}.total_food_land_surface',
                                     f'{self.name}.forest_surface_df'],
-                            outputs=[f'{self.name}.land_demand_constraint_df',
+                            outputs=[f'{self.name}.land_demand_constraint',
                                      f'{self.name}.land_surface_df',
                                      f'{self.name}.land_surface_for_food_df'])

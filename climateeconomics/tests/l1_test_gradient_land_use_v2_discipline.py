@@ -82,18 +82,19 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
         self.forest_surface_df = pd.DataFrame(
             index=years,
             columns=['years',
-                     'forest_constraint_evolution'])
+                     'forest_constraint_evolution',
+                     'global_forest_surface'])
 
         self.forest_surface_df['years'] = years
         # Gha
         self.forest_surface_df['forest_constraint_evolution'] = np.linspace(1, -1, year_range)
+        self.forest_surface_df['global_forest_surface'] = np.linspace(3.9, 4.1, year_range)
 
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
                        f'{self.name}.land_demand_df': land_demand_df,
                        f'{self.name}.total_food_land_surface': self.total_food_land_surface,
                        f'{self.name}.forest_surface_df': self.forest_surface_df,
-                       f'{self.name}.initial_unmanaged_forest_surface': initial_unmanaged_forest_surface
                        }
         self.ee.dm.set_values_from_dict(values_dict)
 
@@ -109,7 +110,6 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.forest_surface_df',
                                     f'{self.name}.total_food_land_surface',
                                     ],
-                            outputs=[f'{self.name}.land_demand_constraint_df',
-                                     f'{self.name}.land_surface_df',
+                            outputs=[f'{self.name}.land_demand_constraint',
                                      f'{self.name}.land_surface_for_food_df',
                                     ])

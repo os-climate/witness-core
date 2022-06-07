@@ -212,5 +212,6 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.CO2_emissions',
                                      f'{self.name}.CO2_land_emission_df',
                                      f'{self.name}.CH4_land_emission_df',
+                                     f'{self.name}.N2O_land_emission_df',
 
                                     ])

@@ -165,15 +165,11 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                                            'direct_air_capture.AmineScrubbing': loss_ct})
         non_use_capital_ref = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
                                             'Forest': loss_ref})
-        reforestation_lost_capital = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
-                                            'lost_capital': loss_reforest})
-        reforestation_lost_capital_cons_ref = 1
-        reforestation_lost_capital_cons_limit = 10
-
-        forest_invest = np.linspace(5, 8, year_range)
-
-        forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+        forest_lost_capital = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+                                            'reforestation': loss_reforest,
+                                            'managed_wood': loss_reforest})
+        forest_lost_capital_cons_ref = 1
+        forest_lost_capital_cons_limit = 10
 
         alpha, gamma = 0.5, 0.5
         non_use_capital_obj_ref = 100.
@@ -202,10 +198,9 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
                        f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': non_use_capital_ft,
                        f'{self.name}.AgricultureMix.Forest.non_use_capital': non_use_capital_ref,
                        f'{self.name}.AgricultureMix.Forest.techno_capital': non_use_capital_ref,
-                       f'{self.name}.AgricultureMix.Forest.reforestation_lost_capital': reforestation_lost_capital,
-                       f'{self.name}.reforestation_lost_capital_cons_limit': reforestation_lost_capital_cons_limit,
-                       f'{self.name}.reforestation_lost_capital_cons_ref': reforestation_lost_capital_cons_ref,
-                       f'{self.name}.forest_investment': forest_invest_df, }
+                       f'{self.name}.AgricultureMix.Forest.forest_lost_capital': forest_lost_capital,
+                       f'{self.name}.forest_lost_capital_cons_limit': forest_lost_capital_cons_limit,
+                       f'{self.name}.forest_lost_capital_cons_ref': forest_lost_capital_cons_ref}
 
         self.ee.load_study_from_input_dict(values_dict)
 

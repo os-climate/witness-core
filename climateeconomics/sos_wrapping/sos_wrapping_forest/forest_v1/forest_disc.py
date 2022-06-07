@@ -99,7 +99,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         outputs_dict = {
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
-            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'forest_surface_evol']],
+            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'forest_surface_evol', 'global_forest_surface']],
             Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
         }
 
