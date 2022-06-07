@@ -306,15 +306,13 @@ class Forest():
             if i > 0:
                 self.managed_wood_df.loc[i, 'cumulative_surface'] = self.managed_wood_df.loc[i-1, 'cumulative_surface']  + \
                     self.managed_wood_df.loc[i, 'delta_surface']
-            else:
-                self.managed_wood_df.loc[i, 'cumulative_surface'] += self.managed_wood_df.loc[i, 'delta_surface']
 
             # if managed forest are empty, all is removed
             if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
-
+                sum = np.cumsum(self.managed_wood_df['delta_surface'])
                 # delta is all the managed wood available
-                self.managed_wood_df.loc[i, 'delta_surface'] = -(self.managed_wood_df.loc[i - 1, 'cumulative_surface'])
-                self.managed_wood_df.loc[i, 'cumulative_surface'] = 0
+                self.managed_wood_df.loc[i, 'delta_surface'] = -self.managed_wood_df.loc[i-1, 'cumulative_surface']
+                self.managed_wood_df.loc[i, 'cumulative_surface'] = self.managed_wood_df.loc[i-1, 'cumulative_surface'] + self.managed_wood_df.loc[i, 'delta_surface']
                 self.forest_lost_capital.loc[i, 'managed_wood'] =  - self.managed_wood_df.loc[i, 'delta_surface'] * self.techno_wood_info['managed_wood_price_per_ha'] + self.mw_from_invests.loc[i, 'mw_surface']
 
                 #set a limit to deforestation at the forest that have been reforested because there is no other
