@@ -57,21 +57,20 @@ class LandUseV2TestCase(unittest.TestCase):
         self.forest_surface_df = pd.DataFrame(
             index=years,
             columns=['years',
-                     'forest_constraint_evolution'])
-
-        initial_unmanaged_forest_surface = (4 - 1.25)
+                     'forest_constraint_evolution',
+                     'global_forest_surface'])
 
         self.forest_surface_df['years'] = years
         # Gha
-        self.forest_surface_df['forest_constraint_evolution'] = np.linspace(-0.5, 0, year_range)
+        self.forest_surface_df['forest_constraint_evolution'] = np.linspace(1, -1, year_range)
+        self.forest_surface_df['global_forest_surface'] = np.linspace(3.9, 4.1, year_range)
 
         self.param = {'land_demand_df': self.energy_land_demand_df,
                       'year_start': self.year_start,
                       'year_end': self.year_end,
                       'total_food_land_surface': self.total_food_land_surface,
                       'forest_surface_df': self.forest_surface_df,
-                      'land_use_constraint_ref': 0.01,
-                      'initial_unmanaged_forest_surface':initial_unmanaged_forest_surface,
+                      'land_demand_constraint_ref': 0.01,
                       }
 
     def test_land_use_v2_model(self):
@@ -123,5 +122,5 @@ class LandUseV2TestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        #for graph in graph_list:
+        #    graph.to_plotly().show()

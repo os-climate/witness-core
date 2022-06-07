@@ -82,7 +82,8 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
         self.forest_surface_df = pd.DataFrame(
             index=years,
             columns=['years',
-                     'forest_constraint_evolution'])
+                     'forest_constraint_evolution',
+                     'global_forest_surface'])
 
         self.forest_surface_df['years'] = years
         # Gha

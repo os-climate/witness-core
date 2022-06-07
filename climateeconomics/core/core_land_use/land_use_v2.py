@@ -116,6 +116,12 @@ class LandUseV2():
         self.land_demand_df = land_demand_df
 
         #------------------------------------------------
+        # Add available surfaces to df
+        self.land_surface_df['Available Agriculture Surface (Gha)'] = np.ones(number_of_data)*self.total_agriculture_surfaces
+        self.land_surface_df['Available Forest Surface (Gha)'] = np.ones(number_of_data)*self.total_forest_surfaces
+        self.land_surface_df['Available Shrub Surface (Gha)'] = np.ones(number_of_data)*self.total_shrub_surfaces
+
+        #------------------------------------------------
         # Add global forest and food surface from agriculture mix sub models
         self.land_surface_df['Forest Surface (Gha)'] = total_forest_surface_df['global_forest_surface'].values
         self.land_surface_df['Total Forest Surface (Gha)'] = self.land_surface_df['Forest Surface (Gha)']
