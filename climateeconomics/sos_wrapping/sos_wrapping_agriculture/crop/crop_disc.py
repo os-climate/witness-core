@@ -581,9 +581,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         # value of ToT with a shift of five year between then
 
         chart_filters = []
-        # chart_list = [
-        #     CropDiscipline.CROP_CHARTS, 'Crop Productivity Evolution', 'Crop Energy', 'Crop Emissions']
-        chart_list = ['Crop Emissions']
+        chart_list = [
+            CropDiscipline.CROP_CHARTS, 'Crop Productivity Evolution', 'Crop Energy', 'Crop Emissions']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts filter', chart_list, chart_list, 'charts'))
