@@ -163,10 +163,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         Forest.DEFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha',  'default': 8000,
                                            'namespace': 'ns_forest'},
+        # TODO: not used anymore, to delete
         Forest.LIMIT_DEFORESTATION_SURFACE: {'type': 'float', 'unit': 'Mha',  'default': deforestation_limit,
                                              'namespace': 'ns_forest', },
         Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2',  'default': initial_emissions,
                                        'namespace': 'ns_forest', },
+        # TODO: not used anymore, to delete
         Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year',  'default': 4000,
                             'namespace': 'ns_forest'},
         Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha',  'default': 13800,

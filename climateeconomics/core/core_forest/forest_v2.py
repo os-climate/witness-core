@@ -79,7 +79,6 @@ class Forest():
             self.year_end + 1,
             self.time_step)
         self.years = years
-        self.limit_deforestation_surface = self.param[self.LIMIT_DEFORESTATION_SURFACE]
         self.CO2_per_ha = self.param[self.CO2_PER_HA]
         # initial CO2 emissions
         self.initial_emissions = self.param[self.INITIAL_CO2_EMISSIONS]
@@ -319,6 +318,8 @@ class Forest():
                 self.forest_lost_capital.loc[i, 'managed_wood'] =  - self.managed_wood_df.loc[i, 'delta_surface'] * self.techno_wood_info['managed_wood_price_per_ha'] + self.mw_from_invests.loc[i, 'mw_surface']
 
                 #set a limit to deforestation at the forest that have been reforested because there is no other
+                # real_deforested surface = -delta_reforestation_surface + delta_mw_surface
+                # lost_capital = (delta_deforestation_surface - real_deforested) * deforestation_cost_per_ha
                 self.forest_surface_df.loc[i, 'delta_deforestation_surface'] = - self.forest_surface_df.loc[i, 'delta_reforestation_surface'] + self.managed_wood_df.loc[i, 'delta_surface'] 
 
         self.forest_surface_df['deforestation_surface'] = np.cumsum(self.forest_surface_df['delta_deforestation_surface'])
