@@ -141,6 +141,10 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         self.CH4_land_emissions = pd.DataFrame(
             {'years': self.years, 'emitted_CH4_evol_cumulative': CH4_land_emissions})
 
+        N2O_land_emissions = np.linspace(3.21 / 500, 4 / 500, year_range)
+        self.N2O_land_emissions = pd.DataFrame(
+            {'years': self.years, 'emitted_N2O_evol_cumulative': N2O_land_emissions})
+
         land_use_required = np.linspace(4, 3.5, year_range)
         self.land_use_required_forest = pd.DataFrame(
             {'years': self.years, 'Forest (Gha)': land_use_required})
@@ -193,6 +197,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
                        f'{test_name}.{disc_name}.Crop.CO2_emissions': self.CO2_emissions_crop,
                        f'{test_name}.{disc_name}.Crop.CO2_land_emission_df': self.CO2_land_emissions,
                        f'{test_name}.{disc_name}.Crop.CH4_land_emission_df': self.CH4_land_emissions,
+                       f'{test_name}.{disc_name}.Crop.N2O_land_emission_df': self.N2O_land_emissions,
                        f'{test_name}.{disc_name}.Crop.land_use_required': self.land_use_required_crop,
                        f'{test_name}.{disc_name}.Forest.techno_consumption': self.techno_consumption_forest,
                        f'{test_name}.{disc_name}.Forest.techno_consumption_woratio': self.techno_consumption_woratio_forest,
