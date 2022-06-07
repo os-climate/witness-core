@@ -194,8 +194,8 @@ A weighed kgCO2eq per kg of food is then computed for each modelled category of 
 Resulted greenhouse gas emissions are finally calibrated using OurWorldInData global Food Grenhouse gas emissions [^17]. We consider only emissions from Crops and Livestock as all supply chain and lan use emissions are computed elsewhere. 
 ![](How-much-of-GHGs-come-from-food.png)
 
-Note that each of those sources deal with CO3eq emissions of all greenhouse gases. From OurWorldInData: Carbon footprint and methane [^19], we are able to identify the CH4 part in these global GHG emissions and deduce the CO2 emissions part.
-
+Note that each of those sources deal with CO2eq emissions of all greenhouse gases. From OurWorldInData: Carbon footprint and methane [^19], we are able to identify the CH4 part in these global GHG emissions.
+Nitrous Oxide emissions (N20) are extracted from FAO Stats from 2019 [^20]. All calibrations are also done using the total emissions given by the FAO.
 
 
 
@@ -293,3 +293,4 @@ Prices are computed with the input parameter crop_residue_price_percent_dif.
 [^18]: OurWorldInData: Environmental impacts of food, https://ourworldindata.org/environmental-impacts-of-food#co2-and-greenhouse-gas-emissions
 [^19]: OurWorldInData: Carbon footprint and methane, https://ourworldindata.org/carbon-footprint-food-methane
 [^20]: Food and Agriculture Organisation, World Statistics, https://www.fao.org/faostat/en/#data/FBS
+[^21]: Food and Agriculture Organisation, World Statistics, https://www.fao.org/faostat/en/#data/GT
