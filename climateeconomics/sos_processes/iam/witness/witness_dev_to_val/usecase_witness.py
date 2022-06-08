@@ -76,8 +76,8 @@ class Study(ClimateEconomicsStudyManager):
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['land_demand_constraint_df'])
-        list_parent.extend([None])
+            ['land_demand_constraint'])
+        list_parent.extend(['agriculture_constraint'])
         list_ftype.extend([INEQ_CONSTRAINT])
         list_weight.extend([-1.0])
         list_aggr_type.extend(
