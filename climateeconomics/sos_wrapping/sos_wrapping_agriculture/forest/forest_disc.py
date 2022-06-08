@@ -131,7 +131,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         # into account into the energy net factor
                         # land CO2 absorption is computed in land_emission with
                         # the CO2_per_ha parameter
-                        'CO2_from_production':- 0.425 * 44.01 / 12.0,
+                        'CO2_from_production': - 0.425 * 44.01 / 12.0,
                         'CO2_from_production_unit': 'kg/kg'}
 
 # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
@@ -315,24 +315,35 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_mw_surface_d_invest = self.forest_model.compute_d_mw_surface_d_invest()
 
         # compute the gradient of the surfaces vs invest at the limit
-        d_cum_umw_d_deforestation_invest, d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest = self.forest_model.compute_d_limit_surfaces_d_deforestation_invest(d_deforestation_surface_d_invest)
-        d_cum_umw_d_reforestation_invest, d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest = self.forest_model.compute_d_limit_surfaces_d_reforestation_invest(d_reforestation_surface_d_invest)
-        d_cum_umw_d_mw_invest, d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest = self.forest_model.compute_d_limit_surfaces_d_mw_invest(d_mw_surface_d_invest)
+        d_cum_umw_d_deforestation_invest, d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest = self.forest_model.compute_d_limit_surfaces_d_deforestation_invest(
+            d_deforestation_surface_d_invest)
+        d_cum_umw_d_reforestation_invest, d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest = self.forest_model.compute_d_limit_surfaces_d_reforestation_invest(
+            d_reforestation_surface_d_invest)
+        d_cum_umw_d_mw_invest, d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest = self.forest_model.compute_d_limit_surfaces_d_mw_invest(
+            d_mw_surface_d_invest)
 
         # compute cumulated surfaces vs deforestation invest
-        d_cum_mw_surface_d_deforestation_invest = self.forest_model.d_cum(d_delta_mw_d_deforestation_invest)
-        d_cum_deforestation_surface_d_deforestation_invest = self.forest_model.d_cum(d_delta_deforestation_d_deforestation_invest)
+        d_cum_mw_surface_d_deforestation_invest = self.forest_model.d_cum(
+            d_delta_mw_d_deforestation_invest)
+        d_cum_deforestation_surface_d_deforestation_invest = self.forest_model.d_cum(
+            d_delta_deforestation_d_deforestation_invest)
 
         # compute cumulated surfaces vs reforestation invest
-        d_cum_mw_surface_d_reforestation_invest = self.forest_model.d_cum(d_delta_mw_d_reforestation_invest)
-        d_cum_deforestation_surface_d_reforestation_invest = self.forest_model.d_cum(d_delta_deforestation_d_reforestation_invest)
-        d_cum_reforestation_surface_d_reforestation_invest = self.forest_model.d_cum(d_reforestation_surface_d_invest)
+        d_cum_mw_surface_d_reforestation_invest = self.forest_model.d_cum(
+            d_delta_mw_d_reforestation_invest)
+        d_cum_deforestation_surface_d_reforestation_invest = self.forest_model.d_cum(
+            d_delta_deforestation_d_reforestation_invest)
+        d_cum_reforestation_surface_d_reforestation_invest = self.forest_model.d_cum(
+            d_reforestation_surface_d_invest)
 
         # compute cumulated surfaces vs mw invest
-        d_cum_mw_surface_d_mw_invest = self.forest_model.d_cum(d_delta_mw_d_mw_invest)
-        d_cum_deforestation_surface_d_mw_invest = self.forest_model.d_cum(d_delta_deforestation_d_mw_invest)
+        d_cum_mw_surface_d_mw_invest = self.forest_model.d_cum(
+            d_delta_mw_d_mw_invest)
+        d_cum_deforestation_surface_d_mw_invest = self.forest_model.d_cum(
+            d_delta_deforestation_d_mw_invest)
 
-        # compute gradient global forest surface vs  invest: global_surface = cum_mw_surface + cum_deforestation_surface
+        # compute gradient global forest surface vs  invest: global_surface =
+        # cum_mw_surface + cum_deforestation_surface
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_cum_mw_surface_d_deforestation_invest + d_cum_umw_d_deforestation_invest)
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
@@ -347,7 +358,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_forest_constraint_d_deforestation_invest)
 
         # forest constraint surface vs reforestation invest
-        d_forest_constraint_d_reforestation_invest = d_cum_deforestation_surface_d_reforestation_invest + d_cum_reforestation_surface_d_reforestation_invest
+        d_forest_constraint_d_reforestation_invest = d_cum_deforestation_surface_d_reforestation_invest + \
+            d_cum_reforestation_surface_d_reforestation_invest
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'forest_constraint_evolution'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_forest_constraint_d_reforestation_invest)
 
@@ -356,7 +368,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'forest_constraint_evolution'), (
             'managed_wood_investment', 'investment'), d_forest_constraint_d_mw_invest)
 
-        # compute gradient land use required vs invest, land use required = cum_mw_surface
+        # compute gradient land use required vs invest, land use required =
+        # cum_mw_surface
         self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_cum_mw_surface_d_deforestation_invest)
         self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
@@ -364,24 +377,29 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(('land_use_required', 'Forest (Gha)'), (
             'managed_wood_investment', 'investment'), d_cum_mw_surface_d_mw_invest)
 
-
         # compute gradient CO2_land_emission vs invest
-        d_CO2_land_emission_d_deforestation_invest = self.forest_model.compute_d_CO2_land_emission(d_forest_constraint_d_deforestation_invest)
+        d_CO2_land_emission_d_deforestation_invest = self.forest_model.compute_d_CO2_land_emission(
+            d_forest_constraint_d_deforestation_invest)
         self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
             Forest.DEFORESTATION_INVESTMENT, 'investment'), d_CO2_land_emission_d_deforestation_invest)
 
-        d_CO2_land_emission_d_reforestation_invest = self.forest_model.compute_d_CO2_land_emission(d_forest_constraint_d_reforestation_invest)
+        d_CO2_land_emission_d_reforestation_invest = self.forest_model.compute_d_CO2_land_emission(
+            d_forest_constraint_d_reforestation_invest)
         self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_CO2_land_emission_d_reforestation_invest)
 
-        d_CO2_land_emission_d_mw_invest = self.forest_model.compute_d_CO2_land_emission(d_forest_constraint_d_mw_invest)
+        d_CO2_land_emission_d_mw_invest = self.forest_model.compute_d_CO2_land_emission(
+            d_forest_constraint_d_mw_invest)
         self.set_partial_derivative_for_other_types(('CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), (
             'managed_wood_investment', 'investment'), d_CO2_land_emission_d_mw_invest)
 
         # compute gradient of techno production vs invest
-        d_techno_prod_d_deforestation_invest =  self.forest_model.compute_d_techno_prod_d_invest(d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest)
-        d_techno_prod_d_reforestation_invest =  self.forest_model.compute_d_techno_prod_d_invest(d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest)
-        d_techno_prod_d_mw_invest =  self.forest_model.compute_d_techno_prod_d_invest(d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest)
+        d_techno_prod_d_deforestation_invest = self.forest_model.compute_d_techno_prod_d_invest(
+            d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest)
+        d_techno_prod_d_reforestation_invest = self.forest_model.compute_d_techno_prod_d_invest(
+            d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest)
+        d_techno_prod_d_mw_invest = self.forest_model.compute_d_techno_prod_d_invest(
+            d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest)
 
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
                                                     d_techno_prod_d_deforestation_invest / scaling_factor_techno_production)
@@ -391,30 +409,36 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                     d_techno_prod_d_mw_invest / scaling_factor_techno_production)
 
         # compute gradient of techno consumption vs invest
-        d_techno_conso_d_deforestation_invest =  self.forest_model.compute_d_techno_conso_d_invest(d_techno_prod_d_deforestation_invest)
-        d_techno_conso_d_reforestation_invest =  self.forest_model.compute_d_techno_conso_d_invest(d_techno_prod_d_reforestation_invest)
-        d_techno_conso_d_mw_invest =  self.forest_model.compute_d_techno_conso_d_invest(d_techno_prod_d_mw_invest)
+        d_techno_conso_d_deforestation_invest = self.forest_model.compute_d_techno_conso_d_invest(
+            d_techno_prod_d_deforestation_invest)
+        d_techno_conso_d_reforestation_invest = self.forest_model.compute_d_techno_conso_d_invest(
+            d_techno_prod_d_reforestation_invest)
+        d_techno_conso_d_mw_invest = self.forest_model.compute_d_techno_conso_d_invest(
+            d_techno_prod_d_mw_invest)
 
         self.set_partial_derivative_for_other_types(('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
                                                     (Forest.DEFORESTATION_INVESTMENT, 'investment'), d_techno_conso_d_deforestation_invest / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                     (Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
+                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                     ('managed_wood_investment', 'investment'), d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
+                                                    ('managed_wood_investment', 'investment'), d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
 
-        # gradient of techno consumption wo ratio (same as techno_consumption here)
+        # gradient of techno consumption wo ratio (same as techno_consumption
+        # here)
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
                                                     (Forest.DEFORESTATION_INVESTMENT, 'investment'), d_techno_conso_d_deforestation_invest / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                     (Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
+                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                     ('managed_wood_investment', 'investment'), d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
-
+                                                    ('managed_wood_investment', 'investment'), d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
 
         # compute gradient of techno prices vs invest
-        d_techno_price_d_deforestation_invest =  self.forest_model.compute_d_techno_price_d_invest(d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest)
-        d_techno_price_d_reforestation_invest =  self.forest_model.compute_d_techno_price_d_invest(d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest)
-        d_techno_price_d_mw_invest =  self.forest_model.compute_d_techno_price_d_invest(d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest)
+        d_techno_price_d_deforestation_invest = self.forest_model.compute_d_techno_price_d_invest(
+            d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest)
+        d_techno_price_d_reforestation_invest = self.forest_model.compute_d_techno_price_d_invest(
+            d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest)
+        d_techno_price_d_mw_invest = self.forest_model.compute_d_techno_price_d_invest(
+            d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest)
 
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
                                                     d_techno_price_d_deforestation_invest)
@@ -434,10 +458,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
         # lost capital vs reforestation investment grad
         #dlostcapital_dinvest = self.forest_model.d_lostcapitald_invest(d_reforestation_surface_d_invest)
 
-        #self.set_partial_derivative_for_other_types(('reforestation_lost_capital', 'lost_capital'), (
-        #    Forest.REFORESTATION_INVESTMENT, 'forest_investment'), dlostcapital_dinvest)
-
-
+        # self.set_partial_derivative_for_other_types(('reforestation_lost_capital', 'lost_capital'), (
+        # Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+        # dlostcapital_dinvest)
 
     def get_chart_filter_list(self):
 
@@ -494,8 +517,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             # invests graph
             forest_investment_df = self.get_sosdisc_inputs('forest_investment')
-            managed_wood_investment_df  = self.get_sosdisc_inputs('managed_wood_investment')
-            deforestation_investment_df  = self.get_sosdisc_inputs('deforestation_investment')
+            managed_wood_investment_df = self.get_sosdisc_inputs(
+                'managed_wood_investment')
+            deforestation_investment_df = self.get_sosdisc_inputs(
+                'deforestation_investment')
             new_chart = TwoAxesInstanciatedChart('years', 'Investments [G$]',
                                                  chart_name='Investments in forests activities', stacked_bar=True)
 
@@ -732,15 +757,19 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             lost_capital_reforestation = lost_capital_df['reforestation']
             lost_capital_managed_wood = lost_capital_df['managed_wood']
+            lost_capital_deforestation = lost_capital_df['deforestation']
 
             lost_capital_reforestation_series = InstanciatedSeries(
                 years, lost_capital_reforestation.tolist(), 'Reforestation lost capital', InstanciatedSeries.BAR_DISPLAY)
             lost_capital_managed_wood_series = InstanciatedSeries(
                 years, lost_capital_managed_wood.tolist(), 'Managed wood lost capital', InstanciatedSeries.BAR_DISPLAY)
+            new_serie_deforestation = InstanciatedSeries(
+                years, lost_capital_deforestation.tolist(), 'Deforestation Lost Capital', 'bar')
 
             # new_chart.add_series(total_capital_series)
             new_chart.add_series(lost_capital_reforestation_series)
             new_chart.add_series(lost_capital_managed_wood_series)
+            new_chart.series.append(new_serie_deforestation)
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
