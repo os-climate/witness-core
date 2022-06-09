@@ -19,12 +19,11 @@ from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import ServicesDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import IndustrialDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
 from copy import deepcopy
-
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -48,18 +47,25 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-               'sector_list': {'type': 'string_list', 'default': MacroeconomicsModel.SECTORS_LIST, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 
+               'sector_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                               'default': MacroeconomicsModel.SECTORS_LIST,
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                'namespace': 'ns_witness', 'editable': False, 'structuring': True},
-               'total_investment_share_of_gdp': {'type': 'dataframe', 'unit': '%', 'dataframe_descriptor': {'years': ('float', None, False),
-                                                'share_investment': ('float', None, True)}, 'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
-                #'scaling_factor_investment': {'type': 'float', 'default': 1e2, 'unit': '-', 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'} 
-                }
+               'total_investment_share_of_gdp': {'type': 'dataframe', 'unit': '%',
+                                                 'dataframe_descriptor': {'years': ('float', None, False),
+                                                                          'share_investment': ('float', None, True)},
+                                                 'dataframe_edition_locked': False, 'visibility': 'Shared',
+                                                 'namespace': 'ns_witness'},
+               # 'scaling_factor_investment': {'type': 'float', 'default': 1e2, 'unit': '-', 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'}
+               }
 
     DESC_OUT = {
-        'economics_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'economics_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                         'namespace': 'ns_witness'},
+        'investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                          'namespace': 'ns_witness'},
         'economics_detail_df': {'type': 'dataframe'}
-            }
+    }
 
     def init_execution(self):
         inputs_dict = self.get_sosdisc_inputs()
@@ -67,33 +73,35 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
-        #dynamic_outputs = {}
+        # dynamic_outputs = {}
 
         if 'sector_list' in self._data_in:
             sector_list = self.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.capital_df'] = {
-                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
+                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
+                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
                 dynamic_inputs[f'{sector}.production_df'] = {
-                    'type': 'dataframe', 'unit':  MacroeconomicsModel.SECTORS_OUT_UNIT[sector], 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
+                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
+                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
 
             self.add_inputs(dynamic_inputs)
 
     def run(self):
 
-        #-- get inputs
+        # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
         # -- configure class with inputs
         self.macro_model.configure_parameters(inputs_dict)
 
-        #-- compute
+        # -- compute
         economics_df, investment_df = self.macro_model.compute(inputs_dict)
 
-        outputs_dict = {'economics_df': economics_df[['years','net_output', 'capital']],
-                        'investment_df': investment_df, 
+        outputs_dict = {'economics_df': economics_df[['years', 'net_output', 'capital']],
+                        'investment_df': investment_df,
                         'economics_detail_df': economics_df}
 
-        #-- store outputs
+        # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -103,18 +111,22 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         net_output and invest wrt sector net_output 
         """
         sector_list = self.get_sosdisc_inputs('sector_list')
-        #Gradient wrt each sector production df: same for all sectors 
+        # Gradient wrt each sector production df: same for all sectors
         grad_netoutput, grad_invest = self.macro_model.get_derivative_sectors()
         for sector in sector_list:
-            self.set_partial_derivative_for_other_types(('economics_df', 'net_output'), (f'{sector}.production_df', 'output_net_of_damage'), grad_netoutput)
-            self.set_partial_derivative_for_other_types(('economics_df', 'capital'), (f'{sector}.capital_df', 'capital'), grad_netoutput)
+            self.set_partial_derivative_for_other_types(('economics_df', 'net_output'),
+                                                        (f'{sector}.production_df', 'output_net_of_damage'),
+                                                        grad_netoutput)
+            self.set_partial_derivative_for_other_types(('economics_df', 'capital'),
+                                                        (f'{sector}.capital_df', 'capital'), grad_netoutput)
 
-            self.set_partial_derivative_for_other_types(('investment_df', 'investment'), (f'{sector}.production_df', 'output_net_of_damage'), grad_invest)
+            self.set_partial_derivative_for_other_types(('investment_df', 'investment'),
+                                                        (f'{sector}.production_df', 'output_net_of_damage'),
+                                                        grad_invest)
         # Gradient wrt share investment 
         grad_invest_share = self.macro_model.get_derivative_dinvest_dshare()
         self.set_partial_derivative_for_other_types(
-                ('investment_df', 'investment'), ('total_investment_share_of_gdp','share_investment'), grad_invest_share)   
-        
+            ('investment_df', 'investment'), ('total_investment_share_of_gdp', 'share_investment'), grad_invest_share)
 
     def get_chart_filter_list(self):
 
@@ -124,9 +136,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         chart_filters.append(ChartFilter(
             'Charts filter', chart_list, chart_list, 'charts'))
-        
+
         return chart_filters
-        
+
     def get_post_processing_list(self, chart_filters=None):
 
         instanciated_charts = []
@@ -140,8 +152,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         economics_df = deepcopy(self.get_sosdisc_outputs('economics_detail_df'))
         investment_df = deepcopy(self.get_sosdisc_outputs('investment_df'))
         sector_list = self.get_sosdisc_inputs('sector_list')
-        
-        
+
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
@@ -178,7 +189,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
-            
+
         if 'investment' in chart_list:
 
             to_plot = ['investment']
@@ -197,9 +208,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_series = InstanciatedSeries(
                     years, ordonate_data, key, 'lines', visible_line)
                 new_chart.series.append(new_series)
-                
+
             instanciated_charts.append(new_chart)
-            
+
         if 'capital' in chart_list:
 
             to_plot = ['capital', 'usable_capital']
@@ -230,47 +241,45 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
-        
+
         if 'share capital' in chart_list:
             capital = economics_df['capital'].values
             chart_name = 'Capital distribution between economic sectors'
             new_chart = TwoAxesInstanciatedChart('years', 'share of total capital stock [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,
-                                                 chart_name = chart_name)
+                                                 chart_name=chart_name)
 
-            
-            for sector in sector_list: 
+            for sector in sector_list:
                 capital_df = self.get_sosdisc_inputs(f'{sector}.capital_df')
                 sector_capital = capital_df['capital'].values
-                share = (sector_capital/capital)*100
+                share = (sector_capital / capital) * 100
                 visible_line = True
                 ordonate_data = list(share)
                 new_series = InstanciatedSeries(years, ordonate_data,
-                                                f'{sector} share of total capital stock' , 'bar', visible_line)
+                                                f'{sector} share of total capital stock', 'bar', visible_line)
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
-        
+
         if 'share output' in chart_list:
             output = economics_df['net_output'].values
             chart_name = 'Sectors output share of total economics net output'
             new_chart = TwoAxesInstanciatedChart('years', 'share of total net output [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,
-                                                 chart_name = chart_name)
+                                                 chart_name=chart_name)
 
-            
-            for sector in sector_list: 
+            for sector in sector_list:
                 production_df = self.get_sosdisc_inputs(f'{sector}.production_df')
                 sector_output = production_df['output_net_of_damage'].values
-                share = (sector_output/output)*100
+                share = (sector_output / output) * 100
                 visible_line = True
                 ordonate_data = list(share)
                 new_series = InstanciatedSeries(years, ordonate_data,
-                                                f'{sector} share of total net output' , 'bar', visible_line)
+                                                f'{sector} share of total net output', 'bar', visible_line)
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
-            
+
         if 'output growth' in chart_list:
 
             to_plot = ['output_growth']
@@ -289,8 +298,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_series = InstanciatedSeries(
                     years, ordonate_data, key, 'lines', visible_line)
                 new_chart.series.append(new_series)
-                
+
             instanciated_charts.append(new_chart)
-       
 
         return instanciated_charts

@@ -20,9 +20,10 @@ from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilte
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import CoalResourceDiscipline
-from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import NaturalGasResourceDiscipline
+from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import \
+    NaturalGasResourceDiscipline
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
@@ -57,40 +58,50 @@ class ResourceMixDiscipline(SoSDiscipline):
             1.0, 1.0, len(ratio_available_resource_default.index))
     default_conversion_dict = {
         UraniumResourceDiscipline.resource_name:
-        {'price': (1 / 0.001102) * 0.907185,
-         'production': 10 ** -6, 'stock': 10 ** -6},
+            {'price': (1 / 0.001102) * 0.907185,
+             'production': 10 ** -6, 'stock': 10 ** -6},
         CoalResourceDiscipline.resource_name:
-        {'price': 0.907185, 'production': 1.0, 'stock': 1.0},
+            {'price': 0.907185, 'production': 1.0, 'stock': 1.0},
         NaturalGasResourceDiscipline.resource_name:
-        {'price': 1.379 * 35310700 * 10 ** -6,
-         'production': 1 / 1.379, 'stock': 1 / 1.379},
+            {'price': 1.379 * 35310700 * 10 ** -6,
+             'production': 1 / 1.379, 'stock': 1 / 1.379},
         OilResourceDiscipline.resource_name:
-        {'price': 7.33, 'production': 1.0, 'stock': 1.0},
+            {'price': 7.33, 'production': 1.0, 'stock': 1.0},
     }
 
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'resource_list': {'type': 'string_list', 'default': ResourceMixModel.RESOURCE_LIST, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource', 'editable': False, 'structuring': True},
-               ResourceMixModel.NON_MODELED_RESOURCE_PRICE: {'type': 'dataframe', 'unit': '$/t', 'namespace': 'ns_resource'},
+               'resource_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                 'default': ResourceMixModel.RESOURCE_LIST,
+                                 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource',
+                                 'editable': False, 'structuring': True},
+               ResourceMixModel.NON_MODELED_RESOURCE_PRICE: {'type': 'dataframe', 'unit': '$/t',
+                                                             'namespace': 'ns_resource'},
                'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'resources_demand_woratio': {'type': 'dataframe', 'unit': 'Mt',
                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
-               'conversion_dict': {'type': 'dict', 'unit': '[-]', 'default': default_conversion_dict, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
+               'conversion_dict': {'type': 'dict', 'unit': '[-]', 'default': default_conversion_dict,
+                                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
                }
 
     DESC_OUT = {
         ResourceMixModel.ALL_RESOURCE_STOCK: {
             'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRICE: {
-            'type': 'dataframe', 'unit': '$/t', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+            'type': 'dataframe', 'unit': '$/t', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+            'namespace': 'ns_resource'},
         ResourceMixModel.All_RESOURCE_USE: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
-        ResourceMixModel.RATIO_USABLE_DEMAND: {'type': 'dataframe', 'default': ratio_available_resource_default, 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+        ResourceMixModel.RATIO_USABLE_DEMAND: {'type': 'dataframe', 'default': ratio_available_resource_default,
+                                               'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                               'namespace': 'ns_resource'},
         ResourceMixModel.ALL_RESOURCE_DEMAND: {'type': 'dataframe', 'unit': '-',
-                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+                                               'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                               'namespace': 'ns_resource'},
         ResourceMixModel.ALL_RESOURCE_CO2_EMISSIONS: {
-            'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+            'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+            'namespace': 'ns_resource'},
     }
 
     def init_execution(self):
@@ -100,7 +111,7 @@ class ResourceMixDiscipline(SoSDiscipline):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
-        #dynamic_outputs = {}
+        # dynamic_outputs = {}
 
         if 'resource_list' in self._data_in:
             resource_list = self.get_sosdisc_inputs('resource_list')
@@ -108,22 +119,22 @@ class ResourceMixDiscipline(SoSDiscipline):
                 dynamic_inputs[f'{resource}.resource_price'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PRICE_UNIT[resource]}
                 dynamic_inputs[f'{resource}.resource_stock'] = {
-                    'type': 'dataframe', 'unit':  ResourceMixModel.RESOURCE_STOCK_UNIT[resource]}
+                    'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource]}
                 dynamic_inputs[f'{resource}.use_stock'] = {
-                    'type': 'dataframe', 'unit':  ResourceMixModel.RESOURCE_STOCK_UNIT[resource]}
+                    'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource]}
                 dynamic_inputs[f'{resource}.predictable_production'] = {
-                    'type': 'dataframe', 'unit':  ResourceMixModel.RESOURCE_PROD_UNIT[resource]}
+                    'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PROD_UNIT[resource]}
             self.add_inputs(dynamic_inputs)
         # self.add_outputs(dynamic_outputs)
 
     def run(self):
 
-        #-- get inputs
+        # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
         # -- configure class with inputs
         self.all_resource_model.configure_parameters_update(inputs_dict)
 
-        #-- compute
+        # -- compute
         self.all_resource_model.compute(inputs_dict)
 
         years = np.arange(inputs_dict['year_start'],
@@ -139,7 +150,7 @@ class ResourceMixDiscipline(SoSDiscipline):
             ResourceMixModel.ALL_RESOURCE_CO2_EMISSIONS: self.all_resource_model.all_resource_co2_emissions.reset_index(),
         }
 
-        #-- store outputs
+        # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
     def get_chart_filter_list(self):
@@ -172,7 +183,8 @@ class ResourceMixDiscipline(SoSDiscipline):
             for types in inputs_dict[f'{resource_type}.use_stock']:
                 if types != 'years':
                     self.set_partial_derivative_for_other_types(
-                        (ResourceMixModel.All_RESOURCE_USE, resource_type), (f'{resource_type}.use_stock', types), grad_use)
+                        (ResourceMixModel.All_RESOURCE_USE, resource_type), (f'{resource_type}.use_stock', types),
+                        grad_use)
 
             self.set_partial_derivative_for_other_types((ResourceMixModel.RATIO_USABLE_DEMAND, resource_type), (
                 'resources_demand_woratio', resource_type), grad_ratio_on_demand)
@@ -180,19 +192,22 @@ class ResourceMixDiscipline(SoSDiscipline):
             for types in inputs_dict[f'{resource_type}.resource_stock']:
                 if types != 'years':
                     self.set_partial_derivative_for_other_types(
-                        (ResourceMixModel.ALL_RESOURCE_STOCK, resource_type), (f'{resource_type}.resource_stock', types), grad_stock)
+                        (ResourceMixModel.ALL_RESOURCE_STOCK, resource_type),
+                        (f'{resource_type}.resource_stock', types), grad_stock)
                     self.set_partial_derivative_for_other_types(
                         (ResourceMixModel.RATIO_USABLE_DEMAND, resource_type),
                         (f'{resource_type}.resource_stock', types), grad_ratio_on_stock * grad_stock)
 
             self.set_partial_derivative_for_other_types(
-                (ResourceMixModel.ALL_RESOURCE_PRICE, resource_type), (f'{resource_type}.resource_price', 'price'), grad_price)
+                (ResourceMixModel.ALL_RESOURCE_PRICE, resource_type), (f'{resource_type}.resource_price', 'price'),
+                grad_price)
         data_frame_other_resource_price = inputs_dict['non_modeled_resource_price']
 
         for resource_type in data_frame_other_resource_price:
             if resource_type not in resource_list and resource_type != 'years':
                 self.set_partial_derivative_for_other_types((ResourceMixModel.ALL_RESOURCE_PRICE, resource_type), (
-                    ResourceMixModel.NON_MODELED_RESOURCE_PRICE, resource_type), np.identity(len(data_frame_other_resource_price)))
+                    ResourceMixModel.NON_MODELED_RESOURCE_PRICE, resource_type),
+                                                            np.identity(len(data_frame_other_resource_price)))
 
     def get_post_processing_list(self, chart_filters=None):
 
@@ -232,27 +247,33 @@ class ResourceMixDiscipline(SoSDiscipline):
                                                         chart_name='Resource production through the years',
                                                         stacked_bar=True)
             ratio_use_demand_chart = TwoAxesInstanciatedChart(
-                'years', 'ratio usable stock / demand ', chart_name='ratio usable stock and prod on demand through the years', stacked_bar=True)
+                'years', 'ratio usable stock / demand ',
+                chart_name='ratio usable stock and prod on demand through the years', stacked_bar=True)
             resource_demand_chart = TwoAxesInstanciatedChart(
                 'years', 'demand (Mt)', chart_name='resource demand through the years', stacked_bar=True)
             for resource_kind in stock_df:
                 if resource_kind != 'years':
                     stock_serie = InstanciatedSeries(
-                        years, (stock_df[resource_kind]).values.tolist(), resource_kind, InstanciatedSeries.LINES_DISPLAY)
+                        years, (stock_df[resource_kind]).values.tolist(), resource_kind,
+                        InstanciatedSeries.LINES_DISPLAY)
                     stock_chart.add_series(stock_serie)
 
                     production_serie = InstanciatedSeries(
-                        years, (production_df[resource_kind]).values.tolist(), resource_kind, InstanciatedSeries.BAR_DISPLAY)
+                        years, (production_df[resource_kind]).values.tolist(), resource_kind,
+                        InstanciatedSeries.BAR_DISPLAY)
                     production_chart.add_series(production_serie)
 
                     use_stock_serie = InstanciatedSeries(
-                        years, (use_stock_df[resource_kind]).values.tolist(), resource_kind, InstanciatedSeries.BAR_DISPLAY)
+                        years, (use_stock_df[resource_kind]).values.tolist(), resource_kind,
+                        InstanciatedSeries.BAR_DISPLAY)
                     use_stock_chart.add_series(use_stock_serie)
                     ratio_use_serie = InstanciatedSeries(
-                        years, (ratio_use_df[resource_kind]).values.tolist(), resource_kind, InstanciatedSeries.LINES_DISPLAY)
+                        years, (ratio_use_df[resource_kind]).values.tolist(), resource_kind,
+                        InstanciatedSeries.LINES_DISPLAY)
                     ratio_use_demand_chart.add_series(ratio_use_serie)
                     demand_serie = InstanciatedSeries(
-                        years, (demand_df[resource_kind]).values.tolist(), resource_kind, InstanciatedSeries.LINES_DISPLAY)
+                        years, (demand_df[resource_kind]).values.tolist(), resource_kind,
+                        InstanciatedSeries.LINES_DISPLAY)
                     resource_demand_chart.add_series(demand_serie)
             for resource_types in price_df:
                 if resource_types != 'years':
