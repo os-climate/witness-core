@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    # np.set_printoptions(threshold=np.inf)
+    #np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
 
