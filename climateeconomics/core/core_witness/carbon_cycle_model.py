@@ -152,6 +152,8 @@ class CarbonCycle():
         """
         atmo_conc = self.carboncycle_df.at[year, 'atmo_conc']
         init_atmo_conc = self.carboncycle_df.at[self.year_start, 'atmo_conc']
+
+        self.CO2_emissions_df['cum_total_emissions'] = self.CO2_emissions_df['total_emissions'].cumsum()
         init_cum_total_emissions = self.CO2_emissions_df.at[self.year_start,
                                                             'cum_total_emissions']
         cum_total_emissions = self.CO2_emissions_df.at[year,

@@ -110,9 +110,6 @@ class GHGEmissions():
     def compute_co2_emissions_for_carbon_cycle(self):
         co2_emissions_df = self.ghg_emissions_df[['years', 'Total CO2 emissions']].rename(
             {'Total CO2 emissions': 'total_emissions'}, axis=1)
-
-        co2_emissions_df['cum_total_emissions'] = co2_emissions_df['total_emissions'].cumsum(
-        )
         return co2_emissions_df
 
     def compute(self):
