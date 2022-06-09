@@ -179,6 +179,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
         Forest.WOOD_TECHNO_DICT: {'type': 'dict', 'unit': '-',  'default': wood_techno_dict,
                                   'namespace': 'ns_forest'},
+        # TODO: not used anymore, to delete
         Forest.MW_INITIAL_PROD: {'type': 'float', 'unit': 'TWh',  'default': mw_initial_production,
                                  'namespace': 'ns_forest'},
         Forest.MW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha',  'default': mw_initial_surface,
@@ -315,11 +316,11 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_mw_surface_d_invest = self.forest_model.compute_d_mw_surface_d_invest()
 
         # compute the gradient of the surfaces vs invest at the limit
-        d_cum_umw_d_deforestation_invest, d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest = self.forest_model.compute_d_limit_surfaces_d_deforestation_invest(
+        d_cum_umw_d_deforestation_invest, d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest, d_lc_deforestation_d_deforestation_invest, d_lc_reforestation_d_deforestation_invest, d_lc_mw_d_deforestation_invest = self.forest_model.compute_d_limit_surfaces_d_deforestation_invest(
             d_deforestation_surface_d_invest)
-        d_cum_umw_d_reforestation_invest, d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest = self.forest_model.compute_d_limit_surfaces_d_reforestation_invest(
+        d_cum_umw_d_reforestation_invest, d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest, d_lc_deforestation_d_reforestation_invest, d_lc_reforestation_d_reforestation_invest, d_lc_mw_d_reforestation_invest = self.forest_model.compute_d_limit_surfaces_d_reforestation_invest(
             d_reforestation_surface_d_invest)
-        d_cum_umw_d_mw_invest, d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest = self.forest_model.compute_d_limit_surfaces_d_mw_invest(
+        d_cum_umw_d_mw_invest, d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest, d_lc_deforestation_d_mw_invest, d_lc_reforestation_d_mw_invest, d_lc_mw_d_mw_invest = self.forest_model.compute_d_limit_surfaces_d_mw_invest(
             d_mw_surface_d_invest)
 
         # compute cumulated surfaces vs deforestation invest
@@ -327,7 +328,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             d_delta_mw_d_deforestation_invest)
         d_cum_deforestation_surface_d_deforestation_invest = self.forest_model.d_cum(
             d_delta_deforestation_d_deforestation_invest)
-
         # compute cumulated surfaces vs reforestation invest
         d_cum_mw_surface_d_reforestation_invest = self.forest_model.d_cum(
             d_delta_mw_d_reforestation_invest)
@@ -341,7 +341,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             d_delta_mw_d_mw_invest)
         d_cum_deforestation_surface_d_mw_invest = self.forest_model.d_cum(
             d_delta_deforestation_d_mw_invest)
-
         # compute gradient global forest surface vs  invest: global_surface =
         # cum_mw_surface + cum_deforestation_surface
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
@@ -455,12 +454,32 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), ('managed_wood_investment', 'investment'),
                                                     d_techno_price_d_mw_invest)
 
-        # lost capital vs reforestation investment grad
-        #dlostcapital_dinvest = self.forest_model.d_lostcapitald_invest(d_reforestation_surface_d_invest)
+        # gradient lost capital vs reforestation investment
 
-        # self.set_partial_derivative_for_other_types(('reforestation_lost_capital', 'lost_capital'), (
-        # Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
-        # dlostcapital_dinvest)
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+                                                    d_lc_reforestation_d_reforestation_invest)
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+                                                    d_lc_deforestation_d_reforestation_invest)
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+                                                    d_lc_mw_d_reforestation_invest)
+
+        # gradient lost capital vs deforestation investment
+
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
+                                                    d_lc_reforestation_d_deforestation_invest)
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
+                                                    d_lc_deforestation_d_deforestation_invest)
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
+                                                    d_lc_mw_d_deforestation_invest)
+
+        # gradient lost capital vs managed wood investment
+
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'), ('managed_wood_investment', 'investment'),
+                                                    d_lc_reforestation_d_mw_invest)
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'), ('managed_wood_investment', 'investment'),
+                                                    d_lc_deforestation_d_mw_invest)
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'), ('managed_wood_investment', 'investment'),
+                                                    d_lc_mw_d_mw_invest)
 
     def get_chart_filter_list(self):
 

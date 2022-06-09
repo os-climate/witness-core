@@ -12,11 +12,11 @@ The forest model takes the following data as inputs:
 - **time_step**, the number of year between two data computation. Default is 1.
 - **limit_deforestation_surface**, the maximum surface in Mha which can be deforested during the study.
 - **deforestation_investment**, the money invested in the deforestation. Unit is G$.
-- **deforestation_cost_per_ha**, the average price to deforest 1ha of land. Unit is $/ha. Default value is 12000$/ha [^1].
+- **deforestation_cost_per_ha**, the average price to deforest 1ha of land. Unit is \$/ha. Default value is 12000 \$/ha [^1].
 - **CO2_per_ha**, the quantity of CO2 captured by 1 hectare of forest during one year. Unit is kgCO2/ha/year. Default value is 4000kgC02/ha/year [^2].
 As forest captures 16 Gt of CO2 per year, reducing forest by 1% results in a deficit of CO2 captured of 160 Mt. The value of 4000kgCO2/year/ha is coherent with these data.
 - **Initial CO2 emissions**, CO2 emissions in GtCO2 due to deforestation at the first year of the study. Default value is 3.21 GtCO2 at 2020, which is the value found at [^3].
-- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 13800 $/ha (10k$/ha for land cost and 3800$/ha to plant trees) [^4].
+- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is $/ha. The default value is 13800 $/ha splitted as 10 k$/ha for land cost and 3800$/ha to plant trees [^4].
 - **reforestation_investment**, the quantity of money dedicated to reforestation each year in billions of $.
 - **wood tehcno dict**, data use to compute price and production of biomass for managed wood and unmanaged wood.
 - **managed wood initial prod**, which is the production of biomass by managed wood at the first year of the study. Unit is TWh.
@@ -106,13 +106,30 @@ The land emissions can be computed with this formula:
 $$CO2\_land\_emissions = Surface\_deforestation * CO2\_per\_ha - Surface\_reforestation * CO2\_per\_ha \\+ Surface\_managed\_wood * 0$$
 
 The forest for energy emissions can be computed as following:
-$$CO2\_emissions = CO2(by use biomass) - CO2(captured from growing trees) => 0$$
+$$CO2\_emissions = CO2(by\_use\_biomass) - CO2(captured\_from\_growing\_trees) => 0$$
+
+As a result, deforested surfaces does not capture CO2 as they does not exist anymore.
+Managed surfaces are neutral in CO2 because CO2 captured in wood is likely to be released when the wood is burn.
 
 ## Lost capital
-In order to do not waste money, the model will compute the value called lost capital that will be given to the appropriate model. This concerns reforestation and deforestation activities. As they are opposite activities, it is a waste of money and capital to invest in deforestation and reforestation.
-For example, adding 10Mha of forest and removing 12Mha of forest results in removing 2Mha of forest. But the capital for adding the forest is lost.
-As a formula, we use:
-$$lost\_capital = min(reforested\_surface, deforested\_surface) * cost\_per\_ha$$
+In the forest model, there are 3 activities : deforestation, reforestation, managed wood, with their own investment. If reforestation and managed wood aimed at expand forest surface, deforestation diminishes it. As a result using money into opposite activities leads to a waste of money called lost capital.
+As an example, investing in 10Mha of reforestation and 8Mha of deforestation results in a +2Mha of forest planted. Then, investment in reforestation is not optimized.
+The following formula gives the detail of the lost capital computation.
+
+First case : part of unmanaged wood is deforested
+In this first case, trees that were planted in the past years are cut and the land will be used for another purpose than forestry.
+**reforestation\_lost\_capital = unmanaged\_deforested\_surface * reforestation\_cost\_per\_ha**
+
+Second case : all unmanaged wood is deforested, part of managed wood is deforested
+In this second case, all unmanaged wood is deforested and managed wood trees start to be cut. As in first case reforestation capital is lost. Moreover, some of managed wood capital is also lost.
+**reforestation\_lost\_capital = unmanaged\_deforested\_surface * reforestation\_cost\_per\_ha**
+**managed_wood\_lost\_capital = managed\_deforested\_surface * managed\_cost\_per\_ha**
+
+Last case : all that can be cut is cut
+In this last case, all unmanaged wood is deforested, all managed wood is also deforested. Plus, money is over invested into deforestation. This exceed amount of money is lost because nothing can be cut.
+**reforestation\_lost\_capital = unmanaged\_deforested\_surface * reforestation\_cost\_per\_ha**
+**managed_wood\_lost\_capital = managed\_deforested\_surface * managed\_cost\_per\_ha**
+**deforestation\_lost\_capital = exceed\_deforestation\_investment**
 
 ## Model limitations
 In this model, the quantity of CO2 captured by ha of forest is assumed to be the same all over the world.  However, the CO2 captured change with the climate condition. Forest in tropical regions are more effective than forest in cold regions. As a result, cutting trees of the Amazon forest does not have the same impact than cutting trees in cold region, in term of captured CO2.

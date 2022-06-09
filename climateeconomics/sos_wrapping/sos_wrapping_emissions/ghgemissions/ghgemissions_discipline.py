@@ -56,12 +56,14 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         'GHG_global_warming_potential20':  {'type': 'dict', 'unit': 'kgCO2eq/kg', 'default': GWP_20_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
         'GHG_global_warming_potential100':  {'type': 'dict', 'unit': 'kgCO2eq/kg', 'default': GWP_100_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
         'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'CH4_land_emissions': {'type': 'dataframe', 'unit': 'GtCH4', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'N2O_land_emissions': {'type': 'dataframe', 'unit': 'GtN2O', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'CO2_indus_emissions_df':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'GHG_total_energy_emissions':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
     }
     DESC_OUT = {
         'co2_emissions_Gt': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_energy_mix', 'unit': 'Gt'},
-        'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
+        'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
         'GHG_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'}
     }
@@ -78,10 +80,13 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         self.emissions_model.compute()
         # Store output data
 
-        co2_emissions_df = self.emissions_model.compute_co2_emissions_for_carbon_cycle()
+        # co2_emissions_df = self.emissions_model.compute_co2_emissions_for_carbon_cycle()
+        cols = ['years'] + [f'Total {ghg} emissions' for ghg in self.emissions_model.GHG_TYPE_LIST]
+        emissions_df = self.emissions_model.ghg_emissions_df[cols]
+
         dict_values = {'GHG_emissions_detail_df': self.emissions_model.ghg_emissions_df,
                        'co2_emissions_Gt': self.emissions_model.GHG_total_energy_emissions[['years', 'Total CO2 emissions']],
-                       'CO2_emissions_df': co2_emissions_df,
+                       'GHG_emissions_df': emissions_df,
                        'GWP_emissions': self.emissions_model.gwp_emissions}
 
         self.store_sos_outputs_values(dict_values)
@@ -98,23 +103,22 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             inputs_dict['year_start'], inputs_dict['year_end'] + 1, inputs_dict['time_step'])
 
         # land emissions
-        CO2_land_emissions = inputs_dict['CO2_land_emissions']
-        for column in CO2_land_emissions.columns:
-            if column != "years":
-                self.set_partial_derivative_for_other_types(
-                    ('CO2_emissions_df', 'total_emissions'), ('CO2_land_emissions', column),  np.identity(len(years)))
-                self.set_partial_derivative_for_other_types(
-                    ('CO2_emissions_df', 'cum_total_emissions'), ('CO2_land_emissions', column),  np.tril(np.ones((len(years), len(years)))))
-        self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'total_emissions'), ('CO2_indus_emissions_df', 'indus_emissions'),  np.identity(len(years)))
-        self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'cum_total_emissions'), ('CO2_indus_emissions_df', 'indus_emissions'),  np.tril(np.ones((len(years), len(years)))))
-        self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'total_emissions'), ('GHG_total_energy_emissions', 'Total CO2 emissions'),  np.identity(len(years)))
-        self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'cum_total_emissions'), ('GHG_total_energy_emissions', 'Total CO2 emissions'),  np.tril(np.ones((len(years), len(years)))))
+        for ghg in self.emissions_model.GHG_TYPE_LIST:
+            ghg_land_emissions = inputs_dict[f'{ghg}_land_emissions']
+            for column in ghg_land_emissions.columns:
+                if column != "years":
+                    self.set_partial_derivative_for_other_types(
+                        ('GHG_emissions_df', f'Total {ghg} emissions'), (f'{ghg}_land_emissions', column),  np.identity(len(years)))
+
+            self.set_partial_derivative_for_other_types(
+                ('GHG_emissions_df', f'Total {ghg} emissions'), ('GHG_total_energy_emissions', f'Total {ghg} emissions'),
+                np.identity(len(years)))
+
         self.set_partial_derivative_for_other_types(
             ('co2_emissions_Gt', 'Total CO2 emissions'), ('GHG_total_energy_emissions', 'Total CO2 emissions'),  np.identity(len(years)))
+        self.set_partial_derivative_for_other_types(
+            ('GHG_emissions_df', 'Total CO2 emissions'), ('CO2_indus_emissions_df', 'indus_emissions'),
+            np.identity(len(years)))
 
     def get_chart_filter_list(self):
 
