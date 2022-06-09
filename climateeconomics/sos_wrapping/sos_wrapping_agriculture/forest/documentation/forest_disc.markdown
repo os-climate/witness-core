@@ -122,12 +122,12 @@ $$reforestation\_lost\_capital = unmanaged\_deforested\_surface * reforestation\
 Second case : all unmanaged wood is deforested, part of managed wood is deforested
 In this second case, all unmanaged wood is deforested and managed wood trees start to be cut. As in first case reforestation capital is lost. Moreover, some of managed wood capital is also lost.
 $$reforestation\_lost\_capital = unmanaged\_deforested\_surface * reforestation\_cost\_per\_ha$$
-$$managed_wood\_lost\_capital = managed\_deforested\_surface * managed\_cost\_per\_ha$$
+$$managed\_wood\_lost\_capital = managed\_deforested\_surface * managed\_cost\_per\_ha$$
 
 Last case : all that can be cut is cut
 In this last case, all unmanaged wood is deforested, all managed wood is also deforested. Plus, money is over invested into deforestation. This exceed amount of money is lost because nothing can be cut.
 $$reforestation\_lost\_capital = unmanaged\_deforested\_surface * reforestation\_cost\_per\_ha$$
-$$managed_wood\_lost\_capital = managed\_deforested\_surface * managed\_cost\_per\_ha$$
+$$managed\_wood\_lost\_capital = managed\_deforested\_surface * managed\_cost\_per\_ha$$
 $$deforestation\_lost\_capital = exceed\_deforestation\_investment$$
 
 ## Model limitations
