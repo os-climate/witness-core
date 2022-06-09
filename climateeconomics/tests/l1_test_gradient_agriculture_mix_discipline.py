@@ -203,9 +203,6 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.test_name}.{disc_name}.Crop.techno_production': self.techno_production_crop,
                        f'{self.test_name}.{disc_name}.Crop.techno_prices': self.techno_prices_crop,
                        f'{self.test_name}.{disc_name}.Crop.CO2_emissions': self.CO2_emissions_crop,
-                       f'{self.test_name}.{disc_name}.Crop.CO2_land_emission_df': CO2_emitted_land,
-                       f'{self.test_name}.{disc_name}.Crop.CH4_land_emission_df': CH4_emitted_land,
-                       f'{self.test_name}.{disc_name}.Crop.N2O_land_emission_df': N2O_emitted_land,
                        f'{self.test_name}.{disc_name}.Crop.land_use_required': self.land_use_required_crop,
                        f'{self.test_name}.{disc_name}.Forest.techno_consumption': self.techno_consumption_forest,
                        f'{self.test_name}.{disc_name}.Forest.techno_consumption_woratio': self.techno_consumption_woratio_forest,
@@ -213,7 +210,6 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.test_name}.{disc_name}.Forest.techno_prices': self.techno_prices_forest,
                        f'{self.test_name}.{disc_name}.Forest.CO2_emissions': self.CO2_emissions_forest,
                        f'{self.test_name}.{disc_name}.Forest.land_use_required': self.land_use_required_forest,
-                       f'{self.test_name}.{disc_name}.Forest.CO2_land_emission_df': CO2_emitted_land,
                        f'{self.test_name}.technologies_list': self.technology_list,
                        f'{self.test_name}.CO2_taxes': self.co2_taxes
                       }
@@ -230,15 +226,12 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.test_name}.{disc_name}.Crop.techno_prices',
                                     f'{self.test_name}.{disc_name}.Crop.CO2_emissions',
                                     f'{self.test_name}.{disc_name}.Crop.land_use_required',
-                                    f'{self.test_name}.{disc_name}.Crop.CO2_land_emission_df',
-                                    f'{self.test_name}.{disc_name}.Crop.CH4_land_emission_df',
                                     f'{self.test_name}.{disc_name}.Forest.techno_consumption',
                                     f'{self.test_name}.{disc_name}.Forest.techno_consumption_woratio',
                                     f'{self.test_name}.{disc_name}.Forest.techno_production',
                                     f'{self.test_name}.{disc_name}.Forest.techno_prices',
                                     f'{self.test_name}.{disc_name}.Forest.CO2_emissions',
                                     f'{self.test_name}.{disc_name}.Forest.land_use_required',
-                                    f'{self.test_name}.{disc_name}.Forest.CO2_land_emission_df',
                                     ],
                             outputs=[f'{self.test_name}.{disc_name}.CO2_emissions',
                                     f'{self.test_name}.{disc_name}.CO2_per_use',
@@ -247,6 +240,4 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.test_name}.{disc_name}.energy_consumption_woratio',
                                     f'{self.test_name}.{disc_name}.energy_production',
                                     f'{self.test_name}.{disc_name}.land_use_required',
-                                    f'{self.test_name}.CO2_land_emissions',
-                                    f'{self.test_name}.CH4_land_emissions'
                             ])
