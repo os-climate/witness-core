@@ -316,11 +316,11 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_mw_surface_d_invest = self.forest_model.compute_d_mw_surface_d_invest()
 
         # compute the gradient of the surfaces vs invest at the limit
-        d_cum_umw_d_deforestation_invest, d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest = self.forest_model.compute_d_limit_surfaces_d_deforestation_invest(
+        d_cum_umw_d_deforestation_invest, d_delta_mw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest, d_lc_deforestation_d_deforestation_invest, d_lc_reforestation_d_deforestation_invest, d_lc_mw_d_deforestation_invest = self.forest_model.compute_d_limit_surfaces_d_deforestation_invest(
             d_deforestation_surface_d_invest)
-        d_cum_umw_d_reforestation_invest, d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest = self.forest_model.compute_d_limit_surfaces_d_reforestation_invest(
+        d_cum_umw_d_reforestation_invest, d_delta_mw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest, d_lc_deforestation_d_reforestation_invest, d_lc_reforestation_d_reforestation_invest, d_lc_mw_d_reforestation_invest = self.forest_model.compute_d_limit_surfaces_d_reforestation_invest(
             d_reforestation_surface_d_invest)
-        d_cum_umw_d_mw_invest, d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest = self.forest_model.compute_d_limit_surfaces_d_mw_invest(
+        d_cum_umw_d_mw_invest, d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest, d_lc_deforestation_d_mw_invest, d_lc_reforestation_d_mw_invest, d_lc_mw_d_mw_invest = self.forest_model.compute_d_limit_surfaces_d_mw_invest(
             d_mw_surface_d_invest)
 
         # compute cumulated surfaces vs deforestation invest
@@ -341,7 +341,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             d_delta_mw_d_mw_invest)
         d_cum_deforestation_surface_d_mw_invest = self.forest_model.d_cum(
             d_delta_deforestation_d_mw_invest)
-
         # compute gradient global forest surface vs  invest: global_surface =
         # cum_mw_surface + cum_deforestation_surface
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
@@ -456,16 +455,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                     d_techno_price_d_mw_invest)
 
         # gradient lost capital vs reforestation investment
-        zero = d_delta_mw_d_reforestation_invest * 0
-        d_updated_delta_mw_d_invest_reforestation = self.forest_model.d_updated_delta_mw_dinvest(
-            d_cum_mw_surface_d_reforestation_invest)
 
-        d_lc_reforestation_d_reforestation_invest = self.forest_model.d_lostcapital_reforestationd_invest(
-            d_reforestation_surface_d_invest, d_cum_umw_d_reforestation_invest, d_delta_deforestation_d_reforestation_invest)
-        d_lc_mw_d_reforestation_invest = self.forest_model.d_lc_mw_d_deforest_invest_extr(
-            d_delta_mw_d_reforestation_invest)
-        d_lc_deforestation_d_reforestation_invest = self.forest_model.d_lostcapital_deforestd_invest_reforest(
-            d_cum_deforestation_surface_d_reforestation_invest, d_cum_deforestation_surface_d_deforestation_invest)
         self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
                                                     d_lc_reforestation_d_reforestation_invest)
         self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
@@ -474,15 +464,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                     d_lc_mw_d_reforestation_invest)
 
         # gradient lost capital vs deforestation investment
-        d_updated_delta_mw_d_invest_deforestation = self.forest_model.d_updated_delta_mw_dinvest(
-            d_cum_mw_surface_d_deforestation_invest)
-
-        d_lc_reforestation_d_deforestation_invest = self.forest_model.d_lostcapital_reforestationd_invest(
-            zero, d_cum_umw_d_deforestation_invest, d_delta_deforestation_d_deforestation_invest)
-        d_lc_mw_d_deforestation_invest = self.forest_model.d_lc_mw_d_deforest_invest_extr(
-            d_delta_mw_d_deforestation_invest)
-        d_lc_deforestation_d_deforestation_invest = self.forest_model.d_lostcapital_deforestd_invest(
-            d_deforestation_surface_d_invest, d_cum_deforestation_surface_d_deforestation_invest)
 
         self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'), (Forest.DEFORESTATION_INVESTMENT, 'investment'),
                                                     d_lc_reforestation_d_deforestation_invest)
@@ -492,15 +473,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                     d_lc_mw_d_deforestation_invest)
 
         # gradient lost capital vs managed wood investment
-        d_updated_delta_mw_d_invest_mw = self.forest_model.d_updated_delta_mw_dinvest(
-            d_cum_mw_surface_d_mw_invest)
-
-        d_lc_reforestation_d_mw_invest = self.forest_model.d_lostcapital_reforestationd_invest(
-            d_delta_deforestation_d_mw_invest, d_cum_umw_d_mw_invest, d_delta_deforestation_d_mw_invest)
-        d_lc_mw_d_mw_invest = self.forest_model.d_lostcapital_managed_woodd_invest(
-            d_delta_deforestation_d_mw_invest, d_cum_umw_d_mw_invest, d_updated_delta_mw_d_invest_mw, d_mw_surface_d_invest)
-        d_lc_deforestation_d_mw_invest = self.forest_model.d_lostcapital_deforestd_invest(
-            d_cum_deforestation_surface_d_mw_invest, d_cum_deforestation_surface_d_mw_invest)
 
         self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'), ('managed_wood_investment', 'investment'),
                                                     d_lc_reforestation_d_mw_invest)
