@@ -86,7 +86,7 @@ class ObjectivesModel():
             capital_df = self.sectors_capital_dfs[sector]
             production_df = self.sectors_production_dfs[sector]
             sectors_cap_errors[sector] = self.compute_quadratic_error(self.historical_capital[sector].values, capital_df['capital'].values)
-            sectors_gdp_errors[sector] = self.compute_quadratic_error(self.historical_capital[sector].values, production_df['output_net_of_damage'].values)
+            sectors_gdp_errors[sector] = self.compute_quadratic_error(self.historical_gdp[sector].values, production_df['output_net_of_damage'].values)
             self.compute_hist_energy_efficiency(sector)
             sectors_energy_eff_errors[sector] = self.compute_quadratic_error(self.hist_energy_eff[sector].values, capital_df['energy_efficiency'].values )
 
