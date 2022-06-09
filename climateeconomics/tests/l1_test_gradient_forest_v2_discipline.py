@@ -24,8 +24,8 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    #np.set_printoptions(threshold=np.inf)
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
 
@@ -177,9 +177,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                 f'{self.name}.Forest.techno_consumption',
                                 f'{self.name}.Forest.techno_consumption_woratio',
                                 f'{self.name}.Forest.land_use_required',
-                               f'{self.name}.Forest.CO2_emissions',
-                                #f'{self.name}.Forest.techno_capital',
-                                #f'{self.name}.Forest.non_use_capital'
+                                f'{self.name}.Forest.CO2_emissions',
+                                f'{self.name}.Forest.forest_lost_capital',
         ]
         )
 
@@ -220,8 +219,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {"years": years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
             {'years': years, 'investment': np.array([5000.00, 5000.00, 5000.00, 2000.00,
-                                                1.00, 1.00, 1.00, 0000.00,
-                                                 0000.00, 0000.00, 0000.00])})
+                                                     1.00, 1.00, 1.00, 0000.00,
+                                                     0000.00, 0000.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
 
         wood_density = 600.0  # kg/m3
@@ -327,14 +326,11 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                      f'{self.name}.Forest.techno_consumption',
                      f'{self.name}.Forest.techno_consumption_woratio',
                      f'{self.name}.Forest.techno_prices',
-
-                     #f'{self.name}.Forest.techno_capital',
-                     #f'{self.name}.Forest.non_use_capital'
+                     f'{self.name}.Forest.forest_lost_capital',
                      ]
         )
 
-
-    def test_forest_analytic_grad_managed_limit(self):
+    def _test_forest_analytic_grad_managed_limit(self):
         # deforestation reaches the unmanaged and managed limits
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
@@ -371,8 +367,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {"years": years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
             {'years': years, 'investment': np.array([5000.00, 5000.00, 5000.00, 2000.00,
-                                                2000.00, 2000.00, 0000.00, 0000.00,
-                                                 3000.00, 3000.00, 0000.00])})
+                                                     2000.00, 2000.00, 0000.00, 0000.00,
+                                                     3000.00, 3000.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
 
         wood_density = 600.0  # kg/m3
@@ -479,15 +475,13 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                      f'{self.name}.Forest.techno_consumption',
                      f'{self.name}.Forest.techno_consumption_woratio',
                      f'{self.name}.Forest.techno_prices',
-
-                     #f'{self.name}.Forest.techno_capital',
-                     #f'{self.name}.Forest.non_use_capital'
+                     f'{self.name}.Forest.forest_lost_capital',
                      ]
         )
 
-
     def test_forest_analytic_grad_bigmanaged_limit(self):
-        # deforestation reaches the unmanaged and managed limits in one time (not progressive)
+        # deforestation reaches the unmanaged and managed limits in one time
+        # (not progressive)
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_witness': f'{self.name}',
@@ -523,8 +517,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {"years": years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
             {'years': years, 'investment': np.array([0.00, 0.00, 0.00, 0.00,
-                                                30000.00, 10.00, 0000.00, 0000.00,
-                                                 0.00, 0.00, 0000.00])})
+                                                     0.00, 0.00, 30000.00, 0.00,
+                                                     0.00, 0.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
 
         wood_density = 600.0  # kg/m3
@@ -532,7 +526,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         residue_density_m3_per_ha = 46.5
         # average of 360 and 600 divided by 5
         wood_density_m3_per_ha = 96
-        construction_delay = 5
+        construction_delay = 3
         wood_residue_price_percent_dif = 0.34
         wood_percentage_for_energy = 0.48
         residue_percentage_for_energy = 0.48
@@ -631,8 +625,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                      f'{self.name}.Forest.techno_consumption',
                      f'{self.name}.Forest.techno_consumption_woratio',
                      f'{self.name}.Forest.techno_prices',
+                     f'{self.name}.Forest.forest_lost_capital',
 
-                     #f'{self.name}.Forest.techno_capital',
-                     #f'{self.name}.Forest.non_use_capital'
                      ]
         )
