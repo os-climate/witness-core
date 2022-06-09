@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
@@ -330,7 +330,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                      ]
         )
 
-    def _test_forest_analytic_grad_managed_limit(self):
+    def test_forest_analytic_grad_managed_limit(self):
         # deforestation reaches the unmanaged and managed limits
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
@@ -517,7 +517,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {"years": years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
             {'years': years, 'investment': np.array([0.00, 0.00, 0.00, 0.00,
-                                                     0.00, 0.00, 30000.00, 0.00,
+                                                     0.00, 0.00, 30000.00, 10.00,
                                                      0.00, 0.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
 
