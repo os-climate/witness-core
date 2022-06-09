@@ -130,7 +130,39 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                     ('N2O_land_emissions', f'{techno}'),
                     (f'{techno}.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'), np.identity(np_years))
 
-    def get_chart_co2_emissions(self):
+    def get_chart_filter_list(self):
+
+        # For the outputs, making a graph for tco vs year for each range and for specific
+        # value of ToT with a shift of five year between then
+
+        chart_filters = []
+
+        chart_list = ['GHG emissions']
+        # First filter to deal with the view : program or actor
+        chart_filters.append(ChartFilter(
+            'Charts', chart_list, chart_list, 'charts'))
+
+        return chart_filters
+
+    def get_post_processing_list(self, chart_filters=None):
+
+        # For the outputs, making a graph for tco vs year for each range and for specific
+        # value of ToT with a shift of five year between then
+
+        instanciated_charts = []
+        charts = []
+        if chart_filters is not None:
+            for chart_filter in chart_filters:
+                charts = chart_filter.selected_values
+
+        if 'GHG emissions' in charts:
+                new_charts = self.get_chart_ghg_emissions()
+                if new_charts is not None:
+                    instanciated_charts += new_charts
+
+        return instanciated_charts
+
+    def get_chart_ghg_emissions(self):
         new_charts = []
 
         # all ghg graph
