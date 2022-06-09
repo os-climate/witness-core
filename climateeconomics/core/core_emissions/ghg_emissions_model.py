@@ -39,6 +39,8 @@ class GHGEmissions():
         self.time_step = self.param['time_step']
 
         self.CO2_land_emissions = self.param['CO2_land_emissions']
+        self.CH4_land_emissions = self.param['CH4_land_emissions']
+        self.N2O_land_emissions = self.param['N2O_land_emissions']
         self.CO2_indus_emissions_df = self.param['CO2_indus_emissions_df']
         self.GHG_total_energy_emissions = self.param['GHG_total_energy_emissions']
         # Conversion factor 1Gtc = 44/12 GT of CO2
@@ -51,6 +53,8 @@ class GHGEmissions():
     def configure_parameters_update(self, inputs_dict):
 
         self.CO2_land_emissions = inputs_dict['CO2_land_emissions']
+        self.CH4_land_emissions = inputs_dict['CH4_land_emissions']
+        self.N2O_land_emissions = inputs_dict['N2O_land_emissions']
         self.CO2_indus_emissions_df = inputs_dict['CO2_indus_emissions_df']
         self.GHG_total_energy_emissions = inputs_dict['GHG_total_energy_emissions']
         self.create_dataframe()
@@ -76,8 +80,10 @@ class GHGEmissions():
 
         self.ghg_emissions_df['CO2 land_emissions'] = self.CO2_land_emissions.drop(
             'years', axis=1).sum(axis=1).values
-        self.ghg_emissions_df['CH4 land_emissions'] = 0.
-        self.ghg_emissions_df['N2O land_emissions'] = 0.
+        self.ghg_emissions_df['CH4 land_emissions'] = self.CH4_land_emissions.drop(
+            'years', axis=1).sum(axis=1).values
+        self.ghg_emissions_df['N2O land_emissions'] = self.N2O_land_emissions.drop(
+            'years', axis=1).sum(axis=1).values
 
     def compute_total_emissions(self):
         '''

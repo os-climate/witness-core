@@ -133,18 +133,6 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         self.CO2_emissions_forest = pd.DataFrame(
             {'years': self.years, 'Forest': CO2_emissions})
 
-        CO2_land_emissions = np.linspace(3.21, 4, year_range)
-        self.CO2_land_emissions = pd.DataFrame(
-            {'years': self.years, 'emitted_CO2_evol_cumulative': CO2_land_emissions})
-
-        CH4_land_emissions = np.linspace(3.21/100, 4/100, year_range)
-        self.CH4_land_emissions = pd.DataFrame(
-            {'years': self.years, 'emitted_CH4_evol_cumulative': CH4_land_emissions})
-
-        N2O_land_emissions = np.linspace(3.21 / 500, 4 / 500, year_range)
-        self.N2O_land_emissions = pd.DataFrame(
-            {'years': self.years, 'emitted_N2O_evol_cumulative': N2O_land_emissions})
-
         land_use_required = np.linspace(4, 3.5, year_range)
         self.land_use_required_forest = pd.DataFrame(
             {'years': self.years, 'Forest (Gha)': land_use_required})
@@ -195,16 +183,12 @@ class AgricultureMixModelTestCase(unittest.TestCase):
                        f'{test_name}.{disc_name}.Crop.techno_production': self.techno_production_crop,
                        f'{test_name}.{disc_name}.Crop.techno_prices': self.techno_prices_crop,
                        f'{test_name}.{disc_name}.Crop.CO2_emissions': self.CO2_emissions_crop,
-                       f'{test_name}.{disc_name}.Crop.CO2_land_emission_df': self.CO2_land_emissions,
-                       f'{test_name}.{disc_name}.Crop.CH4_land_emission_df': self.CH4_land_emissions,
-                       f'{test_name}.{disc_name}.Crop.N2O_land_emission_df': self.N2O_land_emissions,
                        f'{test_name}.{disc_name}.Crop.land_use_required': self.land_use_required_crop,
                        f'{test_name}.{disc_name}.Forest.techno_consumption': self.techno_consumption_forest,
                        f'{test_name}.{disc_name}.Forest.techno_consumption_woratio': self.techno_consumption_woratio_forest,
                        f'{test_name}.{disc_name}.Forest.techno_production': self.techno_production_forest,
                        f'{test_name}.{disc_name}.Forest.techno_prices': self.techno_prices_forest,
                        f'{test_name}.{disc_name}.Forest.CO2_emissions': self.CO2_emissions_forest,
-                       f'{test_name}.{disc_name}.Forest.CO2_land_emission_df': self.CO2_land_emissions,
                        f'{test_name}.{disc_name}.Forest.land_use_required': self.land_use_required_forest,
                        f'{test_name}.technologies_list': self.technology_list,
                        f'{test_name}.CO2_taxes': self.co2_taxes,
