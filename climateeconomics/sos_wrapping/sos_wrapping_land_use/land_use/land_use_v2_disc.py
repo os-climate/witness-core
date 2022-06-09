@@ -189,13 +189,13 @@ class LandUseV2Discipline(SoSDiscipline):
                                 name=legend,
                             ), secondary_y=False)
                     fig.add_trace(go.Scatter(x=years, y=list(np.ones(len(years))*total_land_available),
-                                             line=dict(color=qualitative.Dark2[7], width=4),
+                                             line=dict(color=qualitative.Dark2[7]),
                                              name='Total Land Available'), secondary_y=False)
                     fig.add_trace(go.Scatter(
                         x=years,
                         y=list(np.maximum(0.0,-land_demand_constraint)),
                         name="Land Demand Constraint (capped below 0)",
-                        line=dict(color=qualitative.Set1[0], width=4),
+                        line=dict(color=qualitative.Set1[0]),
                     ), secondary_y=True)
                     fig.update_layout(
                         barmode='stack',)
