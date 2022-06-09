@@ -22,7 +22,7 @@ from pandas import read_csv
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 
 
-class GHGEmissionDiscTest(unittest.TestCase):
+class AgricultureGHGEmissionDiscTest(unittest.TestCase):
 
     def setUp(self):
 
@@ -31,17 +31,16 @@ class GHGEmissionDiscTest(unittest.TestCase):
 
     def test_execute(self):
 
-        self.model_name = 'ghgemission'
+        self.model_name = 'agriculture_emissions'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   'ns_agriculture': f'{self.name}',
                    'ns_ref': f'{self.name}',
-                   'ns_ccs': f'{self.name}',
-                   'ns_energy': f'{self.name}'}
+                   }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -53,31 +52,26 @@ class GHGEmissionDiscTest(unittest.TestCase):
         year_start = 2020
         year_end = 2100
         years = np.arange(year_start, year_end + 1)
-        GHG_total_energy_emissions = pd.DataFrame({'years': years,
-                                                   'Total CO2 emissions': np.linspace(37., 10., len(years)),
-                                                   'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
-                                                   'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
-        CO2_land_emissions = pd.DataFrame({'years': years,
-                                           'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
-        N2O_land_emissions = pd.DataFrame({'years': years,
-                                           'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
-        CH4_land_emissions = pd.DataFrame({'years': years,
-                                           'Crop': np.linspace(0., 0., len(years)),
-                                           'Forest': np.linspace(3., 4., len(years))})
 
-        CO2_indus_emissions_df = pd.DataFrame({'years': years,
-                                               'indus_emissions': np.linspace(1., 2., len(years))})
+        CO2_land_emissions = pd.DataFrame({'years': years,
+                                           'emitted_CO2_evol_cumulative': np.linspace(0., 0.7, len(years))})
+        N2O_land_emissions = pd.DataFrame({'years': years,
+                                           'emitted_N2O_evol_cumulative': np.linspace(0., 0.4, len(years)),
+                                           })
+        CH4_land_emissions = pd.DataFrame({'years': years,
+                                           'emitted_CH4_evol_cumulative': np.linspace(0., 0.5, len(years)),
+                                           })
+
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
-                       f'{self.name}.CO2_land_emissions': CO2_land_emissions,
-                       f'{self.name}.CH4_land_emissions': CH4_land_emissions,
-                       f'{self.name}.N2O_land_emissions': N2O_land_emissions,
-                       f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
-                       f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions, }
+                       f'{self.name}.technologies_list': ['Crop', 'Forest'],
+                       f'{self.name}.Crop.CO2_land_emission_df': CO2_land_emissions,
+                       f'{self.name}.Forest.CO2_land_emission_df': CO2_land_emissions,
+                       f'{self.name}.Crop.CH4_land_emission_df': CH4_land_emissions,
+                       f'{self.name}.Crop.N2O_land_emission_df': N2O_land_emissions,
+                       }
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 

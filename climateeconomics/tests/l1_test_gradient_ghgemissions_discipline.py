@@ -67,12 +67,20 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         CO2_land_emissions = pd.DataFrame({'years': years,
                                            'Crop': np.linspace(0., 0., len(years)),
                                            'Forest': np.linspace(3., 4., len(years))})
+        CH4_land_emissions = pd.DataFrame({'years': years,
+                                           'Crop': np.linspace(0., 0., len(years)),
+                                           'Forest': np.linspace(3., 4., len(years))})
+        N2O_land_emissions = pd.DataFrame({'years': years,
+                                           'Crop': np.linspace(0., 0., len(years)),
+                                           'Forest': np.linspace(3., 4., len(years))})
 
         CO2_indus_emissions_df = pd.DataFrame({'years': years,
                                                'indus_emissions': np.linspace(1., 2., len(years))})
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
                        f'{self.name}.CO2_land_emissions': CO2_land_emissions,
+                       f'{self.name}.CH4_land_emissions': CH4_land_emissions,
+                       f'{self.name}.N2O_land_emissions': N2O_land_emissions,
                        f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
                        f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions, }
 
@@ -82,6 +90,8 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ghg_emission_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.CO2_land_emissions',
+                                    f'{self.name}.CH4_land_emissions',
+                                    f'{self.name}.N2O_land_emissions',
                                     f'{self.name}.CO2_indus_emissions_df',
                                     f'{self.name}.GHG_total_energy_emissions'],
                             outputs=[f'{self.name}.co2_emissions_Gt',
