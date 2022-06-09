@@ -105,16 +105,10 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             if column != "years":
                 self.set_partial_derivative_for_other_types(
                     ('CO2_emissions_df', 'total_emissions'), ('CO2_land_emissions', column),  np.identity(len(years)))
-                self.set_partial_derivative_for_other_types(
-                    ('CO2_emissions_df', 'cum_total_emissions'), ('CO2_land_emissions', column),  np.tril(np.ones((len(years), len(years)))))
         self.set_partial_derivative_for_other_types(
             ('CO2_emissions_df', 'total_emissions'), ('CO2_indus_emissions_df', 'indus_emissions'),  np.identity(len(years)))
         self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'cum_total_emissions'), ('CO2_indus_emissions_df', 'indus_emissions'),  np.tril(np.ones((len(years), len(years)))))
-        self.set_partial_derivative_for_other_types(
             ('CO2_emissions_df', 'total_emissions'), ('GHG_total_energy_emissions', 'Total CO2 emissions'),  np.identity(len(years)))
-        self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'cum_total_emissions'), ('GHG_total_energy_emissions', 'Total CO2 emissions'),  np.tril(np.ones((len(years), len(years)))))
         self.set_partial_derivative_for_other_types(
             ('co2_emissions_Gt', 'Total CO2 emissions'), ('GHG_total_energy_emissions', 'Total CO2 emissions'),  np.identity(len(years)))
 
