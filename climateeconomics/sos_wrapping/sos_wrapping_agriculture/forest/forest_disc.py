@@ -179,6 +179,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
         Forest.WOOD_TECHNO_DICT: {'type': 'dict', 'unit': '-',  'default': wood_techno_dict,
                                   'namespace': 'ns_forest'},
+        # TODO: not used anymore, to delete
         Forest.MW_INITIAL_PROD: {'type': 'float', 'unit': 'TWh',  'default': mw_initial_production,
                                  'namespace': 'ns_forest'},
         Forest.MW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha',  'default': mw_initial_surface,

@@ -238,8 +238,8 @@ class Forest():
         # first investment
         self.managed_wood_df['delta_biomass_production (Mt)'] = self.managed_wood_df['delta_surface'] * density_per_ha * mean_density / \
             years_between_harvest / (1 - recycle_part)
-        self.managed_wood_df['biomass_production (Mt)'] = np.cumsum(
-            self.managed_wood_df['delta_biomass_production (Mt)']) + self.managed_wood_inital_prod / self.biomass_dry_calorific_value
+        self.managed_wood_df['biomass_production (Mt)'] = self.managed_wood_df['cumulative_surface'] * density_per_ha * mean_density / \
+            years_between_harvest / (1 - recycle_part)
         self.managed_wood_df['residues_production (Mt)'] = self.managed_wood_df['biomass_production (Mt)'] * \
             residue_density_percentage
         self.managed_wood_df['residues_production_for_energy (Mt)'] = self.managed_wood_df['residues_production (Mt)'] * \
