@@ -10,7 +10,6 @@ The forest model takes the following data as inputs:
 - **year_start**, the first year of the study. Default is 2020.
 - **year_end**, the final year of the study. Default is 2100.
 - **time_step**, the number of year between two data computation. Default is 1.
-- **limit_deforestation_surface**, the maximum surface in Mha which can be deforested during the study.
 - **deforestation_investment**, the money invested in the deforestation. Unit is G$.
 - **deforestation_cost_per_ha**, the average price to deforest 1ha of land. Unit is \$/ha. Default value is 12000 \$/ha [^1].
 - **CO2_per_ha**, the quantity of CO2 captured by 1 hectare of forest during one year. Unit is kgCO2/ha/year. Default value is 4000kgC02/ha/year [^2].

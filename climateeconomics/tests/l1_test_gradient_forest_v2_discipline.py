@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    #np.set_printoptions(threshold=np.inf)
+    # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
 
@@ -63,7 +63,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         self.CO2_per_ha = 13000
-        self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
         forest_invest = np.linspace(2, 10, year_range)
@@ -122,9 +121,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
-        self.mw_initial_production = 1.25 * 0.92 * \
-            density_per_ha * mean_density * 3.6 / \
-            years_between_harvest / (1 - recycle_part)  # in Twh
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -141,7 +137,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.time_step': 1,
-                       f'{self.name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -149,7 +144,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
                        f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{self.name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{self.name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
@@ -271,9 +265,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
-        self.mw_initial_production = 1.25 * 0.92 * \
-            density_per_ha * mean_density * 3.6 / \
-            years_between_harvest / (1 - recycle_part)  # in Twh
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -290,7 +281,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.time_step': 1,
-                       f'{self.name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -298,7 +288,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
                        f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{self.name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{self.name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
@@ -420,9 +409,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
-        self.mw_initial_production = 1.25 * 0.92 * \
-            density_per_ha * mean_density * 3.6 / \
-            years_between_harvest / (1 - recycle_part)  # in Twh
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -439,7 +425,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.time_step': 1,
-                       f'{self.name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -447,7 +432,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
                        f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{self.name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{self.name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
@@ -570,9 +554,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
-        self.mw_initial_production = 1.25 * 0.92 * \
-            density_per_ha * mean_density * 3.6 / \
-            years_between_harvest / (1 - recycle_part)  # in Twh
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -589,7 +570,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.time_step': 1,
-                       f'{self.name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -597,7 +577,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
                        f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{self.name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{self.name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
