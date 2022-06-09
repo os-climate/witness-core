@@ -101,7 +101,8 @@ class ForestTestCase(unittest.TestCase):
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
-        self.mw_initial_production = 23080  # TWh
+        self.mw_initial_production = 1.15* density_per_ha * mean_density *3.6 / \
+            years_between_harvest / (1 - recycle_part) #TWh
 
         mw_invest = np.linspace(10, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -303,8 +304,8 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
     def test_forest_discipline_high_lost_capital(self):
         '''
