@@ -23,7 +23,6 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class AgricultureMixDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Agriculture Mix Model',
@@ -38,12 +37,13 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': ['Crop', 'Forest'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_agriculture',
                                      'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'unit': 'defined in dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'unit': 'defined in dict',
+                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
@@ -89,7 +89,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         CH4_emitted_crop_df = self.get_sosdisc_inputs('Crop.CH4_land_emission_df')
         N2O_emitted_crop_df = self.get_sosdisc_inputs('Crop.N2O_land_emission_df')
         CO2_emitted_forest_df = self.get_sosdisc_inputs('Forest.CO2_land_emission_df')
-        
+
         CO2_emissions_land_use_df = pd.DataFrame()
         CH4_emissions_land_use_df = pd.DataFrame()
         N2O_emissions_land_use_df = pd.DataFrame()
@@ -119,10 +119,12 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         techno_list = self.get_sosdisc_inputs('technologies_list')
         for techno in techno_list:
             self.set_partial_derivative_for_other_types(
-                ('CO2_land_emissions', f'{techno}'), (f'{techno}.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'), np.identity(np_years))
+                ('CO2_land_emissions', f'{techno}'), (f'{techno}.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+                np.identity(np_years))
             if techno == 'Crop':
                 self.set_partial_derivative_for_other_types(
-                    ('CH4_land_emissions', f'{techno}'), (f'{techno}.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'), np.identity(np_years))
+                    ('CH4_land_emissions', f'{techno}'),
+                    (f'{techno}.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'), np.identity(np_years))
                 self.set_partial_derivative_for_other_types(
                     ('N2O_land_emissions', f'{techno}'),
                     (f'{techno}.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'), np.identity(np_years))
