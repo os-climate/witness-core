@@ -175,8 +175,6 @@ class SectorModel():
         capital = self.capital_df.loc[year, 'capital'] * 1e3
         # compute energy_efficiency
         energy_efficiency = cst + max_e / (1 + np.exp(-k * (year - xo)))
-        if year == 2020: 
-            energy_efficiency = 2.7565
         # Then compute e_max
         e_max = capital / (capital_utilisation_ratio * energy_efficiency)
 
