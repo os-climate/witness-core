@@ -47,7 +47,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'technologies_list': {'type': 'string_list',
+        'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': ['Crop', 'Forest'],
                                      'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_agriculture',
