@@ -23,7 +23,9 @@ from climateeconomics.core.core_resources.models.coal_resource.coal_resource_dis
 from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import \
     NaturalGasResourceDiscipline
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+
+from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
+from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
@@ -66,7 +68,11 @@ class ResourceMixDiscipline(SoSDiscipline):
             {'price': 1.379 * 35310700 * 10 ** -6,
              'production': 1 / 1.379, 'stock': 1 / 1.379},
         OilResourceDiscipline.resource_name:
-            {'price': 7.33, 'production': 1.0, 'stock': 1.0},
+
+        {'price': 7.33, 'production': 1.0, 'stock': 1.0},
+        CopperResourceDiscipline.resource_name:
+            {'price': 1.0, 'production': 1.0, 'stock': 1.0},
+
     }
 
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
