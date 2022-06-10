@@ -19,7 +19,7 @@ from climateeconomics.core.core_resources.models.coal_resource.coal_resource_dis
 from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
 from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import NaturalGasResourceDiscipline
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
-
+from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
 
 class ProcessBuilder(BaseProcessBuilder):
 
@@ -35,6 +35,7 @@ class ProcessBuilder(BaseProcessBuilder):
     OIL_NAME = OilResourceDiscipline.resource_name
     NATURAL_GAS_NAME = NaturalGasResourceDiscipline.resource_name
     URANIUM_NAME = UraniumResourceDiscipline.resource_name
+    COPPER_NAME = CopperResourceDiscipline.resource_name
 
     def get_builders(self):
 
@@ -44,6 +45,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_oil_resource': f'{ns_scatter}.{self.OIL_NAME}',
                    'ns_natural_gas_resource': f'{ns_scatter}.{self.NATURAL_GAS_NAME}',
                    'ns_uranium_resource': f'{ns_scatter}.{self.URANIUM_NAME}',
+                   'ns_copper_resource': f'{ns_scatter}.{self.COPPER_NAME}',
                    'ns_public': self.ee.study_name,
                    'ns_resource': ns_scatter,
                    }
@@ -52,6 +54,7 @@ class ProcessBuilder(BaseProcessBuilder):
                      f'Resources.{self.OIL_NAME}': 'climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc.OilResourceDiscipline',
                      f'Resources.{self.NATURAL_GAS_NAME}': 'climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc.NaturalGasResourceDiscipline',
                      f'Resources.{self.URANIUM_NAME}': 'climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc.UraniumResourceDiscipline',
+                     f'Resources.{self.COPPER_NAME}': 'climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc.CopperResourceDiscipline',
                      'Resources': 'climateeconomics.core.core_resources.resource_mix.resource_mix_disc.ResourceMixDiscipline'
                      }
         #chain_builders_resource = self.ee.factory.get_builder_from_module()

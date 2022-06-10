@@ -163,12 +163,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         Forest.DEFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha',  'default': 8000,
                                            'namespace': 'ns_forest'},
-        # TODO: not used anymore, to delete
-        Forest.LIMIT_DEFORESTATION_SURFACE: {'type': 'float', 'unit': 'Mha',  'default': deforestation_limit,
-                                             'namespace': 'ns_forest', },
         Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2',  'default': initial_emissions,
                                        'namespace': 'ns_forest', },
-        # TODO: not used anymore, to delete
         Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year',  'default': 4000,
                             'namespace': 'ns_forest'},
         Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha',  'default': 13800,
@@ -179,9 +175,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
         Forest.WOOD_TECHNO_DICT: {'type': 'dict', 'unit': '-',  'default': wood_techno_dict,
                                   'namespace': 'ns_forest'},
-        # TODO: not used anymore, to delete
-        Forest.MW_INITIAL_PROD: {'type': 'float', 'unit': 'TWh',  'default': mw_initial_production,
-                                 'namespace': 'ns_forest'},
         Forest.MW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha',  'default': mw_initial_surface,
                                     'namespace': 'ns_forest'},
         Forest.MW_INVEST_BEFORE_YEAR_START: {'type': 'dataframe', 'unit': 'G$',
@@ -659,7 +652,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 'biomass_dry_detail_df')
 
             # chart biomass dry for energy production
-            new_chart = TwoAxesInstanciatedChart('years', 'biomass dry [Mt]',
+            new_chart = TwoAxesInstanciatedChart('years', 'Biomass dry [Mt]',
                                                  chart_name='Break down of biomass dry production for energy', stacked_bar=True)
             mw_residues_energy = managed_wood_df[
                 'residues_production_for_energy (Mt)']
@@ -710,7 +703,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             # chart total biomass dry production
-            new_chart = TwoAxesInstanciatedChart('years', 'biomass dry [Mt]',
+            new_chart = TwoAxesInstanciatedChart('years', 'Biomass dry [Mt]',
                                                  chart_name='Break down of biomass dry production', stacked_bar=True)
             residues_industry = managed_wood_df[
                 'residues_production_for_industry (Mt)'].values
@@ -772,7 +765,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             # lost capital graph
             lost_capital_df = self.get_sosdisc_outputs('forest_lost_capital')
             new_chart = TwoAxesInstanciatedChart('years', 'Capital [G$]',
-                                                 chart_name='Lost capital due to deforestation<br> vs total capital', stacked_bar=True)
+                                                 chart_name='Lost capital due to deforestation', stacked_bar=True)
 
             lost_capital_reforestation = lost_capital_df['reforestation']
             lost_capital_managed_wood = lost_capital_df['managed_wood']
@@ -782,13 +775,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 years, lost_capital_reforestation.tolist(), 'Reforestation lost capital', InstanciatedSeries.BAR_DISPLAY)
             lost_capital_managed_wood_series = InstanciatedSeries(
                 years, lost_capital_managed_wood.tolist(), 'Managed wood lost capital', InstanciatedSeries.BAR_DISPLAY)
-            new_serie_deforestation = InstanciatedSeries(
+            lost_capital_deforestation = InstanciatedSeries(
                 years, lost_capital_deforestation.tolist(), 'Deforestation Lost Capital', 'bar')
 
             # new_chart.add_series(total_capital_series)
             new_chart.add_series(lost_capital_reforestation_series)
             new_chart.add_series(lost_capital_managed_wood_series)
-            new_chart.series.append(new_serie_deforestation)
+            new_chart.series.append(lost_capital_deforestation)
             instanciated_charts.append(new_chart)
 
         return instanciated_charts

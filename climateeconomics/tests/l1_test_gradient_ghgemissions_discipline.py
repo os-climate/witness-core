@@ -95,4 +95,4 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CO2_indus_emissions_df',
                                     f'{self.name}.GHG_total_energy_emissions'],
                             outputs=[f'{self.name}.co2_emissions_Gt',
-                                     f'{self.name}.CO2_emissions_df'])
+                                     f'{self.name}.GHG_emissions_df'])

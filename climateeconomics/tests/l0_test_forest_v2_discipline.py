@@ -38,8 +38,6 @@ class ForestTestCase(unittest.TestCase):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         self.CO2_per_ha = 4000
-        # Mha
-        self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
         forest_invest = np.linspace(45, 50, year_range)
@@ -101,8 +99,6 @@ class ForestTestCase(unittest.TestCase):
                                          }
         self.invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
-        self.mw_initial_production = 1.15* density_per_ha * mean_density *3.6 / \
-            years_between_harvest / (1 - recycle_part) #TWh
 
         mw_invest = np.linspace(10, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -126,13 +122,11 @@ class ForestTestCase(unittest.TestCase):
                       'time_step': self.time_step,
                       Forest.DEFORESTATION_INVESTMENT: self.deforest_invest_df,
                       Forest.DEFORESTATION_COST_PER_HA: 8000,
-                      Forest.LIMIT_DEFORESTATION_SURFACE: self.limit_deforestation_surface,
                       Forest.CO2_PER_HA: self.CO2_per_ha,
                       Forest.INITIAL_CO2_EMISSIONS: self.initial_emissions,
                       Forest.REFORESTATION_INVESTMENT:  self.forest_invest_df,
                       Forest.REFORESTATION_COST_PER_HA:  self.reforestation_cost_per_ha,
                       'wood_techno_dict': self.managed_wood_techno_dict,
-                      'managed_wood_initial_prod': self.mw_initial_production,
                       'managed_wood_initial_surface': 1.25 * 0.92,
                       'managed_wood_invest_before_year_start': self.invest_before_year_start,
                       'managed_wood_investment': self.mw_invest_df,
@@ -199,16 +193,13 @@ class ForestTestCase(unittest.TestCase):
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.time_step': 1,
-                       f'{name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
                        f'{name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
-                       f'{name}.{model_name}.managed_wood_initial_prod': self.managed_wood_techno_dict,
                        f'{name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
@@ -278,7 +269,6 @@ class ForestTestCase(unittest.TestCase):
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.time_step': 1,
-                       f'{name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -286,7 +276,6 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
                        f'{name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
@@ -304,8 +293,8 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
 
     def test_forest_discipline_high_lost_capital(self):
         '''
@@ -391,7 +380,6 @@ class ForestTestCase(unittest.TestCase):
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.time_step': 1,
-                       f'{name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -399,7 +387,6 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
                        f'{name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
@@ -417,8 +404,8 @@ class ForestTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
 
     def test_forest_discipline_low_lost_capital(self):
         '''
@@ -504,7 +491,6 @@ class ForestTestCase(unittest.TestCase):
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.time_step': 1,
-                       f'{name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -512,7 +498,6 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
                        f'{name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
@@ -592,7 +577,6 @@ class ForestTestCase(unittest.TestCase):
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.time_step': 1,
-                       f'{name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -600,7 +584,6 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
                        f'{name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{name}.{model_name}.managed_wood_initial_prod': self.mw_initial_production,
                        f'{name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{name}.{model_name}.managed_wood_investment': self.mw_invest_df,
@@ -620,4 +603,3 @@ class ForestTestCase(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
-

@@ -73,8 +73,6 @@ class Study(StudyManager):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
-        deforestation_limit = 1000
-
         initial_emissions = 3.21
 
         CO2_per_ha = 4000
@@ -110,7 +108,7 @@ class Study(StudyManager):
                             'wood_residue_colorific_value': 4.356,
                             'Opex_percentage': 0.045,
                             'managed_wood_price_per_ha': 14872,  # 13047,
-                            'Price_per_ha_unit': 'euro/ha',
+                            'Price_per_ha_unit': '$/ha',
                             'full_load_hours': 8760.0,
                             'euro_dollar': 1.1447,  # in 2019, date of the paper
                             'percentage_production': 0.52,
@@ -138,9 +136,6 @@ class Study(StudyManager):
                             }
         invest_before_year_start = pd.DataFrame(
             {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
-        mw_initial_production = 1.25 * 0.92 * \
-            density_per_ha * mean_density * 3.6 / \
-            years_between_harvest / (1 - recycle_part)  # in Twh
 
         mw_invest = np.linspace(1, 4, year_range)
         mw_invest_df = pd.DataFrame(
@@ -164,9 +159,6 @@ class Study(StudyManager):
         forest_input[self.study_name + '.year_end'] = self.year_end
 
         forest_input[self.study_name + self.forest_name +
-                     '.limit_deforestation_surface'] = deforestation_limit
-
-        forest_input[self.study_name + self.forest_name +
                      '.CO2_per_ha'] = CO2_per_ha
 
         forest_input[self.study_name + self.forest_name +
@@ -179,8 +171,6 @@ class Study(StudyManager):
 
         forest_input[self.study_name + self.forest_name +
                      '.wood_techno_dict'] = wood_techno_dict
-        forest_input[self.study_name + self.forest_name +
-                     '.managed_wood_initial_prod'] = mw_initial_production
         # 1.15 = 1.25 * 0.92
         forest_input[self.study_name + self.forest_name +
                      '.managed_wood_initial_surface'] = 1.15
