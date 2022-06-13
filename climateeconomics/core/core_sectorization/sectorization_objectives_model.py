@@ -96,8 +96,12 @@ class ObjectivesModel():
         """
         Compute quadratic error. Inputs: ref and pred are arrays
         """
+        #Find maximum value in data to normalise objective
+        norm_value = np.amax(ref)
         delta = np.subtract(pred, ref)
-        delta_squared = np.square(delta)
+        #And normalise delta
+        delta_norm = delta / norm_value
+        delta_squared = np.square(delta_norm)
         error = np.mean(delta_squared)
         return error
     
