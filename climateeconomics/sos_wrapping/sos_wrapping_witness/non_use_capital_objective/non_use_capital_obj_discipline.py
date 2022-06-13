@@ -243,10 +243,15 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         if is_dev:
             forest_lost_capital_cons_ref = inputs_dict['forest_lost_capital_cons_ref']
             self.set_partial_derivative_for_other_types(
-                ('forest_lost_capital_cons',), ('forest_lost_capital', 'reforestation'),
+                ('forest_lost_capital_cons',
+                 ), ('forest_lost_capital', 'reforestation'),
                 - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
             self.set_partial_derivative_for_other_types(
                 ('forest_lost_capital_cons',), ('forest_lost_capital', 'managed_wood'),
+                - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
+            self.set_partial_derivative_for_other_types(
+                ('forest_lost_capital_cons',
+                 ), ('forest_lost_capital', 'deforestation'),
                 - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
 
     def get_chart_filter_list(self):
