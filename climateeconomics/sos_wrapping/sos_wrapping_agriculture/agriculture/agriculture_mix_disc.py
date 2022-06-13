@@ -23,7 +23,6 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
 
 
 class AgricultureMixDiscipline(EnergyDiscipline):
-
     # ontology information
     _ontology_data = {
         'label': 'Agriculture Mix Model',
@@ -38,12 +37,13 @@ class AgricultureMixDiscipline(EnergyDiscipline):
         'version': '',
     }
 
-    DESC_IN = {'technologies_list': {'type': 'string_list',
+    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': ['Crop', 'Forest'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_agriculture',
                                      'structuring': True},
-               'data_fuel_dict': {'type': 'dict', 'unit': 'defined in dict', 'visibility': EnergyDiscipline.SHARED_VISIBILITY,
+               'data_fuel_dict': {'type': 'dict', 'unit': 'defined in dict',
+                                  'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                   'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)

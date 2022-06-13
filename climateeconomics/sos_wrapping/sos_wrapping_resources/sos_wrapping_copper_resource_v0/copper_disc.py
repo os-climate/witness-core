@@ -1,6 +1,7 @@
 # from sos_trades_core.api import SoSDiscipline, InstanciatedSeries, TwoAxesInstanciatedChart, ChartFilter
 from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 from climateeconomics.core.core_resources.new_resources_v0.copper_model import CopperModel
@@ -10,7 +11,6 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 
 
 class CopperDisc(SoSDiscipline):
-
     _ontology_data = {
         'label': 'Copper Resource Model',
         'type': 'Research',
@@ -28,8 +28,11 @@ class CopperDisc(SoSDiscipline):
     DESC_IN = {'copper_demand': {'type': 'dataframe', 'unit': 'Mt'},
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'annual_extraction': {'type': 'float_list', 'unit': 'Mt', 'default': [26] * 81},
-               'initial_copper_reserve': {'type': 'float', 'unit': 'Mt', 'default': 3500, 'user_level': 2},
+
+               'annual_extraction': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': 'Mt',
+                                     'default': [26] * 81},
+               'initial_copper_reserve': {'type': 'float', 'unit': 'Mt', 'default': 3500,'user_level': 2},
+
                'initial_copper_stock': {'type': 'float', 'unit': 'Mt', 'default': 880, 'user_level': 2}}
 
     DESC_OUT = {CopperModel.COPPER_RESERVE: {'type': 'dataframe', 'unit': 'million_tonnes'},
@@ -82,7 +85,6 @@ class CopperDisc(SoSDiscipline):
                     charts_list = chart_filter.selected_values
 
         if 'all' in charts_list:
-
             period_of_exploitation = np.arange(
                 self.DESC_IN['year_start']['default'], self.DESC_IN['year_end']['default'] + 1, 1).tolist()
 
@@ -100,7 +102,7 @@ class CopperDisc(SoSDiscipline):
             extraction_list = production['Extraction'].values
 
             chart_production = TwoAxesInstanciatedChart('Years [y]',
-                                                        'Production [Mt]',  chart_name="Copper Production")
+                                                        'Production [Mt]', chart_name="Copper Production")
 
             chart_stock = TwoAxesInstanciatedChart('Years [y]',
                                                    'Stock [Mt]', chart_name="Copper Use")
@@ -109,10 +111,11 @@ class CopperDisc(SoSDiscipline):
                                                              'Price/t [USD/t]', chart_name="Copper Price Evolution")
 
             chart_copper_situation = TwoAxesInstanciatedChart('Years [y]',
-                                                              'Copper [Mt]', chart_name="Copper Repartition", stacked_bar=True)
+                                                              'Copper [Mt]', chart_name="Copper Repartition",
+                                                              stacked_bar=True)
 
             chart_ratio = TwoAxesInstanciatedChart('Years [y]',
-                                                   'Ratio [-]',  chart_name="Copper Ratio extraction/demand")
+                                                   'Ratio [-]', chart_name="Copper Ratio extraction/demand")
 
             production_series = InstanciatedSeries(
                 period_of_exploitation, production_list.tolist(), "Copper Production", 'lines')
@@ -127,8 +130,10 @@ class CopperDisc(SoSDiscipline):
             ratio_series = InstanciatedSeries(
                 period_of_exploitation, ratio_list.tolist(), "Copper Ratio", 'lines')
 
-            bar_cumulated_production_serie = InstanciatedSeries(period_of_exploitation, cumulated_production_list.tolist(
-            ), "Cumulated Copper Consumption", InstanciatedSeries.BAR_DISPLAY)
+            bar_cumulated_production_serie = InstanciatedSeries(period_of_exploitation,
+                                                                cumulated_production_list.tolist(
+                                                                ), "Cumulated Copper Consumption",
+                                                                InstanciatedSeries.BAR_DISPLAY)
             bar_stock_series = InstanciatedSeries(period_of_exploitation, stock_list.tolist(
             ), "Copper Stock", InstanciatedSeries.BAR_DISPLAY)
             bar_reserve_series = InstanciatedSeries(period_of_exploitation, reserve_list.tolist(

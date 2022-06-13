@@ -45,6 +45,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'coal.predictible_production.csv'))
         self.uranium_production_df = read_csv(
             join(data_dir, 'uranium.predictible_production.csv'))
+        self.copper_production_df = read_csv(
+            join(data_dir, 'copper.predictible_production.csv'))
         self.oil_stock_df = read_csv(
             join(data_dir, 'oil.stock.csv'))
         self.gas_stock_df = read_csv(
@@ -53,6 +55,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'uranium.stock.csv'))
         self.coal_stock_df = read_csv(
             join(data_dir, 'coal.stock.csv'))
+        self.copper_stock_df = read_csv(
+            join(data_dir, 'copper.stock.csv'))
         self.oil_price_df = read_csv(
             join(data_dir, 'oil.price.csv'))
         self.gas_price_df = read_csv(
@@ -61,6 +65,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'coal.price.csv'))
         self.uranium_price_df = read_csv(
             join(data_dir, 'uranium.price.csv'))
+        self.copper_price_df = read_csv(
+            join(data_dir, 'copper.price.csv'))
         self.oil_use_df = read_csv(
             join(data_dir, 'oil.use.csv'))
         self.gas_use_df = read_csv(
@@ -69,6 +75,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'coal.use.csv'))
         self.uranium_use_df = read_csv(
             join(data_dir, 'uranium.use.csv'))
+        self.copper_use_df = read_csv(
+            join(data_dir, 'copper.use.csv'))
         self.non_modeled_resource_df = read_csv(
             join(data_dir, 'resource_data_price.csv'))
         self.all_demand = read_csv(
@@ -99,6 +107,10 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.{self.model_name}.uranium_resource.resource_stock': self.uranium_stock_df,
                             f'{self.name}.{self.model_name}.uranium_resource.resource_price': self.uranium_price_df,
                             f'{self.name}.{self.model_name}.uranium_resource.use_stock': self.uranium_use_df,
+                            f'{self.name}.{self.model_name}.copper_resource.predictable_production': self.copper_production_df,
+                            f'{self.name}.{self.model_name}.copper_resource.resource_stock': self.copper_stock_df,
+                            f'{self.name}.{self.model_name}.copper_resource.resource_price': self.copper_price_df,
+                            f'{self.name}.{self.model_name}.copper_resource.use_stock': self.copper_use_df,
                             f'{self.name}.{self.model_name}.{ResourceMixModel.NON_MODELED_RESOURCE_PRICE}': self.non_modeled_resource_df
                             }
 
@@ -107,6 +119,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                         'ns_oil_resource': f'{self.name}.{self.model_name}',
                         'ns_natural_gas_resource': f'{self.name}.{self.model_name}',
                         'ns_uranium_resource': f'{self.name}.{self.model_name}',
+                        'ns_copper_resource': f'{self.name}.{self.model_name}',
                         'ns_resource': f'{self.name}.{self.model_name}',
                         }
 
@@ -148,6 +161,10 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.uranium_resource.resource_stock': self.uranium_stock_df,
                        f'{self.name}.{self.model_name}.uranium_resource.resource_price': self.uranium_price_df,
                        f'{self.name}.{self.model_name}.uranium_resource.use_stock': self.uranium_use_df,
+                       f'{self.name}.{self.model_name}.copper_resource.predictable_production': self.copper_production_df,
+                       f'{self.name}.{self.model_name}.copper_resource.resource_stock': self.copper_stock_df,
+                       f'{self.name}.{self.model_name}.copper_resource.resource_price': self.copper_price_df,
+                       f'{self.name}.{self.model_name}.copper_resource.use_stock': self.copper_use_df,
                        f'{self.name}.{self.model_name}.{ResourceMixModel.NON_MODELED_RESOURCE_PRICE}': self.non_modeled_resource_df
                        }
         self.ee.load_study_from_input_dict(values_dict)
