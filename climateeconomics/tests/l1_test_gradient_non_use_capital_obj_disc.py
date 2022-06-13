@@ -24,7 +24,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -151,7 +151,8 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                                             'Forest': loss_ref})
         forest_lost_capital = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
                                             'reforestation': loss_reforest,
-                                            'managed_wood': loss_reforest})
+                                            'managed_wood': loss_reforest,
+                                            'deforestation': loss_reforest})
         forest_lost_capital_cons_ref = 1
         forest_lost_capital_cons_limit = 10
 
