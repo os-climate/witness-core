@@ -48,7 +48,6 @@ class NonUseCapitalObjective():
             self.forest_lost_capital_cons_ref = self.param['forest_lost_capital_cons_ref']
             self.forest_lost_capital = self.param['forest_lost_capital']
 
-
     def create_year_range(self):
         '''
         Create the dataframe and fill it with values at year_start
@@ -103,20 +102,30 @@ class NonUseCapitalObjective():
         if 'Sum of non use capital' in self.non_use_capital_df:
             self.non_use_capital_objective_wo_ponderation = np.asarray(
                 [self.non_use_capital_df['Sum of non use capital'].sum()]) / self.delta_years
-            self.non_use_capital_objective = self.alpha * (1 - self.gamma) * self.non_use_capital_objective_wo_ponderation / self.non_use_capital_obj_ref
+            self.non_use_capital_objective = self.alpha * \
+                (1 - self.gamma) * self.non_use_capital_objective_wo_ponderation / \
+                self.non_use_capital_obj_ref
 
     def compute_constraint(self):
         '''
         Compute constraint
         '''
         if 'Sum of non use capital' in self.non_use_capital_df:
-            self.non_use_capital_cons = (self.non_use_capital_cons_limit - self.non_use_capital_objective_wo_ponderation) / self.non_use_capital_cons_ref
-        
+            self.non_use_capital_cons = (
+                self.non_use_capital_cons_limit - self.non_use_capital_objective_wo_ponderation) / self.non_use_capital_cons_ref
+
         if self.is_dev:
-            reforestation_lost_capital_wo_ponderation = np.asarray([self.forest_lost_capital['reforestation'].sum()]) / self.delta_years
-            managed_wood_lost_capital_wo_ponderation = np.asarray([self.forest_lost_capital['managed_wood'].sum()]) / self.delta_years
-            forest_lost_capital_wo_ponderation = reforestation_lost_capital_wo_ponderation + managed_wood_lost_capital_wo_ponderation
-            self.forest_lost_capital_cons = (self.forest_lost_capital_cons_limit - forest_lost_capital_wo_ponderation) / self.forest_lost_capital_cons_ref
+            reforestation_lost_capital_wo_ponderation = np.asarray(
+                [self.forest_lost_capital['reforestation'].sum()]) / self.delta_years
+            managed_wood_lost_capital_wo_ponderation = np.asarray(
+                [self.forest_lost_capital['managed_wood'].sum()]) / self.delta_years
+            deforestation_lost_capital_wo_ponderation = np.asarray(
+                [self.forest_lost_capital['deforestation'].sum()]) / self.delta_years
+            forest_lost_capital_wo_ponderation = reforestation_lost_capital_wo_ponderation + \
+                managed_wood_lost_capital_wo_ponderation + \
+                deforestation_lost_capital_wo_ponderation
+            self.forest_lost_capital_cons = (
+                self.forest_lost_capital_cons_limit - forest_lost_capital_wo_ponderation) / self.forest_lost_capital_cons_ref
 
     def get_objective(self):
         '''
