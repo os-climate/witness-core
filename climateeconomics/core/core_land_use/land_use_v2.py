@@ -65,7 +65,7 @@ class LandUseV2():
     FOREST_COLUMN = 'Forest (Gha)'
 
     # Technologies filtered by land type
-    FOREST_TECHNO = ['Forest (Gha)']
+    FOREST_TECHNO = ['']
     AGRICULTURE_TECHNO = ['Crop (Gha)', 'SolarPv (Gha)', 'SolarThermal (Gha)']
 
 
@@ -129,10 +129,19 @@ class LandUseV2():
         self.land_surface_df['Total Agriculture Surface (Gha)'] = self.land_surface_df['Food Surface (Gha)']
 
         # Loop on techno using agriculture or forest surfaces
+        agri_techno = []
+        forest_techno = []
+        land_demand_columns = list(self.land_demand_df)
         for techno in LandUseV2.AGRICULTURE_TECHNO:
+            if techno in land_demand_columns:
+                agri_techno.append(techno)
+        for techno in LandUseV2.FOREST_TECHNO:
+            if techno in land_demand_columns:
+                forest_techno.append(techno)
+        for techno in agri_techno:
             self.land_surface_df[techno] = self.land_demand_df[techno]
             self.land_surface_df['Total Agriculture Surface (Gha)'] += self.land_surface_df[techno]
-        for techno in LandUseV2.FOREST_TECHNO:
+        for techno in forest_techno:
             self.land_surface_df[techno] = self.land_demand_df[techno]
             self.land_surface_df['Total Forest Surface (Gha)'] += self.land_surface_df[techno]
 
