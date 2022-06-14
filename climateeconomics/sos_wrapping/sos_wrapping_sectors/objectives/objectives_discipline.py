@@ -89,8 +89,6 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {'error_pib_total': {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                     'namespace': 'ns_obj'},
-                'error_cap_total': {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                    'namespace': 'ns_obj'},
                 'historical_energy_efficiency': {'type': 'dataframe', 'unit': '-',
                                                  'dataframe_descriptor': {'years': ('float', None, False),
                                                                           'Agriculture': ('float', None, True),
@@ -136,18 +134,15 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         self.objectives_model.configure_parameters(inputs_dict)
 
         # -- compute
-        error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors, energy_eff_errors, hist_energy_eff = self.objectives_model.compute_all_errors(
-            inputs_dict)
+        error_pib_total, sectors_gdp_errors, energy_eff_errors, hist_energy_eff = self.objectives_model.compute_all_errors(inputs_dict)
 
         # store outputs in a dict
         outputs_dict = {'error_pib_total': np.array([error_pib_total]),
-                        'error_cap_total': np.array([error_cap_total]),
                         'historical_energy_efficiency': hist_energy_eff}
         if 'sector_list' in self._data_in:
             sector_list = self.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 outputs_dict[f'{sector}.gdp_error'] = np.array([sectors_gdp_errors[sector]])
-                outputs_dict[f'{sector}.cap_error'] = np.array([sectors_cap_errors[sector]])
                 outputs_dict[f'{sector}.energy_eff_error'] = np.array([energy_eff_errors[sector]])
 
         # -- store outputs
