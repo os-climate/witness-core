@@ -71,6 +71,6 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
         self.all_usecase_disciplines_jacobian_test(usecase,
                                                    directory=directory,
                                                    excluded_disc=excluded_disc,
-                                                   max_mda_iter=1,
+                                                   max_mda_iter=3,
                                                    excluded_outputs=excluded_outputs,
                                                    )
