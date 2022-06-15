@@ -361,3 +361,4 @@ productivity_df,Productivity df,,Productivity and productivity growth rate over 
 sector_investment,Sector investment df,T$,Investment in sector per year. ,,
 historical_gdp,Historical output ,T$,Dataframe with historical data for output in T$ used for fitting of production functions,,
 historical_capital,Historical capital,T$,Dataframe with historical data for capital in T$ used for fitting of production functions,,
+other_land_CO2_emissions,Other Land Use and Change Co2 emissions,GtCO2,"Value of the CO2 emissions of land use and change. This does not include deforestation and forest sequestration, emission from crop and food development",,
