@@ -113,7 +113,16 @@ class LandUseV2Discipline(SoSDiscipline):
         inputs = list(self.DESC_IN.keys())
         inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
         years = np.arange(inputs_dict['year_start'], inputs_dict['year_end']+1)
-
+        land_demand_df = inputs_dict['land_demand_df']
+        agri_techno = []
+        forest_techno = []
+        land_demand_columns = list(land_demand_df)
+        for techno in LandUseV2.AGRICULTURE_TECHNO:
+            if techno in land_demand_columns:
+                agri_techno.append(techno)
+        for techno in LandUseV2.FOREST_TECHNO:
+            if techno in land_demand_columns:
+                forest_techno.append(techno)
         # land_surface_for_food_df wrt food_surface_df
         self.set_partial_derivative_for_other_types(
             (LandUseV2.LAND_SURFACE_FOR_FOOD_DF, 'Agriculture total (Gha)'),
@@ -128,7 +137,7 @@ class LandUseV2Discipline(SoSDiscipline):
             (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.TOTAL_FOOD_LAND_SURFACE,'total surface (Gha)'),
             - np.identity(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
         # land_demand_constraint wrt land_demand_df
-        for techno in LandUseV2.AGRICULTURE_TECHNO+LandUseV2.FOREST_TECHNO:
+        for techno in agri_techno+forest_techno:
             self.set_partial_derivative_for_other_types(
                 (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.LAND_DEMAND_DF, techno),
                 - np.identity(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
