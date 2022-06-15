@@ -91,8 +91,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                       'namespace': 'ns_witness'},
         'population_detail_df': {'type': 'dataframe', 'unit': 'people'},
         'birth_rate_df': {'type': 'dataframe', 'unit': '-'},
-        'death_rate_dict': {'type': 'dict', 'unit': '-'},
-        'death_dict': {'type': 'dict', 'unit': 'people' },
+        'death_rate_dict': {'type': 'dict', 'subtype_descriptor':{'dict':'dataframe'}, 'unit': '-'},
+        'death_dict': {'type': 'dict', 'subtype_descriptor':{'dict':'dataframe'}, 'unit': 'people' },
         'birth_df': {'type': 'dataframe', 'unit': 'people'},
         'life_expectancy_df': {'type': 'dataframe', 'unit': 'age'}
     }

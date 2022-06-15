@@ -87,7 +87,7 @@ class ResourceMixDiscipline(SoSDiscipline):
                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'resources_demand_woratio': {'type': 'dataframe', 'unit': 'Mt',
                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
-               'conversion_dict': {'type': 'dict', 'unit': '[-]', 'default': default_conversion_dict,
+               'conversion_dict': {'type': 'dict','subtype_descriptor':{'dict':{'dict':'float'}}, 'unit': '[-]', 'default': default_conversion_dict,
                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
                }
 
