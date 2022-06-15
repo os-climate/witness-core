@@ -1,4 +1,4 @@
-Forests are a natural consumer of CO2. As CO2 has a major impact on the temperature evolution, tracking the evolution of forests and their CO2 consumption is important in order to get precise results.
+Forests are a natural consumer of CO2. As CO2 has a major impact on the temperature evolution, tracking the evolution of forests and their CO2 consumption is important in order to get accurate results.
 Many factors can lead to a reduction of the global forests surfaces, such as consequencies of temperature change and human activities. On the other side, environmental care and policies can lead to a rise of the global forest surface.
 
 In this forest model, the global evolution of forest are impacted by 4 activities. There are afforestation and deforestation that respectively consists on planting and cutting trees. The two other activities are managed and unmanaged wood, which consist on planting trees, then harvest wood for different purpose (industrial or energy). these two last activities expand the forest surface but also generate biomass products.
@@ -14,8 +14,8 @@ The forest model takes the following data as inputs:
 - **deforestation_cost_per_ha**, the average price to deforest 1ha of land. Unit is \$/ha. Default value is 12000 \$/ha [^1].
 - **CO2_per_ha**, the quantity of CO2 captured by 1 hectare of forest during one year. Unit is kgCO2/ha/year. Default value is 4000kgC02/ha/year [^2].
 As forest captures 16 Gt of CO2 per year, reducing forest by 1% results in a deficit of CO2 captured of 160 Mt. The value of 4000kgCO2/year/ha is coherent with these data.
-- **Initial CO2 emissions**, CO2 emissions in GtCO2 due to deforestation at the first year of the study. Default value is 3.21 GtCO2 at 2020, which is the value found at [^3].
-- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is \$/ha. The default value is 13800\$/ha splitted as 10000\$/ha for land cost and 3800\$/ha to plant trees [^4].
+- **Initial CO2 emissions**, CO2 emissions balance of forest at the first year of the study. Unit is GtCO2. Default value is -7.9 GtCO2 at 2020, which is the value found at [^2].
+- **reforestation_cost_per_ha**, which is the average price to plant 1ha of tree. Unit is \$/ha. The default value is 13800\$/ha splitted as 10000\$/ha for land cost and 3800\$/ha to plant trees [^3].
 - **reforestation_investment**, the quantity of money dedicated to reforestation each year in billions of $.
 - **wood tehcno dict**, data use to compute price and production of biomass for managed wood and unmanaged wood.
 - **managed wood initial prod**, which is the production of biomass by managed wood at the first year of the study. Unit is TWh.
@@ -45,9 +45,9 @@ The outputs of the model are:
 The forest model has to track the global forest surface evolution, the wood harvested (more generally biomass) and CO2 captured.
 To do this, the following assumptions are made.
 The global forest surface is divided into 3 parts:
-* Managed forest. These are the forest dedicated to long term biomass production thanks to management plans.
-* Protected forest. These are the forest that are legally protected, and they will stay as they are. No management plan allowed.
-* Unmanaged forest. These are forest that are now unused but they are not protected. As a result, they can be transformed by human activities.
+* Managed forest. These are the forests dedicated to long term biomass production thanks to management plans.
+* Protected forest. These are the forests that are legally protected, and they will stay as they are. No management plan allowed.
+* Unmanaged forest. These are forests that are now unused but they are not protected. As a result, they can be transformed by human activities.
 
 Then, 3 different activities will impact these surfaces taken into account.
 * Reforestation. This activities consists in planting trees, and thus increases the unmanaged forest surface, as the global forest surface.
@@ -59,7 +59,7 @@ Following paragraphs gives further details about each part of the model.
 
 ## Afforestation and reforestation
 
-Deforestation and reforestation are activities that impacts the evolution of the global forest surface.
+Deforestation and reforestation are activities that impact the evolution of the global forest surface.
 They both impact unmanaged forests.
 
 Deforestation is directly the **deforestation_surface** from the inputs.
@@ -73,7 +73,7 @@ The surface deforested is removed from the existing forest surface. It firstly t
 
 ## Managed wood
 
-Managed wood defines all the forest under management plan in order to produce biomass on a long term period. As said previously, managed wood will take existing and unmanaged forest and apply management plan to it.
+Managed wood defines all the forest under management plan in order to produce biomass on a long term period.
 
 **Surface of forest**
 Each year, a certain amount of money is invested into managed wood. This is an input data of the model. Knowing the price per ha (in **wood techno dict**) the surface added each year can be deduced by
@@ -94,7 +94,7 @@ recycle : the percentage of biomass that comes from recycling
 Knowing the surface of managed wood we can deduced the quantity of biomass produced.
 
 **Biomass price**
-Biomass is produced by managed forest and by deforestation. Each of these technics has its own price. As a result, the average price of biomass is the weighted average of managed wood and deforestation price.
+Biomass is produced by managed forest and by deforestation. Each of these production way has its own price. As a result, the average price of biomass is the weighted average of managed wood and deforestation price.
 $$biomass\_price = managed\_wood\_price * managed\_wood\_part + deforestation\_price * deforestation\_part$$
 with deforestation\_part = deforestation\_production / total\_biomass\_production
 managed\_wood\_part = managed\_wood\_production / total\_biomass\_production
@@ -137,5 +137,4 @@ In this model, the quantity of CO2 captured by ha of forest is assumed to be the
 
 [^1]: LawnStarter, Pricing Guide: How much does it cost to clear land ?, found online at https://www.lawnstarter.com/blog/cost/clear-land-price/#:~:text=Expect%20to%20pay%20between%20%24733,higher%20your%20bill%20will%20be.
 [^2]: World Resources Institute, Forests Absorb Twice As Much Carbon As They Emit Each Year, January 21, 2021 By Nancy Harris and David Gibbs, found online at https://www.wri.org/insights/forests-absorb-twice-much-carbon-they-emit-each-year
-[^3]: Our World In Data, Global CO2 emissions from fossil fuels and land use change, found online at https://ourworldindata.org/co2-emissions
-[^4]: Agriculture and Food Development Authority, Reforestation, found online at https://www.teagasc.ie/crops/forestry/advice/establishment/reforestation/
+[^3]: Agriculture and Food Development Authority, Reforestation, found online at https://www.teagasc.ie/crops/forestry/advice/establishment/reforestation/
