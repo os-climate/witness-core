@@ -86,7 +86,7 @@ class CopperResourceDiscipline(ResourceDiscipline):
                'stock_start': {'type': 'float', 'default': default_stock_start, 'user_level': 2, 'unit': '[Mt]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
                'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'user_level': 2, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
                'lifespan': {'type': 'int', 'default': default_lifespan, 'user_level': 2, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'sectorisation': {'type': 'dict', 'unit': '[-]', 'default': default_sectorisation_dict,'visibility': SoSDiscipline.SHARED_VISIBILITY,
+               'sectorisation': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '[-]', 'default': default_sectorisation_dict,'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                  'user_level': 2, 'namespace': 'ns_copper_resource'},
                'resource_max_price': {'type': 'float', 'default': default_resource_max_price, 'user_level': 2, 'unit': '[$/Mt]'}
                }
@@ -113,5 +113,5 @@ class CopperResourceDiscipline(ResourceDiscipline):
         self.resource_model = CopperResourceModel(self.resource_name)
         self.resource_model.configure_parameters(inputs_dict)
 
-        
-        
+
+

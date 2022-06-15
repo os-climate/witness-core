@@ -239,8 +239,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                                              'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),
                                              'fruits and vegetables': ('float', [0, 1e9], True)},
                     'dataframe_edition_locked': False, 'namespace': 'ns_crop'},
-        'kg_to_kcal_dict': {'type': 'dict', 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_crop'},
-        'kg_to_m2_dict': {'type': 'dict', 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_crop'},
+        'kg_to_kcal_dict': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_crop'},
+        'kg_to_m2_dict': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_crop'},
         # design variables of changing diet
         'red_meat_percentage': {'type': 'dataframe', 'default': default_red_meat_percentage,
                                 'dataframe_descriptor': {'years': ('float', None, False),
@@ -278,9 +278,9 @@ class CropDiscipline(ClimateEcoDiscipline):
                               'default': techno_infos_dict_default},
         'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
         'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
-        'co2_emissions_per_kg': {'type': 'dict', 'unit': 'kg/kg', 'default': default_co2_emissions},
-        'ch4_emissions_per_kg': {'type': 'dict', 'unit': 'kg/kg', 'default': default_ch4_emissions},
-        'n2o_emissions_per_kg': {'type': 'dict', 'unit': 'kg/kg', 'default': default_n2o_emissions},
+        'co2_emissions_per_kg': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kg/kg', 'default': default_co2_emissions},
+        'ch4_emissions_per_kg': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kg/kg', 'default': default_ch4_emissions},
+        'n2o_emissions_per_kg': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kg/kg', 'default': default_n2o_emissions},
     }
 
     DESC_OUT = {
