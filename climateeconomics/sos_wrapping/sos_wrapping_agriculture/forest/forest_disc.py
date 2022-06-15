@@ -163,7 +163,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         Forest.DEFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha',  'default': 8000,
                                            'namespace': 'ns_forest'},
-        Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2',  'default': initial_emissions,
+        Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2',  'default': -7.6,
                                        'namespace': 'ns_forest', },
         Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year',  'default': 4000,
                             'namespace': 'ns_forest'},
@@ -638,7 +638,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             CO2_total_series = InstanciatedSeries(
                 years, global_surface.tolist(), 'Global CO2 balance', InstanciatedSeries.LINES_DISPLAY)
             CO2_init_balance_serie = InstanciatedSeries(
-                years, init_balance.tolist(), 'initial land use change emissions', InstanciatedSeries.BAR_DISPLAY)
+                years, init_balance.tolist(), 'initial forest emissions', InstanciatedSeries.BAR_DISPLAY)
 
             new_chart.add_series(CO2_deforestation_series)
             new_chart.add_series(CO2_reforestation_series)

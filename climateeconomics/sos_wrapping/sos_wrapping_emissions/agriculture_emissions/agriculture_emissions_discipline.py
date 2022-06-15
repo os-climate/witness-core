@@ -48,10 +48,13 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                                     'possible_values': ['Crop', 'Forest'],
-                                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_agriculture',
-                                     'structuring': True},
+                              'possible_values': ['Crop', 'Forest'],
+                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                              'namespace': 'ns_agriculture',
+                              'structuring': True},
+        'other_land_CO2_emissions': {'type': 'float', 'unit': 'GtCO2',  'default': 10.4, },
+        # other land emissions = land use change emission - Forest initial
+        # emission = 3.2(initial) + 7.9(frorest) - 0.7(crop)
     }
     DESC_OUT = {
         'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2',
@@ -80,10 +83,16 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
 
     def run(self):
         # -- get CO2 emissions inputs
-        CO2_emitted_crop_df = self.get_sosdisc_inputs('Crop.CO2_land_emission_df')
-        CH4_emitted_crop_df = self.get_sosdisc_inputs('Crop.CH4_land_emission_df')
-        N2O_emitted_crop_df = self.get_sosdisc_inputs('Crop.N2O_land_emission_df')
-        CO2_emitted_forest_df = self.get_sosdisc_inputs('Forest.CO2_land_emission_df')
+        CO2_emitted_crop_df = self.get_sosdisc_inputs(
+            'Crop.CO2_land_emission_df')
+        CH4_emitted_crop_df = self.get_sosdisc_inputs(
+            'Crop.CH4_land_emission_df')
+        N2O_emitted_crop_df = self.get_sosdisc_inputs(
+            'Crop.N2O_land_emission_df')
+        CO2_emitted_forest_df = self.get_sosdisc_inputs(
+            'Forest.CO2_land_emission_df')
+        other_land_CO2_emissions = self.get_sosdisc_inputs(
+            'other_land_CO2_emissions')
 
         # init dataframes
         CO2_emissions_land_use_df = pd.DataFrame()
@@ -94,6 +103,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         CO2_emissions_land_use_df['years'] = CO2_emitted_crop_df['years']
         CO2_emissions_land_use_df['Crop'] = CO2_emitted_crop_df['emitted_CO2_evol_cumulative']
         CO2_emissions_land_use_df['Forest'] = CO2_emitted_forest_df['emitted_CO2_evol_cumulative']
+        CO2_emissions_land_use_df['Other_emissions'] = other_land_CO2_emissions
 
         # ch4 aggregation
         CH4_emissions_land_use_df['years'] = CH4_emitted_crop_df['years']
@@ -120,7 +130,8 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         techno_list = self.get_sosdisc_inputs('technologies_list')
         for techno in techno_list:
             self.set_partial_derivative_for_other_types(
-                ('CO2_land_emissions', f'{techno}'), (f'{techno}.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+                ('CO2_land_emissions', f'{techno}'), (
+                    f'{techno}.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
                 np.identity(np_years))
             if techno == 'Crop':
                 self.set_partial_derivative_for_other_types(
@@ -156,9 +167,9 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                 charts = chart_filter.selected_values
 
         if 'GHG emissions' in charts:
-                new_charts = self.get_chart_ghg_emissions()
-                if new_charts is not None:
-                    instanciated_charts += new_charts
+            new_charts = self.get_chart_ghg_emissions()
+            if new_charts is not None:
+                instanciated_charts += new_charts
 
         return instanciated_charts
 
@@ -182,9 +193,12 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         year_end = self.get_sosdisc_inputs('year_end')
         year_list = np.arange(year_start, year_end + 1).tolist()
 
-        CO2_emissions_land_use = CO2_emissions_land_use_df.drop('years', axis=1).sum(axis=1).values.tolist()
-        CH4_emissions_land_use = CH4_emissions_land_use_df.drop('years', axis=1).sum(axis=1).values.tolist()
-        N2O_emissions_land_use = N2O_emissions_land_use_df.drop('years', axis=1).sum(axis=1).values.tolist()
+        CO2_emissions_land_use = CO2_emissions_land_use_df.drop(
+            'years', axis=1).sum(axis=1).values.tolist()
+        CH4_emissions_land_use = CH4_emissions_land_use_df.drop(
+            'years', axis=1).sum(axis=1).values.tolist()
+        N2O_emissions_land_use = N2O_emissions_land_use_df.drop(
+            'years', axis=1).sum(axis=1).values.tolist()
 
         serie = InstanciatedSeries(
             year_list, CO2_emissions_land_use, 'CO2 Emissions [GtCO2]', 'bar')
@@ -222,4 +236,3 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         new_charts.append(new_chart)
 
         return new_charts
-
