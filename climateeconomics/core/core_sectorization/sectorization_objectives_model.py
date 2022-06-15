@@ -76,28 +76,29 @@ class ObjectivesModel():
        
         #compute total errors  
         error_pib_total = self.compute_quadratic_error(self.historical_gdp['total'].values, self.economics_df['net_output'].values)
-        error_cap_total = self.compute_quadratic_error(self.historical_capital['total'].values, self.economics_df['capital'].values)
         #Per sector
-        sectors_cap_errors = {}
         sectors_gdp_errors = {}
         sectors_energy_eff_errors = {}
         
         for sector in self.SECTORS_LIST:
             capital_df = self.sectors_capital_dfs[sector]
             production_df = self.sectors_production_dfs[sector]
-            sectors_cap_errors[sector] = self.compute_quadratic_error(self.historical_capital[sector].values, capital_df['capital'].values)
             sectors_gdp_errors[sector] = self.compute_quadratic_error(self.historical_gdp[sector].values, production_df['output_net_of_damage'].values)
             self.compute_hist_energy_efficiency(sector)
             sectors_energy_eff_errors[sector] = self.compute_quadratic_error(self.hist_energy_eff[sector].values, capital_df['energy_efficiency'].values )
 
-        return error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors, sectors_energy_eff_errors, self.hist_energy_eff
+        return error_pib_total, sectors_gdp_errors, sectors_energy_eff_errors, self.hist_energy_eff
     
     def compute_quadratic_error(self, ref, pred):
         """
         Compute quadratic error. Inputs: ref and pred are arrays
         """
+        #Find maximum value in data to normalise objective
+        norm_value = np.amax(ref)
         delta = np.subtract(pred, ref)
-        delta_squared = np.square(delta)
+        #And normalise delta
+        delta_norm = delta / norm_value
+        delta_squared = np.square(delta_norm)
         error = np.mean(delta_squared)
         return error
     

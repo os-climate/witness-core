@@ -163,8 +163,8 @@ class Study(StudyManager):
         disc_dict[f'{ns_optim}.design_space'] = dspace
         disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
         disc_dict[f'{ns_optim}.objective_name'] = 'objective_lagrangian'
-        disc_dict[f'{ns_optim}.differentiation_method'] = 'finite_differences' #complex_step user
-        disc_dict[f'{ns_optim}.fd_step'] = 1.e-6
+        disc_dict[f'{ns_optim}.differentiation_method'] = 'complex_step' #complex_step user
+        disc_dict[f'{ns_optim}.fd_step'] = 1.e-15
         disc_dict[f'{ns_optim}.ineq_constraints'] = []
         disc_dict[f'{ns_optim}.eq_constraints'] = []
         disc_dict[f'{ns_optim}.algo_options'] = {
@@ -205,18 +205,14 @@ class Study(StudyManager):
         
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
-        func_df['variable'] = [ 'error_pib_total', 'error_cap_total', 
-                               'Industry.cap_error', 'Agriculture.cap_error', 'Services.cap_error',
+        func_df['variable'] = [ 'error_pib_total',
                                'Industry.gdp_error', 'Agriculture.gdp_error', 'Services.gdp_error',
                                'Industry.energy_eff_error', 'Agriculture.energy_eff_error', 'Services.energy_eff_error']
-        func_df['ftype'] =  [OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE,
-                             OBJECTIVE, OBJECTIVE, OBJECTIVE]
-        func_df['weight'] = [1,1,1,1,1,1,1,1,1,1,1]
+        func_df['ftype'] =  [OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE]
+        func_df['weight'] = [1,1,1,1,1,1,1]
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, 
-                              AGGR_TYPE_SUM, AGGR_TYPE_SUM,AGGR_TYPE_SUM, AGGR_TYPE_SUM,
-                              AGGR_TYPE_SUM,AGGR_TYPE_SUM, AGGR_TYPE_SUM]
-        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj',
-                                'ns_obj', 'ns_obj', 'ns_obj']
+                              AGGR_TYPE_SUM, AGGR_TYPE_SUM,AGGR_TYPE_SUM]
+        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj']
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{ns_coupling}.{func_mng_name}.'
