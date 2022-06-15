@@ -92,8 +92,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                                             'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),
                                                             'fruits and vegetables': ('float', [0, 1e9], True)},
                                    'dataframe_edition_locked': False, 'namespace': 'ns_agriculture'},
-               'kg_to_kcal_dict': {'type': 'dict', 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
-               'kg_to_m2_dict': {'type': 'dict', 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
+               'kg_to_kcal_dict': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
+               'kg_to_m2_dict': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
                # design variables of changing diet
                'red_meat_percentage': {'type': 'dataframe', 'default': default_red_meat_percentage,
                                                'dataframe_descriptor': {'years': ('float', None, False),
