@@ -49,27 +49,24 @@ class GHGCycleDiscTest(unittest.TestCase):
 
         data_dir = join(dirname(__file__), 'data')
 
-        CO2_emissions_df_all = read_csv(
+        emissions_df = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
-        CO2_emissions_df_all['Total CO2 emissions'] = CO2_emissions_df_all['total_emissions']
+        emissions_df['Total CO2 emissions'] = emissions_df['total_emissions']
 
-        CO2_emissions_df_y = CO2_emissions_df_all[CO2_emissions_df_all['years'] >= 2020]
+        emissions_df = emissions_df[emissions_df['years'] >= 2020]
+        emissions_df['Total CH4 emissions'] = emissions_df['Total CO2 emissions'] * 0.3/40
+        emissions_df['Total N2O emissions'] = emissions_df['Total CO2 emissions'] * 0.008/40
 
-        # put manually the index
-        years = np.arange(2020, 2101)
-        CO2_emissions_df_y.index = years
-
-        values_dict = {f'{self.name}.GHG_emissions_df': CO2_emissions_df_y}
+        values_dict = {f'{self.name}.GHG_emissions_df': emissions_df[['years', 'Total CO2 emissions', 'Total CH4 emissions', 'Total N2O emissions']]}
 
         self.ee.dm.set_values_from_dict(values_dict)
 
         self.ee.execute()
 
-        res_carbon_cycle = self.ee.dm.get_value(f'{self.name}.carboncycle_df')
+        ghg_cycle_df = self.ee.dm.get_value(f'{self.name}.ghg_cycle_df')
 
-        disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
-        filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        # disc = self.ee.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[0]
+        # filter = disc.get_chart_filter_list()
+        # graph_list = disc.get_post_processing_list(filter)
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
