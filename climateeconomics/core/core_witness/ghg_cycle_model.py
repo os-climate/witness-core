@@ -35,23 +35,6 @@ class GHGCycle():
         self.year_start = self.param['year_start']
         self.year_end = self.param['year_end']
         self.time_step = self.param['time_step']
-        self.conc_lower_strata = self.param['conc_lower_strata']
-        self.conc_upper_strata = self.param['conc_upper_strata']
-        self.conc_atmo = self.param['conc_atmo']
-        self.init_conc_atmo = self.param['init_conc_atmo']
-        self.init_upper_strata = self.param['init_upper_strata']
-        self.init_lower_strata = self.param['init_lower_strata']
-        self.b_twelve = self.param['b_twelve']
-        self.b_twentythree = self.param['b_twentythree']
-        self.b_eleven = 1.0 - self.b_twelve
-        self.b_twentyone = self.b_twelve * self.conc_atmo / self.conc_upper_strata
-        self.b_twentytwo = 1.0 - self.b_twentyone - self.b_twentythree
-        self.b_thirtytwo = self.b_twentythree * \
-            self.conc_upper_strata / self.conc_lower_strata
-        self.b_thirtythree = 1.0 - self.b_thirtytwo
-        self.lo_mat = self.param['lo_mat']
-        self.lo_mu = self.param['lo_mu']
-        self.lo_ml = self.param['lo_ml']
 
         self.alpha = self.param['alpha']
         self.beta = self.param['beta']
@@ -62,10 +45,26 @@ class GHGCycle():
         self.gtco2_to_gtc = 44 / 12
         # conversion factor 1ppm= 2.13 Gtc
         self.gtc_to_ppm = 2.13
-        self.scale_factor_carbon_cycle = self.param['scale_factor_atmo_conc']
         self.rockstrom_constraint_ref = self.param['rockstrom_constraint_ref']
         self.minimum_ppm_constraint_ref = self.param['minimum_ppm_constraint_ref']
         self.minimum_ppm_limit = self.param['minimum_ppm_limit']
+
+        # FUND parameters
+        self.em_ratios = self.param['co2_emissions_fractions']
+        self.lifetimes = self.param['co2_boxes_lifetimes']
+        self.decays = [np.exp(-1/lifetime) for lifetime in self.lifetimes]
+        self.boxes_conc = self.param['co2_boxes_init_conc']
+
+        self.em_to_conc_ch4 = self.param['ch4_emis_to_conc']
+        self.decay_ch4 = self.param['ch4_decay_rate']
+        self.pre_indus_conc_ch4 = self.param['ch4_pre_indus_conc']
+        self.conc_ch4 = self.param['ch4_init_conc']
+        self.em_to_conc_n2o = self.param['n2o_emis_to_conc']
+        self.decay_n2o = self.param['n2o_decay_rate']
+        self.pre_indus_conc_n2o = self.param['n2o_pre_indus_conc']
+        self.conc_n2o = self.param['n2o_init_conc']
+
+        self.ghg_list = ['CO2', 'CH4, N2O']
 
     def create_dataframe(self):
         '''
@@ -74,235 +73,100 @@ class GHGCycle():
         years_range = np.arange(
             self.year_start, self.year_end + 1, self.time_step)
         self.years_range = years_range
-        carboncycle_df = pd.DataFrame(index=years_range, columns=['years',
-                                                                  'atmo_conc', 'lower_ocean_conc', 'shallow_ocean_conc', 'ppm', 'atmo_share_since1850', 'atmo_share_sinceystart'])
 
-        for key in carboncycle_df.keys():
-            carboncycle_df[key] = 0
-        carboncycle_df['years'] = self.years_range
-        carboncycle_df.loc[self.year_start, 'atmo_conc'] = self.init_conc_atmo
-        carboncycle_df.loc[self.year_start,
-                           'lower_ocean_conc'] = self.init_lower_strata
-        carboncycle_df.loc[self.year_start,
-                           'shallow_ocean_conc'] = self.init_upper_strata
-        self.carboncycle_df = carboncycle_df
+        self.ghg_cycle_df = pd.DataFrame({'years': self.years_range})
 
-        return carboncycle_df
+        for i in [1, 2, 3, 4, 5]:
+            self.ghg_cycle_df[f'co2_ppm_b{i}'] = self.boxes_conc[i-1]
+        self.ghg_cycle_df[f'co2_ppm'] = self.boxes_conc[0]
+        self.ghg_cycle_df[f'ch4_ppm'] = self.conc_ch4
+        self.ghg_cycle_df[f'n2o_ppm'] = self.conc_n2o
 
-    def compute_atmo_conc(self, year):
+    def compute_co2_atm_conc(self, year, boxes):
         """
-        compute atmo conc for t using value at t-1 (MAT in DICE)
+        computes CO2 concentrations in atmosphere in ppm at t following FUND model
         """
-        p_atmo_conc = self.carboncycle_df.at[year -
-                                             self.time_step, 'atmo_conc']
-        p_shallow_ocean_conc = self.carboncycle_df.at[year -
-                                                      self.time_step, 'shallow_ocean_conc']
-        p_emissions = self.GHG_emissions_df.at[year -
-                                               self.time_step, 'Total CO2 emissions']
-        atmo_conc = p_atmo_conc * self.b_eleven + p_shallow_ocean_conc * \
-            self.b_twentyone + p_emissions * self.time_step / self.gtco2_to_gtc
-        # Lower bound
-        self.carboncycle_df.loc[year, 'atmo_conc'] = max(
-            atmo_conc, self.lo_mat)
-        return atmo_conc
+        emissions = self.GHG_emissions_df.loc[self.GHG_emissions_df['years'] == year, 'Total CO2 emissions'].values[0] * 1e3     # in MtCO2
+        boxes_tmp = [decay*box_conc + 0.000471*em_ratio*emissions for (decay, box_conc, em_ratio) in zip(self.decays, boxes, self.em_ratios)]
+        boxes = boxes_tmp
+        for i in [1, 2, 3, 4, 5]:
+            self.ghg_cycle_df.loc[self.ghg_cycle_df['years'] == year, f'co2_ppm_b{i}'] = boxes[i-1]
 
-    def compute_lower_ocean_conc(self, year):
+        return boxes
+
+    def compute_ch4_atm_conc(self, year, conc_ch4):
         """
-        Compute lower ocean conc at t using values at t-1
+        computes CH4 concentrations in atmosphere in ppm at t following FUND model
         """
-        p_lower_ocean_conc = self.carboncycle_df.at[year -
-                                                    self.time_step, 'lower_ocean_conc']
-        p_shallow_ocean_conc = self.carboncycle_df.at[year -
-                                                      self.time_step, 'shallow_ocean_conc']
-        lower_ocean_conc = p_lower_ocean_conc * self.b_thirtythree + \
-            p_shallow_ocean_conc * self.b_twentythree
-        # Lower bound
-        self.carboncycle_df.loc[year, 'lower_ocean_conc'] = max(
-            lower_ocean_conc, self.lo_ml)
-        return lower_ocean_conc
 
-    def compute_upper_ocean_conc(self, year):
+        conc_ch4 += self.GHG_emissions_df.loc[self.GHG_emissions_df['years'] == year, 'Total CH4 emissions'].values[0] * 1e3 * self.em_to_conc_ch4 - \
+                    self.decay_ch4 * (conc_ch4 - self.pre_indus_conc_ch4)
+
+        self.ghg_cycle_df.loc[self.ghg_cycle_df['years'] == year, f'ch4_ppm'] = conc_ch4
+
+        return conc_ch4
+
+    def compute_n2o_atm_conc(self, year, conc_n2o):
         """
-        Compute upper ocean conc at t using values at t-1
+        computes N2O concentrations in atmosphere in ppm at t following FUND model
         """
-        p_lower_ocean_conc = self.carboncycle_df.at[year -
-                                                    self.time_step, 'lower_ocean_conc']
-        p_shallow_ocean_conc = self.carboncycle_df.at[year -
-                                                      self.time_step, 'shallow_ocean_conc']
-        p_atmo_conc = self.carboncycle_df.at[year -
-                                             self.time_step, 'atmo_conc']
-        shallow_ocean_conc = p_atmo_conc * self.b_twelve + p_shallow_ocean_conc * \
-            self.b_twentytwo + p_lower_ocean_conc * self.b_thirtytwo
-        # Lower Bound
-        self.carboncycle_df.loc[year, 'shallow_ocean_conc'] = max(
-            shallow_ocean_conc, self.lo_mu)
 
-    def compute_ppm(self, year):
+        conc_n2o += self.GHG_emissions_df.loc[self.GHG_emissions_df['years'] == year, 'Total N2O emissions'].values[0] * 1e3 * self.em_to_conc_n2o - \
+                    self.decay_n2o * (conc_n2o - self.pre_indus_conc_n2o)
+
+        self.ghg_cycle_df.loc[self.ghg_cycle_df['years'] == year, f'n2o_ppm'] = conc_n2o
+
+        return conc_n2o
+
+    def compute_dco2_ppm_d_emissions(self):
         """
-         Compute Atmospheric concentrations parts per million at t
+        computes derivative of co2_ppm with respect to CO2 emissions
         """
-        atmo_conc = self.carboncycle_df.at[year, 'atmo_conc']
-        ppm = atmo_conc / self.gtc_to_ppm
-        self.carboncycle_df.loc[year, 'ppm'] = ppm
-        return ppm
 
-    def compute_atmo_share(self, year):
+        coeff = 0.000471*self.em_ratios[0] * 1e3
+        decay = self.decays[0]
+        mat = np.diag(coeff*np.ones(len(self.years_range)))
+
+        for i in np.arange(1, len(self.years_range-1)):
+            coeff = coeff*decay
+            mat += np.diag(coeff*np.ones(len(self.years_range)-i), -i)
+
+        # first year is from initial data and is fixed ==> grad is zero
+        mat[:, 0] = 0.0
+
+        return mat
+
+    def d_ppm_d_other_ghg(self):
         """
-        Compute atmo share since 1850 and since 2010
+        computes derivative of ghg_ppm with respect to GHG emissions for other GHG.
         """
-        atmo_conc = self.carboncycle_df.at[year, 'atmo_conc']
-        init_atmo_conc = self.carboncycle_df.at[self.year_start, 'atmo_conc']
+        # CH4
+        coeff_ch4 = self.em_to_conc_ch4 * 1e3
+        decay_ch4 = 1 - self.decay_ch4
+        mat_ch4 = np.diag(coeff_ch4*np.ones(len(self.years_range)))
 
-        self.GHG_emissions_df['cum_total_emissions'] = self.GHG_emissions_df['Total CO2 emissions'].cumsum()
-        init_cum_total_emissions = self.GHG_emissions_df.at[self.year_start,
-                                                            'cum_total_emissions']
-        cum_total_emissions = self.GHG_emissions_df.at[year,
-                                                       'cum_total_emissions']
+        # N2O
+        coeff_n2o = self.em_to_conc_n2o * 1e3
+        decay_n2o = 1 - self.decay_n2o
+        mat_n2o = np.diag(coeff_n2o * np.ones(len(self.years_range)))
 
-        atmo_share1850 = ((atmo_conc - 588.0) /
-                          (cum_total_emissions + .000001))
-        atmo_shareystart = ((atmo_conc - init_atmo_conc) /
-                            (cum_total_emissions - init_cum_total_emissions))
+        for i in np.arange(1, len(self.years_range-1)):
+            coeff_ch4 = coeff_ch4*decay_ch4
+            coeff_n2o = coeff_n2o*decay_n2o
 
-        self.carboncycle_df.loc[year,
-                                'atmo_share_since1850'] = atmo_share1850
-        self.carboncycle_df.loc[year,
-                                'atmo_share_sinceystart'] = atmo_shareystart
-        return atmo_share1850
+            mat_ch4 += np.diag(coeff_ch4 * np.ones(len(self.years_range)-i), -i)
+            mat_n2o += np.diag(coeff_n2o * np.ones(len(self.years_range) - i), -i)
 
-    def compute_d_total_emissions(self):
-        """
-        Compute d_y / d_total_emissions, with y is a column of carboncycle_detail_df
-        """
-        time_step = self.time_step
-        gtco2_to_gtc = self.gtco2_to_gtc
-        lo_mat = self.lo_mat
-        years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
+        # first year is from initial data and is fixed ==> grad is zero
+        mat_ch4[:, 0] = 0.0
+        mat_n2o[:, 0] = 0.0
 
-        b_eleven = 1.0 - self.b_twelve
-        b_twentyone = self.b_twelve * self.conc_atmo / self.conc_upper_strata
-        b_twentytwo = 1.0 - b_twentyone - self.b_twentythree
-        b_thirtytwo = self.b_twentythree * self.conc_upper_strata / self.conc_lower_strata
-        b_thirtythree = 1.0 - b_thirtytwo
-
-        d_atmoconc_d_totalemissions = np.zeros((len(years), len(years)))
-        d_swallow_d_totalemissions = np.zeros((len(years), len(years)))
-        d_lower_d_totalemissions = np.zeros((len(years), len(years)))
-
-        atmo_conc = self.carboncycle_df['atmo_conc'] / \
-            self.scale_factor_carbon_cycle
-        #---- initialisation
-        if atmo_conc.values[1] > lo_mat:
-            d_atmoconc_d_totalemissions[1, 0] = time_step / gtco2_to_gtc
-
-        if atmo_conc.values[2] > lo_mat:
-            d_atmoconc_d_totalemissions[2, 1] = time_step / gtco2_to_gtc
-
-        if self.carboncycle_df['shallow_ocean_conc'].values[2] > self.lo_mu:
-            d_swallow_d_totalemissions[2,
-                                       0] = time_step / gtco2_to_gtc * self.b_twelve
-            d_atmoconc_d_totalemissions[2,
-                                        0] = time_step / gtco2_to_gtc * b_eleven
-
-        for i in range(3, len(years)):
-            for j in range(0, i):
-                # if lower ocean conc is not a constant, grad is not null
-                if np.real(self.carboncycle_df['lower_ocean_conc'].values[i]) > self.lo_ml:
-
-                    d_lower_d_totalemissions[i, j] = d_lower_d_totalemissions[i - 1, j] * b_thirtythree +\
-                        d_swallow_d_totalemissions[i -
-                                                   1, j] * self.b_twentythree
-
-                # if shallow_ocean_conc is not a constant, grad is not null
-                if np.real(self.carboncycle_df['shallow_ocean_conc'].values[i]) > self.lo_mu:
-                    d_swallow_d_totalemissions[i, j] = d_atmoconc_d_totalemissions[i - 1, j] * self.b_twelve +\
-                        d_swallow_d_totalemissions[i - 1, j] * b_twentytwo + \
-                        d_lower_d_totalemissions[i - 1, j] * b_thirtytwo
-
-                # if atmo_conc is not a constant, grad is not null
-                if np.real(atmo_conc.values[i]) > lo_mat:
-                    if j == i - 1:
-                        d_atmoconc_d_totalemissions[i, j] = d_atmoconc_d_totalemissions[i - 1, j] * b_eleven + \
-                            d_swallow_d_totalemissions[i - 1, j] * \
-                            b_twentyone + time_step / gtco2_to_gtc
-                    else:
-                        d_atmoconc_d_totalemissions[i, j] = d_atmoconc_d_totalemissions[i - 1, j] * b_eleven + \
-                            d_swallow_d_totalemissions[i - 1, j] * b_twentyone
-
-            if np.real(atmo_conc.values[i]) == lo_mat:
-                d_atmoconc_d_totalemissions[i, 0] = 0
-
-        #-----------
-        cum_total_emissions = self.GHG_emissions_df['cum_total_emissions']
-        d_atmo1850_dtotalemission = np.zeros((len(years), len(years)))
-
-        for i in range(0, len(years)):
-            for j in range(0, len(years)):
-
-                Cte = (
-                    cum_total_emissions[self.year_start + time_step * j] + .000001)
-                d_atmo1850_dtotalemission[j,
-                                          i] = d_atmoconc_d_totalemissions[j, i] / Cte
-
-        #-----------
-        init_cum_total_emissions = self.GHG_emissions_df.at[self.year_start,
-                                                            'cum_total_emissions']
-
-        d_atmotoday_dtotalemission = np.zeros((len(years), len(years)))
-        for i in range(0, len(years)):
-            for j in range(1, len(years)):
-
-                Cte = (cum_total_emissions[self.year_start +
-                                           time_step * j] - init_cum_total_emissions)
-                d_atmotoday_dtotalemission[j,
-                                           i] = d_atmoconc_d_totalemissions[j, i] / Cte
-
-                d_atmotoday_dtotalemission[0, j] = 0
-
-        return d_atmoconc_d_totalemissions * self.scale_factor_carbon_cycle, d_lower_d_totalemissions, d_swallow_d_totalemissions, d_atmo1850_dtotalemission, d_atmotoday_dtotalemission
-
-    def compute_d_cum_total_emissions(self):
-
-        years = np.arange(self.year_start,
-                          self.year_end + 1, self.time_step)
-
-        init_atmo_conc = self.init_conc_atmo
-        init_cum_total_emissions = self.GHG_emissions_df.at[self.year_start,
-                                                            'cum_total_emissions']
-        cum_total_emissions = self.GHG_emissions_df['cum_total_emissions']
-
-        atmo_conc = self.carboncycle_df['atmo_conc']
-        d_atmo1850_dcumemission = np.zeros((len(years), len(years)))
-
-        for i in range(1, len(years)):
-            d_atmo1850_dcumemission[i, i] = -(atmo_conc[years[i]] - 588.0) / (
-                cum_total_emissions[years[i]] + .000001) ** 2
-
-        #-----------
-        d_atmotoday_dcumtotalemission = np.zeros((len(years), len(years)))
-        for i in range(1, len(years)):
-            d_atmotoday_dcumtotalemission[i, i] = - (self.carboncycle_df['atmo_conc'][self.year_start + self.time_step * i] - init_atmo_conc) / (
-                cum_total_emissions[self.year_start + self.time_step * i] - init_cum_total_emissions) ** 2
-
-            d_atmotoday_dcumtotalemission[i, 0] = - \
-                d_atmotoday_dcumtotalemission[i, i]
-
-        return d_atmo1850_dcumemission, d_atmotoday_dcumtotalemission
-
-    def compute_d_ppm(self, d_atmoconc_d_totalemissions):
-        """
-        Compute d_ppm / d_total_emission
-        """
-#         atmo_conc = self.carboncycle_df.loc[year, 'atmo_conc']
-#         ppm = atmo_conc / 2.13
-# rescale correctly d_atmoconc_d_totalemissions
-        d_ppm = d_atmoconc_d_totalemissions / \
-            self.gtc_to_ppm / self.scale_factor_carbon_cycle
-        return d_ppm
+        return {'CH4': mat_ch4,
+                'N2O': mat_n2o,
+                }
 
     def compute_d_objective(self, d_ppm):
-        delta_years = len(self.carboncycle_df)
+        delta_years = len(self.ghg_cycle_df)
         d_ppm_objective = (1 - self.alpha) * (1 - self.beta) * \
             d_ppm.sum(axis=0) / (self.ppm_ref * delta_years)
         return d_ppm_objective
@@ -311,15 +175,15 @@ class GHGCycle():
         """
         Compute ppm objective
         """
-        delta_years = len(self.carboncycle_df)
-        self.ppm_obj = np.asarray([(1 - self.alpha) * (1 - self.beta) * self.carboncycle_df['ppm'].sum()
+        delta_years = len(self.ghg_cycle_df)
+        self.ppm_obj = np.asarray([(1 - self.alpha) * (1 - self.beta) * self.ghg_cycle_df['co2_ppm'].sum()
                                    / (self.ppm_ref * delta_years)])
 
     def compute_rockstrom_limit_constraint(self):
         """
         Compute Rockstrom limit constraint
         """
-        self.rockstrom_limit_constraint = - (self.carboncycle_df['ppm'].values -
+        self.rockstrom_limit_constraint = - (self.ghg_cycle_df['co2_ppm'].values -
                                              1.1 * self.rockstrom_limit) / self.rockstrom_constraint_ref
 
     def compute_minimum_ppm_limit_constraint(self):
@@ -328,7 +192,7 @@ class GHGCycle():
         """
         self.minimum_ppm_constraint = - \
             (self.minimum_ppm_limit -
-             self.carboncycle_df['ppm'].values) / self.minimum_ppm_constraint_ref
+             self.ghg_cycle_df['co2_ppm'].values) / self.minimum_ppm_constraint_ref
 
     def compute(self, inputs_models):
         """
@@ -337,22 +201,20 @@ class GHGCycle():
         self.create_dataframe()
         self.inputs_models = inputs_models
         self.GHG_emissions_df = self.inputs_models['GHG_emissions_df']
-        self.GHG_emissions_df.index = self.GHG_emissions_df['years'].values
-        self.compute_ppm(self.year_start)
+
+        conc_boxes = self.boxes_conc
+        conc_ch4 = self.conc_ch4
+        conc_n2o = self.conc_n2o
 
         for year in self.years_range[1:]:
-            self.compute_atmo_conc(year)
-            self.compute_lower_ocean_conc(year)
-            self.compute_upper_ocean_conc(year)
-            self.compute_ppm(year)
-            self.compute_atmo_share(year)
-        self.carboncycle_df = self.carboncycle_df.replace(
-            [np.inf, -np.inf], np.nan)
+            conc_boxes = self.compute_co2_atm_conc(year, conc_boxes)
+            conc_ch4 = self.compute_ch4_atm_conc(year, conc_ch4)
+            conc_n2o = self.compute_n2o_atm_conc(year, conc_n2o)
+
+        self.ghg_cycle_df[f'co2_ppm'] = self.ghg_cycle_df[f'co2_ppm_b1']
+
         self.compute_objective()
         self.compute_rockstrom_limit_constraint()
         self.compute_minimum_ppm_limit_constraint()
-        # Rescale atmo_conc of carbon_cycle_df
-        self.carboncycle_df['atmo_conc'] = self.carboncycle_df['atmo_conc'] * \
-            self.scale_factor_carbon_cycle
 
-        return self.carboncycle_df.fillna(0.0), self.ppm_obj
+
