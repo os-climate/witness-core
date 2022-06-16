@@ -51,8 +51,7 @@ class GHGCycle():
 
         # FUND parameters
         self.em_ratios = self.param['co2_emissions_fractions']
-        self.lifetimes = self.param['co2_boxes_lifetimes']
-        self.decays = [np.exp(-1/lifetime) for lifetime in self.lifetimes]
+        self.decays = self.param['co2_boxes_decays']
         self.boxes_conc = self.param['co2_boxes_init_conc']
 
         self.em_to_conc_ch4 = self.param['ch4_emis_to_conc']
