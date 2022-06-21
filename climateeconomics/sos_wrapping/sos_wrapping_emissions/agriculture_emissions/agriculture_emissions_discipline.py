@@ -54,7 +54,8 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                               'structuring': True},
         'other_land_CO2_emissions': {'type': 'float', 'unit': 'GtCO2',  'default': 10.4, },
         # other land emissions = land use change emission - Forest initial
-        # emission = 3.2(initial) + 7.9(frorest) - 0.7(crop)
+        # emission - computed crop emissions = 3.2(initial) + 7.9(frorest) -
+        # 0.7(crop)
     }
     DESC_OUT = {
         'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2',
