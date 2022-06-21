@@ -84,7 +84,7 @@ class Study(StudyManager):
                                       [0.99], [0.1], [0.1],[2.0],
                                       [1.0], [2.0],[2050.0], [8.0],
                                       [0.99], [0.1], [0.1],[2.0],
-                                      [1.0], [2.0],[2050.0], [8.0]],
+                                      [1.0], [2.0],[2015.0], [8.0]],
                        'enable_variable': [ True, True, True, True,
                                            True, True, True, True,
                                            True, True, True, True,
@@ -208,18 +208,16 @@ class Study(StudyManager):
         func_df['variable'] = [ 'error_pib_total',
                                'Industry.gdp_error', 'Agriculture.gdp_error', 'Services.gdp_error',
                                'Industry.energy_eff_error', 'Agriculture.energy_eff_error', 'Services.energy_eff_error',
-                               'Industry.range_energy_eff_constraint', 'Industry.energy_eff_xzero_constraint',
-                               'Agriculture.range_energy_eff_constraint', 'Agriculture.energy_eff_xzero_constraint',
-                               'Services.range_energy_eff_constraint', 'Services.energy_eff_xzero_constraint']
+                               'Industry.range_energy_eff_constraint', 'Agriculture.range_energy_eff_constraint', 
+                               'Services.range_energy_eff_constraint']
         func_df['ftype'] =  [OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,
-                             INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT]
-        func_df['weight'] = [1,1,1,1,1,1,1,
-                             -1, -1, -1, -1, -1, -1]
+                             INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT]
+        func_df['weight'] = [1,1,1,1,1,1,1,-1, -1, -1]
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, 
                               AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, 
-                              AGGR_TYPE_SUM, AGGR_TYPE_SUM,  AGGR_TYPE_SUM, AGGR_TYPE_SUM,  AGGR_TYPE_SUM, AGGR_TYPE_SUM]
+                              AGGR_TYPE_SUM, AGGR_TYPE_SUM,  AGGR_TYPE_SUM]
         func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj',
-                                'ns_macro', 'ns_macro', 'ns_macro', 'ns_macro','ns_macro', 'ns_macro']
+                                'ns_macro', 'ns_macro', 'ns_macro']
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{ns_coupling}.{func_mng_name}.'
@@ -262,8 +260,7 @@ if '__main__' == __name__:
     ppf = PostProcessingFactory()
     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
         if disc.sos_name == 'Objectives':
-            filters = ppf.get_post_processing_filters_by_discipline(
-                disc)
+            filters = ppf.get_post_processing_filters_by_discipline(disc)
             graph_list = ppf.get_post_processing_by_discipline(
                 disc, filters, as_json=False)
 

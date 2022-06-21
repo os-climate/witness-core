@@ -108,7 +108,6 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                 dynamic_inputs['energy_eff_xzero_max_ref'] = {'type': 'float', 'unit': '-', 'default': 2070}
                 dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
-                dynamic_outputs['energy_eff_xzero_constraint'] = {'type': 'array', 'unit': '-'}
                 self.add_outputs(dynamic_outputs)
                 self.add_inputs(dynamic_inputs)
 
@@ -144,7 +143,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                            'sector_investment': sector_investment,
                            'workforce_df': workforce_df}
         # Model execution
-        production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, energy_eff_xzero_constraint = self.services_model.compute(services_inputs)
+        production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.services_model.compute(services_inputs)
 
         # Store output data
         dict_values = {'productivity_df': productivity_df,
@@ -157,7 +156,6 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         if  prod_function_fitting == True: 
             dict_values['longterm_energy_efficiency'] = lt_energy_eff
             dict_values['range_energy_eff_constraint'] = range_energy_eff_cstrt
-            dict_values['energy_eff_xzero_constraint'] = energy_eff_xzero_constraint
 
         self.store_sos_outputs_values(dict_values)
 

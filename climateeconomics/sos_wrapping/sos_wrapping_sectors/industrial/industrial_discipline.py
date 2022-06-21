@@ -105,10 +105,8 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
             if prod_function_fitting == True:
                 dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 20}
-                dynamic_inputs['energy_eff_xzero_max_ref'] = {'type': 'float', 'unit': '-', 'default': 2015}
                 dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
-                dynamic_outputs['energy_eff_xzero_constraint'] = {'type': 'array', 'unit': '-'}
                 self.add_outputs(dynamic_outputs)
                 self.add_inputs(dynamic_inputs)
     def update_default_with_years(self):
@@ -142,7 +140,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
                              'sector_investment': investment,
                              'workforce_df': workforce_df}
         # Model execution
-        production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, energy_eff_xzero_constraint = self.industrial_model.compute(
+        production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.industrial_model.compute(
             industrial_inputs)
 
         # Store output data
@@ -157,7 +155,6 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         if  prod_function_fitting == True: 
             dict_values['longterm_energy_efficiency'] = lt_energy_eff
             dict_values['range_energy_eff_constraint'] = range_energy_eff_cstrt
-            dict_values['energy_eff_xzero_constraint'] = energy_eff_xzero_constraint
 
 
         self.store_sos_outputs_values(dict_values)
