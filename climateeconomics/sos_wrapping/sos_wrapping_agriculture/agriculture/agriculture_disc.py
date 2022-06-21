@@ -92,8 +92,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                                             'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),
                                                             'fruits and vegetables': ('float', [0, 1e9], True)},
                                    'dataframe_edition_locked': False, 'namespace': 'ns_agriculture'},
-               'kg_to_kcal_dict': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
-               'kg_to_m2_dict': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
+               'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_agriculture'},
+               'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
                # design variables of changing diet
                'red_meat_percentage': {'type': 'dataframe', 'default': default_red_meat_percentage,
                                                'dataframe_descriptor': {'years': ('float', None, False),
@@ -106,8 +106,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
                'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'default': default_other_use, 'namespace': 'ns_agriculture'},
                'temperature_df': {'type': 'dataframe', 'unit': 'degree Celsius', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-               'param_a': {'type': 'float', 'default': - 0.00833, 'user_level': 3},
-               'param_b': {'type': 'float', 'default': - 0.04167, 'user_level': 3}
+               'param_a': {'type': 'float', 'unit': '-', 'default': - 0.00833, 'user_level': 3},
+               'param_b': {'type': 'float', 'unit': '-', 'default': - 0.04167, 'user_level': 3}
                }
 
     DESC_OUT = {
@@ -117,7 +117,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': 'Gha'},
         'food_land_surface_percentage_df': {'type': 'dataframe', 'unit': '%'},
         'updated_diet_df': {'type': 'dataframe', 'unit': 'kg/person/year'},
-        'agriculture_productivity_evolution': {'type': 'dataframe'}
+        'agriculture_productivity_evolution': {'type': 'dataframe', 'unit': '%', }
     }
 
     AGRICULTURE_CHARTS = 'agriculture and diet charts'

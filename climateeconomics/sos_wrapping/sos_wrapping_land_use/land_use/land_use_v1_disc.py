@@ -56,7 +56,7 @@ class LandUseV1Discipline(SoSDiscipline):
                LandUseV1.DEFORESTED_SURFACE_DF: {
                    'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV1.LAND_USE_CONSTRAINT_REF: {
-                   'type': 'float', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
+                   'type': 'float', 'default': 0.1, 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
                }
 
     DESC_OUT = {

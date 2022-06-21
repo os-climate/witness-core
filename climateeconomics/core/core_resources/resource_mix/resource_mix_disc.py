@@ -78,6 +78,7 @@ class ResourceMixDiscipline(SoSDiscipline):
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'resource_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+                                 'unit': '-',
                                  'default': ResourceMixModel.RESOURCE_LIST,
                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource',
                                  'editable': False, 'structuring': True},
@@ -87,7 +88,7 @@ class ResourceMixDiscipline(SoSDiscipline):
                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'resources_demand_woratio': {'type': 'dataframe', 'unit': 'Mt',
                                             'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
-               'conversion_dict': {'type': 'dict','subtype_descriptor':{'dict':{'dict':'float'}}, 'unit': '[-]', 'default': default_conversion_dict,
+               'conversion_dict': {'type': 'dict', 'subtype_descriptor': {'dict': {'dict': 'float'}}, 'unit': '[-]', 'default': default_conversion_dict,
                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
                }
 
@@ -100,7 +101,7 @@ class ResourceMixDiscipline(SoSDiscipline):
         ResourceMixModel.All_RESOURCE_USE: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.RATIO_USABLE_DEMAND: {'type': 'dataframe', 'default': ratio_available_resource_default,
-                                               'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'unit': '%',
                                                'namespace': 'ns_resource'},
         ResourceMixModel.ALL_RESOURCE_DEMAND: {'type': 'dataframe', 'unit': '-',
                                                'visibility': SoSDiscipline.SHARED_VISIBILITY,
@@ -189,7 +190,8 @@ class ResourceMixDiscipline(SoSDiscipline):
             for types in inputs_dict[f'{resource_type}.use_stock']:
                 if types != 'years':
                     self.set_partial_derivative_for_other_types(
-                        (ResourceMixModel.All_RESOURCE_USE, resource_type), (f'{resource_type}.use_stock', types),
+                        (ResourceMixModel.All_RESOURCE_USE,
+                         resource_type), (f'{resource_type}.use_stock', types),
                         grad_use)
 
             self.set_partial_derivative_for_other_types((ResourceMixModel.RATIO_USABLE_DEMAND, resource_type), (
@@ -205,7 +207,8 @@ class ResourceMixDiscipline(SoSDiscipline):
                         (f'{resource_type}.resource_stock', types), grad_ratio_on_stock * grad_stock)
 
             self.set_partial_derivative_for_other_types(
-                (ResourceMixModel.ALL_RESOURCE_PRICE, resource_type), (f'{resource_type}.resource_price', 'price'),
+                (ResourceMixModel.ALL_RESOURCE_PRICE,
+                 resource_type), (f'{resource_type}.resource_price', 'price'),
                 grad_price)
         data_frame_other_resource_price = inputs_dict['non_modeled_resource_price']
 
@@ -213,7 +216,7 @@ class ResourceMixDiscipline(SoSDiscipline):
             if resource_type not in resource_list and resource_type != 'years':
                 self.set_partial_derivative_for_other_types((ResourceMixModel.ALL_RESOURCE_PRICE, resource_type), (
                     ResourceMixModel.NON_MODELED_RESOURCE_PRICE, resource_type),
-                                                            np.identity(len(data_frame_other_resource_price)))
+                    np.identity(len(data_frame_other_resource_price)))
 
     def get_post_processing_list(self, chart_filters=None):
 
@@ -260,25 +263,30 @@ class ResourceMixDiscipline(SoSDiscipline):
             for resource_kind in stock_df:
                 if resource_kind != 'years':
                     stock_serie = InstanciatedSeries(
-                        years, (stock_df[resource_kind]).values.tolist(), resource_kind,
+                        years, (stock_df[resource_kind]
+                                ).values.tolist(), resource_kind,
                         InstanciatedSeries.LINES_DISPLAY)
                     stock_chart.add_series(stock_serie)
 
                     production_serie = InstanciatedSeries(
-                        years, (production_df[resource_kind]).values.tolist(), resource_kind,
+                        years, (production_df[resource_kind]
+                                ).values.tolist(), resource_kind,
                         InstanciatedSeries.BAR_DISPLAY)
                     production_chart.add_series(production_serie)
 
                     use_stock_serie = InstanciatedSeries(
-                        years, (use_stock_df[resource_kind]).values.tolist(), resource_kind,
+                        years, (use_stock_df[resource_kind]
+                                ).values.tolist(), resource_kind,
                         InstanciatedSeries.BAR_DISPLAY)
                     use_stock_chart.add_series(use_stock_serie)
                     ratio_use_serie = InstanciatedSeries(
-                        years, (ratio_use_df[resource_kind]).values.tolist(), resource_kind,
+                        years, (ratio_use_df[resource_kind]
+                                ).values.tolist(), resource_kind,
                         InstanciatedSeries.LINES_DISPLAY)
                     ratio_use_demand_chart.add_series(ratio_use_serie)
                     demand_serie = InstanciatedSeries(
-                        years, (demand_df[resource_kind]).values.tolist(), resource_kind,
+                        years, (demand_df[resource_kind]
+                                ).values.tolist(), resource_kind,
                         InstanciatedSeries.LINES_DISPLAY)
                     resource_demand_chart.add_series(demand_serie)
             for resource_types in price_df:
