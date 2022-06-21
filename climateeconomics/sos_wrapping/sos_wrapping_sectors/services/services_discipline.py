@@ -74,7 +74,6 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                              'visibility': 'Shared', 'namespace': 'ns_witness'},
         'sector_investment': {'type': 'dataframe', 'unit': 'T$', 'dataframe_descriptor': {'years': ('float', None, False),
                             'investment': ('float', None, True)}, 'dataframe_edition_locked': False},
-
         # energy_production stored in PetaWh for coupling variables scaling
         'energy_production': {'type': 'dataframe',  'unit': 'PWh',  
                               'dataframe_descriptor': {'years': ('float', None, False),'Total production': ('float', None, True)}, 'dataframe_edition_locked': False},
@@ -83,7 +82,9 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                   'user_level': 1, 'unit': '-'},
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2, 'unit': '-'},
         'ref_emax_enet_constraint': {'type': 'float', 'default': 60e3, 'user_level': 3, 
-                                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref', 'unit': '-'}
+                                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref', 'unit': '-'},
+        'prod_function_fitting': {'type': 'bool', 'default': False, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                    'unit': '-','namespace': 'ns_macro', 'structuring': True}
     }
 
     DESC_OUT = {
@@ -92,12 +93,24 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         'capital_df':  {'type': 'dataframe', 'unit': 'T$'},
         'detailed_capital_df': {'type': 'dataframe', 'unit': 'T$'}, 
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
-        'emax_enet_constraint':  {'type': 'array'}
+        'emax_enet_constraint':  {'type': 'array'},
     }
-
+        
     def setup_sos_disciplines(self):
-
-        self.update_default_with_years()
+ 
+        #self.update_default_with_years()
+        dynamic_outputs = {}
+        dynamic_inputs = {}
+        if 'prod_function_fitting' in self._data_in:
+            prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
+            if prod_function_fitting == True:
+                dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 5}
+                dynamic_inputs['energy_eff_xzero_max_ref'] = {'type': 'float', 'unit': '-', 'default': 2070}
+                dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
+                dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
+                dynamic_outputs['energy_eff_xzero_constraint'] = {'type': 'array', 'unit': '-'}
+                self.add_outputs(dynamic_outputs)
+                self.add_inputs(dynamic_inputs)
 
     def update_default_with_years(self):
         '''
@@ -107,7 +120,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
             year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
-
+            
     def init_execution(self):
         param = self.get_sosdisc_inputs(in_dict=True)
         self.services_model = SectorModel()
@@ -123,13 +136,15 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         energy_production = param['energy_production']
         sector_investment = param['sector_investment']
         workforce_df = param['workforce_df']
+        prod_function_fitting = param['prod_function_fitting']
+        
 
         services_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                            'energy_production': energy_production,
                            'sector_investment': sector_investment,
                            'workforce_df': workforce_df}
         # Model execution
-        production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint = self.services_model.compute(services_inputs)
+        production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, energy_eff_xzero_constraint = self.services_model.compute(services_inputs)
 
         # Store output data
         dict_values = {'productivity_df': productivity_df,
@@ -137,8 +152,12 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                        'capital_df': capital_df[['years', 'capital', 'usable_capital']],
                        'detailed_capital_df': capital_df, 
                        'growth_rate_df': growth_rate_df,
-                       'emax_enet_constraint': emax_enet_constraint
-                       }
+                       'emax_enet_constraint': emax_enet_constraint}
+        
+        if  prod_function_fitting == True: 
+            dict_values['longterm_energy_efficiency'] = lt_energy_eff
+            dict_values['range_energy_eff_constraint'] = range_energy_eff_cstrt
+            dict_values['energy_eff_xzero_constraint'] = energy_eff_xzero_constraint
 
         self.store_sos_outputs_values(dict_values)
 
@@ -201,13 +220,15 @@ class ServicesDiscipline(ClimateEcoDiscipline):
 
     def get_chart_filter_list(self):
 
-        # For the outputs, making a graph for tco vs year for each range and for specific
-        # value of ToT with a shift of five year between then
-
         chart_filters = []
 
         chart_list = ['sector output', 'investment', 'output growth', 'energy supply',
-                      'usable capital', 'capital', 'employment_rate', 'workforce', 'productivity', 'energy efficiency', 'e_max']
+                      'usable capital', 'capital', 'employment_rate', 'workforce', 
+                      'productivity', 'energy efficiency', 'e_max']
+        
+        prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
+        if prod_func_fit == True: 
+            chart_list.append('long term energy efficiency')
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -215,9 +236,6 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         return chart_filters
 
     def get_post_processing_list(self, chart_filters=None):
-
-        # For the outputs, making a graph for tco vs year for each range and for specific
-        # value of ToT with a shift of five year between then
 
         instanciated_charts = []
 
@@ -233,11 +251,13 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         workforce_df = self.get_sosdisc_inputs('workforce_df')
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
         capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
+        prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
+        if prod_func_fit == True:
+            lt_energy_eff = self.get_sosdisc_outputs('longterm_energy_efficiency')
 
         if 'sector output' in chart_list:
 
             to_plot = ['output', 'output_net_of_damage']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             legend = {'output': 'sector gross output',
                       'output_net_of_damage': 'world output net of damage'}
@@ -537,6 +557,36 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                 new_series = InstanciatedSeries(years, ordonate_data, key, 'lines', visible_line)
                 new_chart.series.append(new_series)
                 
+            instanciated_charts.append(new_chart)
+            
+        if 'long term energy efficiency' in chart_list: 
+
+            to_plot = ['energy_efficiency']
+
+            years = list(lt_energy_eff['years'])
+
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+
+            min_value, max_value = self.get_greataxisrange(lt_energy_eff[to_plot])
+
+            chart_name = 'Capital energy efficiency over the years'
+
+            new_chart = TwoAxesInstanciatedChart('years', 'Capital energy efficiency [-]',
+                                                 [year_start, year_end],
+                                                 [min_value, max_value],
+                                                 chart_name)
+
+            for key in to_plot:
+                visible_line = True
+
+                ordonate_data = list(lt_energy_eff[key])
+
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, key, 'lines', visible_line)
+
+                new_chart.series.append(new_series)
+
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
