@@ -52,7 +52,6 @@ class SectorModel():
         self.prod_function_fitting = inputs_dict['prod_function_fitting']
         if self.prod_function_fitting == True:
             self.energy_eff_max_range_ref = inputs_dict['energy_eff_max_range_ref']
-            self.energy_eff_xzero_max_ref = inputs_dict['energy_eff_xzero_max_ref']
         
         self.year_start = inputs_dict['year_start']  # year start
         self.year_end = inputs_dict['year_end']  # year end
@@ -300,10 +299,8 @@ class SectorModel():
         #constraint for diff between min and max value
         self.range_energy_eff_cstrt = (self.energy_eff_cst + self.energy_eff_max)/self.energy_eff_cst - self.energy_eff_max_range_ref
         self.range_energy_eff_cstrt = np.array([self.range_energy_eff_cstrt])
-        #constraint for x0 
-        self.energy_eff_xzero_constraint = np.array([self.energy_eff_xzero - self.energy_eff_xzero_max_ref])
    
-        return self.range_energy_eff_cstrt, self.energy_eff_xzero_constraint
+        return self.range_energy_eff_cstrt
     
     #RUN
     def compute(self, inputs):
@@ -332,7 +329,7 @@ class SectorModel():
             self.compute_long_term_energy_efficiency()
             self.compute_energy_eff_constraints()
 
-        return self.production_df, self.capital_df, self.productivity_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.energy_eff_xzero_constraint
+        return self.production_df, self.capital_df, self.productivity_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt
     
     ### GRADIENTS ###
 
