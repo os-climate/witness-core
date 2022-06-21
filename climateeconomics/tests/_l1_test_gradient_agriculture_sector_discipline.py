@@ -112,7 +112,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.workforce_df': self.workforce_df,
                        f'{self.name}.sector_investment': self.total_invest,
-                       f'{self.name}.alpha': 0.5
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.prod_function_fitting': False
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -156,7 +157,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.workforce_df': self.workforce_df,
                        f'{self.name}.sector_investment': self.total_invest,
-                       f'{self.name}.alpha': 0.5
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.prod_function_fitting': False
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

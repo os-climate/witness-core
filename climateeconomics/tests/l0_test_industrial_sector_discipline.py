@@ -34,10 +34,9 @@ class IndustrialDiscTest(unittest.TestCase):
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-
-    def test_execute(self):
         self.model_name = 'Industry'
         ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_macro': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
@@ -60,6 +59,9 @@ class IndustrialDiscTest(unittest.TestCase):
         year_start = 2020
         year_end = 2100
         time_step = 1
+        self.year_start = year_start
+        self.year_end = year_end 
+        self.time_step = time_step
         nb_per = round((year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
        
@@ -71,7 +73,7 @@ class IndustrialDiscTest(unittest.TestCase):
         total_workforce_df.index = years
         #multiply ageworking pop by employment rate and by % in industrial
         workforce = total_workforce_df['population_1570']* 0.659 * 0.217
-        workforce_df = pd.DataFrame({'years': years, 'workforce': workforce})
+        self.workforce_df = pd.DataFrame({'years': years, 'workforce': workforce})
 
         #Energy_supply
         brut_net = 1/1.45
@@ -84,8 +86,8 @@ class IndustrialDiscTest(unittest.TestCase):
         #Find values for 2020, 2050 and concat dfs 
         energy_supply = f2(np.arange(year_start, year_end+1))
         energy_supply_values = energy_supply * brut_net * share_indus
-        energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
-        energy_supply_df.index = self.years
+        self.energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
+        self.energy_supply_df.index = self.years
         #energy_supply_df.loc[2020, 'Total production'] = 91.936
 
         #Investment growth at 2% 
@@ -94,26 +96,29 @@ class IndustrialDiscTest(unittest.TestCase):
         invest_serie.append(init_value)
         for year in np.arange(1, nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.02)
-        total_invest = pd.DataFrame({'years': years, 'investment': invest_serie})
+        self.total_invest = pd.DataFrame({'years': years, 'investment': invest_serie})
         
         #damage
         self.damage_df = pd.DataFrame({'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
                                        'base_carbon_price': np.zeros(self.nb_per)})
         self.damage_df.index = self.years
 
+    def test_execute(self):
+
         # out dict definition
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
-                       f'{self.name}.time_step': time_step,
+        values_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end':  self.year_end,
+                       f'{self.name}.time_step':  self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.{self.model_name}.sector_investment': total_invest,
-                       f'{self.name}.{self.model_name}.energy_production': energy_supply_df,
+                       f'{self.name}.{self.model_name}.sector_investment':  self.total_invest,
+                       f'{self.name}.{self.model_name}.energy_production':  self.energy_supply_df,
                        f'{self.name}.{self.model_name}.damage_df': self.damage_df,
-                       f'{self.name}.{self.model_name}.workforce_df': workforce_df, 
-                       f'{self.name}.{self.model_name}.capital_start': 71 #2019 value 
+                       f'{self.name}.{self.model_name}.workforce_df':  self.workforce_df, 
+                       f'{self.name}.{self.model_name}.capital_start': 71, #2019 value
+                       f'{self.name}.prod_function_fitting': False
                        }
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
@@ -122,3 +127,29 @@ class IndustrialDiscTest(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filterr)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
+
+    def test_execute_forfitting(self):
+
+        # out dict definition
+        values_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end':  self.year_end,
+                       f'{self.name}.time_step':  self.time_step,
+                       f'{self.name}.damage_to_productivity': True,
+                       f'{self.name}.{self.model_name}.sector_investment':  self.total_invest,
+                       f'{self.name}.{self.model_name}.energy_production':  self.energy_supply_df,
+                       f'{self.name}.{self.model_name}.damage_df': self.damage_df,
+                       f'{self.name}.{self.model_name}.workforce_df':  self.workforce_df, 
+                       f'{self.name}.{self.model_name}.capital_start': 71, #2019 value
+                       f'{self.name}.prod_function_fitting': True
+                       }
+
+        self.ee.load_study_from_input_dict(values_dict)
+        self.ee.execute()
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.model_name}')[0]
+        filterr = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filterr)
+#         for graph in graph_list:
+#             graph.to_plotly().show()
+
