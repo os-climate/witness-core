@@ -1,7 +1,7 @@
 ## Macroeconomics model
 ### Main Inputs 
 - Damage data ($damage\_df$): Dataframe with damage fraction to be applied to output 
--  Working age population ($working\_age\_population\_df$): Dataframe with working age population per year in million of people
+- Working age population ($working\_age\_population\_df$): Dataframe with working age population per year in million of people
 - Population df ($population\_df$): Dataframe with total population per year in millions of people
 - Energy Production Quantity ($energy\_production$): Dataframe with Total Final Consumption of energy per year in Pwh
 - Energy capital ($energy\_capital$): Dataframe with the total capital stock dedicated to energy production per year. Unit: trillion dollars. 

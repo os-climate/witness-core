@@ -1,10 +1,17 @@
 ## Consumption model
-As in DICE (Nordhaus, 2017[^1]), this model is used for the optimisation problem. Our way to compute utility per capita is slightly different from DICE. We multiply the value obtained in DICE by an energy price ratio. 
+As in DICE (Nordhaus, 2017[^1]), this model is used for the optimisation problem. Our way to compute utility per capita is slightly different from DICE. We multiply the value obtained in DICE by an energy price ratio and a residential energy ratio.
+Consumption is:
+$$C_t = (1 - total\_investment\_share\_of\_GDP / 100) * Y_t
+with 
+$$Y_t$$ is the net output (GDP) coming from Macroeconomics.
+
 Utility per capita is: 
 $$U_{pc}(c_t) = energy\_price\_ratio_t.(\frac{c_t^{1-\alpha}}{1-\alpha}-1)$$
 with 
 $$energy\_price\_ratio_t =\frac{energy\_price_{t=0}}{energy\_price_t}$$
-where $energy\_price$ is the mean price of energy in dollars per MWh and comes from the energy model, $\alpha$ is the elasticity of marginal utility ($conso\_elasticity$). We set it by default to 2. A higher $\alpha$ means that marginal utility decreases faster with increase in income. $c_t = \frac{C_t}{L_t}$ is the per capita consumption. $L_t$ is the population in millions of people.
+and
+$$residential\_energy\_ratio_t =\frac{residential\_energy_t}{residential\_energy_{2019}}$$
+where $energy\_price$ is the mean price of energy in dollars per MWh and comes from the energy model, $residential\_energy$ is the residential energy coming from energy mix, $\alpha$ is the elasticity of marginal utility ($conso\_elasticity$). We set it by default to 2. A higher $\alpha$ means that marginal utility decreases faster with increase in income. $c_t = \frac{C_t}{L_t}$ is the per capita consumption. $L_t$ is the population in millions of people.
 
 ### Objectives   
 The DICE's objective function is the social welfare, the discounted sum of utility: 
