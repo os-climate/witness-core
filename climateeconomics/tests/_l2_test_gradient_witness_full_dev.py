@@ -54,7 +54,8 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
                                            )
         usecase.study_name = self.name
 
-        directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_full_dev')
+        directory = join(
+            AbstractJacobianUnittest.PICKLE_DIRECTORY, 'witness_full_dev')
 
         excluded_disc = []
 
@@ -67,10 +68,12 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.energy_detailed_techno_prices',
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.energy_production_detailed',
                             ]
+        disc_to_test_list = ['WITNESS.AgricultureMix.Forest']
 
         self.all_usecase_disciplines_jacobian_test(usecase,
                                                    directory=directory,
                                                    excluded_disc=excluded_disc,
                                                    max_mda_iter=3,
                                                    excluded_outputs=excluded_outputs,
+                                                   # optional_disciplines_list=disc_to_test_list
                                                    )

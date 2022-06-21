@@ -41,10 +41,12 @@ class AgricultureMixDiscipline(EnergyDiscipline):
                                      'possible_values': ['Crop', 'Forest'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_agriculture',
-                                     'structuring': True},
+                                     'structuring': True,
+                                     'unit': '-'},
                'data_fuel_dict': {'type': 'dict', 'unit': 'defined in dict',
                                   'visibility': EnergyDiscipline.SHARED_VISIBILITY,
-                                  'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict},
+                                  'namespace': 'ns_agriculture', 'default': BiomassDry.data_energy_dict,
+                                  'unit': '-'},
                }
     DESC_IN.update(EnergyDiscipline.DESC_IN)
     name = 'AgricultureMix'
