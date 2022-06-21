@@ -59,12 +59,12 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         'co2_boxes_init_conc': {'type': 'array', 'unit': 'ppm', 'default': co2_init_conc_fund, 'user_level': 2},
         'ch4_emis_to_conc': {'type': 'float', 'unit': 'ppm/Mt', 'default': 0.3597, 'user_level': 2},
         'ch4_decay_rate': {'type': 'float', 'unit': '-', 'default': 1/12, 'user_level': 2},
-        'ch4_pre_indus_conc': {'type': 'float', 'unit': 'ppm', 'default': 0.790, 'user_level': 2},
-        'ch4_init_conc': {'type': 'float', 'unit': 'ppm', 'default': 1.222, 'user_level': 2},
+        'ch4_pre_indus_conc': {'type': 'float', 'unit': 'ppm', 'default': 790, 'user_level': 2},
+        'ch4_init_conc': {'type': 'float', 'unit': 'ppm', 'default': 1222, 'user_level': 2},
         'n2o_emis_to_conc': {'type': 'float', 'unit': 'ppm/Mt', 'default': 0.2079, 'user_level': 2},
         'n2o_decay_rate': {'type': 'float', 'unit': '-', 'default':  1/114, 'user_level': 2},
-        'n2o_pre_indus_conc': {'type': 'float', 'unit': 'ppm', 'default': 0.285, 'user_level': 2},
-        'n2o_init_conc': {'type': 'float', 'unit': 'ppm', 'default': 0.296, 'user_level': 2},
+        'n2o_pre_indus_conc': {'type': 'float', 'unit': 'ppm', 'default': 285, 'user_level': 2},
+        'n2o_init_conc': {'type': 'float', 'unit': 'ppm', 'default': 296, 'user_level': 2},
 
 
 
