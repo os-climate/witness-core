@@ -48,7 +48,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2, 'unit': '°C'},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'unit': '-', 'default': 3.1, 'user_level': 3},
-        'forcing_model': {'type': 'string', 'default': 'Meinshausen', 'possible_values': ['DICE', 'Myhre', 'Etminan', 'Meinshausen'], 'structuring': True},
+        'temperature_model': {'type': 'string', 'default': 'FUND', 'possible_values': ['DICE', 'FUND', 'FAIR'], 'structuring': True},
         'climate_upper': {'type': 'float', 'default': 0.1005, 'user_level': 3, 'unit': '-'},
         'transfer_upper': {'type': 'float', 'default': 0.088, 'user_level': 3, 'unit': '-'},
         'transfer_lower': {'type': 'float', 'default': 0.025, 'user_level': 3, 'unit': '-'},
@@ -87,21 +87,41 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'forcing_model' in self._data_in:
-            forcing_model = self.get_sosdisc_inputs('forcing_model')
-            if forcing_model == 'DICE':
+        if 'temperature_model' in self._data_in:
+            temperature_model = self.get_sosdisc_inputs('temperature_model')
+            if temperature_model == 'DICE':
 
+                dynamic_inputs['forcing_model'] = {'type': 'string',
+                                                   'default': 'DICE',
+                                                   'possible_values': ['DICE'],
+                                                   'structuring': True}
                 dynamic_inputs['init_forcing_nonco'] = {
                     'type': 'float', 'default': 0.83, 'unit': 'W.m-2', 'user_level': 2}
                 dynamic_inputs['hundred_forcing_nonco'] = {
                     'type': 'float', 'default': 1.1422, 'unit': 'W.m-2', 'user_level': 2}
-            else:
-                # Default values for FAIR : 722 ppm and 273 ppm
-                # Default values for FUND : 790 ppm and 285 ppm
+
+            elif temperature_model == 'FUND':
+
+                dynamic_inputs['forcing_model'] = {'type': 'string',
+                                                   'default': 'Myhre',
+                                                   'possible_values': ['Myhre'],
+                                                   'structuring': True}
+                dynamic_inputs['pre_indus_ch4_concentration_ppm'] = {
+                    'type': 'float', 'default': 790., 'unit': 'ppm', 'user_level': 2}
+                dynamic_inputs['pre_indus_n2o_concentration_ppm'] = {
+                    'type': 'float', 'default': 285., 'unit': 'ppm', 'user_level': 2}
+
+            elif temperature_model == 'FAIR':
+
+                dynamic_inputs['forcing_model'] = {'type': 'string',
+                                                   'default': 'Meinshausen',
+                                                   'possible_values': ['Myhre', 'Etminan', 'Meinshausen'],
+                                                   'structuring': True}
                 dynamic_inputs['pre_indus_ch4_concentration_ppm'] = {
                     'type': 'float', 'default': 722., 'unit': 'ppm', 'user_level': 2}
                 dynamic_inputs['pre_indus_n2o_concentration_ppm'] = {
                     'type': 'float', 'default': 273., 'unit': 'ppm', 'user_level': 2}
+
         self.add_inputs(dynamic_inputs)
 
     def init_execution(self):
@@ -127,34 +147,96 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
     def compute_sos_jacobian(self):
         """ 
-        Compute jacobian for each coupling variable 
-        gradient of coupling variable to compute: 
-        temperature_df
-          - 'forcing':
-                - carboncycle_df, 'atmo_conc'
-          -'temp_atmo'
-                - carboncycle_df, 'atmo_conc'
-          - 'temp_ocean',
-                - carboncycle_df, 'atmo_conc'
+        Compute jacobian for each coupling variable
         """
-        d_tempatmo_d_atmoconc, d_tempocean_d_atmoconc = self.model.compute_d_temp_atmo()
-        d_tempatmoobj_d_temp_atmo = self.model.compute_d_temp_atmo_objective()
-        temperature_constraint_ref = self.get_sosdisc_inputs(
-            'temperature_end_constraint_ref')
-        self.set_partial_derivative_for_other_types(
-            ('temperature_df', 'temp_atmo'),  ('ghg_cycle_df', 'co2_ppm'), d_tempatmo_d_atmoconc,)
-        self.set_partial_derivative_for_other_types(
-            ('temperature_constraint', ),  ('ghg_cycle_df', 'co2_ppm'), -d_tempatmo_d_atmoconc[-1] / temperature_constraint_ref,)
-        for forcing_name, d_forcing_datmo_conc in self.model.d_forcing_datmo_conc_dict.items():
-            self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', forcing_name),  ('ghg_cycle_df', 'co2_ppm'), np.identity(len(d_forcing_datmo_conc)) * d_forcing_datmo_conc,)
+        temperature_model = self.get_sosdisc_inputs('temperature_model')
+        forcing_model = self.get_sosdisc_inputs('forcing_model')
+        year_start = self.get_sosdisc_inputs('year_start')
+        year_end = self.get_sosdisc_inputs('year_end')
+        temperature_constraint_ref = self.get_sosdisc_inputs('temperature_end_constraint_ref')
+        identity = np.identity(year_end-year_start+1)
 
-        # dtao => derivative temp atmo obj
-        # dac => derivative atmo conc
-        # dta => derivative temp atmo
-        # dtao/dac = dtao/dta * dta/dac
-        self.set_partial_derivative_for_other_types(
-            ('temperature_objective', ),  ('ghg_cycle_df', 'co2_ppm'),  d_tempatmoobj_d_temp_atmo.dot(d_tempatmo_d_atmoconc),)
+        # forcing_detail
+        self.model.compute_d_forcing()
+        d_forcing_datmo_conc = self.model.d_forcing_datmo_conc_dict
+
+        if forcing_model == 'DICE':
+            self.set_partial_derivative_for_other_types(
+                ('forcing_detail_df', 'CO2 forcing'),  ('ghg_cycle_df', 'co2_ppm'), identity * d_forcing_datmo_conc['CO2 forcing'],)
+
+        elif forcing_model == 'Myhre':
+            self.set_partial_derivative_for_other_types(
+                ('forcing_detail_df', 'CO2 forcing'), ('ghg_cycle_df', 'co2_ppm'),
+                identity * d_forcing_datmo_conc['CO2 forcing'], )
+            self.set_partial_derivative_for_other_types(
+                ('forcing_detail_df', 'CH4 and N2O forcing'), ('ghg_cycle_df', 'ch4_ppm'),
+                identity * d_forcing_datmo_conc['CH4 forcing'], )
+            self.set_partial_derivative_for_other_types(
+                ('forcing_detail_df', 'CH4 and N2O forcing'), ('ghg_cycle_df', 'n2o_ppm'),
+                identity * d_forcing_datmo_conc['N2O forcing'], )
+
+        elif forcing_model == 'Etminan' or forcing_model == 'Meinshausen':
+            self.set_partial_derivative_for_other_types(
+                ('forcing_detail_df', 'CO2 forcing'), ('ghg_cycle_df', 'co2_ppm'),
+                identity * d_forcing_datmo_conc['CO2 forcing'], )
+            self.set_partial_derivative_for_other_types(
+                ('forcing_detail_df', 'CH4 forcing'), ('ghg_cycle_df', 'ch4_ppm'),
+                identity * d_forcing_datmo_conc['CH4 forcing'], )
+            self.set_partial_derivative_for_other_types(
+                ('forcing_detail_df', 'N2O forcing'), ('ghg_cycle_df', 'n2o_ppm'),
+                identity * d_forcing_datmo_conc['N2O forcing'], )
+
+        if temperature_model == 'DICE':
+            d_tempatmo_d_atmoconc, _ = self.model.compute_d_temp_atmo()
+
+            # temperature_df
+            self.set_partial_derivative_for_other_types(
+                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'co2_ppm'), d_tempatmo_d_atmoconc, )
+
+            # temperature_constraint
+            d_tempatmo_d_atmoconc, _ = self.model.compute_d_temp_atmo()
+            self.set_partial_derivative_for_other_types(
+                ('temperature_constraint',), ('ghg_cycle_df', 'co2_ppm'),
+                -d_tempatmo_d_atmoconc[-1] / temperature_constraint_ref, )
+
+        elif temperature_model == 'FUND':
+
+            # temperature_df
+            d_temp_d_forcing_fund = self.model.compute_d_temp_d_forcing_fund()
+            d_temp_d_co2_ppm = np.matmul(d_temp_d_forcing_fund, identity * d_forcing_datmo_conc['CO2 forcing'])
+            d_temp_d_ch4_ppm = np.matmul(d_temp_d_forcing_fund, identity * d_forcing_datmo_conc['CH4 forcing'])
+            d_temp_d_n2o_ppm = np.matmul(d_temp_d_forcing_fund, identity * d_forcing_datmo_conc['N2O forcing'])
+            self.set_partial_derivative_for_other_types(
+                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'co2_ppm'), d_temp_d_co2_ppm,)
+            self.set_partial_derivative_for_other_types(
+                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'ch4_ppm'), d_temp_d_ch4_ppm,)
+            self.set_partial_derivative_for_other_types(
+                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'n2o_ppm'), d_temp_d_n2o_ppm,)
+
+            # temperature_constraint
+            self.set_partial_derivative_for_other_types(
+                ('temperature_constraint',), ('ghg_cycle_df', 'co2_ppm'),
+                -d_temp_d_co2_ppm[-1] / temperature_constraint_ref, )
+            self.set_partial_derivative_for_other_types(
+                ('temperature_constraint',), ('ghg_cycle_df', 'ch4_ppm'),
+                -d_temp_d_ch4_ppm[-1] / temperature_constraint_ref, )
+            self.set_partial_derivative_for_other_types(
+                ('temperature_constraint',), ('ghg_cycle_df', 'n2o_ppm'),
+                -d_temp_d_n2o_ppm[-1] / temperature_constraint_ref, )
+
+        elif forcing_model == 'Etminan' or forcing_model == 'Meinshausen':
+
+            # temperature df
+            # todo: FAIR model
+
+            # temperature_constraint
+            d_tempatmo_d_atmoconc, _ = self.model.compute_d_temp_atmo()
+            d_tempatmoobj_d_temp_atmo = self.model.compute_d_temp_atmo_objective()
+            self.set_partial_derivative_for_other_types(
+                ('temperature_constraint',), ('ghg_cycle_df', 'co2_ppm'),
+                -d_tempatmo_d_atmoconc[-1] / temperature_constraint_ref, )
+            self.set_partial_derivative_for_other_types(
+                ('temperature_objective', ),  ('ghg_cycle_df', 'co2_ppm'),  d_tempatmoobj_d_temp_atmo.dot(d_tempatmo_d_atmoconc),)
 
     def get_chart_filter_list(self):
 
@@ -185,12 +267,21 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         if 'temperature evolution' in chart_list:
 
-            to_plot = ['temp_atmo', 'temp_ocean']
+            model = self.get_sosdisc_inputs('temperature_model')
             temperature_df = deepcopy(
                 self.get_sosdisc_outputs('temperature_detail_df'))
 
-            legend = {'temp_atmo': 'atmosphere temperature',
-                      'temp_ocean': 'ocean temperature'}
+            if model == 'DICE':
+                to_plot = ['temp_atmo', 'temp_ocean']
+                legend = {'temp_atmo': 'atmosphere temperature',
+                          'temp_ocean': 'ocean temperature'}
+
+            elif model == 'FUND':
+                to_plot = ['temp_atmo']
+                legend = {'temp_atmo': 'atmosphere temperature'}
+
+            elif model == 'FAIR':
+                raise NotImplementedError('Model not implemented yet')
 
             years = list(temperature_df.index)
 
@@ -224,6 +315,22 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
+
+            # Seal level chart for FUND model
+            if model == 'FUND':
+                chart_name = 'Sea level evolution over the years'
+                min_value, max_value = self.get_greataxisrange(temperature_df['sea_level'])
+                new_chart = TwoAxesInstanciatedChart('years',
+                                                     'Seal level evolution',
+                                                     [year_start - 5, year_end + 5], [min_value, max_value],
+                                                     chart_name)
+                visible_line = True
+                ordonate_data = list(temperature_df['sea_level'])
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, 'Seal level evolution', 'lines', visible_line)
+                new_chart.series.append(new_series)
+
+                instanciated_charts.append(new_chart)
 
         if 'Radiative forcing' in chart_list:
 
