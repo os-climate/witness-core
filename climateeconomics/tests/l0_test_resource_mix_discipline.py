@@ -74,6 +74,16 @@ class AllResourceModelTestCase(unittest.TestCase):
             join(data_dir, 'uranium.use.csv'))
         self.copper_use_df = read_csv(
             join(data_dir, 'copper.use.csv'))
+        self.oil_recycled_production_df = read_csv(
+            join(data_dir, 'oil.recycled_production.csv'))
+        self.gas_recycled_production_df = read_csv(
+            join(data_dir, 'gas.recycled_production.csv'))
+        self.coal_recycled_production_df = read_csv(
+            join(data_dir, 'coal.recycled_production.csv'))
+        self.uranium_recycled_production_df = read_csv(
+            join(data_dir, 'uranium.recycled_production.csv'))
+        self.copper_recycled_production_df = read_csv(
+            join(data_dir, 'copper.recycled_production.csv'))
         self.non_modeled_resource_df = read_csv(
             join(data_dir, 'resource_data_price.csv'))
         self.all_demand= read_csv(
@@ -105,7 +115,12 @@ class AllResourceModelTestCase(unittest.TestCase):
                       'coal_resource.resource_price': self.coal_price_df,
                       'uranium_resource.resource_price': self.uranium_price_df,
                       'copper_resource.resource_price': self.copper_price_df,
-                      'non_modeled_resource_price':self.non_modeled_resource_df}
+                      'non_modeled_resource_price':self.non_modeled_resource_df,
+                      'oil_resource.recycled_production' : self.oil_recycled_production_df,
+                      'natural_gas_resource.recycled_production' : self.gas_recycled_production_df,
+                      'uranium_resource.recycled_production' : self.uranium_recycled_production_df,
+                      'coal_resource.recycled_production' : self.coal_recycled_production_df,
+                      'copper_resource.recycled_production': self.copper_recycled_production_df,}
 
     def test_All_resource_discipline(self):
         '''
@@ -138,23 +153,28 @@ class AllResourceModelTestCase(unittest.TestCase):
                        f'{name}.{model_name}.oil_resource.resource_stock':self.oil_stock_df,
                        f'{name}.{model_name}.oil_resource.resource_price':self.oil_price_df,
                        f'{name}.{model_name}.oil_resource.use_stock':self.oil_use_df,
+                       f'{name}.{model_name}.oil_resource.recycled_production' : self.oil_recycled_production_df,
                        f'{name}.{model_name}.natural_gas_resource.predictable_production':self.gas_production_df,
                        f'{name}.{model_name}.natural_gas_resource.resource_stock':self.gas_stock_df,
                        f'{name}.{model_name}.natural_gas_resource.resource_price':self.gas_price_df,
                        f'{name}.{model_name}.natural_gas_resource.use_stock':self.gas_use_df,
+                       f'{name}.{model_name}.natural_gas_resource.recycled_production' : self.gas_recycled_production_df,
                        f'{name}.{model_name}.coal_resource.predictable_production':self.coal_production_df,
                        f'{name}.{model_name}.coal_resource.resource_stock':self.coal_stock_df,
                        f'{name}.{model_name}.coal_resource.resource_price':self.coal_price_df,
                        f'{name}.{model_name}.coal_resource.use_stock':self.coal_use_df,
+                       f'{name}.{model_name}.coal_resource.recycled_production' : self.coal_recycled_production_df,
                        f'{name}.{model_name}.uranium_resource.predictable_production':self.uranium_production_df,
                        f'{name}.{model_name}.uranium_resource.resource_stock':self.uranium_stock_df,
                        f'{name}.{model_name}.uranium_resource.resource_price':self.uranium_price_df,
                        f'{name}.{model_name}.uranium_resource.use_stock':self.uranium_use_df,
+                       f'{name}.{model_name}.uranium_resource.recycled_production' : self.uranium_recycled_production_df,
                        f'{name}.{model_name}.copper_resource.predictable_production': self.copper_production_df,
                        f'{name}.{model_name}.copper_resource.resource_stock': self.copper_stock_df,
                        f'{name}.{model_name}.copper_resource.resource_price': self.copper_price_df,
                        f'{name}.{model_name}.copper_resource.use_stock': self.copper_use_df,
-                       f'{name}.{model_name}.non_modeled_resource_price': self.non_modeled_resource_df}
+                       f'{name}.{model_name}.copper_resource.recycled_production': self.copper_recycled_production_df,
+                       f'{name}.{model_name}.non_modeled_resource_price': self.non_modeled_resource_df,}
 
         ee.load_study_from_input_dict(inputs_dict)
         ee.execute()
@@ -162,5 +182,7 @@ class AllResourceModelTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #   graph.to_plotly().show()
+        for graph in graph_list:
+          graph.to_plotly().show()
+if __name__ =="__main__" :
+    unittest.main()

@@ -61,17 +61,22 @@ class ResourceMixDiscipline(SoSDiscipline):
     default_conversion_dict = {
         UraniumResourceDiscipline.resource_name:
             {'price': (1 / 0.001102) * 0.907185,
-             'production': 10 ** -6, 'stock': 10 ** -6},
+             'production': 10 ** -6, 'stock': 10 ** -6, 
+             'global_demand': 1.0},
         CoalResourceDiscipline.resource_name:
-            {'price': 0.907185, 'production': 1.0, 'stock': 1.0},
+            {'price': 0.907185, 'production': 1.0, 'stock': 1.0,
+            'global_demand': 1.0},
         NaturalGasResourceDiscipline.resource_name:
             {'price': 1.379 * 35310700 * 10 ** -6,
-             'production': 1 / 1.379, 'stock': 1 / 1.379},
+             'production': 1 / 1.379, 'stock': 1 / 1.379,
+             'global_demand': 1.0},
         OilResourceDiscipline.resource_name:
 
-        {'price': 7.33, 'production': 1.0, 'stock': 1.0},
+        {'price': 7.33, 'production': 1.0, 'stock': 1.0,
+        'global_demand': 1.0},
         CopperResourceDiscipline.resource_name:
-            {'price': 1.0, 'production': 1.0, 'stock': 1.0},
+            {'price': 1.0, 'production': 1.0, 'stock': 1.0,
+            'global_demand': 24.987 / 0.000213421},
 
     }
 
@@ -100,6 +105,7 @@ class ResourceMixDiscipline(SoSDiscipline):
             'namespace': 'ns_resource'},
         ResourceMixModel.All_RESOURCE_USE: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
+        ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION:  {'type': 'dataframe', 'unit': 'million_tonnes'} ,
         ResourceMixModel.RATIO_USABLE_DEMAND: {'type': 'dataframe', 'default': ratio_available_resource_default,
                                                'visibility': SoSDiscipline.SHARED_VISIBILITY, 'unit': '%',
                                                'namespace': 'ns_resource'},
@@ -129,8 +135,11 @@ class ResourceMixDiscipline(SoSDiscipline):
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource]}
                 dynamic_inputs[f'{resource}.use_stock'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource]}
+                dynamic_inputs[f'{resource}.recycled_production'] = {
+                    'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource] }
                 dynamic_inputs[f'{resource}.predictable_production'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PROD_UNIT[resource]}
+                
             self.add_inputs(dynamic_inputs)
         # self.add_outputs(dynamic_outputs)
 
@@ -152,6 +161,7 @@ class ResourceMixDiscipline(SoSDiscipline):
             ResourceMixModel.ALL_RESOURCE_PRICE: self.all_resource_model.all_resource_price.reset_index(),
             ResourceMixModel.All_RESOURCE_USE: self.all_resource_model.all_resource_use.reset_index(),
             ResourceMixModel.ALL_RESOURCE_PRODUCTION: self.all_resource_model.all_resource_production.reset_index(),
+            ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION: self.all_resource_model.all_resource_recycled_production.reset_index(),
             ResourceMixModel.RATIO_USABLE_DEMAND: self.all_resource_model.all_resource_ratio_usable_demand.reset_index(),
             ResourceMixModel.ALL_RESOURCE_DEMAND: self.all_resource_model.resource_demand.reset_index(),
             ResourceMixModel.ALL_RESOURCE_CO2_EMISSIONS: self.all_resource_model.all_resource_co2_emissions.reset_index(),
@@ -182,9 +192,9 @@ class ResourceMixDiscipline(SoSDiscipline):
         resource_list = self.get_sosdisc_inputs('resource_list')
         output_dict = self.get_sosdisc_outputs()
         for resource_type in resource_list:
-            grad_price, grad_use, grad_stock = self.all_resource_model.get_derivative_all_resource(
+            grad_price, grad_use, grad_stock, grad_recycling,  grad_demand = self.all_resource_model.get_derivative_all_resource(
                 inputs_dict, resource_type)
-            grad_ratio_on_stock, grad_ratio_on_demand = self.all_resource_model.get_derivative_ratio(
+            grad_ratio_on_stock, grad_ratio_on_demand, grad_ratio_on_recycling = self.all_resource_model.get_derivative_ratio(
                 inputs_dict, resource_type, output_dict)
 
             for types in inputs_dict[f'{resource_type}.use_stock']:
@@ -205,11 +215,26 @@ class ResourceMixDiscipline(SoSDiscipline):
                     self.set_partial_derivative_for_other_types(
                         (ResourceMixModel.RATIO_USABLE_DEMAND, resource_type),
                         (f'{resource_type}.resource_stock', types), grad_ratio_on_stock * grad_stock)
+            
+            for types in inputs_dict[f'{resource_type}.recycled_production']:
+                if types != 'years':
+                    self.set_partial_derivative_for_other_types(
+                        (ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION, resource_type),
+                        (f'{resource_type}.recycled_production', types), grad_recycling)
+                    self.set_partial_derivative_for_other_types(
+                        (ResourceMixModel.RATIO_USABLE_DEMAND, resource_type),
+                        (f'{resource_type}.recycled_production', types), grad_ratio_on_recycling * grad_recycling)
+            
+            
+            self.set_partial_derivative_for_other_types(
+                (ResourceMixModel.ALL_RESOURCE_DEMAND, resource_type),
+                ('resources_demand', resource_type), grad_demand)
 
             self.set_partial_derivative_for_other_types(
                 (ResourceMixModel.ALL_RESOURCE_PRICE,
                  resource_type), (f'{resource_type}.resource_price', 'price'),
                 grad_price)
+            
         data_frame_other_resource_price = inputs_dict['non_modeled_resource_price']
 
         for resource_type in data_frame_other_resource_price:
@@ -243,6 +268,8 @@ class ResourceMixDiscipline(SoSDiscipline):
                 ResourceMixModel.RATIO_USABLE_DEMAND)
             demand_df = self.get_sosdisc_outputs(
                 ResourceMixModel.ALL_RESOURCE_DEMAND)
+            recycling_df = self.get_sosdisc_outputs(
+                ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION)
 
             # two charts for stock evolution and price evolution
             stock_chart = TwoAxesInstanciatedChart('years', 'stocks (Mt)',
@@ -260,6 +287,8 @@ class ResourceMixDiscipline(SoSDiscipline):
                 chart_name='ratio usable stock and prod on demand through the years', stacked_bar=True)
             resource_demand_chart = TwoAxesInstanciatedChart(
                 'years', 'demand (Mt)', chart_name='resource demand through the years', stacked_bar=True)
+            recycling_chart = TwoAxesInstanciatedChart(
+                'years', 'recycled production (Mt)', chart_name='recycled production through the years', stacked_bar=True)
             for resource_kind in stock_df:
                 if resource_kind != 'years':
                     stock_serie = InstanciatedSeries(
@@ -289,6 +318,12 @@ class ResourceMixDiscipline(SoSDiscipline):
                                 ).values.tolist(), resource_kind,
                         InstanciatedSeries.LINES_DISPLAY)
                     resource_demand_chart.add_series(demand_serie)
+
+                    recycled_production_serie = InstanciatedSeries(
+                        years, (recycling_df[resource_kind]).values.tolist(), resource_kind,
+                        InstanciatedSeries.BAR_DISPLAY)
+                    recycling_chart.add_series(recycled_production_serie)
+
             for resource_types in price_df:
                 if resource_types != 'years':
                     price_serie = InstanciatedSeries(years, (price_df[resource_types]).values.tolist(
@@ -301,5 +336,6 @@ class ResourceMixDiscipline(SoSDiscipline):
             instanciated_charts.append(production_chart)
             instanciated_charts.append(ratio_use_demand_chart)
             instanciated_charts.append(resource_demand_chart)
+            instanciated_charts.append(recycling_chart)
 
         return instanciated_charts
