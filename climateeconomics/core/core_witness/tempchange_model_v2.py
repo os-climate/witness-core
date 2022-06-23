@@ -200,8 +200,8 @@ class TempChange(object):
         alphap[co2_ppm <= self.c0_ppm] = d1
         alphap[co2_ppm >= Camax] = d1 - b1**2 / (4 * a1)
 
-        alphaN2O = c1 * np.sqrt(n2o_ppm)
-        co2_forcing = (alphap + alphaN2O) * np.log(co2_ppm / self.c0_ppm)
+        alpha_n2o = c1 * np.sqrt(n2o_ppm)
+        co2_forcing = (alphap + alpha_n2o) * np.log(co2_ppm / self.c0_ppm)
         self.forcing_df['CO2 forcing'] = co2_forcing
 
         # CH4
@@ -352,11 +352,11 @@ class TempChange(object):
             dforcing = dco2_forcing + dexog_forcing_ch4 + dexog_forcing_n2o
 
         elif self.forcing_model == 'Etminan':
-            dforcing = self.compute_dforcing_etminan(co2_ppm)
+            dforcing = self.compute_dforcing_etminan(co2_ppm, ch4_ppm, n2o_ppm)
 
         elif self.forcing_model == 'Meinshausen':
 
-            dforcing = self.compute_dforcing_meinshausen(co2_ppm)
+            dforcing = self.compute_dforcing_meinshausen(co2_ppm, ch4_ppm, n2o_ppm)
 
         return dforcing
 
@@ -396,56 +396,48 @@ class TempChange(object):
 
         return dexog_forcing_ch4, dexog_forcing_n2o
 
-    def compute_dforcing_etminan(self, atmo_conc_ppm):
+    def compute_dforcing_etminan(self, co2_ppm, ch4_ppm, n2o_ppm):
         """
         Compute gradient for Etminan model
         """
-        datmo_conc_ppm = 1.0
+        co2mean = 0.5 * (co2_ppm + self.c0_ppm)
+        ch4mean = 0.5 * (ch4_ppm + self.ch4_conc_init_ppm)
+        n2omean = 0.5 * (n2o_ppm + self.n2o_conc_init_ppm)
+        sign_values = np.ones(len(co2_ppm))
+        sign_values[co2_ppm.real < self.c0_ppm] = -1
 
-        ch4_conc = atmo_conc_ppm * self.ch4_conc_init_ppm / self.c0_ppm
-        n2o_conc = atmo_conc_ppm * self.n2o_conc_init_ppm / self.c0_ppm
-
-        dch4_conc = datmo_conc_ppm * self.ch4_conc_init_ppm / self.c0_ppm
-        dn2o_conc = datmo_conc_ppm * self.n2o_conc_init_ppm / self.c0_ppm
-
-        co2mean = 0.5 * (atmo_conc_ppm + self.c0_ppm)
-        ch4mean = 0.5 * (ch4_conc + self.ch4_conc_init_ppm)
-        n2omean = 0.5 * (n2o_conc + self.n2o_conc_init_ppm)
-
-        dco2mean = 0.5 * datmo_conc_ppm
-        dch4mean = 0.5 * dch4_conc
-        dn2omean = 0.5 * dn2o_conc
-
-#         co2_forcing = (-2.4e-7 * (atmo_conc_ppm - self.c0_ppm)**2 + 7.2e-4 * np.abs(atmo_conc_ppm - self.c0_ppm) -
-#                        2.1e-4 * n2omean + self.forcing_eq_co2 / np.log(2)) * np.log(atmo_conc_ppm / self.c0_ppm)
-#         ch4_forcing = (-1.3e-6 * ch4mean - 8.2e-6 * n2omean + 0.043) * (np.sqrt(ch4_conc) -
-#                                                                         np.sqrt(self.ch4_conc_init_ppm))
-#         n2o_forcing = (-8.0e-6 * co2mean + 4.2e-6 * n2omean - 4.9e-6 * ch4mean + 0.117) * \
-#             (np.sqrt(n2o_conc) - np.sqrt(self.n2o_conc_init_ppm))
-        sign_values = np.ones(len(atmo_conc_ppm))
-        sign_values[atmo_conc_ppm.real < self.c0_ppm] = -1
-
-        dco2_forcing = (-2.4e-7 * datmo_conc_ppm * 2.0 * (atmo_conc_ppm - self.c0_ppm) + sign_values * 7.2e-4 * datmo_conc_ppm -
-                        2.1e-4 * dn2omean) * np.log(atmo_conc_ppm / self.c0_ppm) + \
-            datmo_conc_ppm / atmo_conc_ppm * (-2.4e-7 * (atmo_conc_ppm - self.c0_ppm)**2 + sign_values * 7.2e-4 * (atmo_conc_ppm - self.c0_ppm) -
+        # CO2
+        dco2_forcing_dco2_ppm = (-2.4e-7 * 2.0 * (co2_ppm - self.c0_ppm) + sign_values * 7.2e-4) * np.log(co2_ppm / self.c0_ppm) + \
+            1.0 / co2_ppm * (-2.4e-7 * (co2_ppm - self.c0_ppm)**2 + sign_values * 7.2e-4 * (co2_ppm - self.c0_ppm) -
                                               2.1e-4 * n2omean + self.forcing_eq_co2 / np.log(2))
+        dco2_forcing_dn2o_ppm = -2.1e-4 * 0.5 * np.log(co2_ppm / self.c0_ppm)
 
-        dch4_forcing = (-1.3e-6 * dch4mean - 8.2e-6 * dn2omean) * (np.sqrt(ch4_conc) -
-                                                                   np.sqrt(self.ch4_conc_init_ppm)) +\
-            (-1.3e-6 * ch4mean - 8.2e-6 * n2omean + 0.043) * \
-            dch4_conc / (2.0 * np.sqrt(ch4_conc))
+        # CH4
+        dch4_forcing_dch4_ppm = (-1.3e-6 * 0.5) * (np.sqrt(ch4_ppm) - np.sqrt(self.ch4_conc_init_ppm)) +\
+            (-1.3e-6 * ch4mean - 8.2e-6 * n2omean + 0.043) * 1.0 / (2.0 * np.sqrt(ch4_ppm))
+        dch4_forcing_dn2o_ppm = (-8.2e-6 * 0.5) * (np.sqrt(ch4_ppm) - np.sqrt(self.ch4_conc_init_ppm))
 
-        dn2o_forcing = (-8.0e-6 * dco2mean + 4.2e-6 * dn2omean - 4.9e-6 * dch4mean) * \
-            (np.sqrt(n2o_conc) - np.sqrt(self.n2o_conc_init_ppm)) + \
-            (-8.0e-6 * co2mean + 4.2e-6 * n2omean - 4.9e-6 *
-             ch4mean + 0.117) * dn2o_conc / (2.0 * np.sqrt(n2o_conc))
+        # N2O
+        dn2o_forcing_dn2o_ppm = (4.2e-6 * 0.5) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm)) + \
+            (-8.0e-6 * co2mean + 4.2e-6 * n2omean - 4.9e-6 * ch4mean + 0.117) * 1.0 / (2.0 * np.sqrt(n2o_ppm))
+        dn2o_forcing_dco2_ppm = (-8.0e-6 * 0.5) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm))
+        dn2o_forcing_dch4_ppm = (- 4.9e-6 * 0.5 ) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm))
 
-        self.d_forcing_datmo_conc_dict = {'CO2 forcing': dco2_forcing,
-                                          'CH4 forcing': dch4_forcing,
-                                          'N2O forcing': dn2o_forcing}
+        dco2_forcing = dco2_forcing_dco2_ppm + dco2_forcing_dn2o_ppm
+        dch4_forcing = dch4_forcing_dch4_ppm + dch4_forcing_dn2o_ppm
+        dn2o_forcing = dn2o_forcing_dn2o_ppm + dn2o_forcing_dch4_ppm + dn2o_forcing_dco2_ppm
+
+        self.d_forcing_datmo_conc_dict = {'CO2 forcing CO2 ppm': dco2_forcing_dco2_ppm,
+                                          'CO2 forcing N2O ppm': dco2_forcing_dn2o_ppm,
+                                          'CH4 forcing CH4 ppm': dch4_forcing_dch4_ppm,
+                                          'CH4 forcing N2O ppm': dch4_forcing_dn2o_ppm,
+                                          'N2O forcing CO2 ppm': dn2o_forcing_dco2_ppm,
+                                          'N2O forcing CH4 ppm': dn2o_forcing_dch4_ppm,
+                                          'N2O forcing N2O ppm': dn2o_forcing_dn2o_ppm,
+                                          }
         return dco2_forcing + dch4_forcing + dn2o_forcing
 
-    def compute_dforcing_meinshausen(self, atmo_conc_ppm):
+    def compute_dforcing_meinshausen(self, co2_ppm, ch4_ppm, n2o_ppm):
         """
         Compute gradient for radiative forcing following MeinsHausen model
 
@@ -462,47 +454,51 @@ class TempChange(object):
         b3 = -0.00012462
         d3 = 0.045194
 
-        ch4_conc = atmo_conc_ppm * self.ch4_conc_init_ppm / self.c0_ppm
-        n2o_conc = atmo_conc_ppm * self.n2o_conc_init_ppm / self.c0_ppm
-
-        dch4_conc = self.ch4_conc_init_ppm / self.c0_ppm
-        dn2o_conc = self.n2o_conc_init_ppm / self.c0_ppm
-
-        datmo_conc_ppm = 1.0
-
         Camax = self.c0_ppm - b1 / (2 * a1)
         # if self.c0_ppm < atmo_conc_ppm <= Camax:  # the most likely case
-        alphap = d1 + a1 * (atmo_conc_ppm - self.c0_ppm)**2 + \
-            b1 * (atmo_conc_ppm - self.c0_ppm)
-        alphap[atmo_conc_ppm <= self.c0_ppm] = d1
-        alphap[atmo_conc_ppm >= Camax] = d1 - b1**2 / (4 * a1)
+        alphap = d1 + a1 * (co2_ppm - self.c0_ppm)**2 + \
+            b1 * (co2_ppm - self.c0_ppm)
+        alphap[co2_ppm <= self.c0_ppm] = d1
+        alphap[co2_ppm >= Camax] = d1 - b1**2 / (4 * a1)
 
-        dalphap = a1 * datmo_conc_ppm * 2.0 * (atmo_conc_ppm - self.c0_ppm) + \
-            b1 * datmo_conc_ppm
-        dalphap[atmo_conc_ppm <= self.c0_ppm] = 0.0
-        dalphap[atmo_conc_ppm >= Camax] = 0.0
+        dalphap_dco2_ppm = a1 * 2.0 * (co2_ppm - self.c0_ppm) + b1
+        dalphap_dco2_ppm[co2_ppm <= self.c0_ppm] = 0.0
+        dalphap_dco2_ppm[co2_ppm >= Camax] = 0.0
 
-        alphaN2O = c1 * np.sqrt(n2o_conc)
-        dalphaN2O = c1 * dn2o_conc / (2 * np.sqrt(n2o_conc))
+        alpha_n2o = c1 * np.sqrt(n2o_ppm)
+        alpha_n2o_dn2o_ppm = c1 / (2 * np.sqrt(n2o_ppm))
 
-        dco2_forcing = (dalphap + dalphaN2O) * np.log(atmo_conc_ppm / self.c0_ppm) + \
-            (alphap + alphaN2O) * datmo_conc_ppm / atmo_conc_ppm
+        # CO2 --> co2_forcing = (alphap + alpha_n2o) * np.log(co2_ppm / self.c0_ppm)
+        dco2_forcing_dco2_ppm = (dalphap_dco2_ppm) * np.log(co2_ppm / self.c0_ppm) + \
+            (alphap + alpha_n2o) / co2_ppm
+        dco2_forcing_dn2o_ppm = (alpha_n2o_dn2o_ppm) * np.log(co2_ppm / self.c0_ppm)
 
-        # CH4
-        dch4_forcing = (
-            a3 * dch4_conc / (2.0 * np.sqrt(ch4_conc)) + b3 * dn2o_conc / (2.0 * np.sqrt(n2o_conc))) * (np.sqrt(ch4_conc) - np.sqrt(self.ch4_conc_init_ppm)) + \
-            dch4_conc * (a3 * np.sqrt(ch4_conc) + b3 *
-                         np.sqrt(n2o_conc) + d3) / (2.0 * np.sqrt(ch4_conc))
+        # CH4 --> ch4_forcing = (a3 * np.sqrt(ch4_ppm) + b3 * np.sqrt(n2o_ppm) + d3) * (np.sqrt(ch4_ppm) - np.sqrt(self.ch4_conc_init_ppm))
+        dch4_forcing_dch4_ppm = a3 / (2.0 * np.sqrt(ch4_ppm)) * (np.sqrt(ch4_ppm) - np.sqrt(self.ch4_conc_init_ppm)) + \
+                                (a3 * np.sqrt(ch4_ppm) + b3 * np.sqrt(n2o_ppm) + d3) / (2.0 * np.sqrt(ch4_ppm))
 
-        # N2O
-        dn2o_forcing = (a2 * datmo_conc_ppm / (2.0 * np.sqrt(atmo_conc_ppm)) + b2 * dn2o_conc / (2.0 * np.sqrt(n2o_conc)) +
-                        c2 * dch4_conc / (2.0 * np.sqrt(ch4_conc))) * (np.sqrt(n2o_conc) - np.sqrt(self.n2o_conc_init_ppm)) +\
-            (a2 * np.sqrt(atmo_conc_ppm) + b2 * np.sqrt(n2o_conc) +
-             c2 * np.sqrt(ch4_conc) + d2) * dn2o_conc / (2.0 * np.sqrt(n2o_conc))
+        dch4_forcing_dn2o_ppm = b3 / (2.0 * np.sqrt(n2o_ppm)) * (np.sqrt(ch4_ppm) - np.sqrt(self.ch4_conc_init_ppm))
 
-        self.d_forcing_datmo_conc_dict = {'CO2 forcing': dco2_forcing,
-                                          'CH4 forcing': dch4_forcing,
-                                          'N2O forcing': dn2o_forcing}
+        # N2O --> n2o_forcing = (a2 * np.sqrt(co2_ppm) + b2 * np.sqrt(n2o_ppm) + c2 * np.sqrt(ch4_ppm) + d2) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm))
+        dn2o_forcing_dco2_ppm = a2 / (2.0 * np.sqrt(co2_ppm)) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm))
+
+        dn2o_forcing_dch4_ppm = c2 / (2.0 * np.sqrt(ch4_ppm)) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm))
+
+        dn2o_forcing_dn2o_ppm = b2 / (2.0 * np.sqrt(n2o_ppm)) * (np.sqrt(n2o_ppm) - np.sqrt(self.n2o_conc_init_ppm)) + \
+                       (a2 * np.sqrt(co2_ppm) + b2 * np.sqrt(n2o_ppm) + c2 * np.sqrt(ch4_ppm) + d2) / (2.0 * np.sqrt(n2o_ppm))
+
+        dco2_forcing = dco2_forcing_dco2_ppm + dco2_forcing_dn2o_ppm
+        dch4_forcing = dch4_forcing_dch4_ppm + dch4_forcing_dn2o_ppm
+        dn2o_forcing = dn2o_forcing_dn2o_ppm + dn2o_forcing_dch4_ppm + dn2o_forcing_dco2_ppm
+
+        self.d_forcing_datmo_conc_dict = {'CO2 forcing CO2 ppm': dco2_forcing_dco2_ppm,
+                                          'CO2 forcing N2O ppm': dco2_forcing_dn2o_ppm,
+                                          'CH4 forcing CH4 ppm': dch4_forcing_dch4_ppm,
+                                          'CH4 forcing N2O ppm': dch4_forcing_dn2o_ppm,
+                                          'N2O forcing CO2 ppm': dn2o_forcing_dco2_ppm,
+                                          'N2O forcing CH4 ppm': dn2o_forcing_dch4_ppm,
+                                          'N2O forcing N2O ppm': dn2o_forcing_dn2o_ppm,
+                                          }
         return dco2_forcing + dch4_forcing + dn2o_forcing
 
     def compute_d_temp_atmo(self):
@@ -551,63 +547,6 @@ class TempChange(object):
                 j = j + 1
 
         return d_tempatmo_d_atmoconc, d_tempocean_d_atmoconc
-
-    def compute_d_temp_atmo_objective(self):
-        """ Compute derivative of temperature objective function regarding atmospheric temperature
-        """
-
-        temperature_df_values = self.temperature_df['temp_atmo'].values
-        delta_years = len(temperature_df_values)
-        result = np.zeros(len(temperature_df_values))
-
-        if self.temperature_obj_option == TempChange.LAST_TEMPERATURE_OBJECTIVE:
-            # (1-alpha) => C
-            # self.temperature_df['temp_atmo'][-1] => xf
-            # self.temperature_df['temp_atmo'][0]) => x1
-
-            # C * xf / x1
-
-            # derivative at n=1
-            # -(C * xf) / x1²
-            #
-            # derivative at 1 < n < f
-            # 0
-            #
-            # derivative at n = f
-            # C / x1
-
-            result[0] = (1 - self.beta) * (1 - self.alpha) / \
-                self.temperature_change_ref
-            result[-1] = (1 - self.beta) * (1 - self.alpha) / \
-                self.temperature_change_ref
-
-        elif self.temperature_obj_option == TempChange.INTEGRAL_OBJECTIVE:
-            # (1-alpha) => C
-            # self.temperature_df['temp_atmo'].sum() => (x1 + x2 + ... + xn)
-            # self.temperature_df['temp_atmo'][0] * delta_years) => x1*W
-
-            # C(x1 + x2 + .. + xn) / (x1 * W)
-
-            # derivative at n=1
-            # -((x2 + ... + xn)*C) / W * x1²
-            #
-            # derivative at n > 1
-            # C / x1W
-
-            #             dn1 = -1.0 * ((1 - self.beta) * (1 - self.alpha) * (self.temperature_df['temp_atmo'].sum() - temperature_df_values[0])) / (
-            #                 (temperature_df_values[0] ** 2) * delta_years)
-
-            dnn = (1 - self.beta) * (1 - self.alpha) / \
-                (self.temperature_change_ref * delta_years)
-
-            for index in range(len(temperature_df_values)):
-                if index != 0:
-                    result[index] = dnn
-        else:
-            raise ValueError(
-                f'temperature_obj_option = "{self.temperature_obj_option}" is not one of the allowed value : {TempChange.LAST_TEMPERATURE_OBJECTIVE} or {TempChange.INTEGRAL_OBJECTIVE}')
-
-        return result
 
     def compute_d_temp_d_forcing_fund(self):
         """
@@ -661,4 +600,4 @@ class TempChange(object):
             raise NotImplementedError("FAIR Not implemented yet")
 
         self.compute_temperature_year_end_constraint()
-        return self.temperature_df.fillna(0.0), self.temperature_objective
+        return self.temperature_df.fillna(0.0)
