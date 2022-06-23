@@ -75,7 +75,7 @@ class ObjectivesModel():
         self.hist_energy_eff['years'] = self.years_range
        
         #compute total errors  
-        error_pib_total = self.compute_quadratic_error(self.historical_gdp['total'].values, self.economics_df['net_output'].values)
+        error_pib_total = self.compute_quadratic_error(self.historical_gdp['total'].values, self.economics_df['output_net_of_d'].values)
         #Per sector
         sectors_gdp_errors = {}
         sectors_energy_eff_errors = {}

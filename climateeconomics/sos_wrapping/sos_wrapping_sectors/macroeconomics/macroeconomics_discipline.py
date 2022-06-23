@@ -97,7 +97,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # -- compute
         economics_df, investment_df = self.macro_model.compute(inputs_dict)
 
-        outputs_dict = {'economics_df': economics_df[['years', 'net_output', 'capital']],
+        outputs_dict = {'economics_df': economics_df[['years', 'output_net_of_d', 'capital']],
                         'investment_df': investment_df,
                         'economics_detail_df': economics_df}
 
@@ -114,7 +114,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # Gradient wrt each sector production df: same for all sectors
         grad_netoutput, grad_invest = self.macro_model.get_derivative_sectors()
         for sector in sector_list:
-            self.set_partial_derivative_for_other_types(('economics_df', 'net_output'),
+            self.set_partial_derivative_for_other_types(('economics_df', 'output_net_of_d'),
                                                         (f'{sector}.production_df', 'output_net_of_damage'),
                                                         grad_netoutput)
             self.set_partial_derivative_for_other_types(('economics_df', 'capital'),
@@ -161,9 +161,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'output' in chart_list:
 
-            to_plot = ['output', 'net_output']
+            to_plot = ['output', 'output_net_of_d']
             legend = {'output': 'world gross output',
-                      'net_output': 'world output net of damage'}
+                      'output_net_of_d': 'world output net of damage'}
             years = list(economics_df.index)
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -262,7 +262,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'share output' in chart_list:
-            output = economics_df['net_output'].values
+            output = economics_df['output_net_of_d'].values
             chart_name = 'Sectors output share of total economics net output'
             new_chart = TwoAxesInstanciatedChart('years', 'share of total net output [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,
