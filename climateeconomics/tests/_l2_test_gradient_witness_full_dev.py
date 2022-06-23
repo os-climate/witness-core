@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from os.path import join
+import unittest
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
@@ -68,12 +69,13 @@ class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.energy_detailed_techno_prices',
                             'Test.WITNESS_Eval.WITNESS.EnergyMix.fuel.ethanol.energy_production_detailed',
                             ]
-        disc_to_test_list = ['WITNESS.AgricultureMix.Forest']
+        disc_to_test_list = ['WITNESS.Resources'] #'WITNESS.AgricultureMix.Forest'
+                                     
 
         self.all_usecase_disciplines_jacobian_test(usecase,
                                                    directory=directory,
                                                    excluded_disc=excluded_disc,
                                                    max_mda_iter=3,
                                                    excluded_outputs=excluded_outputs,
-                                                   # optional_disciplines_list=disc_to_test_list
+                                                #    optional_disciplines_list=disc_to_test_list
                                                    )

@@ -51,6 +51,7 @@ class ResourceMixModel():
     ALL_RESOURCE_PRICE = 'resources_price'
     All_RESOURCE_USE = 'all_resource_use'
     ALL_RESOURCE_PRODUCTION = 'all_resource_production'
+    ALL_RESOURCE_RECYCLED_PRODUCTION = 'all_resource_recycled_production'
     RATIO_USABLE_DEMAND = 'all_resource_ratio_usable_demand'
     ALL_RESOURCE_RATIO_PROD_DEMAND = 'all_resource_ratio_prod_demand'
     ALL_RESOURCE_CO2_EMISSIONS = 'resources_CO2_emissions'
@@ -85,6 +86,7 @@ class ResourceMixModel():
         self.all_resource_price = None
         self.all_resource_use = None
         self.all_resource_production = None
+        self.all_resource_recycled_production = None
         self.all_resource_ratio_prod_demand = None
         self.all_resource_ratio_usable_demand = None
         self.all_resource_co2_emissions = None
@@ -118,6 +120,7 @@ class ResourceMixModel():
         self.all_resource_price = pd.DataFrame(empty_dict)
         self.all_resource_use = pd.DataFrame(empty_dict)
         self.all_resource_production = pd.DataFrame(empty_dict)
+        self.all_resource_recycled_production = pd.DataFrame(empty_dict)
         self.all_resource_ratio_prod_demand = pd.DataFrame(empty_dict)
         self.all_resource_ratio_usable_demand = pd.DataFrame(empty_dict)
 
@@ -148,6 +151,7 @@ class ResourceMixModel():
         self.all_resource_price.set_index('years', inplace=True)
         self.all_resource_use.set_index('years', inplace=True)
         self.all_resource_production.set_index('years', inplace=True)
+        self.all_resource_recycled_production.set_index('years', inplace=True)
         self.all_resource_ratio_prod_demand.set_index('years', inplace=True)
         self.all_resource_ratio_usable_demand.set_index('years', inplace=True)
         for resource in self.resource_list:
@@ -167,12 +171,15 @@ class ResourceMixModel():
             data_frame_use = deepcopy(inputs_dict[f'{resource}.use_stock'])
             if 'years' in data_frame_use.columns:
                 data_frame_use.set_index('years', inplace=True)
+            data_frame_recycled_production = deepcopy(inputs_dict[f'{resource}.recycled_production'])
+            if 'years' in data_frame_recycled_production.columns:
+                data_frame_recycled_production.set_index('years', inplace=True)
             self.resource_demand = deepcopy(inputs_dict[f'resources_demand'])
             if 'years' in self.resource_demand.columns:
                 self.resource_demand.set_index('years', inplace=True)
             self.all_resource_price[resource] = data_frame_price['price']
 
-            # add the different resource in one dataframe for production, stock
+            # add the different resource in one dataframe for production, stock, recycled production
             # and use resource per year:
             for types in data_frame_use:
                 if types != 'years':
@@ -182,6 +189,8 @@ class ResourceMixModel():
                         data_frame_stock[types]
                     self.all_resource_use[resource] = self.all_resource_use[resource] + \
                         data_frame_use[types]
+                    self.all_resource_recycled_production[resource] = self.all_resource_recycled_production[resource] + \
+                        data_frame_recycled_production[types]
             # conversion in Mt of the different resource:
             self.all_resource_production[resource] = self.all_resource_production[resource] * \
                 self.conversion_dict[resource]['production']
@@ -189,8 +198,12 @@ class ResourceMixModel():
                 self.conversion_dict[resource]['stock']
             self.all_resource_use[resource] = self.all_resource_use[resource] * \
                 self.conversion_dict[resource]['stock']
+            self.all_resource_recycled_production[resource] = self.all_resource_recycled_production[resource] * \
+                self.conversion_dict[resource]['stock']
             self.all_resource_price[resource] = self.all_resource_price[resource] * \
                 self.conversion_dict[resource]['price']
+            self.resource_demand[resource] = self.resource_demand[resource] *\
+                self.conversion_dict[resource]['global_demand']
 
     def compute(self, inputs_dict):
 
@@ -220,7 +233,8 @@ class ResourceMixModel():
         for resource in self.resource_list:
             # Available resources
             available_resource = deepcopy(self.all_resource_stock[resource].values) +\
-                deepcopy(self.all_resource_production[resource].values)
+                deepcopy(self.all_resource_production[resource].values) +\
+                deepcopy(self.all_resource_recycled_production[resource].values)
             available_resource_limited = compute_func_with_exp_min(
                 np.array(available_resource), 1.0e-10)
             # Demand without ratio
@@ -237,6 +251,8 @@ class ResourceMixModel():
         grad_stock = pd.DataFrame()
         grad_use = pd.DataFrame()
         grad_price = pd.DataFrame()
+        grad_recycling = pd.DataFrame()
+        grad_demand = pd.DataFrame()
         grad_stock = self.conversion_dict[resource_type]['stock'] * \
             np.identity(
             len(inputs_dict[f'{resource_type}.resource_stock'].index))
@@ -246,14 +262,21 @@ class ResourceMixModel():
         grad_price = self.conversion_dict[resource_type]['price'] * \
             np.identity(
             len(inputs_dict[f'{resource_type}.resource_price'].index))
-        return grad_price, grad_use, grad_stock
+        grad_recycling =  self.conversion_dict[resource_type]['stock'] * \
+            np.identity(
+            len(inputs_dict[f'{resource_type}.recycled_production'].index))
+        grad_demand = self.conversion_dict[resource_type]['global_demand'] * \
+            np.identity(
+            len(inputs_dict['resources_demand'].index))
+        return grad_price, grad_use, grad_stock, grad_recycling, grad_demand
 
     def get_derivative_ratio(self, inputs_dict, resource_type, output_dict):
 
         resource_stock = output_dict[ResourceMixModel.ALL_RESOURCE_STOCK][resource_type]
         resource_production = output_dict[ResourceMixModel.ALL_RESOURCE_PRODUCTION][resource_type]
+        resource_recycled_production = output_dict[ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION][resource_type]
         # Use with ratio
-        available_resource = resource_stock + resource_production
+        available_resource = resource_stock + resource_production + resource_recycled_production
         available_resource_limited = compute_func_with_exp_min(
             np.array(available_resource), 1.0e-10)
         d_available_resource_limited = compute_dfunc_with_exp_min(
@@ -270,6 +293,11 @@ class ResourceMixModel():
             np.where((available_resource_limited <= demand_limited) * (available_resource_limited / demand_limited > 1E-15),
                      d_available_resource_limited / demand_limited,
                      0.0)
+        
+        d_ratio_d_recycling = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
+            np.where((available_resource_limited <= demand_limited) * (available_resource_limited / demand_limited > 1E-15),
+                     d_available_resource_limited / demand_limited,
+                     0.0)
 
         d_ratio_d_demand = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
             np.where((available_resource_limited <= demand_limited) * (available_resource_limited / demand_limited > 1E-15),
@@ -277,7 +305,7 @@ class ResourceMixModel():
                      demand_limited ** 2,
                      0.0)
 
-        return d_ratio_d_stock, d_ratio_d_demand
+        return d_ratio_d_stock, d_ratio_d_demand, d_ratio_d_recycling
 
     def get_co2_emissions(self, years, resource_list, non_modeled_resource_list):
         '''Function to create a dataframe with the CO2 emissions for all the ressources

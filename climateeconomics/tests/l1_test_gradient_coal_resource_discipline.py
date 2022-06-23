@@ -15,6 +15,7 @@ limitations under the License.
 '''
 
 from os.path import join, dirname
+import unittest
 from pandas import read_csv
 from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
 from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -92,7 +93,9 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                      f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
-                                     f'{self.name}.{self.model_name}.predictable_production'])
+                                     f'{self.name}.{self.model_name}.predictable_production',
+                                     f'{self.name}.{self.model_name}.recycled_production'
+                                     ])
         
     def test_coal_resource_damand_variable_analytic_grad(self):
         
@@ -130,4 +133,6 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                      f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
-                                     f'{self.name}.{self.model_name}.predictable_production'])
+                                     f'{self.name}.{self.model_name}.predictable_production',
+                                     f'{self.name}.{self.model_name}.recycled_production',
+                                     ])
