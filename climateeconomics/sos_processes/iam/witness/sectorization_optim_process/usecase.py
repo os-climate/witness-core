@@ -80,7 +80,7 @@ class Study(StudyManager):
                                       [0.5], [0.001], [0.00001], [0.01],
                                       [0.0], [1e-5],[1900.0], [1.0]],
                        'upper_bnd': [[0.99], [0.07], [0.1],[2.0],
-                                      [1.0], [2.0],[2050.0], [8.0],
+                                      [1.0], [2.0],[2050.0], [15.0],
                                       [0.99], [0.1], [0.1],[2.0],
                                       [1.0], [2.0],[2050.0], [8.0],
                                       [0.99], [0.1], [0.1],[2.0],
@@ -247,6 +247,23 @@ class Study(StudyManager):
         return [disc_dict]
 
 
+#---------------- SPECIFIC CODE TO ENABLE COMPLEX AS REAL INTO PLOTLY CHARTS
+import json as _json
+import plotly
+
+
+class ComplexJsonEncoder(_json.JSONEncoder):
+    def default(self, o):
+
+        if isinstance(o, np.complex):
+            return o.real
+
+        # default, if not one of the specified object. Caller's problem if this is not
+        # serializable.
+        return _json.JSONEncoder.default(self, o)
+    
+#---------------- SPECIFIC CODE TO ENABLE COMPLEX AS REAL INTO PLOTLY CHARTS
+
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
@@ -258,13 +275,23 @@ if '__main__' == __name__:
     uc_cls.run()
     
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    for disc in uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines[0].sos_disciplines:
         if disc.sos_name == 'Objectives':
             filters = ppf.get_post_processing_filters_by_discipline(disc)
             graph_list = ppf.get_post_processing_by_discipline(
                 disc, filters, as_json=False)
 
             for graph in graph_list:
-                graph.to_plotly().show()
 
+                # Get chart as plotly dict instead of plotly json to avoid complex type error
+                d = graph.to_plotly_dict()
+                # Convert dict into json using a custom encoder that manage complex type
+                j = _json.dumps(d, cls=ComplexJsonEncoder)
+                # Set up a new plotly object using this generated json
+                p = plotly.io.from_json(j)
+                # display the plotly chart
+                #p.show()
+
+                #g = graph.to_plotly()
+                #g.show()
     
