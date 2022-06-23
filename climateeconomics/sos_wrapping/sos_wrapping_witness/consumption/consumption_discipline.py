@@ -291,7 +291,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['Consumption', 'Utility', 'Utility of pc consumption',
+        chart_list = ['Consumption', 'Consumption PC', 'Utility', 'Utility of pc consumption',
                       'Energy effects on utility', 'Energy ratios']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -489,6 +489,36 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             chart_name = 'Global consumption over the years'
 
             new_chart = TwoAxesInstanciatedChart('years', ' global consumption [trillion $]',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
+                                                 chart_name)
+
+            for key in to_plot:
+                visible_line = True
+
+                ordonate_data = list(utility_df[key])
+
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, key, 'lines', visible_line)
+
+                new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+        if 'Consumption PC' in chart_list:
+
+            to_plot = ['pc_consumption']
+            utility_df = deepcopy(self.get_sosdisc_outputs('utility_detail_df'))
+            years = list(utility_df.index)
+
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+
+            min_value, max_value = self.get_greataxisrange(
+                utility_df[to_plot])
+
+            chart_name = 'Per capita consumption over the years'
+
+            new_chart = TwoAxesInstanciatedChart('years', ' Per capita consumption [thousand $]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
