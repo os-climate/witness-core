@@ -183,7 +183,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
         if 'Total output' in chart_list:
             ref = historical_gdp['total']
-            simu = economics_df['net_output']
+            simu = economics_df['output_net_of_d']
 
             years = list(economics_df['years'])
             year_start = years[0]
