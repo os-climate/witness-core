@@ -74,17 +74,17 @@ class Study(StudyManager):
                                  [0.87], [0.02], [0.02],[0.27], 
                                  [0.05], [0.98], [2012.0], [3.51]],
                        'lower_bnd': [[0.5], [0.001], [0.00001], [0.01],
-                                     [0.0], [0.0],[1900.0], [1.0],
+                                     [0.0], [1e-5],[1900.0], [1.0],
                                       [0.5], [0.001], [0.00001], [0.01],
-                                      [0.0], [0.0],[1900.0], [1.0],
+                                      [0.0], [1e-5],[1900.0], [1.0],
                                       [0.5], [0.001], [0.00001], [0.01],
-                                      [0.0], [0.0],[1900.0], [1.0]],
+                                      [0.0], [1e-5],[1900.0], [1.0]],
                        'upper_bnd': [[0.99], [0.07], [0.1],[2.0],
-                                      [1.0], [2.0],[2050.0], [8.0],
+                                      [1.0], [2.0],[2050.0], [15.0],
                                       [0.99], [0.1], [0.1],[2.0],
                                       [1.0], [2.0],[2050.0], [8.0],
                                       [0.99], [0.1], [0.1],[2.0],
-                                      [1.0], [2.0],[2050.0], [8.0]],
+                                      [1.0], [2.0],[2015.0], [8.0]],
                        'enable_variable': [ True, True, True, True,
                                            True, True, True, True,
                                            True, True, True, True,
@@ -158,7 +158,7 @@ class Study(StudyManager):
         disc_dict[f'{ns_coupling}.DesignVariables.design_var_descriptor'] = design_var_descriptor
 
         # Optim inputs
-        disc_dict[f'{ns_optim}.max_iter'] = 100
+        disc_dict[f'{ns_optim}.max_iter'] = 300
         disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
         disc_dict[f'{ns_optim}.design_space'] = dspace
         disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
@@ -175,44 +175,49 @@ class Study(StudyManager):
         }
         
     # design var inputs
-        disc_dict[f'{ns_optim}.output_alpha_services_in'] = 0.87
-        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = 0.02
-        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = 0.02
-        disc_dict[f'{ns_optim}.prod_start_services_in'] = 0.27
-        disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = 0.05
-        disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = 0.98
-        disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = 2012.0
-        disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = 3.51
+        disc_dict[f'{ns_optim}.output_alpha_services_in'] = ([0.87])
+        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = ([0.02])
+        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = ([0.02])
+        disc_dict[f'{ns_optim}.prod_start_services_in'] = ([0.27])
+        disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = ([0.05])
+        disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = ([0.98])
+        disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = ([2012.0])
+        disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = ([3.51])
         
-        disc_dict[f'{ns_optim}.output_alpha_agri_in'] = 0.87
-        disc_dict[f'{ns_optim}.prod_gr_start_agri_in'] = 0.02
-        disc_dict[f'{ns_optim}.decl_rate_tfp_agri_in'] = 0.02
-        disc_dict[f'{ns_optim}.prod_start_agri_in'] = 0.27
-        disc_dict[f'{ns_optim}.energy_eff_k_agri_in'] = 0.05
-        disc_dict[f'{ns_optim}.energy_eff_cst_agri_in'] = 0.98
-        disc_dict[f'{ns_optim}.energy_eff_xzero_agri_in'] = 2012.0
-        disc_dict[f'{ns_optim}.energy_eff_max_agri_in'] = 3.51
+        disc_dict[f'{ns_optim}.output_alpha_agri_in'] = ([0.87])
+        disc_dict[f'{ns_optim}.prod_gr_start_agri_in'] = ([0.02])
+        disc_dict[f'{ns_optim}.decl_rate_tfp_agri_in'] = ([0.02])
+        disc_dict[f'{ns_optim}.prod_start_agri_in'] = ([0.27])
+        disc_dict[f'{ns_optim}.energy_eff_k_agri_in'] = ([0.05])
+        disc_dict[f'{ns_optim}.energy_eff_cst_agri_in'] = ([0.98])
+        disc_dict[f'{ns_optim}.energy_eff_xzero_agri_in'] = ([2012.0])
+        disc_dict[f'{ns_optim}.energy_eff_max_agri_in'] = ([3.51])
         
-        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = 0.87
-        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = 0.02
-        disc_dict[f'{ns_optim}.decl_rate_tfp_indus_in'] = 0.02
-        disc_dict[f'{ns_optim}.prod_start_indus_in'] = 0.27
-        disc_dict[f'{ns_optim}.energy_eff_k_indus_in'] = 0.05
-        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = 0.98
-        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = 2012.0
-        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = 3.51
+        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = ([0.87])
+        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = ([0.02])
+        disc_dict[f'{ns_optim}.decl_rate_tfp_indus_in'] = ([0.02])
+        disc_dict[f'{ns_optim}.prod_start_indus_in'] = ([0.27])
+        disc_dict[f'{ns_optim}.energy_eff_k_indus_in'] = ([0.05])
+        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = ([0.98])
+        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = ([2012.0])
+        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = ([3.51])
 
         
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
         func_df['variable'] = [ 'error_pib_total',
                                'Industry.gdp_error', 'Agriculture.gdp_error', 'Services.gdp_error',
-                               'Industry.energy_eff_error', 'Agriculture.energy_eff_error', 'Services.energy_eff_error']
-        func_df['ftype'] =  [OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE]
-        func_df['weight'] = [1,1,1,1,1,1,1]
+                               'Industry.energy_eff_error', 'Agriculture.energy_eff_error', 'Services.energy_eff_error',
+                               'Industry.range_energy_eff_constraint', 'Agriculture.range_energy_eff_constraint', 
+                               'Services.range_energy_eff_constraint']
+        func_df['ftype'] =  [OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,
+                             INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT]
+        func_df['weight'] = [1,1,1,1,1,1,1,-1, -1, -1]
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, 
-                              AGGR_TYPE_SUM, AGGR_TYPE_SUM,AGGR_TYPE_SUM]
-        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj']
+                              AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, 
+                              AGGR_TYPE_SUM, AGGR_TYPE_SUM,  AGGR_TYPE_SUM]
+        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj',
+                                'ns_macro', 'ns_macro', 'ns_macro']
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{ns_coupling}.{func_mng_name}.'
@@ -231,6 +236,7 @@ class Study(StudyManager):
         sect_input[ns_coupling + self.obj_name +  '.historical_gdp'] = hist_gdp
         sect_input[ns_coupling + self.obj_name +  '.historical_capital'] = hist_capital
         sect_input[ns_coupling + self.obj_name +  '.historical_energy'] = hist_energy
+        sect_input[ns_coupling + self.macro_name + '.prod_function_fitting'] = True
         disc_dict.update(sect_input)
         
         self.witness_sect_uc.study_name = f'{ns_coupling}'
@@ -241,6 +247,23 @@ class Study(StudyManager):
         return [disc_dict]
 
 
+#---------------- SPECIFIC CODE TO ENABLE COMPLEX AS REAL INTO PLOTLY CHARTS
+import json as _json
+import plotly
+
+
+class ComplexJsonEncoder(_json.JSONEncoder):
+    def default(self, o):
+
+        if isinstance(o, np.complex):
+            return o.real
+
+        # default, if not one of the specified object. Caller's problem if this is not
+        # serializable.
+        return _json.JSONEncoder.default(self, o)
+    
+#---------------- SPECIFIC CODE TO ENABLE COMPLEX AS REAL INTO PLOTLY CHARTS
+
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
@@ -250,4 +273,25 @@ if '__main__' == __name__:
 #     generate_n2_plot(uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines[0].sos_disciplines)
 #     uc_cls.execution_engine.dm.export_couplings(in_csv=True, f_name='couplings.csv')
     uc_cls.run()
+    
+    ppf = PostProcessingFactory()
+    for disc in uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines[0].sos_disciplines:
+        if disc.sos_name == 'Objectives':
+            filters = ppf.get_post_processing_filters_by_discipline(disc)
+            graph_list = ppf.get_post_processing_by_discipline(
+                disc, filters, as_json=False)
+
+            for graph in graph_list:
+
+                # Get chart as plotly dict instead of plotly json to avoid complex type error
+                d = graph.to_plotly_dict()
+                # Convert dict into json using a custom encoder that manage complex type
+                j = _json.dumps(d, cls=ComplexJsonEncoder)
+                # Set up a new plotly object using this generated json
+                p = plotly.io.from_json(j)
+                # display the plotly chart
+                #p.show()
+
+                #g = graph.to_plotly()
+                #g.show()
     

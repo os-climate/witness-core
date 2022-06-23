@@ -109,7 +109,7 @@ class ResourceDiscipline(SoSDiscipline):
         resources_demand = inputs_dict['resources_demand']
         sub_resource_list = self.resource_model.sub_resource_list
 
-        grad_stock, grad_price, grad_use = self.resource_model.get_derivative_resource()
+        grad_stock, grad_price, grad_use, grad_recycling = self.resource_model.get_derivative_resource()
         # # ------------------------------------------------
         # # Stock resource gradient
         for sub_resource_type in sub_resource_list:
@@ -127,6 +127,13 @@ class ResourceDiscipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('use_stock', sub_resource_type),
                 ('resources_demand', self.resource_name), grad_use[sub_resource_type])
+        # # ------------------------------------------------
+        # # Recycled resource gradient
+        for sub_resource_type in sub_resource_list:
+            self.set_partial_derivative_for_other_types(
+                ('recycled_production', sub_resource_type),
+                ('resources_demand', self.resource_name), grad_recycling[sub_resource_type])
+              
         # # ------------------------------------------------
         # # Prod resource gradient did not depend on demand
 

@@ -56,4 +56,9 @@ documentation folder gives details about the optimisation problem formulation.
 At the moment, results given by Witness process and the different models are global results which are an average over the world.
 In order to have more accuracy, we want to add regionalisation aspect. The first step is to propose a regionalisation continent by continent.
 
-##License
+## License
+The witness-core source code is distributed under the Apache License Version 2.0.
+A copy of it can be found in the LICENSE file.
+
+The witness-core product depends on other software which have various licenses.
+The list of dependencies with their licenses is given in the CREDITS.rst file.

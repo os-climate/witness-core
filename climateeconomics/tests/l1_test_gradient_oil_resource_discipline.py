@@ -92,7 +92,9 @@ class OilResourceJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                      f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
-                                     f'{self.name}.{self.model_name}.predictable_production'])
+                                     f'{self.name}.{self.model_name}.predictable_production',
+                                     f'{self.name}.{self.model_name}.recycled_production',
+                                     ])
     def test_oil_resource_demand_variable_analytic_grad(self):
         
         self.name = 'Test'
@@ -127,4 +129,6 @@ class OilResourceJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                      f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
-                                     f'{self.name}.{self.model_name}.predictable_production'])
+                                     f'{self.name}.{self.model_name}.predictable_production',
+                                     f'{self.name}.{self.model_name}.recycled_production',
+                                     ])

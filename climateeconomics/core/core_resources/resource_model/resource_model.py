@@ -65,6 +65,7 @@ class ResourceModel():
         self.w = None
         self.price_data = None
         self.data_year_start = None
+        self.construction_resource_list = ['copper_resource']
 
     def configure_parameters(self, inputs_dict):
         '''
@@ -403,7 +404,7 @@ class ResourceModel():
                             # a given year).  
                             # Recycling depends on the use_stock of lifespan ago 
 
-                            
+                           
                             for year in range(year_start + 1, year_demand + 1):
                                 
                                 if resource_stock_dict[resource_type][
@@ -445,6 +446,8 @@ class ResourceModel():
                                 year_demand - year_start - 1] 
                             grad_use[resource_type][year_demand - year_start, year_demand - self.lifespan - year_start] += \
                                 grad_recycling[resource_type][year_demand - year_start, year_demand - self.lifespan - year_start]
+                            # grad_use[resource_type][year_demand - year_start] += \
+                            #     grad_recycling[resource_type][year_demand - year_start]
                             demand = demand - \
                                 use_stock_dict[resource_type][year_demand]
                             # if no stock at previous year grad_demand = 0
@@ -465,7 +468,7 @@ class ResourceModel():
 
         grad_price = self.get_d_price_d_demand(year_start, year_end, nb_years, grad_use, grad_price)
         
-        return grad_stock, grad_price, grad_use, 
+        return grad_stock, grad_price, grad_use, grad_recycling
 
 
     def get_d_price_d_demand (self, year_start, year_end, nb_years, grad_use, grad_price):
@@ -508,5 +511,4 @@ class ResourceModel():
                                 * grad_total_consumption[year_demand - year_start, year - year_start])\
                             / (total_consumption_dict['production'][year_demand]) ** 2
         return grad_price
-        
         

@@ -58,7 +58,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         'discounted_utility_ref': {'type': 'float', 'unit': '-', 'default': 1700, 'visibility': 'Shared', 'namespace': 'ns_ref', 'user_level': 2},
     }
     DESC_OUT = {
-        'utility_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'utility_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
         'welfare_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'negative_welfare_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'min_utility_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}
@@ -95,7 +95,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         dict_values = {'utility_df': utility_df,
                        'welfare_objective': welfare_objective,
                        'min_utility_objective': min_utility_objective,
-                       'negative_welfare_objective' : negative_welfare_objective
+                       'negative_welfare_objective': negative_welfare_objective
                        }
         self.store_sos_outputs_values(dict_values)
 
@@ -175,7 +175,6 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('negative_welfare_objective',), ('energy_mean_price', 'energy_price'),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_energy_price))
-
 
         d_obj_d_discounted_utility, d_obj_d_period_utility_pc = self.utility_m.compute_gradient_min_utility_objective()
 

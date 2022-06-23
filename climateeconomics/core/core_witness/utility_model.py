@@ -19,7 +19,7 @@ import pandas as pd
 
 class UtilityModel():
     '''
-    Used to compute damage from climate change
+    Used to compute population welfare and utility
     '''
 
     def __init__(self, param):

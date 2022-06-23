@@ -95,7 +95,9 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                      f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
-                                     f'{self.name}.{self.model_name}.predictable_production'])
+                                     f'{self.name}.{self.model_name}.predictable_production',
+                                     f'{self.name}.{self.model_name}.recycled_production',
+                                     ])
 
     def test_natural_gas_resource_demand_variable_analytic_grad(self):
         
@@ -133,4 +135,7 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                      f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
-                                     f'{self.name}.{self.model_name}.predictable_production'])
+                                     f'{self.name}.{self.model_name}.predictable_production',
+                                     f'{self.name}.{self.model_name}.recycled_production',
+                                     ])
+

@@ -49,13 +49,13 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
                         'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
-                        'structuring': True},
+                        'structuring': True, 'unit': '-'},
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': EnergyMix.ccs_list,
                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
-                     'structuring': True},
+                     'structuring': True, 'unit': '-'},
         'agri_capital_techno_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'default': [],
                                      'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                                     'user_level': 1, 'structuring': True},
+                                     'user_level': 1, 'structuring': True, 'unit': '-'},
         'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit': 'G$', 'user_level': 2,
                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared',
@@ -73,12 +73,12 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
 
     }
     DESC_OUT = {
-        'non_use_capital_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'non_use_capital_df': {'type': 'dataframe'},
-        'techno_capital_df': {'type': 'dataframe'},
+        'non_use_capital_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
+        'non_use_capital_df': {'type': 'dataframe', 'unit': 'G$'},
+        'techno_capital_df': {'type': 'dataframe', 'unit': 'G$'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'non_use_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'forest_lost_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'non_use_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
+        'forest_lost_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
     }
 
     def setup_sos_disciplines(self):

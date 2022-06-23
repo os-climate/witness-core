@@ -17,7 +17,6 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from os.path import join, dirname
-from gemseo.third_party.prettytable.prettytable import NONE
 
 
 class SectorModel():
@@ -38,12 +37,22 @@ class SectorModel():
         self.production_df = None
         self.workforce_df = None
         self.growth_rate_df = None
+        self.lt_energy_eff = None
+        self.emax_enet_constraint = None
+        
+        self.range_energy_eff_cstrt = None
+        self.energy_eff_xzero_constraint =  None 
         
     def configure_parameters(self, inputs_dict):
         '''
         Configure with inputs_dict from the discipline
         '''
-
+        #years range for long term energy efficiency 
+        self.years_lt_energy_eff = np.arange(1950, 2120)
+        self.prod_function_fitting = inputs_dict['prod_function_fitting']
+        if self.prod_function_fitting == True:
+            self.energy_eff_max_range_ref = inputs_dict['energy_eff_max_range_ref']
+        
         self.year_start = inputs_dict['year_start']  # year start
         self.year_end = inputs_dict['year_end']  # year end
         self.time_step = inputs_dict['time_step']
@@ -264,6 +273,35 @@ class SectorModel():
         self.emax_enet_constraint = - \
             (energy - e_max * self.max_capital_utilisation_ratio) / self.ref_emax_enet_constraint
     
+    ### For production fitting optim  only  
+    def compute_long_term_energy_efficiency(self):
+        """ Compute energy efficiency function on a longer time scale to analyse shape
+        of the function. 
+        """
+        #period 
+        years = self.years_lt_energy_eff
+        #param
+        k = self.energy_eff_k
+        cst = self.energy_eff_cst
+        xo = self.energy_eff_xzero
+        max_e = self.energy_eff_max
+        # compute energy_efficiency
+        energy_efficiency = cst + max_e / (1 + np.exp(-k * (years - xo)))
+        self.lt_energy_eff = pd.DataFrame({'years': years, 'energy_efficiency': energy_efficiency})
+        return self.lt_energy_eff
+    
+    def compute_energy_eff_constraints(self):
+        """ 
+        Compute constraints for energy efficiency fitting
+        One constraint to limit the range of variation of the energy efficiency max/min < some chosen value
+        One constraint to limit the value of the sigmoid midpoint (year)
+        """
+        #constraint for diff between min and max value
+        self.range_energy_eff_cstrt = (self.energy_eff_cst + self.energy_eff_max)/self.energy_eff_cst - self.energy_eff_max_range_ref
+        self.range_energy_eff_cstrt = np.array([self.range_energy_eff_cstrt])
+   
+        return self.range_energy_eff_cstrt
+    
     #RUN
     def compute(self, inputs):
         """
@@ -287,8 +325,11 @@ class SectorModel():
         self.capital_df = self.capital_df.fillna(0.0)
         self.productivity_df = self.productivity_df.fillna(0.0)
         self.compute_emax_enet_constraint()
+        if self.prod_function_fitting == True:
+            self.compute_long_term_energy_efficiency()
+            self.compute_energy_eff_constraints()
 
-        return self.production_df, self.capital_df, self.productivity_df, self.growth_rate_df, self.emax_enet_constraint
+        return self.production_df, self.capital_df, self.productivity_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt
     
     ### GRADIENTS ###
 

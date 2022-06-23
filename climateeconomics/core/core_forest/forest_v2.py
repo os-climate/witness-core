@@ -19,6 +19,7 @@ import pandas as pd
 from copy import deepcopy
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+from sos_trades_core.tools.cst_manager.constraint_manager import compute_func_with_exp_min, compute_dfunc_with_exp_min
 
 
 class Forest():
@@ -359,6 +360,10 @@ class Forest():
 
         self.forest_surface_df['deforestation_surface'] = np.cumsum(
             self.forest_surface_df['delta_deforestation_surface'])
+        self.managed_wood_df['cumulative_surface'] = compute_func_with_exp_min(
+            self.managed_wood_df['cumulative_surface'].values, 1e-15)
+        self.forest_surface_df['unmanaged_forest'] = compute_func_with_exp_min(
+            self.forest_surface_df['unmanaged_forest'].values, 1e-15)
 
     def compute_deforestation_biomass(self):
         """
@@ -579,7 +584,7 @@ class Forest():
                 d_cum_umw_surface_d_invest[i] = d_cum_umw_surface_d_invest[i -
                                                                            1] + d_delta_deforestation_surface_d_invest[i]
             # if unmanaged forest are empty, managed forest are removed
-            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
+            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 1e-10:
                 # remove managed wood
                 d_delta_mw_surface_d_invest[i] += d_cum_umw_surface_d_invest[i]
 
@@ -599,7 +604,7 @@ class Forest():
                     d_deforestation_surface_d_invest[i] * self.cost_per_ha
 
             # if managed forest are empty, all is removed
-            if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
+            if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 1e-10:
 
                 sum = self.d_cum(d_delta_mw_surface_d_invest)
                 # delta is all the managed wood available
@@ -608,7 +613,11 @@ class Forest():
                 d_lc_mw_d_invest[i] = - (d_deforestation_surface_d_invest[i] + d_lc_reforestation_d_invest[i] / self.cost_per_ha - sum[i]) * \
                     self.techno_wood_info['managed_wood_price_per_ha']
 
-                d_delta_mw_surface_d_invest[i] = - sum[i - 1]
+#                 d_delta_mw_surface_d_invest[i] = - \
+#                     compute_dfunc_with_exp_min(
+#                         sum[i - 1], 1e-15).reshape(number_of_values)
+                d_delta_mw_surface_d_invest[i] = - \
+                    sum[i - 1]
                 d_delta_deforestation_surface_d_invest[i] = d_delta_mw_surface_d_invest[i]
 
         return d_cum_umw_surface_d_invest, d_delta_mw_surface_d_invest, d_delta_deforestation_surface_d_invest, d_lc_deforestation_d_invest, d_lc_reforestation_d_invest, d_lc_mw_d_invest
@@ -643,7 +652,7 @@ class Forest():
                     d_delta_reforestation_surface_d_invest[i] + \
                     d_delta_deforestation_surface_d_invest[i]
             # if unmanaged forest are empty, managed forest are removed
-            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
+            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 1e-10:
                 # remove managed wood
                 d_delta_mw_surface_d_invest[i] += d_cum_umw_surface_d_invest[i]
 
@@ -661,7 +670,7 @@ class Forest():
             else:
                 d_lc_reforestation_d_invest[i] = np.zeros(number_of_values)
             # if managed forest are empty, all is removed
-            if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
+            if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 1e-10:
 
                 sum = self.d_cum(d_delta_mw_surface_d_invest)
                 # delta is all the managed wood available
@@ -670,7 +679,8 @@ class Forest():
                 d_lc_mw_d_invest[i] = - (d_lc_reforestation_d_invest[i] / self.cost_per_ha -
                                          sum[i]) * self.techno_wood_info['managed_wood_price_per_ha']
 
-                d_delta_mw_surface_d_invest[i] = - sum[i - 1]
+                d_delta_mw_surface_d_invest[i] = - \
+                    sum[i - 1]
                 d_delta_deforestation_surface_d_invest[i] = - \
                     d_reforestation_surface_d_invest[i] + \
                     d_delta_mw_surface_d_invest[i]
@@ -697,8 +707,8 @@ class Forest():
             (number_of_values, number_of_values))
 
         for i in range(0, number_of_values):
-            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 0:
-                if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 0:
+            if self.forest_surface_df.loc[i, 'unmanaged_forest'] <= 1e-10:
+                if self.managed_wood_df.loc[i, 'cumulative_surface'] <= 1e-10:
                     sum = self.d_cum(d_delta_mw_surface_d_invest)
                     d_lc_deforestation_d_invest[i] = - \
                         sum[i] * self.deforest_cost_per_ha

@@ -184,30 +184,17 @@ class Study(StudyManager):
         disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = 0.02
         disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = 0.02
         disc_dict[f'{ns_optim}.prod_start_services_in'] = 0.27
-        disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = 0.031947197
-        disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = 2.63340451
-        disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = 2072.605142
-        disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = 23.70064183
-        
-        disc_dict[f'{ns_optim}.output_alpha_agri_in'] = 0.87
-        disc_dict[f'{ns_optim}.prod_gr_start_agri_in'] = 0.02
-        disc_dict[f'{ns_optim}.decl_rate_tfp_agri_in'] = 0.02
-        disc_dict[f'{ns_optim}.prod_start_agri_in'] = 0.27
-        disc_dict[f'{ns_optim}.energy_eff_k_agri_in'] = 0.05
-        disc_dict[f'{ns_optim}.energy_eff_cst_agri_in'] = 0.98
-        disc_dict[f'{ns_optim}.energy_eff_xzero_agri_in'] = 2012.0
-        disc_dict[f'{ns_optim}.energy_eff_max_agri_in'] = 3.51
-        
-        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = 0.87
-        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = 0.02
-        disc_dict[f'{ns_optim}.decl_rate_tfp_indus_in'] = 0.02
-        disc_dict[f'{ns_optim}.prod_start_indus_in'] = 0.27
-        disc_dict[f'{ns_optim}.energy_eff_k_indus_in'] = 0.05
-        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = 0.98
-        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = 2012.0
-        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = 3.51
+#         disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = 0.031947197
+#         disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = 2.63340451
+#         disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = 2072.605142
+#         disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = 23.70064183
 
-        
+    #other inputs
+        disc_dict[f'{self.ns_services}.energy_eff_k'] = 0.039609214
+        disc_dict[f'{self.ns_services}.energy_eff_cst'] = 2.867328682
+        disc_dict[f'{self.ns_services}.energy_eff_xzero'] = 2041.038019
+        disc_dict[f'{self.ns_services}.energy_eff_max'] = 11.4693228
+       
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
         func_df['variable'] = [ 'Services.gdp_error', 

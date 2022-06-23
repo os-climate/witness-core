@@ -15,6 +15,7 @@ limitations under the License.
 '''
 
 from pandas import DataFrame, concat
+from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 from sos_trades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy as datacase_witness
@@ -165,13 +166,29 @@ if '__main__' == __name__:
 
     uc_cls.run()
 
-#     ppf = PostProcessingFactory()
-#     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-#         if disc.sos_name == 'Land_Use':
-#             filters = ppf.get_post_processing_filters_by_discipline(
-#                 disc)
-#             graph_list = ppf.get_post_processing_by_discipline(
-#                 disc, filters, as_json=False)
-#
-#             for graph in graph_list:
-#                 graph.to_plotly().show()
+    ppf = PostProcessingFactory()
+    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+        if disc.sos_name == 'Resources':
+            filters = ppf.get_post_processing_filters_by_discipline(
+                disc)
+            graph_list = ppf.get_post_processing_by_discipline(
+                disc, filters, as_json=False)
+
+            for graph in graph_list:
+                graph.to_plotly().show()
+        if disc.sos_name == 'EnergyMix.electricity.Nuclear':
+            filters = ppf.get_post_processing_filters_by_discipline(
+                disc)
+            graph_list = ppf.get_post_processing_by_discipline(
+                disc, filters, as_json=False)
+
+            for graph in graph_list:
+                graph.to_plotly().show()
+        if disc.sos_name == 'EnergyMix.electricity':
+            filters = ppf.get_post_processing_filters_by_discipline(
+                disc)
+            graph_list = ppf.get_post_processing_by_discipline(
+                disc, filters, as_json=False)
+
+            for graph in graph_list:
+                graph.to_plotly().show()
