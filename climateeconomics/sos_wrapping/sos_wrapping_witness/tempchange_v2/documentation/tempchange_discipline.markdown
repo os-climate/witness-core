@@ -78,15 +78,45 @@ The Etminan equation is  used in FAIR [^6] model.
 ### MeinsHausen Radiative forcing model [^8]
 
 The model of MeinsHausen is another improved version of the Myhre model (See [^8] for more details on equations). The model is  used in FAIR [^6] model.
-### Atmospheric temperature
+
+## Temperature Models
+
+### DICE
+
+#### Atmospheric temperature
 Radiative forcing warms up the atmosphere which leads to a warm up in the upper ocean and then the lower ocean. The increase in atmospheric temperature in degree celsius is:  
 $$T_{t\,AT} = T_{t-1\,AT} + \xi_1[F_t - \lambda T_{t-1} - \xi_2(T_{t-1} - T_{t-1\,LO})]$$
 with $\xi_i$ the transfer coefficients reflecting the rates of flow and thermal capacities of the sinks for a $time step$ = 5 that we adapt to the current time step. $\xi_1$ is $climate\_upper$ in the inputs and $\xi_2$ $transfer\_upper$. Lastly $\lambda  = \frac{forcing\_eq\_C02}{eq\_temp\_impact}$ is climate sensitivity.
 
-### Ocean temperature
+#### Ocean temperature
 The increase in ocean temperature is: 
 $$T_{t\,LO} = T_{t-1\,LO} + \xi_3(T_{t-1} - T_{t-1\,LO})$$
 with $\frac{1}{\xi_3}$ the transfer rate from the upper ocean to the deep ocean ($transfer\_lower$ in the inputs).   
+
+### The Climate Framework for Uncertainty, Negotiation and Distribution (FUND) 
+
+From the FUND Online Documentation [^9], we have a model describing global temperature evolution with respect to greenhouse gases concentrations in the atmosphere.
+It also models the sea level rise (instead of the ocean temperature in DICE). The description of the FUND Model is extracted from their Online Documentation.
+Temperature and sea level are calibrated to the best guess temperature and sea level for the IS92a scenario of Kattenberg et al. (1996).[^10]
+
+#### Global Mean Temperature
+The global mean temperature $T$ is governed by a geometric build-up to its equilibrium (determined by radiative forcing $RF$). In the base case, global mean temperature $T$ rises in equilibrium by 3.0°C for a doubling of carbon dioxide equivalents, so:
+
+$$T_t = \left(1-\frac{1}{\varphi}\right)T_{t-1} + \frac{1}{\varphi} \frac{CS}{5.35 \ln{2}} RF_t$$
+
+where $CS$ is climate sensitivity, set to $3.0$. $\varphi$ is the e-folding time and set to
+
+$$\varphi = \max{\left(\alpha + \beta^l CS + \beta^q CS^2, 1\right)}$$
+
+where $\alpha$ is set to $-42.7$, $\beta^{l}$ is set to $29.1$ and $\beta^{q}$ is set to 0.001, such that the best guess e-folding time for a climate sensitivity of $3.0$ is $44$ years.
+
+#### Sea Level Rise
+
+Global mean sea level is also geometric, with its equilibrium level determined by the temperature and a life-time of $500$ years:
+
+$$S_t = \left(1-\frac{1}{\varphi}\right)S_{t-1} + \gamma\frac{1}{\varphi} T_t$$
+
+where $\rho = 500$ is the e-folding time. $\gamma = 2$ is sea-level sensitivity to temperature.
 
 ### References 
 
@@ -99,3 +129,5 @@ T. Nakajima, A. Robock, G. Stephens, T. Takemura and H. Zhang, 2013: Anthropogen
 [^6]: Smith, C.J., Forster, P.M., Allen, M., Leach, N., Millar, R.J., Passerello, G.A. and Regayre, L.A., 2018. FAIR v1. 3: a simple emissions-based impulse response and carbon cycle model. Geoscientific Model Development, 11(6), pp.2273-2297.
 [^7]: Etminan, M., Myhre, G., Highwood, E., and Shine, K.: Radiative forcing of carbon dioxide, methane, and nitrous oxide: A significant revision of the methane radiative forcing, Geophysical Research Letters, 43, 2016
 [^8]: Meinshausen, M., Nicholls, Z.R., Lewis, J., Gidden, M.J, Vogel, E., Freund, M., Beyerle, U., Gessner, C., Nauels, A., Bauer, N. and Canadell, J.G., 2020. The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. Geoscientific Model Development, 13(8), pp.3571-3605
+[^9]: FUND Model Online Documentation (http://www.fund-model.org/MimiFUND.jl/latest/science/#.3.-Temperature-and-sea-level-rise-1)
+[^10]: Kattenberg, A., F.Giorgi, H.Grassl, G.A.Meehl, J.F.B.Mitchell, R.J.Stouffer, T.Tokioka, A.J.Weaver, and T.M.L.Wigley (1996), 'Climate Models - Projections of Future Climate', in Climate Change 1995: The Science of Climate Change – Contribution of Working Group I to the Second Assessment Report of the Intergovernmental Panel on Climate Change, 1 edn, J.T. Houghton et al. (eds.), Cambridge University Press, Cambridge, pp. 285-357.
