@@ -187,7 +187,7 @@ class DataStudy():
         self.dspace.update(dc_agriculture_mix.dspace)
         nb_poles = 8
         update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                [1.65] * nb_poles, [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
+                                [1.65] * nb_poles, [1.5] * nb_poles, [5.0] * nb_poles, enable_variable=False)
         # WITNESS
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
@@ -223,9 +223,6 @@ class DataStudy():
 #             "initial.pdf")
 # self.exec_eng.root_process.coupling_structure.graph.export_reduced_graph(
 # "reduced.pdf")
-        nb_poles = 8
-        update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                [1.65] * nb_poles, [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
         setup_data_list.append(witness_input)
 
         return setup_data_list
