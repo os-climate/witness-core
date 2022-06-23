@@ -1,12 +1,30 @@
 ## Greenhouse Gas cycle 
 
-For the Greenhouse Gas cycle model we use the one from FUND. 
+For the Greenhouse Gas cycle model we use the one from FUND.[^4]
 
-![Fund.PNG](fund.PNG)
+Methane, nitrous oxide and sulphur hexafluoride are taken up in the atmosphere, and then geometrically depleted:
 
-The model is due to Maier-Reimer, E. and K.Hasselmann (1987).[^1]
-The model parameters are from Hammitt, J.K., R.J.Lempert, and M.E.Schlesinger (1992).[^2]
+$$C_{t} = C_{t-1} + \alpha E_{t} - \beta (C_{t-1} - C_{pre}) $$
+
+where $C$ denotes concentration, $E$ emissions, $t$ year, and $\text{pre}$ pre-industrial. $\alpha$ and $\beta$ are given parameters for all gases. 
+Parameters are taken from Forster et al. (2007).[^5]
+
+The atmospheric concentration of carbon dioxide follows from a five-box model:
+
+$$Box_{i, t} = \rho_i Box_{i, t-1} + 0.000471\alpha_i E_t$$
+
+with 
+
+$$C_t = \sum_{i=1}^5 \alpha_i Box_{i, t}$$
+
+where $\alpha_{i}$ denotes the fraction of emissions $E$ (in million metric tonnes of carbon) that is allocated to $Box_{i}$($0.13$, $0.20$, $0.32$, $0.25$ and $0.10$, respectively) 
+and $\rho$ the decay-rate of the boxes $(\rho = exp( - \frac{1}{\mathrm{\text{lifetime}}})$
+with life-times $infinity$, $363$, $74$, $17$ and $2$ years, respectively).
+
+The model is due to Maier-Reimer and Hasselmann (1987)[^1].
+Its parameters are due to Hammitt et al. (1992)[^2]. Thus, 13$\%$ of total emissions remains forever in the atmosphere, while 10$\%$ is—on average—removed in two years. Carbon dioxide concentrations are measured in parts per million by volume.
 You can find an implementation (and parameters) of this model on GitHub.[^3]
+
 
 ### Model inputs and outputs
 
@@ -34,3 +52,5 @@ where $CO2_{ppm}^{ref}$ is a reference value used to normalize the value of the 
 [^1]: Maier-Reimer, E. and K.Hasselmann (1987), 'Transport and Storage of Carbon Dioxide in the Ocean: An Inorganic Ocean Circulation Carbon Cycle Model', Climate Dynamics, 2, 63-90.
 [^2]: Hammitt, J.K., R.J.Lempert, and M.E.Schlesinger (1992), 'A Sequential-Decision Strategy for Abating Climate Change', Nature, 357, 315-318.
 [^3]: FUND Repository on GitHub (https://github.com/fund-model/MimiFUND.jl/tree/master/src)
+[^4]: FUND Model Online Documentation (http://www.fund-model.org/MimiFUND.jl/latest/science/#.-Atmosphere-and-climate-1)
+[^5]: Forster, P., V. Ramaswamy, P. Artaxo, T. Berntsen, R. Betts, D. W. Fahey, J. Haywood, J. Lean, D. C. Lowe, G. Myhre, J. Nganga, R. Prinn, G. Raga, M. Schulz and R. V. Dorland (2007). Changes in Atmospheric Constituents and in Radiative Forcing. Climate Change 2007: The Physical Science Basis. Contribution of Working Group I to the Fourth Assessment Report of the Intergovernmental Panel on Climate Change. S. Solomon, D. Qin, M. Manning et al. Cambridge, United Kingdom and New York, NY, USA, Cambridge University Press.
