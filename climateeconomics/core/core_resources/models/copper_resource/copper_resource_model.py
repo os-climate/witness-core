@@ -72,8 +72,8 @@ class CopperResourceModel(ResourceModel):
     def get_global_demand(self, demand):
         energy_demand = self.sectorisation_dict['power_generation']
         self.resource_demand=demand
-        self.resource_demand[self.resource_name]=demand[self.resource_name] * (100 / energy_demand)
-        self.conversion_factor = 100 / energy_demand
+        self.resource_demand[self.resource_name]=demand[self.resource_name] / energy_demand
+        self.conversion_factor = 1 / energy_demand
 
     def sigmoid(self, ratio, sigmoid_min ):  
             '''
@@ -133,13 +133,14 @@ class CopperResourceModel(ResourceModel):
                     #grad_price = cst * u'v  / v^2 (cst < 0)
                     if self.use_stock[self.sub_resource_list[0]][year_demand]/demand_limited[year_demand - year_start] > 1E-15 :
                         grad_price[year_demand - year_start, year - year_start] = \
-                            -(self.resource_max_price - self.resource_price_data.loc[0, 'price']) * \
-                                grad_use[resource_type][year_demand - year_start, year - year_start]* grad_demand_limited[year_demand - year_start] / demand_limited[year_demand - year_start] 
+                            - grad_use[resource_type][year_demand - year_start, year - year_start]
                         ## grad_price -= cst *  uv'  / v^2 (cst < 0)
                         if year == year_demand :
-                                grad_price[year_demand - year_start, year - year_start] += (self.resource_max_price - self.resource_price_data.loc[0, 'price']) *\
-                                    self.use_stock[self.sub_resource_list[0]][year_demand]\
-                                        * self.conversion_factor * grad_demand_limited[year_demand - year_start]/ demand_limited[year_demand - year_start] **2
+                                grad_price[year_demand - year_start, year - year_start] +=   self.use_stock[self.sub_resource_list[0]][year_demand]\
+                                        * self.conversion_factor / demand_limited[year_demand - year_start] 
+                        grad_price[year_demand - year_start, year - year_start] = grad_price[year_demand - year_start, year - year_start] *\
+                            (self.resource_max_price - self.resource_price_data.loc[0, 'price']) *\
+                            grad_demand_limited[year_demand - year_start]/ demand_limited[year_demand - year_start]
                     
 
         return grad_price

@@ -48,12 +48,7 @@ class CopperResourceDiscipline(ResourceDiscipline):
     default_stock_start = 780.0
     default_recycled_rate = 0.5
     default_lifespan = 30
-    default_sectorisation_dict = {'power_generation': 9.86175,
-                                  'power_distribution_and_transmission': 35.13825,
-                                  'construction': 20.0,
-                                  'appliance_and_electronics': 12.5,
-                                  'transports': 12.5,
-                                  'other': 10.0}
+    default_sectorisation_dict = {'power_generation': 0.000213421 / 24.987,} # 9.86175
     default_resource_max_price = 50000 #roughly 5 times the current price (10057 $/t)
     default_extraction_price = 5000 #price extraction is 4400$/t to be profitable minium price is set at 5000
     resource_name = CopperResourceModel.resource_name
