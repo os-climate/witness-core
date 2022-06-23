@@ -25,7 +25,7 @@ from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacob
 
 
 class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -174,21 +174,28 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         data_dir = join(dirname(__file__), 'data')
-        carboncycle_df_all = read_csv(
+        carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
+        # Take only from year start value
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally['years'] >= 2020]
 
-        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
-        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        ghg_cycle_df['co2_ppm'] = ghg_cycle_df['ppm']
+        ghg_cycle_df['ch4_ppm'] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df['n2o_ppm'] = ghg_cycle_df['ppm'] * 296/296
+        ghg_cycle_df = ghg_cycle_df[['years', 'co2_ppm', 'ch4_ppm', 'n2o_ppm']]
+
         # put manually the index
         years = np.arange(2020, 2101, 1)
-        carboncycle_df.index = years
+        ghg_cycle_df.index = years
 
         values_dict = {f'{self.name}.year_start': 2020,
                        f'{self.name}.year_end': 2100,
                        f'{self.name}.time_step': 1,
-                       f'{self.name}.carboncycle_df': carboncycle_df,
+                       f'{self.name}.ghg_cycle_df': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
-                       f'{self.name}.{self.model_name}.forcing_model': 'Etminan', }
+                       f'{self.name}.{self.model_name}.temperature_model': 'DICE',
+                       f'{self.name}.{self.model_name}.forcing_model': 'Etminan',
+                       }
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -196,8 +203,15 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_etminan.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_temperature_discipline_etminan.pkl',
+                            discipline=disc_techno,
+                            step=1e-15,
+                            inputs=[f'{self.name}.ghg_cycle_df'],
+                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df',
+                                     f'{self.name}.temperature_df',
+                                     f'{self.name}.temperature_constraint'],
+                            derr_approx='complex_step')
 
     def _test_05_temperature_discipline_analytic_grad_meinshausen(self):
 
@@ -218,20 +232,26 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         data_dir = join(dirname(__file__), 'data')
-        carboncycle_df_all = read_csv(
+        carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
+        # Take only from year start value
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally['years'] >= 2020]
 
-        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
-        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        ghg_cycle_df['co2_ppm'] = ghg_cycle_df['ppm']
+        ghg_cycle_df['ch4_ppm'] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df['n2o_ppm'] = ghg_cycle_df['ppm'] * 296/296
+        ghg_cycle_df = ghg_cycle_df[['years', 'co2_ppm', 'ch4_ppm', 'n2o_ppm']]
+
         # put manually the index
         years = np.arange(2020, 2101, 1)
-        carboncycle_df.index = years
+        ghg_cycle_df.index = years
 
         values_dict = {f'{self.name}.year_start': 2020,
                        f'{self.name}.year_end': 2100,
                        f'{self.name}.time_step': 1,
-                       f'{self.name}.carboncycle_df': carboncycle_df,
+                       f'{self.name}.ghg_cycle_df': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{self.model_name}.temperature_model': 'DICE',
                        f'{self.name}.{self.model_name}.forcing_model': 'Meinshausen', }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -240,8 +260,15 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_Meinshausen.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_temperature_discipline_Meinshausen.pkl',
+                            discipline=disc_techno,
+                            step=1e-15,
+                            inputs=[f'{self.name}.ghg_cycle_df'],
+                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df',
+                                     f'{self.name}.temperature_df',
+                                     f'{self.name}.temperature_constraint'],
+                            derr_approx='complex_step')
 
     def _test_06_temperature_discipline_analytic_grad_etminan_lower_atmo_conc(self):
 
