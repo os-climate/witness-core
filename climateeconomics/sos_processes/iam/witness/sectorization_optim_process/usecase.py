@@ -253,7 +253,7 @@ import plotly
 
 
 class ComplexJsonEncoder(_json.JSONEncoder):
-    def default(self, o):
+    def default(self, o):# pylint: disable=E0202
 
         if isinstance(o, np.complex):
             return o.real
