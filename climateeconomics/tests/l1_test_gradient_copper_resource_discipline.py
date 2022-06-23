@@ -29,7 +29,7 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
     """
     # np.set_printoptions(threshold=np.inf)
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -67,7 +67,7 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.energy_copper_variable_demand_df = self.energy_copper_variable_demand_df.loc[self.energy_copper_variable_demand_df['years']
                                                                                           <= self.year_end]
 
-    def _test_copper_resource_analytic_grad(self):
+    def test_copper_resource_analytic_grad(self):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -93,9 +93,9 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_copper_demand_df,
-                       # f'{self.name}.{self.model_name}.lifespan': self.lifespan,
-                       # f'{self.name}.{self.model_name}.resource_consumed_data'
-                       # : self.consumed_copper_df,
+                    #    f'{self.name}.{self.model_name}.lifespan': self.lifespan,
+                    #    f'{self.name}.{self.model_name}.resource_consumed_data'
+                    #    : self.consumed_copper_df,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -108,11 +108,11 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                      f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
-                                     f'{self.name}.{self.model_name}.predictable_production'
-
+                                     f'{self.name}.{self.model_name}.predictable_production',
+                                     f'{self.name}.{self.model_name}.recycled_production'
                                      ])
         
-    def _test_copper_resource_damand_variable_analytic_grad(self):
+    def test_copper_resource_damand_variable_analytic_grad(self):
         
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -138,8 +138,8 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_copper_variable_demand_df,
-                       #f'{self.name}.{self.model_name}.lifespan': self.lifespan,
-                       #f'{self.name}.{self.model_name}.resource_consumed_data' : self.consumed_copper_df,
+                    #    f'{self.name}.{self.model_name}.lifespan': self.lifespan,
+                    #    f'{self.name}.{self.model_name}.resource_consumed_data' : self.consumed_copper_df,
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -151,7 +151,8 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
                                      f'{self.name}.{self.model_name}.resource_price',
                                      f'{self.name}.{self.model_name}.use_stock',
-                                     f'{self.name}.{self.model_name}.predictable_production'
+                                     f'{self.name}.{self.model_name}.predictable_production',
+                                     f'{self.name}.{self.model_name}.recycled_production'
                                      ])
 
 
