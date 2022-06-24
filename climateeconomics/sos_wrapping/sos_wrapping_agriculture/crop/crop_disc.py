@@ -333,7 +333,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     def run(self):
 
         #-- get inputs
-        input_dict = self.get_sosdisc_inputs()
+        input_dict = deepcopy(self.get_sosdisc_inputs())
         # -- configure class with inputs
         self.crop_model.configure_parameters_update(input_dict)
         #-- compute
