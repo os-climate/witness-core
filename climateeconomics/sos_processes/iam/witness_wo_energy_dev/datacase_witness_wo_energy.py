@@ -187,7 +187,7 @@ class DataStudy():
         self.dspace.update(dc_agriculture_mix.dspace)
         nb_poles = 8
         update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                [1.65] * nb_poles, [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
+                                [1.65] * nb_poles, [1.5] * nb_poles, [5.0] * nb_poles, enable_variable=False)
         # WITNESS
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
@@ -223,9 +223,6 @@ class DataStudy():
 #             "initial.pdf")
 # self.exec_eng.root_process.coupling_structure.graph.export_reduced_graph(
 # "reduced.pdf")
-        nb_poles = 8
-        update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                [1.65] * nb_poles, [1.5] * nb_poles, [5.0] * nb_poles, activated_elem=[False] * nb_poles)
         setup_data_list.append(witness_input)
 
         return setup_data_list
@@ -240,16 +237,16 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective',  'temperature_objective', 'ppm_objective', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted'])
+            ['welfare_objective', 'ppm_objective', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted'])
         list_parent.extend(['utility_objective',
-                            'CO2_obj', 'CO2_obj', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted'])
+                            'CO2_obj', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted'])
         list_ns.extend(['ns_functions',
-                        'ns_functions', 'ns_functions', 'ns_witness','ns_functions', 'ns_functions'])
+                        'ns_functions', 'ns_witness','ns_functions', 'ns_functions'])
         list_ftype.extend(
-            [OBJECTIVE,  OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
+        list_weight.extend([1.0, 0.0, 0.0, 0.0, 0.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM,  AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent

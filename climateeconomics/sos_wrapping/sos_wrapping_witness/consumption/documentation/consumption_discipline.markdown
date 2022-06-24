@@ -1,12 +1,12 @@
 ## Consumption model
 As in DICE (Nordhaus, 2017[^1]), this model is used for the optimisation problem. Our way to compute utility per capita is slightly different from DICE. We multiply the value obtained in DICE by an energy price ratio and a residential energy ratio.
 Consumption is:
-$$C_t = (1 - total\_investment\_share\_of\_GDP / 100) * Y_t
+$$C_t = (1 - total\_investment\_share\_of\_GDP / 100) * Y_t$$
 with 
-$$Y_t$$ is the net output (GDP) coming from Macroeconomics.
+$Y_t$ is the net output (GDP) coming from Macroeconomics.
 
 Utility per capita is: 
-$$U_{pc}(c_t) = energy\_price\_ratio_t.(\frac{c_t^{1-\alpha}}{1-\alpha}-1)$$
+$$U_{pc}(c_t) = energy\_price\_ratio_t.residential\_energy\_ratio_t.(\frac{c_t^{1-\alpha}}{1-\alpha}-1)$$
 with 
 $$energy\_price\_ratio_t =\frac{energy\_price_{t=0}}{energy\_price_t}$$
 and
