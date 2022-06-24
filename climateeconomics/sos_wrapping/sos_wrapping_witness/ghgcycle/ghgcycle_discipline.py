@@ -200,27 +200,6 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-            # detail on co2 ppm
-            series = [ghg_cycle_df[f'co2_ppm_b{i}'] for i in [1, 2, 3, 4, 5]]
-            labels = [f'Box {i}' for i in [1, 2, 3, 4, 5]]
-            years = list(ppm.index)
-            chart_name = 'CO2 Atmospheric concentrations parts per million'
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-            min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 Five Boxes concentrations parts per million',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value], chart_name)
-
-            visible_line = True
-            for serie, label in zip(series, labels):
-                ordonate_data = list(serie)
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, label, 'lines', visible_line)
-                new_chart.series.append(new_series)
-
-            instanciated_charts.append(new_chart)
-
             ppm = ghg_cycle_df['ch4_ppm']
             years = list(ppm.index)
             chart_name = 'CH4 Atmospheric concentrations parts per million'
