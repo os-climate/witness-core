@@ -50,8 +50,7 @@ class CopperResourceModel(ResourceModel):
         super().configure_parameters(inputs_dict)
         self.sectorisation_dict = inputs_dict['sectorisation']
         self.resource_max_price = inputs_dict['resource_max_price']
-        self.world_demand_year_start = inputs_dict['world_demand_year_starts']
-        
+    
     
 
     #Units conversion

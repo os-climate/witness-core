@@ -50,8 +50,6 @@ class CopperResourceDiscipline(ResourceDiscipline):
     default_lifespan = 30
     default_sectorisation_dict = {'power_generation': 0.000213421 / 24.987,} # 9.86175
     default_resource_max_price = 50000 #roughly 5 times the current price (10057 $/t)
-    default_extraction_price = 5000 #price extraction is 4400$/t to be profitable minium price is set at 5000
-    default_world_demand_year_start = 24.987
     resource_name = CopperResourceModel.resource_name
 
     prod_unit = 'Mt'
@@ -85,7 +83,6 @@ class CopperResourceDiscipline(ResourceDiscipline):
                'sectorisation': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '[-]', 'default': default_sectorisation_dict,'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                  'user_level': 2, 'namespace': 'ns_copper_resource'},
                'resource_max_price': {'type': 'float', 'default': default_resource_max_price, 'user_level': 2, 'unit': '[$/Mt]'},
-               'world_demand_year_start': {'type': 'float', 'default': default_world_demand_year_start}
                }
 
     DESC_IN.update(ResourceDiscipline.DESC_IN)
