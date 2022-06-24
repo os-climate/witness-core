@@ -21,6 +21,7 @@ from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart im
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
+from copy import deepcopy
 
 
 class AgricultureDiscipline(ClimateEcoDiscipline):
@@ -132,7 +133,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
-        inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        inp_dict = deepcopy(self.get_sosdisc_inputs(inputs, in_dict=True))
 
         self.agriculture_model.apply_percentage(inp_dict)
         #-- compute

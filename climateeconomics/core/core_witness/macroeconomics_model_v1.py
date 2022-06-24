@@ -588,7 +588,7 @@ class MacroEconomics():
         """
         self.create_dataframe()
         self.damage_prod = damage_prod
-        self.inputs = inputs
+        self.inputs = deepcopy(inputs)
         self.set_coupling_inputs()
 
         # Employment rate and workforce

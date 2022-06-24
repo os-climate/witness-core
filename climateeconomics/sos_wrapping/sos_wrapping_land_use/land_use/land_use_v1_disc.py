@@ -85,7 +85,7 @@ class LandUseV1Discipline(SoSDiscipline):
 
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
-        inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        inputs_dict = deepcopy(self.get_sosdisc_inputs(inputs, in_dict=True))
 
         #-- compute
         land_demand_df = inputs_dict['land_demand_df']
