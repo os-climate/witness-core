@@ -67,12 +67,12 @@ class Study(StudyManager):
                                     'output_alpha_indus_in', 'prod_gr_start_indus_in','decl_rate_tfp_indus_in','prod_start_indus_in', 
                                     'energy_eff_k_indus_in', 'energy_eff_cst_indus_in', 'energy_eff_xzero_indus_in','energy_eff_max_indus_in',
                                     ],
-                       'value': [[0.87], [0.02], [0.02],[0.27], 
-                                 [0.05], [0.98], [2012.0], [3.51], 
-                                 [0.87], [0.02], [0.02],[0.27], 
-                                 [0.05], [0.98], [2012.0], [3.51], 
-                                 [0.87], [0.02], [0.02],[0.27], 
-                                 [0.05], [0.98], [2012.0], [3.51]],
+                       'value': [[0.77], [0.01], [0.03],[0.19], 
+                                 [0.04], [0.98], [2004.0], [8.0], 
+                                 [0.99], [0.05], [0.07],[1.08], 
+                                 [0.02], [0.08], [2030.0], [5.92], 
+                                 [0.71], [0.001], [0.02],[0.20], 
+                                 [0.05], [0.16], [2015.0], [4.18]],
                        'lower_bnd': [[0.5], [0.001], [0.00001], [0.01],
                                      [0.0], [1e-5],[1900.0], [1.0],
                                       [0.5], [0.001], [0.00001], [0.01],
@@ -175,32 +175,32 @@ class Study(StudyManager):
         }
         
     # design var inputs
-        disc_dict[f'{ns_optim}.output_alpha_services_in'] = ([0.87])
-        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = ([0.02])
-        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = ([0.02])
-        disc_dict[f'{ns_optim}.prod_start_services_in'] = ([0.27])
-        disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = ([0.05])
+        disc_dict[f'{ns_optim}.output_alpha_services_in'] = ([0.77])
+        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = ([0.01])
+        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = ([0.03])
+        disc_dict[f'{ns_optim}.prod_start_services_in'] = ([0.19])
+        disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = ([0.04])
         disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = ([0.98])
-        disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = ([2012.0])
-        disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = ([3.51])
+        disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = ([2004.0])
+        disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = ([8.0])
         
-        disc_dict[f'{ns_optim}.output_alpha_agri_in'] = ([0.87])
-        disc_dict[f'{ns_optim}.prod_gr_start_agri_in'] = ([0.02])
-        disc_dict[f'{ns_optim}.decl_rate_tfp_agri_in'] = ([0.02])
-        disc_dict[f'{ns_optim}.prod_start_agri_in'] = ([0.27])
-        disc_dict[f'{ns_optim}.energy_eff_k_agri_in'] = ([0.05])
-        disc_dict[f'{ns_optim}.energy_eff_cst_agri_in'] = ([0.98])
-        disc_dict[f'{ns_optim}.energy_eff_xzero_agri_in'] = ([2012.0])
-        disc_dict[f'{ns_optim}.energy_eff_max_agri_in'] = ([3.51])
+        disc_dict[f'{ns_optim}.output_alpha_agri_in'] = ([0.99])
+        disc_dict[f'{ns_optim}.prod_gr_start_agri_in'] = ([0.04])
+        disc_dict[f'{ns_optim}.decl_rate_tfp_agri_in'] = ([0.07])
+        disc_dict[f'{ns_optim}.prod_start_agri_in'] = ([1.08])
+        disc_dict[f'{ns_optim}.energy_eff_k_agri_in'] = ([0.02])
+        disc_dict[f'{ns_optim}.energy_eff_cst_agri_in'] = ([0.08])
+        disc_dict[f'{ns_optim}.energy_eff_xzero_agri_in'] = ([2030.0])
+        disc_dict[f'{ns_optim}.energy_eff_max_agri_in'] = ([5.9])
         
-        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = ([0.87])
-        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = ([0.02])
+        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = ([0.71])
+        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = ([0.001])
         disc_dict[f'{ns_optim}.decl_rate_tfp_indus_in'] = ([0.02])
-        disc_dict[f'{ns_optim}.prod_start_indus_in'] = ([0.27])
+        disc_dict[f'{ns_optim}.prod_start_indus_in'] = ([0.20])
         disc_dict[f'{ns_optim}.energy_eff_k_indus_in'] = ([0.05])
-        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = ([0.98])
-        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = ([2012.0])
-        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = ([3.51])
+        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = ([0.16])
+        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = ([2015])
+        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = ([4.18])
 
         
         func_df = pd.DataFrame(
@@ -290,7 +290,7 @@ if '__main__' == __name__:
                 # Set up a new plotly object using this generated json
                 p = plotly.io.from_json(j)
                 # display the plotly chart
-                #p.show()
+                p.show()
 
                 #g = graph.to_plotly()
                 #g.show()
