@@ -152,7 +152,7 @@ class Crop():
         # crop_investment from G$ to M$
         self.crop_investment = inputs_dict[Crop.CROP_INVESTMENT]
         self.scaling_factor_crop_investment = inputs_dict['scaling_factor_crop_investment']
-        self.crop_investment = inputs_dict['crop_investment']
+        self.crop_investment = deepcopy(inputs_dict['crop_investment'])
         self.crop_investment['investment'] = self.crop_investment['investment'] * \
             self.scaling_factor_crop_investment
         if self.initial_age_distrib['distrib'].sum() > 100.001 or self.initial_age_distrib[
@@ -681,7 +681,6 @@ class Crop():
             else:
                 surface = self.food_land_surface_df[f'{food} (Gha)']
 
-
             # CO2
             self.CO2_land_emissions_detailed[f'{food} (Gt)'] = self.co2_emissions_per_kg[food] / \
                                              self.kg_to_m2_dict[food] * surface * \
@@ -690,7 +689,7 @@ class Crop():
 
             # CH4
             self.CH4_land_emissions_detailed[f'{food} (Gt)'] = self.ch4_emissions_per_kg[food] / \
-                                             self.kg_to_m2_dict[food] * surface* \
+                                             self.kg_to_m2_dict[food] * surface * \
                                              self.m2toha * 1e9 * 1e-12  # to m^2 and then to GtCo2
             self.CH4_land_emissions[f'emitted_CH4_evol_cumulative'] += self.CH4_land_emissions_detailed[f'{food} (Gt)']
 
@@ -883,7 +882,7 @@ class Crop():
         '''
         return {'CO2': self.co2_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12,
                 'CH4': self.ch4_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12,
-                'N2O': self.n2o_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12,}
+                'N2O': self.n2o_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12, }
 
     def compute_d_food_surface_d_red_meat_percentage(self, population_df, food):
         """
