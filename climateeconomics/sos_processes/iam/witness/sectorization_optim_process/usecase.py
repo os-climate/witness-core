@@ -290,7 +290,7 @@ if '__main__' == __name__:
                 # Set up a new plotly object using this generated json
                 p = plotly.io.from_json(j)
                 # display the plotly chart
-                p.show()
+                #p.show()
 
                 #g = graph.to_plotly()
                 #g.show()
