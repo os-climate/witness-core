@@ -129,7 +129,7 @@ class ResourceModel():
         Configure with inputs_dict from the discipline
         '''
 
-        self.resources_demand = inputs_dict['resources_demand']
+        self.resources_demand = deepcopy(inputs_dict['resources_demand'])
         self.resources_demand.index = self.resources_demand['years']
         # re adapt the dataframe to the length of the simulation
         self.resources_demand = self.resources_demand.loc[self.resources_demand['years']
