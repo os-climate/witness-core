@@ -134,7 +134,7 @@ class Study(StudyManager):
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
         temperature_df = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
-        residential_energy = np.linspace(21, 15, len(years))
+        residential_energy = np.linspace(21, 58, len(years))
         residential_energy_df = pd.DataFrame(
             {'years': years, 'residential_energy': residential_energy})
         energy_price = np.arange(200, 200 + len(years))
