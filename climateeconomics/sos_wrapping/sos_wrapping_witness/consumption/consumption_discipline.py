@@ -442,7 +442,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
             energy_price_ratio = energy_price_ref / energy_mean_price
 
-            discounted_utility_before = discounted_utility_final / energy_price_ratio / residential_energy_ratio
+            discounted_utility_residential_ratio = discounted_utility_final / energy_price_ratio / residential_energy_ratio
 
             discounted_utility_price_ratio = discounted_utility_final / residential_energy_ratio
 
@@ -459,7 +459,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             visible_line = True
 
             new_series = InstanciatedSeries(
-                years, discounted_utility_before.tolist(), 'Discounted Utility without residential energy and price ratio', 'lines', visible_line)
+                years, discounted_utility_residential_ratio.tolist(), 'Discounted Utility without price ratio', 'lines', visible_line)
 
             new_chart.series.append(new_series)
 
@@ -504,6 +504,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
+
         if 'Consumption PC' in chart_list:
 
             to_plot = ['pc_consumption']
