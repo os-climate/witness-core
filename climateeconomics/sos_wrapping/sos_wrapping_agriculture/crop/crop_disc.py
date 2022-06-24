@@ -392,7 +392,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         """
         Compute jacobian for each coupling variable
         """
-        inputs_dict = self.get_sosdisc_inputs()
+        inputs_dict = deepcopy(self.get_sosdisc_inputs())
         population_df = inputs_dict['population_df']
         temperature_df = inputs_dict['temperature_df']
         scaling_factor_crop_investment = inputs_dict['scaling_factor_crop_investment']
