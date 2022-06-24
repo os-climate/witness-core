@@ -230,16 +230,19 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         """
 
-        scaling_factor_energy_production, scaling_factor_energy_investment, ref_pc_consumption_constraint, ref_emax_enet_constraint, usable_capital_ref_raw, capital_ratio, alpha = self.get_sosdisc_inputs(
-            ['scaling_factor_energy_production', 'scaling_factor_energy_investment', 'ref_pc_consumption_constraint', 'ref_emax_enet_constraint', 'usable_capital_ref', 'capital_utilisation_ratio', 'alpha'])
+        inputs_dict = deepcopy(self.get_sosdisc_inputs())
+        outputs_dict = deepcopy(self.get_sosdisc_outputs())
 
-        year_start = self.get_sosdisc_inputs('year_start')
-        year_end = self.get_sosdisc_inputs('year_end')
-        time_step = self.get_sosdisc_inputs('time_step')
+        scaling_factor_energy_production, scaling_factor_energy_investment, ref_pc_consumption_constraint, ref_emax_enet_constraint, usable_capital_ref_raw, capital_ratio, alpha = [inputs_dict[key] for key in [
+            'scaling_factor_energy_production', 'scaling_factor_energy_investment', 'ref_pc_consumption_constraint', 'ref_emax_enet_constraint', 'usable_capital_ref', 'capital_utilisation_ratio', 'alpha']]
+
+        year_start = inputs_dict['year_start']
+        year_end = inputs_dict['year_end']
+        time_step = inputs_dict['time_step']
         nb_years = len(np.arange(year_start, year_end + 1, time_step))
         usable_capital_ref = usable_capital_ref_raw * nb_years
-        capital_df, delta_capital_objective_wo_exp_min = self.get_sosdisc_outputs(
-            ['capital_df', 'delta_capital_objective_wo_exp_min'])
+        capital_df, delta_capital_objective_wo_exp_min = [outputs_dict[key] for key in [
+            'capital_df', 'delta_capital_objective_wo_exp_min']]
         npzeros = np.zeros(
             (self.macro_model.nb_years, self.macro_model.nb_years))
         # Compute gradient for coupling variable co2_emissions_Gt
