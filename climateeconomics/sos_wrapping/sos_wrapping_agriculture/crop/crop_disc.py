@@ -18,10 +18,10 @@ import matplotlib.pyplot as plt
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from climateeconomics.core.core_agriculture.crop import Crop,\
+from climateeconomics.core.core_agriculture.crop import Crop, \
     OrderOfMagnitude
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 
@@ -79,7 +79,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     ch4_gwp_100 = 28.0
     n2o_gwp_100 = 265.0
 
-    ghg_emissions_unit = 'kg/kg'    # in kgCo2eq per kg of food
+    ghg_emissions_unit = 'kg/kg'  # in kgCo2eq per kg of food
     default_ghg_emissions = {'red meat': 32.7,
                              'white meat': 4.09,
                              'milk': 1.16,
@@ -92,7 +92,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     # Our World in Data
     # https://ourworldindata.org/carbon-footprint-food-methane
-    ch4_emissions_unit = 'kg/kg'     # in kgCH4 per kg food
+    ch4_emissions_unit = 'kg/kg'  # in kgCH4 per kg food
     calibration = 0.134635 / 0.108958
     # set up as a ratio of total ghg emissions
     ch4_emissions_ratios = {'red meat': 49 / 100 * calibration,
@@ -113,7 +113,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     # FAO Stats
     # https://www.fao.org/faostat/en/#data/GT
-    n2o_emissions_unit = 'kg/kg'     # in kgN2O per kg food$
+    n2o_emissions_unit = 'kg/kg'  # in kgN2O per kg food$
     calibration = 7.332 / 6.0199
     pastures_emissions = 3.039e-3 * calibration
     crops_emissions = 1.504e-3 * calibration
@@ -131,7 +131,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100 -
     # n2o_emissions * n2o_gwp_100)/co2_gwp_100
-    co2_emissions_unit = 'kg/kg'    # in kgCo2 per kg food
+    co2_emissions_unit = 'kg/kg'  # in kgCo2 per kg food
     calibration = 0.722 / 3.417569
     default_co2_emissions = {'red meat': 0.0 * calibration,
                              'white meat': 0.0 * calibration,
@@ -178,7 +178,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
     # energy of all surfaces
     initial_production = 4.8 * density_per_ha * \
-        3.6 * energy_crop_percentage   # in Twh
+        3.6 * energy_crop_percentage  # in Twh
     construction_delay = 1  # years
     lifetime = 50
 
@@ -195,7 +195,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # CO2 from production from tractor is taken
         # into account into the energy net factor
         # land CO2 absorption is static and set in carbonemission model
-        'CO2_from_production': - 0.425 * 44.01 / 12.0,
+        'CO2_from_production':-0.425 * 44.01 / 12.0,
         'CO2_from_production_unit': 'kg/kg',
         'elec_demand': 0,
         'elec_demand_unit': 'kWh/kWh',
@@ -243,7 +243,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                              'fruits and vegetables': ('float', [0, 1e9], True)},
                     'dataframe_edition_locked': False, 'namespace': 'ns_crop'},
         'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_crop'},
-        'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_crop'},
+        'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg', 'namespace': 'ns_crop'},
         # design variables of changing diet
         'red_meat_percentage': {'type': 'dataframe', 'default': default_red_meat_percentage,
                                 'dataframe_descriptor': {'years': ('float', None, False),
@@ -256,23 +256,23 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop'},
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
-        'param_a': {'type': 'float', 'default': - 0.00833, 'unit': '-', 'user_level': 3},
-        'param_b': {'type': 'float', 'default': - 0.04167, 'unit': '-', 'user_level': 3},
+        'param_a': {'type': 'float', 'default':-0.00833, 'unit': '-', 'user_level': 3},
+        'param_b': {'type': 'float', 'default':-0.04167, 'unit': '-', 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',
-                            'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                     'investment': ('float',  None, True)},
+                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                     'investment': ('float', None, True)},
                             'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop'},
         'scaling_factor_crop_investment': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_witness'},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                           'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                    'transport': ('float',  None, True)},
+                           'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                    'transport': ('float', None, True)},
                            'dataframe_edition_locked': False},
         'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                             'dataframe_descriptor': {'years': ('int',  [1900, 2100], False),
-                                                      'margin': ('float',  None, True)},
+                             'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                                                      'margin': ('float', None, True)},
                              'dataframe_edition_locked': False},
         'data_fuel_dict': {'type': 'dict', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                            'namespace': 'ns_biomass_dry', 'default': BiomassDry.data_energy_dict,
@@ -332,11 +332,11 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     def run(self):
 
-        #-- get inputs
-        input_dict = deepcopy(self.get_sosdisc_inputs())
+        # -- get inputs
+        input_dict = self.get_sosdisc_inputs()
         # -- configure class with inputs
         self.crop_model.configure_parameters_update(input_dict)
-        #-- compute
+        # -- compute
         self.crop_model.compute()
 
         # Scale production TWh -> PWh
@@ -385,7 +385,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         }
 
-        #-- store outputs
+        # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -486,7 +486,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('crop_investment', 'investment'),
-                                                    -CO2_from_production / high_calorific_value *
+                                                    -CO2_from_production / high_calorific_value * 
                                                     dprod_dinvest * scaling_factor_crop_investment
                                                     * calorific_value / scaling_factor_techno_production)
         # --------------------------------------------------------------
@@ -509,7 +509,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), ('crop_investment', 'investment'),
-                                                    -CO2_from_production / high_calorific_value *
+                                                    -CO2_from_production / high_calorific_value * 
                                                     dprod_dinvest * scaling_factor_crop_investment
                                                     * calorific_value / scaling_factor_techno_production)
 
