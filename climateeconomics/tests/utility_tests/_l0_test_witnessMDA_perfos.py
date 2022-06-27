@@ -118,6 +118,12 @@ class TestScatter(unittest.TestCase):
         lines = result.split('\n')
         total_time = float(lines[1].split(',')[3])
         print('total_time : ', total_time)
+
+        print('filename(function),total time, time per call, number of calls')
+        for line in lines[1:200]:
+            print(line.split(',')[-1].split('\\')[-3:], ',', line.split(',')
+                  [3], ',', line.split(',')[4], ',', line.split(',')[0])
+
         linearize_time = float([line for line in lines if 'linearize' in line][0].split(',')[
             3])
         execute_time = float([line for line in lines if 'execute_all_disciplines' in line][0].split(',')[
