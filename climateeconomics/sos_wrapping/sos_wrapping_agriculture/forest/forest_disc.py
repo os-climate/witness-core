@@ -548,9 +548,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
                 years, deforestation_investment.tolist(), 'Deforestation invests', InstanciatedSeries.BAR_DISPLAY)
 
             # new_chart.add_series(total_capital_series)
+            new_chart.add_series(deforestation_investment_series)
             new_chart.add_series(forest_investment_series)
             new_chart.add_series(managed_wood_investment_series)
-            new_chart.add_series(deforestation_investment_series)
             instanciated_charts.append(new_chart)
 
             # forest evolution year by year chart
