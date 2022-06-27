@@ -442,7 +442,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
             energy_price_ratio = energy_price_ref / energy_mean_price
 
-            discounted_utility_residential_ratio = discounted_utility_final / energy_price_ratio / residential_energy_ratio
+            discounted_utility_residential_ratio = discounted_utility_final / energy_price_ratio
 
             discounted_utility_price_ratio = discounted_utility_final / residential_energy_ratio
 
