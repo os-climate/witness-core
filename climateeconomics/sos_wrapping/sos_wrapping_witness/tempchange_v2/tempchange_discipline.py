@@ -109,8 +109,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             elif temperature_model == 'FUND':
 
                 dynamic_inputs['forcing_model'] = {'type': 'string',
-                                                   'default': 'Myhre',
-                                                   'possible_values': ['Myhre'],
+                                                   'default': 'Meinshausen',
+                                                   'possible_values': ['Myhre', 'Etminan', 'Meinshausen'],
                                                    'structuring': True}
                 dynamic_inputs['pre_indus_ch4_concentration_ppm'] = {
                     'type': 'float', 'default': 790., 'unit': 'ppm', 'user_level': 2}
@@ -219,9 +219,18 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             # temperature_df
             d_temp_d_forcing_fund = self.model.compute_d_temp_d_forcing_fund()
-            d_temp_d_co2_ppm = np.matmul(d_temp_d_forcing_fund, identity * d_forcing_datmo_conc['CO2 forcing'])
-            d_temp_d_ch4_ppm = np.matmul(d_temp_d_forcing_fund, identity * d_forcing_datmo_conc['CH4 forcing'])
-            d_temp_d_n2o_ppm = np.matmul(d_temp_d_forcing_fund, identity * d_forcing_datmo_conc['N2O forcing'])
+
+            if forcing_model == 'Myhre':
+                d_temp_d_co2_ppm = np.matmul(d_temp_d_forcing_fund, identity * d_forcing_datmo_conc['CO2 forcing'])
+                d_temp_d_ch4_ppm = np.matmul(d_temp_d_forcing_fund, identity * d_forcing_datmo_conc['CH4 forcing'])
+                d_temp_d_n2o_ppm = np.matmul(d_temp_d_forcing_fund, identity * d_forcing_datmo_conc['N2O forcing'])
+
+            elif forcing_model == 'Etminan' or forcing_model == 'Meinshausen':
+
+                d_temp_d_co2_ppm = np.matmul(d_temp_d_forcing_fund, identity * (d_forcing_datmo_conc['CO2 forcing CO2 ppm'] + d_forcing_datmo_conc['N2O forcing CO2 ppm']))
+                d_temp_d_ch4_ppm = np.matmul(d_temp_d_forcing_fund, identity * (d_forcing_datmo_conc['CH4 forcing CH4 ppm'] + d_forcing_datmo_conc['N2O forcing CH4 ppm']))
+                d_temp_d_n2o_ppm = np.matmul(d_temp_d_forcing_fund, identity * (d_forcing_datmo_conc['CO2 forcing N2O ppm'] + d_forcing_datmo_conc['CH4 forcing N2O ppm'] + d_forcing_datmo_conc['N2O forcing N2O ppm']))
+
             self.set_partial_derivative_for_other_types(
                 ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'co2_ppm'), d_temp_d_co2_ppm,)
             self.set_partial_derivative_for_other_types(
