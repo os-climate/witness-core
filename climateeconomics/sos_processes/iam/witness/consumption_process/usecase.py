@@ -137,7 +137,7 @@ class Study(StudyManager):
         residential_energy = np.linspace(21, 58, len(years))
         residential_energy_df = pd.DataFrame(
             {'years': years, 'residential_energy': residential_energy})
-        energy_price = np.arange(200, 200 + len(years))
+        energy_price = np.arange(110, 110 + len(years))
         energy_mean_price = pd.DataFrame(
             {'years': years, 'energy_price': energy_price})
         #Share invest
