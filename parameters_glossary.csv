@@ -261,6 +261,7 @@ red_to_white_meat,Red to white meat percentage,%,"Give the percentage of red mea
 red_to_white_meat_ctrl,Red to white meat ctrl,%,Ctrl data concerning to_white.,,
 ref_pc_consumption_constraint,Ref pc consumption constraint,k$,Constraint data concerning pc.,,
 reforestation_cost_per_ha,Reforestation cost,$/ha,"Average cost to plant 1 ha of tree. That includes plantintg, ground preparation, fertilizer and other actions.",,
+forest_lost_capital,Forest lost capital,G$,Lost capital relative to forest activities,,
 forest_lost_capital_cons,Reforestation lost capital constraint,,Constraint on reforestation capital. Used for optimisation.,,
 forest_lost_capital_cons_limit,Reforestation lost capital constraint limit,G$,Constraint limit on reforestation capital. Used for optimisation.,,
 forest_lost_capital_cons_ref,Reforestation lost capital constraint reference,G$,Constraint reference on reforestation capital. Used for optimisation.,,

@@ -110,10 +110,10 @@ class TestScatter(unittest.TestCase):
         result = '\n'.join([','.join(line.rstrip().split(None, 5))
                             for line in result.split('\n')])
         #
-        with open(join(dirname(__file__), f'witness_perfos.csv'), 'w+') as f:
-            # f = open(result.rsplit('.')[0] + '.csv', 'w')
-            f.write(result)
-            f.close()
+#         with open(join(dirname(__file__), f'witness_perfos.csv'), 'w+') as f:
+#             # f = open(result.rsplit('.')[0] + '.csv', 'w')
+#             f.write(result)
+#             f.close()
 
         lines = result.split('\n')
         total_time = float(lines[1].split(',')[3])
