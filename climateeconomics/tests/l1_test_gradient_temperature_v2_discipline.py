@@ -35,7 +35,8 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
     def analytic_grad_entry(self):
         return [
             self.test_02_temperature_discipline_analytic_grad_DICE,
-            self.test_03_temperature_discipline_analytic_grad_FUND_myhre
+            self.test_03_temperature_discipline_analytic_grad_FUND_myhre,
+            self.test_03_1_temperature_discipline_analytic_grad_FUND_Meinshausen
         ]
 
     def test_02_temperature_discipline_analytic_grad_DICE(self):
@@ -146,6 +147,65 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_temperature_discipline_Myhre.pkl',
+                            discipline=disc_techno,
+                            step=1e-15,
+                            inputs=[f'{self.name}.ghg_cycle_df'],
+                            outputs=[f'{self.name}.temperature_df',
+                                     f'{self.name}.temperature_constraint',
+                                     f'{self.name}.{self.model_name}.forcing_detail_df',
+                                     ],
+                            derr_approx='complex_step')
+
+    def test_03_1_temperature_discipline_analytic_grad_FUND_Meinshausen(self):
+
+        self.model_name = 'temperature'
+        ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_public': f'{self.name}',
+                   'ns_ref': f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline.TempChangeDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        data_dir = join(dirname(__file__), 'data')
+        carboncycle_df_ally = read_csv(
+            join(data_dir, 'carbon_cycle_data_onestep.csv'))
+        # Take only from year start value
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally['years'] >= 2020]
+
+        ghg_cycle_df['co2_ppm'] = ghg_cycle_df['ppm']
+        ghg_cycle_df['ch4_ppm'] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df['n2o_ppm'] = ghg_cycle_df['ppm'] * 296/296
+        ghg_cycle_df = ghg_cycle_df[['years', 'co2_ppm', 'ch4_ppm', 'n2o_ppm']]
+
+        # put manually the index
+        years = np.arange(2020, 2101, 1)
+        ghg_cycle_df.index = years
+
+        values_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2100,
+                       f'{self.name}.time_step': 1,
+                       f'{self.name}.ghg_cycle_df': ghg_cycle_df,
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{self.model_name}.temperature_model': 'FUND',
+                       f'{self.name}.{self.model_name}.forcing_model': 'Meinshausen',
+                       }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        # self.ee.execute()
+
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_temperature_discipline_Meinshausen.pkl',
                             discipline=disc_techno,
                             step=1e-15,
                             inputs=[f'{self.name}.ghg_cycle_df'],
