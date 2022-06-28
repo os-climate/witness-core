@@ -313,34 +313,6 @@ class ConsumptionModel():
         d_welfare_d_share_investment[nb_years - 1] = d_discounted_utility_d_share_investment.diagonal()
         d_welfare_d_population[nb_years - 1] = d_discounted_utility_d_population.diagonal()
 
-        for i in range(nb_years):
-
-            output_net_of_d = self.economics_df.at[years[i], 'output_net_of_d']
-            pc_consumption = self.utility_df.at[years[i], 'pc_consumption']
-            population = self.population_df.at[years[i], 'population']
-            u_discount_rate = self.utility_df.at[years[i], 'u_discount_rate']
-            period_utility_pc = self.utility_df.at[years[i], 'period_utility_pc']
-            energy_price = self.energy_mean_price.at[years[i], 'energy_price']
-            
-            # period_utility_i = (
-            #     pc_consumption**(1 - self.conso_elasticity) - 1) / (1 - self.conso_elasticity) - 1
-
-            # d_period_utility_d_pc_consumption[i, i] = pc_consumption ** (- self.conso_elasticity) *\
-            #     self.energy_price_ref / energy_price
-
-            # if period_utility_i < self.min_period_utility:
-            #     d_period_utility_d_pc_consumption[i, i] = d_period_utility_d_pc_consumption[i, i] * self.min_period_utility / 10. * (np.exp(
-            #         period_utility_i / self.min_period_utility) * np.exp(-1)) / self.min_period_utility
-            # d_discounted_utility_d_pc_consumption[i, i] = d_period_utility_d_pc_consumption[i, i] * \
-            #     u_discount_rate * population
-
-            # d_discounted_utility_d_population[i, i] = period_utility_pc * u_discount_rate
-
-            # d_welfare_d_pc_consumption[nb_years - 1,
-            #                            i] = d_discounted_utility_d_pc_consumption[i, i]
-
-            # d_welfare_d_population[nb_years - 1, i] = d_discounted_utility_d_population[i, i]
-
         return d_pc_consumption_d_output_net_of_d, d_pc_consumption_d_share_investment, d_pc_consumption_d_population, \
             d_period_utility_pc_d_output_net_of_d, d_period_utility_pc_d_share_investment, d_period_utility_d_population, \
             d_discounted_utility_d_output_net_of_d, d_discounted_utility_d_share_investment, d_discounted_utility_d_population, \
