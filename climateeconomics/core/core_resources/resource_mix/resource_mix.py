@@ -239,7 +239,7 @@ class ResourceMixModel():
                 np.array(available_resource), 1.0e-10)
             # Demand without ratio
             demand_woratio = deepcopy(
-                self.resources_demand_woratio[resource].values)
+                self.resources_demand_woratio[resource].values * self.conversion_dict[resource]['global_demand'])
             demand_limited = compute_func_with_exp_min(
                 np.array(demand_woratio), 1.0e-10)
             self.all_resource_ratio_usable_demand[resource] = np.minimum(
@@ -281,11 +281,11 @@ class ResourceMixModel():
             np.array(available_resource), 1.0e-10)
         d_available_resource_limited = compute_dfunc_with_exp_min(
             np.array(available_resource), 1.0e-10)
-        demand = inputs_dict['resources_demand_woratio'][resource_type]
+        demand = inputs_dict['resources_demand_woratio'][resource_type] * self.conversion_dict[resource_type]['global_demand']
         demand_limited = compute_func_with_exp_min(
             demand.values, 1.0e-10)
         d_demand_limited = compute_dfunc_with_exp_min(
-            demand.values, 1.0e-10)
+            demand.values, 1.0e-10) 
 
         # If prod < cons, set the identity element for the given year to
         # the corresponding value
@@ -301,8 +301,8 @@ class ResourceMixModel():
 
         d_ratio_d_demand = np.identity(len(inputs_dict['resources_demand_woratio'].index)) * 100.0 * \
             np.where((available_resource_limited <= demand_limited) * (available_resource_limited / demand_limited > 1E-15),
-                     -available_resource_limited * d_demand_limited /
-                     demand_limited ** 2,
+                     -available_resource_limited * d_demand_limited * self.conversion_dict[resource_type]['global_demand'] / 
+                     demand_limited ** 2 ,
                      0.0)
 
         return d_ratio_d_stock, d_ratio_d_demand, d_ratio_d_recycling
