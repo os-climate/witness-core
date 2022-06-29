@@ -94,7 +94,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                 dynamic_inputs['forcing_model'] = {'type': 'string',
                                                    'default': 'DICE',
                                                    'possible_values': ['DICE', 'Etminan', 'Meinshausen'],
-                                                   'structuring': True}
+                                                   }
                 dynamic_inputs['init_forcing_nonco'] = {
                     'type': 'float', 'default': 0.83, 'unit': 'W.m-2', 'user_level': 2}
                 dynamic_inputs['hundred_forcing_nonco'] = {
@@ -111,7 +111,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                 dynamic_inputs['forcing_model'] = {'type': 'string',
                                                    'default': 'Meinshausen',
                                                    'possible_values': ['Myhre', 'Etminan', 'Meinshausen'],
-                                                   'structuring': True}
+                                                   }
                 dynamic_inputs['pre_indus_ch4_concentration_ppm'] = {
                     'type': 'float', 'default': 790., 'unit': 'ppm', 'user_level': 2}
                 dynamic_inputs['pre_indus_n2o_concentration_ppm'] = {
@@ -122,7 +122,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                 dynamic_inputs['forcing_model'] = {'type': 'string',
                                                    'default': 'Meinshausen',
                                                    'possible_values': ['Myhre', 'Etminan', 'Meinshausen'],
-                                                   'structuring': True}
+                                                   }
                 dynamic_inputs['pre_indus_ch4_concentration_ppm'] = {
                     'type': 'float', 'default': 722., 'unit': 'ppm', 'user_level': 2}
                 dynamic_inputs['pre_indus_n2o_concentration_ppm'] = {
