@@ -645,10 +645,10 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             join(dirname(__file__), 'data/mda_coarse_data_energymix_output_dict.pkl'), 'rb')
         mda_data_output_dict = pickle.load(pkl_file)
         pkl_file.close()
-
+        excluded_elem = ['resources_demand', 'resources_demand_woratio']
         coupled_outputs = []
         for key in mda_data_output_dict.keys():
-            if mda_data_output_dict[key]['is_coupling']:
+            if mda_data_output_dict[key]['is_coupling'] and key not in excluded_elem:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
         self.ee.load_study_from_input_dict(inputs_dict)
