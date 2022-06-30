@@ -271,6 +271,6 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
 if '__main__' == __name__:
     cls = TemperatureJacobianDiscTest()
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls.setUp()
     cls.test_04_temperature_discipline_analytic_grad_etminan()
