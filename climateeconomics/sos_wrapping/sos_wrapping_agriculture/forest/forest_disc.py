@@ -43,7 +43,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'category': '',
         'definition': '',
         'icon': 'fas fa-tree fa-fw',
-        'version': '',
+        'version': 'Version 0',
     }
     AGRI_CAPITAL_TECHNO_LIST = []
     biomass_cal_val = BiomassDry.data_energy_dict[
