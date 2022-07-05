@@ -212,7 +212,7 @@ class Study(StudyManager):
                                'Services.range_energy_eff_constraint']
         func_df['ftype'] =  [OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,OBJECTIVE, OBJECTIVE,
                              INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT]
-        func_df['weight'] = [1,1,1,1,1,1,1,-1, -1, -1]
+        func_df['weight'] = [1,1,1,1,1,1,1,1, 1, 1]
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, 
                               AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, 
                               AGGR_TYPE_SUM, AGGR_TYPE_SUM,  AGGR_TYPE_SUM]
