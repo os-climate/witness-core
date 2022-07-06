@@ -40,7 +40,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'category': '',
         'definition': '',
         'icon': 'fas fa-tree fa-fw',
-        'version': '',
+        'version': 'Version 1',
     }
     default_year_start = 2020
     default_year_end = 2050

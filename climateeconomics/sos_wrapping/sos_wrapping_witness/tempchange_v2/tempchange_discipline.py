@@ -127,7 +127,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                     'type': 'float', 'default': 722., 'unit': 'ppm', 'user_level': 2}
                 dynamic_inputs['pre_indus_n2o_concentration_ppm'] = {
                     'type': 'float', 'default': 273., 'unit': 'ppm', 'user_level': 2}
-
+        var_names = ['forcing_model','init_forcing_nonco','hundred_forcing_nonco','pre_indus_ch4_concentration_ppm','pre_indus_n2o_concentration_ppm']
+        for var_name in var_names:
+            if var_name in self._data_in:
+                self.clean_variables([var_name], self.IO_TYPE_IN)
         self.add_inputs(dynamic_inputs)
 
     def init_execution(self):
