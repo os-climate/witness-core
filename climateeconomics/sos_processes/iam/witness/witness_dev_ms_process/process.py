@@ -20,7 +20,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Dev Multiscenario Process',
+        'label': 'WITNESS Dev Multiscenario Optimization Process',
         'description': '',
         'category': '',
         'version': '',
@@ -39,6 +39,7 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_functions',
                                          'ns_energy_mix',
                                          'ns_public',
+                                         'ns_optim',
                                          'ns_syngas',
                                          'ns_flue_gas',
                                          'ns_energy_study',
@@ -50,6 +51,7 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_liquid_fuel',
                                          'ns_liquid_hydrogen',
                                          'ns_hydrotreated_oil_fuel',
+                                         #'ns_kerosene',
                                          'ns_methane',
                                          'ns_solid_fuel',
                                          'ns_energy',
@@ -59,32 +61,36 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_carb',
                                          'ns_ccs',
                                          'ns_resource',
+                                         #'ns_ref',
                                          'ns_invest',
                                          'ns_agriculture',
                                          'ns_crop',
-                                         'ns_forest'
-
-
+                                         'ns_forest',
                                          ]}
 
         self.ee.smaps_manager.add_build_map(
             'scenario_list', scenario_map)
 
         builder_cdf_list = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_dev')
+            'climateeconomics.sos_processes.iam.witness', 'witness_dev_optim_process')
 
-        scatter_scenario_name = 'multiscenario'
+        scatter_scenario_name = 'optimization scenarios'
         # modify namespaces defined in the child process
         for ns in self.ee.ns_manager.ns_list:
             self.ee.ns_manager.update_namespace_with_extra_ns(
                 ns, scatter_scenario_name, after_name=self.ee.study_name)
 
         # Add new namespaces needed for the scatter multiscenario
-        ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}'}
+        ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
+                   'ns_post_processing': f'{self.ee.study_name}.Post-processing',
+                   'ns_ref': f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         multi_scenario = self.ee.factory.create_very_simple_multi_scenario_builder(
-            scatter_scenario_name, 'scenario_list', builder_cdf_list)
+            scatter_scenario_name, 'scenario_list', [builder_cdf_list], autogather=True, gather_node='Post-processing')
+
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
+                                                                                'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_ms.post_processing_witness_full')
 
         return multi_scenario
