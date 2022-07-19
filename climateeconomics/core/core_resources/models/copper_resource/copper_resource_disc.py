@@ -64,25 +64,25 @@ class CopperResourceDiscipline(ResourceDiscipline):
 
 
 
-    DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '[-]', 'default': default_resource_data,
+    DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '-', 'default': default_resource_data,
                                  'user_level': 2, 'namespace': 'ns_copper_resource'},
-               'resource_production_data': {'type': 'dataframe', 'unit': '[Mt]', 'optional': True,
+               'resource_production_data': {'type': 'dataframe', 'unit': 'Mt', 'optional': True,
                                             'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_copper_resource'},
-               'resource_price_data': {'type': 'dataframe', 'unit': '[$/t]', 'default': default_resource_price_data, 'user_level': 2,
+               'resource_price_data': {'type': 'dataframe', 'unit': '$/t', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {'resource_type': ('string', None, False),
                                                                 'price': ('float', None, False),
                                                                 'unit': ('string', None, False)},
                                        'namespace': 'ns_copper_resource'},
-               'resource_consumed_data': {'type': 'dataframe', 'unit': '[Mt]', 'optional': True,
+               'resource_consumed_data': {'type': 'dataframe', 'unit': 'Mt', 'optional': True,
                                             'default': default_resource_consumed_data, 'user_level': 2, 'namespace': 'ns_copper_resource'},
-               'production_start': {'type': 'float', 'default': default_production_start, 'unit': '[-]',
+               'production_start': {'type': 'float', 'default': default_production_start, 'unit': '-',
                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'stock_start': {'type': 'float', 'default': default_stock_start, 'user_level': 2, 'unit': '[Mt]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'user_level': 2, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'lifespan': {'type': 'int', 'default': default_lifespan, 'user_level': 2, 'unit': '[-]', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'sectorisation': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '[-]', 'default': default_sectorisation_dict,'visibility': SoSDiscipline.SHARED_VISIBILITY,
+               'stock_start': {'type': 'float', 'default': default_stock_start, 'user_level': 2, 'unit': 'Mt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
+               'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'user_level': 2, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
+               'lifespan': {'type': 'int', 'default': default_lifespan, 'user_level': 2, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
+               'sectorisation': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '-', 'default': default_sectorisation_dict,'visibility': SoSDiscipline.SHARED_VISIBILITY,
                                  'user_level': 2, 'namespace': 'ns_copper_resource'},
-               'resource_max_price': {'type': 'float', 'default': default_resource_max_price, 'user_level': 2, 'unit': '[$/Mt]'},
+               'resource_max_price': {'type': 'float', 'default': default_resource_max_price, 'user_level': 2, 'unit': '$/t'},
                }
 
     DESC_IN.update(ResourceDiscipline.DESC_IN)
