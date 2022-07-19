@@ -44,7 +44,7 @@ class Study(StudyManager):
         data_dir_resource = join(
             dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'tests', 'data')
         resources_demand = pd.read_csv(
-            join(data_dir_resource, 'all_demand_from_energy_mix.csv'))
+            join(data_dir_resource, 'all_demand_variable.csv'))
 
         
 

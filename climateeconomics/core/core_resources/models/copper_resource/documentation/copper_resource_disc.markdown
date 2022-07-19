@@ -32,9 +32,9 @@ $$price(ratio) = (price\_max - price\_min) (1 - ratio) + price\_min$$
 
 The following data are integrated into the model
 
-|  Region  | material type | current Reserve | Reserve unit |
-| :------- | :--------:| ---------: | :-----------------: |
-| World | copper | 2100 | million_tonnes |
+|  Region  | material type | current Reserve | Reserve unit | undiscovered reserve | Reserve unit |
+| :------- | :--------:| ---------: | :-----------------: | :-----------------: | :-----------------: |
+| World | copper | 2100 | million_tonnes | 3500 |  million_tonnes |
 
 ### Sector using copper [^5]
 
