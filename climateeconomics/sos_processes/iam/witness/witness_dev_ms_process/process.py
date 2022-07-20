@@ -91,6 +91,6 @@ class ProcessBuilder(BaseProcessBuilder):
             scatter_scenario_name, 'scenario_list', [builder_cdf_list], autogather=True, gather_node='Post-processing')
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
-                                                                                'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_ms.post_processing_witness_full')
+                                                                                'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_ms.post_processing_witness_full_dev')
 
         return multi_scenario
