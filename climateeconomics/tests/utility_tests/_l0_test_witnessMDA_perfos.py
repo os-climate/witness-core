@@ -1037,8 +1037,8 @@ class TestScatter(unittest.TestCase):
                 rects1 = ax.bar(labels, [values[operation] for values in values_list], width, label=operation)
             fig.tight_layout()
             if save:
-                plt.savefig(f'{filename}.jpg')
-            plt.show()
+                fig.savefig(join(dirname(__file__), f'{filename}.jpg'))
+            return fig
 
         def get_operation_bar_chart(labels, values, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
             x = np.arange(len(labels))  # the label locations
@@ -1047,8 +1047,8 @@ class TestScatter(unittest.TestCase):
             rects1 = ax.bar(labels, values, width)
             fig.tight_layout()
             if save:
-                fig.savefig(f'{filename}.jpg')
-            fig.show()
+                fig.savefig(join(dirname(__file__), f'{filename}.jpg'))
+            return fig
 
         case_dict={'sequential': 1, '2thread': 2, '10thread': 10}
         operations_dict = {
@@ -1068,14 +1068,31 @@ class TestScatter(unittest.TestCase):
             cat_times = get_categorized_times(result, categories_dict= operations_dict)
             cat_times_list+=[cat_times,]
 
-
+        operations_fig=[]
         for operation in operations_dict.keys():
-            get_operation_bar_chart(case_dict.keys(), [cat_times[operation] for cat_times in cat_times_list],
+            operations_fig +=[get_operation_bar_chart(case_dict.keys(), [cat_times[operation] for cat_times in cat_times_list],
                                     title=f'{operation} time', save=False,
-                                    filename=f'witness_full_MDA_{operation}_parallel_perfos')
-        get_stacked_bar_chart(case_dict.keys(), cat_times_list,
+                                    filename=f'witness_full_MDA_{operation}_parallel_perfos'),]
+        stacked_fig=get_stacked_bar_chart(case_dict.keys(), cat_times_list,
                               title='Stacked operations time', save=False,
                               filename=f'witness_full_MDA_parallel_perfos')
+
+        if platform.system() == 'Windows':
+            for fig in operations_fig:
+                fig.show()
+            stacked_fig.show()
+        else:
+            for operation in operations_dict.keys():
+                fig_name=join(dirname(__file__), f'witness_full_MDA_GSPureNR_{operation}_parallel_perfos')
+                os.system(
+                    f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
+            fig_name = join(dirname(__file__), f'witness_full_MDA_GSPureNR_parallel_perfos')
+            os.system(
+                f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
+            os.system(
+                f'git commit -m "Add perfo GSPureNewton figures"')
+            os.system('git pull')
+            os.system('git push')
 
     def test_09_witness_full_mda_GSPureNR_perfos_parallels(self):
 
@@ -1169,8 +1186,8 @@ class TestScatter(unittest.TestCase):
                 rects1 = ax.bar(labels, [values[operation] for values in values_list], width, label=operation)
             fig.tight_layout()
             if save:
-                plt.savefig(f'{filename}.jpg')
-            plt.show()
+                fig.savefig(join(dirname(__file__),f'{filename}.jpg'))
+            return fig
 
         def get_operation_bar_chart(labels, values, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
             x = np.arange(len(labels))  # the label locations
@@ -1179,8 +1196,8 @@ class TestScatter(unittest.TestCase):
             rects1 = ax.bar(labels, values, width)
             fig.tight_layout()
             if save:
-                fig.savefig(f'{filename}.jpg')
-            fig.show()
+                fig.savefig(join(dirname(__file__),f'{filename}.jpg'))
+            return fig
 
         case_dict={'sequential': 1, '2thread': 2, '10thread': 10}
         operations_dict = {
@@ -1200,14 +1217,30 @@ class TestScatter(unittest.TestCase):
             cat_times = get_categorized_times(result, categories_dict= operations_dict)
             cat_times_list+=[cat_times,]
 
-
+        operations_fig=[]
         for operation in operations_dict.keys():
-            get_operation_bar_chart(case_dict.keys(), [cat_times[operation] for cat_times in cat_times_list],
+            operations_fig +=[get_operation_bar_chart(case_dict.keys(), [cat_times[operation] for cat_times in cat_times_list],
                                     title=f'{operation} time', save=False,
-                                    filename=f'witness_full_MDA_GSPureNR_{operation}_parallel_perfos')
-        get_stacked_bar_chart(case_dict.keys(), cat_times_list,
-                              title='Stacked operations time', save=False,
-                              filename=f'witness_full_MDA_GSPureNR_parallel_perfos')
+                                    filename=f'witness_full_MDA_GSPureNR_{operation}_parallel_perfos'),]
+        stacked_fig=get_stacked_bar_chart(case_dict.keys(), cat_times_list,
+                                            title='Stacked operations time', save=False,
+                                            filename=f'witness_full_MDA_GSPureNR_parallel_perfos')
+        if platform.system() == 'Windows':
+            for fig in operations_fig:
+                fig.show()
+            stacked_fig.show()
+        else:
+            for operation in operations_dict.keys():
+                fig_name=join(dirname(__file__), f'witness_full_MDA_GSPureNR_{operation}_parallel_perfos')
+                os.system(
+                    f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
+            fig_name = join(dirname(__file__), f'witness_full_MDA_GSPureNR_parallel_perfos')
+            os.system(
+                f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
+            os.system(
+                f'git commit -m "Add perfo GSPureNewton figures"')
+            os.system('git pull')
+            os.system('git push')
 
 if '__main__' == __name__:
     cls = TestScatter()
