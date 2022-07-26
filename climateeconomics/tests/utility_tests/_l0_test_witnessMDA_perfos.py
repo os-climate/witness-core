@@ -1007,9 +1007,6 @@ class TestScatter(unittest.TestCase):
             with open(join(dirname(__file__), f'{filename}.csv'), 'w+') as f:
                 f.write(result)
                 f.close()
-            if not platform.system() == 'Windows':
-                os.system(
-                    f'git add ./climateeconomics/tests/utility_tests/perfo_dir/{filename}.csv')
 
         def get_categorized_times(result, categories_dict):
             result = result.getvalue()
@@ -1057,9 +1054,6 @@ class TestScatter(unittest.TestCase):
             fig.legend()
             if save:
                 fig.savefig(join(dirname(__file__),f'{filename}.jpg'))
-                if not platform.system() == 'Windows':
-                    os.system(
-                        f'git add ./climateeconomics/tests/utility_tests/perfo_dir/{filename}.jpg')
             return fig
 
         def get_operation_bar_chart(labels, values, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
@@ -1071,9 +1065,6 @@ class TestScatter(unittest.TestCase):
             fig.tight_layout()
             if save:
                 fig.savefig(join(dirname(__file__),f'{filename}.jpg'))
-                if not platform.system() == 'Windows':
-                    os.system(
-                        f'git add ./climateeconomics/tests/utility_tests/perfo_dir/{filename}.jpg')
             return fig
 
         case_dict={'GSPureNR-sequential': [1,'GSPureNewtonMDA'], 'GSPureNR-2thread': [2,'GSPureNewtonMDA'] , 'GSPureNR-10thread': [10,'GSPureNewtonMDA'],
@@ -1117,6 +1108,10 @@ class TestScatter(unittest.TestCase):
         else:
             os.system('git config user.email "julien.souchard.external@airbus.com"')
             os.system('git config user.name "Julien Souchard"')
+            os.system(
+                f'git add ./perfo_dir/*.csv')
+            os.system(
+                f'git add ./perfo_dir/*.jpg')
             os.system(
                 f'git commit -m "Add perfo MDA parallel figures"')
             os.system('git pull')
