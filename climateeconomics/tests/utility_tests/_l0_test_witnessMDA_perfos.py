@@ -1004,7 +1004,7 @@ class TestScatter(unittest.TestCase):
             result = 'ncalls' + result.split('ncalls')[-1]
             result = '\n'.join([','.join(line.rstrip().split(None, 5))
                                 for line in result.split('\n')])
-            with open(join(dirname(__file__), f'{filename}.csv'), 'w+') as f:
+            with open(join(dirname(__file__), f'perfo_dir/{filename}.csv'), 'w+') as f:
                 f.write(result)
                 f.close()
 
@@ -1053,7 +1053,7 @@ class TestScatter(unittest.TestCase):
             fig.tight_layout()
             fig.legend()
             if save:
-                fig.savefig(join(dirname(__file__),f'{filename}.jpg'))
+                fig.savefig(join(dirname(__file__),f'perfo_dir/{filename}.jpg'))
             return fig
 
         def get_operation_bar_chart(labels, values, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
@@ -1064,7 +1064,7 @@ class TestScatter(unittest.TestCase):
             ax.set_title(title)
             fig.tight_layout()
             if save:
-                fig.savefig(join(dirname(__file__),f'{filename}.jpg'))
+                fig.savefig(join(dirname(__file__),f'perfo_dir/{filename}.jpg'))
             return fig
 
         case_dict={'GSPureNR-sequential': [1,'GSPureNewtonMDA'], 'GSPureNR-2thread': [2,'GSPureNewtonMDA'] , 'GSPureNR-10thread': [10,'GSPureNewtonMDA'],
