@@ -984,6 +984,7 @@ class TestScatter(unittest.TestCase):
             input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
             input_dict_to_load[f'{self.name}.sub_mda_class'] = mda_type
             self.ee.load_study_from_input_dict(input_dict_to_load)
+
             profil = cProfile.Profile()
             profil.enable()
             self.ee.execute()
@@ -1006,6 +1007,9 @@ class TestScatter(unittest.TestCase):
             with open(join(dirname(__file__), f'{filename}.csv'), 'w+') as f:
                 f.write(result)
                 f.close()
+            if not platform.system() == 'Windows':
+                os.system(
+                    f'git add ./climateeconomics/tests/utility_tests/perfo_dir/{filename}.csv')
 
         def get_categorized_times(result, categories_dict):
             result = result.getvalue()
@@ -1039,15 +1043,23 @@ class TestScatter(unittest.TestCase):
             x = np.arange(len(labels))  # the label locations
             width = 0.35  # the width of the bars
             fig, ax = plt.subplots()
+            bottom=0.0
             for operation in values_list[0].keys():
                 if operation == 'Total':
-                    rects2 = ax.bar(labels, values_list[0][operation], width, position=np.arange(len(labels)), label = operation)
-                rects1 = ax.bar(labels, [values[operation] for values in values_list], width,
-                                position=np.arange(len(labels))+0.4, label=operation)
+                    ax.bar(x, values_list[0]['Total'], width, label=operation)
+                else:
+                    ax.bar(x+0.5, [values[operation] for values in values_list][0], width, bottom=bottom, label=operation)
+                    bottom+=[values[operation] for values in values_list][0]
+            ax.set_xticks(x)
+            ax.set_xticklabels(labels)
+            ax.set_title(title)
             fig.tight_layout()
             fig.legend()
             if save:
                 fig.savefig(join(dirname(__file__),f'{filename}.jpg'))
+                if not platform.system() == 'Windows':
+                    os.system(
+                        f'git add ./climateeconomics/tests/utility_tests/perfo_dir/{filename}.jpg')
             return fig
 
         def get_operation_bar_chart(labels, values, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
@@ -1055,9 +1067,13 @@ class TestScatter(unittest.TestCase):
             width = 0.35  # the width of the bars
             fig, ax = plt.subplots()
             rects1 = ax.bar(labels, values, width)
+            ax.set_title(title)
             fig.tight_layout()
             if save:
                 fig.savefig(join(dirname(__file__),f'{filename}.jpg'))
+                if not platform.system() == 'Windows':
+                    os.system(
+                        f'git add ./climateeconomics/tests/utility_tests/perfo_dir/{filename}.jpg')
             return fig
 
         case_dict={'GSPureNR-sequential': [1,'GSPureNewtonMDA'], 'GSPureNR-2thread': [2,'GSPureNewtonMDA'] , 'GSPureNR-10thread': [10,'GSPureNewtonMDA'],
@@ -1100,13 +1116,6 @@ class TestScatter(unittest.TestCase):
         else:
             os.system('git config --global user.email "julien.souchard.external@airbus.com"')
             os.system('git config --global user.name "Julien Souchard"')
-            for operation in operations_dict.keys():
-                fig_name=join(dirname(__file__), f'witness_full_MDA_{operation}_parallel_perfos')
-                os.system(
-                    f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
-            fig_name = join(dirname(__file__), f'witness_full_MDA_parallel_perfos')
-            os.system(
-                f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
             os.system(
                 f'git commit -m "Add perfo MDA parallel figures"')
             os.system('git pull')
