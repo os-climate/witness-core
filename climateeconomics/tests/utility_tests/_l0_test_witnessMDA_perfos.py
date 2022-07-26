@@ -1079,6 +1079,7 @@ class TestScatter(unittest.TestCase):
         case_dict={'GSPureNR-sequential': [1,'GSPureNewtonMDA'], 'GSPureNR-2thread': [2,'GSPureNewtonMDA'] , 'GSPureNR-10thread': [10,'GSPureNewtonMDA'],
                    'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-2thread': [2, 'GSNewtonMDA'], 'GSNR-10thread': [10, 'GSNewtonMDA']
                    }
+        case_dict = {'GSPureNR-sequential': [1, 'GSPureNewtonMDA']}
         operations_dict = {
             'Total': None,
             'Linearize': 'linearize_all_disciplines',
@@ -1114,8 +1115,8 @@ class TestScatter(unittest.TestCase):
                 fig.show()
             stacked_fig.show()
         else:
-            os.system('git config --global user.email "julien.souchard.external@airbus.com"')
-            os.system('git config --global user.name "Julien Souchard"')
+            os.system('git config user.email "julien.souchard.external@airbus.com"')
+            os.system('git config user.name "Julien Souchard"')
             os.system(
                 f'git commit -m "Add perfo MDA parallel figures"')
             os.system('git pull')
