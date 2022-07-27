@@ -1115,6 +1115,174 @@ class TestScatter(unittest.TestCase):
             os.system('git pull')
             os.system('git push')
 
+    def test_09_witness_coarse_mda_perfos_parallels(self):
+
+        def launch_execution(self, mda_type, n_proc=1):
+            '''
+            Launch WITNESS Full MDA run with a specified number of core for
+            multiprocess run or specified number of thread for multithread run.
+            A run cannot be multiproc AND multithread.
+            Returns a dict with the main functions times
+            '''
+
+            if n_proc < 1:
+                raise ValueError("n_proc cannot be < 1")
+            if not isinstance(n_proc, int):
+                raise TypeError("n_proc must be integer")
+
+            self.name = 'Test'
+            self.ee = ExecutionEngine(self.name)
+            repo = 'climateeconomics.sos_processes.iam.witness'
+            builder = self.ee.factory.get_builder_from_process(
+                repo, 'witness_coarse')
+
+            self.ee.factory.set_builders_to_coupling_builder(builder)
+            self.ee.configure()
+            usecase = Studycoarse(execution_engine=self.ee)
+            usecase.study_name = self.name
+            values_dict = usecase.setup_usecase()
+
+            input_dict_to_load = {}
+
+            for uc_d in values_dict:
+                input_dict_to_load.update(uc_d)
+
+            input_dict_to_load[f'{self.name}.n_processes'] = n_proc
+            input_dict_to_load[f'{self.name}.max_mda_iter'] = 300
+            input_dict_to_load[f'{self.name}.sub_mda_class'] = mda_type
+            self.ee.load_study_from_input_dict(input_dict_to_load)
+
+            profil = cProfile.Profile()
+            profil.enable()
+            self.ee.execute()
+            profil.disable()
+            result = StringIO()
+
+            ps = pstats.Stats(profil, stream=result)
+            ps.sort_stats('cumulative')
+            ps.print_stats(1000)
+
+            return result
+
+        def extract_profile_to_csv(result, filename):
+
+            result = result.getvalue()
+            # chop the string into a csv-like buffer
+            result = 'ncalls' + result.split('ncalls')[-1]
+            result = '\n'.join([','.join(line.rstrip().split(None, 5))
+                                for line in result.split('\n')])
+            with open(join(dirname(__file__), f'perfo_dir/{filename}.csv'), 'w+') as f:
+                f.write(result)
+                f.close()
+
+        def get_categorized_times(result, categories_dict):
+            result = result.getvalue()
+            # chop the string into a csv-like buffer
+            result = 'ncalls' + result.split('ncalls')[-1]
+            result = '\n'.join([','.join(line.rstrip().split(None, 5))
+                                for line in result.split('\n')])
+            lines = result.split('\n')
+            total_time = float(lines[1].split(',')[3])
+            print('total_time : ', total_time)
+            print('filename(function),total time, time per call, number of calls')
+            for line in lines[1:200]:
+                print(line.split(',')[-1].split('\\')[-3:], ',', line.split(',')
+                [3], ',', line.split(',')[4], ',', line.split(',')[0])
+
+            cat_times = {}
+            for category, str_to_find in categories_dict.items():
+                if str_to_find is None:
+                    continue
+                try:
+                    cat_times[category] = float([line for line in lines if str_to_find in line][0].split(',')[
+                                           3])
+                except:
+                    cat_times[category] = 0.0
+            cat_times['Total']=total_time
+            cat_times['Others']=total_time - sum([time for key, time in cat_times.items() if key in
+                                                  ['Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build']])
+            return cat_times
+
+        def get_stacked_bar_chart(labels, values_list, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
+            x = np.arange(len(labels))  # the label locations
+            width = 0.35  # the width of the bars
+            fig, ax = plt.subplots()
+            bottom=np.zeros(len(x))
+            for operation in values_list[0].keys():
+                if operation == 'Total':
+                    ax.bar(x, [values['Total'] for values in values_list], width, label=operation)
+                else:
+                    ax.bar(x+0.5, [values[operation] for values in values_list], width, bottom=bottom, label=operation)
+                    bottom+=[values[operation] for values in values_list]
+            ax.set_xticks(x)
+            ax.set_xticklabels(labels)
+            ax.set_title(title)
+            fig.tight_layout()
+            fig.legend()
+            if save:
+                fig.savefig(join(dirname(__file__),f'perfo_dir/{filename}.jpg'))
+            return fig
+
+        def get_operation_bar_chart(labels, values, title='Fig Title', save=False, filename='witness_full_MDA_parallel_perfos'):
+            x = np.arange(len(labels))  # the label locations
+            width = 0.35  # the width of the bars
+            fig, ax = plt.subplots()
+            rects1 = ax.bar(labels, values, width)
+            ax.set_title(title)
+            fig.tight_layout()
+            if save:
+                fig.savefig(join(dirname(__file__),f'perfo_dir/{filename}.jpg'))
+            return fig
+
+        case_dict={'GSPureNR-sequential': [1,'GSPureNewtonMDA'], 'GSPureNR-2thread': [2,'GSPureNewtonMDA'] , 'GSPureNR-10thread': [10,'GSPureNewtonMDA'],
+                   'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-2thread': [2, 'GSNewtonMDA'], 'GSNR-10thread': [10, 'GSNewtonMDA']
+                   }
+        operations_dict = {
+            'Total': None,
+            'Linearize': 'linearize_all_disciplines',
+            'Pre-run': 'pre_run_mda',
+            'Gauss Seidel': 'gauss_seidel.py',
+            'Execute': 'execute_all_disciplines',
+            'Matrix Inversion': 'algo_lib.py',
+            'Matrix Build': '(dres_dvar',
+            'Threading Wait': '(wait',
+            'Type Conversion': '_convert_new_type_into_array',
+            'Deepcopy': '(deepcopy',
+            'Others' : None #value is found by substracting operations time to total time
+        }
+        cat_times_list = []
+        for case, (n_proc, mda_type) in case_dict.items():
+            result = launch_execution(self, mda_type=mda_type, n_proc=n_proc)
+            extract_profile_to_csv(result, f'witness_coarse_MDA_{case}_profile')
+            cat_times = get_categorized_times(result, categories_dict= operations_dict)
+            cat_times_list+=[cat_times,]
+
+        operations_fig=[]
+        for operation in operations_dict.keys():
+            operations_fig +=[get_operation_bar_chart(case_dict.keys(), [cat_times[operation] for cat_times in cat_times_list],
+                                    title=f'{operation} time', save=True,
+                                    filename=f'witness_coarse_MDA_{operation}_parallel_perfos'),]
+        stacked_data=[{key: value for key, value in cat_times.items() if key in
+                       ['Total', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build']} for cat_times in cat_times_list]
+        stacked_fig=get_stacked_bar_chart(case_dict.keys(), stacked_data,
+                                            title='Stacked operations time', save=True,
+                                            filename=f'witness_coarse_MDA_parallel_perfos')
+        if platform.system() == 'Windows':
+            for fig in operations_fig:
+                fig.show()
+            stacked_fig.show()
+        else:
+            os.system('git config user.email "julien.souchard.external@airbus.com"')
+            os.system('git config user.name "Julien Souchard"')
+            os.system(
+                f'git add ./perfo_dir/*.csv')
+            os.system(
+                f'git add ./perfo_dir/*.jpg')
+            os.system(
+                f'git commit -m "Add perfo MDA parallel figures"')
+            os.system('git pull')
+            os.system('git push')
+
 if '__main__' == __name__:
     cls = TestScatter()
-    cls.test_08_witness_full_mda_perfos_parallels()
+    cls.test_09_witness_coarse_mda_perfos_parallels()
