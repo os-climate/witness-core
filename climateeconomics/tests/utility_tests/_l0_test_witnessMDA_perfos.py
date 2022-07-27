@@ -1068,7 +1068,6 @@ class TestScatter(unittest.TestCase):
             return fig
 
         case_dict={'GSPureNR-sequential': [1,'GSPureNewtonMDA'], 'GSPureNR-2thread': [2,'GSPureNewtonMDA'] , 'GSPureNR-10thread': [10,'GSPureNewtonMDA'],
-                   'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-2thread': [2, 'GSNewtonMDA'], 'GSNR-10thread': [10, 'GSNewtonMDA']
                    }
         operations_dict = {
             'Total': None,
