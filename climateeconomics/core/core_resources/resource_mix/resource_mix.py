@@ -23,6 +23,7 @@ from climateeconomics.core.core_resources.models.coal_resource.coal_resource_dis
 from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import NaturalGasResourceDiscipline
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
+from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import PlatinumResourceDiscipline
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
     compute_func_with_exp_min
@@ -57,7 +58,7 @@ class ResourceMixModel():
     ALL_RESOURCE_CO2_EMISSIONS = 'resources_CO2_emissions'
     NON_MODELED_RESOURCE_PRICE = 'non_modeled_resource_price'
     RESOURCE_DISC_LIST = [OilResourceDiscipline, UraniumResourceDiscipline,
-                          NaturalGasResourceDiscipline, CoalResourceDiscipline, CopperResourceDiscipline]
+                          NaturalGasResourceDiscipline, CoalResourceDiscipline, CopperResourceDiscipline, PlatinumResourceDiscipline]
 
     RESOURCE_LIST = [disc.resource_name for disc in RESOURCE_DISC_LIST]
 

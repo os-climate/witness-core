@@ -10,9 +10,9 @@ production data sources: [^2]
 
 |Year |Platinum [Mt]|
 | :------- | :---------- | 
-|1967|4.07e-8|
+|1967|4.07e-5|
 |...|...|
-|2020|1.66e-7|
+|2020|1.66e-4|
 
 ### Fitting [^1]
 
@@ -40,12 +40,12 @@ The following data are integrated into the model
 
 | Sector |proportion of the global demand per year in %|demand in Million tonnes|
 |:------- | :--------:|:-----------------:|
-|Exhaust treatment systems |36|8.1e-8|
-|Jewelry|26|5.8e-8|
-|Chemical catalysts|9|2.0e-8|
-|Glass production|8|1.8e-8|
-|Electronics|3|7.0e-9|
-|Other|18|4.0e-8|
+|Exhaust treatment systems |36|8.1e-5|
+|Jewelry|26|5.8e-5|
+|Chemical catalysts|9|2.0e-5|
+|Glass production|8|1.8e-5|
+|Electronics|3|7.0e-6|
+|Other|18|4.0e-5|
 
 Data implemented in the platinum input.
 
