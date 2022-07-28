@@ -67,7 +67,7 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_uranium_resource'},
                'resource_production_data': {'type': 'dataframe', 'unit': 't', 'optional': True,
                                             'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_uranium_resource'},
-               'resource_price_data': {'type': 'dataframe', 'unit': '$/k', 'default': default_resource_price_data, 'user_level': 2,
+               'resource_price_data': {'type': 'dataframe', 'unit': '$/kg', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {'resource_type': ('string', None, False),
                                                                 'price': ('float', None, False),
                                                                 'unit': ('string', None, False)},
