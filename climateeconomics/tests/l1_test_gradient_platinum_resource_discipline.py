@@ -44,7 +44,6 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.year_start = 2020
         self.year_end = 2100
     
-
         self.lifespan = 5
 
         data_dir = join(dirname(__file__), 'data')

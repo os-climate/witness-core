@@ -20,14 +20,22 @@ from scipy.fftpack import diff
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import CopperResourceModel
 import numpy as np
 import pandas as pd
+from climateeconomics.core.tools.Hubbert_Curve import compute_Hubbert_regression
+from matplotlib import pyplot as plt
 
 
-resource_name = CopperResourceModel.resource_name
-Q_inf_th = 2851.691 #reserve underground + Q(2020)
-past_production = pd.read_csv(join(dirname(__file__), f'../resources_data/{resource_name}_production_data.csv'))
-production_start = 1925
+
+resource_name = CopperResourceModel.resource_name #CopperResourceModel.resource_name  PlatinumResourceModel.resource_name
+known_reserves = 2100 #2100    0.0354
+undiscovered_resources = 3500  #3500
+future_discovery = 0.5
+hypot_reservers = known_reserves + future_discovery * undiscovered_resources
+Q_2020 = 751.691 #751.691  0.007319767919
+Q_inf_th = Q_2020 + hypot_reservers # Q(2020) + reserve underground 
+past_production = pd.read_csv(join(dirname(__file__), f'../core_resources/models/resources_data/{resource_name}_production_data.csv'))
+production_start = 1925 #1925   1967
 production_years = np.arange(production_start, 2101)
-past_production_years = np.arange(production_start, 2021)
+past_production_years = np.arange(production_start, 2021) 
 
 
 def compute_Hubbert_parameters(past_production, production_years, regression_start, resource_type):
@@ -73,18 +81,64 @@ def compute_Hubbert_parameters(past_production, production_years, regression_sta
 
     return Q_inf
 
-year_regression = 1925
+
+### Loops going through the potential years and selecting optimum regression year ###
+
+
+
+### start of the loop, must be the first year in the past_production csv
+year_regression = 1925 #1925  1967
 
 difference = 1000
+Q_inf_taken = 5
+new_difference = 1000
+new_year_regression = 0
+end_of_past_production = 0
 
 #Goes through all the past years and returns the year of the regression
-for evolving_year in past_production_years :
-    Q_inf = compute_Hubbert_parameters(past_production, production_years, evolving_year, 'copper')
-    if abs(Q_inf_th - Q_inf) < difference :
-        difference = abs (Q_inf_th - Q_inf)
-        year_regression = evolving_year
-print("l'année de régression est : ")
-print (year_regression)
+for evolving_year in past_production_years : 
+    
+    #loop also the last_year of regression
+    new_past_production = past_production.loc[past_production['years'] <= evolving_year]
+        
+    print(evolving_year)
+    for year in np.arange(production_start + 1, evolving_year):
+        Q_inf = compute_Hubbert_parameters(new_past_production, production_years, year, 'copper' ) #'copper' 'platinum
+        if abs(Q_inf_th - Q_inf) < difference :
+            difference = abs (Q_inf_th - Q_inf)
+            year_regression = year
+            Q_inf_taken = Q_inf
+    
+    if abs(Q_inf_th - Q_inf_taken) < new_difference :
+        new_difference = abs(Q_inf_th - Q_inf_taken)
+        new_year_regression = year_regression
+        final_Q_inf = Q_inf_taken
+        end_of_past_production = evolving_year
 
-print("et la différence entre Q_inf et Q_inf_th est de ")
-print (difference)
+error = ((Q_inf_th -final_Q_inf) / Q_inf_th) * 100
+
+
+### Graph with past production and hubert curve determined with the optimum parameters
+
+# production = compute_Hubbert_regression(past_production, production_years, new_year_regression, 'copper')
+
+# plt.title('Production according to Hubert vs real production')
+# plt.plot(list(production_years), list(production))
+# plt.plot(np.arange(production_start, 2021), list(past_production['copper']))
+# plt.xlabel('years')
+# plt.ylabel('Potential production [Mt]')
+# plt.show()
+
+
+print("l'année de régression est : ")
+print (new_year_regression)
+
+print(f"la fin de la régression est {end_of_past_production}")
+
+print("et la différence entre Q_inf_th et Q_inf est de ")
+print (new_difference)
+
+print(f"le taux d'erreur est de {error} %")
+
+print(f"celui qu'on veut obtenir est {Q_inf_th} et celui qu'on calcule est de {final_Q_inf} ")
+
