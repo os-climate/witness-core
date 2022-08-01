@@ -23,7 +23,7 @@ from climateeconomics.core.core_resources.models.coal_resource.coal_resource_dis
 from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import \
     NaturalGasResourceDiscipline
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
-
+from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import PlatinumResourceDiscipline
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
@@ -71,12 +71,14 @@ class ResourceMixDiscipline(SoSDiscipline):
              'production': 1 / 1.379, 'stock': 1 / 1.379,
              'global_demand': 1.0},
         OilResourceDiscipline.resource_name:
-
-        {'price': 7.33, 'production': 1.0, 'stock': 1.0,
-        'global_demand': 1.0},
+            {'price': 7.33, 'production': 1.0, 'stock': 1.0,
+            'global_demand': 1.0},
         CopperResourceDiscipline.resource_name:
             {'price': 1.0, 'production': 1.0, 'stock': 1.0,
             'global_demand': 24.987 / 0.000213421},
+        PlatinumResourceDiscipline.resource_name:
+            {'price': 1.0, 'production': 1.0, 'stock': 1.0,
+             'global_demand': 1.0},
 
     }
 

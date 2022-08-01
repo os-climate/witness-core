@@ -58,7 +58,8 @@ class ResourceMixModel():
     ALL_RESOURCE_CO2_EMISSIONS = 'resources_CO2_emissions'
     NON_MODELED_RESOURCE_PRICE = 'non_modeled_resource_price'
     RESOURCE_DISC_LIST = [OilResourceDiscipline, UraniumResourceDiscipline,
-                          NaturalGasResourceDiscipline, CoalResourceDiscipline, CopperResourceDiscipline, PlatinumResourceDiscipline]
+                          NaturalGasResourceDiscipline, CoalResourceDiscipline,
+                          CopperResourceDiscipline, ]#PlatinumResourceDiscipline]
 
     RESOURCE_LIST = [disc.resource_name for disc in RESOURCE_DISC_LIST]
 
