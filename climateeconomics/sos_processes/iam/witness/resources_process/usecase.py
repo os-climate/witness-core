@@ -113,7 +113,7 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
-    uc_cls.execution_engine.set_debug_mode()
+    #uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
     uc_cls.execution_engine.display_treeview_nodes(True)
 
