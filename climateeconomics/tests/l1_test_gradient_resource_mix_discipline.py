@@ -47,6 +47,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'uranium.predictible_production.csv'))
         self.copper_production_df = read_csv(
             join(data_dir, 'copper.predictible_production.csv'))
+        self.platinum_production_df = read_csv(
+            join(data_dir, 'platinum.predictible_production.csv'))
         self.oil_stock_df = read_csv(
             join(data_dir, 'oil.stock.csv'))
         self.gas_stock_df = read_csv(
@@ -57,6 +59,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'coal.stock.csv'))
         self.copper_stock_df = read_csv(
             join(data_dir, 'copper.stock.csv'))
+        self.platinum_stock_df = read_csv(
+            join(data_dir, 'platinum.stock.csv'))
         self.oil_price_df = read_csv(
             join(data_dir, 'oil.price.csv'))
         self.gas_price_df = read_csv(
@@ -67,6 +71,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'uranium.price.csv'))
         self.copper_price_df = read_csv(
             join(data_dir, 'copper.price.csv'))
+        self.platinum_price_df = read_csv(
+            join(data_dir, 'platinum.price.csv'))
         self.oil_use_df = read_csv(
             join(data_dir, 'oil.use.csv'))
         self.gas_use_df = read_csv(
@@ -77,6 +83,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'uranium.use.csv'))
         self.copper_use_df = read_csv(
             join(data_dir, 'copper.use.csv'))
+        self.platinum_use_df = read_csv(
+            join(data_dir, 'platinum.use.csv'))
         self.oil_recycled_production_df = read_csv(
             join(data_dir, 'oil.recycled_production.csv'))
         self.gas_recycled_production_df = read_csv(
@@ -87,6 +95,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'uranium.recycled_production.csv'))
         self.copper_recycled_production_df = read_csv(
             join(data_dir, 'copper.recycled_production.csv'))
+        self.platinum_recycled_production_df = read_csv(
+            join(data_dir, 'platinum.recycled_production.csv'))
         self.non_modeled_resource_df = read_csv(
             join(data_dir, 'resource_data_price.csv'))
         self.all_demand = read_csv(
@@ -121,11 +131,16 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.{self.model_name}.uranium_resource.resource_price': self.uranium_price_df,
                             f'{self.name}.{self.model_name}.uranium_resource.use_stock': self.uranium_use_df,
                             f'{self.name}.{self.model_name}.uranium_resource.recycled_production': self.uranium_recycled_production_df,
-                            f'{self.name}.{self.model_name}.copper_resource.predictable_production': self.copper_production_df,
-                            f'{self.name}.{self.model_name}.copper_resource.resource_stock': self.copper_stock_df,
-                            f'{self.name}.{self.model_name}.copper_resource.resource_price': self.copper_price_df,
-                            f'{self.name}.{self.model_name}.copper_resource.use_stock': self.copper_use_df,
-                            f'{self.name}.{self.model_name}.copper_resource.recycled_production': self.copper_recycled_production_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.predictable_production': self.platinum_production_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.resource_stock': self.platinum_stock_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.resource_price': self.platinum_price_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.use_stock': self.platinum_use_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.recycled_production': self.platinum_recycled_production_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.predictable_production': self.platinum_production_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.resource_stock': self.platinum_stock_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.resource_price': self.platinum_price_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.use_stock': self.platinum_use_df,
+                            f'{self.name}.{self.model_name}.platinum_resource.recycled_production': self.platinum_recycled_production_df,
                             f'{self.name}.{self.model_name}.{ResourceMixModel.NON_MODELED_RESOURCE_PRICE}': self.non_modeled_resource_df
                             }
 
@@ -135,6 +150,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                         'ns_natural_gas_resource': f'{self.name}.{self.model_name}',
                         'ns_uranium_resource': f'{self.name}.{self.model_name}',
                         'ns_copper_resource': f'{self.name}.{self.model_name}',
+                        'ns_platinum_resource': f'{self.name}.{self.model_name}',
                         'ns_resource': f'{self.name}.{self.model_name}',
                         }
 
@@ -185,6 +201,11 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.copper_resource.resource_price': self.copper_price_df,
                        f'{self.name}.{self.model_name}.copper_resource.use_stock': self.copper_use_df,
                        f'{self.name}.{self.model_name}.copper_resource.recycled_production': self.copper_recycled_production_df,
+                       f'{self.name}.{self.model_name}.platinum_resource.predictable_production': self.platinum_production_df,
+                       f'{self.name}.{self.model_name}.platinum_resource.resource_stock': self.platinum_stock_df,
+                       f'{self.name}.{self.model_name}.platinum_resource.resource_price': self.platinum_price_df,
+                       f'{self.name}.{self.model_name}.platinum_resource.use_stock': self.platinum_use_df,
+                       f'{self.name}.{self.model_name}.platinum_resource.recycled_production': self.platinum_recycled_production_df,
                        f'{self.name}.{self.model_name}.{ResourceMixModel.NON_MODELED_RESOURCE_PRICE}': self.non_modeled_resource_df
                        }
         self.ee.load_study_from_input_dict(values_dict)
@@ -214,11 +235,12 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
             [f'{self.name}.{self.model_name}.resources_demand_woratio'])
         input_names.extend(input_demand)
         resource_output = [
-                            f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_STOCK}', f'{self.name}.{self.model_name}.{ResourceMixModel.All_RESOURCE_USE}',
-                           f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_PRICE}',
-                           f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION}',
-                           f'{self.name}.{self.model_name}.{ResourceMixModel.RATIO_USABLE_DEMAND}',
-                           f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_DEMAND}',
+                            f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_STOCK}',
+                            f'{self.name}.{self.model_name}.{ResourceMixModel.All_RESOURCE_USE}',
+                            f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_PRICE}',
+                            f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION}',
+                            f'{self.name}.{self.model_name}.{ResourceMixModel.RATIO_USABLE_DEMAND}',
+                            f'{self.name}.{self.model_name}.{ResourceMixModel.ALL_RESOURCE_DEMAND}',
                            ]
 
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
