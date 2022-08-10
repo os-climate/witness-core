@@ -56,3 +56,4 @@ Data implemented in the platinum input.
 [^3]: Fiche Critique Platine 2015 - Le platine (Pt) – éléments de criticité - Retrieved from: 'https://www.mineralinfo.fr/sites/default/files/documents/2020-12/fichecriticiteplatine-publique150409.pdf'
 [^4]: Statista - Average global platinum closing price from 2016 to 2022 - Retrieved from : 'https://www.statista.com/statistics/254519/average-platinum-price/'
 [^5]: Statista - Consumption of platinum worldwide in 2021, by industry - Retrieved from : 'https://www.statista.com/statistics/693866/platinum-consumption-worldwide-by-industry/#:~:text=In%202021%2C%20exhaust%20treatment%20systems,consumed%20worldwide%20in%20that%20year'
+
