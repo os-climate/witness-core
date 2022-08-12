@@ -141,12 +141,13 @@ class Study(StudyManager):
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
         func_df['variable'] = [ 'Industry.gdp_error', 
-                               'Industry.energy_eff_error'
+                               'Industry.energy_eff_error',
+                               'Industry.range_energy_eff_constraint'
                                ]
-        func_df['ftype'] =  [OBJECTIVE, OBJECTIVE]
-        func_df['weight'] = [1,1]
-        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM]
-        func_df['namespace'] = ['ns_obj', 'ns_obj']
+        func_df['ftype'] =  [OBJECTIVE, OBJECTIVE, INEQ_CONSTRAINT]
+        func_df['weight'] = [1,1, 1]
+        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM]
+        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_macro']
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{ns_coupling}.{func_mng_name}.'
@@ -165,6 +166,7 @@ class Study(StudyManager):
         sect_input[ns_coupling + self.obj_name +  '.historical_gdp'] = hist_gdp
         sect_input[ns_coupling + self.obj_name +  '.historical_capital'] = hist_capital
         sect_input[ns_coupling + self.obj_name +  '.historical_energy'] = hist_energy
+        sect_input[ns_coupling + self.macro_name + '.prod_function_fitting'] = True
         disc_dict.update(sect_input)
         
         self.witness_sect_uc.study_name = f'{ns_coupling}'
