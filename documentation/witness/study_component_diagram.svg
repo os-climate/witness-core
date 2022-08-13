@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="220px" preserveAspectRatio="none" style="width:1073px;height:220px;background:#FFFFFF;" version="1.1" viewBox="0 0 1073 220" width="1073px" zoomAndPan="magnify"><defs/><g><rect height="26.2969" id="_title" style="stroke:#00000000;stroke-width:1.0;fill:none;" width="227" x="416" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="217" x="421" y="22.9951">Study Component Diagram</text><!--MD5=[69aa65254c303341395c02f81b801bfd]
+cluster Study--><g id="cluster_Study"><path d="M8.5,43.2969 L56.5,43.2969 A3.75,3.75 0 0 1 59,45.7969 L66,65.5938 L1063.5,65.5938 A2.5,2.5 0 0 1 1066,68.0938 L1066,210.7969 A2.5,2.5 0 0 1 1063.5,213.2969 L8.5,213.2969 A2.5,2.5 0 0 1 6,210.7969 L6,45.7969 A2.5,2.5 0 0 1 8.5,43.2969 " style="stroke:#000000;stroke-width:1.5;fill:none;"/><line style="stroke:#000000;stroke-width:1.5;fill:none;" x1="6" x2="66" y1="65.5938" y2="65.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="47" x="10" y="58.292">Study</text></g><!--MD5=[1a8d404bc7806d79b115573ba3cd9941]
+cluster Execution Engine--><g id="cluster_Execution Engine"><path d="M172.5,86.2969 L310.5,86.2969 A3.75,3.75 0 0 1 313,88.7969 L320,108.5938 L886.5,108.5938 A2.5,2.5 0 0 1 889,111.0938 L889,186.7969 A2.5,2.5 0 0 1 886.5,189.2969 L172.5,189.2969 A2.5,2.5 0 0 1 170,186.7969 L170,88.7969 A2.5,2.5 0 0 1 172.5,86.2969 " style="stroke:#000000;stroke-width:1.5;fill:none;"/><line style="stroke:#000000;stroke-width:1.5;fill:none;" x1="170" x2="320" y1="108.5938" y2="108.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="137" x="174" y="101.292">Execution Engine</text></g><!--MD5=[9a9f7a7118ae17816e018c2bf6f0b153]
+entity DI--><g id="elem_DI"><path d="M22,131.7969 C22,121.7969 57.5,121.7969 57.5,121.7969 C57.5,121.7969 93,121.7969 93,131.7969 L93,157.0938 C93,167.0938 57.5,167.0938 57.5,167.0938 C57.5,167.0938 22,167.0938 22,157.0938 L22,131.7969 " fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;"/><path d="M22,131.7969 C22,141.7969 57.5,141.7969 57.5,141.7969 C57.5,141.7969 93,141.7969 93,131.7969 " fill="none" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="51" x="32" y="158.792">Data In</text></g><!--MD5=[ece4e2062200afd0fc6d579270179f5e]
+entity DO--><g id="elem_DO"><path d="M966,131.7969 C966,121.7969 1008,121.7969 1008,121.7969 C1008,121.7969 1050,121.7969 1050,131.7969 L1050,157.0938 C1050,167.0938 1008,167.0938 1008,167.0938 C1008,167.0938 966,167.0938 966,157.0938 L966,131.7969 " fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;"/><path d="M966,131.7969 C966,141.7969 1008,141.7969 1008,141.7969 C1008,141.7969 1050,141.7969 1050,131.7969 " fill="none" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="64" x="976" y="158.792">Data Out</text></g><!--MD5=[b3ad01ddeee7a8023078597cce53191f]
+entity D1--><g id="elem_D1"><rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="123" x="186" y="121.2969"/><rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="289" y="126.2969"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="287" y="128.2969"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="287" y="132.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="83" x="201" y="154.292">Discipline 1</text></g><!--MD5=[a36976c252c313df2dc3293dc523a6ce]
+entity D2--><g id="elem_D2"><rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="122" x="400" y="121.2969"/><rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="502" y="126.2969"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="500" y="128.2969"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="500" y="132.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="82" x="415" y="154.292">Discipline 2</text></g><!--MD5=[10b237f47a05d67bbf7fe34336452d69]
+entity Dots--><g id="elem_Dots"><path d="M622.3159,130.0424 C626.1383,123.7751 630.0828,122.3166 635.751,127.9603 C641.0362,121.3047 648.4048,121.0868 651.7435,129.9644 C658.3618,134.8928 660.6,139.359 652.7039,145.2021 C660.6877,151.1147 658.9447,157.1432 651.1445,161.5502 C647.1273,169.4189 642.6939,170.7237 636.364,163.8725 C629.4759,169.5112 625.2592,168.2069 622.4811,159.8079 C614.0917,157.8466 613.3181,151.3241 618.9554,145.8259 C612.488,138.8833 613.3779,133.7049 622.3159,130.0424 " fill="#F1F1F1" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="15" x="628" y="149.292">...</text></g><!--MD5=[f2af5fb657be85b9dacf1970f15859a9]
+entity DN--><g id="elem_DN"><rect fill="#F1F1F1" height="46.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="124" x="749" y="121.2969"/><rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="853" y="126.2969"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="851" y="128.2969"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="851" y="132.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="84" x="764" y="154.292">Discipline N</text></g><!--MD5=[2b4837fea5d922ac9fd466d1c0a32f7a]
+link DI to D1--><g id="link_DI_D1"><path d="M93.421,144.2969 C117.914,144.2969 151.406,144.2969 180.818,144.2969 " fill="none" id="DI-to-D1" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="185.879,144.2969,176.879,140.2969,180.879,144.2969,176.879,148.2969,185.879,144.2969" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="29" x="124" y="140.3638">data</text></g><!--MD5=[ba62c61b86bc53b24f134fe980b8378b]
+link D1 to D2--><g id="link_D1_D2"><path d="M309.107,144.2969 C335.882,144.2969 367.41,144.2969 394.705,144.2969 " fill="none" id="D1-to-D2" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="399.75,144.2969,390.75,140.2969,394.75,144.2969,390.75,148.2969,399.75,144.2969" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="29" x="340" y="140.3638">data</text></g><!--MD5=[ca245a71a57f131ce14e338db6d47081]
+link D2 to Dots--><g id="link_D2_Dots"><path d="M522.332,144.2969 C551.474,144.2969 584.969,144.2969 607.714,144.2969 " fill="none" id="D2-to-Dots" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="612.969,144.2969,603.969,140.2969,607.969,144.2969,603.969,148.2969,612.969,144.2969" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="29" x="553" y="140.3638">data</text></g><!--MD5=[f8e6778b2bfa5e93fba578818923bdd1]
+link Dots to DN--><g id="link_Dots_DN"><path d="M658.123,144.2969 C679.505,144.2969 713.327,144.2969 743.631,144.2969 " fill="none" id="Dots-to-DN" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="748.852,144.2969,739.852,140.2969,743.852,144.2969,739.852,148.2969,748.852,144.2969" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="29" x="689" y="140.3638">data</text></g><!--MD5=[23e808d8734937d7e2ceb16e3bfac9bc]
+link DN to DO--><g id="link_DN_DO"><path d="M873.164,144.2969 C901.437,144.2969 934.466,144.2969 960.638,144.2969 " fill="none" id="DN-to-DO" style="stroke:#181818;stroke-width:1.0;"/><polygon fill="#181818" points="965.778,144.2969,956.778,140.2969,960.778,144.2969,956.778,148.2969,965.778,144.2969" style="stroke:#181818;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="29" x="906" y="140.3638">data</text></g><!--MD5=[b87b34c6c9dc19b9f95249006f660eb1]
+@startuml
+left to right direction
+
+title Study Component Diagram
+
+package Study {
+  database "Data In" as DI
+  package "Execution Engine" {
+    component "Discipline 1" as D1
+    component "Discipline 2" as D2
+    cloud "..." as Dots
+    component "Discipline N" as DN
+  }
+  database "Data Out" as DO
+}
+
+DI - -> D1 : data
+D1 - -> D2 : data
+D2 - -> Dots : data
+Dots - -> DN : data
+DN - -> DO : data
+@enduml
+
+PlantUML version 1.2022.7beta2(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
