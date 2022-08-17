@@ -159,7 +159,7 @@ class Study(StudyManager):
         sect_input[self.study_name + '.total_investment_share_of_gdp'] = share_invest_df
         
         if self.year_start == 2000:
-            sect_input[self.study_name + self.macro_name +'.Industry.capital_start'] = 37.15058 
+            sect_input[self.study_name + self.macro_name +'.Industry.capital_start'] = 31.763
             sect_input[self.study_name + self.macro_name +'.Agriculture.capital_start'] = 4.035565
             sect_input[self.study_name + self.macro_name +'.Services.capital_start'] = 139.1369
             sect_input[self.study_name +'.damage_to_productivity'] = False
