@@ -9,7 +9,25 @@ A *study* includes data and a series of processing steps.
 Individual processing steps are called *disciplines*.
 The diagram below shows components of a study.
 
-![image](witness/study_component_diagram.svg)
+```mermaid
+flowchart LR
+  subgraph Study
+    di[(Data In)]
+    subgraph ExcutionEngine
+      d1[Discipline 1]
+      d2[Discipline 2]
+      ddots([...])
+      dn[Discipline N]
+    end
+    do[(Data Out)]
+  end
+
+  di-->|data|d1
+  d1-->|data|d2
+  d2-->|data|ddots
+  ddots-->|data|dn
+  dn-->|data|do
+```
 
 The steps to model a study are:
 
@@ -135,7 +153,25 @@ All disciplines, which execute a study, are loaded into an `ExecutionEngine`.
 It couples disciplines together, when a study requires multiple steps of data
 processing. An example of coupling is shown on the diagram below.
 
-![image](witness/coupling_component_diagram.svg)
+```mermaid
+flowchart LR
+  di1([ ])
+  di2([ ])
+  subgraph ExcutionEngine
+    d1[Discipline 1]
+    d2[Discipline 2]
+    d3[Discipline 3]
+  end
+  do1([ ])
+  do2([ ])
+
+  di1-->d1
+  d1-->d2
+  di2-->d3
+  d3-->d2
+  d2-->do1
+  d3-->do2
+```
 
 To couple output data of one discipline with input data of the other, the
 corresponding dictionary keys should:
