@@ -158,7 +158,7 @@ class Study(StudyManager):
         disc_dict[f'{ns_coupling}.DesignVariables.design_var_descriptor'] = design_var_descriptor
 
         # Optim inputs
-        disc_dict[f'{ns_optim}.max_iter'] = 300
+        disc_dict[f'{ns_optim}.max_iter'] = 1
         disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
         disc_dict[f'{ns_optim}.design_space'] = dspace
         disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
@@ -232,11 +232,16 @@ class Study(StudyManager):
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
+        extra_data = pd.read_csv(join(data_dir, 'extra_data_for_energy_eff.csv'))
+        weights = pd.read_csv(join(data_dir, 'weights_df.csv'))
+        
         sect_input = {}
         sect_input[ns_coupling + self.obj_name +  '.historical_gdp'] = hist_gdp
         sect_input[ns_coupling + self.obj_name +  '.historical_capital'] = hist_capital
         sect_input[ns_coupling + self.obj_name +  '.historical_energy'] = hist_energy
         sect_input[ns_coupling + self.macro_name + '.prod_function_fitting'] = True
+        sect_input[ns_coupling + self.obj_name + '.data_for_earlier_energy_eff'] = extra_data
+        sect_input[ns_coupling + self.obj_name + '.weights_df'] = weights
         disc_dict.update(sect_input)
         
         self.witness_sect_uc.study_name = f'{ns_coupling}'
@@ -292,6 +297,6 @@ if '__main__' == __name__:
                 # display the plotly chart
                 #p.show()
 
-                #g = graph.to_plotly()
-                #g.show()
+#                 g = graph.to_plotly()
+#                 g.show()
     

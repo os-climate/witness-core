@@ -238,7 +238,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year',
                     'dataframe_descriptor': {'years': ('float', None, False),
-                                             'red meat': ('float', [0, 1e9], True), 'white meat': ('float', [0, 1e9], True), 'milkt': ('float', [0, 1e9], True),
+                                             'red meat': ('float', [0, 1e9], True), 'white meat': ('float', [0, 1e9], True), 'milk': ('float', [0, 1e9], True),
                                              'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),
                                              'fruits and vegetables': ('float', [0, 1e9], True)},
                     'dataframe_edition_locked': False, 'namespace': 'ns_crop'},
