@@ -109,6 +109,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
                 self.add_outputs(dynamic_outputs)
                 self.add_inputs(dynamic_inputs)
+                
     def update_default_with_years(self):
         '''
         Update all default dataframes with years 
