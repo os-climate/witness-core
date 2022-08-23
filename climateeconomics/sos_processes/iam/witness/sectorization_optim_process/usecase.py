@@ -158,7 +158,7 @@ class Study(StudyManager):
         disc_dict[f'{ns_coupling}.DesignVariables.design_var_descriptor'] = design_var_descriptor
 
         # Optim inputs
-        disc_dict[f'{ns_optim}.max_iter'] = 1
+        disc_dict[f'{ns_optim}.max_iter'] = 300
         disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
         disc_dict[f'{ns_optim}.design_space'] = dspace
         disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
