@@ -68,7 +68,11 @@ class ObjectivesTestCase(unittest.TestCase):
         self.hist_gdp = read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         self.hist_capital = read_csv(join(data_dir, 'hist_capital_sect.csv'))
         self.hist_energy = read_csv(join(data_dir, 'hist_energy_sect.csv'))
-        
+        long_term_energy_eff =  read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
+        self.lt_enef_agri = DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Agriculture']})
+        self.lt_enef_indus = DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Industry']})
+        self.lt_enef_services = DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Services']})
+        self.extra_data = read_csv(join(data_dir, 'extra_data_for_energy_eff.csv'))
 
     def test_objectives_discipline(self):
         '''
@@ -90,6 +94,50 @@ class ObjectivesTestCase(unittest.TestCase):
 
         ee.configure()
         ee.display_treeview_nodes()
+        self.inputs_dict = {f'{name}.year_start': self.year_start,
+                       f'{name}.year_end': self.year_end,
+                       f'{name}.economics_df': self.economics_df,
+                       f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
+                       f'{name}.{model_name}.Services.production_df': self.prod_service,
+                       f'{name}.{model_name}.Industry.production_df': self.prod_indus,
+                       f'{name}.{model_name}.Industry.detailed_capital_df': self.cap_indus_df,
+                       f'{name}.{model_name}.Services.detailed_capital_df': self.cap_service_df,
+                       f'{name}.{model_name}.Agriculture.detailed_capital_df':self.cap_agri_df,
+                       f'{name}.{model_name}.historical_gdp': self.hist_gdp,
+                       f'{name}.{model_name}.historical_capital': self.hist_capital,
+                       f'{name}.{model_name}.historical_energy': self.hist_energy, 
+                       f'{name}.{model_name}.Agriculture.longterm_energy_efficiency': self.lt_enef_agri, 
+                       f'{name}.{model_name}.Industry.longterm_energy_efficiency': self.lt_enef_indus,
+                       f'{name}.{model_name}.Services.longterm_energy_efficiency': self.lt_enef_services,
+                       }
+
+        ee.load_study_from_input_dict(self.inputs_dict)
+        ee.execute()
+        disc = ee.dm.get_disciplines_with_name(
+            f'{name}.{model_name}')[0]
+        error_pib_total= disc.get_sosdisc_outputs(['error_pib_total'])
+        #print(error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors)
+        filter = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filter)
+#         for graph in graph_list:
+#             graph.to_plotly().show()
+            
+    def test_objectives_discipline_withextradata(self):
+        name = 'Test'
+        model_name = 'Objectives'
+        ee = ExecutionEngine(name)
+        ns_dict = {'ns_public': f'{name}',
+                   'ns_witness':  f'{name}',
+                   'ns_macro': f'{name}.{model_name}',
+                   'ns_obj': f'{name}.{model_name}'}
+        ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.objectives.objectives_discipline.ObjectivesDiscipline'
+        builder = ee.factory.get_builder_from_module(model_name, mod_path)
+        ee.factory.set_builders_to_coupling_builder(builder)
+        ee.configure()
+        ee.display_treeview_nodes()
+        
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.economics_df': self.economics_df,
@@ -101,15 +149,63 @@ class ObjectivesTestCase(unittest.TestCase):
                        f'{name}.{model_name}.Agriculture.detailed_capital_df':self.cap_agri_df,
                        f'{name}.{model_name}.historical_gdp': self.hist_gdp,
                        f'{name}.{model_name}.historical_capital': self.hist_capital,
-                       f'{name}.{model_name}.historical_energy': self.hist_energy
+                       f'{name}.{model_name}.historical_energy': self.hist_energy, 
+                       f'{name}.{model_name}.Agriculture.longterm_energy_efficiency': self.lt_enef_agri, 
+                       f'{name}.{model_name}.Industry.longterm_energy_efficiency': self.lt_enef_indus,
+                       f'{name}.{model_name}.Services.longterm_energy_efficiency': self.lt_enef_services,
+                       f'{name}.{model_name}.data_for_earlier_energy_eff': self.extra_data
                        }
-
+        
         ee.load_study_from_input_dict(inputs_dict)
         ee.execute()
-        disc = ee.dm.get_disciplines_with_name(
-            f'{name}.{model_name}')[0]
-        error_pib_total= disc.get_sosdisc_outputs(['error_pib_total'])
-        #print(error_pib_total, error_cap_total, sectors_cap_errors, sectors_gdp_errors)
+        disc = ee.dm.get_disciplines_with_name(f'{name}.{model_name}')[0]
+        filter = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filter)
+#         for graph in graph_list:
+#             graph.to_plotly().show()
+        
+        
+    def test_objectives_discipline_withextradata_wrongdata(self):
+        name = 'Test'
+        model_name = 'Objectives'
+        ee = ExecutionEngine(name)
+        ns_dict = {'ns_public': f'{name}',
+                   'ns_witness':  f'{name}',
+                   'ns_macro': f'{name}.{model_name}',
+                   'ns_obj': f'{name}.{model_name}'}
+        ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.objectives.objectives_discipline.ObjectivesDiscipline'
+        builder = ee.factory.get_builder_from_module(model_name, mod_path)
+        ee.factory.set_builders_to_coupling_builder(builder)
+        ee.configure()
+        ee.display_treeview_nodes()
+        
+        #modify extra data to have one column with only O 
+        extra_data = self.extra_data.copy()
+        extra_data['Industry.capital'] = 0 
+        
+        inputs_dict = {f'{name}.year_start': self.year_start,
+                       f'{name}.year_end': self.year_end,
+                       f'{name}.economics_df': self.economics_df,
+                       f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
+                       f'{name}.{model_name}.Services.production_df': self.prod_service,
+                       f'{name}.{model_name}.Industry.production_df': self.prod_indus,
+                       f'{name}.{model_name}.Industry.detailed_capital_df': self.cap_indus_df,
+                       f'{name}.{model_name}.Services.detailed_capital_df': self.cap_service_df,
+                       f'{name}.{model_name}.Agriculture.detailed_capital_df':self.cap_agri_df,
+                       f'{name}.{model_name}.historical_gdp': self.hist_gdp,
+                       f'{name}.{model_name}.historical_capital': self.hist_capital,
+                       f'{name}.{model_name}.historical_energy': self.hist_energy, 
+                       f'{name}.{model_name}.Agriculture.longterm_energy_efficiency': self.lt_enef_agri, 
+                       f'{name}.{model_name}.Industry.longterm_energy_efficiency': self.lt_enef_indus,
+                       f'{name}.{model_name}.Services.longterm_energy_efficiency': self.lt_enef_services,
+                       f'{name}.{model_name}.data_for_earlier_energy_eff': extra_data
+                       }
+        
+        ee.load_study_from_input_dict(inputs_dict)
+        ee.execute()
+        disc = ee.dm.get_disciplines_with_name(f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
 #         for graph in graph_list:

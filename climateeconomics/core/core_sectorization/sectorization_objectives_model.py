@@ -28,7 +28,7 @@ class ObjectivesModel():
     """
 
     #Units conversion
-    conversion_factor=1.0
+    conversion_factor = 1.0
     SECTORS_DISC_LIST = [AgricultureDiscipline, ServicesDiscipline, IndustrialDiscipline]
     SECTORS_LIST = [disc.sector_name for disc in SECTORS_DISC_LIST]
     SECTORS_OUT_UNIT = {disc.sector_name: disc.prod_cap_unit for disc in SECTORS_DISC_LIST}
@@ -53,43 +53,63 @@ class ObjectivesModel():
         self.historical_gdp = inputs_dict['historical_gdp']
         self.historical_capital = inputs_dict['historical_capital']
         self.historical_energy = inputs_dict['historical_energy']
+        self.extra_hist_data = inputs_dict['data_for_earlier_energy_eff']
+        self.default_weight = inputs_dict['weights_df']['weight'].values
    
     def set_coupling_inputs(self, inputs):
         self.economics_df = inputs['economics_df']
         self.economics_df.index = self.economics_df['years'].values
-        #Put all inputs in dictionary and check if complex
+        #Put all inputs in dictionary 
         sectors_capital_dfs = {}
         sectors_production_dfs ={}
+        sectors_long_term_energy_eff_df = {}
         for sector in self.SECTORS_LIST:
             sectors_capital_dfs[sector] = inputs[f'{sector}.detailed_capital_df']
             sectors_production_dfs[sector] = inputs[f'{sector}.production_df']
+            sectors_long_term_energy_eff_df[sector] = inputs[f'{sector}.longterm_energy_efficiency']
         self.sectors_capital_dfs = sectors_capital_dfs
         self.sectors_production_dfs = sectors_production_dfs
+        self.sectors_long_term_energy_eff_df = sectors_long_term_energy_eff_df
             
     def compute_all_errors(self, inputs):
         """ For all variables takes predicted values and reference and compute the quadratic error
         """
         self.set_coupling_inputs(inputs)
-        #Initialise a dataframe to store hsitorical energy efficiency per sector
-        self.hist_energy_eff = pd.DataFrame({'years': self.years_range})
-        self.hist_energy_eff['years'] = self.years_range
-       
+
         #compute total errors  
-        error_pib_total = self.compute_quadratic_error(self.historical_gdp['total'].values, self.economics_df['output_net_of_d'].values)
+        error_pib_total = self.compute_quadratic_error(self.historical_gdp['total'].values, 
+                                                       self.economics_df['output_net_of_d'].values, self.default_weight)
         #Per sector
         sectors_gdp_errors = {}
         sectors_energy_eff_errors = {}
+        hist_energy_eff_dfs = {}
+        self.year_min_energy_eff = {}
         
         for sector in self.SECTORS_LIST:
+            self.year_min_energy_eff[sector] = self.year_start
             capital_df = self.sectors_capital_dfs[sector]
             production_df = self.sectors_production_dfs[sector]
-            sectors_gdp_errors[sector] = self.compute_quadratic_error(self.historical_gdp[sector].values, production_df['output_net_of_damage'].values)
-            self.compute_hist_energy_efficiency(sector)
-            sectors_energy_eff_errors[sector] = self.compute_quadratic_error(self.hist_energy_eff[sector].values, capital_df['energy_efficiency'].values )
-
-        return error_pib_total, sectors_gdp_errors, sectors_energy_eff_errors, self.hist_energy_eff
+            sectors_gdp_errors[sector] = self.compute_quadratic_error(self.historical_gdp[sector].values, 
+                                                                      production_df['output_net_of_damage'].values, self.default_weight) 
+            self.sim_energy_eff = capital_df['energy_efficiency'].values
+            
+            #for energy efficiency: it depends if we add extra years
+            if not self.extra_hist_data.empty: 
+                #If we have extra data, add it to compute error 
+                hist_energy_eff_dfs[sector], extra_weight = self.compute_extra_hist_energy_efficiency(sector)
+                weight = np.append(extra_weight, self.default_weight) 
+            else:    
+                hist_energy_eff = self.compute_hist_energy_efficiency(self.historical_energy[sector].values, self.historical_capital[sector].values)
+                hist_energy_eff_dfs[sector] = pd.DataFrame({'years': self.years_range, 'energy_efficiency': hist_energy_eff})
+                weight = self.default_weight
+            
+            #Energy eff errors
+            sectors_energy_eff_errors[sector] = self.compute_quadratic_error(hist_energy_eff_dfs[sector]['energy_efficiency'].values, 
+                                                                             self.sim_energy_eff, weight)
+            
+        return error_pib_total, sectors_gdp_errors, sectors_energy_eff_errors, hist_energy_eff_dfs, self.year_min_energy_eff
     
-    def compute_quadratic_error(self, ref, pred):
+    def compute_quadratic_error(self, ref, pred, weight):
         """
         Compute quadratic error. Inputs: ref and pred are arrays
         """
@@ -99,17 +119,61 @@ class ObjectivesModel():
         #And normalise delta
         delta_norm = delta / norm_value
         delta_squared = np.square(delta_norm)
-        error = np.mean(delta_squared)
+        #Add weight 
+        with_weight = delta_squared * weight
+        #and mean
+        error = with_weight/sum(weight)
+        #error = np.mean(delta_squared)
         return error
     
-    def compute_hist_energy_efficiency(self, sector):
+    def compute_hist_energy_efficiency(self,historical_energy, historical_capital):
         """
         Compute historical energy efficiency value: energy in 1e3Twh and capital in T$
         """
-        energy = self.historical_energy[sector].values 
-        capital = self.historical_capital[sector].values 
         #compute 
-        energy_eff = capital/energy
-        #and store
-        self.hist_energy_eff[sector] = energy_eff
+        energy_eff = historical_capital/historical_energy
+        return energy_eff
+    
+    def compute_extra_hist_energy_efficiency(self, sector):
+        """ 
+        Add extra years to compute errors for energy efficiency for a sector
+        using extra_hist_data dataframe 
+        return energy effiency for a sector and the associated weight for fitting
+        """
+        extra_hist_data = self.extra_hist_data
+        
+        #check that for this sector data exist
+        capital = extra_hist_data[f'{sector}.capital']
+        energy = extra_hist_data[f'{sector}.energy']
+        #find first year of extra data 
+        year_min_series = extra_hist_data['years'][(capital>0) & (energy>0)]
+        year_min = year_min_series.min()
+        
+        if year_min < self.year_start: 
+            self.year_min_energy_eff[sector] = year_min 
+            #get extra data 
+            extra_hist_capital = extra_hist_data[f'{sector}.capital'][(extra_hist_data['years']>=year_min) & (extra_hist_data['years']< self.year_start)]
+            extra_hist_energy = extra_hist_data[f'{sector}.energy'][(extra_hist_data['years']>=year_min) & (extra_hist_data['years']< self.year_start)]
+            #and append original data 
+            hist_capital = np.append([extra_hist_capital],[self.historical_capital[sector].values])
+            hist_energy = np.append([extra_hist_energy],[self.historical_energy[sector].values])
+            #prepare data to compute error 
+            lt_ene_eff_df = self.sectors_long_term_energy_eff_df[sector]
+            self.sim_energy_eff = lt_ene_eff_df['energy_efficiency'][(lt_ene_eff_df['years']<=self.year_end) & (lt_ene_eff_df['years']>=year_min)].values
+            #get weight for fitting 
+            extra_weight = extra_hist_data['weight'][(extra_hist_data['years']>=year_min) & (extra_hist_data['years']< self.year_start)].values
+            year_range = np.arange(year_min, self.year_end+1, self.time_step)
+        else: 
+            #if extra data not coherent use original data: eg not same year start for capital and energy
+            print('Using ' + f'{self.year_start}' + '-' + f'{self.year_end}' + ' data only for ' + f'{sector}')
+            hist_energy = self.historical_energy[sector].values
+            hist_capital = self.historical_capital[sector].values
+            year_range = self.years_range 
+            extra_weight = []
+        
+        #compute energy efficiency
+        hist_energy_eff = self.compute_hist_energy_efficiency(hist_energy, hist_capital)
+        hist_energy_eff_df = pd.DataFrame({'years': year_range, 'energy_efficiency': hist_energy_eff})
+
+        return hist_energy_eff_df, extra_weight 
         

@@ -30,7 +30,7 @@ from copy import deepcopy
 class ObjectivesDiscipline(ClimateEcoDiscipline):
     ''' Discipline to compute objectives for production function fitting optim 
     '''
-
+    
     # ontology information
     _ontology_data = {
         'label': 'Objectives Model',
@@ -44,6 +44,11 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         'icon': 'fa-solid fa-bullseye',
         'version': '',
     }
+    
+    default_earlier_energy_eff = pd.DataFrame()
+    default_years = np.arange(2000, 2020+1)
+    default_weight = np.array([1]*len(default_years))
+    default_weight_df = pd.DataFrame({'years': default_years, 'weight': default_weight})
 
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
@@ -52,16 +57,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                'default': MacroeconomicsModel.SECTORS_LIST,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                'namespace': 'ns_witness', 'editable': False, 'structuring': True},
-               #                'data_energy_df': {'type': 'dataframe', 'unit': 'Twh', 'dataframe_descriptor': {'years': ('float', None, False),
-               #                                                 'agri_energy': ('float', None, True), 'indus_energy': ('float', None, True),
-               #                                                 'services_energy': ('float', None, True), 'total_energy': ('float', None, True)}, 'dataframe_edition_locked': False,} ,
-               #                'data_investments_df': {'type': 'dataframe', 'unit': 'T$', 'dataframe_descriptor': {'years': ('float', None, False),
-               #                                                 'agri_invest': ('float', None, True), 'indus_invest': ('float', None, True),
-               #                                                 'services_invest': ('float', None, True), 'total_invest': ('float', None, True)}, 'dataframe_edition_locked': False,} ,
-               #                'data_workforce_df': {'type': 'dataframe', 'unit': 'Million of people', 'dataframe_descriptor': {'years': ('float', None, False),
-               #                                                 'Agriculture': ('float', None, True), 'Industry': ('float', None, True),
-               #                                                 'services_workforce': ('float', None, True), 'total_workforce': ('float', None, True)}, 'dataframe_edition_locked': False,},
-               'historical_gdp': {'type': 'dataframe', 'unit': 'T$',
+                'historical_gdp': {'type': 'dataframe', 'unit': 'T$',
                                   'dataframe_descriptor': {'years': ('float', None, False),
                                                            'Agriculture': ('float', None, True),
                                                            'Industry': ('float', None, True),
@@ -84,17 +80,26 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                      'dataframe_edition_locked': False, },
                'economics_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'namespace': 'ns_witness'},
+               'weights_df': {'type': 'dataframe', 'unit': '-', 'default' : default_weight_df,
+                               'dataframe_descriptor': {'years': ('float', None, False),
+                                                              'weight': ('float', None, True)},
+                                                              'dataframe_edition_locked': False, },
+               'data_for_earlier_energy_eff': {'type': 'dataframe', 'unit': '-', 'default': default_earlier_energy_eff,
+                                     'dataframe_descriptor': {'years': ('float', None, False),
+                                                              'Agriculture.capital': ('float', None, True),
+                                                              'Agriculture.energy': ('float', None, True),
+                                                              'Industry.capital': ('float', None, True),
+                                                              'Industry.energy': ('float', None, True),
+                                                              'Services.capital': ('float', None, True),
+                                                              'Services.energy': ('float', None, True),
+                                                              'weight': ('float', None, True)},
+                                     'dataframe_edition_locked': False, },
 
                }
 
     DESC_OUT = {'error_pib_total': {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                    'namespace': 'ns_obj'},
-                'historical_energy_efficiency': {'type': 'dataframe', 'unit': '-',
-                                                 'dataframe_descriptor': {'years': ('float', None, False),
-                                                                          'Agriculture': ('float', None, True),
-                                                                          'Industry': ('float', None, True),
-                                                                          'Services': ('float', None, True)},
-                                                 'dataframe_edition_locked': False, }
+                                    'namespace': 'ns_obj'}, 
+                'year_min_energy_eff': {'type': 'dict', 'unit': '-'}, 
                 }
 
     def init_execution(self):
@@ -114,6 +119,9 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 dynamic_inputs[f'{sector}.production_df'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
+                dynamic_inputs[f'{sector}.longterm_energy_efficiency'] = {
+                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
+                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
                 dynamic_outputs[f'{sector}.gdp_error'] = {
                     'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                     'namespace': 'ns_obj'}
@@ -122,6 +130,9 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                     'namespace': 'ns_obj'}
                 dynamic_outputs[f'{sector}.energy_eff_error'] = {
                     'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                    'namespace': 'ns_obj'}
+                dynamic_outputs[f'{sector}.historical_energy_efficiency'] = {
+                    'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                     'namespace': 'ns_obj'}
             self.add_inputs(dynamic_inputs)
             self.add_outputs(dynamic_outputs)
@@ -134,16 +145,18 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         self.objectives_model.configure_parameters(inputs_dict)
 
         # -- compute
-        error_pib_total, sectors_gdp_errors, energy_eff_errors, hist_energy_eff = self.objectives_model.compute_all_errors(inputs_dict)
+        error_pib_total, sectors_gdp_errors, energy_eff_errors, hist_energy_eff, year_min = self.objectives_model.compute_all_errors(inputs_dict)
 
         # store outputs in a dict
-        outputs_dict = {'error_pib_total': np.array([error_pib_total]),
-                        'historical_energy_efficiency': hist_energy_eff}
+        outputs_dict = {'error_pib_total': np.array([error_pib_total]), 
+                        'year_min_energy_eff': year_min}
+        
         if 'sector_list' in self._data_in:
             sector_list = self.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 outputs_dict[f'{sector}.gdp_error'] = np.array([sectors_gdp_errors[sector]])
                 outputs_dict[f'{sector}.energy_eff_error'] = np.array([energy_eff_errors[sector]])
+                outputs_dict[f'{sector}.historical_energy_efficiency'] = hist_energy_eff[sector]
 
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
@@ -173,7 +186,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         sector_list = self.get_sosdisc_inputs('sector_list')
         historical_gdp = self.get_sosdisc_inputs('historical_gdp')
         historical_capital = self.get_sosdisc_inputs('historical_capital')
-        hist_energy_efficiency = self.get_sosdisc_outputs('historical_energy_efficiency')
+        year_min_energy_eff = self.get_sosdisc_outputs('year_min_energy_eff')
 
         # Overload default value with chart filter
         if chart_filters is not None:
@@ -248,9 +261,10 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 simu_gdp_sector = simu_gdp_sector_df['output_net_of_damage']
                 hist_gdp_sector = historical_gdp[sector]
                 simu_capital_sector_df = self.get_sosdisc_inputs(f'{sector}.detailed_capital_df')
+                simu_energy_eff_sector_lt = self.get_sosdisc_inputs(f'{sector}.longterm_energy_efficiency')
                 simu_capital_sector = simu_capital_sector_df['capital']
                 hist_capital_sector = historical_capital[sector]
-                hist_energy_eff_sector = hist_energy_efficiency[sector].values
+                hist_energy_eff_sector = self.get_sosdisc_outputs(f'{sector}.historical_energy_efficiency')
                 simu_energy_eff_sector = simu_capital_sector_df['energy_efficiency']
 
                 new_chart = TwoAxesInstanciatedChart('years', 'capital stock [T$]',
@@ -275,11 +289,20 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
                 new_chart = TwoAxesInstanciatedChart('years', 'energy efficiency [-]',
                                                      chart_name=f'{sector} energy efficiency fitting comparison with historical data')
+                #filter data above year min 
+                years_energ_eff = list(hist_energy_eff_sector['years'][hist_energy_eff_sector['years']>=year_min_energy_eff[sector]])
+                hist_energy_eff_s = list(hist_energy_eff_sector['energy_efficiency'][hist_energy_eff_sector['years']>=year_min_energy_eff[sector]])
                 new_series = InstanciatedSeries(
-                    years, list(hist_energy_eff_sector), 'historical data', 'scatter', visible_line, marker_symbol='x')
+                    years_energ_eff, hist_energy_eff_s, 'historical data', 'scatter', visible_line, marker_symbol='x')
                 new_chart.series.append(new_series)
-                new_series = InstanciatedSeries(
-                    years, list(simu_energy_eff_sector), 'simulated values', 'lines', visible_line)
+                #If extra data plot all the data and use long term energy efficiency
+                if len(years_energ_eff)> len(years): 
+                    new_series = InstanciatedSeries(
+                        list(simu_energy_eff_sector_lt['years']), list(simu_energy_eff_sector_lt['energy_efficiency']), 'simulated values', 'lines', visible_line)
+                #If not extra data: plot only calculated values in capital_df
+                else: 
+                    new_series = InstanciatedSeries(
+                        years, list(simu_energy_eff_sector), 'simulated values', 'lines', visible_line)
                 new_chart.series.append(new_series)
                 instanciated_charts.append(new_chart)
 
