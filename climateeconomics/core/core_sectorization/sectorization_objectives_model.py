@@ -122,7 +122,7 @@ class ObjectivesModel():
         #Add weight 
         with_weight = delta_squared * weight
         #and mean
-        error = with_weight/sum(weight)
+        error = sum(with_weight)/sum(weight)
         #error = np.mean(delta_squared)
         return error
     
