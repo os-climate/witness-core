@@ -1234,7 +1234,8 @@ class TestScatter(unittest.TestCase):
                 fig.savefig(join(dirname(__file__),f'perfo_dir/{filename}.jpg'))
             return fig
 
-        case_dict={'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-10core': [10, 'GSNewtonMDA'], 'GSNR-64core': [64, 'GSNewtonMDA']
+        case_dict={'GSPureNR-sequential': [1,'GSPureNewtonMDA'], 'GSPureNR-10thread': [10,'GSPureNewtonMDA'], 'GSPureNR-64thread': [64,'GSPureNewtonMDA'],
+                   'GSNR-sequential': [1, 'GSNewtonMDA'], 'GSNR-10thread': [10, 'GSNewtonMDA'], 'GSNR-64thread': [64, 'GSNewtonMDA']
                    }
         operations_dict = {
             'Total': None,
