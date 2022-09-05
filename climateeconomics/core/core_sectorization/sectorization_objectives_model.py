@@ -55,6 +55,8 @@ class ObjectivesModel():
         self.historical_energy = inputs_dict['historical_energy']
         self.extra_hist_data = inputs_dict['data_for_earlier_energy_eff']
         self.default_weight = inputs_dict['weights_df']['weight'].values
+        self.delta_max_gdp = inputs_dict['delta_max_gdp']
+        self.delta_max_energy_eff = inputs_dict['delta_max_energy_eff']
    
     def set_coupling_inputs(self, inputs):
         self.economics_df = inputs['economics_df']
@@ -78,7 +80,7 @@ class ObjectivesModel():
 
         #compute total errors  
         error_pib_total = self.compute_quadratic_error(self.historical_gdp['total'].values, 
-                                                       self.economics_df['output_net_of_d'].values, self.default_weight)
+                                                       self.economics_df['output_net_of_d'].values, self.default_weight, self.delta_max_gdp)
         #Per sector
         sectors_gdp_errors = {}
         sectors_energy_eff_errors = {}
@@ -90,7 +92,8 @@ class ObjectivesModel():
             capital_df = self.sectors_capital_dfs[sector]
             production_df = self.sectors_production_dfs[sector]
             sectors_gdp_errors[sector] = self.compute_quadratic_error(self.historical_gdp[sector].values, 
-                                                                      production_df['output_net_of_damage'].values, self.default_weight) 
+                                                                      production_df['output_net_of_damage'].values, 
+                                                                      self.default_weight, self.delta_max_energy_eff) 
             self.sim_energy_eff = capital_df['energy_efficiency'].values
             
             #for energy efficiency: it depends if we add extra years
@@ -105,19 +108,18 @@ class ObjectivesModel():
             
             #Energy eff errors
             sectors_energy_eff_errors[sector] = self.compute_quadratic_error(hist_energy_eff_dfs[sector]['energy_efficiency'].values, 
-                                                                             self.sim_energy_eff, weight)
+                                                                             self.sim_energy_eff, weight, self.delta_max_energy_eff)
             
         return error_pib_total, sectors_gdp_errors, sectors_energy_eff_errors, hist_energy_eff_dfs, self.year_min_energy_eff
     
-    def compute_quadratic_error(self, ref, pred, weight):
+    def compute_quadratic_error(self, ref, pred, weight,delta_max):
         """
         Compute quadratic error. Inputs: ref and pred are arrays
         """
         #Find maximum value in data to normalise objective
-        norm_value = np.amax(ref)
         delta = np.subtract(pred, ref)
         #And normalise delta
-        delta_norm = delta / norm_value
+        delta_norm = delta / delta_max
         delta_squared = np.square(delta_norm)
         #Add weight 
         with_weight = delta_squared * weight
