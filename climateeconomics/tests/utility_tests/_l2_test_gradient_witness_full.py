@@ -127,9 +127,8 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         chain_builders.append(design_var_builder)
 
         # modify namespaces defined in the child process
-        for ns in self.ee.ns_manager.ns_list:
-            self.ee.ns_manager.update_namespace_with_extra_ns(
-                ns, coupling_name, after_name=self.ee.study_name)
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(
+            coupling_name, after_name=self.ee.study_name)
 
         ns_dict = {'ns_functions': f'{self.ee.study_name}.{coupling_name}.{extra_name}',
                    'ns_public': f'{self.ee.study_name}',

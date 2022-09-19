@@ -69,9 +69,8 @@ class ProcessBuilder(BaseProcessBuilder):
 
         scatter_scenario_name = 'optimization scenarios'
         # modify namespaces defined in the child process
-        for ns in self.ee.ns_manager.ns_list:
-            self.ee.ns_manager.update_namespace_with_extra_ns(
-                ns, scatter_scenario_name, after_name=self.ee.study_name)
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(
+            scatter_scenario_name, after_name=self.ee.study_name)
 
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
