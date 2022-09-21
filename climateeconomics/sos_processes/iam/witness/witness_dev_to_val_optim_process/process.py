@@ -21,17 +21,19 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from copy import deepcopy
 
 DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
-streams_to_add=['fuel.ethanol']
+streams_to_add = ['fuel.ethanol']
 technos_to_add = ['Methanation', 'BiomassFermentation']
 for key in DEFAULT_TECHNO_DICT_DEV.keys():
     if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
-        DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
+        DEFAULT_TECHNO_DICT[key] = dict(
+            {'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value': []})
     for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
         try:
             if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
-                DEFAULT_TECHNO_DICT[key]['value']+=[value,]
+                DEFAULT_TECHNO_DICT[key]['value'] += [value, ]
         except:
             pass
+
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
 
@@ -56,9 +58,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], process_level='val')
 
         # modify namespaces defined in the child process
-        for ns in self.ee.ns_manager.ns_list:
-            self.ee.ns_manager.update_namespace_with_extra_ns(
-                ns, optim_name, after_name=self.ee.study_name)  # optim_name
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(
+            optim_name, after_name=self.ee.study_name)  # optim_name
 
         #-- set optim builder
         opt_builder = self.ee.factory.create_optim_builder(
