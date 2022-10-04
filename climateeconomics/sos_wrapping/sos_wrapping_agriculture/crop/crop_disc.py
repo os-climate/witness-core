@@ -24,10 +24,13 @@ from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilte
 from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
-
+from plotly import graph_objects as go
 import numpy as np
 import pandas as pd
 from copy import deepcopy
+
+from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 
 
 class CropDiscipline(ClimateEcoDiscipline):
@@ -1089,4 +1092,5 @@ class CropDiscipline(ClimateEcoDiscipline):
                         f'N2O Emissions of food and energy production in {year}', food_names, values)
                     instanciated_charts.append(pie_chart)
 
+        
         return instanciated_charts
