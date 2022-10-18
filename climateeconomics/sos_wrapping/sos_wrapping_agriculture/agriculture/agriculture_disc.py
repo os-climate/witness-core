@@ -132,13 +132,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     def run(self):
 
         #-- get inputs
-        inputs = list(self.DESC_IN.keys())
-        inp_dict = deepcopy(self.get_sosdisc_inputs(inputs, in_dict=True))
+
+        inp_dict = self.get_sosdisc_inputs()
 
         self.agriculture_model.apply_percentage(inp_dict)
         #-- compute
-        population_df = inp_dict.pop('population_df')
-        temperature_df = inp_dict['temperature_df']
+        population_df = deepcopy(inp_dict['population_df'])
+        temperature_df = deepcopy(inp_dict['temperature_df'])
         self.agriculture_model.compute(population_df, temperature_df)
 
         outputs_dict = {

@@ -71,13 +71,12 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
     def run(self):
         # get inputs
-        inputs = list(self.DESC_IN.keys())
-        inp_dict = deepcopy(self.get_sosdisc_inputs(inputs, in_dict=True))
+        inp_dict = self.get_sosdisc_inputs()
 
         # compute utility
-        economics_df = inp_dict.pop('economics_df')
-        energy_mean_price = inp_dict['energy_mean_price']
-        population_df = inp_dict.pop('population_df')
+        economics_df = deepcopy(inp_dict['economics_df'])
+        energy_mean_price = deepcopy(inp_dict['energy_mean_price'])
+        population_df = deepcopy(inp_dict['population_df'])
 
         utility_df = self.utility_m.compute(
             economics_df, energy_mean_price, population_df)
