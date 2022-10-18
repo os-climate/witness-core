@@ -115,13 +115,16 @@ class Study(StudyManager):
             energy_supply = f2(np.arange(self.year_start, self.year_end+1))
             energy_supply_values = energy_supply * brut_net 
             indus_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.2894})
-            agri_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values *  0.2136})
+            agri_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values *  0.02136})
             services_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.37})
             
             total_workforce_df = pd.read_csv(join(data_dir, 'workingage_population_df.csv'))
             #multiply ageworking pop by employment rate 
             workforce = total_workforce_df['population_1570']* 0.659 
             workforce = workforce[:self.nb_per]
+            #2020: 3389556200, 2021: 3450067707
+            workforce[0] = 3389.556200
+            workforce[1] = 3450.067707
             agri_workforce = pd.DataFrame({'years': years, 'workforce': workforce * 0.274})
             services_workforce = pd.DataFrame({'years': years, 'workforce': workforce * 0.509})
             indus_workforce = pd.DataFrame({'years': years, 'workforce': workforce * 0.217})
