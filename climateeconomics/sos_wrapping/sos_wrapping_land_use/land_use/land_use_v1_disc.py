@@ -84,13 +84,14 @@ class LandUseV1Discipline(SoSDiscipline):
     def run(self):
 
         #-- get inputs
-        inputs = list(self.DESC_IN.keys())
-        inputs_dict = deepcopy(self.get_sosdisc_inputs(inputs, in_dict=True))
+
+        inputs_dict = self.get_sosdisc_inputs()
 
         #-- compute
-        land_demand_df = inputs_dict['land_demand_df']
-        total_food_land_surface = inputs_dict.pop('total_food_land_surface')
-        deforested_surface_df = inputs_dict.pop('forest_surface_df')
+        land_demand_df = deepcopy(inputs_dict['land_demand_df'])
+        total_food_land_surface = deepcopy(
+            inputs_dict['total_food_land_surface'])
+        deforested_surface_df = deepcopy(inputs_dict['forest_surface_df'])
         deforested_surface_df.index = land_demand_df['years']
         self.land_use_model.compute(
             land_demand_df, total_food_land_surface, deforested_surface_df)
