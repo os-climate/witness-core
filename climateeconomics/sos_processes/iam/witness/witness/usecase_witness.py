@@ -30,6 +30,10 @@ from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
+import cProfile
+from io import StringIO
+import pstats
+
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
@@ -39,7 +43,8 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[
+                     2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -138,7 +143,8 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
             f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
-            f'{self.study_name}.cache_type': 'SimpleCache'}
+            f'{self.study_name}.cache_type': 'SimpleCache',
+            f'{self.study_name}.gauss_seidel_execution': True}
 
         setup_data_list.append(numerical_values_dict)
 
@@ -163,8 +169,19 @@ if '__main__' == __name__:
 #     pd.set_option('display.max_rows', None)
 #     pd.set_option('display.max_columns', None)
 #     pd.set_option('display.width', None)
+    profil = cProfile.Profile()
+    profil.enable()
 
     uc_cls.run()
+    profil.disable()
+
+    result = StringIO()
+
+    ps = pstats.Stats(profil, stream=result)
+    ps.sort_stats('cumulative')
+    ps.print_stats(100)
+    result = result.getvalue()
+    print(result)
 
     # ppf = PostProcessingFactory()
     # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
