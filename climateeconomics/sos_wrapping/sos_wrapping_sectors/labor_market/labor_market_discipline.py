@@ -52,7 +52,6 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
                'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
                'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
-               'workforce_share_per_sector': {'type': 'dataframe', 'unit':'%'},
                'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
               }
     DESC_OUT = {
@@ -67,12 +66,19 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
     def setup_sos_disciplines(self):
 
-        if 'sector_list' in self._data_in:
-            sector_list = self.get_sosdisc_inputs('sector_list')
-            workforce_share = self.get_sosdisc_inputs('workforce_share_per_sector')
-            for sector in sector_list:
-                if sector not in workforce_share.keys():
-                    print("The workforce share per sector dataframe does not contain information for sector:" + sector)
+        dynamic_inputs = {}
+        if self._data_in is not None:
+            if 'sector_list' in self._data_in:
+                sector_list = self.get_sosdisc_inputs('sector_list')
+                df_descriptor = {'years': ('float', None, False)}
+                df_descriptor.update({col: ('float', None, True)
+                                 for col in sector_list})
+                
+                dynamic_inputs['workforce_share_per_sector'] = {'type': 'dataframe', 'unit': '%',
+                                                'dataframe_descriptor': df_descriptor,
+                                                'dataframe_edition_locked': False}
+              
+            self.add_inputs(dynamic_inputs)
 
 
     def run(self):

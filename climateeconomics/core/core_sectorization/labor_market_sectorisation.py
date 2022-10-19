@@ -150,7 +150,6 @@ class LaborMarketModel():
         workforce_df.insert(0, 'years', self.years_range)
         self.workforce_df = workforce_df
         share = self.workforce_share_per_sector['Agriculture'].values
-        print(working_age_pop[-1], employment_rate[-1], share[-1])
         
         return workforce_df
             
