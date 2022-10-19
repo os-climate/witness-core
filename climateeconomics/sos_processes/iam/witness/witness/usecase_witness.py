@@ -150,6 +150,24 @@ class Study(ClimateEconomicsStudyManager):
 
         return setup_data_list
 
+    def run(self, logger_level=None,
+            dump_study=False,
+            for_test=False):
+
+        profil = cProfile.Profile()
+        profil.enable()
+        ClimateEconomicsStudyManager.run(
+            self, logger_level=logger_level, dump_study=dump_study, for_test=for_test)
+        profil.disable()
+
+        result = StringIO()
+
+        ps = pstats.Stats(profil, stream=result)
+        ps.sort_stats('cumulative')
+        ps.print_stats(500)
+        result = result.getvalue()
+        print(result)
+
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
@@ -168,20 +186,20 @@ if '__main__' == __name__:
 #     uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
 #     pd.set_option('display.max_rows', None)
 #     pd.set_option('display.max_columns', None)
-#     pd.set_option('display.width', None)
-    profil = cProfile.Profile()
-    profil.enable()
+# #     pd.set_option('display.width', None)
+#     profil = cProfile.Profile()
+#     profil.enable()
 
     uc_cls.run()
-    profil.disable()
-
-    result = StringIO()
-
-    ps = pstats.Stats(profil, stream=result)
-    ps.sort_stats('cumulative')
-    ps.print_stats(500)
-    result = result.getvalue()
-    print(result)
+#     profil.disable()
+#
+#     result = StringIO()
+#
+#     ps = pstats.Stats(profil, stream=result)
+#     ps.sort_stats('cumulative')
+#     ps.print_stats(500)
+#     result = result.getvalue()
+#     print(result)
 
     # ppf = PostProcessingFactory()
     # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
