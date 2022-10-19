@@ -179,7 +179,7 @@ if '__main__' == __name__:
 
     ps = pstats.Stats(profil, stream=result)
     ps.sort_stats('cumulative')
-    ps.print_stats(100)
+    ps.print_stats(500)
     result = result.getvalue()
     print(result)
 
