@@ -370,3 +370,4 @@ other_land_CO2_emissions,Other Land Use and Change Co2 emissions,GtCO2,"Value of
 data_for_earlier_energy_eff,Data for earlier energy efficiency,,Dataframe to add extra data and years for energy efficiency fitting. Capital in T$ and energy in Pwh. ,,
 weights_df,Weights dataframe,,Dataframe with weights by year for fitting. ,,
 prod_function_fitting,Production function fitting,,Input to be activated if we fit the production function. When activated it adds outputs necessary for the fitting. ,,
+workforce_share_per_sector,Workforce share per sector,%,Distribution of workforce per economic sector in %. One column per sector. Total of column should be 100. ,,
