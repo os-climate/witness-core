@@ -43,7 +43,7 @@ class SectorModel():
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint =  None 
         
-    def configure_parameters(self, inputs_dict):
+    def configure_parameters(self, inputs_dict, sector_name):
         '''
         Configure with inputs_dict from the discipline
         '''
@@ -78,6 +78,8 @@ class SectorModel():
         self.max_capital_utilisation_ratio = inputs_dict['max_capital_utilisation_ratio']
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.ref_emax_enet_constraint = inputs_dict['ref_emax_enet_constraint']
+        
+        self.sector_name = sector_name
         
         self.init_dataframes()
 
@@ -214,7 +216,7 @@ class SectorModel():
         alpha = self.output_alpha
         gamma = self.output_gamma
         productivity = self.productivity_df.loc[year, 'productivity']
-        working_pop = self.workforce_df.loc[year, 'workforce']
+        working_pop = self.workforce_df.loc[year, self.sector_name]
         capital_u = self.capital_df.loc[year, 'usable_capital']
         # If gamma == 1/2 use sqrt but same formula
         if gamma == 1 / 2:
@@ -342,7 +344,7 @@ class SectorModel():
         alpha = self.output_alpha
         gamma = self.output_gamma
         doutput = np.identity(nb_years)
-        working_pop = self.workforce_df['workforce'].values
+        working_pop = self.workforce_df[self.sector_name].values
         capital_u = self.capital_df['usable_capital'].values
         productivity = self.productivity_df['productivity'].values
         # output = f(g(x)) with f = productivity*g**(1/gamma) a,d g= alpha * capital_u**gamma + (1-alpha)* (working_pop)**gamma
@@ -375,7 +377,7 @@ class SectorModel():
         alpha = self.output_alpha
         gamma = self.output_gamma
         doutput_dcap = np.identity(nb_years)
-        working_pop = self.workforce_df['workforce'].values
+        working_pop = self.workforce_df[self.sector_name].values
         capital_u = self.capital_df['usable_capital'].values
         productivity = self.productivity_df['productivity'].values
         # Derivative of output wrt capital
@@ -424,7 +426,7 @@ class SectorModel():
         alpha = self.output_alpha
         gamma = self.output_gamma
         doutput_dprod = np.identity(nb_years)
-        working_pop = self.workforce_df['workforce'].values
+        working_pop = self.workforce_df[self.sector_name].values
         capital_u = self.capital_df['usable_capital'].values
         # Derivative of output wrt productivity
         doutput_dprod *= (alpha * capital_u**gamma + (1 - alpha)
