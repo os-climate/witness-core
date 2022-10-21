@@ -92,9 +92,7 @@ class Study(StudyManager):
             indus_energy = pd.DataFrame({'years': hist_energy['years'], 'Total production': hist_energy['Industry']})
             #Workforce
             hist_workforce = pd.read_csv(join(data_dir, 'hist_workforce_sect.csv'))
-            agri_workforce = pd.DataFrame({'years': hist_workforce['years'], 'workforce': hist_workforce['Agriculture']})
-            services_workforce = pd.DataFrame({'years': hist_workforce['years'], 'workforce': hist_workforce['Services']})
-            indus_workforce = pd.DataFrame({'years': hist_workforce['years'], 'workforce': hist_workforce['Industry']})
+            workforce_df = hist_workforce
             
         else:
             invest_init = 31.489
@@ -125,10 +123,8 @@ class Study(StudyManager):
             #2020: 3389556200, 2021: 3450067707
             workforce[0] = 3389.556200
             workforce[1] = 3450.067707
-            agri_workforce = pd.DataFrame({'years': years, 'workforce': workforce * 0.274})
-            services_workforce = pd.DataFrame({'years': years, 'workforce': workforce * 0.509})
-            indus_workforce = pd.DataFrame({'years': years, 'workforce': workforce * 0.217})
-       
+            workforce_df = pd.DataFrame({'years': years, 'Agriculture': workforce * 0.274, 
+                                         'Services': workforce * 0.509,'Industry': workforce * 0.217})
         
         #Damage
         damage_df = pd.DataFrame({'years': years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
@@ -143,10 +139,8 @@ class Study(StudyManager):
         sect_input[self.study_name + '.year_start'] = self.year_start
         sect_input[self.study_name + '.year_end'] = self.year_end
         
-        sect_input[self.study_name + self.macro_name +'.Agriculture.workforce_df'] = agri_workforce
-        sect_input[self.study_name + self.macro_name +'.Services.workforce_df'] = services_workforce
-        sect_input[self.study_name + self.macro_name +'.Industry.workforce_df'] = indus_workforce
-        
+        sect_input[self.study_name + '.workforce_df'] = workforce_df
+              
         sect_input[self.study_name + self.macro_name +'.Agriculture.sector_investment'] = agri_invest
         sect_input[self.study_name + self.macro_name +'.Services.sector_investment'] = services_invest
         sect_input[self.study_name + self.macro_name +'.Industry.sector_investment'] = indus_invest

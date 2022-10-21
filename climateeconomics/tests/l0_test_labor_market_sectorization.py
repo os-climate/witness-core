@@ -49,7 +49,7 @@ class LaborMarketTestCase(unittest.TestCase):
         self.working_age_pop_df = working_age_pop_df
         
 
-    def test_macroeconomics_discipline(self):
+    def test_labormarket_discipline(self):
         '''
         Check discipline setup and run
         '''

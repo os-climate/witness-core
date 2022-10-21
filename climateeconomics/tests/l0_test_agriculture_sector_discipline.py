@@ -73,7 +73,7 @@ class AgricultureDiscTest(unittest.TestCase):
         total_workforce_df.index = years
         #multiply ageworking pop by employment rate and by % in agriculture
         workforce = total_workforce_df['population_1570']* 0.659 * 0.274
-        self.workforce_df = pd.DataFrame({'years': years, 'workforce': workforce})
+        self.workforce_df = pd.DataFrame({'years': years, 'Agriculture': workforce})
 
         #Energy_supply
         brut_net = 1/1.45
@@ -113,7 +113,7 @@ class AgricultureDiscTest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.sector_investment': self.total_invest,
                        f'{self.name}.{self.model_name}.energy_production': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.damage_df': self.damage_df,
-                       f'{self.name}.{self.model_name}.workforce_df': self.workforce_df, 
+                       f'{self.name}.workforce_df': self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 6.718, #2019 value for test 
                        f'{self.name}.prod_function_fitting': False
                        }
@@ -138,7 +138,7 @@ class AgricultureDiscTest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.sector_investment': self.total_invest,
                        f'{self.name}.{self.model_name}.energy_production': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.damage_df': self.damage_df,
-                       f'{self.name}.{self.model_name}.workforce_df': self.workforce_df, 
+                       f'{self.name}.workforce_df': self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 6.718, #2019 value for test 
                        f'{self.name}.prod_function_fitting': True
                        }
