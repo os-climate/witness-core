@@ -204,7 +204,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
         if 'workforce per sector' in chart_list:
             chart_name = 'Workforce per economic sector'
-            new_chart = TwoAxesInstanciatedChart('years', 'Workforce per sector',
+            new_chart = TwoAxesInstanciatedChart('years', 'Workforce per sector [million of people]',
                                                  [year_start - 5, year_end + 5],
                                                  chart_name=chart_name)
 
