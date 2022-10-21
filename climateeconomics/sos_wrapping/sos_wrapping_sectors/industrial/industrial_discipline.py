@@ -53,8 +53,8 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.4903228, 'user_level': 2, 'unit': '-'},
         'capital_start': {'type': 'float', 'unit': 'T$', 'default':88.5051, 'user_level': 2},
-        'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 
-                         'dataframe_descriptor': {'years': ('float', None, False),'workforce': ('float', None, True)}, 'dataframe_edition_locked': False,},
+        'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                         'namespace': 'ns_witness'},
         'productivity_gr_start': {'type': 'float', 'default': 0.00019, 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 1e-05, 'user_level': 3, 'unit': '-'},
         # Usable capital
@@ -122,13 +122,13 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
     def init_execution(self):
         param = self.get_sosdisc_inputs(in_dict=True)
         self.industrial_model = SectorModel()
-        self.industrial_model.configure_parameters(param)
+        self.industrial_model.configure_parameters(param, self.sector_name)
 
     def run(self):
         # Get inputs
         param = self.get_sosdisc_inputs(in_dict=True)
         #configure param
-        self.industrial_model.configure_parameters(param)
+        self.industrial_model.configure_parameters(param, self.sector_name)
         #coupling df 
         damage_df = param['damage_df']
         energy_production = param['energy_production']
@@ -196,9 +196,9 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         doutput_dworkforce = self.industrial_model.compute_doutput_dworkforce()
         dnetoutput_dworkforce = self.industrial_model.dnetoutput(doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output'), ('workforce_df', 'workforce'), doutput_dworkforce)
+            ('production_df', 'output'), ('workforce_df', self.sector_name), doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output_net_of_damage'), ('workforce_df', 'workforce'), dnetoutput_dworkforce)
+            ('production_df', 'output_net_of_damage'), ('workforce_df', self.sector_name), dnetoutput_dworkforce)
 
         # gradients wrt damage:
         dproductivity_ddamage = self.industrial_model.dproductivity_ddamage()
@@ -372,7 +372,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             year_end = years[len(years) - 1]
 
             min_value, max_value = self.get_greataxisrange(
-                workforce_df['workforce'])
+                workforce_df[self.sector_name])
 
             chart_name = 'Workforce'
 
@@ -382,7 +382,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
                                                  chart_name)
 
             visible_line = True
-            ordonate_data = list(workforce_df['workforce'])
+            ordonate_data = list(workforce_df[self.sector_name])
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Workforce', 'lines', visible_line)
 

@@ -62,6 +62,7 @@ class Study(StudyManager):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.macro_name = '.Macroeconomics'
+        self.labormarket_name = '.LaborMarket'
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -73,68 +74,42 @@ class Study(StudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
-       
-        # data dir 
-        data_dir = join(
-            dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
-        
-        if self.year_start == 2000 and self.year_end == 2020: 
-            data_dir = join(
-            dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
-            #Invest
-            hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-            agri_invest = pd.DataFrame({'years': hist_invest['years'], 'investment': hist_invest['Agriculture']})
-            services_invest = pd.DataFrame({'years': hist_invest['years'], 'investment': hist_invest['Services']})
-            indus_invest = pd.DataFrame({'years': hist_invest['years'], 'investment': hist_invest['Industry']})
-            #Energy
-            hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
-            agri_energy = pd.DataFrame({'years': hist_energy['years'], 'Total production': hist_energy['Agriculture']})
-            services_energy = pd.DataFrame({'years': hist_energy['years'], 'Total production': hist_energy['Services']})
-            indus_energy = pd.DataFrame({'years': hist_energy['years'], 'Total production': hist_energy['Industry']})
-            #Workforce
-            hist_workforce = pd.read_csv(join(data_dir, 'hist_workforce_sect.csv'))
-            agri_workforce = pd.DataFrame({'years': hist_workforce['years'], 'workforce': hist_workforce['Agriculture']})
-            services_workforce = pd.DataFrame({'years': hist_workforce['years'], 'workforce': hist_workforce['Services']})
-            indus_workforce = pd.DataFrame({'years': hist_workforce['years'], 'workforce': hist_workforce['Industry']})
-            
-        else:
-            invest_init = 31.489
-            invest_serie = np.zeros(self.nb_per)
-            invest_serie[0] = invest_init
-            for year in np.arange(1, self.nb_per):
-                invest_serie[year] = invest_serie[year - 1] * 1.02
-                agri_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.0187})
-                indus_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.18737})
-                services_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.7939})
-            #Energy
-            brut_net = 1/1.45
-            energy_outlook = pd.DataFrame({
+             
+        invest_init = 31.489
+        invest_serie = np.zeros(self.nb_per)
+        invest_serie[0] = invest_init
+        for year in np.arange(1, self.nb_per):
+            invest_serie[year] = invest_serie[year - 1] * 1.02
+            agri_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.0187})
+            indus_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.18737})
+            services_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.7939})
+        #Energy
+        brut_net = 1/1.45
+        energy_outlook = pd.DataFrame({
                  'year': [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
                  'energy': [118.112,134.122 ,149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
-            f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
-            #Find values for 2020, 2050 and concat dfs 
-            energy_supply = f2(np.arange(self.year_start, self.year_end+1))
-            energy_supply_values = energy_supply * brut_net 
-            indus_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.2894})
-            agri_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values *  0.02136})
-            services_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.37})
-            
-            total_workforce_df = pd.read_csv(join(data_dir, 'workingage_population_df.csv'))
-            #multiply ageworking pop by employment rate 
-            workforce = total_workforce_df['population_1570']* 0.659 
-            workforce = workforce[:self.nb_per]
-            #Data 2020: 3389556200, 2021: 3450067707
-            workforce[0] = 3389.556200
-            workforce[1] = 3450.067707
-            agri_workforce = pd.DataFrame({'years': years, 'workforce': workforce * 0.274})
-            services_workforce = pd.DataFrame({'years': years, 'workforce': workforce * 0.509})
-            indus_workforce = pd.DataFrame({'years': years, 'workforce': workforce * 0.217})
-       
+        f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
+        #Find values for 2020, 2050 and concat dfs 
+        energy_supply = f2(np.arange(self.year_start, self.year_end+1))
+        energy_supply_values = energy_supply * brut_net 
+        indus_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.2894})
+        agri_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values *  0.02136})
+        services_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.37})
+        
+        #workforce share     
+        agrishare = 27.4
+        indusshare = 21.7
+        serviceshare = 50.9
+        workforce_share = pd.DataFrame({'years': years, 'Agriculture': agrishare, 
+                                     'Industry': indusshare, 'Services': serviceshare})
+        
         #Damage
         damage_df = pd.DataFrame({'years': years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
                                        'base_carbon_price': np.zeros(self.nb_per)})
         data_dir = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
+        
+        #data for consumption
         temperature_df = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
         residential_energy = np.linspace(21, 58, len(years))
@@ -147,14 +122,16 @@ class Study(StudyManager):
         share_invest = np.asarray([27.0] * self.nb_per)
         share_invest = pd.DataFrame({'years':years, 'share_investment': share_invest})
         share_invest_df = share_invest
+        
+        #economisc df to init mda 
+        # Test With a GDP that grows at 2%
+        gdp= [130.187]*len(years)
+        economics_df = pd.DataFrame({'years': years, 'output_net_of_d': gdp})
+        economics_df.index = years
 
         cons_input = {}
         cons_input[self.study_name + '.year_start'] = self.year_start
         cons_input[self.study_name + '.year_end'] = self.year_end
-        
-        cons_input[self.study_name + self.macro_name +'.Agriculture.workforce_df'] = agri_workforce
-        cons_input[self.study_name + self.macro_name +'.Services.workforce_df'] = services_workforce
-        cons_input[self.study_name + self.macro_name +'.Industry.workforce_df'] = indus_workforce
         
         cons_input[self.study_name + self.macro_name +'.Agriculture.sector_investment'] = agri_invest
         cons_input[self.study_name + self.macro_name +'.Services.sector_investment'] = services_invest
@@ -174,16 +151,9 @@ class Study(StudyManager):
         cons_input[self.study_name + '.residential_energy'] = residential_energy_df
         cons_input[self.study_name + '.energy_mean_price'] = energy_mean_price
         
-        if self.year_start == 2000:
-            cons_input[self.study_name + self.macro_name +'.Industry.capital_start'] = 37.15058 
-            cons_input[self.study_name + self.macro_name +'.Agriculture.capital_start'] = 4.035565
-            cons_input[self.study_name + self.macro_name +'.Services.capital_start'] = 139.1369
-            cons_input[self.study_name +'.damage_to_productivity'] = False
-            cons_input[self.study_name + self.macro_name +'.Services.init_output_growth'] = 0
-            cons_input[self.study_name + self.macro_name +'.Agriculture.init_output_growth'] = 0
-            cons_input[self.study_name + self.macro_name +'.Industry.init_output_growth'] = 0
-            
-            
+        cons_input[self.study_name + self.labormarket_name + '.workforce_share_per_sector'] = workforce_share
+        cons_input[self.study_name + '.economics_df'] = economics_df
+             
         setup_data_list.append(cons_input)
 
         return setup_data_list
@@ -203,5 +173,5 @@ if '__main__' == __name__:
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
