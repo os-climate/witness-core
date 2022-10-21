@@ -29,7 +29,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
     # ontology information
     _ontology_data = {
-        'label': 'Macroeconomics Model',
+        'label': 'Labor Market Model',
         'type': 'Research',
         'source': 'SoSTrades Project',
         'validated': '',
@@ -37,7 +37,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         'last_modification_date': '',
         'category': '',
         'definition': '',
-        'icon': 'fa-solid fa-city',
+        'icon': 'fa-solid fa-briefcase',
         'version': '',
     }
 
