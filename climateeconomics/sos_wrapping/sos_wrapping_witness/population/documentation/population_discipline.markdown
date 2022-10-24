@@ -55,7 +55,7 @@ $$\beta_i := \sum_{\mathclap{j \in J}} \alpha_{i,j}$$
 ![](climate_death_multipliers.PNG)
 
 We then have one death rate per age category and per year. 
-Having a different GDP from McIsaac (2017)[^1] we could not use values of parameters from the paper so we fitted the death using data detailed in the data section bellow. 
+Having a different GDP from McIsaac (2017)[^1] we could not use values of parameters from the paper so we fitted the death using data detailed in the data section below. 
 
 ## Working age population
 The working age population is the population in age to work, it is the sum of population in the 15-70 age range.
