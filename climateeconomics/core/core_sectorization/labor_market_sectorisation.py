@@ -160,9 +160,8 @@ class LaborMarketModel():
                 - dataframe employment rate per year
         output: dataframe with workforce per sector in million per year. 1 column per sector 
         """
-        workforce_df = self.workforce_share_per_sector.copy(deep=True)
+        workforce_df_dict = {}
         #drop years for computation
-        workforce_df = workforce_df.drop(columns = ['years'])
         working_age_pop = self.working_age_population_df['population_1570'].values
         employment_rate = self.employment_df['employment_rate'].values
         sector_list = self.SECTORS_LIST
@@ -170,7 +169,8 @@ class LaborMarketModel():
         for sector in sector_list: 
             share = workforce_share[sector]/100
             sector_wf = share * employment_rate * working_age_pop
-            workforce_df[sector] = sector_wf
+            workforce_df_dict[sector] = sector_wf
+        workforce_df = pd.DataFrame.from_dict(workforce_df_dict)
         #workforce total is the sum of all sectors 
         workforce_df['workforce'] = workforce_df.sum(axis = 1)
         workforce_df.insert(0, 'years', self.years_range)
