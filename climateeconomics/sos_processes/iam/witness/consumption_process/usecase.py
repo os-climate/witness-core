@@ -74,6 +74,8 @@ class Study(StudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
+        
+        
              
         invest_init = 31.489
         invest_serie = np.zeros(self.nb_per)
@@ -155,6 +157,17 @@ class Study(StudyManager):
         cons_input[self.study_name + '.economics_df'] = economics_df
              
         setup_data_list.append(cons_input)
+        
+        numerical_values_dict = {
+            f'{self.study_name}.epsilon0': 1.0,
+            f'{self.study_name}.max_mda_iter': 70,
+            f'{self.study_name}.tolerance': 1.0e-10,
+            f'{self.study_name}.n_processes': 1,
+            f'{self.study_name}.linearization_mode': 'adjoint',
+            f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
+            f'{self.study_name}.cache_type': 'SimpleCache'}
+
+        setup_data_list.append(numerical_values_dict)
 
         return setup_data_list
 
