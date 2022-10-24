@@ -79,11 +79,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             sector_list = self.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.capital_df'] = {
-                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
+                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector]}
                 dynamic_inputs[f'{sector}.production_df'] = {
-                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
+                    'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector]}
 
             self.add_inputs(dynamic_inputs)
 
