@@ -152,6 +152,29 @@ class LaborMarketModel():
         share = self.workforce_share_per_sector['Agriculture'].values
         
         return workforce_df
+    
+    def compute_workforce_persector_bis(self):
+        """ Compute workforce per sector. 
+        Inputs: - dataframe of share of workforce per sector per year
+                - working age population (million) per year
+                - dataframe employment rate per year
+        output: dataframe with workforce per sector in million per year. 1 column per sector 
+        """
+        workforce_df = self.workforce_share_per_sector.copy(deep=True)
+        #drop years for computation
+        working_age_pop = self.working_age_population_df['population_1570'].values
+        employment_rate = self.employment_df['employment_rate'].values
+        sector_list = self.SECTORS_LIST
+        workforce_share = self.workforce_share_per_sector
+        for sector in sector_list: 
+            share = workforce_share[sector]
+            sector_wf = share * employment_rate * working_age_pop
+            workforce_df[sector] = sector_wf
+        #workforce total is the sum of all sectors 
+        workforce_df['workforce'] = workforce_df.sum(axis = 1)
+        self.workforce_df = workforce_df
+        
+        return workforce_df
             
     #RUN
     def compute(self, inputs):
@@ -161,7 +184,7 @@ class LaborMarketModel():
         self.inputs = inputs
         self.set_coupling_inputs(inputs)
         self.compute_employment_rate()
-        self.compute_workforce_persector()
+        self.compute_workforce_persector_bis()
 
         return self.workforce_df, self.employment_df 
     
