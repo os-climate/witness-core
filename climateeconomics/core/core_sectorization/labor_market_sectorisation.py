@@ -174,7 +174,6 @@ class LaborMarketModel():
         #workforce total is the sum of all sectors 
         workforce_df['workforce'] = workforce_df.sum(axis = 1)
         workforce_df.insert(0, 'years', self.years_range)
-        print(workforce_df)
         self.workforce_df = workforce_df
         
         return workforce_df
