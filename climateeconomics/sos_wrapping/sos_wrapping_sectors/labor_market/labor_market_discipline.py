@@ -176,7 +176,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
             working_age_pop_df = self.get_sosdisc_inputs(
                 'working_age_population_df')
-            years = list(workforce_df.index)
+            years = list(workforce_df['years'].values)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
