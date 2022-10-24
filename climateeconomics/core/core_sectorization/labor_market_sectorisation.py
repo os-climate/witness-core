@@ -162,16 +162,19 @@ class LaborMarketModel():
         """
         workforce_df = self.workforce_share_per_sector.copy(deep=True)
         #drop years for computation
+        workforce_df = workforce_df.drop(columns = ['years'])
         working_age_pop = self.working_age_population_df['population_1570'].values
         employment_rate = self.employment_df['employment_rate'].values
         sector_list = self.SECTORS_LIST
         workforce_share = self.workforce_share_per_sector
         for sector in sector_list: 
-            share = workforce_share[sector]
+            share = workforce_share[sector]/100
             sector_wf = share * employment_rate * working_age_pop
             workforce_df[sector] = sector_wf
         #workforce total is the sum of all sectors 
         workforce_df['workforce'] = workforce_df.sum(axis = 1)
+        workforce_df.insert(0, 'years', self.years_range)
+        print(workforce_df)
         self.workforce_df = workforce_df
         
         return workforce_df
