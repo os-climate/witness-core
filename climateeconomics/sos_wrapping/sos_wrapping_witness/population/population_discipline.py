@@ -311,7 +311,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             years = list(pop_df.index)
             headers = list(death_rate_dict['total'].columns.values)
-            to_plot = headers[:]
+            to_plot = headers[1:]
 
             year_start = years[0]
             year_end = years[len(years) - 1]
