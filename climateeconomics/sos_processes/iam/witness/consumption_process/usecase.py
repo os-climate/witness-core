@@ -112,8 +112,9 @@ class Study(StudyManager):
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
         
         #data for consumption
-        temperature_df = read_csv(
-            join(data_dir, 'temperature_data_onestep.csv'))
+        temperature = np.linspace(1, 3, len(years))
+        temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temperature, 'temp_ocean': temperature/100})
+        temperature_df.index = years
         residential_energy = np.linspace(21, 58, len(years))
         residential_energy_df = pd.DataFrame(
             {'years': years, 'residential_energy': residential_energy})
@@ -164,8 +165,7 @@ class Study(StudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
-            f'{self.study_name}.cache_type': 'SimpleCache'}
+            f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel'}
 
         setup_data_list.append(numerical_values_dict)
 
@@ -176,7 +176,7 @@ if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
     # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    # uc_cls.execution_engine.set_debug_mode()
+    #uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
     
     ppf = PostProcessingFactory()
