@@ -61,9 +61,9 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
             self.test_macro_analytic_grad
         ]
 
-    def test_macro_analytic_grad(self):
+    def test_labor_analytic_grad(self):
         
-        model_name = 'Macroeconomics'
+        model_name = 'LaborMarket'
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_witness':  f'{self.name}'}
         
