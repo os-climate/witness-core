@@ -17,6 +17,9 @@ $$pip install -r requirements.txt --trusted-host pypi.org --trusted-host files.p
 
 ## Overview
 
+For a quick start with modeling in `witness-core`, see
+[How to Model a Study](documentation/how_to_model_a_study.md).
+
 This package contains the following disciplines:
 * agiculture, to determine the area taken by food to feed humanity
 * resources (coal, gas, oil, uranium), to evaluate to quantity left and the extraction price of resources.
