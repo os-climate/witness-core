@@ -228,7 +228,7 @@ class Study(ClimateEconomicsStudyManager):
         # "reduced.pdf")
         setup_data_list.append(witness_input)
 
-        self.func_df = self.setup_constraint_land_use()
+        self.func_df = pd.concat([self.setup_constraint_land_use(), self.setup_objectives()])
 
         return setup_data_list
 
@@ -242,13 +242,13 @@ class Study(ClimateEconomicsStudyManager):
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['CO2_objective'])
+            ['CO2_em_objective'])
         list_parent.extend([
                             'CO2_obj'])
         list_ns.extend(['ns_functions'])
         list_ftype.extend(
             [OBJECTIVE])
-        list_weight.extend([1.0])
+        list_weight.extend([5.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM])
 
@@ -306,7 +306,7 @@ class Study(ClimateEconomicsStudyManager):
             ['land_demand_constraint'])
         list_parent.extend(['agriculture_constraint'])
         list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-1.0])
+        list_weight.extend([-2.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM])
         list_ns.extend(['ns_functions'])
