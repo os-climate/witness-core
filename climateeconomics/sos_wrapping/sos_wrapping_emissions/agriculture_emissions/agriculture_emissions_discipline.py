@@ -64,6 +64,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'N2O_land_emissions': {'type': 'dataframe', 'unit': 'GtN2O',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'CO2_em_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''}
     }
 
     def setup_sos_disciplines(self):
@@ -114,11 +115,15 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         N2O_emissions_land_use_df['years'] = N2O_emitted_crop_df['years']
         N2O_emissions_land_use_df['Crop'] = N2O_emitted_crop_df['emitted_N2O_evol_cumulative']
 
+        co2_emissions_objective = np.asarray([CO2_emissions_land_use_df['Crop'].sum() + CO2_emissions_land_use_df['Forest'].sum()])
+
+
         # write outputs
         outputs_dict = {
             'CO2_land_emissions': CO2_emissions_land_use_df,
             'CH4_land_emissions': CH4_emissions_land_use_df,
             'N2O_land_emissions': N2O_emissions_land_use_df,
+            'CO2_em_objective': co2_emissions_objective
         }
         self.store_sos_outputs_values(outputs_dict)
 
@@ -141,6 +146,14 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('N2O_land_emissions', f'{techno}'),
                     (f'{techno}.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'), np.identity(np_years))
+        self.set_partial_derivative_for_other_types(
+                ('CO2_em_objective',), (
+                    'Crop.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+                np.ones(np_years))
+        self.set_partial_derivative_for_other_types(
+            ('CO2_em_objective',), (
+                'Forest.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+            np.ones(np_years))
 
     def get_chart_filter_list(self):
 
