@@ -18,6 +18,7 @@ limitations under the License.
 # Copyright (C) 2020 Airbus SAS.
 # All rights reserved.
 from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import AgricultureEmissionsDiscipline
 
 
 class ProcessBuilder(BaseProcessBuilder):
@@ -66,5 +67,14 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
+
+        '''
+        Add emissions disciplines
+        '''
+        mods_dict = {AgricultureEmissionsDiscipline.name: 'climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline.AgricultureEmissionsDiscipline',
+                     }
+        non_use_capital_list = self.create_builder_list(
+            mods_dict, ns_dict=ns_dict)
+        builder_list.extend(non_use_capital_list)
 
         return builder_list
