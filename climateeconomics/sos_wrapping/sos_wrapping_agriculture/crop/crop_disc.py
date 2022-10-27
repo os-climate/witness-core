@@ -248,15 +248,20 @@ class CropDiscipline(ClimateEcoDiscipline):
         'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_crop'},
         'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg', 'namespace': 'ns_crop'},
         # design variables of changing diet
-        'red_meat_percentage': {'type': 'dataframe', 'default': default_red_meat_percentage,
+        'red_meat_calories_per_day': {'type': 'dataframe', 'default': default_red_meat_percentage,
                                 'dataframe_descriptor': {'years': ('float', None, False),
-                                                         'red_meat_percentage': ('float', [0, 100], True)},
+                                                         'red_meat_calories_per_day': ('float', [0, 100], True)},
                                 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
-        'white_meat_percentage': {'type': 'dataframe', 'default': default_white_meat_percentage,
+        'white_meat_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
                                   'dataframe_descriptor': {'years': ('float', None, False),
-                                                           'white_meat_percentage': ('float', [0, 100], True)},
+                                                           'white_meat_calories_per_day': ('float', [0, 100], True)},
                                   'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
-
+        'other_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
+                                        'dataframe_descriptor': {'years': ('float', None, False),
+                                                                 'other_calories_per_day': (
+                                                                 'float', [0, 100], True)},
+                                        'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                        'namespace': 'ns_crop'},
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop'},
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
         'param_a': {'type': 'float', 'default':-0.00833, 'unit': '-', 'user_level': 3},
@@ -440,9 +445,21 @@ class CropDiscipline(ClimateEcoDiscipline):
             population_df)
 
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('red_meat_percentage', 'red_meat_percentage'), d_surface_d_red_meat_percentage)
+            ('total_food_land_surface', 'total surface (Gha)'), ('red_meat_calories_per_day', 'red_meat_calories_per_day'), d_surface_d_red_meat_percentage)
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('white_meat_percentage', 'white_meat_percentage'), d_surface_d_white_meat_percentage)
+            ('total_food_land_surface', 'total surface (Gha)'), ('white_meat_calories_per_day', 'white_meat_calories_per_day'), d_surface_d_white_meat_percentage)
+
+        vegetables_column_names = ['fruits and vegetables', 'potatoes', 'rice and maize']
+        l_years = len(model.years)
+        d_surface_d_other_cal = np.zeros((l_years , l_years))
+        for veg in vegetables_column_names:
+            grad_res = model.d_surface_d_other_calories_percentage(population_df, veg)
+            d_surface_d_other_cal = d_surface_d_other_cal + grad_res
+
+        self.set_partial_derivative_for_other_types(
+            ('total_food_land_surface', 'total surface (Gha)'),
+            ('other_calories_per_day', 'other_calories_per_day'), d_surface_d_other_cal)
+
 
         # gradients for techno_production from total food land surface
         d_prod_dpopulation = model.compute_d_prod_dland_for_food(summ)
@@ -452,6 +469,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             d_surface_d_red_meat_percentage)
         d_prod_dmeat_to_vegetable = model.compute_d_prod_dland_for_food(
             d_surface_d_white_meat_percentage)
+        d_prod_dother_cal = model.compute_d_prod_dland_for_food(d_surface_d_other_cal)
         # --------------------------------------------------------------
         # Techno production gradients
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('population_df', 'population'),
@@ -460,13 +478,18 @@ class CropDiscipline(ClimateEcoDiscipline):
             ('techno_production', 'biomass_dry (TWh)'), ('temperature_df', 'temp_atmo'),
             d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'), ('red_meat_percentage',
-                                                         'red_meat_percentage'),
+            ('techno_production', 'biomass_dry (TWh)'), ('red_meat_calories_per_day',
+                                                         'red_meat_calories_per_day'),
             d_prod_dred_to_white)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'), ('white_meat_percentage',
-                                                         'white_meat_percentage'),
+            ('techno_production', 'biomass_dry (TWh)'), ('white_meat_calories_per_day',
+                                                         'white_meat_calories_per_day'),
             d_prod_dmeat_to_vegetable)
+        self.set_partial_derivative_for_other_types(
+            ('techno_production', 'biomass_dry (TWh)'), ('other_calories_per_day',
+                                                         'other_calories_per_day'),
+            d_prod_dother_cal)
+
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('crop_investment', 'investment'),
@@ -479,13 +502,19 @@ class CropDiscipline(ClimateEcoDiscipline):
             ('techno_consumption', 'CO2_resource (Mt)'), ('temperature_df', 'temp_atmo'),
             -CO2_from_production / high_calorific_value * d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'), ('red_meat_percentage',
-                                                          'red_meat_percentage'),
+            ('techno_consumption', 'CO2_resource (Mt)'), ('red_meat_calories_per_day',
+                                                          'red_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dred_to_white)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'), ('white_meat_percentage',
-                                                          'white_meat_percentage'),
+            ('techno_consumption', 'CO2_resource (Mt)'), ('white_meat_calories_per_day',
+                                                          'white_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dmeat_to_vegetable)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption', 'CO2_resource (Mt)'), ('other_calories_per_day',
+                                                          'other_calories_per_day'),
+            -CO2_from_production / high_calorific_value * d_prod_dother_cal)
+
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('crop_investment', 'investment'),
@@ -502,12 +531,17 @@ class CropDiscipline(ClimateEcoDiscipline):
             -CO2_from_production / high_calorific_value * d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption_woratio',
-             'CO2_resource (Mt)'), ('red_meat_percentage', 'red_meat_percentage'),
+             'CO2_resource (Mt)'), ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dred_to_white)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption_woratio',
-             'CO2_resource (Mt)'), ('white_meat_percentage', 'white_meat_percentage'),
+             'CO2_resource (Mt)'), ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dmeat_to_vegetable)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), ('other_calories_per_day', 'other_calories_per_day'),
+            -CO2_from_production / high_calorific_value * d_prod_dother_cal)
 
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
@@ -529,6 +563,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             dco2_dred_meat = 0.0
             dco2_dwhite_meat = 0.0
             dco2_dinvest = 0.0
+            dco2_dother_cal = 0.0
 
             for food in self.get_sosdisc_inputs('co2_emissions_per_kg'):
                 food = food.replace(' (Gt)', '')
@@ -562,6 +597,10 @@ class CropDiscipline(ClimateEcoDiscipline):
                         dco2_dinvest += dland_emissions_dfood_land_surface[ghg] * dprod_dinvest * \
                             scaling_factor_crop_investment * (1 - residue_density_percentage) / \
                             density_per_ha * calorific_value
+            for food in vegetables_column_names:
+                dland_emissions_dfood_land_surface_oth = model.compute_dland_emissions_dfood_land_surface_df(
+                        food)[ghg]
+                dco2_dother_cal += dland_emissions_dfood_land_surface_oth * model.d_surface_d_other_calories_percentage(population_df, food)
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
@@ -575,13 +614,20 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
-                ('red_meat_percentage', 'red_meat_percentage'),
+                ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
                 dco2_dred_meat)
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
-                ('white_meat_percentage', 'white_meat_percentage'),
+                ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
                 dco2_dwhite_meat)
+
+            self.set_partial_derivative_for_other_types(
+                (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
+                ('other_calories_per_day', 'other_calories_per_day'),
+                dco2_dother_cal)
+
+
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),

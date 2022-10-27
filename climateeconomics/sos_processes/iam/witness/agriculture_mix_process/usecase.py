@@ -97,6 +97,9 @@ class Study(StudyManager):
         self.white_meat_percentage = pd.DataFrame({
             'years': years,
             'white_meat_percentage': white_meat_percentage})
+        self.other_percentage = pd.DataFrame({
+            'years': years,
+            'other_calories_per_day': white_meat_percentage})
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -163,6 +166,7 @@ class Study(StudyManager):
             f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
             f'{self.study_name}.{energy_name}.Crop.red_meat_percentage': self.red_meat_percentage,
             f'{self.study_name}.{energy_name}.Crop.white_meat_percentage': self.white_meat_percentage,
+            f'{self.study_name}.{energy_name}.Crop.other_calories_per_day': self.other_percentage,
             f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
             f'{self.study_name}.{energy_name}.Crop.crop_investment': self.crop_investment,
             f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
@@ -175,6 +179,7 @@ class Study(StudyManager):
 
         red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
         white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
+        other_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
         deforestation_investment_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
         forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
         crop_investment_array_mix = np.linspace(1.0, 1.5, self.nb_poles)
@@ -185,6 +190,7 @@ class Study(StudyManager):
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
         design_space_ctrl_dict['white_meat_percentage_ctrl'] = white_meat_percentage_ctrl
+        design_space_ctrl_dict['other_percentage_ctrl'] = other_percentage_ctrl
         design_space_ctrl_dict['deforestation_investment_ctrl'] = deforestation_investment_ctrl
         design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
 
@@ -209,9 +215,11 @@ class Study(StudyManager):
         # -----------------------------------------
         # Crop related
         update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles, [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles, [1000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        update_dspace_dict_with(ddict, 'other_percentage_ctrl',
+                                list(self.design_space_ctrl['other_percentage_ctrl'].values), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         update_dspace_dict_with(ddict, 'deforestation_investment_ctrl',
                                 list(self.design_space_ctrl['deforestation_investment_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
