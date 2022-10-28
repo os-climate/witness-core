@@ -9,6 +9,7 @@ This model allows to test different food diets, and computes the agriculture sur
 This section lists the inputs and outputs of the model.
 
 The model inputs are:
+
 * **year start**, this defines the starting year of the study.
 * **year end**, this defines the last year of the study.
 * **population_df**, this gives the population number, for each year of the study. The unit is the million of people.
@@ -31,6 +32,7 @@ By default, the values are:
 |2566|1860|550|1500|1150|670|624|kcal/kg|
 
 These data are extracted from [^3].
+
 * **red meat calory percentage**, gives the percentage of red meat kcal in a person diet.
 * **white meat calory percentage**, gives the percentage of white meat kcal in a person diet.
 * **other_use_agriculture**, gives the average ha per person for the use of agriculture in other way that the 7 food types. It mainly takes into account :
@@ -38,6 +40,7 @@ cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) -
 By default, it is set to 0.102ha/person to represent around of 800 millions of ha for a population of 7.8billions of people. [^4]
 
 The model outputs are:
+
 * **agriculture productivity evolution**, gives the evolution of agriculture productivity overtime, due to climat change. Unit is %.
 * **food land surface**, gives the surface needed to produce the amount of food of the diet. The unit is Gha.
 * **food land surface percentage**, gives the share of the surface of each type of food, in %.
@@ -47,6 +50,7 @@ The model outputs are:
 ## From a food diet to a surface
 This section aims to explain how the model goes from a food diet to a surface to produce the required food.
 The following picture shows the "how to" process.
+
 ![](diet_to_surface.PNG)
 
 First, given the population and the diet per person, the quantity of food is deduced:
@@ -75,6 +79,7 @@ The white meat percentage must be between 20% and 5%.
 Eggs and milk are not impacted.
 
 The following picture shows the different steps.
+
 ![](diet_update.PNG)
 
 First, the new quantity of red meat is calculated:
