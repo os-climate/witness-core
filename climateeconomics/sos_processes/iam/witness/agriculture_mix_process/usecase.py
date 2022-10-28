@@ -177,9 +177,9 @@ class Study(StudyManager):
             f'{self.study_name}.temperature_df': temperature_df
         }
 
-        red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
-        white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
-        other_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
+        red_meat_percentage_ctrl = np.linspace(600, 900, self.nb_poles)
+        white_meat_percentage_ctrl = np.linspace(700, 900, self.nb_poles)
+        other_percentage_ctrl = np.linspace(900, 900, self.nb_poles)
         deforestation_investment_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
         forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
         crop_investment_array_mix = np.linspace(1.0, 1.5, self.nb_poles)
