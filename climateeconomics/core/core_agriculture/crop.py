@@ -101,6 +101,7 @@ class Crop():
         self.scaling_factor_techno_production = self.param['scaling_factor_techno_production']
         self.initial_age_distrib = self.param['initial_age_distrib']
         self.initial_production = self.param['initial_production']
+
         self.nb_years_amort_capex = 10
         self.construction_delay = 3  # default value
         self.margin = self.param['margin']
@@ -150,7 +151,8 @@ class Crop():
         self.red_meat_calories_per_day = inputs_dict['red_meat_calories_per_day']['red_meat_calories_per_day'].values
         self.white_meat_calories_per_day = inputs_dict['white_meat_calories_per_day']['white_meat_calories_per_day'].values
         self.other_calories = inputs_dict['other_calories_per_day']['other_calories_per_day'].values
-
+        self.constaint_calories_limit = inputs_dict['constraint_calories_limit']
+        self.constraint_calories_ref = inputs_dict['constraint_calories_ref']
         # crop_investment from G$ to M$
         self.crop_investment = inputs_dict[Crop.CROP_INVESTMENT]
         self.scaling_factor_crop_investment = inputs_dict['scaling_factor_crop_investment']
@@ -193,7 +195,9 @@ class Crop():
         
         # construct the diet over time
         new_diet_df = self.update_diet_direct_variables()
-
+        self.calories_per_day_constraint = (self.red_meat_calories_per_day + self.white_meat_calories_per_day
+                                                       + self.other_calories - self.constaint_calories_limit) / self.constraint_calories_ref
+        print('****',self.calories_per_day_constraint )
         self.updated_diet_df = deepcopy(new_diet_df)
 
         # compute the quantity of food consumed

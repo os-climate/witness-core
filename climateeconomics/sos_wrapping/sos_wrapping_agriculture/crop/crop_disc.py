@@ -292,6 +292,9 @@ class CropDiscipline(ClimateEcoDiscipline):
         'co2_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg', 'default': default_co2_emissions},
         'ch4_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg', 'default': default_ch4_emissions},
         'n2o_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg', 'default': default_n2o_emissions},
+        'constraint_calories_ref': {'type': 'float','visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref', 'default': 3400. },
+        'constraint_calories_limit': {'type': 'float', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                    'namespace': 'ns_ref', 'default': 1700.},
     }
 
     DESC_OUT = {
@@ -329,6 +332,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'N2O_land_emission_detailed': {'type': 'dataframe', 'unit': 'GtN2O',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'calories_per_day_constraint': {'type': 'array', 'unit': 'GtN2O',
+                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
     }
 
     CROP_CHARTS = 'crop and diet charts'
@@ -390,7 +395,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             'CH4_land_emission_detailed': self.crop_model.CH4_land_emissions_detailed,
             'N2O_land_emission_df': self.crop_model.N2O_land_emissions,
             'N2O_land_emission_detailed': self.crop_model.N2O_land_emissions_detailed,
-
+            'calories_per_day_constraint': self.crop_model.calories_per_day_constraint
         }
 
         # -- store outputs
@@ -459,6 +464,11 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'),
             ('other_calories_per_day', 'other_calories_per_day'), d_surface_d_other_cal)
+
+        grad_constraint = np.identity(l_years)/self.crop_model.constraint_calories_ref
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),('other_calories_per_day', 'other_calories_per_day'),grad_constraint )
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),('red_meat_calories_per_day', 'red_meat_calories_per_day'),grad_constraint )
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),('white_meat_calories_per_day', 'white_meat_calories_per_day'),grad_constraint )
 
 
         # gradients for techno_production from total food land surface
