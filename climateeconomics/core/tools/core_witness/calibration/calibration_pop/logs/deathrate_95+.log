@@ -1,0 +1,29 @@
+2021-11-17 14:50:57,763 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - Logger initialized
+2021-11-17 14:50:57,778 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - 
+2021-11-17 14:50:57,781 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 0 x_0 [0.814900142, 0.28133478, 0.000393510108, 4033.60017, 4.86232766]
+2021-11-17 14:50:57,990 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 1 x_1 [1.12497057e+00 2.50000000e-01 3.37812068e-04 4.03360030e+03
+ 4.82766818e+00] cst_delta_pib 4.019024774757223
+2021-11-17 14:50:58,151 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 2 x_2 [1.20554179e+00 2.50000000e-01 2.39144566e-04 4.03360033e+03
+ 4.81866195e+00] cst_delta_pib 3.5806415076492746
+2021-11-17 14:50:58,222 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 3 x_3 [1.17287639e+00 2.50000000e-01 1.78791015e-04 4.03360032e+03
+ 4.82231325e+00] cst_delta_pib 3.402699749588568
+2021-11-17 14:50:58,276 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 4 x_4 [1.02915330e+00 2.50000000e-01 1.04008408e-04 4.03360026e+03
+ 4.83837853e+00] cst_delta_pib 3.1521388110005475
+2021-11-17 14:50:58,303 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 5 x_5 [6.34724029e-01 2.50000000e-01 9.12292557e-06 4.03360010e+03
+ 4.88246760e+00] cst_delta_pib 2.7072428911141246
+2021-11-17 14:50:58,365 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 6 x_6 [7.82055262e-01 2.50000000e-01 5.65359388e-05 4.03360016e+03
+ 4.86599900e+00] cst_delta_pib 2.675811682134709
+2021-11-17 14:50:58,415 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 7 x_7 [7.35030731e-01 2.50000000e-01 4.44165598e-05 4.03360014e+03
+ 4.87125538e+00] cst_delta_pib 2.6583033142686463
+2021-11-17 14:50:58,457 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 8 x_8 [7.25737820e-01 2.50000000e-01 4.27535318e-05 4.03360013e+03
+ 4.87229413e+00] cst_delta_pib 2.657764670911705
+2021-11-17 14:50:58,497 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 9 x_9 [7.27934799e-01 2.50000000e-01 4.33679581e-05 4.03360013e+03
+ 4.87204856e+00] cst_delta_pib 2.657757413023205
+2021-11-17 14:50:58,567 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 10 x_10 [7.27750011e-01 2.50000000e-01 4.32126740e-05 4.03360013e+03
+ 4.87206921e+00] cst_delta_pib 2.65775658296078
+2021-11-17 14:50:58,706 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 11 x_11 [7.27675087e-01 2.50000000e-01 4.31651528e-05 4.03360013e+03
+ 4.87207759e+00] cst_delta_pib 2.6577565327406503
+2021-11-17 14:50:58,728 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 12 x_12 [7.27594765e-01 2.50000000e-01 4.31592581e-05 4.03360013e+03
+ 4.87208657e+00] cst_delta_pib 2.6577555543899867
+2021-11-17 14:50:58,751 - climateeconomics.core.core_witness.calibration.calibration_pop.base_calib_deathrate - INFO - ite 13 x_13 [7.27614599e-01 2.50000000e-01 4.32563933e-05 4.03360013e+03
+ 4.87208435e+00] cst_delta_pib 2.657754879038718

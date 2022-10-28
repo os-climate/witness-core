@@ -1,0 +1,73 @@
+2021-03-04 17:04:00,817 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - Logger initialized
+2021-03-04 17:04:00,819 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - Productivity Base, format: Y = AK^a(L/1000)^(1-a)
+2021-03-04 17:04:00,819 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 0 x_0 [1, 0.076, 0.005, 0.3]
+2021-03-04 17:04:01,497 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 1 x_1 [0.1  0.2  0.01 0.09] cst_delta_pib 298.92266405352274
+2021-03-04 17:04:01,879 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 2 x_2 [4.07734458e-01 2.00000000e-01 1.00000000e-04 9.00000000e-02] cst_delta_pib 217.54884884317974
+2021-03-04 17:04:04,200 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 3 x_3 [5.93407397e-01 2.00000000e-01 1.00000000e-04 1.22507578e-01] cst_delta_pib 110.02620028739922
+2021-03-04 17:04:05,211 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 4 x_4 [5.97263709e-01 2.00000000e-01 1.00000000e-04 1.24466398e-01] cst_delta_pib 108.52546915572006
+2021-03-04 17:04:06,194 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 5 x_5 [4.72018720e-01 2.00000000e-01 1.00000000e-04 2.06539081e-01] cst_delta_pib 88.82865633561191
+2021-03-04 17:04:06,520 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 6 x_6 [1.e-01 2.e-01 1.e-04 8.e-01] cst_delta_pib 45.86610711474749
+2021-03-04 17:04:07,217 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 7 x_7 [0.1        0.19204717 0.00321132 0.8       ] cst_delta_pib 28.928673902394937
+2021-03-04 17:04:07,543 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 8 x_8 [0.1        0.19307851 0.00223568 0.78009927] cst_delta_pib 13.628223969406172
+2021-03-04 17:04:07,873 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 9 x_9 [0.1        0.19437139 0.0017716  0.77494029] cst_delta_pib 11.600598628551118
+2021-03-04 17:04:08,199 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 10 x_10 [1.00000000e-01 1.99081971e-01 3.50944599e-04 7.60707280e-01] cst_delta_pib 7.969911777006422
+2021-03-04 17:04:08,529 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 11 x_11 [1.00000000e-01 2.00000000e-01 1.00000000e-04 7.53482462e-01] cst_delta_pib 7.761971610798492
+2021-03-04 17:04:08,864 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 12 x_12 [1.00000000e-01 2.00000000e-01 1.00000000e-04 7.57709002e-01] cst_delta_pib 7.668212503448485
+2021-03-04 17:04:09,204 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 13 x_13 [1.0000000e-01 2.0000000e-01 1.0000000e-04 7.5709949e-01] cst_delta_pib 7.665742002927073
+2021-03-04 17:04:09,549 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 14 x_14 [1.00000000e-01 2.00000000e-01 1.00000000e-04 7.57136351e-01] cst_delta_pib 7.665731561836353
+2021-03-04 17:04:09,879 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 15 x_15 [1.00000000e-01 2.00000000e-01 1.00000000e-04 7.57136761e-01] cst_delta_pib 7.665731560575326
+2021-03-04 17:04:10,201 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 16 x_16 [1.00000000e-01 2.00000000e-01 1.00000000e-04 7.57136761e-01] cst_delta_pib 7.665731560575252
+2021-03-04 17:04:10,201 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO -       year                output
+1965  1965    2.344880+0.000000j
+1966  1966    2.533662+0.000000j
+1967  1967    2.738274+0.000000j
+1968  1968    2.957283+0.000000j
+1969  1969    3.195116+0.000000j
+1970  1970    3.452806+0.000000j
+1971  1971    3.728347+0.000000j
+1972  1972    4.027388+0.000000j
+1973  1973    4.353865+0.000000j
+1974  1974    4.712842+0.000000j
+1975  1975    5.085921+0.000000j
+1976  1976    5.479478+0.000000j
+1977  1977    5.908603+0.000000j
+1978  1978    6.375125+0.000000j
+1979  1979    6.884819+0.000000j
+1980  1980    7.431099+0.000000j
+1981  1981    8.011097+0.000000j
+1982  1982    8.618925+0.000000j
+1983  1983    9.242236+0.000000j
+1984  1984    9.893270+0.000000j
+1985  1985   10.594428+0.000000j
+1986  1986   11.347529+0.000000j
+1987  1987   12.156371+0.000000j
+1988  1988   13.026175+0.000000j
+1989  1989   13.974152+0.000000j
+1990  1990   14.992720+0.000000j
+1991  1991   16.118615+0.000000j
+1992  1992   17.280434+0.000000j
+1993  1993   18.478592+0.000000j
+1994  1994   19.733003+0.000000j
+1995  1995   21.082581+0.000000j
+1996  1996   22.534049+0.000000j
+1997  1997   24.119337+0.000000j
+1998  1998   25.827789+0.000000j
+1999  1999   27.640387+0.000000j
+2000  2000   29.567444+0.000000j
+2001  2001   31.660349+0.000000j
+2002  2002   33.850078+0.000000j
+2003  2003   36.135286+0.000000j
+2004  2004   38.622141+0.000000j
+2005  2005   41.390617+0.000000j
+2006  2006   44.466720+0.000000j
+2007  2007   47.873155+0.000000j
+2008  2008   51.634902+0.000000j
+2009  2009   55.647154+0.000000j
+2010  2010   59.744369+0.000000j
+2011  2011   64.261658+0.000000j
+2012  2012   69.185594+0.000000j
+2013  2013   74.547474+0.000000j
+2014  2014   80.308061+0.000000j
+2015  2015   86.435958+0.000000j
+2016  2016   93.059342+0.000000j
+2017  2017  100.118036+0.000000j

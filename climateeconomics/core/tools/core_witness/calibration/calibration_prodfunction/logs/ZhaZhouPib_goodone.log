@@ -1,0 +1,106 @@
+2021-03-10 10:29:14,375 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - Logger initialized
+2021-03-10 10:29:14,389 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 0 x_0 [0.5, 0.019, 0.6, 0.076, 0.005, 1.0, 1.0, 1.0, 0.5, 0.5]
+2021-03-10 10:29:16,533 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 1 x_1 [0.5        0.019      0.6        0.07719039 0.00495296 0.99760197
+ 0.99738228 1.03839982 0.50383998 0.50431998] cst_delta_pib (0.10759318630325894+0j)
+2021-03-10 10:29:17,504 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 2 x_2 [0.5        0.019      0.6        0.07850404 0.00466489 0.99570577
+ 0.99530691 1.06873935 0.50691417 0.50780849] cst_delta_pib (0.020803738060715005+0j)
+2021-03-10 10:29:18,398 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 3 x_3 [0.5        0.019      0.6        0.07832989 0.00508714 0.99595972
+ 0.99558489 1.06472342 0.50650564 0.5073213 ] cst_delta_pib (0.0172694806156596+0j)
+2021-03-10 10:29:19,860 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 4 x_4 [0.5        0.019      0.6        0.07860119 0.00647042 0.99569251
+ 0.99529021 1.06918499 0.50695747 0.50775279] cst_delta_pib (0.016047865609465403+0j)
+2021-03-10 10:29:21,645 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 5 x_5 [0.5        0.019      0.6        0.07939703 0.01       0.99498356
+ 0.9945023  1.08117236 0.50815776 0.50884644] cst_delta_pib (0.015681225194943717+0j)
+2021-03-10 10:29:22,699 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 6 x_6 [0.5        0.019      0.6        0.0792717  0.01       0.99514621
+ 0.9946806  1.07851643 0.50788667 0.50856899] cst_delta_pib (0.014253399581588482+0j)
+2021-03-10 10:29:23,683 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 7 x_7 [0.5        0.019      0.6        0.07924898 0.01       0.99518772
+ 0.99472535 1.07785823 0.50781756 0.50848826] cst_delta_pib (0.014199475910010176+0j)
+2021-03-10 10:29:27,813 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 8 x_8 [0.5        0.019      0.6        0.0818786  0.01       0.99585945
+ 0.99521183 1.07370122 0.50673434 0.50378068] cst_delta_pib (0.01399144350753175+0j)
+2021-03-10 10:29:28,517 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 9 x_9 [0.5        0.019      0.6        0.09092043 0.01       0.99799128
+ 0.99669992 1.06203143 0.50330331 0.48805526] cst_delta_pib (0.013455907781655143+0j)
+2021-03-10 10:29:29,311 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 10 x_10 [0.5        0.019      0.6        0.09542887 0.01       0.99896046
+ 0.99729119 1.05852798 0.50167292 0.47997657] cst_delta_pib (0.013352855450820484+0j)
+2021-03-10 10:29:31,029 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 11 x_11 [0.5        0.019      0.6        0.09902504 0.01       0.99979724
+ 0.99785592 1.05432084 0.50030435 0.47360889] cst_delta_pib (0.013234729517593632+0j)
+2021-03-10 10:29:32,667 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 12 x_12 [0.5        0.019      0.6        0.10014225 0.01       1.00005421
+ 0.9980254  1.05310507 0.49987984 0.471612  ] cst_delta_pib (0.013226497662880718+0j)
+2021-03-10 10:29:33,382 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 13 x_13 [0.5        0.019      0.6        0.10173278 0.00938745 1.00053631
+ 0.99837918 1.04980172 0.49907203 0.46838641] cst_delta_pib (0.01316304518677355+0j)
+2021-03-10 10:29:34,128 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 14 x_14 [0.5        0.019      0.6        0.1045585  0.00794511 1.00145175
+ 0.999054   1.04330052 0.49751884 0.46238217] cst_delta_pib (0.013092380228833097+0j)
+2021-03-10 10:29:34,862 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 15 x_15 [0.5        0.019      0.6        0.10489891 0.00775481 1.00158061
+ 0.99910918 1.04286599 0.49723628 0.46131031] cst_delta_pib (0.013070356201857564+0j)
+2021-03-10 10:29:35,600 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 16 x_16 [0.5        0.019      0.6        0.11036925 0.00669864 1.00311389
+ 0.99992321 1.03706528 0.49427478 0.4487701 ] cst_delta_pib (0.012992605485450101+0j)
+2021-03-10 10:29:36,428 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 17 x_17 [0.5        0.019      0.6        0.11136506 0.00674297 1.0034274
+ 0.99989428 1.03832683 0.49337657 0.44505522] cst_delta_pib (0.012950104073004188+0j)
+2021-03-10 10:29:37,233 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 18 x_18 [0.5        0.019      0.6        0.11443813 0.00611086 1.00431955
+ 1.00032401 1.03539657 0.4915777  0.43755935] cst_delta_pib (0.012936958235986368+0j)
+2021-03-10 10:29:38,117 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 19 x_19 [0.5        0.019      0.6        0.11401304 0.00607545 1.00423493
+ 1.00026605 1.03574187 0.49170769 0.43825135] cst_delta_pib (0.012929990159828987+0j)
+2021-03-10 10:29:38,973 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 20 x_20 [0.5        0.019      0.6        0.11476062 0.00585086 1.00448342
+ 1.00035794 1.03515907 0.4911541  0.43606474] cst_delta_pib (0.01292748009699262+0j)
+2021-03-10 10:29:39,801 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 21 x_21 [0.5        0.019      0.6        0.11455938 0.00569825 1.00457681
+ 1.00026472 1.03547141 0.49072189 0.43518425] cst_delta_pib (0.012923413105496065+0j)
+2021-03-10 10:29:40,568 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 22 x_22 [0.5        0.019      0.6        0.11422097 0.00569562 1.00468024
+ 1.00004393 1.03681214 0.4900707  0.43386422] cst_delta_pib (0.0129153904925901+0j)
+2021-03-10 10:29:41,285 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 23 x_23 [0.5        0.019      0.6        0.10808278 0.00668229 1.00459284
+ 0.99766864 1.0516943  0.48645116 0.43066505] cst_delta_pib (0.012856613366033108+0j)
+2021-03-10 10:29:42,698 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 24 x_24 [0.5        0.019      0.6        0.1010511  0.0080096  1.0040936
+ 0.995251   1.06747179 0.48391742 0.43086034] cst_delta_pib (0.012801084047738191+0j)
+2021-03-10 10:29:44,149 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 25 x_25 [0.5        0.019      0.6        0.100005   0.0080961  1.00404053
+ 0.99485533 1.07015636 0.48342501 0.43055972] cst_delta_pib (0.012789716149913996+0j)
+2021-03-10 10:29:44,888 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 26 x_26 [0.5        0.019      0.6        0.09069242 0.01       1.00342092
+ 0.99151606 1.09262467 0.47974372 0.42974749] cst_delta_pib (0.012730936796920446+0j)
+2021-03-10 10:29:46,295 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 27 x_27 [0.5        0.019      0.6        0.09067229 0.01       1.00341932
+ 0.99144256 1.09339253 0.47964443 0.42945461] cst_delta_pib (0.012700367235707367+0j)
+2021-03-10 10:29:46,970 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 28 x_28 [0.5        0.019      0.6        0.09000295 0.01       1.00278522
+ 0.99176799 1.09136532 0.48194307 0.43595789] cst_delta_pib (0.012675061527429846+0j)
+2021-03-10 10:29:47,714 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 29 x_29 [0.5        0.019      0.6        0.09052983 0.01       1.0029888
+ 0.99156731 1.08947678 0.48109324 0.43854233] cst_delta_pib (0.012655086525306867+0j)
+2021-03-10 10:29:48,439 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 30 x_30 [0.5        0.019      0.6        0.08874147 0.01       1.00532884
+ 0.98691959 1.09003649 0.46732162 0.45152238] cst_delta_pib (0.012555964698409555+0j)
+2021-03-10 10:29:49,796 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 31 x_31 [0.5        0.019      0.6        0.08840606 0.01       1.00540424
+ 0.98662331 1.09097703 0.46664534 0.4518206 ] cst_delta_pib (0.012550661043994618+0j)
+2021-03-10 10:29:50,484 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 32 x_32 [0.5        0.019      0.6        0.08978869 0.01       1.00921562
+ 0.98166493 1.09104387 0.44830854 0.45430231] cst_delta_pib (0.01241550270499882+0j)
+2021-03-10 10:29:51,856 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 33 x_33 [0.5        0.019      0.6        0.09573718 0.01       1.02830583
+ 0.95698519 1.0984098  0.35664611 0.45470592] cst_delta_pib (0.01184744044092885+0j)
+2021-03-10 10:29:53,252 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 34 x_34 [0.5        0.019      0.6        0.09856504 0.01       1.04246001
+ 0.93831938 1.10864732 0.28803729 0.45021824] cst_delta_pib (0.011578409558001754+0j)
+2021-03-10 10:29:53,938 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 35 x_35 [0.5        0.019      0.6        0.09551759 0.01       1.05833549
+ 0.91498773 1.1329263  0.20715433 0.44360479] cst_delta_pib (0.011396793473539519+0j)
+2021-03-10 10:29:55,360 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 36 x_36 [0.5        0.019      0.6        0.09610602 0.01       1.05902025
+ 0.91438253 1.13318122 0.20618692 0.44138657] cst_delta_pib (0.01136141423384501+0j)
+2021-03-10 10:29:56,098 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 37 x_37 [0.5        0.019      0.6        0.09630153 0.01       1.05863369
+ 0.91539052 1.13460707 0.20774455 0.43476121] cst_delta_pib (0.011306901932779136+0j)
+2021-03-10 10:29:56,857 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 38 x_38 [0.5        0.019      0.6        0.09869455 0.01       1.05822758
+ 0.91749517 1.13162943 0.20929306 0.42631328] cst_delta_pib (0.011241316153959405+0j)
+2021-03-10 10:29:58,285 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 39 x_39 [0.5        0.019      0.6        0.09975392 0.01       1.05918083
+ 0.91670786 1.13083056 0.2070592  0.42450894] cst_delta_pib (0.011228724515541114+0j)
+2021-03-10 10:29:58,980 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 40 x_40 [0.5        0.019      0.6        0.10672375 0.01       1.06081821
+ 0.91798957 1.12004706 0.20305625 0.41474102] cst_delta_pib (0.011148155487664414+0j)
+2021-03-10 10:30:00,520 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 41 x_41 [0.5        0.019      0.6        0.10718772 0.01       1.06162679
+ 0.917031   1.11972804 0.20253894 0.41501001] cst_delta_pib (0.011114805766284064+0j)
+2021-03-10 10:30:02,787 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 42 x_42 [0.5        0.019      0.6        0.1072491  0.01       1.06167096
+ 0.91699686 1.11964408 0.20252282 0.41498108] cst_delta_pib (0.011114354115924307+0j)
+2021-03-10 10:30:05,661 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 43 x_43 [0.5        0.019      0.6        0.10738922 0.01       1.06177317
+ 0.91691725 1.11945582 0.20248773 0.41490995] cst_delta_pib (0.011113774201164115+0j)
+2021-03-10 10:30:11,814 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 44 x_44 [0.5        0.019      0.6        0.10741655 0.01       1.06179288
+ 0.91690204 1.11941884 0.20248088 0.41489614] cst_delta_pib (0.011113713613112718+0j)
+2021-03-10 10:30:12,489 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 45 x_45 [0.5        0.019      0.6        0.11638841 0.01       1.06623859
+ 0.91469715 1.10453668 0.2        0.41203473] cst_delta_pib (0.01109733111696463+0j)
+2021-03-10 10:30:13,179 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 46 x_46 [0.5        0.019      0.6        0.12180648 0.01       1.06806266
+ 0.91453844 1.09453909 0.2        0.41092527] cst_delta_pib (0.01099429282516193+0j)
+2021-03-10 10:30:14,669 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 47 x_47 [0.5        0.019      0.6        0.12399002 0.01       1.06876818
+ 0.91446243 1.0901339  0.2        0.41145987] cst_delta_pib (0.01097838987534165+0j)
+2021-03-10 10:30:15,372 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 48 x_48 [0.5        0.019      0.6        0.12357252 0.01       1.068025
+ 0.91502796 1.08831284 0.2        0.41709395] cst_delta_pib (0.010948300217832135+0j)
+2021-03-10 10:30:16,235 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 49 x_49 [0.5        0.019      0.6        0.12011477 0.01       1.06671684
+ 0.91512551 1.09167038 0.2        0.42337883] cst_delta_pib (0.01093323279969463+0j)
+2021-03-10 10:30:17,278 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 50 x_50 [0.5        0.019      0.6        0.12105116 0.01       1.06713198
+ 0.91499001 1.09043552 0.2        0.42230551] cst_delta_pib (0.010931744871869487+0j)
+2021-03-10 10:30:28,579 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 51 x_51 [0.5        0.019      0.6        0.12115779 0.01       1.06721838
+ 0.9149219  1.09025943 0.2        0.42223964] cst_delta_pib (0.010931502825105395+0j)
+2021-03-10 10:30:35,569 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 52 x_52 [0.5        0.019      0.6        0.12116461 0.01       1.06722598
+ 0.91491487 1.09024793 0.2        0.42223522] cst_delta_pib (0.010931480857816688+0j)

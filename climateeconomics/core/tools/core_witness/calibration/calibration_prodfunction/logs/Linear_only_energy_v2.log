@@ -1,0 +1,1441 @@
+2021-03-10 13:58:42,700 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - Logger initialized
+2021-03-10 13:58:42,713 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - 
+2021-03-10 13:58:42,713 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 0 x_0 [1, 0.08, 0.005, 3.75e-05, 10]
+2021-03-10 13:58:43,465 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 1 x_1 [1.00000000e-02 1.00000000e-02 1.00000000e-01 3.00000000e-05
+ 8.85993223e+00] cst_delta_pib 284.8798473633078
+2021-03-10 13:58:46,712 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 2 x_2 [9.01851460e-01 7.30597834e-02 1.44190969e-02 3.00000000e-05
+ 9.88697367e+00] cst_delta_pib 10.251479163997486
+2021-03-10 13:58:47,427 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 3 x_3 [9.03505482e-01 7.31767363e-02 1.42603834e-02 3.36032292e-05
+ 9.88887841e+00] cst_delta_pib 8.300932022458579
+2021-03-10 13:58:47,797 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 4 x_4 [8.88470965e-01 7.21136930e-02 1.57031013e-02 4.00000000e-05
+ 9.87156490e+00] cst_delta_pib 6.747057766909172
+2021-03-10 13:58:48,183 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 5 x_5 [8.85351016e-01 7.18930908e-02 1.60024916e-02 4.00000000e-05
+ 9.86797202e+00] cst_delta_pib 6.697185190404569
+2021-03-10 13:58:48,561 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 6 x_6 [8.85652432e-01 7.19144033e-02 1.59735689e-02 4.00000000e-05
+ 9.86831913e+00] cst_delta_pib 6.696390776591891
+2021-03-10 13:58:48,941 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 7 x_7 [8.85737213e-01 7.19203984e-02 1.59654353e-02 4.00000000e-05
+ 9.86841676e+00] cst_delta_pib 6.696351671500933
+2021-03-10 13:58:49,344 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 8 x_8 [8.85734907e-01 7.19202357e-02 1.59656582e-02 4.00000000e-05
+ 9.86841410e+00] cst_delta_pib 6.696351390150769
+2021-03-10 13:58:49,709 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 9 x_9 [8.85725615e-01 7.19195820e-02 1.59665640e-02 4.00000000e-05
+ 9.86840340e+00] cst_delta_pib 6.696349612841834
+2021-03-10 13:58:50,066 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 10 x_10 [8.85714049e-01 7.19187727e-02 1.59677096e-02 4.00000000e-05
+ 9.86839008e+00] cst_delta_pib 6.6963459497990705
+2021-03-10 13:58:50,452 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 11 x_11 [8.85693450e-01 7.19173433e-02 1.59698012e-02 4.00000000e-05
+ 9.86836635e+00] cst_delta_pib 6.69633534723542
+2021-03-10 13:58:50,819 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 12 x_12 [8.85662057e-01 7.19151960e-02 1.59731210e-02 4.00000000e-05
+ 9.86833018e+00] cst_delta_pib 6.696308660539489
+2021-03-10 13:58:51,229 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 13 x_13 [8.85612013e-01 7.19118552e-02 1.59787619e-02 4.00000000e-05
+ 9.86827250e+00] cst_delta_pib 6.696238876717383
+2021-03-10 13:58:51,586 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 14 x_14 [8.85536998e-01 7.19070630e-02 1.59881314e-02 4.00000000e-05
+ 9.86818597e+00] cst_delta_pib 6.696062548443379
+2021-03-10 13:58:51,944 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 15 x_15 [8.85426112e-01 7.19005608e-02 1.60044489e-02 4.00000000e-05
+ 9.86805791e+00] cst_delta_pib 6.695609324348789
+2021-03-10 13:58:52,307 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 16 x_16 [8.85274996e-01 7.18933138e-02 1.60335330e-02 4.00000000e-05
+ 9.86788294e+00] cst_delta_pib 6.694459498531895
+2021-03-10 13:58:52,659 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 17 x_17 [8.85098077e-01 7.18896213e-02 1.60879085e-02 4.00000000e-05
+ 9.86767677e+00] cst_delta_pib 6.691544083895441
+2021-03-10 13:58:53,017 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 18 x_18 [8.84979110e-01 7.19036355e-02 1.61944468e-02 4.00000000e-05
+ 9.86753359e+00] cst_delta_pib 6.684220684740383
+2021-03-10 13:58:53,376 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 19 x_19 [8.85195492e-01 7.19756509e-02 1.64142457e-02 4.00000000e-05
+ 9.86776715e+00] cst_delta_pib 6.666013961415317
+2021-03-10 13:58:53,740 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 20 x_20 [8.86534950e-01 7.22123745e-02 1.68880672e-02 4.00000000e-05
+ 9.86927053e+00] cst_delta_pib 6.621598094824997
+2021-03-10 13:58:54,118 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 21 x_21 [8.91058797e-01 7.28845910e-02 1.79484392e-02 4.00000000e-05
+ 9.87438305e+00] cst_delta_pib 6.516132895481302
+2021-03-10 13:58:54,477 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 22 x_22 [9.03723686e-01 7.46323968e-02 2.03481471e-02 4.00000000e-05
+ 9.88873294e+00] cst_delta_pib 6.281442465402554
+2021-03-10 13:58:54,844 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 23 x_23 [9.33576430e-01 7.85999325e-02 2.53587013e-02 4.00000000e-05
+ 9.92259939e+00] cst_delta_pib 5.856083616072223
+2021-03-10 13:58:55,208 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 24 x_24 [9.76925795e-01 8.41912376e-02 3.19135235e-02 4.00000000e-05
+ 9.97182390e+00] cst_delta_pib 5.404206579471512
+2021-03-10 13:58:55,560 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 25 x_25 [1.02007740e+00 8.95259821e-02 3.74583246e-02 4.00000000e-05
+ 1.00208875e+01] cst_delta_pib 4.852156347460346
+2021-03-10 13:58:55,913 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 26 x_26 [1.15833595e+00 1.06108501e-01 5.30601111e-02 4.00000000e-05
+ 1.01782288e+01] cst_delta_pib 2.902894823283251
+2021-03-10 13:58:56,283 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 27 x_27 [1.36372730e+00 1.30344605e-01 7.45353908e-02 4.00000000e-05
+ 1.04120788e+01] cst_delta_pib 0.9802032995890337
+2021-03-10 13:58:56,644 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 28 x_28 [1.43172775e+00 1.38255610e-01 8.11649896e-02 4.00000000e-05
+ 1.04895324e+01] cst_delta_pib 0.7834725749711049
+2021-03-10 13:58:57,006 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 29 x_29 [1.42366181e+00 1.37155605e-01 7.96915787e-02 4.00000000e-05
+ 1.04803898e+01] cst_delta_pib 0.7285672748451836
+2021-03-10 13:58:57,723 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 30 x_30 [1.35934885e+00 1.28769763e-01 6.95796591e-02 4.00000000e-05
+ 1.04073855e+01] cst_delta_pib 0.5334810709514958
+2021-03-10 13:58:58,077 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 31 x_31 [1.33538855e+00 1.25636724e-01 6.57748637e-02 4.00000000e-05
+ 1.03801896e+01] cst_delta_pib 0.5244930390444217
+2021-03-10 13:58:58,445 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 32 x_32 [1.34436493e+00 1.26789899e-01 6.71128320e-02 4.00000000e-05
+ 1.03903838e+01] cst_delta_pib 0.522304460448351
+2021-03-10 13:58:58,807 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 33 x_33 [1.34413169e+00 1.26755267e-01 6.70582254e-02 4.00000000e-05
+ 1.03901202e+01] cst_delta_pib 0.5222867479933984
+2021-03-10 13:58:59,161 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 34 x_34 [1.34413100e+00 1.26753668e-01 6.70517060e-02 4.00000000e-05
+ 1.03901199e+01] cst_delta_pib 0.5222858874163514
+2021-03-10 13:58:59,519 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 35 x_35 [1.34415861e+00 1.26756904e-01 6.70544989e-02 4.00000000e-05
+ 1.03901513e+01] cst_delta_pib 0.5222858235858727
+2021-03-10 13:58:59,884 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 36 x_36 [1.34419442e+00 1.26761275e-01 6.70588623e-02 4.00000000e-05
+ 1.03901921e+01] cst_delta_pib 0.5222857946296705
+2021-03-10 13:59:00,265 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 37 x_37 [1.34419749e+00 1.26761675e-01 6.70593469e-02 4.00000000e-05
+ 1.03901955e+01] cst_delta_pib 0.5222857917683079
+2021-03-10 13:59:00,651 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 38 x_38 [1.34420711e+00 1.26762949e-01 6.70609550e-02 4.00000000e-05
+ 1.03902065e+01] cst_delta_pib 0.5222857776908949
+2021-03-10 13:59:01,005 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 39 x_39 [1.34421665e+00 1.26764216e-01 6.70625797e-02 4.00000000e-05
+ 1.03902173e+01] cst_delta_pib 0.5222857544960472
+2021-03-10 13:59:01,366 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 40 x_40 [1.34422996e+00 1.26766038e-01 6.70651219e-02 4.00000000e-05
+ 1.03902324e+01] cst_delta_pib 0.5222856906829607
+2021-03-10 13:59:01,745 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 41 x_41 [1.34424300e+00 1.26767900e-01 6.70680493e-02 4.00000000e-05
+ 1.03902471e+01] cst_delta_pib 0.5222855553820882
+2021-03-10 13:59:02,118 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 42 x_42 [1.34424558e+00 1.26768604e-01 6.70704779e-02 4.00000000e-05
+ 1.03902499e+01] cst_delta_pib 0.5222852408193975
+2021-03-10 13:59:02,470 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 43 x_43 [1.34421147e+00 1.26764875e-01 6.70690994e-02 4.00000000e-05
+ 1.03902109e+01] cst_delta_pib 0.5222846286220443
+2021-03-10 13:59:02,827 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 44 x_44 [1.34411258e+00 1.26752976e-01 6.70591310e-02 4.00000000e-05
+ 1.03900983e+01] cst_delta_pib 0.522283810325772
+2021-03-10 13:59:03,193 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 45 x_45 [1.34399088e+00 1.26737774e-01 6.70438056e-02 4.00000000e-05
+ 1.03899599e+01] cst_delta_pib 0.5222832236889943
+2021-03-10 13:59:03,546 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 46 x_46 [1.34392720e+00 1.26729532e-01 6.70342141e-02 4.00000000e-05
+ 1.03898876e+01] cst_delta_pib 0.5222830436742164
+2021-03-10 13:59:03,916 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 47 x_47 [1.34392231e+00 1.26728769e-01 6.70327641e-02 4.00000000e-05
+ 1.03898821e+01] cst_delta_pib 0.5222830210010382
+2021-03-10 13:59:04,285 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 48 x_48 [1.34392538e+00 1.26729094e-01 6.70328399e-02 4.00000000e-05
+ 1.03898856e+01] cst_delta_pib 0.5222830174243963
+2021-03-10 13:59:04,665 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 49 x_49 [1.34392847e+00 1.26729461e-01 6.70331239e-02 4.00000000e-05
+ 1.03898891e+01] cst_delta_pib 0.5222830157419392
+2021-03-10 13:59:05,023 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 50 x_50 [1.34393312e+00 1.26730016e-01 6.70335719e-02 4.00000000e-05
+ 1.03898944e+01] cst_delta_pib 0.5222830116071205
+2021-03-10 13:59:05,392 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 51 x_51 [1.34394329e+00 1.26731243e-01 6.70346393e-02 4.00000000e-05
+ 1.03899060e+01] cst_delta_pib 0.5222830001416459
+2021-03-10 13:59:05,751 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 52 x_52 [1.34396093e+00 1.26733403e-01 6.70366697e-02 4.00000000e-05
+ 1.03899261e+01] cst_delta_pib 0.5222829767149452
+2021-03-10 13:59:06,106 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 53 x_53 [1.34398434e+00 1.26736319e-01 6.70396538e-02 4.00000000e-05
+ 1.03899527e+01] cst_delta_pib 0.5222829340858884
+2021-03-10 13:59:06,472 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 54 x_54 [1.34401862e+00 1.26740683e-01 6.70445890e-02 4.00000000e-05
+ 1.03899916e+01] cst_delta_pib 0.5222828521793222
+2021-03-10 13:59:06,834 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 55 x_55 [1.34403796e+00 1.26743282e-01 6.70482031e-02 4.00000000e-05
+ 1.03900135e+01] cst_delta_pib 0.5222827673537666
+2021-03-10 13:59:07,203 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 56 x_56 [1.34403428e+00 1.26743024e-01 6.70489438e-02 4.00000000e-05
+ 1.03900093e+01] cst_delta_pib 0.5222827212040824
+2021-03-10 13:59:07,560 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 57 x_57 [1.34402310e+00 1.26741688e-01 6.70478644e-02 4.00000000e-05
+ 1.03899965e+01] cst_delta_pib 0.5222827117904427
+2021-03-10 13:59:07,915 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 58 x_58 [1.34401444e+00 1.26740618e-01 6.70468198e-02 4.00000000e-05
+ 1.03899867e+01] cst_delta_pib 0.5222827080833649
+2021-03-10 13:59:08,265 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 59 x_59 [1.34400756e+00 1.26739754e-01 6.70459038e-02 4.00000000e-05
+ 1.03899789e+01] cst_delta_pib 0.5222827047611747
+2021-03-10 13:59:08,623 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 60 x_60 [1.34399941e+00 1.26738718e-01 6.70447706e-02 4.00000000e-05
+ 1.03899696e+01] cst_delta_pib 0.5222826797389126
+2021-03-10 13:59:09,330 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 61 x_61 [1.34369332e+00 1.26697583e-01 6.69996866e-02 4.00000000e-05
+ 1.03896219e+01] cst_delta_pib 0.5222741976836418
+2021-03-10 13:59:09,697 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 62 x_62 [1.34333172e+00 1.26644123e-01 6.69413427e-02 4.00000000e-05
+ 1.03892115e+01] cst_delta_pib 0.5222512946986745
+2021-03-10 13:59:10,065 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 63 x_63 [1.34262241e+00 1.26520777e-01 6.68083973e-02 4.00000000e-05
+ 1.03884072e+01] cst_delta_pib 0.522155894344884
+2021-03-10 13:59:10,424 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 64 x_64 [1.34186961e+00 1.26333965e-01 6.66101503e-02 4.00000000e-05
+ 1.03875566e+01] cst_delta_pib 0.5219243481183611
+2021-03-10 13:59:10,821 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 65 x_65 [1.34173741e+00 1.26103575e-01 6.63732945e-02 4.00000000e-05
+ 1.03874176e+01] cst_delta_pib 0.5214196779288711
+2021-03-10 13:59:11,177 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 66 x_66 [1.34362290e+00 1.25923321e-01 6.62074887e-02 4.00000000e-05
+ 1.03895821e+01] cst_delta_pib 0.5205077227495447
+2021-03-10 13:59:11,555 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 67 x_67 [1.34847462e+00 1.25968399e-01 6.63013132e-02 3.99931845e-05
+ 1.03951250e+01] cst_delta_pib 0.5194270025085246
+2021-03-10 13:59:11,916 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 68 x_68 [1.35528547e+00 1.25890102e-01 6.62883933e-02 3.98925055e-05
+ 1.04029136e+01] cst_delta_pib 0.5179752773303025
+2021-03-10 13:59:12,272 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 69 x_69 [1.38532341e+00 1.25423611e-01 6.61076622e-02 3.92963346e-05
+ 1.04372699e+01] cst_delta_pib 0.5116263524995521
+2021-03-10 13:59:13,709 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 70 x_70 [1.74381604e+00 1.18998668e-01 6.30746014e-02 3.13201195e-05
+ 1.08473461e+01] cst_delta_pib 0.394597324800135
+2021-03-10 13:59:14,448 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 71 x_71 [1.77303651e+00 1.18305095e-01 6.26536077e-02 3.07067820e-05
+ 1.08807800e+01] cst_delta_pib 0.39251122857932635
+2021-03-10 13:59:14,807 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 72 x_72 [1.85217771e+00 1.15023999e-01 6.00786563e-02 3.00000000e-05
+ 1.09714067e+01] cst_delta_pib 0.3533137031145624
+2021-03-10 13:59:15,165 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 73 x_73 [1.84713408e+00 1.15369893e-01 6.03826629e-02 3.00000000e-05
+ 1.09656239e+01] cst_delta_pib 0.3521927394489561
+2021-03-10 13:59:15,523 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 74 x_74 [1.84711591e+00 1.15464295e-01 6.04790379e-02 3.00000000e-05
+ 1.09655982e+01] cst_delta_pib 0.35206522308423205
+2021-03-10 13:59:15,884 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 75 x_75 [1.84985730e+00 1.15772006e-01 6.08208309e-02 3.00000000e-05
+ 1.09687153e+01] cst_delta_pib 0.351676680676062
+2021-03-10 13:59:16,238 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 76 x_76 [1.85360763e+00 1.15971160e-01 6.10615546e-02 3.00000000e-05
+ 1.09729913e+01] cst_delta_pib 0.351488281718991
+2021-03-10 13:59:16,601 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 77 x_77 [1.85545634e+00 1.16004573e-01 6.11139825e-02 3.00000000e-05
+ 1.09751025e+01] cst_delta_pib 0.3514514286709848
+2021-03-10 13:59:16,967 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 78 x_78 [1.85575261e+00 1.15985486e-01 6.10973858e-02 3.00000000e-05
+ 1.09754421e+01] cst_delta_pib 0.35144785310035986
+2021-03-10 13:59:17,323 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 79 x_79 [1.85571132e+00 1.15976711e-01 6.10880033e-02 3.00000000e-05
+ 1.09753954e+01] cst_delta_pib 0.35144768309707075
+2021-03-10 13:59:17,682 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 80 x_80 [1.85570087e+00 1.15975723e-01 6.10868915e-02 3.00000000e-05
+ 1.09753835e+01] cst_delta_pib 0.3514476601404252
+2021-03-10 13:59:18,044 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 81 x_81 [1.85562956e+00 1.15969391e-01 6.10797587e-02 3.00000000e-05
+ 1.09753023e+01] cst_delta_pib 0.35144681231859376
+2021-03-10 13:59:18,408 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 82 x_82 [1.85525537e+00 1.15930713e-01 6.10379937e-02 3.00000000e-05
+ 1.09748767e+01] cst_delta_pib 0.3514239289313036
+2021-03-10 13:59:18,766 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 83 x_83 [1.85352622e+00 1.15747471e-01 6.08467301e-02 3.00000000e-05
+ 1.09729098e+01] cst_delta_pib 0.3512448822637573
+2021-03-10 13:59:19,127 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 84 x_84 [1.85123835e+00 1.15457724e-01 6.05611584e-02 3.00000000e-05
+ 1.09703097e+01] cst_delta_pib 0.3508781215809906
+2021-03-10 13:59:19,491 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 85 x_85 [1.84848106e+00 1.14999290e-01 6.01452852e-02 3.00000000e-05
+ 1.09671813e+01] cst_delta_pib 0.35005058310725684
+2021-03-10 13:59:19,841 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 86 x_86 [1.84523628e+00 1.14122463e-01 5.94333179e-02 3.00000000e-05
+ 1.09635159e+01] cst_delta_pib 0.3479094853781271
+2021-03-10 13:59:20,203 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 87 x_87 [1.84382960e+00 1.12667261e-01 5.84183866e-02 3.00000000e-05
+ 1.09619783e+01] cst_delta_pib 0.34337352163545065
+2021-03-10 13:59:20,557 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 88 x_88 [1.84848716e+00 1.10583646e-01 5.72413864e-02 3.00292560e-05
+ 1.09673993e+01] cst_delta_pib 0.33565865122453337
+2021-03-10 13:59:20,944 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 89 x_89 [1.86205876e+00 1.06788420e-01 5.53086192e-02 3.02552186e-05
+ 1.09830869e+01] cst_delta_pib 0.3217848506434702
+2021-03-10 13:59:21,320 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 90 x_90 [1.89896423e+00 9.92169763e-02 5.18605951e-02 3.09703457e-05
+ 1.10256149e+01] cst_delta_pib 0.2952374942020808
+2021-03-10 13:59:21,669 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 91 x_91 [1.93996038e+00 9.35729487e-02 4.98500896e-02 3.18761002e-05
+ 1.10727244e+01] cst_delta_pib 0.25780017895212903
+2021-03-10 13:59:22,038 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 92 x_92 [2.03227725e+00 8.16702559e-02 4.58546650e-02 3.46818110e-05
+ 1.11787691e+01] cst_delta_pib 0.15831011220366897
+2021-03-10 13:59:22,403 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 93 x_93 [2.05702377e+00 7.91174737e-02 4.52042657e-02 3.64320275e-05
+ 1.12071650e+01] cst_delta_pib 0.10070740731175933
+2021-03-10 13:59:22,772 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 94 x_94 [2.11555216e+00 7.00725332e-02 4.16859262e-02 3.86850683e-05
+ 1.12744685e+01] cst_delta_pib 0.0834391937751623
+2021-03-10 13:59:23,137 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 95 x_95 [2.09699072e+00 7.09286228e-02 4.14784339e-02 3.85911761e-05
+ 1.12532204e+01] cst_delta_pib 0.07210971621043684
+2021-03-10 13:59:23,504 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 96 x_96 [2.09661249e+00 6.80137708e-02 3.95460798e-02 3.96100768e-05
+ 1.12529276e+01] cst_delta_pib 0.06154968963262604
+2021-03-10 13:59:24,203 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 97 x_97 [2.09740088e+00 6.73738500e-02 3.91580107e-02 3.96437921e-05
+ 1.12538589e+01] cst_delta_pib 0.060302825680588375
+2021-03-10 13:59:24,936 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 98 x_98 [2.09744184e+00 6.73138035e-02 3.91202264e-02 3.96467838e-05
+ 1.12539086e+01] cst_delta_pib 0.06029116263995653
+2021-03-10 13:59:25,732 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 99 x_99 [2.09744608e+00 6.73080965e-02 3.91166498e-02 3.96470712e-05
+ 1.12539137e+01] cst_delta_pib 0.060291056802410294
+2021-03-10 13:59:26,485 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 100 x_100 [2.09745493e+00 6.72816971e-02 3.90996581e-02 3.96484450e-05
+ 1.12539251e+01] cst_delta_pib 0.06028701400890562
+2021-03-10 13:59:27,221 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 101 x_101 [2.09745296e+00 6.72617167e-02 3.90864382e-02 3.96494332e-05
+ 1.12539238e+01] cst_delta_pib 0.06028575273562529
+2021-03-10 13:59:27,942 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 102 x_102 [2.09872101e+00 6.61913705e-02 3.84352434e-02 4.00000000e-05
+ 1.12554238e+01] cst_delta_pib 0.05762733736524691
+2021-03-10 13:59:28,295 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 103 x_103 [2.09818494e+00 6.62735315e-02 3.84670171e-02 4.00000000e-05
+ 1.12548074e+01] cst_delta_pib 0.05744385743733489
+2021-03-10 13:59:28,651 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 104 x_104 [2.09583317e+00 6.63783608e-02 3.84383322e-02 4.00000000e-05
+ 1.12521154e+01] cst_delta_pib 0.05694406492756141
+2021-03-10 13:59:29,011 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 105 x_105 [2.09086682e+00 6.63876281e-02 3.82382881e-02 4.00000000e-05
+ 1.12464407e+01] cst_delta_pib 0.05619044823660728
+2021-03-10 13:59:29,368 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 106 x_106 [2.08465756e+00 6.62002047e-02 3.78573235e-02 4.00000000e-05
+ 1.12393553e+01] cst_delta_pib 0.055450873587438755
+2021-03-10 13:59:30,093 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 107 x_107 [2.08434955e+00 6.58878669e-02 3.76367523e-02 4.00000000e-05
+ 1.12390183e+01] cst_delta_pib 0.05511451689919938
+2021-03-10 13:59:30,441 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 108 x_108 [2.08115571e+00 6.58100820e-02 3.74530863e-02 4.00000000e-05
+ 1.12353730e+01] cst_delta_pib 0.055026111107714167
+2021-03-10 13:59:31,165 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 109 x_109 [2.08119216e+00 6.58079371e-02 3.74530686e-02 4.00000000e-05
+ 1.12354147e+01] cst_delta_pib 0.05502576855907625
+2021-03-10 13:59:31,523 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 110 x_110 [2.08134739e+00 6.57981829e-02 3.74521581e-02 4.00000000e-05
+ 1.12355925e+01] cst_delta_pib 0.055025402718186484
+2021-03-10 13:59:31,897 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 111 x_111 [2.08156666e+00 6.57911246e-02 3.74547804e-02 4.00000000e-05
+ 1.12358434e+01] cst_delta_pib 0.055023007656911475
+2021-03-10 13:59:32,265 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 112 x_112 [2.08216009e+00 6.57614523e-02 3.74508408e-02 4.00000000e-05
+ 1.12365229e+01] cst_delta_pib 0.05500136121672748
+2021-03-10 13:59:32,623 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 113 x_113 [2.08379391e+00 6.56642451e-02 3.74211372e-02 4.00000000e-05
+ 1.12383943e+01] cst_delta_pib 0.054939211260707915
+2021-03-10 13:59:32,991 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 114 x_114 [2.08553425e+00 6.55530643e-02 3.73731038e-02 4.00000000e-05
+ 1.12403881e+01] cst_delta_pib 0.05484824256666834
+2021-03-10 13:59:33,350 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 115 x_115 [2.09117616e+00 6.51754236e-02 3.71779186e-02 4.00000000e-05
+ 1.12468526e+01] cst_delta_pib 0.05452088759166253
+2021-03-10 13:59:33,715 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 116 x_116 [2.09924130e+00 6.45862122e-02 3.68154306e-02 4.00000000e-05
+ 1.12560962e+01] cst_delta_pib 0.05394635908365815
+2021-03-10 13:59:34,074 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 117 x_117 [2.11523220e+00 6.33363205e-02 3.59510266e-02 4.00000000e-05
+ 1.12744276e+01] cst_delta_pib 0.052703093928991314
+2021-03-10 13:59:34,457 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 118 x_118 [2.12976551e+00 6.20859858e-02 3.49573822e-02 4.00000000e-05
+ 1.12910938e+01] cst_delta_pib 0.05119045140185251
+2021-03-10 13:59:34,810 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 119 x_119 [2.13910008e+00 6.11199409e-02 3.40138164e-02 4.00000000e-05
+ 1.13018066e+01] cst_delta_pib 0.0497255183166297
+2021-03-10 13:59:35,168 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 120 x_120 [2.13867513e+00 6.10550188e-02 3.38548848e-02 4.00000000e-05
+ 1.13013244e+01] cst_delta_pib 0.049549231691260506
+2021-03-10 13:59:35,532 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 121 x_121 [2.13827934e+00 6.10867724e-02 3.38776686e-02 4.00000000e-05
+ 1.13008706e+01] cst_delta_pib 0.04954836338895555
+2021-03-10 13:59:35,904 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 122 x_122 [2.13789123e+00 6.11187109e-02 3.39013834e-02 4.00000000e-05
+ 1.13004256e+01] cst_delta_pib 0.0495477931844035
+2021-03-10 13:59:36,268 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 123 x_123 [2.13767890e+00 6.11366838e-02 3.39151971e-02 4.00000000e-05
+ 1.13001821e+01] cst_delta_pib 0.04954749156083353
+2021-03-10 13:59:36,629 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 124 x_124 [2.13740331e+00 6.11602666e-02 3.39333995e-02 4.00000000e-05
+ 1.12998661e+01] cst_delta_pib 0.04954685117057012
+2021-03-10 13:59:36,986 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 125 x_125 [2.13694201e+00 6.12005476e-02 3.39648360e-02 4.00000000e-05
+ 1.12993371e+01] cst_delta_pib 0.04954514683229036
+2021-03-10 13:59:37,342 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 126 x_126 [2.13629232e+00 6.12599903e-02 3.40127927e-02 4.00000000e-05
+ 1.12985919e+01] cst_delta_pib 0.04954107541815137
+2021-03-10 13:59:37,696 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 127 x_127 [2.13539281e+00 6.13492013e-02 3.40884138e-02 4.00000000e-05
+ 1.12975598e+01] cst_delta_pib 0.049533718964347315
+2021-03-10 13:59:38,060 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 128 x_128 [2.13478292e+00 6.14285068e-02 3.41646226e-02 4.00000000e-05
+ 1.12968591e+01] cst_delta_pib 0.049512690796513346
+2021-03-10 13:59:38,424 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 129 x_129 [2.13484292e+00 6.15003010e-02 3.42626574e-02 4.00000000e-05
+ 1.12969243e+01] cst_delta_pib 0.04946327083991465
+2021-03-10 13:59:38,787 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 130 x_130 [2.13667829e+00 6.14370314e-02 3.42659353e-02 4.00000000e-05
+ 1.12990245e+01] cst_delta_pib 0.04941890326202611
+2021-03-10 13:59:39,139 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 131 x_131 [2.13913473e+00 6.12692613e-02 3.41601237e-02 4.00000000e-05
+ 1.13018393e+01] cst_delta_pib 0.04939485055144872
+2021-03-10 13:59:39,507 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 132 x_132 [2.14036170e+00 6.11628609e-02 3.40772908e-02 4.00000000e-05
+ 1.13032464e+01] cst_delta_pib 0.04938868537095909
+2021-03-10 13:59:39,867 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 133 x_133 [2.14040277e+00 6.11532609e-02 3.40665065e-02 4.00000000e-05
+ 1.13032938e+01] cst_delta_pib 0.04938848444174111
+2021-03-10 13:59:40,223 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 134 x_134 [2.14040058e+00 6.11514051e-02 3.40639387e-02 4.00000000e-05
+ 1.13032914e+01] cst_delta_pib 0.04938846237100661
+2021-03-10 13:59:40,571 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 135 x_135 [2.14039434e+00 6.11510182e-02 3.40631265e-02 4.00000000e-05
+ 1.13032842e+01] cst_delta_pib 0.04938845054400307
+2021-03-10 13:59:40,944 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 136 x_136 [2.14037684e+00 6.11505490e-02 3.40616629e-02 4.00000000e-05
+ 1.13032643e+01] cst_delta_pib 0.04938841256576005
+2021-03-10 13:59:41,326 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 137 x_137 [2.14034419e+00 6.11506323e-02 3.40601976e-02 4.00000000e-05
+ 1.13032270e+01] cst_delta_pib 0.04938832910662053
+2021-03-10 13:59:41,693 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 138 x_138 [2.14025702e+00 6.11536252e-02 3.40599589e-02 4.00000000e-05
+ 1.13031272e+01] cst_delta_pib 0.049388113201820065
+2021-03-10 13:59:42,055 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 139 x_139 [2.14006181e+00 6.11642159e-02 3.40645749e-02 4.00000000e-05
+ 1.13029037e+01] cst_delta_pib 0.04938763868888854
+2021-03-10 13:59:42,417 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 140 x_140 [2.13970329e+00 6.11890149e-02 3.40801336e-02 4.00000000e-05
+ 1.13024928e+01] cst_delta_pib 0.049386771411104445
+2021-03-10 13:59:43,536 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 141 x_141 [2.13934952e+00 6.12184112e-02 3.41020077e-02 4.00000000e-05
+ 1.13020872e+01] cst_delta_pib 0.04938587547222679
+2021-03-10 13:59:44,998 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 142 x_142 [2.13928247e+00 6.12250835e-02 3.41076111e-02 4.00000000e-05
+ 1.13020102e+01] cst_delta_pib 0.04938565794100998
+2021-03-10 13:59:49,276 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 143 x_143 [2.13933903e+00 6.12566969e-02 3.40998435e-02 4.00000000e-05
+ 1.13020161e+01] cst_delta_pib 0.04913429876761123
+2021-03-10 13:59:49,645 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 144 x_144 [2.13947421e+00 6.13322595e-02 3.40812775e-02 4.00000000e-05
+ 1.13020301e+01] cst_delta_pib 0.04888001675991617
+2021-03-10 13:59:50,060 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 145 x_145 [2.13947498e+00 6.13326912e-02 3.40811714e-02 4.00000000e-05
+ 1.13020302e+01] cst_delta_pib 0.04888000809541252
+2021-03-10 13:59:50,504 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 146 x_146 [2.13947504e+00 6.13327218e-02 3.40811639e-02 4.00000000e-05
+ 1.13020302e+01] cst_delta_pib 0.04888000803214814
+2021-03-10 13:59:50,860 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 147 x_147 [2.13947505e+00 6.13327319e-02 3.40811615e-02 4.00000000e-05
+ 1.13020302e+01] cst_delta_pib 0.04888000799490939
+2021-03-10 13:59:51,218 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 148 x_148 [2.13947513e+00 6.13327728e-02 3.40811517e-02 4.00000000e-05
+ 1.13020302e+01] cst_delta_pib 0.048880007760325916
+2021-03-10 13:59:51,616 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 149 x_149 [2.13947522e+00 6.13328237e-02 3.40811399e-02 4.00000000e-05
+ 1.13020302e+01] cst_delta_pib 0.04888000728156997
+2021-03-10 13:59:51,984 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 150 x_150 [2.13947539e+00 6.13329169e-02 3.40811190e-02 4.00000000e-05
+ 1.13020302e+01] cst_delta_pib 0.0488800058865493
+2021-03-10 13:59:52,352 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 151 x_151 [2.13947564e+00 6.13330619e-02 3.40810887e-02 4.00000000e-05
+ 1.13020302e+01] cst_delta_pib 0.0488800024080634
+2021-03-10 13:59:52,712 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 152 x_152 [2.13947608e+00 6.13333050e-02 3.40810434e-02 4.00000000e-05
+ 1.13020303e+01] cst_delta_pib 0.04887999327042967
+2021-03-10 13:59:53,088 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 153 x_153 [2.13947678e+00 6.13336995e-02 3.40809837e-02 4.00000000e-05
+ 1.13020303e+01] cst_delta_pib 0.048879970118895257
+2021-03-10 13:59:53,445 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 154 x_154 [2.13947796e+00 6.13343637e-02 3.40809179e-02 4.00000000e-05
+ 1.13020305e+01] cst_delta_pib 0.0488799103418413
+2021-03-10 13:59:53,813 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 155 x_155 [2.13947995e+00 6.13354934e-02 3.40808908e-02 4.00000000e-05
+ 1.13020307e+01] cst_delta_pib 0.04887975759037508
+2021-03-10 13:59:54,172 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 156 x_156 [2.13948344e+00 6.13374868e-02 3.40810473e-02 4.00000000e-05
+ 1.13020310e+01] cst_delta_pib 0.048877514515270865
+2021-03-10 13:59:56,739 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 157 x_157 [2.13948498e+00 6.13383868e-02 3.40814139e-02 4.00000000e-05
+ 1.13020312e+01] cst_delta_pib 0.048876997474826434
+2021-03-10 13:59:57,110 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 158 x_158 [2.13953761e+00 6.13693434e-02 3.40974144e-02 4.00000000e-05
+ 1.13020368e+01] cst_delta_pib 0.04886498182755278
+2021-03-10 13:59:57,487 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 159 x_159 [2.13956896e+00 6.13880847e-02 3.41114759e-02 4.00000000e-05
+ 1.13020401e+01] cst_delta_pib 0.048851824744926435
+2021-03-10 13:59:57,847 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 160 x_160 [2.13974524e+00 6.14944976e-02 3.42061350e-02 4.00000000e-05
+ 1.13020591e+01] cst_delta_pib 0.048768054447016325
+2021-03-10 13:59:58,203 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 161 x_161 [2.14006307e+00 6.16878674e-02 3.43996375e-02 4.00000000e-05
+ 1.13020934e+01] cst_delta_pib 0.048633143284812046
+2021-03-10 13:59:58,559 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 162 x_162 [2.14006511e+00 6.16981919e-02 3.45379561e-02 4.00000000e-05
+ 1.13020945e+01] cst_delta_pib 0.04846300145944006
+2021-03-10 13:59:58,915 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 163 x_163 [2.14055012e+00 6.19922203e-02 3.48172755e-02 4.00000000e-05
+ 1.13021467e+01] cst_delta_pib 0.0483130084265814
+2021-03-10 13:59:59,267 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 164 x_164 [2.14057184e+00 6.20054355e-02 3.48304444e-02 4.00000000e-05
+ 1.13021491e+01] cst_delta_pib 0.04831271730236332
+2021-03-10 13:59:59,643 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 165 x_165 [2.14057678e+00 6.20084449e-02 3.48334888e-02 4.00000000e-05
+ 1.13021496e+01] cst_delta_pib 0.04831270723245969
+2021-03-10 14:00:00,006 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 166 x_166 [2.14057680e+00 6.20084536e-02 3.48335025e-02 4.00000000e-05
+ 1.13021496e+01] cst_delta_pib 0.04831270723136113
+2021-03-10 14:00:00,377 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 167 x_167 [2.14057680e+00 6.20084562e-02 3.48335078e-02 4.00000000e-05
+ 1.13021496e+01] cst_delta_pib 0.048312707230664304
+2021-03-10 14:00:00,736 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 168 x_168 [2.14057681e+00 6.20084626e-02 3.48335192e-02 4.00000000e-05
+ 1.13021496e+01] cst_delta_pib 0.04831270722904359
+2021-03-10 14:00:01,110 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 169 x_169 [2.14057683e+00 6.20084721e-02 3.48335347e-02 4.00000000e-05
+ 1.13021496e+01] cst_delta_pib 0.048312707225822475
+2021-03-10 14:00:01,480 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 170 x_170 [2.14057685e+00 6.20084882e-02 3.48335615e-02 4.00000000e-05
+ 1.13021496e+01] cst_delta_pib 0.048312707216525135
+2021-03-10 14:00:01,856 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 171 x_171 [2.14057689e+00 6.20085140e-02 3.48336042e-02 4.00000000e-05
+ 1.13021496e+01] cst_delta_pib 0.04831270719263604
+2021-03-10 14:00:02,233 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 172 x_172 [2.14057697e+00 6.20085597e-02 3.48336773e-02 4.00000000e-05
+ 1.13021496e+01] cst_delta_pib 0.04831270713110708
+2021-03-10 14:00:02,590 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 173 x_173 [2.14057710e+00 6.20086405e-02 3.48338016e-02 4.00000000e-05
+ 1.13021496e+01] cst_delta_pib 0.04831270697420099
+2021-03-10 14:00:02,950 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 174 x_174 [2.14057735e+00 6.20087880e-02 3.48340181e-02 4.00000000e-05
+ 1.13021497e+01] cst_delta_pib 0.048312706572553356
+2021-03-10 14:00:03,317 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 175 x_175 [2.14057784e+00 6.20090694e-02 3.48344077e-02 4.00000000e-05
+ 1.13021497e+01] cst_delta_pib 0.04831270555756259
+2021-03-10 14:00:03,675 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 176 x_176 [2.14057882e+00 6.20096166e-02 3.48351149e-02 4.00000000e-05
+ 1.13021498e+01] cst_delta_pib 0.04831270308256555
+2021-03-10 14:00:04,043 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 177 x_177 [2.14058073e+00 6.20106583e-02 3.48363648e-02 4.00000000e-05
+ 1.13021500e+01] cst_delta_pib 0.048312697429616795
+2021-03-10 14:00:04,421 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 178 x_178 [2.14058408e+00 6.20124380e-02 3.48383297e-02 4.00000000e-05
+ 1.13021504e+01] cst_delta_pib 0.04831268635393265
+2021-03-10 14:00:04,941 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 179 x_179 [2.14058829e+00 6.20146025e-02 3.48404603e-02 4.00000000e-05
+ 1.13021509e+01] cst_delta_pib 0.04831267115251392
+2021-03-10 14:00:05,334 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 180 x_180 [2.14059078e+00 6.20157899e-02 3.48413017e-02 4.00000000e-05
+ 1.13021511e+01] cst_delta_pib 0.048312659929040484
+2021-03-10 14:00:05,735 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 181 x_181 [2.14059049e+00 6.20155502e-02 3.48407302e-02 4.00000000e-05
+ 1.13021511e+01] cst_delta_pib 0.0483126565379103
+2021-03-10 14:00:06,129 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 182 x_182 [2.14058977e+00 6.20151519e-02 3.48402307e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.048312656185528845
+2021-03-10 14:00:06,549 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 183 x_183 [2.14058958e+00 6.20150544e-02 3.48401271e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.048312656169517444
+2021-03-10 14:00:06,944 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 184 x_184 [2.14058952e+00 6.20150239e-02 3.48400970e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265616635289
+2021-03-10 14:00:07,297 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 185 x_185 [2.14058948e+00 6.20150025e-02 3.48400773e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265616231562
+2021-03-10 14:00:07,655 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 186 x_186 [2.14058937e+00 6.20149470e-02 3.48400266e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.048312656149580836
+2021-03-10 14:00:08,043 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 187 x_187 [2.14058931e+00 6.20149190e-02 3.48400058e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265613121634
+2021-03-10 14:00:08,410 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 188 x_188 [2.14058923e+00 6.20148835e-02 3.48400012e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265606595367
+2021-03-10 14:00:08,770 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 189 x_189 [2.14058930e+00 6.20149286e-02 3.48400791e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265600234878
+2021-03-10 14:00:09,134 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 190 x_190 [2.14058955e+00 6.20150639e-02 3.48402475e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265593887517
+2021-03-10 14:00:09,494 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 191 x_191 [2.14058977e+00 6.20151802e-02 3.48403731e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265591275946
+2021-03-10 14:00:09,852 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 192 x_192 [2.14058987e+00 6.20152297e-02 3.48404192e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265590559935
+2021-03-10 14:00:10,218 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 193 x_193 [2.14058992e+00 6.20152531e-02 3.48404384e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265590291371
+2021-03-10 14:00:10,576 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 194 x_194 [2.14058995e+00 6.20152665e-02 3.48404477e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265590089446
+2021-03-10 14:00:10,926 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 195 x_195 [2.14058993e+00 6.20152576e-02 3.48404325e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265589714984
+2021-03-10 14:00:11,284 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 196 x_196 [2.14058987e+00 6.20152207e-02 3.48403832e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.048312655890206634
+2021-03-10 14:00:11,649 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 197 x_197 [2.14058981e+00 6.20151895e-02 3.48403471e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.048312655885961224
+2021-03-10 14:00:12,409 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 198 x_198 [2.14058938e+00 6.20149610e-02 3.48400971e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831265551946362
+2021-03-10 14:00:12,773 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 199 x_199 [2.14058819e+00 6.20143085e-02 3.48393972e-02 4.00000000e-05
+ 1.13021508e+01] cst_delta_pib 0.04831265365778224
+2021-03-10 14:00:13,130 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 200 x_200 [2.14058634e+00 6.20132711e-02 3.48383272e-02 4.00000000e-05
+ 1.13021506e+01] cst_delta_pib 0.04831264904598977
+2021-03-10 14:00:13,489 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 201 x_201 [2.14058384e+00 6.20117971e-02 3.48368875e-02 4.00000000e-05
+ 1.13021504e+01] cst_delta_pib 0.048312638475231914
+2021-03-10 14:00:13,844 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 202 x_202 [2.14058107e+00 6.20099924e-02 3.48353538e-02 4.00000000e-05
+ 1.13021501e+01] cst_delta_pib 0.048312616421143685
+2021-03-10 14:00:14,194 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 203 x_203 [2.14058030e+00 6.20090468e-02 3.48350577e-02 4.00000000e-05
+ 1.13021500e+01] cst_delta_pib 0.0483125845476551
+2021-03-10 14:00:14,554 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 204 x_204 [2.14058340e+00 6.20101761e-02 3.48370428e-02 4.00000000e-05
+ 1.13021504e+01] cst_delta_pib 0.04831255671518073
+2021-03-10 14:00:14,921 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 205 x_205 [2.14058763e+00 6.20122620e-02 3.48395787e-02 4.00000000e-05
+ 1.13021508e+01] cst_delta_pib 0.04831254631244023
+2021-03-10 14:00:15,285 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 206 x_206 [2.14058942e+00 6.20132625e-02 3.48406255e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254488587351
+2021-03-10 14:00:15,645 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 207 x_207 [2.14058964e+00 6.20134114e-02 3.48407417e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254480423902
+2021-03-10 14:00:15,992 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 208 x_208 [2.14058964e+00 6.20134202e-02 3.48407405e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254479884794
+2021-03-10 14:00:16,360 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 209 x_209 [2.14058963e+00 6.20134177e-02 3.48407306e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254479511527
+2021-03-10 14:00:16,714 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 210 x_210 [2.14058959e+00 6.20134032e-02 3.48407058e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254478826033
+2021-03-10 14:00:17,067 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 211 x_211 [2.14058952e+00 6.20133737e-02 3.48406633e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254477488199
+2021-03-10 14:00:17,435 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 212 x_212 [2.14058936e+00 6.20132976e-02 3.48405690e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254474735357
+2021-03-10 14:00:17,796 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 213 x_213 [2.14058917e+00 6.20131908e-02 3.48404521e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254471066742
+2021-03-10 14:00:18,150 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 214 x_214 [2.14058897e+00 6.20130744e-02 3.48403409e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254467410195
+2021-03-10 14:00:18,529 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 215 x_215 [2.14058893e+00 6.20130361e-02 3.48403180e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254466019938
+2021-03-10 14:00:18,890 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 216 x_216 [2.14058895e+00 6.20130439e-02 3.48403350e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254465721962
+2021-03-10 14:00:19,255 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 217 x_217 [2.14058898e+00 6.20130578e-02 3.48403531e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254465630999
+2021-03-10 14:00:19,630 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 218 x_218 [2.14058901e+00 6.20130703e-02 3.48403675e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.04831254465490674
+2021-03-10 14:00:19,987 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 219 x_219 [2.14058909e+00 6.20131135e-02 3.48404159e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.048312544621066385
+2021-03-10 14:00:20,356 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 220 x_220 [2.14058974e+00 6.20134564e-02 3.48407940e-02 4.00000000e-05
+ 1.13021510e+01] cst_delta_pib 0.048312544246592606
+2021-03-10 14:00:20,706 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 221 x_221 [2.14059039e+00 6.20138026e-02 3.48411659e-02 4.00000000e-05
+ 1.13021511e+01] cst_delta_pib 0.04831254363633791
+2021-03-10 14:00:21,081 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 222 x_222 [2.14059162e+00 6.20144678e-02 3.48418516e-02 4.00000000e-05
+ 1.13021513e+01] cst_delta_pib 0.048312541823104495
+2021-03-10 14:00:21,461 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 223 x_223 [2.14059316e+00 6.20153187e-02 3.48426574e-02 4.00000000e-05
+ 1.13021514e+01] cst_delta_pib 0.04831253808539567
+2021-03-10 14:00:21,809 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 224 x_224 [2.14059459e+00 6.20161539e-02 3.48432889e-02 4.00000000e-05
+ 1.13021516e+01] cst_delta_pib 0.048312531386717886
+2021-03-10 14:00:22,194 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 225 x_225 [2.14059452e+00 6.20162201e-02 3.48429738e-02 4.00000000e-05
+ 1.13021516e+01] cst_delta_pib 0.0483125239439927
+2021-03-10 14:00:22,551 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 226 x_226 [2.14059276e+00 6.20153542e-02 3.48417722e-02 4.00000000e-05
+ 1.13021514e+01] cst_delta_pib 0.04831251986491746
+2021-03-10 14:00:22,909 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 227 x_227 [2.14059139e+00 6.20146357e-02 3.48409601e-02 4.00000000e-05
+ 1.13021512e+01] cst_delta_pib 0.04831251905105704
+2021-03-10 14:00:23,272 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 228 x_228 [2.14059105e+00 6.20144516e-02 3.48407857e-02 4.00000000e-05
+ 1.13021512e+01] cst_delta_pib 0.04831251898725627
+2021-03-10 14:00:23,635 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 229 x_229 [2.14059101e+00 6.20144251e-02 3.48407662e-02 4.00000000e-05
+ 1.13021512e+01] cst_delta_pib 0.04831251898456633
+2021-03-10 14:00:23,983 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 230 x_230 [2.14059104e+00 6.20144414e-02 3.48407851e-02 4.00000000e-05
+ 1.13021512e+01] cst_delta_pib 0.048312518984144244
+2021-03-10 14:00:25,441 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 231 x_231 [2.14059128e+00 6.20144927e-02 3.48409566e-02 4.00000000e-05
+ 1.13021512e+01] cst_delta_pib 0.04831251459295034
+2021-03-10 14:00:25,791 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 232 x_232 [2.14059366e+00 6.20147921e-02 3.48421500e-02 4.00000000e-05
+ 1.13021515e+01] cst_delta_pib 0.04831246117620472
+2021-03-10 14:00:26,158 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 233 x_233 [2.14059816e+00 6.20150817e-02 3.48436017e-02 4.00000000e-05
+ 1.13021520e+01] cst_delta_pib 0.04831235066137498
+2021-03-10 14:00:26,510 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 234 x_234 [2.14061029e+00 6.20153858e-02 3.48460495e-02 4.00000000e-05
+ 1.13021535e+01] cst_delta_pib 0.04831203516951206
+2021-03-10 14:00:26,862 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 235 x_235 [2.14063630e+00 6.20137135e-02 3.48478301e-02 4.00000000e-05
+ 1.13021568e+01] cst_delta_pib 0.048311270644309505
+2021-03-10 14:00:27,230 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 236 x_236 [2.14069555e+00 6.20073866e-02 3.48469909e-02 4.00000000e-05
+ 1.13021643e+01] cst_delta_pib 0.04830941426779143
+2021-03-10 14:00:27,590 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 237 x_237 [2.14083789e+00 6.19879518e-02 3.48367339e-02 4.00000000e-05
+ 1.13021825e+01] cst_delta_pib 0.048305131964263635
+2021-03-10 14:00:27,957 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 238 x_238 [2.14108983e+00 6.19465573e-02 3.48051876e-02 4.00000000e-05
+ 1.13022150e+01] cst_delta_pib 0.048297950642872005
+2021-03-10 14:00:28,321 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 239 x_239 [2.14153745e+00 6.18631716e-02 3.47306032e-02 4.00000000e-05
+ 1.13022730e+01] cst_delta_pib 0.048279282298043465
+2021-03-10 14:00:28,674 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 240 x_240 [2.14214845e+00 6.17386732e-02 3.46084350e-02 4.00000000e-05
+ 1.13023527e+01] cst_delta_pib 0.04826110154719183
+2021-03-10 14:00:29,045 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 241 x_241 [2.14233949e+00 6.16923718e-02 3.45561791e-02 4.00000000e-05
+ 1.13023779e+01] cst_delta_pib 0.048256817900167136
+2021-03-10 14:00:29,396 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 242 x_242 [2.14229339e+00 6.16977591e-02 3.45577687e-02 4.00000000e-05
+ 1.13023720e+01] cst_delta_pib 0.048256350873105244
+2021-03-10 14:00:29,757 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 243 x_243 [2.14224596e+00 6.17048815e-02 3.45624146e-02 4.00000000e-05
+ 1.13023659e+01] cst_delta_pib 0.04825625801414065
+2021-03-10 14:00:30,111 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 244 x_244 [2.14224188e+00 6.17056938e-02 3.45631930e-02 4.00000000e-05
+ 1.13023654e+01] cst_delta_pib 0.04825625743301977
+2021-03-10 14:00:30,470 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 245 x_245 [2.14224088e+00 6.17059048e-02 3.45634065e-02 4.00000000e-05
+ 1.13023652e+01] cst_delta_pib 0.048256257091975986
+2021-03-10 14:00:30,839 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 246 x_246 [2.14223603e+00 6.17069620e-02 3.45644830e-02 4.00000000e-05
+ 1.13023646e+01] cst_delta_pib 0.04825624722323033
+2021-03-10 14:00:31,196 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 247 x_247 [2.14220927e+00 6.17129855e-02 3.45706457e-02 4.00000000e-05
+ 1.13023611e+01] cst_delta_pib 0.048256162660427725
+2021-03-10 14:00:31,572 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 248 x_248 [2.14218160e+00 6.17196143e-02 3.45774750e-02 4.00000000e-05
+ 1.13023575e+01] cst_delta_pib 0.048256007143249936
+2021-03-10 14:00:31,931 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 249 x_249 [2.14213715e+00 6.17316268e-02 3.45900678e-02 4.00000000e-05
+ 1.13023516e+01] cst_delta_pib 0.04825553756286331
+2021-03-10 14:00:32,299 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 250 x_250 [2.14208773e+00 6.17488960e-02 3.46086805e-02 4.00000000e-05
+ 1.13023450e+01] cst_delta_pib 0.048254377730150476
+2021-03-10 14:00:32,668 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 251 x_251 [2.14205427e+00 6.17744508e-02 3.46376125e-02 4.00000000e-05
+ 1.13023401e+01] cst_delta_pib 0.04825139989392427
+2021-03-10 14:00:33,028 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 252 x_252 [2.14213333e+00 6.17974632e-02 3.46674918e-02 4.00000000e-05
+ 1.13023494e+01] cst_delta_pib 0.048244408425094094
+2021-03-10 14:00:33,392 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 253 x_253 [2.14274677e+00 6.18379485e-02 3.47367071e-02 4.00000000e-05
+ 1.13024253e+01] cst_delta_pib 0.04821999600297661
+2021-03-10 14:00:33,747 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 254 x_254 [2.14399374e+00 6.18214405e-02 3.47610048e-02 4.00000000e-05
+ 1.13025819e+01] cst_delta_pib 0.048179780512008934
+2021-03-10 14:00:34,102 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 255 x_255 [2.14880008e+00 6.16344371e-02 3.47093122e-02 4.00000000e-05
+ 1.13031887e+01] cst_delta_pib 0.048064546072902475
+2021-03-10 14:00:34,474 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 256 x_256 [2.15405903e+00 6.13112263e-02 3.45130357e-02 4.00000000e-05
+ 1.13038556e+01] cst_delta_pib 0.047954557574587484
+2021-03-10 14:00:34,826 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 257 x_257 [2.15831736e+00 6.09440468e-02 3.42298618e-02 4.00000000e-05
+ 1.13043983e+01] cst_delta_pib 0.04787645971104855
+2021-03-10 14:00:35,189 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 258 x_258 [2.15834496e+00 6.08634678e-02 3.41359028e-02 4.00000000e-05
+ 1.13044038e+01] cst_delta_pib 0.04786139130013748
+2021-03-10 14:00:35,548 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 259 x_259 [2.15812649e+00 6.08436592e-02 3.41048985e-02 4.00000000e-05
+ 1.13043770e+01] cst_delta_pib 0.04786013777459033
+2021-03-10 14:00:35,895 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 260 x_260 [2.15797078e+00 6.08571333e-02 3.41153058e-02 4.00000000e-05
+ 1.13043571e+01] cst_delta_pib 0.04786002009239977
+2021-03-10 14:00:36,261 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 261 x_261 [2.15789163e+00 6.08646820e-02 3.41214187e-02 4.00000000e-05
+ 1.13043470e+01] cst_delta_pib 0.04785999440976772
+2021-03-10 14:00:36,618 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 262 x_262 [2.15787425e+00 6.08662525e-02 3.41226564e-02 4.00000000e-05
+ 1.13043448e+01] cst_delta_pib 0.0478599828914189
+2021-03-10 14:00:37,011 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 263 x_263 [2.15774549e+00 6.08774097e-02 3.41312496e-02 4.00000000e-05
+ 1.13043284e+01] cst_delta_pib 0.04785986333868508
+2021-03-10 14:00:37,410 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 264 x_264 [2.15760592e+00 6.08893626e-02 3.41403679e-02 4.00000000e-05
+ 1.13043106e+01] cst_delta_pib 0.04785974991871446
+2021-03-10 14:00:38,132 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 265 x_265 [2.15734674e+00 6.09056539e-02 3.41499324e-02 4.00000000e-05
+ 1.13042777e+01] cst_delta_pib 0.0478573779779254
+2021-03-10 14:00:38,500 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 266 x_266 [2.15549496e+00 6.10058091e-02 3.41979727e-02 4.00000000e-05
+ 1.13040433e+01] cst_delta_pib 0.04784375830108972
+2021-03-10 14:00:38,867 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 267 x_267 [2.15525494e+00 6.10008065e-02 3.41817201e-02 4.00000000e-05
+ 1.13040134e+01] cst_delta_pib 0.047839202233647515
+2021-03-10 14:00:39,234 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 268 x_268 [2.15559054e+00 6.09319914e-02 3.41096774e-02 4.00000000e-05
+ 1.13040572e+01] cst_delta_pib 0.04783329051344895
+2021-03-10 14:00:39,596 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 269 x_269 [2.15589449e+00 6.09064530e-02 3.40904121e-02 4.00000000e-05
+ 1.13040959e+01] cst_delta_pib 0.04783287489642428
+2021-03-10 14:00:39,960 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 270 x_270 [2.15608020e+00 6.08923832e-02 3.40805582e-02 4.00000000e-05
+ 1.13041195e+01] cst_delta_pib 0.047832805155784384
+2021-03-10 14:00:40,341 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 271 x_271 [2.15608691e+00 6.08920769e-02 3.40804543e-02 4.00000000e-05
+ 1.13041204e+01] cst_delta_pib 0.04783280303791607
+2021-03-10 14:00:40,703 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 272 x_272 [2.15612234e+00 6.08909605e-02 3.40805287e-02 4.00000000e-05
+ 1.13041249e+01] cst_delta_pib 0.04783278534452877
+2021-03-10 14:00:41,058 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 273 x_273 [2.15614939e+00 6.08903990e-02 3.40809437e-02 4.00000000e-05
+ 1.13041283e+01] cst_delta_pib 0.04783276176070272
+2021-03-10 14:00:41,436 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 274 x_274 [2.15617659e+00 6.08915100e-02 3.40834364e-02 4.00000000e-05
+ 1.13041316e+01] cst_delta_pib 0.047832701752799814
+2021-03-10 14:00:41,812 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 275 x_275 [2.15618111e+00 6.08949061e-02 3.40878187e-02 4.00000000e-05
+ 1.13041321e+01] cst_delta_pib 0.047832599727562604
+2021-03-10 14:00:42,170 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 276 x_276 [2.15611308e+00 6.09058995e-02 3.40986104e-02 4.00000000e-05
+ 1.13041233e+01] cst_delta_pib 0.04783237724161754
+2021-03-10 14:00:42,556 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 277 x_277 [2.15593553e+00 6.09237339e-02 3.41133361e-02 4.00000000e-05
+ 1.13041006e+01] cst_delta_pib 0.047832026750028594
+2021-03-10 14:00:42,916 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 278 x_278 [2.15563349e+00 6.09474818e-02 3.41302313e-02 4.00000000e-05
+ 1.13040622e+01] cst_delta_pib 0.04783188673403585
+2021-03-10 14:00:43,363 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 279 x_279 [2.15560979e+00 6.09437890e-02 3.41246831e-02 4.00000000e-05
+ 1.13040593e+01] cst_delta_pib 0.047831726519693196
+2021-03-10 14:00:43,810 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 280 x_280 [2.15561889e+00 6.09375822e-02 3.41173746e-02 4.00000000e-05
+ 1.13040606e+01] cst_delta_pib 0.04783164887263142
+2021-03-10 14:00:44,205 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 281 x_281 [2.15563167e+00 6.09355092e-02 3.41153348e-02 4.00000000e-05
+ 1.13040623e+01] cst_delta_pib 0.047831636677501066
+2021-03-10 14:00:44,588 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 282 x_282 [2.15566621e+00 6.09310690e-02 3.41112428e-02 4.00000000e-05
+ 1.13040667e+01] cst_delta_pib 0.04783154936324666
+2021-03-10 14:00:44,956 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 283 x_283 [2.15584888e+00 6.09102843e-02 3.40927080e-02 4.00000000e-05
+ 1.13040901e+01] cst_delta_pib 0.047830577335446156
+2021-03-10 14:00:45,330 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 284 x_284 [2.15621975e+00 6.08762709e-02 3.40646231e-02 4.00000000e-05
+ 1.13041375e+01] cst_delta_pib 0.04782659001904291
+2021-03-10 14:00:45,695 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 285 x_285 [2.15857333e+00 6.06816574e-02 3.39111431e-02 4.00000000e-05
+ 1.13044373e+01] cst_delta_pib 0.04780686191120308
+2021-03-10 14:00:46,045 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 286 x_286 [2.15985018e+00 6.06039289e-02 3.38603851e-02 4.00000000e-05
+ 1.13045993e+01] cst_delta_pib 0.04778853769615329
+2021-03-10 14:00:46,410 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 287 x_287 [2.16799552e+00 6.01948003e-02 3.36377165e-02 4.00000000e-05
+ 1.13056303e+01] cst_delta_pib 0.047698200747442965
+2021-03-10 14:00:46,761 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 288 x_288 [2.16947142e+00 6.02038634e-02 3.36944310e-02 4.00000000e-05
+ 1.13058150e+01] cst_delta_pib 0.047658308646271214
+2021-03-10 14:00:47,128 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 289 x_289 [2.16963294e+00 6.02822267e-02 3.37909009e-02 4.00000000e-05
+ 1.13058332e+01] cst_delta_pib 0.04764462510066798
+2021-03-10 14:00:47,500 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 290 x_290 [2.16918291e+00 6.03277252e-02 3.38299048e-02 4.00000000e-05
+ 1.13057757e+01] cst_delta_pib 0.047643786110588046
+2021-03-10 14:00:47,861 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 291 x_291 [2.16911458e+00 6.03322552e-02 3.38330451e-02 4.00000000e-05
+ 1.13057670e+01] cst_delta_pib 0.04764372554821655
+2021-03-10 14:00:48,221 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 292 x_292 [2.16875580e+00 6.03553325e-02 3.38486704e-02 4.00000000e-05
+ 1.13057215e+01] cst_delta_pib 0.047643307526123245
+2021-03-10 14:00:48,582 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 293 x_293 [2.16837741e+00 6.03764344e-02 3.38613165e-02 4.00000000e-05
+ 1.13056735e+01] cst_delta_pib 0.04764272675896127
+2021-03-10 14:00:48,939 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 294 x_294 [2.16782581e+00 6.04035887e-02 3.38754082e-02 4.00000000e-05
+ 1.13056037e+01] cst_delta_pib 0.047641485219317055
+2021-03-10 14:00:49,299 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 295 x_295 [2.16721855e+00 6.04190895e-02 3.38737944e-02 4.00000000e-05
+ 1.13055272e+01] cst_delta_pib 0.047638975166888406
+2021-03-10 14:00:49,654 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 296 x_296 [2.16702717e+00 6.04092378e-02 3.38556959e-02 4.00000000e-05
+ 1.13055035e+01] cst_delta_pib 0.04763714542636227
+2021-03-10 14:00:50,005 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 297 x_297 [2.16730433e+00 6.03710095e-02 3.38192457e-02 4.00000000e-05
+ 1.13055392e+01] cst_delta_pib 0.047635672481650154
+2021-03-10 14:00:50,373 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 298 x_298 [2.16774128e+00 6.03389524e-02 3.37953028e-02 4.00000000e-05
+ 1.13055948e+01] cst_delta_pib 0.04763424653129803
+2021-03-10 14:00:50,768 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 299 x_299 [2.16892147e+00 6.02624535e-02 3.37424247e-02 4.00000000e-05
+ 1.13057446e+01] cst_delta_pib 0.04763085255032345
+2021-03-10 14:00:51,161 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 300 x_300 [2.16986403e+00 6.02109166e-02 3.37112965e-02 4.00000000e-05
+ 1.13058640e+01] cst_delta_pib 0.04762771367337059
+2021-03-10 14:00:51,573 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 301 x_301 [2.17136234e+00 6.01407650e-02 3.36751749e-02 4.00000000e-05
+ 1.13060536e+01] cst_delta_pib 0.047620920355713706
+2021-03-10 14:00:51,946 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 302 x_302 [2.17307516e+00 6.00820087e-02 3.36582624e-02 4.00000000e-05
+ 1.13062697e+01] cst_delta_pib 0.0476103323668302
+2021-03-10 14:00:52,337 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 303 x_303 [2.17419795e+00 6.00858490e-02 3.36954733e-02 4.00000000e-05
+ 1.13064103e+01] cst_delta_pib 0.04759749719522556
+2021-03-10 14:00:52,739 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 304 x_304 [2.17388479e+00 6.01644454e-02 3.37758302e-02 4.00000000e-05
+ 1.13063691e+01] cst_delta_pib 0.047588743454128
+2021-03-10 14:00:53,132 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 305 x_305 [2.17284481e+00 6.02450970e-02 3.38371708e-02 4.00000000e-05
+ 1.13062368e+01] cst_delta_pib 0.04758576092574016
+2021-03-10 14:00:53,520 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 306 x_306 [2.17222488e+00 6.02744324e-02 3.38523871e-02 4.00000000e-05
+ 1.13061583e+01] cst_delta_pib 0.04758500374036238
+2021-03-10 14:00:53,887 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 307 x_307 [2.17187489e+00 6.02894896e-02 3.38592205e-02 4.00000000e-05
+ 1.13061141e+01] cst_delta_pib 0.047584531197238586
+2021-03-10 14:00:54,247 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 308 x_308 [2.17140029e+00 6.03069532e-02 3.38650418e-02 4.00000000e-05
+ 1.13060542e+01] cst_delta_pib 0.04758366756717768
+2021-03-10 14:00:54,612 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 309 x_309 [2.17093937e+00 6.03196751e-02 3.38657085e-02 4.00000000e-05
+ 1.13059961e+01] cst_delta_pib 0.04758225013400607
+2021-03-10 14:00:54,969 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 310 x_310 [2.17037901e+00 6.03292040e-02 3.38593485e-02 4.00000000e-05
+ 1.13059256e+01] cst_delta_pib 0.047578918098223136
+2021-03-10 14:00:55,350 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 311 x_311 [2.17001245e+00 6.03099159e-02 3.38247802e-02 4.00000000e-05
+ 1.13058802e+01] cst_delta_pib 0.047571664809928145
+2021-03-10 14:00:55,714 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 312 x_312 [2.17059699e+00 6.02396875e-02 3.37595015e-02 4.00000000e-05
+ 1.13059552e+01] cst_delta_pib 0.04756219019817208
+2021-03-10 14:00:56,062 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 313 x_313 [2.17283117e+00 6.00729565e-02 3.36310884e-02 4.00000000e-05
+ 1.13062395e+01] cst_delta_pib 0.04754927158042594
+2021-03-10 14:00:57,532 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 314 x_314 [2.17320153e+00 6.00529907e-02 3.36189383e-02 4.00000000e-05
+ 1.13062864e+01] cst_delta_pib 0.047547954046853774
+2021-03-10 14:00:58,247 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 315 x_315 [2.17385100e+00 6.00219661e-02 3.36023794e-02 4.00000000e-05
+ 1.13063686e+01] cst_delta_pib 0.047547937139440825
+2021-03-10 14:00:58,622 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 316 x_316 [2.17512803e+00 5.99789497e-02 3.35912444e-02 4.00000000e-05
+ 1.13065297e+01] cst_delta_pib 0.047545975574640534
+2021-03-10 14:00:58,974 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 317 x_317 [2.17506895e+00 5.99807546e-02 3.35915379e-02 4.00000000e-05
+ 1.13065222e+01] cst_delta_pib 0.0475459635259685
+2021-03-10 14:00:59,330 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 318 x_318 [2.17503893e+00 5.99813942e-02 3.35913549e-02 4.00000000e-05
+ 1.13065184e+01] cst_delta_pib 0.04754594920967398
+2021-03-10 14:00:59,689 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 319 x_319 [2.17496882e+00 5.99817944e-02 3.35896171e-02 4.00000000e-05
+ 1.13065097e+01] cst_delta_pib 0.047545882929484036
+2021-03-10 14:01:00,079 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 320 x_320 [2.17493168e+00 5.99793062e-02 3.35854586e-02 4.00000000e-05
+ 1.13065051e+01] cst_delta_pib 0.04754575799161558
+2021-03-10 14:01:02,649 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 321 x_321 [2.17495296e+00 5.99757000e-02 3.35818079e-02 4.00000000e-05
+ 1.13065078e+01] cst_delta_pib 0.047545645771894615
+2021-03-10 14:01:07,001 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 322 x_322 [2.17501205e+00 6.00121872e-02 3.35730599e-02 4.00000000e-05
+ 1.13065115e+01] cst_delta_pib 0.04720869324569124
+2021-03-10 14:01:07,351 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 323 x_323 [2.17516029e+00 6.01037260e-02 3.35511128e-02 4.00000000e-05
+ 1.13065207e+01] cst_delta_pib 0.0468650237756137
+2021-03-10 14:01:09,585 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 324 x_324 [2.17515974e+00 6.01033879e-02 3.35511939e-02 4.00000000e-05
+ 1.13065206e+01] cst_delta_pib 0.04686493713329691
+2021-03-10 14:01:13,206 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 325 x_325 [2.17515925e+00 6.01030838e-02 3.35512668e-02 4.00000000e-05
+ 1.13065206e+01] cst_delta_pib 0.0468648670459564
+2021-03-10 14:01:17,501 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 326 x_326 [2.17516173e+00 6.01005229e-02 3.35546632e-02 4.00000000e-05
+ 1.13065208e+01] cst_delta_pib 0.046864686427475835
+2021-03-10 14:01:17,859 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 327 x_327 [2.17516336e+00 6.00988452e-02 3.35568881e-02 4.00000000e-05
+ 1.13065209e+01] cst_delta_pib 0.04686424392432882
+2021-03-10 14:01:18,226 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 328 x_328 [2.17516356e+00 6.00986366e-02 3.35571649e-02 4.00000000e-05
+ 1.13065210e+01] cst_delta_pib 0.04686423843466487
+2021-03-10 14:01:20,399 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 329 x_329 [2.17516366e+00 6.00985449e-02 3.35573065e-02 4.00000000e-05
+ 1.13065210e+01] cst_delta_pib 0.04686423325227794
+2021-03-10 14:01:20,754 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 330 x_330 [2.17516382e+00 6.00984235e-02 3.35575500e-02 4.00000000e-05
+ 1.13065210e+01] cst_delta_pib 0.046864213739216745
+2021-03-10 14:01:21,110 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 331 x_331 [2.17516429e+00 6.00981755e-02 3.35582902e-02 4.00000000e-05
+ 1.13065210e+01] cst_delta_pib 0.046864130789636804
+2021-03-10 14:01:21,469 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 332 x_332 [2.17516501e+00 6.00980230e-02 3.35595043e-02 4.00000000e-05
+ 1.13065211e+01] cst_delta_pib 0.04686394520349878
+2021-03-10 14:01:21,826 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 333 x_333 [2.17516642e+00 6.00982706e-02 3.35621420e-02 4.00000000e-05
+ 1.13065212e+01] cst_delta_pib 0.04686342928969571
+2021-03-10 14:01:22,186 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 334 x_334 [2.17516911e+00 6.00999499e-02 3.35676456e-02 4.00000000e-05
+ 1.13065214e+01] cst_delta_pib 0.0468604727833595
+2021-03-10 14:01:22,906 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 335 x_335 [2.17517920e+00 6.01188679e-02 3.35934708e-02 4.00000000e-05
+ 1.13065223e+01] cst_delta_pib 0.046848568755258654
+2021-03-10 14:01:23,268 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 336 x_336 [2.17524230e+00 6.02540008e-02 3.37619399e-02 4.00000000e-05
+ 1.13065276e+01] cst_delta_pib 0.04679811841710654
+2021-03-10 14:01:23,655 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 337 x_337 [2.17526258e+00 6.03133187e-02 3.38225931e-02 4.00000000e-05
+ 1.13065292e+01] cst_delta_pib 0.046776538253507575
+2021-03-10 14:01:24,015 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 338 x_338 [2.17529515e+00 6.04378511e-02 3.39320443e-02 4.00000000e-05
+ 1.13065319e+01] cst_delta_pib 0.04673472964940399
+2021-03-10 14:01:24,371 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 339 x_339 [2.17529047e+00 6.04342387e-02 3.39221861e-02 4.00000000e-05
+ 1.13065315e+01] cst_delta_pib 0.046733380868301734
+2021-03-10 14:01:24,729 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 340 x_340 [2.17528781e+00 6.04302348e-02 3.39157709e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.0467332619532047
+2021-03-10 14:01:25,091 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 341 x_341 [2.17528754e+00 6.04294805e-02 3.39149823e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326109546652
+2021-03-10 14:01:25,452 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 342 x_342 [2.17528747e+00 6.04292418e-02 3.39147487e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326103558684
+2021-03-10 14:01:25,802 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 343 x_343 [2.17528747e+00 6.04292407e-02 3.39147479e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326103553004
+2021-03-10 14:01:26,163 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 344 x_344 [2.17528747e+00 6.04292381e-02 3.39147473e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.046733261035217896
+2021-03-10 14:01:26,508 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 345 x_345 [2.17528747e+00 6.04292345e-02 3.39147457e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326103465703
+2021-03-10 14:01:26,866 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 346 x_346 [2.17528747e+00 6.04292337e-02 3.39147496e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.0467332610330405
+2021-03-10 14:01:27,231 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 347 x_347 [2.17528747e+00 6.04292382e-02 3.39147602e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326102993255
+2021-03-10 14:01:27,591 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 348 x_348 [2.17528749e+00 6.04292601e-02 3.39147925e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326102248274
+2021-03-10 14:01:27,958 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 349 x_349 [2.17528751e+00 6.04293104e-02 3.39148543e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.0467332610095919
+2021-03-10 14:01:28,317 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 350 x_350 [2.17528755e+00 6.04293963e-02 3.39149482e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326099255525
+2021-03-10 14:01:28,674 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 351 x_351 [2.17528757e+00 6.04294668e-02 3.39150149e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.046733260981153234
+2021-03-10 14:01:29,043 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 352 x_352 [2.17528757e+00 6.04294859e-02 3.39150256e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326097776118
+2021-03-10 14:01:29,410 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 353 x_353 [2.17528757e+00 6.04294822e-02 3.39150184e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326097740921
+2021-03-10 14:01:29,758 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 354 x_354 [2.17528756e+00 6.04294793e-02 3.39150149e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.046733260977344766
+2021-03-10 14:01:30,116 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 355 x_355 [2.17528756e+00 6.04294718e-02 3.39150062e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.046733260976813455
+2021-03-10 14:01:30,828 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 356 x_356 [2.17528751e+00 6.04293283e-02 3.39148438e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.04673326086351245
+2021-03-10 14:01:31,205 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 357 x_357 [2.17528740e+00 6.04290101e-02 3.39144883e-02 4.00000000e-05
+ 1.13065313e+01] cst_delta_pib 0.0467332603844739
+2021-03-10 14:01:31,560 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 358 x_358 [2.17528722e+00 6.04283949e-02 3.39138112e-02 4.00000000e-05
+ 1.13065312e+01] cst_delta_pib 0.046733258944106335
+2021-03-10 14:01:31,922 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 359 x_359 [2.17528704e+00 6.04274372e-02 3.39127893e-02 4.00000000e-05
+ 1.13065312e+01] cst_delta_pib 0.0467332554917625
+2021-03-10 14:01:32,279 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 360 x_360 [2.17528698e+00 6.04258909e-02 3.39112179e-02 4.00000000e-05
+ 1.13065312e+01] cst_delta_pib 0.04673324700883354
+2021-03-10 14:01:32,630 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 361 x_361 [2.17528740e+00 6.04237793e-02 3.39092463e-02 4.00000000e-05
+ 1.13065312e+01] cst_delta_pib 0.04673322920982692
+2021-03-10 14:01:38,374 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 362 x_362 [2.17528769e+00 6.04240128e-02 3.39090049e-02 4.00000000e-05
+ 1.13065312e+01] cst_delta_pib 0.04673321099586439
+2021-03-10 14:01:39,087 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 363 x_363 [2.17528774e+00 6.04240499e-02 3.39089665e-02 4.00000000e-05
+ 1.13065312e+01] cst_delta_pib 0.046733209067461846
+2021-03-10 14:01:41,248 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 364 x_364 [2.17528776e+00 6.04240720e-02 3.39089436e-02 4.00000000e-05
+ 1.13065312e+01] cst_delta_pib 0.04673320804121747
+2021-03-10 14:01:45,696 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 365 x_365 [2.17537347e+00 6.04235077e-02 3.39023592e-02 4.00000000e-05
+ 1.13065317e+01] cst_delta_pib 0.04673212928521496
+2021-03-10 14:01:46,069 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 366 x_366 [2.17536746e+00 6.04235473e-02 3.39028208e-02 4.00000000e-05
+ 1.13065316e+01] cst_delta_pib 0.04673212023105577
+2021-03-10 14:01:46,438 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 367 x_367 [2.17536618e+00 6.04235557e-02 3.39029190e-02 4.00000000e-05
+ 1.13065316e+01] cst_delta_pib 0.046732119947097354
+2021-03-10 14:01:47,919 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 368 x_368 [2.17536667e+00 6.04235519e-02 3.39028824e-02 4.00000000e-05
+ 1.13065316e+01] cst_delta_pib 0.046732119546401496
+2021-03-10 14:01:48,287 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 369 x_369 [2.17536898e+00 6.04235307e-02 3.39027102e-02 4.00000000e-05
+ 1.13065316e+01] cst_delta_pib 0.04673211626076551
+2021-03-10 14:01:48,645 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 370 x_370 [2.17537251e+00 6.04234907e-02 3.39024547e-02 4.00000000e-05
+ 1.13065317e+01] cst_delta_pib 0.046732108468934934
+2021-03-10 14:01:49,011 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 371 x_371 [2.17537903e+00 6.04233974e-02 3.39020013e-02 4.00000000e-05
+ 1.13065317e+01] cst_delta_pib 0.04673208707024572
+2021-03-10 14:01:49,370 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 372 x_372 [2.17539048e+00 6.04231869e-02 3.39012480e-02 4.00000000e-05
+ 1.13065318e+01] cst_delta_pib 0.04673203253355805
+2021-03-10 14:01:49,728 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 373 x_373 [2.17541240e+00 6.04226771e-02 3.38999075e-02 4.00000000e-05
+ 1.13065319e+01] cst_delta_pib 0.04673189032699616
+2021-03-10 14:01:50,098 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 374 x_374 [2.17545518e+00 6.04214483e-02 3.38975093e-02 4.00000000e-05
+ 1.13065321e+01] cst_delta_pib 0.04673152975261854
+2021-03-10 14:01:50,473 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 375 x_375 [2.17554439e+00 6.04183999e-02 3.38929653e-02 4.00000000e-05
+ 1.13065326e+01] cst_delta_pib 0.04673060385949278
+2021-03-10 14:01:50,857 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 376 x_376 [2.17574041e+00 6.04107437e-02 3.38838808e-02 4.00000000e-05
+ 1.13065338e+01] cst_delta_pib 0.046728229834143174
+2021-03-10 14:01:51,322 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 377 x_377 [2.17618694e+00 6.03915164e-02 3.38648618e-02 4.00000000e-05
+ 1.13065363e+01] cst_delta_pib 0.04672218945295563
+2021-03-10 14:01:51,755 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 378 x_378 [2.17723510e+00 6.03432034e-02 3.38232031e-02 4.00000000e-05
+ 1.13065424e+01] cst_delta_pib 0.046709871692572236
+2021-03-10 14:01:52,790 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 379 x_379 [2.18545028e+00 5.98995049e-02 3.35577304e-02 4.00000000e-05
+ 1.13065894e+01] cst_delta_pib 0.04643452306871717
+2021-03-10 14:01:53,200 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 380 x_380 [2.21496251e+00 5.83556061e-02 3.25570774e-02 4.00000000e-05
+ 1.13067586e+01] cst_delta_pib 0.046059386711916575
+2021-03-10 14:01:53,662 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 381 x_381 [2.21533166e+00 5.83512456e-02 3.25305283e-02 4.00000000e-05
+ 1.13067608e+01] cst_delta_pib 0.046023676711094634
+2021-03-10 14:01:54,037 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 382 x_382 [2.21728492e+00 5.82569575e-02 3.24568909e-02 4.00000000e-05
+ 1.13067720e+01] cst_delta_pib 0.04601875594772713
+2021-03-10 14:01:54,423 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 383 x_383 [2.21744533e+00 5.82487477e-02 3.24512820e-02 4.00000000e-05
+ 1.13067729e+01] cst_delta_pib 0.04601874564863372
+2021-03-10 14:01:55,863 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 384 x_384 [2.21765181e+00 5.82380536e-02 3.24445817e-02 4.00000000e-05
+ 1.13067741e+01] cst_delta_pib 0.046018592428355175
+2021-03-10 14:01:56,229 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 385 x_385 [2.21820439e+00 5.82101304e-02 3.24274310e-02 4.00000000e-05
+ 1.13067772e+01] cst_delta_pib 0.04601778649844133
+2021-03-10 14:01:56,587 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 386 x_386 [2.21920394e+00 5.81614271e-02 3.23988090e-02 4.00000000e-05
+ 1.13067829e+01] cst_delta_pib 0.046015462121207315
+2021-03-10 14:01:56,965 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 387 x_387 [2.22062496e+00 5.80966688e-02 3.23632632e-02 4.00000000e-05
+ 1.13067909e+01] cst_delta_pib 0.0460101320050192
+2021-03-10 14:01:57,332 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 388 x_388 [2.22266775e+00 5.80155517e-02 3.23274418e-02 4.00000000e-05
+ 1.13068023e+01] cst_delta_pib 0.04599692113765749
+2021-03-10 14:01:57,691 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 389 x_389 [2.22470651e+00 5.79643568e-02 3.23287098e-02 4.00000000e-05
+ 1.13068134e+01] cst_delta_pib 0.04597017166736313
+2021-03-10 14:01:58,066 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 390 x_390 [2.22528802e+00 5.80330104e-02 3.24326935e-02 4.00000000e-05
+ 1.13068155e+01] cst_delta_pib 0.04592813271173912
+2021-03-10 14:01:58,417 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 391 x_391 [2.22247296e+00 5.82583572e-02 3.26232642e-02 4.00000000e-05
+ 1.13067984e+01] cst_delta_pib 0.04589718999102586
+2021-03-10 14:01:58,787 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 392 x_392 [2.21980557e+00 5.84101342e-02 3.27270703e-02 4.00000000e-05
+ 1.13067830e+01] cst_delta_pib 0.04588835014618876
+2021-03-10 14:01:59,158 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 393 x_393 [2.21843064e+00 5.84766251e-02 3.27659694e-02 4.00000000e-05
+ 1.13067752e+01] cst_delta_pib 0.0458869650430815
+2021-03-10 14:01:59,524 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 394 x_394 [2.21832168e+00 5.84787257e-02 3.27651097e-02 4.00000000e-05
+ 1.13067746e+01] cst_delta_pib 0.045886924224551436
+2021-03-10 14:01:59,899 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 395 x_395 [2.21832735e+00 5.84771749e-02 3.27633603e-02 4.00000000e-05
+ 1.13067747e+01] cst_delta_pib 0.045886919943435134
+2021-03-10 14:02:00,284 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 396 x_396 [2.21832899e+00 5.84766634e-02 3.27627740e-02 4.00000000e-05
+ 1.13067747e+01] cst_delta_pib 0.04588691623889682
+2021-03-10 14:02:00,643 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 397 x_397 [2.21834413e+00 5.84734745e-02 3.27592651e-02 4.00000000e-05
+ 1.13067748e+01] cst_delta_pib 0.045886884453223885
+2021-03-10 14:02:01,022 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 398 x_398 [2.21836783e+00 5.84695960e-02 3.27551423e-02 4.00000000e-05
+ 1.13067750e+01] cst_delta_pib 0.04588682495608874
+2021-03-10 14:02:01,473 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 399 x_399 [2.21843338e+00 5.84614128e-02 3.27468785e-02 4.00000000e-05
+ 1.13067754e+01] cst_delta_pib 0.045886645619890976
+2021-03-10 14:02:01,856 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 400 x_400 [2.21858091e+00 5.84470620e-02 3.27332838e-02 4.00000000e-05
+ 1.13067763e+01] cst_delta_pib 0.045886206226773085
+2021-03-10 14:02:02,219 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 401 x_401 [2.21894634e+00 5.84187470e-02 3.27085245e-02 4.00000000e-05
+ 1.13067785e+01] cst_delta_pib 0.04588325058435409
+2021-03-10 14:02:02,577 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 402 x_402 [2.21966089e+00 5.83754376e-02 3.26749652e-02 4.00000000e-05
+ 1.13067827e+01] cst_delta_pib 0.045880670790388364
+2021-03-10 14:02:02,933 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 403 x_403 [2.22229099e+00 5.82362945e-02 3.25764126e-02 4.00000000e-05
+ 1.13067978e+01] cst_delta_pib 0.04587071151403948
+2021-03-10 14:02:03,283 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 404 x_404 [2.22477233e+00 5.81299123e-02 3.25139808e-02 4.00000000e-05
+ 1.13068118e+01] cst_delta_pib 0.04586211654167516
+2021-03-10 14:02:03,643 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 405 x_405 [2.22862523e+00 5.79984301e-02 3.24580751e-02 4.00000000e-05
+ 1.13068331e+01] cst_delta_pib 0.04585416252676315
+2021-03-10 14:02:04,000 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 406 x_406 [2.22903470e+00 5.80085628e-02 3.24816087e-02 4.00000000e-05
+ 1.13068351e+01] cst_delta_pib 0.04585150864975482
+2021-03-10 14:02:04,379 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 407 x_407 [2.22868505e+00 5.80438138e-02 3.25151785e-02 4.00000000e-05
+ 1.13068329e+01] cst_delta_pib 0.045850782115368395
+2021-03-10 14:02:04,742 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 408 x_408 [2.22851819e+00 5.80523366e-02 3.25210423e-02 4.00000000e-05
+ 1.13068319e+01] cst_delta_pib 0.045850737190196715
+2021-03-10 14:02:05,101 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 409 x_409 [2.22826060e+00 5.80644145e-02 3.25286899e-02 4.00000000e-05
+ 1.13068305e+01] cst_delta_pib 0.04585052404757028
+2021-03-10 14:02:05,458 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 410 x_410 [2.22728838e+00 5.81100973e-02 3.25573192e-02 4.00000000e-05
+ 1.13068250e+01] cst_delta_pib 0.04584940323431692
+2021-03-10 14:02:05,825 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 411 x_411 [2.22629894e+00 5.81560274e-02 3.25850803e-02 4.00000000e-05
+ 1.13068193e+01] cst_delta_pib 0.045847562948460235
+2021-03-10 14:02:06,183 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 412 x_412 [2.22472818e+00 5.82299598e-02 3.26284754e-02 4.00000000e-05
+ 1.13068104e+01] cst_delta_pib 0.04584263430027386
+2021-03-10 14:02:06,613 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 413 x_413 [2.22307569e+00 5.83061411e-02 3.26674516e-02 4.00000000e-05
+ 1.13068011e+01] cst_delta_pib 0.04583114420641986
+2021-03-10 14:02:07,690 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 414 x_414 [2.22291979e+00 5.83112612e-02 3.26570248e-02 4.00000000e-05
+ 1.13068003e+01] cst_delta_pib 0.045819873941560195
+2021-03-10 14:02:09,510 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 415 x_415 [2.22491503e+00 5.82150737e-02 3.25805258e-02 4.00000000e-05
+ 1.13068117e+01] cst_delta_pib 0.04580791704905785
+2021-03-10 14:02:10,104 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 416 x_416 [2.22739317e+00 5.80979722e-02 3.25001375e-02 4.00000000e-05
+ 1.13068258e+01] cst_delta_pib 0.04580376492531451
+2021-03-10 14:02:10,552 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 417 x_417 [2.22849604e+00 5.80463478e-02 3.24679183e-02 4.00000000e-05
+ 1.13068321e+01] cst_delta_pib 0.04580315988629057
+2021-03-10 14:02:10,990 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 418 x_418 [2.22868660e+00 5.80375848e-02 3.24634376e-02 4.00000000e-05
+ 1.13068332e+01] cst_delta_pib 0.045803109130661636
+2021-03-10 14:02:11,376 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 419 x_419 [2.22866934e+00 5.80384484e-02 3.24643077e-02 4.00000000e-05
+ 1.13068331e+01] cst_delta_pib 0.04580310566737134
+2021-03-10 14:02:11,783 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 420 x_420 [2.22863929e+00 5.80398813e-02 3.24653432e-02 4.00000000e-05
+ 1.13068329e+01] cst_delta_pib 0.045803104464763385
+2021-03-10 14:02:12,160 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 421 x_421 [2.22862608e+00 5.80405253e-02 3.24658624e-02 4.00000000e-05
+ 1.13068328e+01] cst_delta_pib 0.04580310273695981
+2021-03-10 14:02:12,648 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 422 x_422 [2.22857635e+00 5.80429468e-02 3.24677318e-02 4.00000000e-05
+ 1.13068325e+01] cst_delta_pib 0.045803095264505614
+2021-03-10 14:02:13,044 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 423 x_423 [2.22851927e+00 5.80457478e-02 3.24698610e-02 4.00000000e-05
+ 1.13068322e+01] cst_delta_pib 0.04580308180309436
+2021-03-10 14:02:13,457 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 424 x_424 [2.22841119e+00 5.80511430e-02 3.24739720e-02 4.00000000e-05
+ 1.13068316e+01] cst_delta_pib 0.04580303913582584
+2021-03-10 14:02:13,888 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 425 x_425 [2.22823325e+00 5.80602946e-02 3.24810534e-02 4.00000000e-05
+ 1.13068306e+01] cst_delta_pib 0.045802925350711794
+2021-03-10 14:02:14,305 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 426 x_426 [2.22795465e+00 5.80751901e-02 3.24926217e-02 4.00000000e-05
+ 1.13068290e+01] cst_delta_pib 0.045802650227980725
+2021-03-10 14:02:14,714 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 427 x_427 [2.22750042e+00 5.81009343e-02 3.25127903e-02 4.00000000e-05
+ 1.13068263e+01] cst_delta_pib 0.045801953260108774
+2021-03-10 14:02:15,082 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 428 x_428 [2.22681331e+00 5.81434872e-02 3.25465986e-02 4.00000000e-05
+ 1.13068223e+01] cst_delta_pib 0.04580029575007616
+2021-03-10 14:02:15,481 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 429 x_429 [2.22590350e+00 5.82084502e-02 3.25992521e-02 4.00000000e-05
+ 1.13068169e+01] cst_delta_pib 0.04579671610923844
+2021-03-10 14:02:15,863 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 430 x_430 [2.22512626e+00 5.82834741e-02 3.26620253e-02 4.00000000e-05
+ 1.13068120e+01] cst_delta_pib 0.04579581242133128
+2021-03-10 14:02:16,239 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 431 x_431 [2.22571979e+00 5.82714309e-02 3.26553430e-02 4.00000000e-05
+ 1.13068152e+01] cst_delta_pib 0.04579142942594547
+2021-03-10 14:02:16,611 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 432 x_432 [2.22707802e+00 5.82244107e-02 3.26223110e-02 4.00000000e-05
+ 1.13068228e+01] cst_delta_pib 0.0457849970511628
+2021-03-10 14:02:17,720 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 433 x_433 [2.22734966e+00 5.82069900e-02 3.26083971e-02 3.99993876e-05
+ 1.13068244e+01] cst_delta_pib 0.045784560609075
+2021-03-10 14:02:18,073 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 434 x_434 [2.23232066e+00 5.81169463e-02 3.25623378e-02 3.99456893e-05
+ 1.13068512e+01] cst_delta_pib 0.04578284500555742
+2021-03-10 14:02:18,438 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 435 x_435 [2.23623308e+00 5.80739777e-02 3.25515178e-02 3.99056697e-05
+ 1.13068721e+01] cst_delta_pib 0.045778124519268895
+2021-03-10 14:02:18,814 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 436 x_436 [2.23750669e+00 5.80456941e-02 3.25349591e-02 3.98974969e-05
+ 1.13068790e+01] cst_delta_pib 0.04577768111843817
+2021-03-10 14:02:19,167 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 437 x_437 [2.23760000e+00 5.80475473e-02 3.25373246e-02 3.98963569e-05
+ 1.13068795e+01] cst_delta_pib 0.045777666059293606
+2021-03-10 14:02:19,534 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 438 x_438 [2.23754065e+00 5.80497958e-02 3.25389444e-02 3.98967337e-05
+ 1.13068791e+01] cst_delta_pib 0.04577766515371584
+2021-03-10 14:02:19,893 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 439 x_439 [2.23754611e+00 5.80497442e-02 3.25389369e-02 3.98966733e-05
+ 1.13068792e+01] cst_delta_pib 0.04577766515137928
+2021-03-10 14:02:20,633 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 440 x_440 [2.23754645e+00 5.80497271e-02 3.25389238e-02 3.98966743e-05
+ 1.13068792e+01] cst_delta_pib 0.045777665151165846
+2021-03-10 14:02:21,396 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 441 x_441 [2.23754553e+00 5.80497438e-02 3.25389323e-02 3.98966830e-05
+ 1.13068792e+01] cst_delta_pib 0.045777665151098344
+2021-03-10 14:02:22,189 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 442 x_442 [2.23754553e+00 5.80496990e-02 3.25388916e-02 3.98966891e-05
+ 1.13068792e+01] cst_delta_pib 0.045777665150129175
+2021-03-10 14:02:22,555 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 443 x_443 [2.23754715e+00 5.80496685e-02 3.25388756e-02 3.98966748e-05
+ 1.13068792e+01] cst_delta_pib 0.0457776651483638
+2021-03-10 14:02:22,917 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 444 x_444 [2.23755209e+00 5.80495166e-02 3.25387759e-02 3.98966558e-05
+ 1.13068792e+01] cst_delta_pib 0.045777665107558936
+2021-03-10 14:02:23,287 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 445 x_445 [2.23752918e+00 5.80498341e-02 3.25389051e-02 3.98969097e-05
+ 1.13068791e+01] cst_delta_pib 0.04577766505832807
+2021-03-10 14:02:23,652 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 446 x_446 [2.23753808e+00 5.80494532e-02 3.25386688e-02 3.98969264e-05
+ 1.13068791e+01] cst_delta_pib 0.04577766430364178
+2021-03-10 14:02:24,002 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 447 x_447 [2.23753765e+00 5.80467078e-02 3.25369060e-02 3.98981925e-05
+ 1.13068786e+01] cst_delta_pib 0.0457776546864062
+2021-03-10 14:02:24,356 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 448 x_448 [2.23741908e+00 5.80428628e-02 3.25343759e-02 3.99019948e-05
+ 1.13068768e+01] cst_delta_pib 0.045777634721811275
+2021-03-10 14:02:24,729 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 449 x_449 [2.23698352e+00 5.80355750e-02 3.25296581e-02 3.99128751e-05
+ 1.13068712e+01] cst_delta_pib 0.04577758329265132
+2021-03-10 14:02:25,112 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 450 x_450 [2.23533369e+00 5.80209774e-02 3.25192734e-02 3.99476730e-05
+ 1.13068529e+01] cst_delta_pib 0.045777446220892075
+2021-03-10 14:02:25,838 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 451 x_451 [2.23496548e+00 5.80194930e-02 3.25180773e-02 3.99524374e-05
+ 1.13068491e+01] cst_delta_pib 0.04577737344571225
+2021-03-10 14:02:26,207 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 452 x_452 [2.23258319e+00 5.80057684e-02 3.25077494e-02 4.00000000e-05
+ 1.13068239e+01] cst_delta_pib 0.04577716410327899
+2021-03-10 14:02:26,576 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 453 x_453 [2.23235326e+00 5.80174160e-02 3.25150945e-02 4.00000000e-05
+ 1.13068236e+01] cst_delta_pib 0.04577707231907967
+2021-03-10 14:02:27,357 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 454 x_454 [2.23233254e+00 5.80174245e-02 3.25150862e-02 4.00000000e-05
+ 1.13068234e+01] cst_delta_pib 0.045777067135022
+2021-03-10 14:02:27,724 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 455 x_455 [2.23188655e+00 5.80377434e-02 3.25278780e-02 4.00000000e-05
+ 1.13068226e+01] cst_delta_pib 0.04577699673036396
+2021-03-10 14:02:28,102 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 456 x_456 [2.23186021e+00 5.80389845e-02 3.25286673e-02 4.00000000e-05
+ 1.13068225e+01] cst_delta_pib 0.04577699619835838
+2021-03-10 14:02:28,474 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 457 x_457 [2.23184363e+00 5.80397774e-02 3.25291766e-02 4.00000000e-05
+ 1.13068225e+01] cst_delta_pib 0.04577699591313453
+2021-03-10 14:02:28,866 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 458 x_458 [2.23182745e+00 5.80405698e-02 3.25296952e-02 4.00000000e-05
+ 1.13068224e+01] cst_delta_pib 0.04577699543948185
+2021-03-10 14:02:29,289 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 459 x_459 [2.23179629e+00 5.80421533e-02 3.25307604e-02 4.00000000e-05
+ 1.13068224e+01] cst_delta_pib 0.04577699393238402
+2021-03-10 14:02:29,668 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 460 x_460 [2.23175389e+00 5.80444748e-02 3.25323941e-02 4.00000000e-05
+ 1.13068222e+01] cst_delta_pib 0.045776990372734284
+2021-03-10 14:02:30,052 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 461 x_461 [2.23169986e+00 5.80478650e-02 3.25349584e-02 4.00000000e-05
+ 1.13068221e+01] cst_delta_pib 0.045776981923873805
+2021-03-10 14:02:30,471 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 462 x_462 [2.23169675e+00 5.80496770e-02 3.25369157e-02 4.00000000e-05
+ 1.13068219e+01] cst_delta_pib 0.045776961171554935
+2021-03-10 14:02:31,243 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 463 x_463 [2.23169308e+00 5.80516664e-02 3.25390585e-02 3.99994572e-05
+ 1.13068216e+01] cst_delta_pib 0.04577694999423673
+2021-03-10 14:02:31,605 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 464 x_464 [2.23184591e+00 5.80493192e-02 3.25399059e-02 3.99997650e-05
+ 1.13068214e+01] cst_delta_pib 0.045776910135565535
+2021-03-10 14:02:31,977 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 465 x_465 [2.23193497e+00 5.80455974e-02 3.25377664e-02 3.99997706e-05
+ 1.13068215e+01] cst_delta_pib 0.04577690451520463
+2021-03-10 14:02:32,696 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 466 x_466 [2.23194050e+00 5.80448140e-02 3.25370121e-02 3.99997273e-05
+ 1.13068216e+01] cst_delta_pib 0.04577690405837924
+2021-03-10 14:02:33,049 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 467 x_467 [2.23199649e+00 5.80425693e-02 3.25357735e-02 3.99997386e-05
+ 1.13068216e+01] cst_delta_pib 0.04577690319964396
+2021-03-10 14:02:33,406 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 468 x_468 [2.23199273e+00 5.80427275e-02 3.25358653e-02 3.99997386e-05
+ 1.13068216e+01] cst_delta_pib 0.045776903193262816
+2021-03-10 14:02:34,148 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 469 x_469 [2.23199273e+00 5.80427291e-02 3.25358671e-02 3.99997381e-05
+ 1.13068216e+01] cst_delta_pib 0.04577690319325476
+2021-03-10 14:02:34,499 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 470 x_470 [2.23199105e+00 5.80428017e-02 3.25359104e-02 3.99997381e-05
+ 1.13068216e+01] cst_delta_pib 0.04577690319268243
+2021-03-10 14:02:35,241 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 471 x_471 [2.23197691e+00 5.80427346e-02 3.25358518e-02 4.00000000e-05
+ 1.13068215e+01] cst_delta_pib 0.04577690175975614
+2021-03-10 14:02:35,612 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 472 x_472 [2.23196853e+00 5.80431219e-02 3.25361847e-02 4.00000000e-05
+ 1.13068214e+01] cst_delta_pib 0.0457769015760906
+2021-03-10 14:02:36,325 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 473 x_473 [2.23197244e+00 5.80429559e-02 3.25360858e-02 4.00000000e-05
+ 1.13068214e+01] cst_delta_pib 0.04577690157149852
+2021-03-10 14:02:36,684 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 474 x_474 [2.23197190e+00 5.80428748e-02 3.25359915e-02 4.00000000e-05
+ 1.13068215e+01] cst_delta_pib 0.04577690156332635
+2021-03-10 14:02:37,398 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 475 x_475 [2.23197222e+00 5.80428622e-02 3.25359844e-02 4.00000000e-05
+ 1.13068215e+01] cst_delta_pib 0.04577690156329474
+2021-03-10 14:02:37,757 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 476 x_476 [2.23197217e+00 5.80428799e-02 3.25360039e-02 4.00000000e-05
+ 1.13068215e+01] cst_delta_pib 0.04577690156283655
+2021-03-10 14:02:38,858 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 477 x_477 [2.23196942e+00 5.80430792e-02 3.25361746e-02 4.00000000e-05
+ 1.13068214e+01] cst_delta_pib 0.045776901502689676
+2021-03-10 14:02:39,217 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 478 x_478 [2.23196391e+00 5.80434443e-02 3.25364863e-02 4.00000000e-05
+ 1.13068214e+01] cst_delta_pib 0.045776901263704525
+2021-03-10 14:02:39,583 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 479 x_479 [2.23194988e+00 5.80442340e-02 3.25371282e-02 4.00000000e-05
+ 1.13068212e+01] cst_delta_pib 0.04577690053644178
+2021-03-10 14:02:39,965 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 480 x_480 [2.23193414e+00 5.80449600e-02 3.25377109e-02 4.00000000e-05
+ 1.13068209e+01] cst_delta_pib 0.0457768992905136
+2021-03-10 14:02:40,339 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 481 x_481 [2.23192369e+00 5.80450734e-02 3.25377487e-02 4.00000000e-05
+ 1.13068206e+01] cst_delta_pib 0.04577689743648035
+2021-03-10 14:02:40,706 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 482 x_482 [2.23192141e+00 5.80442670e-02 3.25369706e-02 4.00000000e-05
+ 1.13068202e+01] cst_delta_pib 0.045776895510431154
+2021-03-10 14:02:41,172 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 483 x_483 [2.23193070e+00 5.80434540e-02 3.25362620e-02 4.00000000e-05
+ 1.13068202e+01] cst_delta_pib 0.04577689510372923
+2021-03-10 14:02:41,560 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 484 x_484 [2.23193662e+00 5.80430674e-02 3.25359357e-02 4.00000000e-05
+ 1.13068203e+01] cst_delta_pib 0.045776895045030665
+2021-03-10 14:02:41,926 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 485 x_485 [2.23193709e+00 5.80430495e-02 3.25359219e-02 4.00000000e-05
+ 1.13068203e+01] cst_delta_pib 0.045776895043380075
+2021-03-10 14:02:43,800 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 486 x_486 [2.23193710e+00 5.80433866e-02 3.25356241e-02 4.00000000e-05
+ 1.13068202e+01] cst_delta_pib 0.04577688520619126
+2021-03-10 14:02:44,526 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 487 x_487 [2.23193710e+00 5.80433867e-02 3.25356240e-02 4.00000000e-05
+ 1.13068202e+01] cst_delta_pib 0.04577688520617828
+2021-03-10 14:02:44,904 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 488 x_488 [2.23193710e+00 5.80433872e-02 3.25356236e-02 4.00000000e-05
+ 1.13068202e+01] cst_delta_pib 0.04577688520610563
+2021-03-10 14:02:45,277 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 489 x_489 [2.23193710e+00 5.80433879e-02 3.25356229e-02 4.00000000e-05
+ 1.13068202e+01] cst_delta_pib 0.04577688520586724
+2021-03-10 14:02:45,656 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 490 x_490 [2.23193710e+00 5.80433894e-02 3.25356216e-02 4.00000000e-05
+ 1.13068202e+01] cst_delta_pib 0.04577688520523175
+2021-03-10 14:02:46,058 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 491 x_491 [2.23193710e+00 5.80433911e-02 3.25356202e-02 4.00000000e-05
+ 1.13068201e+01] cst_delta_pib 0.04577688520391551
+2021-03-10 14:02:46,801 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 492 x_492 [2.23193710e+00 5.80433980e-02 3.25356143e-02 4.00000000e-05
+ 1.13068201e+01] cst_delta_pib 0.04577688516827964
+2021-03-10 14:02:47,166 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 493 x_493 [2.23193710e+00 5.80434235e-02 3.25355932e-02 4.00000000e-05
+ 1.13068201e+01] cst_delta_pib 0.04577688494228517
+2021-03-10 14:02:47,554 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 494 x_494 [2.23193710e+00 5.80434649e-02 3.25355605e-02 4.00000000e-05
+ 1.13068200e+01] cst_delta_pib 0.04577688438581255
+2021-03-10 14:02:47,912 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 495 x_495 [2.23193711e+00 5.80435338e-02 3.25355102e-02 3.99999974e-05
+ 1.13068198e+01] cst_delta_pib 0.04577688300427693
+2021-03-10 14:02:48,273 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 496 x_496 [2.23193711e+00 5.80436579e-02 3.25354293e-02 3.99999802e-05
+ 1.13068192e+01] cst_delta_pib 0.045776879439993826
+2021-03-10 14:02:48,656 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 497 x_497 [2.23193712e+00 5.80439197e-02 3.25352740e-02 3.99998725e-05
+ 1.13068177e+01] cst_delta_pib 0.04577687015555495
+2021-03-10 14:02:49,041 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 498 x_498 [2.23193715e+00 5.80445202e-02 3.25349415e-02 3.99994476e-05
+ 1.13068139e+01] cst_delta_pib 0.045776846274161676
+2021-03-10 14:02:49,413 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 499 x_499 [2.23193722e+00 5.80458842e-02 3.25342174e-02 3.99981344e-05
+ 1.13068046e+01] cst_delta_pib 0.04577679028764301
+2021-03-10 14:02:49,774 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 500 x_500 [2.23193734e+00 5.80482731e-02 3.25329784e-02 3.99952719e-05
+ 1.13067879e+01] cst_delta_pib 0.045776695947809636
+2021-03-10 14:02:50,529 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 501 x_501 [2.23193739e+00 5.80488835e-02 3.25329082e-02 3.99953460e-05
+ 1.13067792e+01] cst_delta_pib 0.04577668101229778
+2021-03-10 14:02:50,889 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 502 x_502 [2.23193753e+00 5.80512878e-02 3.25319657e-02 3.99924103e-05
+ 1.13067568e+01] cst_delta_pib 0.045776540062488644
+2021-03-10 14:02:51,261 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 503 x_503 [2.23193798e+00 5.80567988e-02 3.25311894e-02 3.99868239e-05
+ 1.13066806e+01] cst_delta_pib 0.04577597565080533
+2021-03-10 14:02:51,636 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 504 x_504 [2.23193974e+00 5.80743000e-02 3.25332524e-02 3.99728455e-05
+ 1.13063569e+01] cst_delta_pib 0.04577542884078011
+2021-03-10 14:02:52,027 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 505 x_505 [2.23194405e+00 5.81100111e-02 3.25463007e-02 3.99529082e-05
+ 1.13055370e+01] cst_delta_pib 0.045769048707739644
+2021-03-10 14:02:52,421 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 506 x_506 [2.23197592e+00 5.83307912e-02 3.26930827e-02 3.98765219e-05
+ 1.12992758e+01] cst_delta_pib 0.045711144566696976
+2021-03-10 14:02:53,278 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 507 x_507 [2.23198406e+00 5.83875861e-02 3.27299971e-02 3.98701509e-05
+ 1.12976804e+01] cst_delta_pib 0.04570232722125876
+2021-03-10 14:02:53,682 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 508 x_508 [2.23204077e+00 5.87516779e-02 3.30241920e-02 3.97790950e-05
+ 1.12864148e+01] cst_delta_pib 0.04563779505629319
+2021-03-10 14:02:54,051 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 509 x_509 [2.23205633e+00 5.88366352e-02 3.31221163e-02 3.97836584e-05
+ 1.12832581e+01] cst_delta_pib 0.04562593465249396
+2021-03-10 14:02:54,423 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 510 x_510 [2.23205459e+00 5.88130645e-02 3.31273365e-02 3.98072784e-05
+ 1.12835498e+01] cst_delta_pib 0.04562387692896126
+2021-03-10 14:02:54,777 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 511 x_511 [2.23205512e+00 5.88160647e-02 3.31305728e-02 3.98075290e-05
+ 1.12834423e+01] cst_delta_pib 0.045623867934075864
+2021-03-10 14:02:55,134 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 512 x_512 [2.23205493e+00 5.88148203e-02 3.31295716e-02 3.98078491e-05
+ 1.12834807e+01] cst_delta_pib 0.045623867826200946
+2021-03-10 14:02:55,529 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 513 x_513 [2.23205500e+00 5.88153037e-02 3.31299139e-02 3.98077404e-05
+ 1.12834666e+01] cst_delta_pib 0.045623867733844456
+2021-03-10 14:02:56,246 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 514 x_514 [2.23205504e+00 5.88155569e-02 3.31301224e-02 3.98076843e-05
+ 1.12834587e+01] cst_delta_pib 0.045623867716517046
+2021-03-10 14:02:56,610 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 515 x_515 [2.23205502e+00 5.88153613e-02 3.31300978e-02 3.98077991e-05
+ 1.12834623e+01] cst_delta_pib 0.04562386769119865
+2021-03-10 14:02:57,358 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 516 x_516 [2.23205501e+00 5.88153284e-02 3.31300708e-02 3.98078062e-05
+ 1.12834634e+01] cst_delta_pib 0.04562386769091397
+2021-03-10 14:02:58,083 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 517 x_517 [2.23205501e+00 5.88153608e-02 3.31300498e-02 3.98077465e-05
+ 1.12834632e+01] cst_delta_pib 0.04562386767276412
+2021-03-10 14:02:58,839 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 518 x_518 [2.23205504e+00 5.88155494e-02 3.31301858e-02 3.98076963e-05
+ 1.12834577e+01] cst_delta_pib 0.045623867664089664
+2021-03-10 14:02:59,234 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 519 x_519 [2.23205501e+00 5.88154273e-02 3.31299252e-02 3.98076466e-05
+ 1.12834643e+01] cst_delta_pib 0.04562386676267384
+2021-03-10 14:02:59,612 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 520 x_520 [2.23205498e+00 5.88154146e-02 3.31295544e-02 3.98074784e-05
+ 1.12834707e+01] cst_delta_pib 0.04562386297523935
+2021-03-10 14:03:00,106 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 521 x_521 [2.23205471e+00 5.88139768e-02 3.31277252e-02 3.98074864e-05
+ 1.12835255e+01] cst_delta_pib 0.04562385210307508
+2021-03-10 14:03:00,537 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 522 x_522 [2.23205442e+00 5.88123703e-02 3.31257058e-02 3.98075094e-05
+ 1.12835846e+01] cst_delta_pib 0.04562383141364762
+2021-03-10 14:03:00,937 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 523 x_523 [2.23205406e+00 5.88106811e-02 3.31223562e-02 3.98066088e-05
+ 1.12836612e+01] cst_delta_pib 0.04562376767463143
+2021-03-10 14:03:01,712 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 524 x_524 [2.23205411e+00 5.88105596e-02 3.31224051e-02 3.98078620e-05
+ 1.12836499e+01] cst_delta_pib 0.04562372645585556
+2021-03-10 14:03:02,256 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 525 x_525 [2.23205405e+00 5.88105882e-02 3.31199043e-02 3.98060595e-05
+ 1.12836676e+01] cst_delta_pib 0.045623544114730526
+2021-03-10 14:03:03,168 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 526 x_526 [2.23204992e+00 5.87817481e-02 3.30980995e-02 3.98134681e-05
+ 1.12844830e+01] cst_delta_pib 0.045623300475951915
+2021-03-10 14:03:03,955 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 527 x_527 [2.23205952e+00 5.87485000e-02 3.31190028e-02 3.98443294e-05
+ 1.12824194e+01] cst_delta_pib 0.04560851360806548
+2021-03-10 14:03:05,146 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 528 x_528 [2.23217975e+00 5.84771666e-02 3.30090287e-02 4.00000000e-05
+ 1.12575956e+01] cst_delta_pib 0.045324934672983486
+2021-03-10 14:03:05,509 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 529 x_529 [2.23258138e+00 5.87965187e-02 3.32710211e-02 4.00000000e-05
+ 1.11762164e+01] cst_delta_pib 0.04491192540790888
+2021-03-10 14:03:05,900 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 530 x_530 [2.23264950e+00 5.89986987e-02 3.34488511e-02 4.00000000e-05
+ 1.11624907e+01] cst_delta_pib 0.04486608443007449
+2021-03-10 14:03:06,503 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 531 x_531 [2.23263708e+00 5.89305315e-02 3.33648364e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485760149832533
+2021-03-10 14:03:11,210 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 532 x_532 [2.23263714e+00 5.89306527e-02 3.33647727e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485758767768514
+2021-03-10 14:03:11,590 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 533 x_533 [2.23263765e+00 5.89316266e-02 3.33642606e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857535401693384
+2021-03-10 14:03:12,333 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 534 x_534 [2.23263765e+00 5.89316262e-02 3.33642608e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485753540158635
+2021-03-10 14:03:12,692 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 535 x_535 [2.23263765e+00 5.89316240e-02 3.33642619e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485753540065359
+2021-03-10 14:03:13,071 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 536 x_536 [2.23263765e+00 5.89316212e-02 3.33642634e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485753539870912
+2021-03-10 14:03:13,459 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 537 x_537 [2.23263765e+00 5.89316162e-02 3.33642659e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857535393050624
+2021-03-10 14:03:13,815 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 538 x_538 [2.23263764e+00 5.89316082e-02 3.33642699e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.0448575353784271
+2021-03-10 14:03:14,193 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 539 x_539 [2.23263764e+00 5.89315950e-02 3.33642763e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.0448575353406943
+2021-03-10 14:03:14,551 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 540 x_540 [2.23263763e+00 5.89315736e-02 3.33642859e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857535244542036
+2021-03-10 14:03:14,919 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 541 x_541 [2.23263763e+00 5.89315382e-02 3.33643004e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485753499724048
+2021-03-10 14:03:15,284 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 542 x_542 [2.23263764e+00 5.89314788e-02 3.33643209e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485753436342924
+2021-03-10 14:03:15,651 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 543 x_543 [2.23263769e+00 5.89313769e-02 3.33643469e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857532740329824
+2021-03-10 14:03:16,028 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 544 x_544 [2.23263785e+00 5.89311960e-02 3.33643710e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485752857630288
+2021-03-10 14:03:16,387 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 545 x_545 [2.23263835e+00 5.89308616e-02 3.33643647e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485751791279375
+2021-03-10 14:03:16,774 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 546 x_546 [2.23263972e+00 5.89302110e-02 3.33642395e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485749060457117
+2021-03-10 14:03:17,885 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 547 x_547 [2.23264217e+00 5.89293283e-02 3.33639121e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857440688922605
+2021-03-10 14:03:22,393 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 548 x_548 [2.23264224e+00 5.89295048e-02 3.33638356e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485741941135988
+2021-03-10 14:03:22,846 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 549 x_549 [2.23264274e+00 5.89306473e-02 3.33633402e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857355511223815
+2021-03-10 14:03:24,075 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 550 x_550 [2.23264274e+00 5.89306461e-02 3.33633407e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857355510845784
+2021-03-10 14:03:24,459 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 551 x_551 [2.23264274e+00 5.89306435e-02 3.33633419e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485735550908216
+2021-03-10 14:03:24,831 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 552 x_552 [2.23264274e+00 5.89306378e-02 3.33633442e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857355503180416
+2021-03-10 14:03:25,217 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 553 x_553 [2.23264273e+00 5.89306298e-02 3.33633475e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485735548944197
+2021-03-10 14:03:25,587 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 554 x_554 [2.23264273e+00 5.89306156e-02 3.33633532e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485735545090734
+2021-03-10 14:03:26,317 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 555 x_555 [2.23264273e+00 5.89305930e-02 3.33633615e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.0448573553546387
+2021-03-10 14:03:26,682 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 556 x_556 [2.23264273e+00 5.89305557e-02 3.33633741e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.0448573551068324
+2021-03-10 14:03:27,067 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 557 x_557 [2.23264274e+00 5.89304935e-02 3.33633915e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485735447334584
+2021-03-10 14:03:27,505 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 558 x_558 [2.23264279e+00 5.89303870e-02 3.33634129e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857352843025104
+2021-03-10 14:03:27,873 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 559 x_559 [2.23264297e+00 5.89301998e-02 3.33634304e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485734867163682
+2021-03-10 14:03:28,240 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 560 x_560 [2.23264348e+00 5.89298565e-02 3.33634154e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485733797334371
+2021-03-10 14:03:28,643 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 561 x_561 [2.23264490e+00 5.89291972e-02 3.33632814e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857310604308316
+2021-03-10 14:03:30,472 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 562 x_562 [2.23264656e+00 5.89286069e-02 3.33630624e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485727558917998
+2021-03-10 14:03:34,938 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 563 x_563 [2.23264663e+00 5.89287542e-02 3.33629926e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485725843585375
+2021-03-10 14:03:35,302 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 564 x_564 [2.23264714e+00 5.89298091e-02 3.33624929e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857201016602836
+2021-03-10 14:03:36,809 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 565 x_565 [2.23264714e+00 5.89298071e-02 3.33624939e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485720101501207
+2021-03-10 14:03:37,183 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 566 x_566 [2.23264713e+00 5.89298003e-02 3.33624970e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485720100485556
+2021-03-10 14:03:37,569 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 567 x_567 [2.23264713e+00 5.89297888e-02 3.33625021e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857200977316256
+2021-03-10 14:03:37,959 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 568 x_568 [2.23264712e+00 5.89297702e-02 3.33625101e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485720090626702
+2021-03-10 14:03:38,340 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 569 x_569 [2.23264712e+00 5.89297393e-02 3.33625224e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485720071891151
+2021-03-10 14:03:38,716 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 570 x_570 [2.23264712e+00 5.89296875e-02 3.33625405e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485720023748195
+2021-03-10 14:03:39,085 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 571 x_571 [2.23264716e+00 5.89296011e-02 3.33625649e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857199014097106
+2021-03-10 14:03:39,452 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 572 x_572 [2.23264728e+00 5.89294507e-02 3.33625929e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485719586472083
+2021-03-10 14:03:39,812 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 573 x_573 [2.23264766e+00 5.89291805e-02 3.33626094e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485718779455358
+2021-03-10 14:03:40,197 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 574 x_574 [2.23264871e+00 5.89286732e-02 3.33625625e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485716713073269
+2021-03-10 14:03:42,185 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 575 x_575 [2.23264997e+00 5.89282322e-02 3.33624472e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485714077215449
+2021-03-10 14:03:46,715 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 576 x_576 [2.23265002e+00 5.89283333e-02 3.33623892e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857129641220635
+2021-03-10 14:03:47,128 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 577 x_577 [2.23265053e+00 5.89292243e-02 3.33618779e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485708321843627
+2021-03-10 14:03:47,497 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 578 x_578 [2.23265053e+00 5.89292241e-02 3.33618780e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485708321841277
+2021-03-10 14:03:47,912 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 579 x_579 [2.23265053e+00 5.89292228e-02 3.33618787e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485708321808853
+2021-03-10 14:03:48,272 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 580 x_580 [2.23265053e+00 5.89292213e-02 3.33618796e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.0448570832174643
+2021-03-10 14:03:48,640 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 581 x_581 [2.23265053e+00 5.89292186e-02 3.33618811e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485708321562151
+2021-03-10 14:03:49,026 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 582 x_582 [2.23265053e+00 5.89292141e-02 3.33618836e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485708321085071
+2021-03-10 14:03:49,393 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 583 x_583 [2.23265053e+00 5.89292070e-02 3.33618875e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485708319885016
+2021-03-10 14:03:49,759 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 584 x_584 [2.23265052e+00 5.89291954e-02 3.33618938e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857083167450455
+2021-03-10 14:03:50,124 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 585 x_585 [2.23265052e+00 5.89291767e-02 3.33619034e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485708308766043
+2021-03-10 14:03:50,520 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 586 x_586 [2.23265051e+00 5.89291460e-02 3.33619183e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485708288241708
+2021-03-10 14:03:50,906 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 587 x_587 [2.23265051e+00 5.89290952e-02 3.33619404e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.04485708235705802
+2021-03-10 14:03:51,313 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 588 x_588 [2.23265055e+00 5.89290090e-02 3.33619715e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857081006989825
+2021-03-10 14:03:51,692 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 589 x_589 [2.23265069e+00 5.89288596e-02 3.33620101e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857077548192736
+2021-03-10 14:03:52,077 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 590 x_590 [2.23265110e+00 5.89285907e-02 3.33620436e-02 4.00000000e-05
+ 1.11650212e+01] cst_delta_pib 0.044857068680311134
+2021-03-10 14:03:52,460 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 591 x_591 [2.23265227e+00 5.89280845e-02 3.33620242e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044857045959672395
+2021-03-10 14:03:55,315 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 592 x_592 [2.23265320e+00 5.89277893e-02 3.33619602e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044857025977674915
+2021-03-10 14:03:59,606 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 593 x_593 [2.23265339e+00 5.89277391e-02 3.33619426e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485702134008644
+2021-03-10 14:04:04,694 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 594 x_594 [2.23265347e+00 5.89278718e-02 3.33618645e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485700714141993
+2021-03-10 14:04:05,048 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 595 x_595 [2.23265396e+00 5.89287042e-02 3.33613746e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485696589531012
+2021-03-10 14:04:05,763 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 596 x_596 [2.23265396e+00 5.89287037e-02 3.33613749e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856965895209086
+2021-03-10 14:04:06,133 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 597 x_597 [2.23265396e+00 5.89287023e-02 3.33613757e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.0448569658946721
+2021-03-10 14:04:06,490 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 598 x_598 [2.23265396e+00 5.89286998e-02 3.33613771e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856965893140296
+2021-03-10 14:04:06,851 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 599 x_599 [2.23265396e+00 5.89286958e-02 3.33613795e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485696588906208
+2021-03-10 14:04:07,235 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 600 x_600 [2.23265395e+00 5.89286892e-02 3.33613832e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485696587848169
+2021-03-10 14:04:07,602 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 601 x_601 [2.23265395e+00 5.89286786e-02 3.33613891e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856965851731434
+2021-03-10 14:04:07,981 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 602 x_602 [2.23265394e+00 5.89286616e-02 3.33613983e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485696578344304
+2021-03-10 14:04:08,339 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 603 x_603 [2.23265394e+00 5.89286335e-02 3.33614126e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485696560677952
+2021-03-10 14:04:08,696 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 604 x_604 [2.23265394e+00 5.89285873e-02 3.33614340e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485696515600836
+2021-03-10 14:04:09,055 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 605 x_605 [2.23265397e+00 5.89285094e-02 3.33614649e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856963995680184
+2021-03-10 14:04:09,421 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 606 x_606 [2.23265408e+00 5.89283755e-02 3.33615053e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485696102664768
+2021-03-10 14:04:09,779 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 607 x_607 [2.23265443e+00 5.89281369e-02 3.33615471e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856953410451025
+2021-03-10 14:04:10,145 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 608 x_608 [2.23265543e+00 5.89276929e-02 3.33615552e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856933887979934
+2021-03-10 14:04:12,705 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 609 x_609 [2.23265622e+00 5.89274383e-02 3.33615148e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856916768812496
+2021-03-10 14:04:15,555 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 610 x_610 [2.23265637e+00 5.89274004e-02 3.33615037e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485691326221166
+2021-03-10 14:04:20,639 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 611 x_611 [2.23265644e+00 5.89275095e-02 3.33614322e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856901826504425
+2021-03-10 14:04:21,140 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 612 x_612 [2.23265693e+00 5.89282689e-02 3.33609347e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485686470047381
+2021-03-10 14:04:21,937 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 613 x_613 [2.23265693e+00 5.89282685e-02 3.33609349e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.0448568647003642
+2021-03-10 14:04:22,366 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 614 x_614 [2.23265693e+00 5.89282662e-02 3.33609365e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856864699094966
+2021-03-10 14:04:22,746 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 615 x_615 [2.23265693e+00 5.89282631e-02 3.33609385e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485686469636876
+2021-03-10 14:04:23,190 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 616 x_616 [2.23265692e+00 5.89282578e-02 3.33609418e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856864688852215
+2021-03-10 14:04:23,806 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 617 x_617 [2.23265692e+00 5.89282491e-02 3.33609473e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485686466880068
+2021-03-10 14:04:24,176 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 618 x_618 [2.23265691e+00 5.89282348e-02 3.33609560e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856864617730495
+2021-03-10 14:04:24,533 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 619 x_619 [2.23265691e+00 5.89282121e-02 3.33609693e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485686448890495
+2021-03-10 14:04:24,888 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 620 x_620 [2.23265690e+00 5.89281742e-02 3.33609898e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856864153917174
+2021-03-10 14:04:25,380 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 621 x_621 [2.23265692e+00 5.89281111e-02 3.33610201e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485686330038636
+2021-03-10 14:04:25,762 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 622 x_622 [2.23265699e+00 5.89280032e-02 3.33610622e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485686110778656
+2021-03-10 14:04:26,116 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 623 x_623 [2.23265723e+00 5.89278132e-02 3.33611132e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856855492235115
+2021-03-10 14:04:26,488 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 624 x_624 [2.23265794e+00 5.89274644e-02 3.33611530e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856841086425306
+2021-03-10 14:04:28,585 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 625 x_625 [2.23265871e+00 5.89272001e-02 3.33611358e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856824479629936
+2021-03-10 14:04:34,220 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 626 x_626 [2.23265877e+00 5.89272785e-02 3.33610737e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856816412457354
+2021-03-10 14:04:34,588 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 627 x_627 [2.23265928e+00 5.89279252e-02 3.33605608e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856785015554644
+2021-03-10 14:04:35,403 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 628 x_628 [2.23265928e+00 5.89279249e-02 3.33605611e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485678501543661
+2021-03-10 14:04:35,780 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 629 x_629 [2.23265928e+00 5.89279226e-02 3.33605629e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485678501399124
+2021-03-10 14:04:36,180 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 630 x_630 [2.23265927e+00 5.89279194e-02 3.33605653e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856785010842885
+2021-03-10 14:04:36,561 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 631 x_631 [2.23265927e+00 5.89279142e-02 3.33605693e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856785002449086
+2021-03-10 14:04:36,910 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 632 x_632 [2.23265927e+00 5.89279057e-02 3.33605758e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.0448567849800924
+2021-03-10 14:04:37,322 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 633 x_633 [2.23265926e+00 5.89278917e-02 3.33605861e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485678492245872
+2021-03-10 14:04:37,706 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 634 x_634 [2.23265925e+00 5.89278689e-02 3.33606020e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485678477654551
+2021-03-10 14:04:38,088 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 635 x_635 [2.23265924e+00 5.89278314e-02 3.33606264e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485678440219496
+2021-03-10 14:04:38,501 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 636 x_636 [2.23265926e+00 5.89277681e-02 3.33606625e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485678344027577
+2021-03-10 14:04:38,888 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 637 x_637 [2.23265933e+00 5.89276587e-02 3.33607128e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.0448567809738891
+2021-03-10 14:04:39,255 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 638 x_638 [2.23265960e+00 5.89274635e-02 3.33607741e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485677465568895
+2021-03-10 14:04:39,619 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 639 x_639 [2.23266039e+00 5.89270986e-02 3.33608230e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485675844304297
+2021-03-10 14:04:42,158 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 640 x_640 [2.23266103e+00 5.89268894e-02 3.33608090e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485674428575824
+2021-03-10 14:04:44,721 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 641 x_641 [2.23266113e+00 5.89268609e-02 3.33608027e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485674163152969
+2021-03-10 14:04:49,901 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 642 x_642 [2.23266119e+00 5.89269377e-02 3.33607412e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485673374962064
+2021-03-10 14:04:50,276 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 643 x_643 [2.23266170e+00 5.89275771e-02 3.33602289e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485670278995317
+2021-03-10 14:04:51,738 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 644 x_644 [2.23266170e+00 5.89275756e-02 3.33602301e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485670278800815
+2021-03-10 14:04:52,107 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 645 x_645 [2.23266170e+00 5.89275680e-02 3.33602360e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485670277156375
+2021-03-10 14:04:52,485 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 646 x_646 [2.23266169e+00 5.89275570e-02 3.33602444e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856702733160746
+2021-03-10 14:04:52,849 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 647 x_647 [2.23266168e+00 5.89275379e-02 3.33602583e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485670262767485
+2021-03-10 14:04:53,206 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 648 x_648 [2.23266167e+00 5.89275070e-02 3.33602796e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485670235760621
+2021-03-10 14:04:53,574 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 649 x_649 [2.23266167e+00 5.89274543e-02 3.33603122e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856701656364836
+2021-03-10 14:04:53,943 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 650 x_650 [2.23266172e+00 5.89273655e-02 3.33603584e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485669988099907
+2021-03-10 14:04:54,294 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 651 x_651 [2.23266189e+00 5.89272081e-02 3.33604194e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485669529999731
+2021-03-10 14:04:54,698 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 652 x_652 [2.23266243e+00 5.89269201e-02 3.33604823e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485668358304426
+2021-03-10 14:04:56,774 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 653 x_653 [2.23266311e+00 5.89266770e-02 3.33604876e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485666866267313
+2021-03-10 14:05:02,773 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 654 x_654 [2.23266368e+00 5.89272828e-02 3.33599053e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485663582032213
+2021-03-10 14:05:03,143 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 655 x_655 [2.23266368e+00 5.89272836e-02 3.33599045e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485663582022775
+2021-03-10 14:05:03,501 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 656 x_656 [2.23266368e+00 5.89272838e-02 3.33599043e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856635820190734
+2021-03-10 14:05:03,918 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 657 x_657 [2.23266368e+00 5.89272849e-02 3.33599033e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485663581990348
+2021-03-10 14:05:04,290 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 658 x_658 [2.23266369e+00 5.89272859e-02 3.33599023e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856635819413834
+2021-03-10 14:05:04,650 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 659 x_659 [2.23266369e+00 5.89272880e-02 3.33599002e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856635817819526
+2021-03-10 14:05:05,081 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 660 x_660 [2.23266369e+00 5.89272911e-02 3.33598973e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856635813993295
+2021-03-10 14:05:05,451 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 661 x_661 [2.23266370e+00 5.89272964e-02 3.33598919e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485663580312623
+2021-03-10 14:05:05,803 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 662 x_662 [2.23266371e+00 5.89273046e-02 3.33598836e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485663577640231
+2021-03-10 14:05:06,179 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 663 x_663 [2.23266372e+00 5.89273176e-02 3.33598700e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.044856635707395676
+2021-03-10 14:05:06,573 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 664 x_664 [2.23266375e+00 5.89273377e-02 3.33598475e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485663553073536
+2021-03-10 14:05:06,965 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 665 x_665 [2.23266381e+00 5.89273684e-02 3.33598103e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485663507885982
+2021-03-10 14:05:07,375 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 666 x_666 [2.23266394e+00 5.89274136e-02 3.33597468e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485663391635892
+2021-03-10 14:05:07,778 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 667 x_667 [2.23266420e+00 5.89274758e-02 3.33596356e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485663094308113
+2021-03-10 14:05:08,213 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 668 x_668 [2.23266479e+00 5.89275491e-02 3.33594332e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485662332099996
+2021-03-10 14:05:08,631 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 669 x_669 [2.23266617e+00 5.89276003e-02 3.33590441e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485660370959237
+2021-03-10 14:05:09,047 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 670 x_670 [2.23266950e+00 5.89275110e-02 3.33582629e-02 4.00000000e-05
+ 1.11650213e+01] cst_delta_pib 0.04485655371392988
+2021-03-10 14:05:09,416 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 671 x_671 [2.23267768e+00 5.89269310e-02 3.33566040e-02 4.00000000e-05
+ 1.11650214e+01] cst_delta_pib 0.04485642592835133
+2021-03-10 14:05:09,789 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 672 x_672 [2.23269796e+00 5.89248944e-02 3.33529232e-02 4.00000000e-05
+ 1.11650214e+01] cst_delta_pib 0.044856101498455196
+2021-03-10 14:05:10,162 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 673 x_673 [2.23274775e+00 5.89189211e-02 3.33445864e-02 4.00000000e-05
+ 1.11650216e+01] cst_delta_pib 0.04485549167869846
+2021-03-10 14:05:10,549 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 674 x_674 [2.23282572e+00 5.89079870e-02 3.33326693e-02 4.00000000e-05
+ 1.11650219e+01] cst_delta_pib 0.04485379482761088
+2021-03-10 14:05:10,902 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 675 x_675 [2.23345189e+00 5.88169108e-02 3.32393161e-02 4.00000000e-05
+ 1.11650242e+01] cst_delta_pib 0.04485149923980486
+2021-03-10 14:05:11,251 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 676 x_676 [2.23355356e+00 5.87993318e-02 3.32261718e-02 4.00000000e-05
+ 1.11650245e+01] cst_delta_pib 0.04484786475311914
+2021-03-10 14:05:11,635 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 677 x_677 [2.23365131e+00 5.87782060e-02 3.32165783e-02 4.00000000e-05
+ 1.11650249e+01] cst_delta_pib 0.04484242747461514
+2021-03-10 14:05:12,009 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 678 x_678 [2.23376981e+00 5.87606525e-02 3.31991416e-02 4.00000000e-05
+ 1.11650253e+01] cst_delta_pib 0.04484206794049107
+2021-03-10 14:05:12,376 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 679 x_679 [2.23382356e+00 5.87529383e-02 3.31910535e-02 4.00000000e-05
+ 1.11650255e+01] cst_delta_pib 0.04484202496331123
+2021-03-10 14:05:13,157 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 680 x_680 [2.23382433e+00 5.87527048e-02 3.31910264e-02 4.00000000e-05
+ 1.11650255e+01] cst_delta_pib 0.04484202038423507
+2021-03-10 14:05:13,548 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 681 x_681 [2.23381655e+00 5.87539124e-02 3.31921321e-02 4.00000000e-05
+ 1.11650255e+01] cst_delta_pib 0.04484202011647471
+2021-03-10 14:05:13,940 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 682 x_682 [2.23381970e+00 5.87534477e-02 3.31916665e-02 4.00000000e-05
+ 1.11650255e+01] cst_delta_pib 0.044842019529259466
+2021-03-10 14:05:15,522 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 683 x_683 [2.23904456e+00 5.85418207e-02 3.30441526e-02 4.00000000e-05
+ 1.11650506e+01] cst_delta_pib 0.044708227182655394
+2021-03-10 14:05:15,912 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 684 x_684 [2.25595183e+00 5.79918558e-02 3.27529848e-02 4.00000000e-05
+ 1.11651333e+01] cst_delta_pib 0.044388519536612325
+2021-03-10 14:05:16,300 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 685 x_685 [2.27235524e+00 5.72694402e-02 3.23321895e-02 4.00000000e-05
+ 1.11652119e+01] cst_delta_pib 0.044078693352440024
+2021-03-10 14:05:16,682 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 686 x_686 [2.28940575e+00 5.65658515e-02 3.19622116e-02 4.00000000e-05
+ 1.11652943e+01] cst_delta_pib 0.0439879435142013
+2021-03-10 14:05:17,045 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 687 x_687 [2.28645394e+00 5.67337851e-02 3.20700415e-02 4.00000000e-05
+ 1.11652805e+01] cst_delta_pib 0.04397522582111982
+2021-03-10 14:05:20,514 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 688 x_688 [2.28661197e+00 5.67262539e-02 3.20650623e-02 3.99999389e-05
+ 1.11652812e+01] cst_delta_pib 0.043975109852925374
+2021-03-10 14:05:26,535 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 689 x_689 [2.28661198e+00 5.67264550e-02 3.20645097e-02 3.99999389e-05
+ 1.11652810e+01] cst_delta_pib 0.043975096556875974
+2021-03-10 14:05:26,950 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 690 x_690 [2.28661198e+00 5.67266384e-02 3.20640058e-02 3.99993401e-05
+ 1.11652808e+01] cst_delta_pib 0.04397507720844148
+2021-03-10 14:05:32,241 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 691 x_691 [2.28661198e+00 5.67265712e-02 3.20639948e-02 3.99993124e-05
+ 1.11652808e+01] cst_delta_pib 0.04397507450719979
+2021-03-10 14:05:33,849 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO - ite 692 x_692 [2.28661197e+00 5.67265169e-02 3.20639858e-02 3.99993022e-05
+ 1.11652807e+01] cst_delta_pib 0.04397507288017866
+2021-03-10 14:05:42,446 - climateeconomics.core.core_witness.calibration_prodfunction.base_calib - INFO -       year               output
+1965  1965  15.957840+0.000000j
+1966  1966  16.477990+0.000000j
+1967  1967  16.968829+0.000000j
+1968  1968  17.612887+0.000000j
+1969  1969  18.357309+0.000000j
+1970  1970  19.147370+0.000000j
+1971  1971  19.852780+0.000000j
+1972  1972  20.712385+0.000000j
+1973  1973  21.672996+0.000000j
+1974  1974  22.214916+0.000000j
+1975  1975  22.768550+0.000000j
+1976  1976  23.846631+0.000000j
+1977  1977  24.807154+0.000000j
+1978  1978  25.801426+0.000000j
+1979  1979  26.848832+0.000000j
+1980  1980  27.346456+0.000000j
+1981  1981  27.885508+0.000000j
+1982  1982  28.399593+0.000000j
+1983  1983  29.261084+0.000000j
+1984  1984  30.670403+0.000000j
+1985  1985  31.786282+0.000000j
+1986  1986  32.859091+0.000000j
+1987  1987  34.225401+0.000000j
+1988  1988  35.725548+0.000000j
+1989  1989  36.875086+0.000000j
+1990  1990  37.892160+0.000000j
+1991  1991  38.797768+0.000000j
+1992  1992  39.721376+0.000000j
+1993  1993  40.637755+0.000000j
+1994  1994  41.719245+0.000000j
+1995  1995  43.041634+0.000000j
+1996  1996  44.646512+0.000000j
+1997  1997  45.700598+0.000000j
+1998  1998  46.656853+0.000000j
+1999  1999  48.017140+0.000000j
+2000  2000  49.603865+0.000000j
+2001  2001  50.683494+0.000000j
+2002  2002  52.185454+0.000000j
+2003  2003  54.212150+0.000000j
+2004  2004  56.809662+0.000000j
+2005  2005  58.951065+0.000000j
+2006  2006  60.954674+0.000000j
+2007  2007  63.133610+0.000000j
+2008  2008  64.438704+0.000000j
+2009  2009  64.423487+0.000000j
+2010  2010  67.528273+0.000000j
+2011  2011  69.535895+0.000000j
+2012  2012  70.962630+0.000000j
+2013  2013  72.749443+0.000000j
+2014  2014  73.941708+0.000000j
+2015  2015  75.067213+0.000000j
+2016  2016  76.625808+0.000000j
+2017  2017  78.464196+0.000000j

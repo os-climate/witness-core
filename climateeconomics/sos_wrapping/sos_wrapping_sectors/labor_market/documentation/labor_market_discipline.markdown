@@ -7,7 +7,7 @@ The goal of the labor market model is to compute the workforce available for eac
 
 ### Main Inputs 
 - sector list: list of economics sectors
--Working age population ($working\_age\_population\_df$): Dataframe with working age population per year in million of people.
+- Working age population ($working\_age\_population\_df$): Dataframe with working age population per year in million of people.
 - Workforce share per sector ($workforce\_share\_per\_sector$): Dataframe with workforce distribution per sector in %. 
   
 ### Outputs 
