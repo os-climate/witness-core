@@ -115,7 +115,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         N2O_emissions_land_use_df['years'] = N2O_emitted_crop_df['years']
         N2O_emissions_land_use_df['Crop'] = N2O_emitted_crop_df['emitted_N2O_evol_cumulative']
 
-        co2_emissions_objective = np.asarray([CO2_emissions_land_use_df['Crop'].sum() + CO2_emissions_land_use_df['Forest'].sum()])
+        co2_emissions_objective = np.asarray([CH4_emissions_land_use_df['Crop'].sum() + CO2_emissions_land_use_df['Forest'].sum()])
 
 
         # write outputs
@@ -148,7 +148,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                     (f'{techno}.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'), np.identity(np_years))
         self.set_partial_derivative_for_other_types(
                 ('CO2_em_objective',), (
-                    'Crop.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+                    'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
                 np.ones(np_years))
         self.set_partial_derivative_for_other_types(
             ('CO2_em_objective',), (

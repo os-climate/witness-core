@@ -150,7 +150,8 @@ class Crop():
 
         self.red_meat_calories_per_day = inputs_dict['red_meat_calories_per_day']['red_meat_calories_per_day'].values
         self.white_meat_calories_per_day = inputs_dict['white_meat_calories_per_day']['white_meat_calories_per_day'].values
-        self.other_calories = inputs_dict['other_calories_per_day']['other_calories_per_day'].values
+        self.vegetables_and_carbs_calories_per_day = inputs_dict['vegetables_and_carbs_calories_per_day']['vegetables_and_carbs_calories_per_day'].values
+        self.milk_and_eggs_calories_per_day = inputs_dict['milk_and_eggs_calories_per_day']['milk_and_eggs_calories_per_day'].values
         self.constaint_calories_limit = inputs_dict['constraint_calories_limit']
         self.constraint_calories_ref = inputs_dict['constraint_calories_ref']
         # crop_investment from G$ to M$
@@ -196,8 +197,8 @@ class Crop():
         # construct the diet over time
         new_diet_df = self.update_diet_direct_variables()
         self.calories_per_day_constraint = (self.red_meat_calories_per_day + self.white_meat_calories_per_day
-                                                       + self.other_calories - self.constaint_calories_limit) / self.constraint_calories_ref
-        print('****',self.calories_per_day_constraint )
+                                                       + self.vegetables_and_carbs_calories_per_day +
+                                            self.milk_and_eggs_calories_per_day - self.constaint_calories_limit) / self.constraint_calories_ref
         self.updated_diet_df = deepcopy(new_diet_df)
 
         # compute the quantity of food consumed
@@ -320,44 +321,6 @@ class Crop():
 
         return(result)
 
-    def update_diet(self):
-        '''
-            update diet data:
-                - compute new kcal/person/year from red and white meat
-                - update proportionally all vegetable kcal/person/year
-                - compute new diet_df
-        '''
-        starting_diet = self.diet_df
-        changed_diet_df = pd.DataFrame({'years': self.years})
-        self.kcal_diet_df = {}
-        total_kcal = 0
-        # compute total kcal
-        for key in starting_diet:
-            self.kcal_diet_df[key] = starting_diet[key].values[0] * self.kg_to_kcal_dict[key]
-            total_kcal += self.kcal_diet_df[key]
-        self.kcal_diet_df['total'] = total_kcal
-
-        # compute the kcal changed of red meat:
-        # kg_food/person/year
-        changed_diet_df['red meat'] = self.kcal_diet_df['total'] * self.red_meat_percentage / 100 / self.kg_to_kcal_dict['red meat']
-        changed_diet_df['white meat'] = self.kcal_diet_df['total'] * self.white_meat_percentage / 100 / self.kg_to_kcal_dict['white meat']
-
-        # removed kcal/person/year
-        removed_red_meat_kcal = self.kcal_diet_df['red meat'] - self.kcal_diet_df['total'] * self.red_meat_percentage / 100
-        removed_white_meat_kcal = self.kcal_diet_df['white meat'] - self.kcal_diet_df['total'] * self.white_meat_percentage / 100
-
-        for key in starting_diet:
-            # compute new vegetable diet in kg_food/person/year: add the removed_kcal/3 for each 3 category of vegetable
-            if key == 'fruits and vegetables' or key == 'potatoes' or key == 'rice and maize':
-                proportion = self.kcal_diet_df[key] / \
-                             (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
-                changed_diet_df[key] = [starting_diet[key].values[0]] * len(self.years) + \
-                                       (removed_red_meat_kcal + removed_white_meat_kcal) * proportion / self.kg_to_kcal_dict[key]
-            # no impact on eggs and milk
-            elif key != 'red meat' and key != 'white meat':
-                changed_diet_df[key] = [starting_diet[key].values[0]] * len(self.years)
-
-        return changed_diet_df
 
 
     def update_diet_direct_variables(self):
@@ -368,20 +331,11 @@ class Crop():
                 - compute new diet_df
         '''
         changed_diet_df = pd.DataFrame({'years': self.years})
-        self.kcal_diet_df = {}
-        total_kcal = 0
-        # compute total kcal
-
-
-        # compute the kcal changed of red meat:
-        # kg_food/person/year
-
         changed_diet_df['red meat'] = self.red_meat_calories_per_day * 365
         changed_diet_df['white meat'] = self.white_meat_calories_per_day * 365
-        other_calories_year = self.other_calories * 365
+        vegetables_and_carbs_calories = self.vegetables_and_carbs_calories_per_day * 365
+        milk_and_eggs_calories = self.milk_and_eggs_calories_per_day * 365
 
-        print('--------- total kcal', changed_diet_df['red meat'].values[0] + changed_diet_df['white meat'].values[0] +
-              other_calories_year[0])
         list_variables = ['fruits and vegetables', 'potatoes', 'rice and maize', 'eggs', 'milk']
 
         for key in list_variables:
@@ -391,10 +345,12 @@ class Crop():
                 proportion = self.diet_df[key].values[0] / \
                              (self.diet_df['fruits and vegetables'].values[0] + self.diet_df['potatoes'].values[0] +
                               self.diet_df['rice and maize'].values[0])
-                changed_diet_df[key] = other_calories_year * proportion
+                changed_diet_df[key] = vegetables_and_carbs_calories * proportion
             # eggs and milk have fixed value for now
             elif key == 'eggs' or key == 'milk':
-                changed_diet_df[key] = [self.diet_df[key].values[0]] * len(self.years)
+                proportion = self.diet_df[key].values[0] / \
+                             (self.diet_df['eggs'].values[0] + self.diet_df['milk'].values[0])
+                changed_diet_df[key] = milk_and_eggs_calories * proportion
 
         return changed_diet_df
 
@@ -819,7 +775,89 @@ class Crop():
         
         return d_food_land_surface_d_temperature
 
-    def d_surface_d_red_meat_percentage(self, population_df):
+    def d_surface_d_calories_per_day(self, population_df, grad_value):
+        """
+        Generic method to compute derivative of total food land surface wrt to variables of
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        idty = np.identity(number_of_values)
+
+        total_surface_grad = grad_value * population_df['population'].values * 1e6 * self.hatom2 / 1e9
+        total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
+
+        return total_surface_climate_grad * idty
+
+    def d_surface_d_vegetables_carbs_calories_per_day(self, population_df):
+        """
+        Generic method to compute derivative of total food land surface wrt to variables of vegetables and carbs
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        idty = np.identity(number_of_values)
+
+        kg_food_to_surface = self.kg_to_m2_dict
+
+        vegetables_column_names = ['fruits and vegetables', 'potatoes', 'rice and maize']
+        l_years = len(self.years)
+        grad_res = np.zeros((l_years, l_years))
+        for veg in vegetables_column_names:
+            proportion = self.diet_df[veg].values[0] / (self.diet_df['fruits and vegetables'].values[0] +
+                                                        self.diet_df['potatoes'].values[0] +
+                                                        self.diet_df['rice and maize'].values[0])
+
+            grad_value = 365 * kg_food_to_surface[veg] * proportion
+
+            total_surface_grad = grad_value * population_df['population'].values * 1e6 * self.hatom2 / 1e9
+            total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
+            grad_res = grad_res + total_surface_climate_grad.values * idty
+
+
+        return grad_res
+
+
+    def d_surface_d_eggs_milk_calories_per_day(self, population_df):
+        """
+        Generic method to compute derivative of total food land surface wrt to variables of eggs and milk
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        idty = np.identity(number_of_values)
+
+        kg_food_to_surface = self.kg_to_m2_dict
+
+        eggs_milk_column_names = ['eggs', 'milk']
+        l_years = len(self.years)
+        grad_res = np.zeros((l_years, l_years))
+        for veg in eggs_milk_column_names:
+            proportion = self.diet_df[veg].values[0] / (self.diet_df['eggs'].values[0] +
+                                                        self.diet_df['milk'].values[0])
+
+            grad_value = 365 * kg_food_to_surface[veg] * proportion
+
+            total_surface_grad = grad_value * population_df['population'].values * 1e6 * self.hatom2 / 1e9
+            total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
+            grad_res = grad_res + total_surface_climate_grad.values * idty
+
+        return grad_res
+
+
+
+    def d_surface_d_calories(self, population_df, key_name):
+        """
+        Compute the derivative of total food land surface wrt red meat percentage design variable
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        idty = np.identity(number_of_values)
+        kg_food_to_surface = self.kg_to_m2_dict
+        # red to white meat value influences red meat, white meat, and vegetable surface
+        red_meat_diet_grad = 365 * kg_food_to_surface[key_name]
+
+        total_surface_grad = red_meat_diet_grad * population_df['population'].values * 1e6 * self.hatom2 / 1e9
+        total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
+
+        return total_surface_climate_grad.values * idty
+
+
+
+    def d_surface_d_red_meat(self, population_df):
         """
         Compute the derivative of total food land surface wrt red meat percentage design variable
         """
@@ -829,22 +867,12 @@ class Crop():
         # red to white meat value influences red meat, white meat, and vegetable surface
         red_meat_diet_grad = 365 * kg_food_to_surface['red meat']
 
-        vegetables_column_names = ['fruits and vegetables', 'potatoes', 'rice and maize']
-        # sub total gradient is the sum of all gradients of food category
-        sub_total_surface_grad = red_meat_diet_grad
-        """
-        for vegetable_name in vegetables_column_names:
-
-            proportion = self.kcal_diet_df[vegetable_name] / \
-                                 (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
-            sub_total_surface_grad = sub_total_surface_grad + removed_red_kcal * proportion / self.kg_to_kcal_dict[vegetable_name] * kg_food_to_surface[vegetable_name]
-        """
-        total_surface_grad = sub_total_surface_grad * population_df['population'].values * 1e6 * self.hatom2 / 1e9
+        total_surface_grad = red_meat_diet_grad * population_df['population'].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
 
         return total_surface_climate_grad.values * idty
 
-    def d_surface_d_white_meat_percentage(self, population_df):
+    def d_surface_d_white_meat(self, population_df):
         """
         Compute the derivative of total food land surface wrt white meat percentage design variable
         """
@@ -854,16 +882,8 @@ class Crop():
         # red to white meat value influences red meat, white meat, and vegetable surface
         white_meat_diet_grad = 365 * kg_food_to_surface['white meat']
 
-        vegetables_column_names = ['fruits and vegetables', 'potatoes', 'rice and maize']
-        # sub total gradient is the sum of all gradients of food category
         sub_total_surface_grad = white_meat_diet_grad
-        """
-        for vegetable_name in vegetables_column_names:
 
-            proportion = self.kcal_diet_df[vegetable_name] / \
-                                 (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
-            sub_total_surface_grad = sub_total_surface_grad + removed_white_kcal * proportion / self.kg_to_kcal_dict[vegetable_name] * kg_food_to_surface[vegetable_name]
-        """
         total_surface_grad = sub_total_surface_grad * population_df['population'].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
 
@@ -886,18 +906,31 @@ class Crop():
 
         # sub total gradient is the sum of all gradients of food category
         sub_total_surface_grad = white_meat_diet_grad
-        """
-        for vegetable_name in vegetables_column_names:
-
-            proportion = self.kcal_diet_df[vegetable_name] / \
-                                 (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
-            sub_total_surface_grad = sub_total_surface_grad + removed_white_kcal * proportion / self.kg_to_kcal_dict[vegetable_name] * kg_food_to_surface[vegetable_name]
-        """
         total_surface_grad = sub_total_surface_grad * population_df['population'].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
 
         return total_surface_climate_grad.values * idty
 
+    def d_surface_d_milk_eggs_calories_percentage(self, population_df, veg):
+        """
+        Compute the derivative of total food land surface wrt white meat percentage design variable
+        """
+        number_of_values = (self.year_end - self.year_start + 1)
+        idty = np.identity(number_of_values)
+        kg_food_to_surface = self.kg_to_m2_dict
+        # red to white meat value influences red meat, white meat, and vegetable surface
+
+        proportion = self.diet_df[veg].values[0] / (self.diet_df['milk'].values[0] +
+                                                    self.diet_df['eggs'].values[0])
+
+        white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion
+
+        # sub total gradient is the sum of all gradients of food category
+        sub_total_surface_grad = white_meat_diet_grad
+        total_surface_grad = sub_total_surface_grad * population_df['population'].values * 1e6 * self.hatom2 / 1e9
+        total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
+
+        return total_surface_climate_grad.values * idty
 
 
     def compute_dprod_from_dinvest(self):

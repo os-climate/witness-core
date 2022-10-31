@@ -82,16 +82,20 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                    }
         red_meat_percentage = np.linspace(600, 700, year_range)
         white_meat_percentage = np.linspace(700, 600, year_range)
-        other_calories_per_day = np.linspace(800, 1200, year_range)
+        vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
         self.red_meat_percentage = pd.DataFrame({
                             'years': years,
                             'red_meat_calories_per_day': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
                                 'years': years,
                                 'white_meat_calories_per_day': white_meat_percentage})
-        self.other_calories_per_day = pd.DataFrame({
+        self.veg_calories_per_day = pd.DataFrame({
                                 'years': years,
-                                'other_calories_per_day': other_calories_per_day})
+                                'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
+
+        self.milk_eggs_calories_per_day = pd.DataFrame({
+                                'years': years,
+                                'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
 
         self.diet_df = pd.DataFrame({'red meat': [11.02],
                                      'white meat': [31.11],
@@ -164,6 +168,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_biomass_dry': f'{self.name}',
                    'ns_land_use':f'{self.name}',
                    'ns_crop':f'{self.name}',
+                   'ns_ref': f'{self.name}',
                    'ns_invest':f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -187,7 +192,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.temperature_df': self.temperature_df,
                        f'{self.name}.red_meat_calories_per_day': self.red_meat_percentage,
                        f'{self.name}.white_meat_calories_per_day': self.white_meat_percentage,
-                       f'{self.name}.other_calories_per_day': self.other_calories_per_day,
+                       f'{self.name}.vegetables_and_carbs_calories_per_day': self.veg_calories_per_day,
+                       f'{self.name}.milk_and_eggs_calories_per_day': self.milk_eggs_calories_per_day,
                        f'{self.name}.{self.model_name}.{Crop.OTHER_USE_CROP}': self.other,
                        f'{self.name}.crop_investment': self.crop_investment,
                        f'{self.name}.margin': self.margin,
@@ -206,7 +212,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.temperature_df',
                                     f'{self.name}.red_meat_calories_per_day',
                                     f'{self.name}.white_meat_calories_per_day',
-                                    f'{self.name}.other_calories_per_day',
+                                    f'{self.name}.vegetables_and_carbs_calories_per_day',
+                                    f'{self.name}.milk_and_eggs_calories_per_day',
                                     f'{self.name}.crop_investment',
                                     ],
                             outputs=[f'{self.name}.total_food_land_surface',

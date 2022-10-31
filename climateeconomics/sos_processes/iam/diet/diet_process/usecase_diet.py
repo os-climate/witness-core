@@ -303,13 +303,13 @@ class Study(ClimateEconomicsStudyManager):
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['land_demand_constraint'])
-        list_parent.extend(['agriculture_constraint'])
-        list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-2.0])
+            ['land_demand_constraint', 'calories_per_day_constraint'])
+        list_parent.extend(['agriculture_constraint', 'agriculture_constraint'])
+        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+        list_weight.extend([0.0, -30.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions'])
+            [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+        list_ns.extend(['ns_functions', 'ns_functions'])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype
