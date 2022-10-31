@@ -44,6 +44,8 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy': f'{ns_study}.{ns_agriculture_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
+                   'ns_ref': f'{ns_study}',
+                   'ns_functions': f'{ns_study}',
                    'ns_witness': f'{ns_study}',
                    'ns_biomass_dry': f'{ns_study}',
                    'ns_land_use': f'{ns_study}',

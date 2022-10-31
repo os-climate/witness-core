@@ -854,27 +854,40 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             # ------------------------------------------
             # DIET EVOLUTION VARIABLES
-            chart_name = "Diet evolution, percentage of red and white meat calories in a person's diet"
+            chart_name = "Calories per day"
 
-            red_meat_evolution = self.get_sosdisc_inputs('red_meat_percentage')
-            white_meat_evolution = self.get_sosdisc_inputs(
-                'white_meat_percentage')
+            red_meat_calories = self.get_sosdisc_inputs('red_meat_calories_per_day')
+            white_meat_calories = self.get_sosdisc_inputs(
+                'white_meat_calories_per_day')
+            veg_carbs = self.get_sosdisc_inputs(
+                'vegetables_and_carbs_calories_per_day')
+            eggs_milk = self.get_sosdisc_inputs(
+                'milk_and_eggs_calories_per_day')
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Diet evolution [%]',
+            new_chart = TwoAxesInstanciatedChart('years', 'calories per day [kcal]',
                                                  chart_name=chart_name)
 
             visible_line = True
             ordonate_data = list(
-                red_meat_evolution['red_meat_percentage'].values)
+                red_meat_calories['red_meat_calories_per_day'].values)
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'percentage of red meat calories in diet', 'lines', visible_line)
+                years, ordonate_data, 'Calories of red meat per day per person', 'lines', visible_line)
             new_chart.series.append(new_series)
             ordonate_data = list(
-                white_meat_evolution['white_meat_percentage'].values)
+                white_meat_calories['white_meat_calories_per_day'].values)
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'percentage of white meat calories in diet', 'lines', visible_line)
+                years, ordonate_data, 'Calories of white meat per day per person', 'lines', visible_line)
             new_chart.series.append(new_series)
-
+            ordonate_data = list(
+                veg_carbs['vegetables_and_carbs_calories_per_day'].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Calories of vegetables and carbs per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
+                eggs_milk['milk_and_eggs_calories_per_day'].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Calories of eggs and milk per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
         if 'Crop Productivity Evolution' in chart_list:
