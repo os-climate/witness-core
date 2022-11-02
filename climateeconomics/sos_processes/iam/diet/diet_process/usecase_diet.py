@@ -306,7 +306,7 @@ class Study(ClimateEconomicsStudyManager):
             ['land_demand_constraint', 'calories_per_day_constraint'])
         list_parent.extend(['agriculture_constraint', 'agriculture_constraint'])
         list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        list_weight.extend([0.0, -30.0])
+        list_weight.extend([-1.0, -3.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
         list_ns.extend(['ns_functions', 'ns_functions'])
