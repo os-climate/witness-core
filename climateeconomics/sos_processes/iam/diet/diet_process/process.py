@@ -25,7 +25,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Process without Energy',
+        'label': 'Diet Process',
         'description': '',
         'category': '',
         'version': '',

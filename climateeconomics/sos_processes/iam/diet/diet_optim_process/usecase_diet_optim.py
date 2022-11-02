@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 from sos_trades_core.study_manager.study_manager import StudyManager
 from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.sos_processes.iam.diet.diet_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
+from climateeconomics.sos_processes.iam.diet.diet_optim_sub_process.usecase_diet_optim_sub import Study as diet_optim_sub_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
 from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from sos_trades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
@@ -50,7 +50,7 @@ class Study(ClimateEconomicsStudyManager):
         self.invest_discipline = invest_discipline
         self.techno_dict = techno_dict
 
-        self.witness_uc = witness_optim_sub_usecase(
+        self.witness_uc = diet_optim_sub_usecase(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine)
 
     def setup_usecase(self):
