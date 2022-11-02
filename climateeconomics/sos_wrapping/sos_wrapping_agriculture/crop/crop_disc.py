@@ -809,8 +809,8 @@ class CropDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'food calories [kcal / person / year]',
-                                                 chart_name='Evolution of the diet over time', stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart('years', 'food calories [kcal / person / day]',
+                                                 chart_name='Food calories per person', stacked_bar=True)
 
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
