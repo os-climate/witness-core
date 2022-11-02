@@ -132,9 +132,9 @@ class Study(ClimateEconomicsStudyManager):
                                                                    'namespace_out': 'ns_crop'
                                                                    }
             dv_arrays_dict[f'{self.witness_uc.study_name}.vegetables_and_carbs_calories_per_day_ctrl'] = dspace_df[f'vegetables_and_carbs_calories_per_day_ctrl']['value']
-            design_var_descriptor['vegetables_and_carbs_calories_per_day_ctrl'] = {'out_name': 'vegetables_and_carbs_calories_per_day_ctrl',
+            design_var_descriptor['vegetables_and_carbs_calories_per_day_ctrl'] = {'out_name': 'vegetables_and_carbs_calories_per_day',
                                                                    'out_type': 'dataframe',
-                                                                   'key': 'vegetables_and_carbs_calories_per_day_ctrl',
+                                                                   'key': 'vegetables_and_carbs_calories_per_day',
                                                                    'index': years,
                                                                    'index_name': 'years',
                                                                    'namespace_in': 'ns_witness',
