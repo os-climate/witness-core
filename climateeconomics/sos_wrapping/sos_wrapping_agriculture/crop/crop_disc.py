@@ -338,7 +338,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'N2O_land_emission_detailed': {'type': 'dataframe', 'unit': 'GtN2O',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
-        'calories_per_day_constraint': {'type': 'array', 'unit': 'GtN2O',
+        'calories_per_day_constraint': {'type': 'array', 'unit': 'kcal',
                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
     }
 
