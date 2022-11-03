@@ -138,7 +138,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                    'index': years,
                                                                    'index_name': 'years',
                                                                    'namespace_in': 'ns_witness',
-                                                                   'namespace_out': 'ns_agriculture'
+                                                                   'namespace_out': 'ns_crop'
                                                                    }
             dv_arrays_dict[f'{self.witness_uc.study_name}.milk_and_eggs_calories_per_day_ctrl'] = \
             dspace_df[f'milk_and_eggs_calories_per_day_ctrl']['value']
@@ -149,7 +149,7 @@ class Study(ClimateEconomicsStudyManager):
                 'index': years,
                 'index_name': 'years',
                 'namespace_in': 'ns_witness',
-                'namespace_out': 'ns_agriculture'
+                'namespace_out': 'ns_crop'
                 }
         else:
             dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']
