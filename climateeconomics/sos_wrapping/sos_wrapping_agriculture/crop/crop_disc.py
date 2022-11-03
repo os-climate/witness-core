@@ -812,7 +812,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 else:
 
                     new_series = InstanciatedSeries(
-                        years, updated_diet_df[key].values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
+                        years, updated_diet_df[key].values.tolist() / 365, key, InstanciatedSeries.BAR_DISPLAY)
 
                     series_to_add.append(new_series)
 
