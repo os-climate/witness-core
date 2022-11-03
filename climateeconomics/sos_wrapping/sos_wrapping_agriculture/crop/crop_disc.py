@@ -805,7 +805,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 else:
 
                     new_series = InstanciatedSeries(
-                        years, (updated_diet_df[key].values * kg_to_kcal_dict[key]).tolist(), key, InstanciatedSeries.BAR_DISPLAY)
+                        years, updated_diet_df[key].values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
 
                     series_to_add.append(new_series)
 
@@ -824,33 +824,6 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-            series_to_add = []
-            for key in updated_diet_df.keys():
-
-                if key == 'years':
-                    pass
-                elif key.startswith('total'):
-                    pass
-                else:
-
-                    new_series = InstanciatedSeries(
-                        years, (updated_diet_df[key].values * kg_to_kcal_dict[key] * 100 / total_kcal).tolist(), key, InstanciatedSeries.BAR_DISPLAY)
-
-                    series_to_add.append(new_series)
-
-            new_chart = TwoAxesInstanciatedChart('years', 'food calories proportion [% / person / year]',
-                                                 chart_name='Evolution of the diet proportion over time', stacked_bar=True)
-            # add a fake serie of value before the other serie to keep the same color than in the first graph,
-            # where the line plot of total surface take the first color
-            fake_serie = InstanciatedSeries(
-                years, surface_percentage_df[key].values.tolist() * 0, '', InstanciatedSeries.BAR_DISPLAY)
-
-            new_chart.add_series(fake_serie)
-
-            for serie in series_to_add:
-                new_chart.add_series(serie)
-
-            instanciated_charts.append(new_chart)
 
             # ------------------------------------------
             # DIET EVOLUTION VARIABLES
