@@ -138,6 +138,7 @@ class Crop():
         self.N2O_land_emissions = pd.DataFrame({'years': self.years})
         self.N2O_land_emissions_detailed = pd.DataFrame({'years': self.years})
         self.updated_diet_df = pd.DataFrame({'years': self.years})
+        self.calories_pc_df = pd.DataFrame({'years': self.years})
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -199,6 +200,9 @@ class Crop():
         self.calories_per_day_constraint = (self.red_meat_calories_per_day + self.white_meat_calories_per_day
                                                        + self.vegetables_and_carbs_calories_per_day +
                                             self.milk_and_eggs_calories_per_day - self.constaint_calories_limit) / self.constraint_calories_ref
+        self.calories_pc_df['kcal_pc'] = self.red_meat_calories_per_day + self.white_meat_calories_per_day \
+                                        + self.vegetables_and_carbs_calories_per_day \
+                                        + self.milk_and_eggs_calories_per_day
         self.updated_diet_df = deepcopy(new_diet_df)
 
         # compute the quantity of food consumed

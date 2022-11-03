@@ -340,6 +340,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'calories_per_day_constraint': {'type': 'array', 'unit': 'kcal',
                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+        'calories_pc_df': {'type': 'dataframe', 'unit': 'kcal',
+                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
     }
 
     CROP_CHARTS = 'crop and diet charts'
@@ -401,7 +403,8 @@ class CropDiscipline(ClimateEcoDiscipline):
             'CH4_land_emission_detailed': self.crop_model.CH4_land_emissions_detailed,
             'N2O_land_emission_df': self.crop_model.N2O_land_emissions,
             'N2O_land_emission_detailed': self.crop_model.N2O_land_emissions_detailed,
-            'calories_per_day_constraint': self.crop_model.calories_per_day_constraint
+            'calories_per_day_constraint': self.crop_model.calories_per_day_constraint,
+            'calories_pc_df': self.crop_model.calories_pc_df
         }
 
         # -- store outputs
@@ -485,6 +488,10 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),('white_meat_calories_per_day', 'white_meat_calories_per_day'),grad_constraint )
         self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'),grad_constraint )
 
+        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),('vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'), np.identity(l_years))
+        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),('red_meat_calories_per_day', 'red_meat_calories_per_day'), np.identity(l_years))
+        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),('white_meat_calories_per_day', 'white_meat_calories_per_day'), np.identity(l_years))
+        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'), np.identity(l_years))
 
         # gradients for techno_production from total food land surface
         d_prod_dpopulation = model.compute_d_prod_dland_for_food(summ)
