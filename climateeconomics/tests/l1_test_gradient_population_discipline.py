@@ -385,3 +385,33 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, inputs=[f'{self.name}.calories_pc_df'],
                             outputs=[
                                 f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
+
+    def _test_population_discipline_analytic_death_rate_sup_1(self):
+        '''
+        Test gradient population with a huge increase in calories intake
+        '''
+        year_start = 2020
+        year_end = 2100
+        years = np.arange(year_start, year_end + 1)
+
+        calories_pc_df = pd.DataFrame(
+            {'years': years, 'kcal_pc': np.linspace(700,800,len(years))})
+        calories_pc_df.index = years
+
+        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+                       f'{self.name}.year_start': year_start,
+                       f'{self.name}.year_end': year_end,
+                       f'{self.name}.temperature_df': self.temperature_df,
+                       f'{self.name}.calories_pc_df': calories_pc_df,
+                       f'{self.name}.population.theta_diet': 1.0
+                       }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_death_rate_sup_1.pkl',
+                            discipline=disc_techno, inputs=[f'{self.name}.calories_pc_df'],
+                            outputs=[
+                                f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
