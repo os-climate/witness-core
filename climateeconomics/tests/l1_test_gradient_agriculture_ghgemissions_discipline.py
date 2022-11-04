@@ -88,5 +88,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.Crop.N2O_land_emission_df'],
                             outputs=[f'{self.name}.CO2_land_emissions',
                                      f'{self.name}.CH4_land_emissions',
-                                     f'{self.name}.N2O_land_emissions'
+                                     f'{self.name}.N2O_land_emissions',
+                                     f'{self.name}.co2_eq_20',
+                                     f'{self.name}.co2_eq_100'
                                      ])

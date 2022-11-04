@@ -14,14 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from copy import deepcopy
 import pandas as pd
 import numpy as np
 from climateeconomics.core.core_emissions.indus_emissions_model import IndusEmissions
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import GHGemissionsDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
+    GHGemissionsDiscipline
 
 
 class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
@@ -41,6 +43,14 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     years = np.arange(2020, 2101)
+    GHG_TYPE_LIST = ['CO2', 'CH4', 'N20']
+    GWP_100_default = {'CO2': 1.0,
+                       'CH4': 28.,
+                       'N2O': 265.}
+
+    GWP_20_default = {'CO2': 1.0,
+                      'CH4': 85.,
+                      'N2O': 265.}
 
     name = f'{GHGemissionsDiscipline.name}.Agriculture'
     _maturity = 'Research'
@@ -52,19 +62,22 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                               'namespace': 'ns_agriculture',
                               'structuring': True},
-        'other_land_CO2_emissions': {'type': 'float', 'unit': 'GtCO2',  'default': 10.1, },
+        'other_land_CO2_emissions': {'type': 'float', 'unit': 'GtCO2', 'default': 10.1, },
+        'co2_eq_20_objective_ref': {'type': 'float', 'default': 1000.} ,
+        'co2_eq_100_objective_ref': {'type': 'float', 'default': 500.} ,
         # other land emissions = land use change emission - Forest initial
         # emission - computed crop emissions = 3.2(initial) + 7.6(frorest) -
         # 0.7(crop)
     }
     DESC_OUT = {
         'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2',
-                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'CH4_land_emissions': {'type': 'dataframe', 'unit': 'GtCH4',
-                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'N2O_land_emissions': {'type': 'dataframe', 'unit': 'GtN2O',
-                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'CO2_em_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''}
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'co2_eq_20': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'co2_eq_100': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
     }
 
     def setup_sos_disciplines(self):
@@ -74,12 +87,15 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.CO2_land_emission_df'] = {
-                        'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'}
+                        'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_agriculture'}
                     if techno == 'Crop':
                         dynamic_inputs[f'{techno}.CH4_land_emission_df'] = {
-                            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'}
+                            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                            'namespace': 'ns_agriculture'}
                         dynamic_inputs[f'{techno}.N2O_land_emission_df'] = {
-                            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'}
+                            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                            'namespace': 'ns_agriculture'}
 
         self.add_inputs(dynamic_inputs, clean_inputs=False)
 
@@ -115,15 +131,26 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         N2O_emissions_land_use_df['years'] = N2O_emitted_crop_df['years']
         N2O_emissions_land_use_df['Crop'] = N2O_emitted_crop_df['emitted_N2O_evol_cumulative']
 
-        co2_emissions_objective = np.asarray([CH4_emissions_land_use_df['Crop'].sum() + CO2_emissions_land_use_df['Forest'].sum()])
+        co2_eq_20_ref = self.get_sosdisc_inputs('co2_eq_20_objective_ref')
+        co2_eq_100_ref = self.get_sosdisc_inputs('co2_eq_100_objective_ref')
 
+        l_years = len(N2O_emitted_crop_df['years'])
+
+        co2_eq_20 = (CO2_emissions_land_use_df['Forest'].sum() + CO2_emissions_land_use_df['Crop'].sum() +
+                        CH4_emissions_land_use_df['Crop'].sum() * self.GWP_20_default['CH4'] +
+                        N2O_emissions_land_use_df['Crop'].sum() * self.GWP_20_default['N2O']) / (co2_eq_20_ref * l_years)
+
+        co2_eq_100 = (CO2_emissions_land_use_df['Forest'].sum() + CO2_emissions_land_use_df['Crop'].sum() + \
+                        CH4_emissions_land_use_df['Crop'].sum() * self.GWP_100_default['CH4'] + \
+                        N2O_emissions_land_use_df['Crop'].sum() * self.GWP_100_default['N2O']) / (co2_eq_100_ref * l_years)
 
         # write outputs
         outputs_dict = {
             'CO2_land_emissions': CO2_emissions_land_use_df,
             'CH4_land_emissions': CH4_emissions_land_use_df,
             'N2O_land_emissions': N2O_emissions_land_use_df,
-            'CO2_em_objective': co2_emissions_objective
+            'co2_eq_20': np.array([co2_eq_20]),
+            'co2_eq_100': np.array([co2_eq_100])
         }
         self.store_sos_outputs_values(outputs_dict)
 
@@ -134,6 +161,9 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         np_years = inputs_dict['year_end'] - inputs_dict['year_start'] + 1
         techno_list = self.get_sosdisc_inputs('technologies_list')
+        co2_eq_20_ref = inputs_dict['co2_eq_20_objective_ref']
+        co2_eq_100_ref = inputs_dict['co2_eq_100_objective_ref']
+
         for techno in techno_list:
             self.set_partial_derivative_for_other_types(
                 ('CO2_land_emissions', f'{techno}'), (
@@ -147,13 +177,54 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                     ('N2O_land_emissions', f'{techno}'),
                     (f'{techno}.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'), np.identity(np_years))
         self.set_partial_derivative_for_other_types(
-                ('CO2_em_objective',), (
-                    'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
-                np.ones(np_years))
+            ('co2_eq_20',), (
+                'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
+            np.ones(np_years) * self.GWP_20_default['CH4'] / (co2_eq_20_ref * np_years))
         self.set_partial_derivative_for_other_types(
-            ('CO2_em_objective',), (
+            ('co2_eq_20',), (
                 'Forest.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
-            np.ones(np_years))
+            np.ones(np_years) / (co2_eq_20_ref * np_years))
+        self.set_partial_derivative_for_other_types(
+            ('co2_eq_20',), (
+                'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
+            np.ones(np_years) * self.GWP_20_default['CH4'] / (co2_eq_20_ref * np_years))
+        self.set_partial_derivative_for_other_types(
+            ('co2_eq_20',), (
+                'Crop.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'),
+            np.ones(np_years) * self.GWP_20_default['N2O'] / (co2_eq_20_ref * np_years))
+        self.set_partial_derivative_for_other_types(
+            ('co2_eq_20',), (
+                'Crop.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+            np.ones(np_years) * self.GWP_20_default['CO2'] / (co2_eq_20_ref * np_years))
+
+        ############################################# co2_eq_100_objective gradient ###############################
+
+        self.set_partial_derivative_for_other_types(
+            ('co2_eq_100',), (
+                'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
+            np.ones(np_years) * self.GWP_100_default['CH4'] / (co2_eq_100_ref * np_years))
+
+        self.set_partial_derivative_for_other_types(
+            ('co2_eq_100',), (
+                'Forest.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+            np.ones(np_years) / (co2_eq_100_ref * np_years))
+
+        self.set_partial_derivative_for_other_types(
+            ('co2_eq_100',), (
+                'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
+            np.ones(np_years) * self.GWP_100_default['CH4'] / (co2_eq_100_ref * np_years))
+
+        self.set_partial_derivative_for_other_types(
+            ('co2_eq_100',), (
+                'Crop.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'),
+            np.ones(np_years) * self.GWP_100_default['N2O'] / (co2_eq_100_ref * np_years))
+
+        self.set_partial_derivative_for_other_types(
+            ('co2_eq_100',), (
+                'Crop.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
+            np.ones(np_years) * self.GWP_100_default['CO2'] / (co2_eq_100_ref * np_years))
+
+
 
     def get_chart_filter_list(self):
 
