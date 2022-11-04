@@ -358,7 +358,7 @@ class Crop():
 
         for col in changed_diet_df:
             if col != 'years':
-                changed_diet_df[col] = changed_diet_df[col] * self.kg_to_kcal_dict[col]
+                changed_diet_df[col] = changed_diet_df[col]  / self.kg_to_kcal_dict[col]
 
 
 
@@ -814,7 +814,7 @@ class Crop():
                                                         self.diet_df['potatoes'].values[0] +
                                                         self.diet_df['rice and maize'].values[0])
 
-            grad_value = 365 * kg_food_to_surface[veg] * proportion * self.kg_to_kcal_dict[veg]
+            grad_value = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
             total_surface_grad = grad_value * population_df['population'].values * 1e6 * self.hatom2 / 1e9
             total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
@@ -840,7 +840,7 @@ class Crop():
             proportion = self.diet_df[veg].values[0] / (self.diet_df['eggs'].values[0] +
                                                         self.diet_df['milk'].values[0])
 
-            grad_value = 365 * kg_food_to_surface[veg] * proportion * self.kg_to_kcal_dict[veg]
+            grad_value = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
             total_surface_grad = grad_value * population_df['population'].values * 1e6 * self.hatom2 / 1e9
             total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
@@ -858,7 +858,7 @@ class Crop():
         idty = np.identity(number_of_values)
         kg_food_to_surface = self.kg_to_m2_dict
         # red to white meat value influences red meat, white meat, and vegetable surface
-        red_meat_diet_grad = 365 * kg_food_to_surface[key_name] * self.kg_to_kcal_dict[key_name]
+        red_meat_diet_grad = 365 * kg_food_to_surface[key_name] / self.kg_to_kcal_dict[key_name]
 
         total_surface_grad = red_meat_diet_grad * population_df['population'].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * (1 - self.productivity_evolution['productivity_evolution'])
@@ -912,7 +912,7 @@ class Crop():
                                                     self.diet_df['potatoes'].values[0] +
                                                     self.diet_df['rice and maize'].values[0])
 
-        white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion * self.kg_to_kcal_dict[veg]
+        white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
         # sub total gradient is the sum of all gradients of food category
         sub_total_surface_grad = white_meat_diet_grad
@@ -933,7 +933,7 @@ class Crop():
         proportion = self.diet_df[veg].values[0] / (self.diet_df['milk'].values[0] +
                                                     self.diet_df['eggs'].values[0])
 
-        white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion * self.kg_to_kcal_dict[veg]
+        white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
         # sub total gradient is the sum of all gradients of food category
         sub_total_surface_grad = white_meat_diet_grad
@@ -1021,7 +1021,7 @@ class Crop():
         if food in ['red meat', 'fruits and vegetables', 'potatoes', 'rice and maize']:
 
             if food == 'red meat':
-                sub_total_surface_grad = red_meat_diet_grad * self.kg_to_kcal_dict[food]
+                sub_total_surface_grad = red_meat_diet_grad / self.kg_to_kcal_dict[food]
 
             else:
                 pass
@@ -1042,14 +1042,14 @@ class Crop():
         sub_total_surface_grad = 0.0
         kg_food_to_surface = self.kg_to_m2_dict
 
-        white_meat_diet_grad = 365 * kg_food_to_surface['white meat'] 
+        white_meat_diet_grad = 365 * kg_food_to_surface['white meat']
         #removed_white_kcal = -self.kcal_diet_df['total'] / 100
 
         # red to white meat value influences red meat, white meat, and vegetable surface
         if food in ['white meat', 'fruits and vegetables', 'potatoes', 'rice and maize']:
 
             if food == 'white meat':
-                sub_total_surface_grad = white_meat_diet_grad * self.kg_to_kcal_dict[food]
+                sub_total_surface_grad = white_meat_diet_grad / self.kg_to_kcal_dict[food]
         """
             else:
                 proportion = self.kcal_diet_df[food] / (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
