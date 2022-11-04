@@ -810,9 +810,9 @@ class CropDiscipline(ClimateEcoDiscipline):
                 elif key.startswith('total'):
                     pass
                 else:
-
+                    l_values = updated_diet_df[key].values / 365
                     new_series = InstanciatedSeries(
-                        years, updated_diet_df[key].values.tolist() / 365, key, InstanciatedSeries.BAR_DISPLAY)
+                        years, l_values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
 
                     series_to_add.append(new_series)
 
