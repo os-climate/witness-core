@@ -341,7 +341,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'calories_per_day_constraint': {'type': 'array', 'unit': 'kcal',
                                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         'calories_pc_df': {'type': 'dataframe', 'unit': 'kcal',
-                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
     }
 
     CROP_CHARTS = 'crop and diet charts'

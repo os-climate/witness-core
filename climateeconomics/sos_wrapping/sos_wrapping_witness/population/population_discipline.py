@@ -88,7 +88,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
         'diet_mortality_param_df': {'type': 'dataframe', 'default': default_diet_mortality_param_df, 'user_level': 3, 'unit': '-'},
         'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
-        'kcal_pc_ref': {'type': 'float', 'default': 2400.0, 'user_level': 3, 'unit': 'kcal'},
+        'kcal_pc_ref': {'type': 'float', 'default': 3000.0, 'user_level': 3, 'unit': 'kcal'},
     }
 
     DESC_OUT = {
