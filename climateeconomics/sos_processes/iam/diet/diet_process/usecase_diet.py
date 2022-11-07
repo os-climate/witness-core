@@ -110,12 +110,10 @@ class Study(ClimateEconomicsStudyManager):
             {'years': years, 'share_investment': self.share_energy_investment_array}, index=years)
         witness_input[self.study_name +
                       '.share_energy_investment'] = share_energy_investment
-        data = arange(1.0, nb_per + 1.0, 1)
+        gdp = [130.187]*len(years)
 
         df_eco = DataFrame({'years': years,
-                            'gross_output': data,
-                            'pc_consumption': data,
-                            'output_net_of_d': data},
+                            'output_net_of_d': gdp},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
         witness_input[self.study_name + '.economics_df'] = df_eco
