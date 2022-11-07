@@ -251,22 +251,22 @@ class CropDiscipline(ClimateEcoDiscipline):
         'red_meat_calories_per_day': {'type': 'dataframe', 'default': default_red_meat_percentage,
                                 'dataframe_descriptor': {'years': ('float', None, False),
                                                          'red_meat_calories_per_day': ('float', [0, 100], True)},
-                                'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+                                'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'white_meat_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
                                   'dataframe_descriptor': {'years': ('float', None, False),
                                                            'white_meat_calories_per_day': ('float', [0, 100], True)},
-                                  'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+                                  'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'vegetables_and_carbs_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
                                         'dataframe_descriptor': {'years': ('float', None, False),
                                                                  'vegetables_and_carbs_calories_per_day': (
                                                                  'float', [0, 100], True)},
-                                        'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                        'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                         'namespace': 'ns_crop'},
         'milk_and_eggs_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
                                                   'dataframe_descriptor': {'years': ('float', None, False),
                                                                            'milk_and_eggs_calories_per_day': (
                                                                                'float', [0, 100], True)},
-                                                  'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                                  'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                                   'namespace': 'ns_crop'},
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop'},
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
@@ -867,6 +867,14 @@ class CropDiscipline(ClimateEcoDiscipline):
                 eggs_milk['milk_and_eggs_calories_per_day'].values)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Calories of eggs and milk per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
+                eggs_milk['milk_and_eggs_calories_per_day'].values +
+                veg_carbs['vegetables_and_carbs_calories_per_day'].values +
+                red_meat_calories['red_meat_calories_per_day'].values +
+                white_meat_calories['white_meat_calories_per_day'].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Total calories per day per person', 'lines', visible_line)
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
