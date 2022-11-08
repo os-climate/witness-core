@@ -878,6 +878,97 @@ class CropDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
+        ##################### Kcal per kg per category #################
+
+        list_categories = ['red meat', 'white meat', 'eggs_milk', 'vegetables_and_carbs']
+
+        co2_gwp_100 = 1.0
+        ch4_gwp_100 = 28.0
+        n2o_gwp_100 = 265.0
+
+        kg_to_m2_dict, co2_emissions_per_kg, ch4_emissions_per_kg, n2o_emissions_per_kg = self.get_sosdisc_inputs(['kg_to_m2_dict',
+                                                                'co2_emissions_per_kg','ch4_emissions_per_kg', 'n2o_emissions_per_kg'])
+        kg_to_kcal_mean_dict = {'vegetables_and_carbs': 0, 'eggs_milk': 0}
+        m2_per_kcal_dict = {'vegetables_and_carbs': 0, 'eggs_milk': 0}
+        co2_emissions_per_kcal_dict_mean = {'vegetables_and_carbs': 0, 'eggs_milk': 0}
+        ch4_emissions_per_kcal_dict_mean = {'vegetables_and_carbs': 0, 'eggs_milk': 0}
+        n2o_emissions_per_kcal_dict_mean = {'vegetables_and_carbs': 0, 'eggs_milk': 0}
+
+        ghg_emissions_per_kcal = {}
+
+        for key in starting_diet:
+            if key == 'fruits and vegetables' or key == 'potatoes' or key == 'rice and maize':
+
+                proportion = starting_diet[key].values[0] / \
+                (starting_diet['fruits and vegetables'].values[0] + starting_diet['potatoes'].values[0] +
+                 starting_diet['rice and maize'].values[0])
+
+                kg_to_kcal_mean_dict['vegetables_and_carbs'] += proportion * kg_to_kcal_dict[key]
+                m2_per_kcal_dict['vegetables_and_carbs'] += proportion * kg_to_m2_dict[key] / kg_to_kcal_dict[key]
+                co2_emissions_per_kcal_dict_mean['vegetables_and_carbs'] += proportion * co2_emissions_per_kg[key] / kg_to_kcal_dict[key]
+                ch4_emissions_per_kcal_dict_mean['vegetables_and_carbs'] += ch4_gwp_100 * proportion * ch4_emissions_per_kg[key] / kg_to_kcal_dict[key]
+                n2o_emissions_per_kcal_dict_mean['vegetables_and_carbs'] += n2o_gwp_100 * proportion * n2o_emissions_per_kg[key] / kg_to_kcal_dict[key]
+
+            elif key == 'eggs' or key == 'milk':
+                proportion = starting_diet[key].values[0] / (starting_diet['eggs'].values[0] + starting_diet['milk'].values[0])
+                kg_to_kcal_mean_dict['eggs_milk'] += proportion * kg_to_kcal_dict[key]
+                m2_per_kcal_dict['eggs_milk'] += proportion * kg_to_m2_dict[key] / kg_to_kcal_dict[key]
+                co2_emissions_per_kcal_dict_mean['eggs_milk'] += proportion * co2_emissions_per_kg[key] / \
+                                                                            kg_to_kcal_dict[key]
+                ch4_emissions_per_kcal_dict_mean['vegetables_and_carbs'] += ch4_gwp_100 * proportion * ch4_emissions_per_kg[key] / kg_to_kcal_dict[key]
+                n2o_emissions_per_kcal_dict_mean['vegetables_and_carbs'] += n2o_gwp_100 * proportion * n2o_emissions_per_kg[key] / kg_to_kcal_dict[key]
+
+        kg_to_kcal_mean_dict['red meat'] = kg_to_kcal_dict['red meat']
+        m2_per_kcal_dict['red meat'] = kg_to_m2_dict['red meat'] / kg_to_kcal_dict['red meat']
+        co2_emissions_per_kcal_dict_mean['red meat'] = co2_emissions_per_kg['red meat'] / kg_to_kcal_dict['red meat']
+        ch4_emissions_per_kcal_dict_mean['red meat'] = ch4_gwp_100 * ch4_emissions_per_kg['red meat'] / kg_to_kcal_dict['red meat']
+        n2o_emissions_per_kcal_dict_mean['red meat'] = n2o_gwp_100 * n2o_emissions_per_kg['red meat'] / kg_to_kcal_dict['red meat']
+
+        kg_to_kcal_mean_dict['white meat'] = kg_to_kcal_dict['white meat']
+        m2_per_kcal_dict['white meat'] = kg_to_m2_dict['white meat'] / kg_to_kcal_dict['white meat']
+        co2_emissions_per_kcal_dict_mean['white meat'] = co2_emissions_per_kg['white meat'] / kg_to_kcal_dict['white meat']
+        ch4_emissions_per_kcal_dict_mean['white meat'] = ch4_gwp_100 * ch4_emissions_per_kg['white meat'] / kg_to_kcal_dict['white meat']
+        n2o_emissions_per_kcal_dict_mean['white meat'] = n2o_gwp_100 * n2o_emissions_per_kg['white meat'] / kg_to_kcal_dict['white meat']
+
+        for category in list_categories:
+            ghg_emissions_per_kcal[category] = co2_emissions_per_kcal_dict_mean[category] + \
+                                               ch4_emissions_per_kcal_dict_mean[category] + \
+                                               n2o_emissions_per_kcal_dict_mean[category]
+
+        ##################### m2/kcal ############
+
+
+        chart_name = "m2 per kcal per category"
+
+
+        new_chart = TwoAxesInstanciatedChart('years', 'm2 per category per kcal [m2/kcal]',
+                                             chart_name=chart_name)
+
+        for key in list_categories:
+            new_series = InstanciatedSeries(
+                [key], [m2_per_kcal_dict[key]], f'm2 per kcal of category {key}', 'bar')
+            new_chart.series.append(new_series)
+
+        instanciated_charts.append(new_chart)
+
+        ################## ghg total ###############
+        chart_name = "ghg emissions per kcal per category"
+
+
+        new_chart = TwoAxesInstanciatedChart('years', 'ghg per category per kcal [co2eq/kcal]',
+                                             chart_name=chart_name)
+
+        for key in list_categories:
+            new_series = InstanciatedSeries(
+                [key], [ghg_emissions_per_kcal[key]], f'co2eq per kcal of category {key}', 'bar')
+            new_chart.series.append(new_series)
+
+        instanciated_charts.append(new_chart)
+
+
+
+
+
         if 'Crop Productivity Evolution' in chart_list:
 
             prod_df = self.get_sosdisc_outputs(
