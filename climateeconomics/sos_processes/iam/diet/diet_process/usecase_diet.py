@@ -243,7 +243,7 @@ class Study(ClimateEconomicsStudyManager):
             ['co2_eq_100', 'co2_eq_20', 'forest_lost_capital'])
         list_parent.extend([
                             'CO2_obj','CO2_obj', 'lost capital'])
-        list_ns.extend(['ns_functions', 'ns_functions', 'ns_functions' ])
+        list_ns.extend(['ns_functions', 'ns_functions', 'ns_forest' ])
         list_ftype.extend(
             [OBJECTIVE, OBJECTIVE, OBJECTIVE])
         list_weight.extend([2.0, 2.0, 1.0])
