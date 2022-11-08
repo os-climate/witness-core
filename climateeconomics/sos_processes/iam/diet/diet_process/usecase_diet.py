@@ -240,15 +240,15 @@ class Study(ClimateEconomicsStudyManager):
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['co2_eq_100', 'co2_eq_20', 'forest_lost_capital'])
+            ['co2_eq_100', 'co2_eq_20'])
         list_parent.extend([
-                            'CO2_obj','CO2_obj', 'lost capital'])
-        list_ns.extend(['ns_functions', 'ns_functions', 'ns_forest' ])
+                            'CO2_obj','CO2_obj'])
+        list_ns.extend(['ns_functions', 'ns_functions'])
         list_ftype.extend(
-            [OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([2.0, 2.0, 1.0])
+            [OBJECTIVE, OBJECTIVE])
+        list_weight.extend([2.0, 2.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
