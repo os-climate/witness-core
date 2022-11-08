@@ -203,6 +203,7 @@ class Crop():
         self.calories_pc_df['kcal_pc'] = self.red_meat_calories_per_day + self.white_meat_calories_per_day \
                                         + self.vegetables_and_carbs_calories_per_day \
                                         + self.milk_and_eggs_calories_per_day
+        self.calories_pc_df.index = self.years
         self.updated_diet_df = deepcopy(new_diet_df)
 
         # compute the quantity of food consumed
