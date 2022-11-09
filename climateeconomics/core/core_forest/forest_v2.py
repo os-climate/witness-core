@@ -199,7 +199,7 @@ class Forest():
 
     def compute_managed_wood_surface(self):
         """
-        compute managed wood delta and cumulative surface form onvestment
+        compute managed wood delta and cumulative surface from investments
         Will be recalculate with deforestation impact in compute_reforestation_deforestation_surface method
         """
         construction_delay = self.techno_wood_info['construction_delay']

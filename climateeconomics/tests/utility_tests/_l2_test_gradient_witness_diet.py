@@ -121,7 +121,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
-        usecase = witness_usecase(
+        usecase = diet_usecase(
             bspline=True, execution_engine=self.ee)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
@@ -182,7 +182,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
-        usecase = witness_usecase(
+        usecase = diet_usecase(
             bspline=True, execution_engine=self.ee)
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
