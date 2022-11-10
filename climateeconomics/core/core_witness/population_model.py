@@ -130,8 +130,6 @@ class Population:
         self.climate_death_rate_df_dict = {}
         # DIET => calculated from kcal intake
         self.diet_death_rate_df_dict = {}
-        # used for gradient computation
-        self.diet_death_rate_df_dict_origin = {}
         # TOTAL => sum of all effects
         self.death_rate_df_dict = {}
 
@@ -266,19 +264,15 @@ class Population:
         else:
             diet_death_rate = alpha_diet * (kcal_pc_ref - kcal_pc)/(theta_diet * kcal_pc_ref)
 
+        for i in range(len(death_rate)):
+            if diet_death_rate[i] >= 1 - death_rate[i] * (1 + climate_death_rate[i]):
+                diet_death_rate[i] =  (1 - death_rate[i] * (1 + climate_death_rate[i]))/ (1 + np.exp(-diet_death_rate[i]))
+
         # Fill the year key in each death rate dict
         self.base_death_rate_df_dict[year] = death_rate
         self.climate_death_rate_df_dict[year] = climate_death_rate * death_rate
-        # normally it is self.diet_death_rate_df_dict[year] =  diet_death_rate but there is a problem of same reference with self.diet_death_rate_df_dict_origin
-        self.diet_death_rate_df_dict[year] =  diet_death_rate*0
-        self.diet_death_rate_df_dict_origin[year] = diet_death_rate
-
-        for i in range(len(death_rate)):
-            if diet_death_rate[i] >= 1 - death_rate[i] * (1 + climate_death_rate[i]):
-                self.diet_death_rate_df_dict[year][i] =  (1 - death_rate[i] * (1 + climate_death_rate[i]))/ (1 + np.exp(-diet_death_rate[i]))
-            else:
-                self.diet_death_rate_df_dict[year][i] =  diet_death_rate[i]
-        self.death_rate_df_dict[year] = death_rate * (1 + climate_death_rate) + self.diet_death_rate_df_dict[year]
+        self.diet_death_rate_df_dict[year] = diet_death_rate
+        self.death_rate_df_dict[year] = death_rate * (1 + climate_death_rate) + diet_death_rate
 
     def compute_death_number(self, year):
         """Compute number of dead people per year
@@ -415,8 +409,6 @@ class Population:
             self.climate_death_rate_df_dict, orient='index', columns=self.column_list)
         self.diet_death_rate_df = DataFrame.from_dict(
             self.diet_death_rate_df_dict, orient='index', columns=self.column_list)
-        self.diet_death_rate_df_origin = DataFrame.from_dict(
-            self.diet_death_rate_df_dict_origin, orient='index', columns=self.column_list)
         self.base_death_rate_df = DataFrame.from_dict(
             self.base_death_rate_df_dict, orient='index', columns=self.column_list)
         self.death_rate_df = DataFrame.from_dict(
@@ -1047,28 +1039,22 @@ class Population:
         d_diet_deathrate_d_kcal_pc = {}
         base_death_rate = self.base_death_rate_df.iloc[iyear, :]
         climate_death_rate = self.climate_death_rate_df.iloc[iyear, :]
-        diet_death_rate_origin = self.diet_death_rate_df_origin.iloc[iyear, :]
-        temp = self.temperature_df.loc[year, 'temp_atmo']
-        cal_temp_increase = self.cal_temp_increase
-        theta = self.theta
         add_death = self.climate_mortality_param_df
         add_death.index = add_death['param'].values
         diet_death_param = self.diet_mortality_param_df
         diet_death_param.index = diet_death_param['param'].values
         kcal_pc = self.calories_pc_df.loc[year, 'kcal_pc']
         kcal_pc_ref = self.kcal_pc_ref
-        cal_temp_increase = self.cal_temp_increase
-        theta = self.theta
         theta_diet = self.theta_diet
-        # Add diet impact on death rate
         risk_type = 'undernutrition'
         if kcal_pc >= kcal_pc_ref:
             risk_type = 'overnutrition'
+        alpha_diet = diet_death_param[risk_type]
+        if np.real(kcal_pc - kcal_pc_ref) >= 0:
+            diet_death_rate = alpha_diet * (kcal_pc - kcal_pc_ref)/(theta_diet * kcal_pc_ref)
+        else:
+            diet_death_rate = alpha_diet * (kcal_pc_ref - kcal_pc)/(theta_diet * kcal_pc_ref)
 
-        # if np.real(kcal_pc - kcal_pc_ref) > 0:
-        #     diet_death_rate = alpha_diet * (kcal_pc - kcal_pc_ref)/(theta_diet * kcal_pc_ref)
-        # else:
-        #     diet_death_rate = alpha_diet * (kcal_pc_ref - kcal_pc)/(theta_diet * kcal_pc_ref)
         for age_range in param['param'].values:
             # Param of death rate equation
             alpha_diet = diet_death_param.loc[age_range, risk_type]
@@ -1077,14 +1063,14 @@ class Population:
             else:
                 d_diet_deathrate_d_kcal_pc[age_range] = - alpha_diet * idty / (theta_diet * kcal_pc_ref)
 
-            if diet_death_rate_origin[age_range] >= 1 - base_death_rate[age_range] - climate_death_rate[age_range]:
+            if diet_death_rate[age_range] >= 1 - base_death_rate[age_range] - climate_death_rate[age_range]:
                 # self.diet_death_rate_df_dict[year][age_range] = (1 - death_rate[i] * (1 + climate_death_rate[age_range]))/ (1 + np.exp(-self.diet_death_rate_df_dict[year][age_range]))
-                #  self.diet_death_rate_df_dict[year][age_range] = u / v
+                # self.diet_death_rate_df_dict[year][age_range] = u / v
                 # d_diet_death_rate_df_dict[year][age_range] = (du*v - dv*u)/v2
                 u = 1 - base_death_rate[age_range]  - climate_death_rate[age_range]
                 u_prime = - d_base_death_rate[year][age_range]
-                v = 1 + np.exp(-diet_death_rate_origin[age_range])
-                v_prime = -d_diet_deathrate_d_kcal_pc[age_range] * np.exp(-diet_death_rate_origin[age_range])
+                v = 1 + np.exp(-diet_death_rate[age_range])
+                v_prime = -d_diet_deathrate_d_kcal_pc[age_range] * np.exp(-diet_death_rate[age_range])
                 d_diet_deathrate_d_kcal_pc[age_range] = (u_prime*v - v_prime * u)/(v**2)
 
         return d_diet_deathrate_d_kcal_pc
