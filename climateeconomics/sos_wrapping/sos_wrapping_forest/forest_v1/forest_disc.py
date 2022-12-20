@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 from climateeconomics.core.core_forest.forest_v1 import Forest
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
 
@@ -80,9 +80,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     FOREST_CHARTS = 'Forest chart'
 
-    def init_execution(self):
+    def init_execution(self, proxy):
         inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = proxy.get_sosdisc_inputs(inputs, in_dict=True)
 
         self.forest_model = Forest(param)
 
@@ -165,7 +165,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
             d_cum_CO2_emitted_d_invest)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -180,7 +180,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
         '''
         For the outputs, making a graph for tco vs year for each range and for specific
         value of ToT with a shift of five year between then

@@ -18,7 +18,7 @@ from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_model import OilResourceModel
 import numpy as np
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class OilResourceDiscipline(ResourceDiscipline):
@@ -73,7 +73,7 @@ class OilResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[million_barrels]', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_oil_resource'},
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_oil_resource'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_oil_resource'},
                'stock_start': {'type': 'float', 'default': default_stock_start, 'unit': '[Mt]'},
                'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'unit': '[-]'},
                'lifespan': {'type': 'int', 'default': default_lifespan, 'unit': '[-]'},
@@ -91,7 +91,7 @@ class OilResourceDiscipline(ResourceDiscipline):
     }
     DESC_OUT.update(ResourceDiscipline.DESC_OUT)
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.resource_model = OilResourceModel(self.resource_name)
         self.resource_model.configure_parameters(inputs_dict)

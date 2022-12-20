@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 # coding: utf-8
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.geophysical_model import CarbonCycle
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import pandas as pd
 
 
-class CarbonCycleDiscipline(SoSDiscipline):
+class CarbonCycleDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -49,8 +49,8 @@ class CarbonCycleDiscipline(SoSDiscipline):
         'init_conc_atmo': {'type': 'int', 'default': 851, 'unit': 'Gtc'},
         'init_upper_strata': {'type': 'int', 'default': 460, 'unit': 'Gtc'},
         'init_lower_strata': {'type': 'int', 'default': 1740, 'unit': 'Gtc'},
-        'b_twelve': {'type': 'float', 'visibility': SoSDiscipline.INTERNAL_VISIBILITY, 'default': 0.12, 'unit': '[-]'},
-        'b_twentythree': {'type': 'float', 'visibility': SoSDiscipline.INTERNAL_VISIBILITY, 'default': 0.007, 'unit': '[-]'},
+        'b_twelve': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.12, 'unit': '[-]'},
+        'b_twentythree': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.007, 'unit': '[-]'},
         'lo_mat': {'type': 'float', 'default': 10},
         'lo_mu': {'type': 'float', 'default': 100},
         'lo_ml': {'type': 'float', 'default': 1000},
@@ -71,7 +71,7 @@ class CarbonCycleDiscipline(SoSDiscipline):
         # store data
         self.store_sos_outputs_values(dict_values)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -85,7 +85,7 @@ class CarbonCycleDiscipline(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then

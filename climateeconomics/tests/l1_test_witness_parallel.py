@@ -15,7 +15,7 @@ limitations under the License.
 '''
 import unittest
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from tempfile import gettempdir
 from copy import deepcopy
 from gemseo.utils.compare_data_manager_tooling import delete_keys_from_dict,\

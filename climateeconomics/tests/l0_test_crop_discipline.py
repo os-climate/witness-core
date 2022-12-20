@@ -20,7 +20,7 @@ import unittest
 from os.path import join, dirname
 from pandas import read_csv
 from climateeconomics.core.core_agriculture.crop import Crop
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import CropDiscipline
 from pathlib import Path

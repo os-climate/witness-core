@@ -15,7 +15,7 @@ limitations under the License.
 '''
 
 import climateeconomics.tests as jacobian_target
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 if __name__ == '__main__':

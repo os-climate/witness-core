@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
 
@@ -68,8 +68,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'}
     }
 
-    def init_execution(self):
-        in_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        in_dict = proxy.get_sosdisc_inputs()
         self.emissions_model = GHGEmissions(in_dict)
 
     def run(self):
@@ -120,7 +120,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
             ('GHG_emissions_df', 'Total CO2 emissions'), ('CO2_indus_emissions_df', 'indus_emissions'),
             np.identity(len(years)))
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -135,7 +135,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then

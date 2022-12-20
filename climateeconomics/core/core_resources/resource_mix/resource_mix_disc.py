@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 # from climateeconomics.core.core_land_use.land_use import LandUse,\
 # OrderOfMagnitude
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import CoalResourceDiscipline
@@ -25,14 +25,14 @@ from climateeconomics.core.core_resources.models.natural_gas_resource.natural_ga
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
 from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import PlatinumResourceDiscipline
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class ResourceMixDiscipline(SoSDiscipline):
+class ResourceMixDiscipline(SoSWrapp):
     ''' Discipline intended to agregate resource parameters
     '''
 
@@ -87,49 +87,49 @@ class ResourceMixDiscipline(SoSDiscipline):
                'resource_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                  'unit': '-',
                                  'default': ResourceMixModel.RESOURCE_LIST,
-                                 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource',
+                                 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
                                  'editable': False, 'structuring': True},
                ResourceMixModel.NON_MODELED_RESOURCE_PRICE: {'type': 'dataframe', 'unit': '$/t',
                                                              'namespace': 'ns_resource'},
                'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'resources_demand_woratio': {'type': 'dataframe', 'unit': 'Mt',
-                                            'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+                                            'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'conversion_dict': {'type': 'dict', 'subtype_descriptor': {'dict': {'dict': 'float'}}, 'unit': '[-]', 'default': default_conversion_dict,
-                                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'}
                }
 
     DESC_OUT = {
         ResourceMixModel.ALL_RESOURCE_STOCK: {
             'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRICE: {
-            'type': 'dataframe', 'unit': '$/t', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+            'type': 'dataframe', 'unit': '$/t', 'visibility': SoSWrapp.SHARED_VISIBILITY,
             'namespace': 'ns_resource'},
         ResourceMixModel.All_RESOURCE_USE: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
         ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION:  {'type': 'dataframe', 'unit': 'million_tonnes'} ,
         ResourceMixModel.RATIO_USABLE_DEMAND: {'type': 'dataframe', 'default': ratio_available_resource_default,
-                                               'visibility': SoSDiscipline.SHARED_VISIBILITY, 'unit': '%',
+                                               'visibility': SoSWrapp.SHARED_VISIBILITY, 'unit': '%',
                                                'namespace': 'ns_resource'},
         ResourceMixModel.ALL_RESOURCE_DEMAND: {'type': 'dataframe', 'unit': '-',
-                                               'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                               'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                'namespace': 'ns_resource'},
         ResourceMixModel.ALL_RESOURCE_CO2_EMISSIONS: {
-            'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSDiscipline.SHARED_VISIBILITY,
+            'type': 'dataframe', 'unit': 'kgCO2/kg', 'visibility': SoSWrapp.SHARED_VISIBILITY,
             'namespace': 'ns_resource'},
     }
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.all_resource_model = ResourceMixModel(inputs_dict)
         self.all_resource_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         dynamic_inputs = {}
         # dynamic_outputs = {}
 
-        if 'resource_list' in self._data_in:
-            resource_list = self.get_sosdisc_inputs('resource_list')
+        if 'resource_list' in proxy.get_data_in():
+            resource_list = proxy.get_sosdisc_inputs('resource_list')
             for resource in resource_list:
                 dynamic_inputs[f'{resource}.resource_price'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PRICE_UNIT[resource]}
@@ -142,8 +142,8 @@ class ResourceMixDiscipline(SoSDiscipline):
                 dynamic_inputs[f'{resource}.predictable_production'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PROD_UNIT[resource]}
                 
-            self.add_inputs(dynamic_inputs)
-        # self.add_outputs(dynamic_outputs)
+            proxy.add_inputs(dynamic_inputs)
+
 
     def run(self):
 
@@ -172,7 +172,7 @@ class ResourceMixDiscipline(SoSDiscipline):
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
 
@@ -245,7 +245,7 @@ class ResourceMixDiscipline(SoSDiscipline):
                     ResourceMixModel.NON_MODELED_RESOURCE_PRICE, resource_type),
                     np.identity(len(data_frame_other_resource_price)))
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         instanciated_charts = []
         chart_list = ['all']

@@ -1,8 +1,8 @@
-# from sos_trades_core.api import SoSDiscipline, InstanciatedSeries, TwoAxesInstanciatedChart, ChartFilter
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+# from sostrades_core.api import SoSDiscipline, InstanciatedSeries, TwoAxesInstanciatedChart, ChartFilter
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 from climateeconomics.core.core_resources.new_resources_v0.copper_model import CopperModel
 
@@ -10,7 +10,7 @@ import numpy as np
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class CopperDisc(SoSDiscipline):
+class CopperDisc(SoSWrapp):
     _ontology_data = {
         'label': 'Copper Resource Model',
         'type': 'Research',
@@ -40,9 +40,9 @@ class CopperDisc(SoSDiscipline):
                 CopperModel.PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
                 CopperModel.COPPER_PRICE: {'type': 'dataframe', 'unit': 'USD'}}
 
-    def init_execution(self):
+    def init_execution(self, proxy):
         inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = proxy.get_sosdisc_inputs(inputs, in_dict=True)
         self.copper_model = CopperModel(param)
 
     def run(self):
@@ -63,7 +63,7 @@ class CopperDisc(SoSDiscipline):
         # put new field value in data_out
         self.store_sos_outputs_values(dict_values)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
 
@@ -74,7 +74,7 @@ class CopperDisc(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, filters=None):
+    def get_post_processing_list(self, proxy, filters=None):
 
         instanciated_charts = []
 

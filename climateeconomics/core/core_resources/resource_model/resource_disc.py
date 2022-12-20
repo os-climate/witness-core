@@ -14,18 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import deepcopy
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_resources.resource_model.resource_model import ResourceModel
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class ResourceDiscipline(SoSDiscipline):
+class ResourceDiscipline(SoSWrapp):
     ''' Resource Discipline
     General implementation of the resource discipline, to be inherited by each specific resource
     '''
@@ -54,7 +54,7 @@ class ResourceDiscipline(SoSDiscipline):
     resource_name = 'Fill with the resource name'
 
     DESC_IN = {'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
 
@@ -65,12 +65,12 @@ class ResourceDiscipline(SoSDiscipline):
 
     _maturity = 'Research'
 
-    def __init__(self, sos_name, ee):
+    def __init__(self, sos_name):
 
-        SoSDiscipline.__init__(self, sos_name, ee)
+        SoSWrapp.__init__(self, sos_name)
         self.resource_model = None
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         pass
 
     def run(self):
@@ -137,7 +137,7 @@ class ResourceDiscipline(SoSDiscipline):
         # # ------------------------------------------------
         # # Prod resource gradient did not depend on demand
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -152,7 +152,7 @@ class ResourceDiscipline(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         instanciated_charts = []
         chart_list = ['Stock', 'Price', 'Production', 'Recycling']
@@ -162,8 +162,8 @@ class ResourceDiscipline(SoSDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        inputs_dict = self.get_sosdisc_inputs()
-        outputs_dict = self.get_sosdisc_outputs()
+        inputs_dict = proxy.get_sosdisc_inputs()
+        outputs_dict = proxy.get_sosdisc_outputs()
         year_start = inputs_dict['year_start']
         year_end = inputs_dict['year_end']
         production_start = inputs_dict['production_start']

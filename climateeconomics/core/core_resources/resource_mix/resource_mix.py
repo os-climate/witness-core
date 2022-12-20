@@ -25,7 +25,7 @@ from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc 
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
 from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import PlatinumResourceDiscipline
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
     compute_func_with_exp_min
 
 

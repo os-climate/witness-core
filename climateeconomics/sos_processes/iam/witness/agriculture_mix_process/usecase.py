@@ -18,8 +18,8 @@ import pandas as pd
 import scipy.interpolate as sc
 from numpy import asarray, arange, array
 
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.sos_processes.iam.witness.forest_v2_process.usecase import Study as datacase_forest
 

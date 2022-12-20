@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from copy import deepcopy
 import pandas as pd
@@ -67,10 +67,10 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         'CO2_em_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''}
     }
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         dynamic_inputs = {}
-        if 'technologies_list' in self._data_in:
-            techno_list = self.get_sosdisc_inputs('technologies_list')
+        if 'technologies_list' in proxy.get_data_in():
+            techno_list = proxy.get_sosdisc_inputs('technologies_list')
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.CO2_land_emission_df'] = {
@@ -81,7 +81,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                         dynamic_inputs[f'{techno}.N2O_land_emission_df'] = {
                             'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'}
 
-        self.add_inputs(dynamic_inputs, clean_inputs=False)
+        proxy.add_inputs(dynamic_inputs, clean_inputs=False)
 
     def run(self):
         # -- get CO2 emissions inputs
@@ -155,7 +155,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                 'Forest.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
             np.ones(np_years))
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -169,7 +169,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then

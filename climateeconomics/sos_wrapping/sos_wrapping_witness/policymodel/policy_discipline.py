@@ -15,16 +15,16 @@ limitations under the License.
 '''
 # coding: utf-8
 
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
 
 from climateeconomics.core.core_witness.policy_model import PolicyModel
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class PolicyDiscipline(SoSDiscipline):
+class PolicyDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -45,13 +45,13 @@ class PolicyDiscipline(SoSDiscipline):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'ccs_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
-                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                    'namespace': 'ns_witness', 'user_level': 2},
         'co2_damage_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
-                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                    'namespace': 'ns_witness', 'user_level': 2},
     }
 
@@ -60,8 +60,8 @@ class PolicyDiscipline(SoSDiscipline):
 
     }
 
-    def init_execution(self):
-        param_in = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        param_in = proxy.get_sosdisc_inputs()
         self.policy_model = PolicyModel()
 
     def run(self):
@@ -87,7 +87,7 @@ class PolicyDiscipline(SoSDiscipline):
         self.set_partial_derivative_for_other_types(
             ('CO2_taxes', 'CO2_tax'), ('CCS_price', 'ccs_price_per_tCO2'),  np.identity(len(dCO2_tax_dCCS_price)) * np.array(dCO2_tax_dCCS_price))
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -101,7 +101,7 @@ class PolicyDiscipline(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -114,8 +114,8 @@ class PolicyDiscipline(SoSDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
         if 'CO2 tax' in chart_list:
-            CCS_price = self.get_sosdisc_inputs('CCS_price')
-            CO2_damage_price = self.get_sosdisc_inputs('CO2_damage_price')
+            CCS_price = proxy.get_sosdisc_inputs('CCS_price')
+            CO2_damage_price = proxy.get_sosdisc_inputs('CO2_damage_price')
             CO2_tax = self.get_sosdisc_outputs('CO2_taxes')
             years = list(CCS_price['years'].values)
 

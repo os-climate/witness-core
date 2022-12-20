@@ -18,7 +18,7 @@ import numpy as np
 from climateeconomics.core.core_forest.forest_v2 import Forest
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 
 
@@ -56,7 +56,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
     DESC_OUT = {}
     DESC_OUT.update(EnergyDiscipline.DESC_OUT)
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.energy_model = BiomassDry(self.energy_name)
         self.energy_model.configure_parameters(inputs_dict)

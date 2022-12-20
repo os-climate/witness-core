@@ -15,14 +15,14 @@ limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import pandas as pd
 import numpy as np
 from copy import deepcopy
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -125,16 +125,16 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                     'namespace': 'ns_functions'}
     }
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
 
-        self.update_default_with_years()
+        self.update_default_with_years(proxy)
 
-    def update_default_with_years(self):
+    def update_default_with_years(self, proxy):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in self._data_in:
-            year_start, year_end = self.get_sosdisc_inputs(
+        if 'year_start' in proxy.get_data_in():
+            year_start, year_end = proxy.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
             intermediate_point = 30
@@ -149,14 +149,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             total_investment_share_of_gdp = pd.DataFrame(
                 {'years': years, 'share_investment': np.ones(len(years)) * 27.0}, index=years)
 
-            self.set_dynamic_default_values(
+            proxy.set_dynamic_default_values(
                 {'CO2_tax_efficiency': co2_tax_efficiency_default,
                  'share_energy_investment': share_energy_investment,
                  'total_investment_share_of_gdp': total_investment_share_of_gdp})
 
-    def init_execution(self):
+    def init_execution(self, proxy):
         inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = proxy.get_sosdisc_inputs(inputs, in_dict=True)
         self.macro_model = MacroEconomics(param)
 
     def run(self):
@@ -608,7 +608,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         return ddelta * delta_wo_exp_min * np.sign(delta_wo_exp_min) * compute_dfunc_with_exp_min(delta_wo_exp_min ** 2, 1e-15) / np.sqrt(compute_func_with_exp_min(
             delta_wo_exp_min ** 2, 1e-15))
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -625,7 +625,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         instanciated_charts = []
 
@@ -638,7 +638,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         economics_df = deepcopy(
             self.get_sosdisc_outputs('economics_detail_df'))
         co2_invest_limit, capital_utilisation_ratio = deepcopy(
-            self.get_sosdisc_inputs(['co2_invest_limit', 'capital_utilisation_ratio']))
+            proxy.get_sosdisc_inputs(['co2_invest_limit', 'capital_utilisation_ratio']))
         workforce_df = deepcopy(
             self.get_sosdisc_outputs('workforce_df'))
 
@@ -826,7 +826,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'capital' in chart_list:
-            energy_capital_df = self.get_sosdisc_inputs('energy_capital')
+            energy_capital_df = proxy.get_sosdisc_inputs('energy_capital')
             first_serie = capital_df['non_energy_capital']
             second_serie = energy_capital_df['energy_capital']
             third_serie = capital_df['capital']
@@ -927,7 +927,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'workforce' in chart_list:
 
-            working_age_pop_df = self.get_sosdisc_inputs(
+            working_age_pop_df = proxy.get_sosdisc_inputs(
                 'working_age_population_df')
             years = list(workforce_df.index)
 
@@ -1023,8 +1023,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             to_plot = 'e_max'
             energy_production = deepcopy(
-                self.get_sosdisc_inputs('energy_production'))
-            scaling_factor_energy_production = self.get_sosdisc_inputs(
+                proxy.get_sosdisc_inputs('energy_production'))
+            scaling_factor_energy_production = proxy.get_sosdisc_inputs(
                 'scaling_factor_energy_production')
             total_production = energy_production['Total production'] * \
                 scaling_factor_energy_production
@@ -1076,8 +1076,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             #inputs = discipline.get_sosdisc_inputs()
             #energy_production = inputs.pop('energy_production')
             energy_production = deepcopy(
-                self.get_sosdisc_inputs('energy_production'))
-            scaling_factor_energy_production = self.get_sosdisc_inputs(
+                proxy.get_sosdisc_inputs('energy_production'))
+            scaling_factor_energy_production = proxy.get_sosdisc_inputs(
                 'scaling_factor_energy_production')
             total_production = energy_production['Total production'] * \
                 scaling_factor_energy_production

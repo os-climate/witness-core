@@ -15,8 +15,8 @@ limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 from climateeconomics.core.core_forest.forest_v2 import Forest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from copy import deepcopy
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
 
@@ -238,9 +238,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     FOREST_CHARTS = 'Forest chart'
 
-    def init_execution(self):
+    def init_execution(self, proxy):
 
-        param = self.get_sosdisc_inputs()
+        param = proxy.get_sosdisc_inputs()
 
         self.forest_model = Forest(param)
 
@@ -474,7 +474,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'), ('managed_wood_investment', 'investment'),
                                                     d_lc_mw_d_mw_invest)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -489,7 +489,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
         '''
         For the outputs, making a graph for tco vs year for each range and for specific
         value of ToT with a shift of five year between then

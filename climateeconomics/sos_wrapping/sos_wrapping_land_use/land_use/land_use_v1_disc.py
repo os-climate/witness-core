@@ -13,13 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_land_use.land_use_v1 import LandUseV1
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import plotly.graph_objects as go
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
 import os
@@ -28,7 +28,7 @@ from copy import deepcopy
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class LandUseV1Discipline(SoSDiscipline):
+class LandUseV1Discipline(SoSWrapp):
     ''' Discipline intended to host land use model with land use for food input from agriculture model
     '''
 
@@ -51,22 +51,22 @@ class LandUseV1Discipline(SoSDiscipline):
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                LandUseV1.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
-                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
-               LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
+               LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV1.DEFORESTED_SURFACE_DF: {
-                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV1.LAND_USE_CONSTRAINT_REF: {
-                   'type': 'float', 'default': 0.1, 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
+                   'type': 'float', 'default': 0.1, 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
                }
 
     DESC_OUT = {
         LandUseV1.LAND_DEMAND_CONSTRAINT: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         LandUseV1.LAND_SURFACE_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         LandUseV1.LAND_SURFACE_DETAIL_DF: {'type': 'dataframe', 'unit': 'Gha'},
         LandUseV1.LAND_SURFACE_FOR_FOOD_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
 
     AGRICULTURE_CHARTS = 'Agriculture surface usage (Giga ha)'
@@ -76,9 +76,9 @@ class LandUseV1Discipline(SoSDiscipline):
     AGRICULTURE_FOOD_CHARTS = 'Agriculture usage for food (Giga ha)'
     GLOBAL_CHARTS = 'Available land surface repartition'
 
-    def init_execution(self):
+    def init_execution(self, proxy):
         inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = proxy.get_sosdisc_inputs(inputs, in_dict=True)
         self.land_use_model = LandUseV1(param)
 
     def run(self):
@@ -163,7 +163,7 @@ class LandUseV1Discipline(SoSDiscipline):
             self.set_partial_derivative_for_other_types(
                 (LandUseV1.LAND_SURFACE_DF, objective_column),  (LandUseV1.DEFORESTED_SURFACE_DF, 'forest_surface_evol'), model.d_land_surface_d_deforestation_surface(objective_column),)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -179,7 +179,7 @@ class LandUseV1Discipline(SoSDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
         '''
         For the outputs, making a graph for tco vs year for each range and for specific
         value of ToT with a shift of five year between then
@@ -191,7 +191,7 @@ class LandUseV1Discipline(SoSDiscipline):
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-        demand_df = self.get_sosdisc_inputs(LandUseV1.LAND_DEMAND_DF)
+        demand_df = proxy.get_sosdisc_inputs(LandUseV1.LAND_DEMAND_DF)
         surface_df = self.get_sosdisc_outputs(LandUseV1.LAND_SURFACE_DETAIL_DF)
         years = demand_df['years'].values.tolist()
 
@@ -261,7 +261,7 @@ class LandUseV1Discipline(SoSDiscipline):
         if LandUseV1Discipline.GLOBAL_CHARTS in chart_list:
             # ------------------------------------------------------------
             # GLOBAL LAND USE -> Display surfaces (Ocean, Land, Forest..)
-            years_list = [self.get_sosdisc_inputs('year_start')]
+            years_list = [proxy.get_sosdisc_inputs('year_start')]
             # ------------------
             # Sunburst figure for global land use. Source
             # https://ourworldindata.org/land-use

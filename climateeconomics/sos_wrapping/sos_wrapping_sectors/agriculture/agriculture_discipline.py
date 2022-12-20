@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_sectorization.sector_model import SectorModel
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import pandas as pd
 import numpy as np
 from copy import deepcopy
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
@@ -95,37 +95,37 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'emax_enet_constraint':  {'type': 'array'},
     }
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
 
-        self.update_default_with_years()
+        self.update_default_with_years(proxy)
         dynamic_outputs = {}
         dynamic_inputs = {}
-        if 'prod_function_fitting' in self._data_in:
-            prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
+        if 'prod_function_fitting' in proxy.get_data_in():
+            prod_function_fitting = proxy.get_sosdisc_inputs('prod_function_fitting')
             if prod_function_fitting == True:
                 dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 20}
                 dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
-                self.add_outputs(dynamic_outputs)
-                self.add_inputs(dynamic_inputs)
+                proxy.add_outputs(dynamic_outputs)
+                proxy.add_inputs(dynamic_inputs)
 
-    def update_default_with_years(self):
+    def update_default_with_years(self, proxy):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in self._data_in:
-            year_start, year_end = self.get_sosdisc_inputs(
+        if 'year_start' in proxy.get_data_in():
+            year_start, year_end = proxy.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
 
-    def init_execution(self):
-        param = self.get_sosdisc_inputs(in_dict=True)
+    def init_execution(self, proxy):
+        param = proxy.get_sosdisc_inputs(in_dict=True)
         self.agriculture_model = SectorModel()
         self.agriculture_model.configure_parameters(param, self.sector_name)
 
     def run(self):
         # Get inputs
-        param = self.get_sosdisc_inputs(in_dict=True)
+        param = proxy.get_sosdisc_inputs(in_dict=True)
         #configure param
         self.agriculture_model.configure_parameters(param, self.sector_name)
         #coupling df 
@@ -220,7 +220,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('sector_investment', 'investment'), demax_cstrt_dinvest)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -238,7 +238,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -255,10 +255,10 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         capital_df = self.get_sosdisc_outputs('capital_df')
         capital_detail_df = self.get_sosdisc_outputs('detailed_capital_df')
         productivity_df = self.get_sosdisc_outputs('productivity_df')
-        workforce_df = self.get_sosdisc_inputs('workforce_df')
-        capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
+        workforce_df = proxy.get_sosdisc_inputs('workforce_df')
+        capital_utilisation_ratio = proxy.get_sosdisc_inputs('capital_utilisation_ratio')
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
-        prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
+        prod_func_fit = proxy.get_sosdisc_inputs('prod_function_fitting')
         if prod_func_fit == True:
             lt_energy_eff = self.get_sosdisc_outputs('longterm_energy_efficiency')
 
@@ -488,8 +488,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             to_plot = 'e_max'
             energy_production = deepcopy(
-                self.get_sosdisc_inputs('energy_production'))
-            scaling_factor_energy_production = self.get_sosdisc_inputs(
+                proxy.get_sosdisc_inputs('energy_production'))
+            scaling_factor_energy_production = proxy.get_sosdisc_inputs(
                 'scaling_factor_energy_production')
             total_production = energy_production['Total production'] * \
                 scaling_factor_energy_production

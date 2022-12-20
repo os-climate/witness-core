@@ -20,8 +20,8 @@ mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
 import numpy as np
 from os.path import join, dirname
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pickle
 from climateeconomics.tests.data.mda_coarse_data_generator import launch_data_pickle_generation
 

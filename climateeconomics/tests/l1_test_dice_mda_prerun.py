@@ -16,7 +16,7 @@ limitations under the License.
 import unittest
 import numpy as np
 from climateeconomics.sos_processes.iam.dice.dice_model.usecase import Study
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from time import time
 from pandas.core.frame import DataFrame
 from tempfile import gettempdir

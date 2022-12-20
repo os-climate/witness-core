@@ -13,10 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
-class ClimateEcoDiscipline(SoSDiscipline):
+class ClimateEcoDiscipline(SoSWrapp):
     """
     Climate Economics Discipline
     """

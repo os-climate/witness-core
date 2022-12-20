@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_sectorization.sectorization_objectives_model import ObjectivesModel
 from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model import MacroeconomicsModel
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import ServicesDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import IndustrialDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
@@ -103,16 +103,16 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 'year_min_energy_eff': {'type': 'dict', 'unit': '-'}, 
                 }
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.objectives_model = ObjectivesModel(inputs_dict)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         dynamic_inputs = {}
         dynamic_outputs = {}
 
-        if 'sector_list' in self._data_in:
-            sector_list = self.get_sosdisc_inputs('sector_list')
+        if 'sector_list' in proxy.get_data_in():
+            sector_list = proxy.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.detailed_capital_df'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
@@ -135,8 +135,8 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 dynamic_outputs[f'{sector}.historical_energy_efficiency'] = {
                     'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                     'namespace': 'ns_obj'}
-            self.add_inputs(dynamic_inputs)
-            self.add_outputs(dynamic_outputs)
+            proxy.add_inputs(dynamic_inputs)
+            proxy.add_outputs(dynamic_outputs)
 
     def run(self):
 
@@ -152,7 +152,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         outputs_dict = {'error_pib_total': np.array([error_pib_total]), 
                         'year_min_energy_eff': year_min}
         
-        if 'sector_list' in self._data_in:
+        if 'sector_list' in self.get_sosdisc_inputs().keys():
             sector_list = self.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 outputs_dict[f'{sector}.gdp_error'] = np.array([sectors_gdp_errors[sector]])
@@ -162,7 +162,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
 
@@ -173,7 +173,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         instanciated_charts = []
 
@@ -183,10 +183,10 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        economics_df = deepcopy(self.get_sosdisc_inputs('economics_df'))
-        sector_list = self.get_sosdisc_inputs('sector_list')
-        historical_gdp = self.get_sosdisc_inputs('historical_gdp')
-        historical_capital = self.get_sosdisc_inputs('historical_capital')
+        economics_df = deepcopy(proxy.get_sosdisc_inputs('economics_df'))
+        sector_list = proxy.get_sosdisc_inputs('sector_list')
+        historical_gdp = proxy.get_sosdisc_inputs('historical_gdp')
+        historical_capital = proxy.get_sosdisc_inputs('historical_capital')
         year_min_energy_eff = self.get_sosdisc_outputs('year_min_energy_eff')
 
         # Overload default value with chart filter
@@ -258,11 +258,11 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         if 'sectors' in chart_list:
             years = list(economics_df['years'])
             for sector in sector_list:
-                simu_gdp_sector_df = self.get_sosdisc_inputs(f'{sector}.production_df')
+                simu_gdp_sector_df = proxy.get_sosdisc_inputs(f'{sector}.production_df')
                 simu_gdp_sector = simu_gdp_sector_df['output_net_of_damage']
                 hist_gdp_sector = historical_gdp[sector]
-                simu_capital_sector_df = self.get_sosdisc_inputs(f'{sector}.detailed_capital_df')
-                simu_energy_eff_sector_lt = self.get_sosdisc_inputs(f'{sector}.longterm_energy_efficiency')
+                simu_capital_sector_df = proxy.get_sosdisc_inputs(f'{sector}.detailed_capital_df')
+                simu_energy_eff_sector_lt = proxy.get_sosdisc_inputs(f'{sector}.longterm_energy_efficiency')
                 simu_capital_sector = simu_capital_sector_df['capital']
                 hist_capital_sector = historical_capital[sector]
                 hist_energy_eff_sector = self.get_sosdisc_outputs(f'{sector}.historical_energy_efficiency')

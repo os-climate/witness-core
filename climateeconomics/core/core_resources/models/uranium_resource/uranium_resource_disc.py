@@ -18,7 +18,7 @@ from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_model import UraniumResourceModel
 import numpy as np
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class UraniumResourceDiscipline(ResourceDiscipline):
@@ -75,9 +75,9 @@ class UraniumResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[t]', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_uranium_resource'},
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_uranium_resource'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_uranium_resource'},
                'regression_start': {'type': 'int', 'default': default_regression_start, 'unit': '[-]',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_uranium_resource'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_uranium_resource'},
                'stock_start': {'type': 'float', 'default': default_stock_start, 'unit': '[Mt]'},
                'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'unit': '[-]'},
                'lifespan': {'type': 'int', 'default': default_lifespan, 'unit': '[-]'},
@@ -95,7 +95,7 @@ class UraniumResourceDiscipline(ResourceDiscipline):
     }
     DESC_OUT.update(ResourceDiscipline.DESC_OUT)
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.resource_model = UraniumResourceModel(self.resource_name)
         self.resource_model.configure_parameters(inputs_dict)

@@ -20,16 +20,16 @@ from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.core.core_agriculture.crop import Crop, \
     OrderOfMagnitude
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
+from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
 from plotly import graph_objects as go
 import numpy as np
 import pandas as pd
 from copy import deepcopy
 
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
 
@@ -328,9 +328,9 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     CROP_CHARTS = 'crop and diet charts'
 
-    def init_execution(self):
+    def init_execution(self, proxy):
         inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        param = proxy.get_sosdisc_inputs(inputs, in_dict=True)
         self.crop_model = Crop(param)
 
     def run(self):
@@ -530,7 +530,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             dco2_dwhite_meat = 0.0
             dco2_dinvest = 0.0
 
-            for food in self.get_sosdisc_inputs('co2_emissions_per_kg'):
+            for food in proxy.get_sosdisc_inputs('co2_emissions_per_kg'):
                 food = food.replace(' (Gt)', '')
                 if food != 'years':
 
@@ -588,7 +588,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 ('crop_investment', 'investment'),
                 dco2_dinvest)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -602,7 +602,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
         '''
         For the outputs, making a graph for tco vs year for each range and for specific
         value of ToT with a shift of five year between then
@@ -682,8 +682,8 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             # chart of the updated diet
             updated_diet_df = self.get_sosdisc_outputs('updated_diet_df')
-            starting_diet = self.get_sosdisc_inputs('diet_df')
-            kg_to_kcal_dict = self.get_sosdisc_inputs('kg_to_kcal_dict')
+            starting_diet = proxy.get_sosdisc_inputs('diet_df')
+            kg_to_kcal_dict = proxy.get_sosdisc_inputs('kg_to_kcal_dict')
             total_kcal = 0
             # compute total kcal
             for key in starting_diet:
@@ -751,8 +751,8 @@ class CropDiscipline(ClimateEcoDiscipline):
             # DIET EVOLUTION VARIABLES
             chart_name = "Diet evolution, percentage of red and white meat calories in a person's diet"
 
-            red_meat_evolution = self.get_sosdisc_inputs('red_meat_percentage')
-            white_meat_evolution = self.get_sosdisc_inputs(
+            red_meat_evolution = proxy.get_sosdisc_inputs('red_meat_percentage')
+            white_meat_evolution = proxy.get_sosdisc_inputs(
                 'white_meat_percentage')
 
             new_chart = TwoAxesInstanciatedChart('years', 'Diet evolution [%]',
@@ -801,10 +801,10 @@ class CropDiscipline(ClimateEcoDiscipline):
             mix_detailed_prices = deepcopy(
                 self.get_sosdisc_outputs('mix_detailed_prices'))
             data_fuel_dict = deepcopy(
-                self.get_sosdisc_inputs('data_fuel_dict'))
+                proxy.get_sosdisc_inputs('data_fuel_dict'))
             cost_details = deepcopy(self.get_sosdisc_outputs('cost_details'))
-            crop_investment = deepcopy(self.get_sosdisc_inputs(
-                'crop_investment') * self.get_sosdisc_inputs('scaling_factor_crop_investment'))
+            crop_investment = deepcopy(proxy.get_sosdisc_inputs(
+                'crop_investment') * proxy.get_sosdisc_inputs('scaling_factor_crop_investment'))
             years = list(prod_df['years'])
 
             # ------------------------------------------

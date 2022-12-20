@@ -16,7 +16,7 @@ limitations under the License.
 from numpy import arange, zeros, append, asarray
 from pandas import DataFrame
 
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 
 
 class Study(StudyManager):

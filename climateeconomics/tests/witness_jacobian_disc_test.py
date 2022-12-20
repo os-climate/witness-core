@@ -16,7 +16,7 @@ limitations under the License.
 
 import climateeconomics.tests as jacobian_target
 from os.path import join, dirname, exists
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from tqdm import tqdm
 import platform
 

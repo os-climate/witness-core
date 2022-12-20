@@ -17,10 +17,10 @@ import pandas as pd
 from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_model import PlatinumResourceModel
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import numpy as np
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class PlatinumResourceDiscipline(ResourceDiscipline):
@@ -86,10 +86,10 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'Mt', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_platinum_resource'},
                'production_start': {'type': 'int', 'default': default_regression_start, 'unit': '-',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_platinum_resource'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_platinum_resource'},
                'regression_stop': {'type': 'int', 'default': default_regression_stop, 'unit': '-',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_platinum_resource'},
-               'world_consumption': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '-', 'default': default_world_consumption_dict,'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_platinum_resource'},
+               'world_consumption': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '-', 'default': default_world_consumption_dict,'visibility': SoSWrapp.SHARED_VISIBILITY,
                                  'user_level': 2, 'namespace': 'ns_platinum_resource'},
                'stock_start': {'type': 'float', 'default': default_stock_start, 'unit': 'Mt'},
                'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'unit': '-'},
@@ -109,8 +109,8 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
     }
     DESC_OUT.update(ResourceDiscipline.DESC_OUT)
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.resource_model = PlatinumResourceModel(self.resource_name)
         self.resource_model.configure_parameters(inputs_dict)
 

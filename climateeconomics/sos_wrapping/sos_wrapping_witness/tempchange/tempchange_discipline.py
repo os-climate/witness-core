@@ -17,8 +17,8 @@ limitations under the License.
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model import TempChange
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from copy import deepcopy
 import pandas as pd
 import numpy as np
@@ -84,11 +84,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
     _maturity = 'Research'
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         dynamic_inputs = {}
 
-        if 'forcing_model' in self._data_in:
-            forcing_model = self.get_sosdisc_inputs('forcing_model')
+        if 'forcing_model' in proxy.get_data_in():
+            forcing_model = proxy.get_sosdisc_inputs('forcing_model')
             if forcing_model == 'DICE':
 
                 dynamic_inputs['init_forcing_nonco'] = {
@@ -102,10 +102,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                     'type': 'float', 'default': 722., 'unit': 'ppm', 'user_level': 2}
                 dynamic_inputs['pre_indus_n2o_concentration_ppm'] = {
                     'type': 'float', 'default': 273., 'unit': 'ppm', 'user_level': 2}
-        self.add_inputs(dynamic_inputs)
+        proxy.add_inputs(dynamic_inputs)
 
-    def init_execution(self):
-        in_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        in_dict = proxy.get_sosdisc_inputs()
         self.model = TempChange(in_dict)
 
     def run(self):
@@ -156,7 +156,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('temperature_objective', ),  ('carboncycle_df', 'atmo_conc'),  d_tempatmoobj_d_temp_atmo.dot(d_tempatmo_d_atmoconc),)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -170,7 +170,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then

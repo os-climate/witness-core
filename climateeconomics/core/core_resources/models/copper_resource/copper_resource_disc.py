@@ -19,8 +19,8 @@ from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import CopperResourceModel
 import numpy as np
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 
 
@@ -76,11 +76,11 @@ class CopperResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'Mt', 'optional': True,
                                             'default': default_resource_consumed_data, 'user_level': 2, 'namespace': 'ns_copper_resource'},
                'production_start': {'type': 'float', 'default': default_production_start, 'unit': '-',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'stock_start': {'type': 'float', 'default': default_stock_start, 'user_level': 2, 'unit': 'Mt', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'user_level': 2, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'lifespan': {'type': 'int', 'default': default_lifespan, 'user_level': 2, 'unit': '-', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
-               'sectorisation': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '-', 'default': default_sectorisation_dict,'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
+               'stock_start': {'type': 'float', 'default': default_stock_start, 'user_level': 2, 'unit': 'Mt', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
+               'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'user_level': 2, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
+               'lifespan': {'type': 'int', 'default': default_lifespan, 'user_level': 2, 'unit': '-', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
+               'sectorisation': {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': '-', 'default': default_sectorisation_dict,'visibility': SoSWrapp.SHARED_VISIBILITY,
                                  'user_level': 2, 'namespace': 'ns_copper_resource'},
                'resource_max_price': {'type': 'float', 'default': default_resource_max_price, 'user_level': 2, 'unit': '$/t'},
                }
@@ -102,8 +102,8 @@ class CopperResourceDiscipline(ResourceDiscipline):
 
     DESC_OUT.update(ResourceDiscipline.DESC_OUT)
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.resource_model = CopperResourceModel(self.resource_name)
         self.resource_model.configure_parameters(inputs_dict)
 

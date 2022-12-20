@@ -16,11 +16,11 @@ limitations under the License.
 from os.path import join, dirname, exists
 import pandas as pd
 import numpy as np
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as EnergyMDA
 import unittest
-from sos_trades_core.study_manager.base_study_manager import BaseStudyManager
+from sostrades_core.study_manager.base_study_manager import BaseStudyManager
 from gemseo.utils.compare_data_manager_tooling import compare_dict
 from copy import deepcopy
 import sys

@@ -15,8 +15,8 @@ limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.utility_model import UtilityModel
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from copy import deepcopy
 import pandas as pd
 import numpy as np
@@ -64,9 +64,9 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         'min_utility_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
-    def init_execution(self):
+    def init_execution(self, proxy):
         inputs = list(self.DESC_IN.keys())
-        inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        inp_dict = proxy.get_sosdisc_inputs(inputs, in_dict=True)
         self.utility_m = UtilityModel(inp_dict)
 
     def run(self):
@@ -184,7 +184,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('min_utility_objective',), ('energy_mean_price', 'energy_price'), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_energy_price))
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -199,7 +199,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -283,10 +283,10 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
             discounted_utility_final = utility_df['discounted_utility'].values
 
-            energy_mean_price = self.get_sosdisc_inputs('energy_mean_price')[
+            energy_mean_price = proxy.get_sosdisc_inputs('energy_mean_price')[
                 'energy_price'].values
 
-            energy_price_ref = self.get_sosdisc_inputs(
+            energy_price_ref = proxy.get_sosdisc_inputs(
                 'initial_raw_energy_price')
 
             energy_price_ratio = energy_price_ref / energy_mean_price

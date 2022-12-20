@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import CoalResourceDiscipline
 from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
 from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import NaturalGasResourceDiscipline
@@ -40,6 +40,9 @@ class ProcessBuilder(BaseProcessBuilder):
     COPPER_NAME = CopperResourceDiscipline.resource_name
     PLATINUM_NAME = PlatinumResourceDiscipline.resource_name
 
+    def setup_process(self, associate_namespace=False):
+        self.associate_namespace = associate_namespace
+
     def get_builders(self):
 
         ns_scatter = self.ee.study_name + '.Resources'
@@ -63,6 +66,6 @@ class ProcessBuilder(BaseProcessBuilder):
                      'Resources': 'climateeconomics.core.core_resources.resource_mix.resource_mix_disc.ResourceMixDiscipline'
                      }
         #chain_builders_resource = self.ee.factory.get_builder_from_module()
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
+        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict, associate_namespace=self.associate_namespace)
         # builder_list.append(chain_builders_resource)
         return builder_list

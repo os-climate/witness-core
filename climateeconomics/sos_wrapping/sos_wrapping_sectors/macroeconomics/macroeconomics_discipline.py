@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model import MacroeconomicsModel
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import ServicesDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import IndustrialDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
@@ -67,23 +67,23 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'economics_detail_df': {'type': 'dataframe'}
     }
 
-    def init_execution(self):
-        inputs_dict = self.get_sosdisc_inputs()
+    def init_execution(self, proxy):
+        inputs_dict = proxy.get_sosdisc_inputs()
         self.macro_model = MacroeconomicsModel(inputs_dict)
 
-    def setup_sos_disciplines(self):
+    def setup_sos_disciplines(self, proxy):
         dynamic_inputs = {}
         # dynamic_outputs = {}
 
-        if 'sector_list' in self._data_in:
-            sector_list = self.get_sosdisc_inputs('sector_list')
+        if 'sector_list' in proxy.get_data_in():
+            sector_list = proxy.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.capital_df'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector]}
                 dynamic_inputs[f'{sector}.production_df'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector]}
 
-            self.add_inputs(dynamic_inputs)
+            proxy.add_inputs(dynamic_inputs)
 
     def run(self):
 
@@ -126,7 +126,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('investment_df', 'investment'), ('total_investment_share_of_gdp', 'share_investment'), grad_invest_share)
 
-    def get_chart_filter_list(self):
+    def get_chart_filter_list(self, proxy):
 
         chart_filters = []
 
@@ -137,7 +137,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, chart_filters=None):
+    def get_post_processing_list(self, proxy, chart_filters=None):
 
         instanciated_charts = []
 
@@ -149,7 +149,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         economics_df = deepcopy(self.get_sosdisc_outputs('economics_detail_df'))
         investment_df = deepcopy(self.get_sosdisc_outputs('investment_df'))
-        sector_list = self.get_sosdisc_inputs('sector_list')
+        sector_list = proxy.get_sosdisc_inputs('sector_list')
 
         # Overload default value with chart filter
         if chart_filters is not None:
@@ -248,7 +248,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                  chart_name=chart_name)
 
             for sector in sector_list:
-                capital_df = self.get_sosdisc_inputs(f'{sector}.capital_df')
+                capital_df = proxy.get_sosdisc_inputs(f'{sector}.capital_df')
                 sector_capital = capital_df['capital'].values
                 share = (sector_capital / capital) * 100
                 visible_line = True
@@ -267,7 +267,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                  chart_name=chart_name)
 
             for sector in sector_list:
-                production_df = self.get_sosdisc_inputs(f'{sector}.production_df')
+                production_df = proxy.get_sosdisc_inputs(f'{sector}.production_df')
                 sector_output = production_df['output_net_of_damage'].values
                 share = (sector_output / output) * 100
                 visible_line = True

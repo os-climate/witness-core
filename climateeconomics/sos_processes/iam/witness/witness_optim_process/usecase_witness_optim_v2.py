@@ -2,7 +2,7 @@ from os.path import join, dirname
 import numpy as np
 import pandas as pd
 import json
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 
 
 class Study(StudyManager):
