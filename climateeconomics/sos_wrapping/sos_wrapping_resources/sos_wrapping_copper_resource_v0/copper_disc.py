@@ -40,9 +40,9 @@ class CopperDisc(SoSWrapp):
                 CopperModel.PRODUCTION: {'type': 'dataframe', 'unit': 'million_tonnes'},
                 CopperModel.COPPER_PRICE: {'type': 'dataframe', 'unit': 'USD'}}
 
-    def init_execution(self, proxy):
+    def init_execution(self):
         inputs = list(self.DESC_IN.keys())
-        param = proxy.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(inputs, in_dict=True)
         self.copper_model = CopperModel(param)
 
     def run(self):
@@ -63,7 +63,7 @@ class CopperDisc(SoSWrapp):
         # put new field value in data_out
         self.store_sos_outputs_values(dict_values)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
 
@@ -74,7 +74,7 @@ class CopperDisc(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, filters=None):
+    def get_post_processing_list(self, filters=None):
 
         instanciated_charts = []
 

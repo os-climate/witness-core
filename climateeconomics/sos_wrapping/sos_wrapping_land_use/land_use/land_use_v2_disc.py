@@ -70,9 +70,9 @@ class LandUseV2Discipline(SoSWrapp):
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
 
-    def init_execution(self, proxy):
+    def init_execution(self):
         inputs = list(self.DESC_IN.keys())
-        param = proxy.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(inputs, in_dict=True)
         self.land_use_model = LandUseV2(param)
 
     def run(self):
@@ -142,7 +142,7 @@ class LandUseV2Discipline(SoSWrapp):
                 (LandUseV2.LAND_DEMAND_CONSTRAINT,), (LandUseV2.LAND_DEMAND_DF, techno),
                 - np.identity(len(years)) / inputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT_REF])
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -157,7 +157,7 @@ class LandUseV2Discipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
         '''
         For the outputs, making a graph for tco vs year for each range and for specific
         value of ToT with a shift of five year between then
@@ -169,8 +169,8 @@ class LandUseV2Discipline(SoSWrapp):
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-        inputs_dict = proxy.get_sosdisc_inputs()
-        outputs_dict = proxy.get_sosdisc_outputs()
+        inputs_dict = self.get_sosdisc_inputs()
+        outputs_dict = self.get_sosdisc_outputs()
         years = list(np.arange(inputs_dict['year_start'], inputs_dict['year_end']+1))
         total_food_land_surface = inputs_dict['total_food_land_surface']
         total_forest_surface_df = inputs_dict['forest_surface_df']
@@ -241,7 +241,7 @@ class LandUseV2Discipline(SoSWrapp):
         if 'Surface Type in 2020 [Gha]' in chart_list:
             # ------------------------------------------------------------
             # GLOBAL LAND USE -> Display surfaces (Ocean, Land, Forest..)
-            years_list = [proxy.get_sosdisc_inputs('year_start')]
+            years_list = [self.get_sosdisc_inputs('year_start')]
             # ------------------
             # Sunburst figure for global land use. Source
             # https://ourworldindata.org/land-use

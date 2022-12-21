@@ -104,7 +104,7 @@ class CarbonEmissionDiscTest(unittest.TestCase):
                        f'{self.name}.CO2_emissions_by_use_sinks': CO2_emissions_by_use_sinks,
                        f'{self.name}.co2_emissions_needed_by_energy_mix': co2_emissions_needed_by_energy_mix}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
@@ -201,7 +201,7 @@ class CarbonEmissionDiscTest(unittest.TestCase):
                        f'{self.name}.CO2_emissions_by_use_sinks': CO2_emissions_by_use_sinks,
                        f'{self.name}.co2_emissions_needed_by_energy_mix': co2_emissions_needed_by_energy_mix}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 

@@ -63,8 +63,8 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         'CO2_indus_emissions_df_detailed': {'type': 'dataframe', 'unit': 'Gt or -'},
     }
 
-    def init_execution(self, proxy):
-        in_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        in_dict = self.get_sosdisc_inputs()
         self.emissions_model = IndusEmissions(in_dict)
 
     def run(self):
@@ -96,7 +96,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('CO2_indus_emissions_df', 'indus_emissions'), ('economics_df', 'gross_output'),  d_indus_emissions_d_gross_output)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -112,7 +112,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then

@@ -80,8 +80,8 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                              'namespace': 'ns_energy_mix', 'unit': 'Gt'}
     }
 
-    def init_execution(self, proxy):
-        in_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        in_dict = self.get_sosdisc_inputs()
         self.emissions_model = CarbonEmissions(in_dict)
 
     def run(self):
@@ -188,7 +188,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('CO2_objective',), ('CO2_land_emissions', column), dobjective_exp_min * d_CO2_obj_d_total_emission)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -204,7 +204,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -311,7 +311,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         #----------------
         cols_to_sum = []
         # Get all the sources and put them as columns in df
-        CO2_emissions_by_use_sources = proxy.get_sosdisc_inputs(
+        CO2_emissions_by_use_sources = self.get_sosdisc_inputs(
             'CO2_emissions_by_use_sources')
         for col in CO2_emissions_by_use_sources.columns:
             if col != 'years':
@@ -323,21 +323,21 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         cols_to_sum = []
         # Get all the sinks and put them as columns in df
-        CO2_emissions_by_use_sinks = proxy.get_sosdisc_inputs(
+        CO2_emissions_by_use_sinks = self.get_sosdisc_inputs(
             'CO2_emissions_by_use_sinks')
         for col in CO2_emissions_by_use_sinks.columns:
             if col != 'years':
                 CO2_emissions_breakdown[col] = - \
                     CO2_emissions_by_use_sinks[col].values
                 cols_to_sum += [col, ]
-        co2_emissions_needed_by_energy_mix = proxy.get_sosdisc_inputs(
+        co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs(
             'co2_emissions_needed_by_energy_mix')
         for col in co2_emissions_needed_by_energy_mix.columns:
             if col != 'years':
                 CO2_emissions_breakdown[col] = - \
                     co2_emissions_needed_by_energy_mix[col].values
                 cols_to_sum += [col, ]
-        co2_emissions_ccus_Gt = proxy.get_sosdisc_inputs(
+        co2_emissions_ccus_Gt = self.get_sosdisc_inputs(
             'co2_emissions_ccus_Gt')
         for col in co2_emissions_ccus_Gt.columns:
             if col != 'years':
@@ -354,10 +354,10 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         cols_to_sum = []
         # Get all the sources and put them as columns in df
         sigma = CO2_emissions_df['sigma'].values
-        gross_output_ter = proxy.get_sosdisc_inputs(
+        gross_output_ter = self.get_sosdisc_inputs(
             'economics_df')['gross_output'].values
-        energy_emis_share = proxy.get_sosdisc_inputs('energy_emis_share')
-        share_land_emis = proxy.get_sosdisc_inputs('land_emis_share')
+        energy_emis_share = self.get_sosdisc_inputs('energy_emis_share')
+        share_land_emis = self.get_sosdisc_inputs('land_emis_share')
         indus_emissions = sigma * gross_output_ter * \
             (1 - energy_emis_share - share_land_emis)
         CO2_emissions_breakdown['industrial emissions (Gt)'] = indus_emissions

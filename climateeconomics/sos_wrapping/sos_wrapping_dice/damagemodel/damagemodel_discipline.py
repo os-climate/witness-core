@@ -89,7 +89,7 @@ class DamageDiscipline(SoSWrapp):
         out_dict = {"damage_df": damage_df}        
         self.store_sos_outputs_values(out_dict)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -103,7 +103,7 @@ class DamageDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then

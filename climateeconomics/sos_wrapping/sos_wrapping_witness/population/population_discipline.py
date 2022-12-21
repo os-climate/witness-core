@@ -99,8 +99,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
     _maturity = 'Research'
 
-    def init_execution(self, proxy):
-        in_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        in_dict = self.get_sosdisc_inputs()
         self.model = Population(in_dict)
 
     def run(self):
@@ -150,7 +150,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('working_age_population_df', 'population_1570'), ('temperature_df', 'temp_atmo'), d_working_pop_d_temp / self.model.million)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -172,7 +172,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then

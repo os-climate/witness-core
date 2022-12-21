@@ -59,7 +59,7 @@ class GHGCycleDiscTest(unittest.TestCase):
 
         values_dict = {f'{self.name}.GHG_emissions_df': emissions_df[['years', 'Total CO2 emissions', 'Total CH4 emissions', 'Total N2O emissions']]}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 

@@ -75,7 +75,7 @@ class PopDiscTest(unittest.TestCase):
                        f'{self.name}.temperature_df': temperature_df_all
                        }
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
         t0 = time.time()
         self.ee.execute()
         print('old_time : 8.636150598526001  s ')
@@ -124,7 +124,7 @@ class PopDiscTest(unittest.TestCase):
                        f'{self.name}.temperature_df': temperature_df
                        }
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
@@ -161,7 +161,7 @@ class PopDiscTest(unittest.TestCase):
 #                        f'{self.name}.temperature_df': temperature_df_all
 #                        }
 #
-#         self.ee.dm.set_values_from_dict(values_dict)
+#         self.ee.load_study_from_input_dict(values_dict)
 #
 #         self.ee.execute()
 #

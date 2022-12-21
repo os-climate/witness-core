@@ -119,17 +119,17 @@ class ResourceMixDiscipline(SoSWrapp):
             'namespace': 'ns_resource'},
     }
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.all_resource_model = ResourceMixModel(inputs_dict)
         self.all_resource_model.configure_parameters(inputs_dict)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
         dynamic_inputs = {}
         # dynamic_outputs = {}
 
-        if 'resource_list' in proxy.get_data_in():
-            resource_list = proxy.get_sosdisc_inputs('resource_list')
+        if 'resource_list' in self.get_data_in():
+            resource_list = self.get_sosdisc_inputs('resource_list')
             for resource in resource_list:
                 dynamic_inputs[f'{resource}.resource_price'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PRICE_UNIT[resource]}
@@ -142,7 +142,7 @@ class ResourceMixDiscipline(SoSWrapp):
                 dynamic_inputs[f'{resource}.predictable_production'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PROD_UNIT[resource]}
                 
-            proxy.add_inputs(dynamic_inputs)
+            self.add_inputs(dynamic_inputs)
 
 
     def run(self):
@@ -172,7 +172,7 @@ class ResourceMixDiscipline(SoSWrapp):
         # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
 
@@ -245,7 +245,7 @@ class ResourceMixDiscipline(SoSWrapp):
                     ResourceMixModel.NON_MODELED_RESOURCE_PRICE, resource_type),
                     np.identity(len(data_frame_other_resource_price)))
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         instanciated_charts = []
         chart_list = ['all']

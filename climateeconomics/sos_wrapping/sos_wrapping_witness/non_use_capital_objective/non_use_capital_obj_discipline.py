@@ -81,15 +81,15 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         'forest_lost_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
     }
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
         dynamic_inputs = {}
         all_non_use_capital_list = []
 
         # Recover the full techno list to get all non_use capital by energy mix
         energy_techno_dict = {}
-        if 'is_dev' in proxy.get_data_in():
-            is_dev = proxy.get_sosdisc_inputs('is_dev')
+        if 'is_dev' in self.get_data_in():
+            is_dev = self.get_sosdisc_inputs('is_dev')
             if is_dev:
                 dynamic_inputs['forest_lost_capital'] = {'type': 'dataframe',
                                                          'unit': 'G$',
@@ -111,8 +111,8 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                     'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                     'namespace': 'ns_ref',
                                                                     'structuring': True}
-        if 'energy_list' in proxy.get_data_in():
-            energy_list = proxy.get_sosdisc_inputs('energy_list')
+        if 'energy_list' in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name and is_dev == True:
@@ -126,14 +126,14 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                          'possible_values': EnergyMix.stream_class_dict[
                                                                              energy].default_techno_list}
 
-                        if f'{energy}.technologies_list' in proxy.get_data_in():
-                            techno_list = proxy.get_sosdisc_inputs(
+                        if f'{energy}.technologies_list' in self.get_data_in():
+                            techno_list = self.get_sosdisc_inputs(
                                 f'{energy}.technologies_list')
                             if techno_list is not None:
                                 energy_techno_dict[energy] = {'namespace': 'ns_energy',
                                                               'value': techno_list}
-        if 'ccs_list' in proxy.get_data_in():
-            ccs_list = proxy.get_sosdisc_inputs('ccs_list')
+        if 'ccs_list' in self.get_data_in():
+            ccs_list = self.get_sosdisc_inputs('ccs_list')
             if ccs_list is not None:
                 for ccs in ccs_list:
                     dynamic_inputs[f'{ccs}.technologies_list'] = {'type': 'list',
@@ -144,15 +144,15 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                   'possible_values': EnergyMix.stream_class_dict[
                                                                       ccs].default_techno_list}
 
-                    if f'{ccs}.technologies_list' in proxy.get_data_in():
-                        techno_list = proxy.get_sosdisc_inputs(
+                    if f'{ccs}.technologies_list' in self.get_data_in():
+                        techno_list = self.get_sosdisc_inputs(
                             f'{ccs}.technologies_list')
                         if techno_list is not None:
                             energy_techno_dict[ccs] = {'namespace': 'ns_ccs',
                                                        'value': techno_list}
 
-        if 'agri_capital_techno_list' in proxy.get_data_in():
-            agriculture_techno_list = proxy.get_sosdisc_inputs(
+        if 'agri_capital_techno_list' in self.get_data_in():
+            agriculture_techno_list = self.get_sosdisc_inputs(
                 'agri_capital_techno_list')
             if agriculture_techno_list is not None:
                 energy_techno_dict['Agriculture'] = {'namespace': 'ns_forest',
@@ -175,11 +175,11 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                            'namespace': non_use_capital_tuple[1],
                                                                            'unit': 'G$'}
 
-        proxy.add_inputs(dynamic_inputs)
+        self.add_inputs(dynamic_inputs)
 
-    def init_execution(self, proxy):
+    def init_execution(self):
 
-        inp_dict = proxy.get_sosdisc_inputs()
+        inp_dict = self.get_sosdisc_inputs()
         self.model = NonUseCapitalObjective(inp_dict)
 
     def run(self):
@@ -254,7 +254,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                  ), ('forest_lost_capital', 'deforestation'),
                 - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -269,13 +269,13 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
 
         instanciated_charts = []
-        is_dev = proxy.get_sosdisc_inputs('is_dev')
+        is_dev = self.get_sosdisc_inputs('is_dev')
         if chart_filters is not None:
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
@@ -329,7 +329,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             instanciated_charts.append(new_chart)
 
         if 'Forest Management Lost Capital' in chart_list and is_dev:
-            forest_lost_capital = proxy.get_sosdisc_inputs(
+            forest_lost_capital = self.get_sosdisc_inputs(
                 'forest_lost_capital')
 
             years = list(forest_lost_capital['years'].values)

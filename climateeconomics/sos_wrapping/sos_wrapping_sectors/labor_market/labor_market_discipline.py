@@ -60,15 +60,15 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         'employment_df': {'type': 'dataframe', 'unit': '-'}
     }
 
-    def init_execution(self, proxy):
-        inputs_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        inputs_dict = self.get_sosdisc_inputs()
         self.labor_model = LaborMarketModel(inputs_dict)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
         dynamic_inputs = {}
-        if proxy.get_data_in() is not None:
-            if 'sector_list' in proxy.get_data_in():
+        if self.get_data_in() is not None:
+            if 'sector_list' in self.get_data_in():
                 sector_list = self.get_sosdisc_inputs('sector_list')
                 df_descriptor = {'years': ('float', None, False)}
                 df_descriptor.update({col: ('float', None, True)
@@ -78,7 +78,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                                                 'dataframe_descriptor': df_descriptor,
                                                 'dataframe_edition_locked': False}
               
-            proxy.add_inputs(dynamic_inputs)
+            self.add_inputs(dynamic_inputs)
 
 
     def run(self):
@@ -116,7 +116,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                                                         grad_workforcesector)
             
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
 
@@ -127,7 +127,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         instanciated_charts = []
 

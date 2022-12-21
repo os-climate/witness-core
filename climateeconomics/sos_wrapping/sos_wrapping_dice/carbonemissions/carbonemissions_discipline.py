@@ -73,7 +73,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
         dict_values = {'emissions_df': emissions_df}
         self.store_sos_outputs_values(dict_values)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -87,7 +87,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -139,7 +139,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
 
             to_plot = ['emissions_control_rate']
 
-            inputs = proxy.get_sosdisc_inputs()
+            inputs = self.get_sosdisc_inputs()
             control_rate_df = inputs.pop('emissions_control_rate')
             control_rate = list(control_rate_df['value'])
             emissions_df = self.get_sosdisc_outputs('emissions_df')

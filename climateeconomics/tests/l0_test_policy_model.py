@@ -59,7 +59,7 @@ class PolicyDiscTest(unittest.TestCase):
                        f'{self.name}.ccs_price_percentage': 50.,
                        f'{self.name}.co2_damage_price_percentage': 50.}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 

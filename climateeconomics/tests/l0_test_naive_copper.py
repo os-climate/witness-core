@@ -49,7 +49,7 @@ class TestSoSDiscipline(unittest.TestCase):
 
         values_dict = {'Test.CopperModel.copper_demand': copper_demand,
                        'Test.CopperModel.annual_extraction': extraction}
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 

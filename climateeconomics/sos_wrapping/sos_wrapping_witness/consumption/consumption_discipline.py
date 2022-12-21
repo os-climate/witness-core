@@ -71,26 +71,26 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         'min_utility_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
-        self.update_default_with_years(proxy)
+        self.update_default_with_years()
 
-    def update_default_with_years(self, proxy):
+    def update_default_with_years(self):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in proxy.get_data_in():
-            year_start, year_end = proxy.get_sosdisc_inputs(
+        if 'year_start' in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
 
             total_investment_share_of_gdp = pd.DataFrame(
                 {'years': years, 'share_investment': np.ones(len(years)) * 27.0}, index=years)
 
-            proxy.set_dynamic_default_values(
+            self.set_dynamic_default_values(
                 {'total_investment_share_of_gdp': total_investment_share_of_gdp})
 
-    def init_execution(self, proxy):
+    def init_execution(self):
         inputs = list(self.DESC_IN.keys())
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
         self.conso_m = ConsumptionModel(inp_dict)
@@ -284,7 +284,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             ('min_utility_objective',), ('population_df', 'population'),  np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_population))
     
     
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -299,7 +299,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then

@@ -78,8 +78,8 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'}
     }
 
-    def init_execution(self, proxy):
-        param_in = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        param_in = self.get_sosdisc_inputs()
         self.carboncycle = CarbonCycle(param_in)
 
     def run(self):
@@ -137,7 +137,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('minimum_ppm_constraint', ), ('CO2_emissions_df', 'total_emissions'),  d_ppm_d_totalemissions / self.carboncycle.minimum_ppm_constraint_ref)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -152,7 +152,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -166,7 +166,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
         carboncycle_df = deepcopy(
             self.get_sosdisc_outputs('carboncycle_detail_df'))
-        scale_factor_atmo_conc = proxy.get_sosdisc_inputs(
+        scale_factor_atmo_conc = self.get_sosdisc_inputs(
             'scale_factor_atmo_conc')
         if 'atmosphere concentration' in chart_list:
 
@@ -238,7 +238,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
 
             # Minimum PPM constraint
 
-            ordonate_data = [proxy.get_sosdisc_inputs(
+            ordonate_data = [self.get_sosdisc_inputs(
                 'minimum_ppm_limit')] * int(len(years) / 5)
             abscisse_data = np.linspace(
                 year_start, year_end, int(len(years) / 5))

@@ -152,7 +152,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.energy_capital': self.energy_capital_df
                        }
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(

@@ -96,31 +96,31 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         'emax_enet_constraint':  {'type': 'array'},
     }
         
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
  
-        #self.update_default_with_years(proxy)
+        #self.update_default_with_years()
         dynamic_outputs = {}
         dynamic_inputs = {}
-        if 'prod_function_fitting' in proxy.get_data_in():
-            prod_function_fitting = proxy.get_sosdisc_inputs('prod_function_fitting')
+        if 'prod_function_fitting' in self.get_data_in():
+            prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
             if prod_function_fitting == True:
                 dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 5}
                 dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
-                proxy.add_outputs(dynamic_outputs)
-                proxy.add_inputs(dynamic_inputs)
+                self.add_outputs(dynamic_outputs)
+                self.add_inputs(dynamic_inputs)
 
-    def update_default_with_years(self, proxy):
+    def update_default_with_years(self):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in proxy.get_data_in():
-            year_start, year_end = proxy.get_sosdisc_inputs(
+        if 'year_start' in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
             
-    def init_execution(self, proxy):
-        param = proxy.get_sosdisc_inputs(in_dict=True)
+    def init_execution(self):
+        param = self.get_sosdisc_inputs(in_dict=True)
         self.services_model = SectorModel()
         self.services_model.configure_parameters(param, self.sector_name)
 
@@ -215,7 +215,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), ('sector_investment', 'investment'), demax_cstrt_dinvest)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         chart_filters = []
 
@@ -232,7 +232,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         instanciated_charts = []
 
@@ -245,10 +245,10 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         production_df = self.get_sosdisc_outputs('production_df')
         capital_df = self.get_sosdisc_outputs('detailed_capital_df')
         productivity_df = self.get_sosdisc_outputs('productivity_df')
-        workforce_df = proxy.get_sosdisc_inputs('workforce_df')
+        workforce_df = self.get_sosdisc_inputs('workforce_df')
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
-        capital_utilisation_ratio = proxy.get_sosdisc_inputs('capital_utilisation_ratio')
-        prod_func_fit = proxy.get_sosdisc_inputs('prod_function_fitting')
+        capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
+        prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         if prod_func_fit == True:
             lt_energy_eff = self.get_sosdisc_outputs('longterm_energy_efficiency')
 

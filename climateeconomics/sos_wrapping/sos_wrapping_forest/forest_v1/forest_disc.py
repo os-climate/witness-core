@@ -80,9 +80,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     FOREST_CHARTS = 'Forest chart'
 
-    def init_execution(self, proxy):
+    def init_execution(self):
         inputs = list(self.DESC_IN.keys())
-        param = proxy.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(inputs, in_dict=True)
 
         self.forest_model = Forest(param)
 
@@ -165,7 +165,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
             d_cum_CO2_emitted_d_invest)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -180,7 +180,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
         '''
         For the outputs, making a graph for tco vs year for each range and for specific
         value of ToT with a shift of five year between then

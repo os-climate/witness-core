@@ -76,9 +76,9 @@ class LandUseV1Discipline(SoSWrapp):
     AGRICULTURE_FOOD_CHARTS = 'Agriculture usage for food (Giga ha)'
     GLOBAL_CHARTS = 'Available land surface repartition'
 
-    def init_execution(self, proxy):
+    def init_execution(self):
         inputs = list(self.DESC_IN.keys())
-        param = proxy.get_sosdisc_inputs(inputs, in_dict=True)
+        param = self.get_sosdisc_inputs(inputs, in_dict=True)
         self.land_use_model = LandUseV1(param)
 
     def run(self):
@@ -163,7 +163,7 @@ class LandUseV1Discipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 (LandUseV1.LAND_SURFACE_DF, objective_column),  (LandUseV1.DEFORESTED_SURFACE_DF, 'forest_surface_evol'), model.d_land_surface_d_deforestation_surface(objective_column),)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -179,7 +179,7 @@ class LandUseV1Discipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
         '''
         For the outputs, making a graph for tco vs year for each range and for specific
         value of ToT with a shift of five year between then
@@ -191,7 +191,7 @@ class LandUseV1Discipline(SoSWrapp):
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-        demand_df = proxy.get_sosdisc_inputs(LandUseV1.LAND_DEMAND_DF)
+        demand_df = self.get_sosdisc_inputs(LandUseV1.LAND_DEMAND_DF)
         surface_df = self.get_sosdisc_outputs(LandUseV1.LAND_SURFACE_DETAIL_DF)
         years = demand_df['years'].values.tolist()
 
@@ -261,7 +261,7 @@ class LandUseV1Discipline(SoSWrapp):
         if LandUseV1Discipline.GLOBAL_CHARTS in chart_list:
             # ------------------------------------------------------------
             # GLOBAL LAND USE -> Display surfaces (Ocean, Land, Forest..)
-            years_list = [proxy.get_sosdisc_inputs('year_start')]
+            years_list = [self.get_sosdisc_inputs('year_start')]
             # ------------------
             # Sunburst figure for global land use. Source
             # https://ourworldindata.org/land-use

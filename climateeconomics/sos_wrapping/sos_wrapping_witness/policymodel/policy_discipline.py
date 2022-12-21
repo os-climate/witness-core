@@ -60,8 +60,8 @@ class PolicyDiscipline(SoSWrapp):
 
     }
 
-    def init_execution(self, proxy):
-        param_in = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        param_in = self.get_sosdisc_inputs()
         self.policy_model = PolicyModel()
 
     def run(self):
@@ -87,7 +87,7 @@ class PolicyDiscipline(SoSWrapp):
         self.set_partial_derivative_for_other_types(
             ('CO2_taxes', 'CO2_tax'), ('CCS_price', 'ccs_price_per_tCO2'),  np.identity(len(dCO2_tax_dCCS_price)) * np.array(dCO2_tax_dCCS_price))
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -101,7 +101,7 @@ class PolicyDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -114,8 +114,8 @@ class PolicyDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
         if 'CO2 tax' in chart_list:
-            CCS_price = proxy.get_sosdisc_inputs('CCS_price')
-            CO2_damage_price = proxy.get_sosdisc_inputs('CO2_damage_price')
+            CCS_price = self.get_sosdisc_inputs('CCS_price')
+            CO2_damage_price = self.get_sosdisc_inputs('CO2_damage_price')
             CO2_tax = self.get_sosdisc_outputs('CO2_taxes')
             years = list(CCS_price['years'].values)
 

@@ -72,25 +72,25 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
     _maturity = 'Research'
 
-    def init_execution(self, proxy):
-        in_dict = proxy.get_sosdisc_inputs()
+    def init_execution(self):
+        in_dict = self.get_sosdisc_inputs()
         self.model = DamageModel(in_dict)
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
 
-        self.update_default_with_years(proxy)
+        self.update_default_with_years()
 
-    def update_default_with_years(self, proxy):
+    def update_default_with_years(self):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in proxy.get_data_in():
-            year_start, year_end = proxy.get_sosdisc_inputs(
+        if 'year_start' in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
             damage_constraint_factor_default = np.concatenate(
                 (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
-            proxy.set_dynamic_default_values(
+            self.set_dynamic_default_values(
                 {'damage_constraint_factor': damage_constraint_factor_default})
 
     def run(self):
@@ -138,7 +138,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('CO2_damage_price', 'CO2_damage_price'), ('economics_df', 'gross_output'),  dconstraint_economics)
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -152,7 +152,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then

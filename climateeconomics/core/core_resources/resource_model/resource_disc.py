@@ -70,7 +70,7 @@ class ResourceDiscipline(SoSWrapp):
         SoSWrapp.__init__(self, sos_name)
         self.resource_model = None
 
-    def setup_sos_disciplines(self, proxy):
+    def setup_sos_disciplines(self):
         pass
 
     def run(self):
@@ -137,7 +137,7 @@ class ResourceDiscipline(SoSWrapp):
         # # ------------------------------------------------
         # # Prod resource gradient did not depend on demand
 
-    def get_chart_filter_list(self, proxy):
+    def get_chart_filter_list(self):
 
         # For the outputs, making a graph for tco vs year for each range and for specific
         # value of ToT with a shift of five year between then
@@ -152,7 +152,7 @@ class ResourceDiscipline(SoSWrapp):
 
         return chart_filters
 
-    def get_post_processing_list(self, proxy, chart_filters=None):
+    def get_post_processing_list(self, chart_filters=None):
 
         instanciated_charts = []
         chart_list = ['Stock', 'Price', 'Production', 'Recycling']
@@ -162,8 +162,8 @@ class ResourceDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        inputs_dict = proxy.get_sosdisc_inputs()
-        outputs_dict = proxy.get_sosdisc_outputs()
+        inputs_dict = self.get_sosdisc_inputs()
+        outputs_dict = self.get_sosdisc_outputs()
         year_start = inputs_dict['year_start']
         year_end = inputs_dict['year_end']
         production_start = inputs_dict['production_start']
