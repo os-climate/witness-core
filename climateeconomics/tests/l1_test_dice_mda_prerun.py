@@ -52,7 +52,6 @@ class DICEMDAPrerunTest(unittest.TestCase):
         self.ee.execute()
         t1 = time() - t0
         print('time for first exec : ', t1, 's')
-        residual_history_1 = self.ee.root_process.sub_mda_list[0].residual_history
         # print(residual_history_1)
         ee2 = ExecutionEngine(self.name)
         builder = ee2.factory.get_builder_from_process(
@@ -94,7 +93,6 @@ class DICEMDAPrerunTest(unittest.TestCase):
         ee2.execute()
         t1 = time() - t0
         print('time for second exec : ', t1, 's')
-        residual_history_2 = ee2.root_process.sub_mda_list[0].residual_history
         # print(residual_history_2)
 
         CO2_emissions_df = DataFrame({
@@ -150,7 +148,6 @@ class DICEMDAPrerunTest(unittest.TestCase):
         ee2.execute()
         t1 = time() - t0
         print('time for all inputs exec : ', t1, 's')
-        residual_history_5 = ee2.root_process.sub_mda_list[0].residual_history
 
         ee2 = ExecutionEngine(self.name)
         builder = ee2.factory.get_builder_from_process(
