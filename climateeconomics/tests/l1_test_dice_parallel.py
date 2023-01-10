@@ -118,7 +118,7 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.co2_emissions_ccus_Gt'] = co2_emissions_ccus_Gt
         values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = CO2_emissions_by_use_sources
         values_dict[f'{self.name}.CO2_emissions_by_use_sinks'] = CO2_emissions_by_use_sinks
-        values_dict[f'{self.name}.co2_emissions_needed_by_energy_mix'] = co2_emissions_needed_by_energy_mix
+        values_dict[f'{self.name}.EnergyMix.co2_emissions_needed_by_energy_mix'] = co2_emissions_needed_by_energy_mix
         values_dict[f'{self.name}.energy_list'] = []
         values_dict[f'{self.name}.ccs_list'] = []
         self.ee.load_study_from_input_dict(values_dict)

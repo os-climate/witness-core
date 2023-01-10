@@ -217,9 +217,10 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_mix_discipline.pkl', discipline=disc_techno,
-                            step=1e-15, derr_approx='complex_step',
+                            step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.test_name}.{disc_name}.Crop.techno_consumption',
                                     f'{self.test_name}.{disc_name}.Crop.techno_consumption_woratio',
                                     f'{self.test_name}.{disc_name}.Crop.techno_production',

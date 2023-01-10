@@ -190,12 +190,13 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.transport_cost': self.transport_cost,
                        f'{self.name}.data_fuel_dict': BiomassDry.data_energy_dict
                        }
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_crop_discipline.pkl', discipline=disc_techno,
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_crop_discipline.pkl', discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15, derr_approx='complex_step',
                             inputs=[f'{self.name}.population_df',
                                     f'{self.name}.temperature_df',
@@ -213,5 +214,4 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.CO2_land_emission_df',
                                      f'{self.name}.CH4_land_emission_df',
                                      f'{self.name}.N2O_land_emission_df',
-
                                     ])

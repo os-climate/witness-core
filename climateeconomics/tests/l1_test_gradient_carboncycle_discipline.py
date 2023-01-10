@@ -70,12 +70,14 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.CO2_emissions_df': emission_df_y}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline1.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.CO2_emissions_df'],
                             outputs=[f'{self.name}.carboncycle_df',
                                      f'{self.name}.ppm_objective',
@@ -115,12 +117,14 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.CO2_emissions_df': emission_df_y}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline2.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.CO2_emissions_df'],
                             outputs=[f'{self.name}.carboncycle_df',
                                      f'{self.name}.ppm_objective',

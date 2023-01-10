@@ -76,7 +76,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(self.values_dict)
 
-        self.disc_techno = self.ee.root_process.sos_disciplines[0]
 
     def analytic_grad_entry(self):
         return [
@@ -86,8 +85,10 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         ]
 
     def test_01_utility_analytic_grad_welfare(self):
+        self.ee.execute()
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_welfare.pkl', discipline=self.disc_techno, step=1e-15,
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_welfare.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.economics_df',
                                     f'{self.name}.energy_mean_price',
                                     f'{self.name}.population_df'],
@@ -105,8 +106,10 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         self.values_dict[f'{self.name}.welfare_obj_option'] = 'last_utility'
 
         self.ee.load_study_from_input_dict(self.values_dict)
+        self.ee.execute()
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_last_utility.pkl', discipline=self.disc_techno, step=1e-15,
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_last_utility.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.economics_df',
                                     f'{self.name}.energy_mean_price',
                                     f'{self.name}.population_df'],
@@ -137,8 +140,10 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.energy_mean_price': energy_mean_price}
 
         self.ee.load_study_from_input_dict(values_dict)
+        self.ee.execute()
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_low_economy.pkl', discipline=self.disc_techno, step=1e-15,
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_low_economy.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.economics_df',
                                     f'{self.name}.energy_mean_price',
                                     f'{self.name}.population_df'],

@@ -119,7 +119,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+            f'{self.study_name}.sub_mda_class': 'MDANewtonRaphson',
             f'{self.study_name}.cache_type': 'SimpleCache'}
 
         setup_data_list.append(numerical_values_dict)
@@ -131,7 +131,7 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
 
-    print(len(uc_cls.execution_engine.root_process.sos_disciplines))
+    #print(len(uc_cls.execution_engine.root_process.sos_disciplines))
     #  self.exec_eng.dm.export_couplings(
     #     in_csv=True, f_name='couplings.csv')
 
@@ -148,7 +148,7 @@ if '__main__' == __name__:
 
     uc_cls.run()
 
-    ppf = PostProcessingFactory()
+    """ppf = PostProcessingFactory()
     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
         if disc.sos_name == 'EnergyMix':
             filters = ppf.get_post_processing_filters_by_discipline(
@@ -157,4 +157,4 @@ if '__main__' == __name__:
                 disc, filters, as_json=False)
 
 #             for graph in graph_list:
-#                 graph.to_plotly().show()
+#                 graph.to_plotly().show()"""

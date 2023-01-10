@@ -173,7 +173,7 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
 
-    print(len(uc_cls.execution_engine.root_process.sos_disciplines))
+    #print(len(uc_cls.execution_engine.root_process.sos_disciplines))
     #  self.exec_eng.dm.export_couplings(
     #     in_csv=True, f_name='couplings.csv')
 

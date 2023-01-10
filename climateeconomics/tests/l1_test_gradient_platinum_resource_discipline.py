@@ -99,9 +99,11 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_platinum_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[
                                 f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
@@ -142,9 +144,11 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_platinum_demand_variable_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[
                                 f'{self.name}.{self.model_name}.resources_demand'],
                             outputs=[f'{self.name}.{self.model_name}.resource_stock',
