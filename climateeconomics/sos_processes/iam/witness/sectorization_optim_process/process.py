@@ -40,13 +40,13 @@ class ProcessBuilder(BaseProcessBuilder):
             'climateeconomics.sos_processes.iam.witness', 'sectorization_process')
 
         # design variables builder
-        design_var_path = 'sos_trades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
+        design_var_path = 'sostrades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
         design_var_builder = self.ee.factory.get_builder_from_module(
             f'{designvariable_name}', design_var_path)
         chain_builders.append(design_var_builder)
 
         # function manager builder
-        fmanager_path = 'sos_trades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
+        fmanager_path = 'sostrades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
         fmanager_builder = self.ee.factory.get_builder_from_module(
             f'{func_manager_name}', fmanager_path)
         chain_builders.append(fmanager_builder)
@@ -76,7 +76,6 @@ class ProcessBuilder(BaseProcessBuilder):
             coupling_name)
         # coupling
         coupling_builder.set_builder_info('cls_builder', chain_builders)
-        coupling_builder.set_builder_info('with_data_io', True)
 
         opt_builder = self.ee.factory.create_optim_builder(
             'SectorsOpt', [coupling_builder])

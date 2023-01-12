@@ -67,6 +67,7 @@ class Study(ClimateEconomicsStudyManager):
         years = np.arange(year_start, year_end + 1)
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5)/1e-4,np.ones(len(years)-5)/4), axis=None)
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
 
         return values_dict
 
@@ -76,12 +77,12 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
     uc_cls.execution_engine.display_treeview_nodes(True)
-    
-    ppf = PostProcessingFactory()
-    filters = ppf.get_post_processing_filters_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
-    graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
-                                                      filters, as_json=False)
-
+    """
+        ppf = PostProcessingFactory()
+        filters = ppf.get_post_processing_filters_by_namespace(
+            uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
+        graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
+                                                          filters, as_json=False)
+    """
 #    for graph in graph_list:
 #        graph.to_plotly().show()

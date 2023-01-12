@@ -123,8 +123,7 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    print(
-        len(uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines[0].sos_disciplines))
+
     # df_xvect = pd.read_pickle('df_xvect.pkl')
     # df_xvect.columns = [
     # f'{uc_cls.study_name}.{uc_cls.optim_name}.{uc_cls.coupling_name}.DesignVariables' + col for col in df_xvect.columns]

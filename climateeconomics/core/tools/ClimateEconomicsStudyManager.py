@@ -27,3 +27,6 @@ class ClimateEconomicsStudyManager(StudyManager):
         Check that the column years of the input dataframes are in [year_start, year_end]
         """
         specific_check_years(self.execution_engine.dm)
+
+    def setup_process(self):
+        self.execution_engine.root_builder_ist.setup_process()

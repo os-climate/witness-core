@@ -39,6 +39,7 @@ class Study(ClimateEconomicsStudyManager):
         witness_ms_usecase.study_name = f'{self.study_name}.{self.scatter_scenario}'
 
         values_dict = {}
+
         scenario_list = []
         alpha_list = np.linspace(0, 100, 3, endpoint=True) / 100.0
         for alpha_i in alpha_list:
@@ -49,7 +50,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 3
-
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
 
         for scenario in scenario_list:
@@ -75,11 +76,6 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
 
-    ppf = PostProcessingFactory()
-    filters = ppf.get_post_processing_filters_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
-    graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
-                                                      filters, as_json=False)
 
 #    for graph in graph_list:
 #        graph.to_plotly().show()

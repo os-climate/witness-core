@@ -212,8 +212,7 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    print(
-        len(uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines))
+
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 

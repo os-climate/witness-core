@@ -117,12 +117,5 @@ if '__main__' == __name__:
     uc_cls.run()
     uc_cls.execution_engine.display_treeview_nodes(True)
 
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-        filters = ppf.get_post_processing_filters_by_discipline(
-            disc)
-        graph_list = ppf.get_post_processing_by_discipline(
-            disc, filters, as_json=False)
-
         # for graph in graph_list:
         #     graph.to_plotly().show()

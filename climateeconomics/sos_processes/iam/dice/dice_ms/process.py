@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sostrades_core.execution_engine.sos_multi_scenario import SoSMultiScenario
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 

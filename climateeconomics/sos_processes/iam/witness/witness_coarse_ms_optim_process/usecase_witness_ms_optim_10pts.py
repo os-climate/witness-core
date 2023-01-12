@@ -62,6 +62,7 @@ class Study(ClimateEconomicsStudyManager):
         year_start = scenarioUseCase.year_start
         year_end = scenarioUseCase.year_end
         years = np.arange(year_start, year_end + 1)
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5)/1e-4,np.ones(len(years)-5)/4), axis=None)
 
@@ -73,9 +74,7 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
 
-    post_processing_factory = PostProcessingFactory()
-    post_processing_factory.get_post_processing_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
+
 #     all_post_processings = post_processing_factory.get_all_post_processings(
 #         uc_cls.execution_engine, False, as_json=False, for_test=False)
 #
