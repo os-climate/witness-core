@@ -57,6 +57,9 @@ class Study(StudyManager):
             for dict_data in scenarioData:
                 values_dict.update(dict_data)
 
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
+
+
         return values_dict
 
 
@@ -64,7 +67,7 @@ if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
     uc_cls.run()
-
+    """
     ppf = PostProcessingFactory()
     filters = ppf.get_post_processing_filters_by_namespace(
         uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
@@ -73,3 +76,4 @@ if '__main__' == __name__:
 
     for graph in graph_list:
         graph.to_plotly().show()
+    """
