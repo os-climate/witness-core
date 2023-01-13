@@ -57,7 +57,7 @@ class Study(StudyManager):
             for dict_data in scenarioData:
                 values_dict.update(dict_data)
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
+        values_dict[f'{self.study_name}.Scenarios.builder_mode'] = 'multi_instance'
 
 
         return values_dict

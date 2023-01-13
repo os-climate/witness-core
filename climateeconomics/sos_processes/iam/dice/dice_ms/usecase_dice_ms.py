@@ -102,7 +102,7 @@ class Study(StudyManager):
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_C}.emissions_control_rate'] = control_rate_C
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_D}.emissions_control_rate'] = control_rate_D
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_E}.emissions_control_rate'] = control_rate_E
-
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
         setup_data_list[0].update(values_dict)
 
         return setup_data_list
