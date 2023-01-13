@@ -73,6 +73,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                                    'namespace': 'ns_witness'},
         'temperature_end_constraint_limit': {'type': 'float', 'default': 1.5, 'unit': '°C', 'user_level': 2},
         'temperature_end_constraint_ref': {'type': 'float', 'default': 3., 'unit': '°C', 'user_level': 2},
+        'temperature_effect': {'type': 'bool', 'default': True}
+
     }
 
     DESC_OUT = {
