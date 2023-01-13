@@ -74,7 +74,7 @@ class ProcessBuilder(BaseProcessBuilder):
         '''
         Add non_use capital objective discipline to all WITNESS processes
         '''
-        mods_dict = {'InvestmentDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_witness.non_use_capital_objective.non_use_capital_obj_discipline.NonUseCapitalObjectiveDiscipline'
+        mods_dict = {'NonUseCapitalDiscipline': 'climateeconomics.sos_wrapping.sos_wrapping_witness.non_use_capital_objective.non_use_capital_obj_discipline.NonUseCapitalObjectiveDiscipline'
                      }
         non_use_capital_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)
