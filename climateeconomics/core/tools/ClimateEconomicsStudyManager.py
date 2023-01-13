@@ -28,5 +28,3 @@ class ClimateEconomicsStudyManager(StudyManager):
         """
         specific_check_years(self.execution_engine.dm)
 
-    def setup_process(self):
-        self.execution_engine.root_builder_ist.setup_process()

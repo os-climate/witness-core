@@ -40,6 +40,10 @@ class ProcessBuilder(BaseProcessBuilder):
     COPPER_NAME = CopperResourceDiscipline.resource_name
     PLATINUM_NAME = PlatinumResourceDiscipline.resource_name
 
+    def __init__(self, ee):
+        self.associate_namespace = False
+        BaseProcessBuilder.__init__(self, ee)
+
     def setup_process(self, associate_namespace=False):
         self.associate_namespace = associate_namespace
 
