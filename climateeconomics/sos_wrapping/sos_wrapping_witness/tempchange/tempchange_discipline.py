@@ -117,12 +117,26 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         # model execution
         temperature_df, temperature_objective = self.model.compute(in_dict)
 
-        # store output data
-        out_dict = {"temperature_detail_df": temperature_df,
-                    "temperature_df": temperature_df[['years', 'temp_atmo']],
-                    'forcing_detail_df': self.model.forcing_df,
-                    'temperature_objective': temperature_objective,
-                    'temperature_constraint': self.model.temperature_end_constraint}
+        if in_dict['temperature_effect'] :
+            # store output data
+            out_dict = {"temperature_detail_df": temperature_df,
+                        "temperature_df": temperature_df[['years', 'temp_atmo']],
+                        'forcing_detail_df': self.model.forcing_df,
+                        'temperature_objective': temperature_objective,
+                        'temperature_constraint': self.model.temperature_end_constraint}
+
+        else:
+            # store output data
+
+            temperature_df_2 = temperature_df.copy()
+            temperature_df_2['temp_atmo'] = [0.1 for i in range (len(temperature_df['temp_atmo']))]
+
+            out_dict = {"temperature_detail_df": temperature_df,
+                        "temperature_df": temperature_df_2[['years', 'temp_atmo']],
+                        'forcing_detail_df': self.model.forcing_df,
+                        'temperature_objective': temperature_objective,
+                        'temperature_constraint': self.model.temperature_end_constraint}
+
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):
