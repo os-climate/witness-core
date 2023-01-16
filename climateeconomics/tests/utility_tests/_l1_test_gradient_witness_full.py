@@ -82,7 +82,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         disc = self.ee.root_process
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_objective_wrt_state_var_on_witness_full.pkl', discipline=disc, inputs=input_full_names,
-                            outputs=output_full_names, derr_approx='complex_step', step=1.0e-12, parallel=True)
+                            outputs=output_full_names, derr_approx='complex_step', local_data = {}, step=1.0e-12, parallel=True)
 
     def test_02_gradient_residus_wrt_state_var_on_witness_full(self):
 
