@@ -56,9 +56,7 @@ class ProcessBuilder(BaseProcessBuilder):
         multi_scenario = self.ee.factory.create_driver(
             'Control rate scenarios', builder_cdf_list, flatten_subprocess=False
         )
-        """
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
                                                                                 'climateeconomics.sos_wrapping.sos_wrapping_dice.post_proc_dice_ms.post_processing')
 
-        """
         return multi_scenario
