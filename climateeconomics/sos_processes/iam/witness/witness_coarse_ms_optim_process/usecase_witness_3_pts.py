@@ -41,17 +41,20 @@ class Study(ClimateEconomicsStudyManager):
         values_dict = {}
 
         scenario_list = []
+        len_scenarios = len(scenario_list)
         alpha_list = np.linspace(0, 100, 3, endpoint=True) / 100.0
         for alpha_i in alpha_list:
             scenario_i = 'scenario_\u03B1=%.2f' % alpha_i
             scenario_i = scenario_i.replace('.', ',')
             scenario_list.append(scenario_i)
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.alpha'] = alpha_i
+        len_scenarios = len(scenario_list)
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 3
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
 
         for scenario in scenario_list:
             scenarioUseCase = witness_optim_usecase(

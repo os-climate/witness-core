@@ -127,7 +127,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes(display_variables=True)
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_constraint_wrt_design_var_bspline.pkl', discipline=disc, inputs=input_full_names,
-                            outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, parallel=True)
+                            outputs=output_full_names, derr_approx='complex_step', step=1.0e-15,local_data = {}, parallel=True)
 
 
 if '__main__' == __name__:

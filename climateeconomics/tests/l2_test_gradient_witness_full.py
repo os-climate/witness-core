@@ -104,7 +104,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                     self.ee.dm.delete_complex_in_df_and_arrays()
                     AbstractJacobianUnittest.DUMP_JACOBIAN = True
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                         inputs=inputs,
                                         outputs=outputs,
                                         directory=directory)
@@ -115,7 +115,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                         print('Testing jacobian vs existing pkl file')
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs,
                                             directory=directory)
@@ -125,7 +125,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                             self.ee.dm.delete_complex_in_df_and_arrays()
                             AbstractJacobianUnittest.DUMP_JACOBIAN = True
                             self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                                step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                                step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                                 inputs=inputs,
                                                 outputs=outputs,
                                                 directory=directory)
