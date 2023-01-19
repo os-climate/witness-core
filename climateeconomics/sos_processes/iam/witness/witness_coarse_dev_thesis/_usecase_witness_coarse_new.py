@@ -16,12 +16,12 @@ limitations under the License.
 
 from pandas import DataFrame, concat
 
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import DataStudy as datacase_witness
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
@@ -131,7 +131,6 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
 
-    print(len(uc_cls.execution_engine.root_process.sos_disciplines))
     #  self.exec_eng.dm.export_couplings(
     #     in_csv=True, f_name='couplings.csv')
 
