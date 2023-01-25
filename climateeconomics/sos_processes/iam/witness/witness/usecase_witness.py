@@ -20,6 +20,7 @@ from sostrades_core.tools.post_processing.post_processing_factory import PostPro
 from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy as datacase_witness
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import DataStudy as datacase_witness_dev
+from climateeconomics.sos_processes.iam.witness_wo_energy_thesis.datacase_witness_wo_energy_solow import DataStudy as datacase_witness_thesis
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
@@ -97,6 +98,20 @@ class Study(ClimateEconomicsStudyManager):
         # -- load data from witness
         if self.process_level == 'val':
             dc_witness = datacase_witness(
+                self.year_start, self.year_end, self.time_step)
+            dc_witness.study_name = self.study_name
+
+            witness_input_list = dc_witness.setup_usecase()
+            setup_data_list = setup_data_list + witness_input_list
+
+            energy_input_list = self.dc_energy.setup_usecase()
+            setup_data_list = setup_data_list + energy_input_list
+
+            dspace_energy = self.dc_energy.dspace
+
+            self.merge_design_spaces([dspace_energy, dc_witness.dspace])
+        elif self.process_level == 'thesis':
+            dc_witness = datacase_witness_thesis(
                 self.year_start, self.year_end, self.time_step)
             dc_witness.study_name = self.study_name
 
