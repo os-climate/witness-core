@@ -742,7 +742,7 @@ class MacroEconomics():
         # first line stays at zero since derivatives of initial values are zero
         g = alpha * capital_u**gamma + (1 - alpha) * (working_pop)**gamma
         g_prime = (1 - alpha) * gamma * working_pop**(gamma - 1)
-        f_prime = productivity * (1 / gamma) * g * g_prime
+        f_prime = productivity * (1 / gamma) * (g** (1/gamma -1)) * g_prime
         doutput *= f_prime
         doutput[0, 0] = 0
         return doutput
@@ -1036,7 +1036,7 @@ class MacroEconomics():
         # f'(g(x)) = f'(g)*g'(x)
         g = alpha * capital_u**gamma + (1 - alpha) * (working_pop)**gamma
         g_prime = alpha * gamma * capital_u**(gamma - 1)
-        f_prime = productivity * (1 / gamma) * g * g_prime
+        f_prime = productivity * (1 / gamma) * (g** (1/gamma -1)) * g_prime
         doutput_dcap *= f_prime
         # at zero gross output is an input
         doutput_dcap[0, 0] = 0
