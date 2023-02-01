@@ -76,7 +76,7 @@ class MacroEconomics():
         self.output_pop_exponent = self.param['output_gamma']
         self.output_energy_exponent = self.param['output_energy_exponent']
         self.output_exponent = self.param['output_gamma']
-        self.output_pop_share = self.param['output_alpha']
+        self.output_pop_share = 1-self.param['output_alpha']
         self.output_alpha_hassler = self.param['output_alpha_hassler']
         self.output_gamma_hassler = self.param['output_gamma_hassler']
         self.hassler= self.param['hassler']
