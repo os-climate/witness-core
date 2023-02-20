@@ -24,7 +24,7 @@ from sostrades_core.tools.cst_manager.constraint_manager import compute_func_wit
 
 class Forest():
     """
-    Forest model class 
+    Forest pyworld3 class
     basic for now, to evolve 
 
     """

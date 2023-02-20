@@ -41,7 +41,7 @@ class OrderOfMagnitude():
 
 class Crop():
     """
-    Crop model class 
+    Crop pyworld3 class
     """
 
     KM_2_unit = 'km2'

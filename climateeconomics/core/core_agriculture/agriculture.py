@@ -37,7 +37,7 @@ class OrderOfMagnitude():
 
 class Agriculture():
     """
-    Agriculture model class 
+    Agriculture pyworld3 class
 
     basic for now, to evolve 
 

@@ -162,7 +162,7 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                                                               stacked_bar=True)
 
         model_production_cumulated_chart = TwoAxesInstanciatedChart('Years',
-                                                                    f'Comparison between model and real {self.resource_name} production [t]',
+                                                                    f'Comparison between pyworld3 and real {self.resource_name} production [t]',
                                                                     chart_name=f'{self.resource_name} production through the years',
                                                                     stacked_bar=True)
         past_production_chart = TwoAxesInstanciatedChart('Years',

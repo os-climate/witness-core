@@ -63,7 +63,7 @@ class ForestTestCase(unittest.TestCase):
 
     def test_forest_model(self):
         '''
-        Basique test of forest model
+        Basique test of forest pyworld3
         Mainly check the overal run without value checks (will be done in another test)
         '''
 

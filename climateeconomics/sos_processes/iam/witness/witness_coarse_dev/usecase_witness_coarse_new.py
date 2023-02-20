@@ -89,7 +89,7 @@ class Study(ClimateEconomicsStudyManager):
     def setup_usecase(self):
         setup_data_list = []
 
-        # -- load data from energy model
+        # -- load data from energy pyworld3
         # -- Start with energy to have it at first position in the list...
         self.dc_energy.study_name = self.study_name
         self.energy_mda_usecase = self.dc_energy

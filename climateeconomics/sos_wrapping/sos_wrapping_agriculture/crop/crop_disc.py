@@ -197,7 +197,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'Opex_percentage_for_residue_only': 0.15,
         # CO2 from production from tractor is taken
         # into account into the energy net factor
-        # land CO2 absorption is static and set in carbonemission model
+        # land CO2 absorption is static and set in carbonemission pyworld3
         'CO2_from_production':-0.425 * 44.01 / 12.0,
         'CO2_from_production_unit': 'kg/kg',
         'elec_demand': 0,

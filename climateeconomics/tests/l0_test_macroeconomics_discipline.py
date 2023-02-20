@@ -25,7 +25,7 @@ from scipy.interpolate import interp1d
 
 class MacroDiscTest(unittest.TestCase):
     '''
-    Economic Manufacturer static model test case
+    Economic Manufacturer static pyworld3 test case
     '''
 
     def setUp(self):

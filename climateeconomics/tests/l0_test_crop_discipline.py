@@ -215,7 +215,7 @@ class CropTestCase(unittest.TestCase):
 
     def test_crop_model(self):
         ''' 
-        Basic test of crop model
+        Basic test of crop pyworld3
         Check the overal run without value checks (will be done in another test)
         '''
 

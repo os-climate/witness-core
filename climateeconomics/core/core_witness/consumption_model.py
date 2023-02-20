@@ -19,7 +19,7 @@ import pandas as pd
 
 class ConsumptionModel():
     '''
-    Used to compute population welfare, utility and consumption. Based on utility model
+    Used to compute population welfare, utility and consumption. Based on utility pyworld3
     '''
 
     def __init__(self, param):
@@ -453,7 +453,7 @@ class ConsumptionModel():
         return d_obj_d_discounted_utility, d_obj_d_period_utility_pc
 
     def compute(self, inputs):
-        ''' model execution
+        ''' pyworld3 execution
         '''
         self.inputs = inputs
         self.set_coupling_inputs()

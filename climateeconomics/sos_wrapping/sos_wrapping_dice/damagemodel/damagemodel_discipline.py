@@ -72,7 +72,7 @@ class DamageDiscipline(SoSWrapp):
     _maturity = 'Research'
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
         economics_df = in_dict.pop('economics_df')
@@ -80,7 +80,7 @@ class DamageDiscipline(SoSWrapp):
         temperature_df = in_dict.pop('temperature_df')
         emissions_control_rate = in_dict.pop('emissions_control_rate')
 
-        # model execution
+        # pyworld3 execution
         model = DamageModel(in_dict)
         damage_df = model.compute(economics_df, emissions_df,
                                   temperature_df, emissions_control_rate)

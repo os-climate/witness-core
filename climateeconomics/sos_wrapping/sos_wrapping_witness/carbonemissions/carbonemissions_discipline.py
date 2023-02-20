@@ -350,7 +350,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         # Industrial emissions
         #---------------------
-        # To be replaced by sources and sinks from model
+        # To be replaced by sources and sinks from pyworld3
         cols_to_sum = []
         # Get all the sources and put them as columns in df
         sigma = CO2_emissions_df['sigma'].values

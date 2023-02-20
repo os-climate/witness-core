@@ -21,7 +21,7 @@ from copy import deepcopy
 
 class Population:
     """
-    Population model mostly based on McIsaac, F., 2020. A Representation of the World Population Dynamics for Integrated Assessment Models.
+    Population pyworld3 mostly based on McIsaac, F., 2020. A Representation of the World Population Dynamics for Integrated Assessment Models.
      Environmental Modeling & Assessment, 25(5), pp.611-632.
     """
 

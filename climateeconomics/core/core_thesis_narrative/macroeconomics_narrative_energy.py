@@ -21,7 +21,7 @@ from numpy import fill_diagonal
 
 class MacroEconomics():
     '''
-    Economic model that compute the evolution of capital, consumption, output...
+    Economic pyworld3 that compute the evolution of capital, consumption, output...
     '''
     PC_CONSUMPTION_CONSTRAINT = 'pc_consumption_constraint'
 
@@ -214,7 +214,7 @@ class MacroEconomics():
     def compute_employment_rate(self):
         """
         Compute the employment rate. based on prediction from ILO
-        We model a recovery from 2020 crisis until 2031 where past level is reached
+        We pyworld3 a recovery from 2020 crisis until 2031 where past level is reached
         For all year not in (2020,2031), value = employment_rate_base_value
         """
         year_covid = 2020
@@ -467,7 +467,7 @@ class MacroEconomics():
     def compute_output_growth(self, year):
         """
         Compute the output growth between year t and year t-1
-        Output growth of the WITNESS model (computed from gross_output_ter)
+        Output growth of the WITNESS pyworld3 (computed from gross_output_ter)
         """
         if year == self.year_start:
             pass

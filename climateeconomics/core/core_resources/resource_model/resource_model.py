@@ -35,8 +35,8 @@ class OrderOfMagnitude():
 
 class ResourceModel():
     """
-    Resource model
-    General implementation of a resource model, to be inherited by specific models for each type of resource
+    Resource pyworld3
+    General implementation of a resource pyworld3, to be inherited by specific models for each type of resource
     """
 
     resource_name = 'resource'
@@ -58,7 +58,7 @@ class ResourceModel():
         self.resource_type = None
         self.sub_resource_list = None
 
-        # Price and Hubert model
+        # Price and Hubert pyworld3
         self.resource_price = None
         self.Q_inf = None
         self.tho = None
@@ -150,7 +150,7 @@ class ResourceModel():
 
     def compute_predictable_production(self):
         '''
-        For each resource_type inside resource model, compute predictable production through Hubbert regression function
+        For each resource_type inside resource pyworld3, compute predictable production through Hubbert regression function
         '''
         for resource_type in self.sub_resource_list:
             self.predictable_production[resource_type] = compute_Hubbert_regression(

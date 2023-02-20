@@ -503,7 +503,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             legend = {
-                'Total production': 'energy supply with oil production from energy model'}
+                'Total production': 'energy supply with oil production from energy pyworld3'}
 
             #inputs = discipline.get_sosdisc_inputs()
             #energy_production = inputs.pop('energy_production')

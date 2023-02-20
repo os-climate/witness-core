@@ -21,8 +21,8 @@ from os.path import join, dirname
 
 class SectorModel():
     """
-    Sector model
-    General implementation of sector model 
+    Sector pyworld3
+    General implementation of sector pyworld3
     """
 
     #Units conversion

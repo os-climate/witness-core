@@ -36,8 +36,8 @@ class OrderOfMagnitude():
 
 class UraniumResourceModel(ResourceModel):
     """
-    Resource model
-    General implementation of a resource model, to be inherited by specific models for each type of resource
+    Resource pyworld3
+    General implementation of a resource pyworld3, to be inherited by specific models for each type of resource
     """
 
     resource_name=ResourceGlossary.Uranium['name']
@@ -92,7 +92,7 @@ class UraniumResourceModel(ResourceModel):
 
     def compute_predictable_production(self):
         '''
-        Special production function for uranium model
+        Special production function for uranium pyworld3
         '''
         for resource_type in self.sub_resource_list:
             if resource_type == 'uranium_40':

@@ -29,7 +29,7 @@ import pickle
 
 class EnergyMix_co2emissions_nonreg_test():
     '''
-    Test to compare the new CO2 emissions model with the implementation out of EnergyMix
+    Test to compare the new CO2 emissions pyworld3 with the implementation out of EnergyMix
     '''
 
     def setUp(self):

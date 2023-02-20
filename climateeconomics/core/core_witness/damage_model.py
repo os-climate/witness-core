@@ -224,7 +224,7 @@ class DamageModel():
 
     def compute(self, economics_df, temperature_df):
         """
-        Compute the outputs of the model
+        Compute the outputs of the pyworld3
         """
         self.economics_df = economics_df
         self.economics_df.index = self.economics_df['years'].values

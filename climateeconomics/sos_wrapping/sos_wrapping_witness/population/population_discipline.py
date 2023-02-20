@@ -104,11 +104,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         self.model = Population(in_dict)
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
 
-        # model execution
+        # pyworld3 execution
         population_detail_df, birth_rate_df, death_rate_dict, birth_df, death_dict, life_expectancy_df, working_age_population_df = self.model.compute(
             in_dict)
 

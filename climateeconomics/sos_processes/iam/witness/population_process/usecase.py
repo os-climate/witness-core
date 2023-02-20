@@ -50,7 +50,7 @@ class Study(StudyManager):
             (self.year_end - self.year_start) / self.time_step + 1)
         years = arange(self.year_start, self.year_end + 1, self.time_step)
         global_data_dir = join(Path(__file__).parents[4], 'data')
-        # private values economics operator model
+        # private values economics operator pyworld3
         population_input = {}
         population_input[self.study_name + '.year_start'] = self.year_start
         population_input[self.study_name + '.year_end'] = self.year_end

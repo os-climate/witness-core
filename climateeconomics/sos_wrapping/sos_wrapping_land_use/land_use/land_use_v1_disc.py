@@ -29,7 +29,7 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 
 
 class LandUseV1Discipline(SoSWrapp):
-    ''' Discipline intended to host land use model with land use for food input from agriculture model
+    ''' Discipline intended to host land use pyworld3 with land use for food input from agriculture pyworld3
     '''
 
     # ontology information

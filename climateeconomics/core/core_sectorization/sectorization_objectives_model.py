@@ -24,7 +24,7 @@ from gemseo.third_party.prettytable.prettytable import NONE
 
 class ObjectivesModel():
     """
-    Objectives model for sectorisation optimisation fitting process 
+    Objectives pyworld3 for sectorisation optimisation fitting process
     """
 
     #Units conversion

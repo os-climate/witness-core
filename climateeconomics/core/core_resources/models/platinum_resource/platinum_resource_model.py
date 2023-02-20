@@ -38,8 +38,8 @@ class OrderOfMagnitude():
 
 class PlatinumResourceModel(ResourceModel):
     """
-    Resource model
-    General implementation of a resource model, to be inherited by specific models for each type of resource
+    Resource pyworld3
+    General implementation of a resource pyworld3, to be inherited by specific models for each type of resource
     """
 
     resource_name=ResourceGlossary.Platinum['name']
@@ -67,7 +67,7 @@ class PlatinumResourceModel(ResourceModel):
     
     def compute_predictable_production(self):
         '''
-        For each resource_type inside resource model, compute predictable production through Hubbert regression function
+        For each resource_type inside resource pyworld3, compute predictable production through Hubbert regression function
         '''
         centered_resource_production_data = self.resource_production_data.loc[self.resource_production_data['years'] <= self.regression_stop]
         for resource_type in self.sub_resource_list:

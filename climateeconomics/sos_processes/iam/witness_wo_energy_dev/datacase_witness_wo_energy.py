@@ -60,7 +60,7 @@ class DataStudy():
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
 
-        # private values economics operator model
+        # private values economics operator pyworld3
         witness_input = {}
         witness_input[self.study_name + '.year_start'] = self.year_start
         witness_input[self.study_name + '.year_end'] = self.year_end

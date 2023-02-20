@@ -43,7 +43,7 @@ class OrderOfMagnitude():
 
 class ResourceMixModel():
     """
-    All Resource model
+    All Resource pyworld3
     """
     YEAR_START = 'year_start'
     YEAR_END = 'year_end'

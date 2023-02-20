@@ -87,7 +87,7 @@ class Study(StudyManager):
             {"years": years, "forest_investment": forest_invest})
         reforestation_cost_per_ha = 3800
 
-        # values of model
+        # values of pyworld3
         forest_input = {}
         forest_input[self.study_name + '.year_start'] = self.year_start
         forest_input[self.study_name + '.year_end'] = self.year_end

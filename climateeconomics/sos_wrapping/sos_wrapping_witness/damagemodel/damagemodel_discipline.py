@@ -94,13 +94,13 @@ class DamageDiscipline(ClimateEcoDiscipline):
                 {'damage_constraint_factor': damage_constraint_factor_default})
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
         economics_df = in_dict.pop('economics_df')
         temperature_df = in_dict.pop('temperature_df')
 
-        # model execution
+        # pyworld3 execution
         damage_df, co2_damage_price_df = self.model.compute(
             economics_df, temperature_df)
 

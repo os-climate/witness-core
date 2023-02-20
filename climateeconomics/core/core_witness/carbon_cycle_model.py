@@ -333,7 +333,7 @@ class CarbonCycle():
 
     def compute(self, inputs_models):
         """
-        Compute results of the model
+        Compute results of the pyworld3
         """
         self.create_dataframe()
         self.inputs_models = inputs_models

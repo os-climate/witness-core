@@ -100,7 +100,7 @@ class AgricultureTestCase(unittest.TestCase):
 
     def test_agriculture_model(self):
         ''' 
-        Basique test of agriculture model
+        Basique test of agriculture pyworld3
         Mainly check the overal run without value checks (will be done in another test)
         '''
 

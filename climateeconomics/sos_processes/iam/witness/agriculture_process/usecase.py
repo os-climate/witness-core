@@ -113,7 +113,7 @@ class Study(StudyManager):
                                 })
         other = np.array(np.linspace(0.102, 0.102, year_range))
 
-        # private values economics operator model
+        # private values economics operator pyworld3
         agriculture_input = {}
         agriculture_input[self.study_name + '.year_start'] = self.year_start
         agriculture_input[self.study_name + '.year_end'] = self.year_end

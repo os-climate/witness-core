@@ -30,8 +30,8 @@ class OrderOfMagnitude():
 
 class NaturalGasResourceModel(ResourceModel):
     """
-    NaturalGas Resource model
-    Overloads the generic resource model
+    NaturalGas Resource pyworld3
+    Overloads the generic resource pyworld3
     """
 
     resource_name=ResourceGlossary.NaturalGas['name']

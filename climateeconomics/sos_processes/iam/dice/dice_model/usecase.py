@@ -29,7 +29,7 @@ class Study(StudyManager):
 
     def setup_usecase(self):
         setup_data_list = []
-        # private values economics operator model
+        # private values economics operator pyworld3
         dice_input = {}
 
         dice_input[self.study_name + '.year_start'] = self.year_start

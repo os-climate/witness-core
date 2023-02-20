@@ -111,12 +111,12 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         self.model = TempChange(in_dict)
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
 #         carboncycle_df = in_dict.pop('carboncycle_df')
 
-        # model execution
+        # pyworld3 execution
         temperature_df, temperature_objective = self.model.compute(in_dict)
 
         if in_dict['temperature_effect'] :

@@ -73,7 +73,7 @@ class LandUseV1TestCase(unittest.TestCase):
 
     def test_land_use_v1_model(self):
         ''' 
-        Basic test of land use model
+        Basic test of land use pyworld3
         Mainly check the overal run without value checks (will be done in another test)
         '''
 

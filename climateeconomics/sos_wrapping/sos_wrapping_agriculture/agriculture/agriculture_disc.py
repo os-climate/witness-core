@@ -25,7 +25,7 @@ from copy import deepcopy
 
 
 class AgricultureDiscipline(ClimateEcoDiscipline):
-    ''' Disscipline intended to host agricluture model
+    ''' Disscipline intended to host agricluture pyworld3
     '''
 
     # ontology information

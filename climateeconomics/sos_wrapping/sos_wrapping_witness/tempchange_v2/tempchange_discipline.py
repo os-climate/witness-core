@@ -138,11 +138,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         self.model = TempChange(in_dict)
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
 
-        # model execution
+        # pyworld3 execution
         temperature_df = self.model.compute(in_dict)
 
         # store output data
@@ -340,7 +340,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-            # Seal level chart for FUND model
+            # Seal level chart for FUND pyworld3
             if model == 'FUND':
                 chart_name = 'Sea level evolution over the years'
                 min_value, max_value = self.get_greataxisrange(temperature_df['sea_level'])
