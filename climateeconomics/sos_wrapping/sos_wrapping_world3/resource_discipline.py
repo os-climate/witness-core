@@ -21,6 +21,19 @@ import numpy as np
 
 
 class ResourceDiscipline(SoSWrapp):
+    # ontology information
+    _ontology_data = {
+        'label': 'Resource World3 Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fas fa-oil-can fa-fw',
+        'version': '',
+    }
     # Define the inputs of the SoSWrapp: type, visibility and namespace (useful for coupling)
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 1900, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},

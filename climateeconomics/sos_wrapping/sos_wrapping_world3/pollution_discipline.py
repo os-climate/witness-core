@@ -21,6 +21,20 @@ import numpy as np
 
 
 class PollutionDiscipline(SoSWrapp):
+    # ontology information
+    _ontology_data = {
+        'label': 'Pollution World3 Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fa-solid fa-smog',
+        'version': '',
+    }
+
     _maturity = 'Fake'
     # Define the inputs of the SoSWrapp: type, visibility and namespace (useful for coupling)
     DESC_IN = {
