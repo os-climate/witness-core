@@ -4,7 +4,7 @@ Created on Monday Nov 29 17:21:18 2021
 
 """
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as MDA_Coarse
 import pickle
 

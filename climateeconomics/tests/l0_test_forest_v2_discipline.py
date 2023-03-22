@@ -20,7 +20,7 @@ import unittest
 from os.path import join, dirname
 from pandas import read_csv
 from climateeconomics.core.core_forest.forest_v2 import Forest
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 import numpy as np
 import pandas as pd
@@ -140,7 +140,7 @@ class ForestTestCase(unittest.TestCase):
 
     def test_forest_model(self):
         '''
-        Basique test of forest model
+        Basique test of forest pyworld3
         Mainly check the overal run without value checks (will be done in another test)
         '''
 

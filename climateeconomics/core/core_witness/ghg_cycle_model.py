@@ -83,7 +83,7 @@ class GHGCycle():
 
     def compute_co2_atm_conc(self, year, boxes):
         """
-        computes CO2 concentrations in atmosphere in ppm at t following FUND model
+        computes CO2 concentrations in atmosphere in ppm at t following FUND pyworld3
         """
         emissions = self.GHG_emissions_df.loc[self.GHG_emissions_df['years'] == year, 'Total CO2 emissions'].values[0] * 1e3     # in MtCO2
         boxes_tmp = [decay*box_conc + 0.000471*em_ratio*emissions for (decay, box_conc, em_ratio) in zip(self.decays, boxes, self.em_ratios)]
@@ -95,7 +95,7 @@ class GHGCycle():
 
     def compute_ch4_atm_conc(self, year, conc_ch4):
         """
-        computes CH4 concentrations in atmosphere in ppm at t following FUND model
+        computes CH4 concentrations in atmosphere in ppm at t following FUND pyworld3
         """
 
         conc_ch4 += self.GHG_emissions_df.loc[self.GHG_emissions_df['years'] == year, 'Total CH4 emissions'].values[0] * 1e3 * self.em_to_conc_ch4 - \
@@ -107,7 +107,7 @@ class GHGCycle():
 
     def compute_n2o_atm_conc(self, year, conc_n2o):
         """
-        computes N2O concentrations in atmosphere in ppm at t following FUND model
+        computes N2O concentrations in atmosphere in ppm at t following FUND pyworld3
         """
 
         conc_n2o += self.GHG_emissions_df.loc[self.GHG_emissions_df['years'] == year, 'Total N2O emissions'].values[0] * 1e3 * self.em_to_conc_n2o - \
@@ -195,7 +195,7 @@ class GHGCycle():
 
     def compute(self, inputs_models):
         """
-        Compute results of the model
+        Compute results of the pyworld3
         """
         self.create_dataframe()
         self.inputs_models = inputs_models

@@ -16,8 +16,8 @@ limitations under the License.
 from os.path import join, dirname, exists
 import pandas as pd
 import numpy as np
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
@@ -95,7 +95,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.root_process
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_objective_wrt_state_var_on_witness_full.pkl', discipline=disc, inputs=input_full_names,
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_objective_wrt_state_var_on_witness_full.pkl', local_data = {},discipline=disc, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-12, parallel=True)
 
     def test_02_gradient_objective_constraint_wrt_design_var_on_witness_full_subprocess_wofuncmanager(self):
@@ -192,7 +192,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         if iend >= len(input_full_names):
             iend = len(input_full_names)
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_objectives_constraint_wrt_design_var_{istart}_{iend}_on_witness_full.pkl', discipline=disc,
-                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                             inputs=input_full_names[istart:iend],
                             outputs=output_full_names, parallel=True)
 
@@ -259,7 +259,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         if iend >= len(input_full_names):
             iend = len(input_full_names)
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_lagrangian_objective_wrt_design_var_{istart}_{iend}_on_witness_full.pkl', discipline=disc,
-                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                             inputs=input_full_names[istart:iend],
                             outputs=output_full_names, parallel=True)
         if disc.jac is not None:
@@ -342,7 +342,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         if iend >= len(input_full_names):
             iend = len(input_full_names)
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_lagrangian_objective_wrt_design_var_{istart}_{iend}_on_witness_full_withx0csv_crash.pkl', discipline=disc,
-                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                             inputs=input_full_names[istart:iend],
                             outputs=output_full_names, parallel=True)
         if disc.jac is not None:
@@ -482,13 +482,13 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
             i += 1
@@ -545,14 +545,14 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
 
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
             i += 1
@@ -635,7 +635,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes(display_variables=True)
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8,
+                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8,local_data = {},
                             inputs=input_full_names, outputs=output_full_names)
 
     def test_07_gradient_all_disciplines_on_crashed_x(self):
@@ -715,7 +715,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             if len(inputs) != 0:
                 self.ee.dm.delete_complex_in_df_and_arrays()
                 self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                    step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                    step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                     inputs=[
                                         'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.invest_level'],
                                     outputs=['Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.techno_production'])
@@ -729,7 +729,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                     print('input_column : ', input_column)
                     print('output_columns : ', output_column)
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                         inputs=[
                                             'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.invest_level'], input_column=input_column,
                                         outputs=['Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.techno_production'], output_column=output_column)

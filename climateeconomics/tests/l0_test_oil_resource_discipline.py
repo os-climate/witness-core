@@ -22,7 +22,7 @@ import unittest
 from os.path import join, dirname
 from pandas import read_csv
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_model import OilResourceModel
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 class OilModelTestCase(unittest.TestCase):
 

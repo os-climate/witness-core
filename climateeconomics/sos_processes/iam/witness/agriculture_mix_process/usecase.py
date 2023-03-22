@@ -18,8 +18,8 @@ import pandas as pd
 import scipy.interpolate as sc
 from numpy import asarray, arange, array
 
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.sos_processes.iam.witness.forest_v2_process.usecase import Study as datacase_forest
 
@@ -91,19 +91,13 @@ class Study(StudyManager):
 
         red_meat_percentage = np.linspace(6.82, 1, year_range)
         white_meat_percentage = np.linspace(13.95, 5, year_range)
-        self.red_meat_calories_per_day = pd.DataFrame({
+        self.red_meat_percentage = pd.DataFrame({
             'years': years,
-            'red_meat_calories_per_day': red_meat_percentage})
-        self.white_meat_calories_per_day = pd.DataFrame({
+            'red_meat_percentage': red_meat_percentage})
+        self.white_meat_percentage = pd.DataFrame({
             'years': years,
-            'white_meat_calories_per_day': white_meat_percentage})
-        self.vegetables_and_carbs_calories_per_day = pd.DataFrame({
-            'years': years,
-            'vegetables_and_carbs_calories_per_day': white_meat_percentage})
+            'white_meat_percentage': white_meat_percentage})
 
-        self.milk_and_eggs_calories_per_day = pd.DataFrame({
-            'years': years,
-            'milk_and_eggs_calories_per_day': white_meat_percentage})
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
                                 'milk': [79.27],
@@ -167,10 +161,8 @@ class Study(StudyManager):
             f'{self.study_name}.transport_margin': self.margin,
             f'{self.study_name}.CO2_taxes': self.co2_taxes,
             f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
-            f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_calories_per_day,
-            f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_calories_per_day,
-            f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
-            f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
+            f'{self.study_name}.{energy_name}.Crop.red_meat_percentage': self.red_meat_percentage,
+            f'{self.study_name}.{energy_name}.Crop.white_meat_percentage': self.white_meat_percentage,
             f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
             f'{self.study_name}.{energy_name}.Crop.crop_investment': self.crop_investment,
             f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
@@ -181,11 +173,8 @@ class Study(StudyManager):
             f'{self.study_name}.temperature_df': temperature_df
         }
 
-        red_meat_percentage_ctrl = np.linspace(600, 900, self.nb_poles)
-        white_meat_percentage_ctrl = np.linspace(700, 900, self.nb_poles)
-        vegetables_and_carbs_calories_per_day_ctrl = np.linspace(900, 900, self.nb_poles)
-        milk_and_eggs_calories_per_day_ctrl = np.linspace(900, 900, self.nb_poles)
-
+        red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
+        white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
         deforestation_investment_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
         forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
         crop_investment_array_mix = np.linspace(1.0, 1.5, self.nb_poles)
@@ -194,10 +183,8 @@ class Study(StudyManager):
 
 
         design_space_ctrl_dict = {}
-        design_space_ctrl_dict['red_meat_calories_per_day_ctrl'] = red_meat_percentage_ctrl
-        design_space_ctrl_dict['white_meat_calories_per_day_ctrl'] = white_meat_percentage_ctrl
-        design_space_ctrl_dict['vegetables_and_carbs_calories_per_day_ctrl'] = vegetables_and_carbs_calories_per_day_ctrl
-        design_space_ctrl_dict['milk_and_eggs_calories_per_day_ctrl'] = milk_and_eggs_calories_per_day_ctrl
+        design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
+        design_space_ctrl_dict['white_meat_percentage_ctrl'] = white_meat_percentage_ctrl
         design_space_ctrl_dict['deforestation_investment_ctrl'] = deforestation_investment_ctrl
         design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
 
@@ -221,14 +208,10 @@ class Study(StudyManager):
         # Design variables
         # -----------------------------------------
         # Crop related
-        update_dspace_dict_with(ddict, 'red_meat_calories_per_day_ctrl',
-                                list(self.design_space_ctrl['red_meat_calories_per_day_ctrl'].values), [1.0] * self.nb_poles, [1000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        update_dspace_dict_with(ddict, 'white_meat_calories_per_day_ctrl',
-                                list(self.design_space_ctrl['white_meat_calories_per_day_ctrl'].values), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        update_dspace_dict_with(ddict, 'vegetables_and_carbs_calories_per_day_ctrl',
-                                list(self.design_space_ctrl['vegetables_and_carbs_calories_per_day_ctrl'].values), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
-        update_dspace_dict_with(ddict, 'milk_and_eggs_calories_per_day_ctrl',
-                                list(self.design_space_ctrl['milk_and_eggs_calories_per_day_ctrl'].values), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
+                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles, [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+        update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
+                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         update_dspace_dict_with(ddict, 'deforestation_investment_ctrl',
                                 list(self.design_space_ctrl['deforestation_investment_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)

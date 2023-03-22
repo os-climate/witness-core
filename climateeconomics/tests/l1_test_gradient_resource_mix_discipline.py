@@ -17,8 +17,8 @@ limitations under the License.
 from os.path import join, dirname
 from pandas import read_csv
 from pathlib import Path
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 import unittest
 import pandas as pd
@@ -212,7 +212,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         input_names = []
         input_stock = [
             f'{self.name}.{self.model_name}.{resource}.resource_stock' for resource in ResourceMixModel.RESOURCE_LIST]
@@ -245,7 +245,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
 
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_all_resource_discipline.pkl',
-                            discipline=disc_techno, inputs=input_names,
+                            discipline=disc_techno, local_data = disc_techno.local_data, inputs=input_names,
                             outputs=resource_output, step=1e-15,
                             derr_approx='complex_step')
 if __name__ == "__main__":

@@ -15,14 +15,14 @@ limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import pandas as pd
 import numpy as np
 from copy import deepcopy
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -133,7 +133,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in self._data_in:
+        if 'year_start' in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
@@ -1071,7 +1071,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             legend = {
-                'Total production': 'energy supply with oil production from energy model'}
+                'Total production': 'energy supply with oil production from energy pyworld3'}
 
             #inputs = discipline.get_sosdisc_inputs()
             #energy_production = inputs.pop('energy_production')

@@ -15,14 +15,14 @@ limitations under the License.
 '''
 
 from os.path import join, dirname
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pandas as pd
 import numpy as np
 
 
 class PopulationJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    
     def setUp(self):
 
         self.name = 'Test'
@@ -70,8 +70,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             self.test_population_discipline_analytic_big_pop,
             self.test_population_discipline_analytic_grad_big_temp,
             self.test_population_discipline_analytic_small_pop,
-            self.test_population_discipline_analytic_grad_temp_negative,
-            self.test_population_discipline_analytic_3000_calories_pc
+            self.test_population_discipline_analytic_grad_temp_negative
         ]
 
     def test_population_discipline_analytic_grad_output(self):
@@ -86,11 +85,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_output.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.economics_df'], outputs=[
+                            discipline=disc_techno, local_data = disc_techno.local_data, inputs=[f'{self.name}.economics_df'], outputs=[
                 f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_working_population_discipline_analytic_grad_output(self):
@@ -105,11 +105,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.economics_df'], outputs=[
+                            discipline=disc_techno, local_data = disc_techno.local_data, inputs=[f'{self.name}.economics_df'], outputs=[
                 f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
     
     def test_working_population_discipline_analytic_grad_temp(self):
@@ -124,11 +125,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_temp.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.temperature_df'], outputs=[
+                            discipline=disc_techno, local_data = disc_techno.local_data, inputs=[f'{self.name}.temperature_df'], outputs=[
                 f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_temperature(self):
@@ -144,11 +146,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_temp.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.temperature_df'], outputs=[
+                            discipline=disc_techno, local_data = disc_techno.local_data,  inputs=[f'{self.name}.temperature_df'], outputs=[
                 f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_temp_negative(self):
@@ -182,11 +185,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_temp_neg.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
+                            discipline=disc_techno, local_data = disc_techno.local_data,  inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
                                 f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
@@ -221,11 +225,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_big_gdp.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
+                            discipline=disc_techno, local_data = disc_techno.local_data, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
                                 f'{self.name}.population_df', f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
@@ -260,11 +265,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
 
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_augmente_temp.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
+                            discipline=disc_techno, local_data = disc_techno.local_data, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
                                 f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
@@ -304,11 +310,13 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_small_pop.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
+                            discipline=disc_techno, local_data = disc_techno.local_data,  inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
                                 f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
@@ -349,69 +357,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_big_pop.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
-                            outputs=[
-                                f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
-
-    def test_population_discipline_analytic_3000_calories_pc(self):
-        '''
-        Test gradient population with a huge increase in calories intake
-        '''
-        year_start = 2020
-        year_end = 2100
-        years = np.arange(year_start, year_end + 1)
-
-        calories_pc_df = pd.DataFrame(
-            {'years': years, 'kcal_pc': np.linspace(2000,3000,len(years))})
-        calories_pc_df.index = years
-
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
-                       f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
-                       f'{self.name}.temperature_df': self.temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc_df
-                       }
-
-        self.ee.load_study_from_input_dict(values_dict)
-
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_3000_kcal.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.calories_pc_df'],
-                            outputs=[
-                                f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
-
-    def test_population_discipline_analytic_death_rate_sup_1(self):
-        '''
-        Test gradient population with a huge increase in calories intake
-        '''
-        year_start = 2020
-        year_end = 2100
-        years = np.arange(year_start, year_end + 1)
-
-        calories_pc_df = pd.DataFrame(
-            {'years': years, 'kcal_pc': np.linspace(700,800,len(years))})
-        calories_pc_df.index = years
-
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
-                       f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
-                       f'{self.name}.temperature_df': self.temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc_df,
-                       f'{self.name}.population.theta_diet': 1.0
-                       }
-
-        self.ee.load_study_from_input_dict(values_dict)
-
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_death_rate_sup_1.pkl',
-                            discipline=disc_techno, inputs=[f'{self.name}.calories_pc_df'],
+                            discipline=disc_techno, local_data = disc_techno.local_data,  inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
                                 f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')

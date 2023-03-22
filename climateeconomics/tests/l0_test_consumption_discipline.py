@@ -19,7 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class ConsumptionDiscTest(unittest.TestCase):
@@ -85,7 +85,7 @@ class ConsumptionDiscTest(unittest.TestCase):
                        f'{self.name}.residential_energy': residential_energy_df,
                        f'{self.name}.total_investment_share_of_gdp': total_investment_share_of_gdp}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 

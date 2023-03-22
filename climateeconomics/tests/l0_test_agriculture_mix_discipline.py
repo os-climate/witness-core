@@ -24,7 +24,7 @@ import pandas as pd
 import scipy.interpolate as sc
 from numpy import asarray, arange, array
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class AgricultureMixModelTestCase(unittest.TestCase):

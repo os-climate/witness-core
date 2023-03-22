@@ -110,7 +110,7 @@ class UtilityModel():
         return sum_u
 
     def compute(self, economics_df, emissions_df, temperature_df):
-        ''' model execution
+        ''' pyworld3 execution
         '''
 
         self.create_dataframe()

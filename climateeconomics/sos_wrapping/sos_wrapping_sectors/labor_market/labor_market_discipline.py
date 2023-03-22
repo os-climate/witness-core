@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_sectorization.labor_market_sectorisation import LaborMarketModel
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
@@ -67,8 +67,8 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
     def setup_sos_disciplines(self):
 
         dynamic_inputs = {}
-        if self._data_in is not None:
-            if 'sector_list' in self._data_in:
+        if self.get_data_in() is not None:
+            if 'sector_list' in self.get_data_in():
                 sector_list = self.get_sosdisc_inputs('sector_list')
                 df_descriptor = {'years': ('float', None, False)}
                 df_descriptor.update({col: ('float', None, True)

@@ -16,8 +16,8 @@ limitations under the License.
 from os.path import join, dirname
 import numpy as np
 import pandas as pd
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
 
 
@@ -127,7 +127,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes(display_variables=True)
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_constraint_wrt_design_var_bspline.pkl', discipline=disc, inputs=input_full_names,
-                            outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, parallel=True)
+                            outputs=output_full_names, derr_approx='complex_step', step=1.0e-15,local_data = {}, parallel=True)
 
 
 if '__main__' == __name__:

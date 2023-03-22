@@ -23,7 +23,7 @@ from copy import deepcopy
 from climateeconomics.core.core_resources.resource_model.resource_model import ResourceModel
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from climateeconomics.core.tools.Hubbert_Curve import compute_Hubbert_regression
-from sos_trades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
     compute_func_with_exp_min
 
 class OrderOfMagnitude():
@@ -39,8 +39,8 @@ class OrderOfMagnitude():
 
 class CopperResourceModel(ResourceModel):
     """
-    Resource model
-    General implementation of a resource model, to be inherited by specific models for each type of resource
+    Resource pyworld3
+    General implementation of a resource pyworld3, to be inherited by specific models for each type of resource
     """
 
     resource_name=ResourceGlossary.Copper['name']

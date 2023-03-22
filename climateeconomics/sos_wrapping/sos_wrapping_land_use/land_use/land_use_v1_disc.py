@@ -13,13 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_land_use.land_use_v1 import LandUseV1
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import plotly.graph_objects as go
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
 import os
@@ -28,8 +28,8 @@ from copy import deepcopy
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class LandUseV1Discipline(SoSDiscipline):
-    ''' Discipline intended to host land use model with land use for food input from agriculture model
+class LandUseV1Discipline(SoSWrapp):
+    ''' Discipline intended to host land use pyworld3 with land use for food input from agriculture pyworld3
     '''
 
     # ontology information
@@ -51,22 +51,22 @@ class LandUseV1Discipline(SoSDiscipline):
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                LandUseV1.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
-                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
-               LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
+               LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV1.DEFORESTED_SURFACE_DF: {
-                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV1.LAND_USE_CONSTRAINT_REF: {
-                   'type': 'float', 'default': 0.1, 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
+                   'type': 'float', 'default': 0.1, 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
                }
 
     DESC_OUT = {
         LandUseV1.LAND_DEMAND_CONSTRAINT: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         LandUseV1.LAND_SURFACE_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         LandUseV1.LAND_SURFACE_DETAIL_DF: {'type': 'dataframe', 'unit': 'Gha'},
         LandUseV1.LAND_SURFACE_FOR_FOOD_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
 
     AGRICULTURE_CHARTS = 'Agriculture surface usage (Giga ha)'

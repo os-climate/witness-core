@@ -14,16 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
 
 from pathlib import Path
 from os.path import join, dirname
 from numpy import asarray, arange, array
 import pandas as pd
 import numpy as np
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
@@ -87,7 +87,7 @@ class Study(StudyManager):
             {"years": years, "forest_investment": forest_invest})
         reforestation_cost_per_ha = 3800
 
-        # values of model
+        # values of pyworld3
         forest_input = {}
         forest_input[self.study_name + '.year_start'] = self.year_start
         forest_input[self.study_name + '.year_end'] = self.year_end

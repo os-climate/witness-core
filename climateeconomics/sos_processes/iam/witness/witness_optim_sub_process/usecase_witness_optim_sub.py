@@ -3,11 +3,11 @@
 # All rights reserved.
 
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sos_trades_core.study_manager.study_manager import StudyManager
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 import pandas as pd
 import numpy as np
@@ -171,48 +171,24 @@ class Study(ClimateEconomicsStudyManager):
                                                                            'namespace_in': 'ns_witness',
                                                                            'namespace_out': 'ns_forest'
                                                                            }
-            dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_calories_per_day_ctrl'] = \
-            dspace_df[f'red_meat_calories_per_day_ctrl']['value']
-            design_var_descriptor['red_meat_calories_per_day_ctrl'] = {'out_name': 'red_meat_calories_per_day',
-                                                                       'out_type': 'dataframe',
-                                                                       'key': 'red_meat_calories_per_day',
-                                                                       'index': years,
-                                                                       'index_name': 'years',
-                                                                       'namespace_in': 'ns_witness',
-                                                                       'namespace_out': 'ns_agriculture'
-                                                                       }
-            dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_calories_per_day_ctrl'] = \
-            dspace_df[f'white_meat_calories_per_day_ctrl']['value']
-            design_var_descriptor['white_meat_calories_per_day_ctrl'] = {'out_name': 'white_meat_calories_per_day',
-                                                                         'out_type': 'dataframe',
-                                                                         'key': 'white_meat_calories_per_day',
-                                                                         'index': years,
-                                                                         'index_name': 'years',
-                                                                         'namespace_in': 'ns_witness',
-                                                                         'namespace_out': 'ns_agriculture'
-                                                                         }
-            dv_arrays_dict[f'{self.witness_uc.study_name}.vegetables_and_carbs_calories_per_day_ctrl'] = \
-            dspace_df[f'vegetables_and_carbs_calories_per_day_ctrl']['value']
-            design_var_descriptor['vegetables_and_carbs_calories_per_day_ctrl'] = {
-                'out_name': 'vegetables_and_carbs_calories_per_day',
-                'out_type': 'dataframe',
-                'key': 'vegetables_and_carbs_calories_per_day',
-                'index': years,
-                'index_name': 'years',
-                'namespace_in': 'ns_witness',
-                'namespace_out': 'ns_agriculture'
-                }
-            dv_arrays_dict[f'{self.witness_uc.study_name}.milk_and_eggs_calories_per_day_ctrl'] = \
-            dspace_df[f'milk_and_eggs_calories_per_day_ctrl']['value']
-            design_var_descriptor['milk_and_eggs_calories_per_day_ctrl'] = {
-                'out_name': 'milk_and_eggs_calories_per_day',
-                'out_type': 'dataframe',
-                'key': 'milk_and_eggs_calories_per_day',
-                'index': years,
-                'index_name': 'years',
-                'namespace_in': 'ns_witness',
-                'namespace_out': 'ns_agriculture'
-                }
+            dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = dspace_df[f'red_meat_percentage_ctrl']['value']
+            design_var_descriptor['red_meat_percentage_ctrl'] = {'out_name': 'red_meat_percentage',
+                                                                 'out_type': 'dataframe',
+                                                                 'key': 'red_meat_percentage',
+                                                                 'index': years,
+                                                                 'index_name': 'years',
+                                                                 'namespace_in': 'ns_witness',
+                                                                 'namespace_out': 'ns_crop'
+                                                                 }
+            dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_percentage_ctrl'] = dspace_df[f'white_meat_percentage_ctrl']['value']
+            design_var_descriptor['white_meat_percentage_ctrl'] = {'out_name': 'white_meat_percentage',
+                                                                   'out_type': 'dataframe',
+                                                                   'key': 'white_meat_percentage',
+                                                                   'index': years,
+                                                                   'index_name': 'years',
+                                                                   'namespace_in': 'ns_witness',
+                                                                   'namespace_out': 'ns_crop'
+                                                                   }
         else:
             dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']
             design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
@@ -249,7 +225,6 @@ class Study(ClimateEconomicsStudyManager):
                                                                    'namespace_in': 'ns_witness',
                                                                    'namespace_out': 'ns_agriculture'
                                                                    }
-
         dv_arrays_dict[f'{self.witness_uc.study_name}.share_energy_investment_ctrl'] = dspace_df[f'share_energy_investment_ctrl']['value']
         design_var_descriptor['share_energy_investment_ctrl'] = {'out_name': 'share_energy_investment',
                                                                  'out_type': 'dataframe',

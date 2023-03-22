@@ -19,7 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import read_csv
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class GHGEmissionDiscTest(unittest.TestCase):
@@ -77,7 +77,7 @@ class GHGEmissionDiscTest(unittest.TestCase):
                        f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
                        f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions, }
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 

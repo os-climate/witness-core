@@ -1,6 +1,6 @@
 
 
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):

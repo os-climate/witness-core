@@ -20,8 +20,8 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
@@ -67,12 +67,14 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.GHG_emissions_df': emissions_df[['years', 'Total CO2 emissions', 'Total CH4 emissions', 'Total N2O emissions']]}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ghg_cycle_discipline1.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.GHG_emissions_df'],
                             outputs=[f'{self.name}.ghg_cycle_df',
                                      f'{self.name}.ppm_objective',

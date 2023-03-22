@@ -16,12 +16,12 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from copy import deepcopy
-from sos_trades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sos_trades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
+from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
+from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 
 class MacroEconomics():
     '''
-    Economic model that compute the evolution of capital, consumption, output...
+    Economic pyworld3 that compute the evolution of capital, consumption, output...
     '''
     PC_CONSUMPTION_CONSTRAINT = 'pc_consumption_constraint'
 
@@ -205,7 +205,7 @@ class MacroEconomics():
     def compute_employment_rate(self):
         """ 
         Compute the employment rate. based on prediction from ILO 
-        We model a recovery from 2020 crisis until 2031 where past level is reached 
+        We pyworld3 a recovery from 2020 crisis until 2031 where past level is reached
         For all year not in (2020,2031), value = employment_rate_base_value
         """
         year_covid = 2020
@@ -438,7 +438,7 @@ class MacroEconomics():
     def compute_output_growth(self, year):
         """
         Compute the output growth between year t and year t-1 
-        Output growth of the WITNESS model (computed from gross_output_ter)
+        Output growth of the WITNESS pyworld3 (computed from gross_output_ter)
         """
         if year == self.year_start:
             pass
@@ -742,7 +742,7 @@ class MacroEconomics():
         # first line stays at zero since derivatives of initial values are zero
         g = alpha * capital_u**gamma + (1 - alpha) * (working_pop)**gamma
         g_prime = (1 - alpha) * gamma * working_pop**(gamma - 1)
-        f_prime = productivity * (1 / gamma) * g * g_prime
+        f_prime = productivity * (1 / gamma) * (g** (1/gamma -1)) * g_prime
         doutput *= f_prime
         doutput[0, 0] = 0
         return doutput
@@ -1036,7 +1036,7 @@ class MacroEconomics():
         # f'(g(x)) = f'(g)*g'(x)
         g = alpha * capital_u**gamma + (1 - alpha) * (working_pop)**gamma
         g_prime = alpha * gamma * capital_u**(gamma - 1)
-        f_prime = productivity * (1 / gamma) * g * g_prime
+        f_prime = productivity * (1 / gamma) * (g** (1/gamma -1)) * g_prime
         doutput_dcap *= f_prime
         # at zero gross output is an input
         doutput_dcap[0, 0] = 0

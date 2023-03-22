@@ -17,8 +17,8 @@ limitations under the License.
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model_v2 import TempChange
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from copy import deepcopy
 import pandas as pd
 import numpy as np
@@ -87,7 +87,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'temperature_model' in self._data_in:
+        if 'temperature_model' in self.get_data_in():
             temperature_model = self.get_sosdisc_inputs('temperature_model')
             if temperature_model == 'DICE':
 
@@ -129,7 +129,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                     'type': 'float', 'default': 273., 'unit': 'ppm', 'user_level': 2}
         var_names = ['forcing_model','init_forcing_nonco','hundred_forcing_nonco','pre_indus_ch4_concentration_ppm','pre_indus_n2o_concentration_ppm']
         for var_name in var_names:
-            if var_name in self._data_in:
+            if var_name in self.get_data_in():
                 self.clean_variables([var_name], self.IO_TYPE_IN)
         self.add_inputs(dynamic_inputs)
 
@@ -138,11 +138,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         self.model = TempChange(in_dict)
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
 
-        # model execution
+        # pyworld3 execution
         temperature_df = self.model.compute(in_dict)
 
         # store output data
@@ -340,7 +340,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-            # Seal level chart for FUND model
+            # Seal level chart for FUND pyworld3
             if model == 'FUND':
                 chart_name = 'Sea level evolution over the years'
                 min_value, max_value = self.get_greataxisrange(temperature_df['sea_level'])

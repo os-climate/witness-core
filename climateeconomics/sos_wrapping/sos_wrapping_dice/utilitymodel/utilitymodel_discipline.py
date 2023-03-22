@@ -14,15 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.utility_model import UtilityModel
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 import pandas as pd
 
 
-class UtilityModelDiscipline(SoSDiscipline):
+class UtilityModelDiscipline(SoSWrapp):
     "UtilityModel discipline for DICE"
 
 
@@ -46,8 +46,8 @@ class UtilityModelDiscipline(SoSDiscipline):
         'time_step': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'conso_elasticity': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_rate_time_pref': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'scaleone': {'type': 'float', 'visibility': SoSDiscipline.INTERNAL_VISIBILITY, 'default': 0.0302455265681763},
-        'scaletwo': {'type': 'float', 'visibility': SoSDiscipline.INTERNAL_VISIBILITY, 'default': -10993.704},
+        'scaleone': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.0302455265681763},
+        'scaletwo': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': -10993.704},
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},

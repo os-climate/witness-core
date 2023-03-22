@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):
@@ -37,8 +37,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_land_use': ns_scatter,
                    'ns_biomass_dry': ns_scatter,
                    'ns_crop': ns_scatter,
-                   'ns_invest': ns_scatter,
-                   'ns_ref': ns_scatter
+                   'ns_invest': ns_scatter
                    }
 
         mods_dict = {'Crop': 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'

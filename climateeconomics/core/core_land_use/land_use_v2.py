@@ -36,7 +36,7 @@ class OrderOfMagnitude():
 
 class LandUseV2():
     """
-    Land use model class 
+    Land use pyworld3 class
 
     basic for now, to evolve 
 
@@ -156,7 +156,7 @@ class LandUseV2():
     def __extract_and_convert_superficie(self, category, name):
         '''
         Regarding the available surface dataframe extract a specific surface value and convert into
-        our unit model (ha)
+        our unit pyworld3 (ha)
 
         @param category: land category regarding the data
         @type category: str

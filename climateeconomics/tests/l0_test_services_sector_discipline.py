@@ -19,13 +19,13 @@ import numpy as np
 from pandas import DataFrame, read_csv
 from os.path import join, dirname
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from scipy.interpolate import interp1d
 
 
 class ServicesDiscTest(unittest.TestCase):
     '''
-    Economic Manufacturer static model test case
+    Economic Manufacturer static pyworld3 test case
     '''
 
     def setUp(self):

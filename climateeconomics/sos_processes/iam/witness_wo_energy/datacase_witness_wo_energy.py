@@ -19,8 +19,8 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase import Study as datacase_landuse
@@ -28,7 +28,7 @@ from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase impo
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
@@ -54,7 +54,7 @@ class DataStudy():
             (self.year_end - self.year_start) / self.time_step + 1)
         years = arange(self.year_start, self.year_end + 1, self.time_step)
 
-        # private values economics operator model
+        # private values economics operator pyworld3
         witness_input = {}
         witness_input[self.study_name + '.year_start'] = self.year_start
         witness_input[self.study_name + '.year_end'] = self.year_end

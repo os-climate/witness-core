@@ -20,7 +20,7 @@ import unittest
 from os.path import join, dirname
 from pandas import read_csv
 from climateeconomics.core.core_agriculture.crop import Crop
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import CropDiscipline
 from pathlib import Path
@@ -184,24 +184,6 @@ class CropTestCase(unittest.TestCase):
                                  'other': 3.44 * calibration,
                                  }
 
-        red_meat_percentage = np.linspace(600, 700, year_range)
-        white_meat_percentage = np.linspace(700, 600, year_range)
-        vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
-        self.red_meat_percentage = pd.DataFrame({
-                            'years': years,
-                            'red_meat_calories_per_day': red_meat_percentage})
-        self.white_meat_percentage = pd.DataFrame({
-                                'years': years,
-                                'white_meat_calories_per_day': white_meat_percentage})
-        self.veg_calories_per_day = pd.DataFrame({
-                                'years': years,
-                                'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
-
-        self.milk_eggs_calories_per_day = pd.DataFrame({
-                                'years': years,
-                                'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
-
-
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
                       'time_step': self.time_step,
@@ -224,20 +206,16 @@ class CropTestCase(unittest.TestCase):
                       'scaling_factor_techno_production': 1e3,
                       'initial_age_distrib': initial_age_distribution,
                       'initial_production': self.initial_production,
-                      'red_meat_calories_per_day': self.red_meat_percentage,
-                      'white_meat_calories_per_day': self.white_meat_percentage,
-                      'vegetables_and_carbs_calories_per_day': self.veg_calories_per_day,
-                      'milk_and_eggs_calories_per_day': self.milk_eggs_calories_per_day,
+                      'red_meat_percentage': self.red_meat_percentage,
+                      'white_meat_percentage': self.white_meat_percentage,
                       'co2_emissions_per_kg': default_co2_emissions,
                       'ch4_emissions_per_kg': default_ch4_emissions,
                       'n2o_emissions_per_kg': default_n2o_emissions,
-                      'constraint_calories_limit': 1700. ,
-                      'constraint_calories_ref': 3400.
                       }
 
     def test_crop_model(self):
         ''' 
-        Basic test of crop model
+        Basic test of crop pyworld3
         Check the overal run without value checks (will be done in another test)
         '''
 
@@ -254,7 +232,6 @@ class CropTestCase(unittest.TestCase):
         model_name = 'crop'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_ref': f'{name}',
                    'ns_witness': f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
@@ -280,10 +257,8 @@ class CropTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{Crop.KG_TO_KCAL_DICT}': self.default_kg_to_kcal,
                        f'{name}.{model_name}.{Crop.KG_TO_M2_DICT}': self.default_kg_to_m2,
                        f'{name}.{model_name}.{Crop.POPULATION_DF}': self.population_df,
-                       f'{name}.{model_name}.red_meat_calories_per_day': self.red_meat_percentage,
-                       f'{name}.{model_name}.white_meat_calories_per_day': self.white_meat_percentage,
-                       f'{name}.{model_name}.vegetables_and_carbs_calories_per_day': self.veg_calories_per_day,
-                       f'{name}.{model_name}.milk_and_eggs_calories_per_day': self.milk_eggs_calories_per_day,
+                       f'{name}.{model_name}.red_meat_percentage': self.red_meat_percentage,
+                       f'{name}.{model_name}.white_meat_percentage': self.white_meat_percentage,
                        f'{name}.{model_name}.{Crop.OTHER_USE_CROP}': self.other,
                        f'{name}.{model_name}.temperature_df': self.temperature_df,
                        f'{name}.{model_name}.crop_investment': self.crop_investment,

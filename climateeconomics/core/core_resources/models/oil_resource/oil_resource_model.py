@@ -36,8 +36,8 @@ class OrderOfMagnitude():
 
 class OilResourceModel(ResourceModel):
     """
-    Resource model
-    General implementation of a resource model, to be inherited by specific models for each type of resource
+    Resource pyworld3
+    General implementation of a resource pyworld3, to be inherited by specific models for each type of resource
     """
 
     resource_name=ResourceGlossary.Oil['name']

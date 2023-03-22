@@ -16,7 +16,7 @@ limitations under the License.
 import unittest
 from os.path import join, dirname
 from pandas import read_csv
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 class UraniumModelTestCase(unittest.TestCase):
 

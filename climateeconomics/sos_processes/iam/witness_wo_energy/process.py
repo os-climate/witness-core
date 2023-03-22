@@ -17,7 +17,7 @@ limitations under the License.
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 # Copyright (C) 2020 Airbus SAS.
 # All rights reserved.
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):
@@ -39,8 +39,8 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_ref': f'{ns_scatter}.NormalizationReferences',
                    'ns_agriculture': ns_scatter,
                    'ns_ccs': ns_scatter,
-                   'ns_energy': ns_scatter,
                    'ns_forest': ns_scatter,
+                   'ns_energy': f'{self.ee.study_name}.EnergyMix',
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
@@ -72,6 +72,7 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    'ns_functions': f'{self.ee.study_name}.EnergyMix',
                    'ns_resource ': f'{self.ee.study_name}.EnergyMix',
+                   'ns_energy': f'{self.ee.study_name}.EnergyMix',
                    'ns_ref': f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
@@ -85,7 +86,7 @@ class ProcessBuilder(BaseProcessBuilder):
         '''
         Add non_use capital objective discipline to all WITNESS processes
         '''
-        mods_dict = {'InvestmentDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_witness.non_use_capital_objective.non_use_capital_obj_discipline.NonUseCapitalObjectiveDiscipline'
+        mods_dict = {'NonUseCapitalDiscipline': 'climateeconomics.sos_wrapping.sos_wrapping_witness.non_use_capital_objective.non_use_capital_obj_discipline.NonUseCapitalObjectiveDiscipline'
                      }
         non_use_capital_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)

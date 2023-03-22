@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import random as rd
 
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
 
 
 class Study(StudyManager):

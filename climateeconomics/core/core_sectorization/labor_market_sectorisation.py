@@ -24,7 +24,7 @@ from gemseo.third_party.prettytable.prettytable import NONE
 
 class LaborMarketModel():
     """
-    Labor Market model: to compute workforce per sector 
+    Labor Market pyworld3: to compute workforce per sector
     """
 
     #Units conversion
@@ -107,7 +107,7 @@ class LaborMarketModel():
     def compute_employment_rate(self):
         """ 
         Compute the employment rate. based on prediction from ILO 
-        We model a recovery from 2020 crisis until 2031 where past level is reached 
+        We pyworld3 a recovery from 2020 crisis until 2031 where past level is reached
         For all year not in (2020,2031), value = employment_rate_base_value
         """
         year_covid = 2020

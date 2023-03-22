@@ -17,8 +17,8 @@ from os.path import join, dirname, exists
 import numpy as np
 import pandas as pd
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as witness_coarse_usecase
 import unittest
@@ -135,7 +135,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names,
+        disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names,local_data = {},
                                    outputs=output_full_names,
                                    load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                       f'jacobian_objectives_constraint_wrt_design_var_on_witness_coarse.pkl'))
@@ -200,7 +200,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes(display_variables=True)
         disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names,
+        disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names,local_data = {},
                                    outputs=output_full_names,
                                    load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                       f'jacobian_lagrangian_objective_wrt_design_var_on_witness_coarse.pkl'))
@@ -318,13 +318,13 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)
             i += 1
@@ -404,13 +404,13 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
             i += 1
@@ -463,13 +463,13 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
             i += 1

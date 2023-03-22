@@ -18,8 +18,8 @@ import pandas as pd
 from os.path import join, dirname
 from climateeconomics.core.core_forest.forest_v2 import Forest
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
@@ -154,9 +154,12 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl',
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl', local_data = disc_techno.local_data,
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[
             f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
@@ -298,10 +301,13 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline_2.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[
             f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
             f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
@@ -442,10 +448,12 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline_3.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[
             f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
             f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
@@ -587,10 +595,12 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline_4.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[
             f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
             f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',

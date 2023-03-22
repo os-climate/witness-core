@@ -14,15 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.damage_model import DamageModel
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 import pandas as pd
 
 
-class DamageDiscipline(SoSDiscipline):
+class DamageDiscipline(SoSWrapp):
     "     Temperature evolution"
 
 
@@ -53,10 +53,10 @@ class DamageDiscipline(SoSDiscipline):
         'gr_base_carbonprice': {'type': 'float', 'default': .02},
         'init_base_carbonprice': {'type': 'float', 'default': 2},
         'tipping_point': {'type': 'bool', 'default': False},
-        'tp_a1': {'type': 'float', 'visibility': SoSDiscipline.INTERNAL_VISIBILITY, 'default': 20.46},
-        'tp_a2': {'type': 'float', 'visibility': SoSDiscipline.INTERNAL_VISIBILITY, 'default': 2},
-        'tp_a3': {'type': 'float', 'visibility': SoSDiscipline.INTERNAL_VISIBILITY, 'default': 6.081},
-        'tp_a4': {'type': 'float', 'visibility': SoSDiscipline.INTERNAL_VISIBILITY, 'default': 6.754},
+        'tp_a1': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 20.46},
+        'tp_a2': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 2},
+        'tp_a3': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.081},
+        'tp_a4': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.754},
         'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
@@ -72,7 +72,7 @@ class DamageDiscipline(SoSDiscipline):
     _maturity = 'Research'
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
         economics_df = in_dict.pop('economics_df')
@@ -80,7 +80,7 @@ class DamageDiscipline(SoSDiscipline):
         temperature_df = in_dict.pop('temperature_df')
         emissions_control_rate = in_dict.pop('emissions_control_rate')
 
-        # model execution
+        # pyworld3 execution
         model = DamageModel(in_dict)
         damage_df = model.compute(economics_df, emissions_df,
                                   temperature_df, emissions_control_rate)

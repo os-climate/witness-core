@@ -16,8 +16,8 @@ limitations under the License.
 from os.path import join, dirname, exists
 import pandas as pd
 import numpy as np
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
@@ -130,13 +130,13 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # filepath=filepath)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8,
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8,local_data = {},
                                             inputs=inputs,
                                             outputs=outputs)  # filepath=filepath)
             i += 1

@@ -14,18 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_witness.non_use_capital_objective_model import NonUseCapitalObjective
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 
-class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
+class NonUseCapitalObjectiveDiscipline(SoSWrapp):
     "Non Use Capital Objective discipline for WITNESS optimization"
 
     # ontology information
@@ -48,28 +48,28 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
+                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
                         'structuring': True, 'unit': '-'},
         'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': EnergyMix.ccs_list,
-                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
                      'structuring': True, 'unit': '-'},
         'agri_capital_techno_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'default': [],
-                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                                      'user_level': 1, 'structuring': True, 'unit': '-'},
         'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit': 'G$', 'user_level': 2,
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared',
                   'namespace': 'ns_witness', 'user_level': 1},
         'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': 'Shared',
                   'namespace': 'ns_witness',
                   'user_level': 1},
         'non_use_capital_cons_ref': {'type': 'float', 'default': 20000., 'unit': 'G$', 'user_level': 2,
-                                     'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
-                                       'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         # WIP is_dev to remove once its validated on dev processes
         'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
-                   'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public'},
+                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
 
     }
     DESC_OUT = {
@@ -88,30 +88,30 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
 
         # Recover the full techno list to get all non_use capital by energy mix
         energy_techno_dict = {}
-        if 'is_dev' in self._data_in:
+        if 'is_dev' in self.get_data_in():
             is_dev = self.get_sosdisc_inputs('is_dev')
             if is_dev:
                 dynamic_inputs['forest_lost_capital'] = {'type': 'dataframe',
                                                          'unit': 'G$',
                                                          'user_level': 2,
-                                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                          'namespace': 'ns_forest',
                                                          'structuring': True}
                 dynamic_inputs['forest_lost_capital_cons_ref'] = {'type': 'float',
                                                                   'unit': 'G$',
                                                                   'default': 20.,
                                                                   'user_level': 2,
-                                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                   'namespace': 'ns_ref',
                                                                   'structuring': True}
                 dynamic_inputs['forest_lost_capital_cons_limit'] = {'type': 'float',
                                                                     'unit': 'G$',
                                                                     'default': 40.,
                                                                     'user_level': 2,
-                                                                    'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                     'namespace': 'ns_ref',
                                                                     'structuring': True}
-        if 'energy_list' in self._data_in:
+        if 'energy_list' in self.get_data_in():
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
@@ -120,38 +120,38 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
                     else:
                         dynamic_inputs[f'{energy}.technologies_list'] = {'type': 'list',
                                                                          'subtype_descriptor': {'list': 'string'},
-                                                                         'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                          'namespace': 'ns_energy',
                                                                          'structuring': True,
                                                                          'possible_values': EnergyMix.stream_class_dict[
                                                                              energy].default_techno_list}
 
-                        if f'{energy}.technologies_list' in self._data_in:
+                        if f'{energy}.technologies_list' in self.get_data_in():
                             techno_list = self.get_sosdisc_inputs(
                                 f'{energy}.technologies_list')
                             if techno_list is not None:
                                 energy_techno_dict[energy] = {'namespace': 'ns_energy',
                                                               'value': techno_list}
-        if 'ccs_list' in self._data_in:
+        if 'ccs_list' in self.get_data_in():
             ccs_list = self.get_sosdisc_inputs('ccs_list')
             if ccs_list is not None:
                 for ccs in ccs_list:
                     dynamic_inputs[f'{ccs}.technologies_list'] = {'type': 'list',
                                                                   'subtype_descriptor': {'list': 'string'},
-                                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                   'namespace': 'ns_ccs',
                                                                   'structuring': True,
                                                                   'possible_values': EnergyMix.stream_class_dict[
                                                                       ccs].default_techno_list}
 
-                    if f'{ccs}.technologies_list' in self._data_in:
+                    if f'{ccs}.technologies_list' in self.get_data_in():
                         techno_list = self.get_sosdisc_inputs(
                             f'{ccs}.technologies_list')
                         if techno_list is not None:
                             energy_techno_dict[ccs] = {'namespace': 'ns_ccs',
                                                        'value': techno_list}
 
-        if 'agri_capital_techno_list' in self._data_in:
+        if 'agri_capital_techno_list' in self.get_data_in():
             agriculture_techno_list = self.get_sosdisc_inputs(
                 'agri_capital_techno_list')
             if agriculture_techno_list is not None:
@@ -167,11 +167,11 @@ class NonUseCapitalObjectiveDiscipline(SoSDiscipline):
 
         for non_use_capital_tuple in all_non_use_capital_list:
             dynamic_inputs[f'{non_use_capital_tuple[0]}non_use_capital'] = {'type': 'dataframe',
-                                                                            'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                             'namespace': non_use_capital_tuple[1],
                                                                             'unit': 'G$'}
             dynamic_inputs[f'{non_use_capital_tuple[0]}techno_capital'] = {'type': 'dataframe',
-                                                                           'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                            'namespace': non_use_capital_tuple[1],
                                                                            'unit': 'G$'}
 

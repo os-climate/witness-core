@@ -13,15 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from plotly.colors import qualitative
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
 import os
@@ -31,8 +31,8 @@ import numpy as np
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class LandUseV2Discipline(SoSDiscipline):
-    ''' Discipline intended to host land use model with land use for food input from agriculture model
+class LandUseV2Discipline(SoSWrapp):
+    ''' Discipline intended to host land use pyworld3 with land use for food input from agriculture pyworld3
     '''
 
     # ontology information
@@ -55,19 +55,19 @@ class LandUseV2Discipline(SoSDiscipline):
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                LandUseV2.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
-                                                  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
-               LandUseV2.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                                  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_land_use'},
+               LandUseV2.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV2.FOREST_SURFACE_DF: {
-                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                LandUseV2.LAND_DEMAND_CONSTRAINT_REF: {
-                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},}
+                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},}
 
     DESC_OUT = {
         LandUseV2.LAND_DEMAND_CONSTRAINT: {
-            'type': 'array', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+            'type': 'array', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         LandUseV2.LAND_SURFACE_DETAIL_DF: {'type': 'dataframe', 'unit': 'Gha'},
         LandUseV2.LAND_SURFACE_FOR_FOOD_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
     }
 
     def init_execution(self):

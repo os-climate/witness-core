@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import CropDiscipline
 
@@ -24,8 +24,8 @@ from os.path import join, dirname
 from numpy import asarray, arange, array
 import pandas as pd
 import numpy as np
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
@@ -95,23 +95,14 @@ class Study(StudyManager):
             {"years": years, "population": population})
         population_df.index = years
 
-        red_meat_percentage = np.linspace(600, 700, year_range)
-        white_meat_percentage = np.linspace(700, 600, year_range)
-        vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
+        red_meat_percentage = np.linspace(6.82, 1, year_range)
+        white_meat_percentage = np.linspace(13.95, 5, year_range)
         self.red_meat_percentage = pd.DataFrame({
                             'years': years,
-                            'red_meat_calories_per_day': red_meat_percentage})
+                            'red_meat_percentage': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
                                 'years': years,
-                                'white_meat_calories_per_day': white_meat_percentage})
-        self.veg_calories_per_day = pd.DataFrame({
-                                'years': years,
-                                'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
-
-        self.milk_eggs_calories_per_day = pd.DataFrame({
-                                'years': years,
-                                'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
-
+                                'white_meat_percentage': white_meat_percentage})
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -123,7 +114,7 @@ class Study(StudyManager):
                                 })
         other = np.array(np.linspace(0.102, 0.102, year_range))
 
-        # private values economics operator model
+        # private values economics operator pyworld3
         agriculture_input = {}
         agriculture_input[self.study_name + '.year_start'] = self.year_start
         agriculture_input[self.study_name + '.year_end'] = self.year_end
@@ -132,14 +123,9 @@ class Study(StudyManager):
                           '.diet_df'] = diet_df
 
         agriculture_input[self.study_name +
-                          '.red_meat_calories_per_day'] = self.red_meat_percentage
+                          '.red_meat_percentage'] = self.red_meat_percentage
         agriculture_input[self.study_name +
-                          '.white_meat_calories_per_day'] = self.white_meat_percentage
-        agriculture_input[self.study_name +
-                          '.vegetables_and_carbs_calories_per_day'] = self.veg_calories_per_day
-        agriculture_input[self.study_name +
-                          '.milk_and_eggs_calories_per_day'] = self.milk_eggs_calories_per_day
-        
+                          '.white_meat_percentage'] = self.white_meat_percentage
         agriculture_input[self.study_name + self.agriculture_name +
                           '.other_use_crop'] = other
 

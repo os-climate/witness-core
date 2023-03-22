@@ -19,8 +19,8 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
@@ -63,7 +63,7 @@ class Study(ClimateEconomicsStudyManager):
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
 
-        # private values economics operator model
+        # private values economics operator pyworld3
         witness_input = {}
         witness_input[self.study_name + '.year_start'] = self.year_start
         witness_input[self.study_name + '.year_end'] = self.year_end
@@ -110,10 +110,12 @@ class Study(ClimateEconomicsStudyManager):
             {'years': years, 'share_investment': self.share_energy_investment_array}, index=years)
         witness_input[self.study_name +
                       '.share_energy_investment'] = share_energy_investment
-        gdp = [130.187]*len(years)
+        data = arange(1.0, nb_per + 1.0, 1)
 
         df_eco = DataFrame({'years': years,
-                            'output_net_of_d': gdp},
+                            'gross_output': data,
+                            'pc_consumption': data,
+                            'output_net_of_d': data},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
         witness_input[self.study_name + '.economics_df'] = df_eco
@@ -240,15 +242,15 @@ class Study(ClimateEconomicsStudyManager):
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['co2_eq_100', 'co2_eq_20'])
+            ['CO2_em_objective'])
         list_parent.extend([
-                            'CO2_obj','CO2_obj'])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+                            'CO2_obj'])
+        list_ns.extend(['ns_functions'])
         list_ftype.extend(
-            [OBJECTIVE, OBJECTIVE])
-        list_weight.extend([2.0, 2.0])
+            [OBJECTIVE])
+        list_weight.extend([5.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -301,13 +303,13 @@ class Study(ClimateEconomicsStudyManager):
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['land_demand_constraint', 'calories_per_day_constraint'])
-        list_parent.extend(['agriculture_constraint', 'agriculture_constraint'])
-        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        list_weight.extend([-1.0, -3.0])
+            ['land_demand_constraint'])
+        list_parent.extend(['agriculture_constraint'])
+        list_ftype.extend([INEQ_CONSTRAINT])
+        list_weight.extend([-2.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+            [AGGR_TYPE_SUM])
+        list_ns.extend(['ns_functions'])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype

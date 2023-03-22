@@ -15,15 +15,16 @@ limitations under the License.
 '''
 
 from pandas import DataFrame, concat
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy as datacase_witness
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import DataStudy as datacase_witness_dev
+from climateeconomics.sos_processes.iam.witness_wo_energy_thesis.datacase_witness_wo_energy_solow import DataStudy as datacase_witness_thesis
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 
@@ -89,7 +90,7 @@ class Study(ClimateEconomicsStudyManager):
     def setup_usecase(self):
         setup_data_list = []
 
-        # -- load data from energy model
+        # -- load data from energy pyworld3
         # -- Start with energy to have it at first position in the list...
 
         self.dc_energy.study_name = self.study_name
@@ -97,6 +98,20 @@ class Study(ClimateEconomicsStudyManager):
         # -- load data from witness
         if self.process_level == 'val':
             dc_witness = datacase_witness(
+                self.year_start, self.year_end, self.time_step)
+            dc_witness.study_name = self.study_name
+
+            witness_input_list = dc_witness.setup_usecase()
+            setup_data_list = setup_data_list + witness_input_list
+
+            energy_input_list = self.dc_energy.setup_usecase()
+            setup_data_list = setup_data_list + energy_input_list
+
+            dspace_energy = self.dc_energy.dspace
+
+            self.merge_design_spaces([dspace_energy, dc_witness.dspace])
+        elif self.process_level == 'thesis':
+            dc_witness = datacase_witness_thesis(
                 self.year_start, self.year_end, self.time_step)
             dc_witness.study_name = self.study_name
 
@@ -173,7 +188,7 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
 
-    print(len(uc_cls.execution_engine.root_process.sos_disciplines))
+    #print(len(uc_cls.execution_engine.root_process.sos_disciplines))
     #  self.exec_eng.dm.export_couplings(
     #     in_csv=True, f_name='couplings.csv')
 

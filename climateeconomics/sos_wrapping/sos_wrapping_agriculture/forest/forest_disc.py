@@ -15,8 +15,8 @@ limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 from climateeconomics.core.core_forest.forest_v2 import Forest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
 from copy import deepcopy
-from sos_trades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 
 

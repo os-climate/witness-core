@@ -114,7 +114,7 @@ class GHGEmissions():
 
     def compute(self):
         """
-        Compute outputs of the model
+        Compute outputs of the pyworld3
         """
 
         self.compute_land_emissions()

@@ -14,18 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import deepcopy
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_resources.resource_model.resource_model import ResourceModel
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class ResourceDiscipline(SoSDiscipline):
+class ResourceDiscipline(SoSWrapp):
     ''' Resource Discipline
     General implementation of the resource discipline, to be inherited by each specific resource
     '''
@@ -54,7 +54,7 @@ class ResourceDiscipline(SoSDiscipline):
     resource_name = 'Fill with the resource name'
 
     DESC_IN = {'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
 
@@ -65,9 +65,9 @@ class ResourceDiscipline(SoSDiscipline):
 
     _maturity = 'Research'
 
-    def __init__(self, sos_name, ee):
+    def __init__(self, sos_name):
 
-        SoSDiscipline.__init__(self, sos_name, ee)
+        SoSWrapp.__init__(self, sos_name)
         self.resource_model = None
 
     def setup_sos_disciplines(self):
@@ -257,7 +257,7 @@ class ResourceDiscipline(SoSDiscipline):
                                                               stacked_bar=True)
 
         model_production_cumulated_chart = TwoAxesInstanciatedChart('Years',
-                                                                    f'Comparison between model and real {self.resource_name} production [{self.prod_unit}]',
+                                                                    f'Comparison between pyworld3 and real {self.resource_name} production [{self.prod_unit}]',
                                                                     chart_name=f'{self.resource_name} production through the years',
                                                                     stacked_bar=True)
         past_production_chart = TwoAxesInstanciatedChart('Years',

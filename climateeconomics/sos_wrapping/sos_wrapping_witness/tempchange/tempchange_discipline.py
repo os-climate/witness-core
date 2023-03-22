@@ -17,8 +17,8 @@ limitations under the License.
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model import TempChange
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from copy import deepcopy
 import pandas as pd
 import numpy as np
@@ -73,6 +73,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                                    'namespace': 'ns_witness'},
         'temperature_end_constraint_limit': {'type': 'float', 'default': 1.5, 'unit': '°C', 'user_level': 2},
         'temperature_end_constraint_ref': {'type': 'float', 'default': 3., 'unit': '°C', 'user_level': 2},
+        'temperature_effect': {'type': 'bool', 'default': True}
+
     }
 
     DESC_OUT = {
@@ -87,7 +89,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
 
-        if 'forcing_model' in self._data_in:
+        if 'forcing_model' in self.get_data_in():
             forcing_model = self.get_sosdisc_inputs('forcing_model')
             if forcing_model == 'DICE':
 
@@ -109,20 +111,34 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         self.model = TempChange(in_dict)
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
 #         carboncycle_df = in_dict.pop('carboncycle_df')
 
-        # model execution
+        # pyworld3 execution
         temperature_df, temperature_objective = self.model.compute(in_dict)
 
-        # store output data
-        out_dict = {"temperature_detail_df": temperature_df,
-                    "temperature_df": temperature_df[['years', 'temp_atmo']],
-                    'forcing_detail_df': self.model.forcing_df,
-                    'temperature_objective': temperature_objective,
-                    'temperature_constraint': self.model.temperature_end_constraint}
+        if in_dict['temperature_effect'] :
+            # store output data
+            out_dict = {"temperature_detail_df": temperature_df,
+                        "temperature_df": temperature_df[['years', 'temp_atmo']],
+                        'forcing_detail_df': self.model.forcing_df,
+                        'temperature_objective': temperature_objective,
+                        'temperature_constraint': self.model.temperature_end_constraint}
+
+        else:
+            # store output data
+
+            temperature_df_2 = temperature_df.copy()
+            temperature_df_2['temp_atmo'] = [0.1 for i in range (len(temperature_df['temp_atmo']))]
+
+            out_dict = {"temperature_detail_df": temperature_df,
+                        "temperature_df": temperature_df_2[['years', 'temp_atmo']],
+                        'forcing_detail_df': self.model.forcing_df,
+                        'temperature_objective': temperature_objective,
+                        'temperature_constraint': self.model.temperature_end_constraint}
+
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):

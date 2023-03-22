@@ -20,8 +20,8 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
@@ -85,10 +85,12 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions, }
 
         self.ee.load_study_from_input_dict(values_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ghg_emission_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.CO2_land_emissions',
                                     f'{self.name}.CH4_land_emissions',
                                     f'{self.name}.N2O_land_emissions',

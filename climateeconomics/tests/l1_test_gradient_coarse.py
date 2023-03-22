@@ -20,8 +20,8 @@ mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
 import numpy as np
 from os.path import join, dirname
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pickle
 from climateeconomics.tests.data.mda_coarse_data_generator import launch_data_pickle_generation
 
@@ -131,12 +131,13 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
+
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0]
+            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5, local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
@@ -212,11 +213,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0]
+            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
@@ -292,11 +293,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0]
+            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
@@ -374,11 +375,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0]
+            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
@@ -454,11 +455,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.techno_name}')[0]
+            f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
@@ -520,11 +521,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0]
+            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
@@ -585,11 +586,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0]
+            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
@@ -656,12 +657,12 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.energy_name}')[0]
+            f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
                             inputs=coupled_inputs,
                             outputs=coupled_outputs,)
 
@@ -672,3 +673,4 @@ if '__main__' == __name__:
     cls.setUp()
     # self.launch_data_pickle_generation()
     cls.test_05_coarse_carbon_storage_techno_discipline_jacobian()
+

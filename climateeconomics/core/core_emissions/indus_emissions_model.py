@@ -178,7 +178,7 @@ class IndusEmissions():
 
     def compute(self, inputs_models):
         """
-        Compute outputs of the model
+        Compute outputs of the pyworld3
         """
         self.inputs_models = inputs_models
         self.economics_df = self.inputs_models['economics_df']

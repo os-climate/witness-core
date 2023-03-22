@@ -16,8 +16,8 @@ limitations under the License.
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.damage_model import DamageModel
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from copy import deepcopy
 import pandas as pd
 import numpy as np
@@ -84,7 +84,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in self._data_in:
+        if 'year_start' in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
             years = np.arange(year_start, year_end + 1)
@@ -94,13 +94,13 @@ class DamageDiscipline(ClimateEcoDiscipline):
                 {'damage_constraint_factor': damage_constraint_factor_default})
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
         economics_df = in_dict.pop('economics_df')
         temperature_df = in_dict.pop('temperature_df')
 
-        # model execution
+        # pyworld3 execution
         damage_df, co2_damage_price_df = self.model.compute(
             economics_df, temperature_df)
 

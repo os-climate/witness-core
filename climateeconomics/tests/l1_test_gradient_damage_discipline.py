@@ -19,8 +19,8 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class DamageJacobianDiscTest(AbstractJacobianUnittest):
@@ -78,7 +78,12 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15))))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline.pkl', discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.temperature_df', f'{self.name}.economics_df'],
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline.pkl',
+                            discipline=disc_techno, local_data= disc_techno.local_data,
+                            step=1e-15, inputs=[f'{self.name}.temperature_df', f'{self.name}.economics_df'],
                             outputs=[f'{self.name}.damage_df', f'{self.name}.CO2_damage_price'], derr_approx='complex_step')

@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model import MacroeconomicsModel
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import ServicesDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import IndustrialDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
@@ -75,7 +75,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dynamic_inputs = {}
         # dynamic_outputs = {}
 
-        if 'sector_list' in self._data_in:
+        if 'sector_list' in self.get_data_in():
             sector_list = self.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.capital_df'] = {

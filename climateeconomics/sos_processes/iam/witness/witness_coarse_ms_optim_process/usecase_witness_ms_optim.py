@@ -17,9 +17,9 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import Study as witness_optim_usecase
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 
 
@@ -47,7 +47,10 @@ class Study(ClimateEconomicsStudyManager):
             scenario_list.append(scenario_i)
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.alpha'] = alpha_i
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
+        len_scenarios = len(scenario_list)
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
+
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 11
         for scenario in scenario_list:
@@ -62,6 +65,7 @@ class Study(ClimateEconomicsStudyManager):
         year_start = scenarioUseCase.year_start
         year_end = scenarioUseCase.year_end
         years = np.arange(year_start, year_end + 1)
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5)*1e-4,np.ones(len(years)-5)/4), axis=None)
         return values_dict
@@ -72,9 +76,7 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
 
-    post_processing_factory = PostProcessingFactory()
-    post_processing_factory.get_post_processing_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
+
 #     all_post_processings = post_processing_factory.get_all_post_processings(
 #         uc_cls.execution_engine, False, as_json=False, for_test=False)
 #

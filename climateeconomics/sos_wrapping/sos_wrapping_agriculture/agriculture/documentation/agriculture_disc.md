@@ -9,7 +9,6 @@ This model allows to test different food diets, and computes the agriculture sur
 This section lists the inputs and outputs of the model.
 
 The model inputs are:
-
 * **year start**, this defines the starting year of the study.
 * **year end**, this defines the last year of the study.
 * **population_df**, this gives the population number, for each year of the study. The unit is the million of people.
@@ -32,7 +31,6 @@ By default, the values are:
 |2566|1860|550|1500|1150|670|624|kcal/kg|
 
 These data are extracted from [^3].
-
 * **red meat calory percentage**, gives the percentage of red meat kcal in a person diet.
 * **white meat calory percentage**, gives the percentage of white meat kcal in a person diet.
 * **other_use_agriculture**, gives the average ha per person for the use of agriculture in other way that the 7 food types. It mainly takes into account :
@@ -40,7 +38,6 @@ cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) -
 By default, it is set to 0.102ha/person to represent around of 800 millions of ha for a population of 7.8billions of people. [^4]
 
 The model outputs are:
-
 * **agriculture productivity evolution**, gives the evolution of agriculture productivity overtime, due to climat change. Unit is %.
 * **food land surface**, gives the surface needed to produce the amount of food of the diet. The unit is Gha.
 * **food land surface percentage**, gives the share of the surface of each type of food, in %.
@@ -50,7 +47,6 @@ The model outputs are:
 ## From a food diet to a surface
 This section aims to explain how the model goes from a food diet to a surface to produce the required food.
 The following picture shows the "how to" process.
-
 ![](diet_to_surface.PNG)
 
 First, given the population and the diet per person, the quantity of food is deduced:
@@ -79,9 +75,7 @@ The white meat percentage must be between 20% and 5%.
 Eggs and milk are not impacted.
 
 The following picture shows the different steps.
-
 ![](diet_update.PNG)
-
 
 First, the new quantity of red meat is calculated:
 $$base\_diet\_red\_meat = total\_kcal * red\_meat\_percentage / 100 / kg\_to\_kcal\_red\_meat$$
@@ -93,36 +87,27 @@ Then, the new quantity of white meat is calculated:
 $$base\_diet\_white\_meat = total\_kcal * white\_meat\_percentage / 100 / kg\_to\_kcal\_white\_meat$$
 
 This white\_meat\_removed corresponds to a quantity of kcal determined by:
-
 $$white\_energy\_removed = base\_diet\_white\_meat - total\_kcal * white\_meat\_percentage / 100$$
 
 Finally, the diet has to be updated with the conversion into vegetables:
 the amount of calory is proportionaly reported to the vegetables.
 for the 'fruit and vegetables' diet:
-
-$$\begin{aligned}proportion = base\_diet\_kcal\_fruit\_and\_vegetables \\ / (base\_diet\_kcal\_fruit\_and\_vegetables + base\_diet\_kcal\_potatoes + base\_diet\_kcal\_rice\_and\_maize)\end{aligned}$$
-
-$$\begin{aligned}base\_diet\_fruit\_and\_vegetables += (red\_energy\_removed + white\_energy\_removed) \\* proportion / kg\_to\_kcal\_fruit\_and\_vegetables\end{aligned}$$
+$$proportion = base\_diet\_kcal\_fruit\_and\_vegetables \\/ (base\_diet\_kcal\_fruit\_and\_vegetables + base\_diet\_kcal\_potatoes + base\_diet\_kcal\_rice\_and\_maize)$$
+$$base\_diet\_fruit\_and\_vegetables += (red\_energy\_removed + white\_energy\_removed) \\* proportion / kg\_to\_kcal\_fruit\_and\_vegetables$$
 
 The same formula is applicated to the 'potatoes' and 'rice and maize' food categories.
 
 ## Climate change impact
-
 The increase in temperature due to global warming has consequences on crop productivity. Effects of global warming on agriculture are for example drought, flooding and increased crops water needs.   
 Some models estimate the impact of increased temperature on crop productivity but results are quite disparate. We therefore chose to implement one impact for all agriculture productivity and not one per type of crop (maize, rice, wheat...). Our bilbiography to define the effect includes IPCC[^5] (Intergovernmental Panel on Climate Change), the FAO[^6] (Food and Agriculture Organization), Carl-Friedrich Schleussner et al (2018)[^8] and Rosenzweig et al. (2014)[^7].   
 The surface required taking into account climate change is:
-
 $$Required\_surface\_with\_global\_warming = required\_surface * (1- productivity\_change)$$
-
 $$Productivity\_change = \alpha T^2+bT$$ 
-
 $$with~~T_t = temperature_t -temperature_{t=0}$$ 
-
 By default $\alpha$ and $b$ are respectively set at  -0.00833 and - 0.04167. So that at +2 degrees (above pre industrial level) the decrease in productivity is 5% and 30% at +5 degrees celsius.   
 Then, when temperature rises, the surface required to produce the same amount of food increases by the share of production reduction. 
 
 ## Results
-
 This sections aims to describes the results charts.
 
 * Surface taken to produce food over time:
@@ -151,7 +136,7 @@ This section gives example of diet data that can be used as diet_df input.
 Data are extracted from [^1], and are given in kg/person for the year 2018
 
 |Region|Red meat|White meat|Milk|Eggs|Rice and Maize|Potatoes|Fruit and vegetables|Unit|Year|
-|:----:|:----:|:---:|:---:|:---:|:----:|:----:|:-------:|:-------:|:-----:|
+| ---- | ------ |:--------:|----|----|:------------:|:------:|:------------------:|----|----|
 |World|11.02|31.11|79.27|9.68|97.76|32.93|217.62|kg/person|2018|
 |USA|37.7|84.63|223.7|16.21|22.99|52.26|203.07|kg/person|2018|
 |China|8.97|52.51|23.13|19.74|125.47|41.9|463.29|kg/person|2018|

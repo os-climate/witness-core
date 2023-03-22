@@ -18,7 +18,7 @@ from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_model import NaturalGasResourceModel
 import numpy as np
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
 class NaturalGasResourceDiscipline(ResourceDiscipline):
@@ -73,7 +73,7 @@ class NaturalGasResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'bcm', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_natural_gas_resource'},
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '-',
-                                    'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_natural_gas_resource'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_natural_gas_resource'},
                'stock_start': {'type': 'float', 'default': default_stock_start, 'unit': 'Mt'},
                'recycled_rate': {'type': 'float', 'default': default_recycled_rate, 'unit': '-'},
                'lifespan': {'type': 'int', 'default': default_lifespan, 'unit': '-'},

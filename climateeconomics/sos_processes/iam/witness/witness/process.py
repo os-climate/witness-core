@@ -43,6 +43,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         if self.process_level == 'dev':
             chain_builders_witness = self.ee.factory.get_builder_from_process(
                 'climateeconomics.sos_processes.iam', 'witness_wo_energy_dev')
+
+        elif self.process_level == 'thesis':
+            chain_builders_witness = self.ee.factory.get_builder_from_process(
+                'climateeconomics.sos_processes.iam', 'witness_wo_energy_thesis')
+
         else:
             chain_builders_witness = self.ee.factory.get_builder_from_process(
                 'climateeconomics.sos_processes.iam', 'witness_wo_energy')

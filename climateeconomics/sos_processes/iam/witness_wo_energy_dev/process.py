@@ -17,7 +17,7 @@ limitations under the License.
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 # Copyright (C) 2020 Airbus SAS.
 # All rights reserved.
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import GHGemissionsDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline import IndusemissionsDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import AgricultureEmissionsDiscipline
@@ -74,7 +74,7 @@ class ProcessBuilder(BaseProcessBuilder):
         '''
         Add non_use capital objective discipline to all WITNESS processes
         '''
-        mods_dict = {'InvestmentDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_witness.non_use_capital_objective.non_use_capital_obj_discipline.NonUseCapitalObjectiveDiscipline'
+        mods_dict = {'NonUseCapitalDiscipline': 'climateeconomics.sos_wrapping.sos_wrapping_witness.non_use_capital_objective.non_use_capital_obj_discipline.NonUseCapitalObjectiveDiscipline'
                      }
         non_use_capital_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)

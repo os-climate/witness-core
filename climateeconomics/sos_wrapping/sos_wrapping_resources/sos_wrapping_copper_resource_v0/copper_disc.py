@@ -1,8 +1,8 @@
-# from sos_trades_core.api import SoSDiscipline, InstanciatedSeries, TwoAxesInstanciatedChart, ChartFilter
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+# from sostrades_core.api import SoSDiscipline, InstanciatedSeries, TwoAxesInstanciatedChart, ChartFilter
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 from climateeconomics.core.core_resources.new_resources_v0.copper_model import CopperModel
 
@@ -10,7 +10,7 @@ import numpy as np
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class CopperDisc(SoSDiscipline):
+class CopperDisc(SoSWrapp):
     _ontology_data = {
         'label': 'Copper Resource Model',
         'type': 'Research',
@@ -28,9 +28,11 @@ class CopperDisc(SoSDiscipline):
     DESC_IN = {'copper_demand': {'type': 'dataframe', 'unit': 'Mt'},
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+
                'annual_extraction': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': 'Mt',
                                      'default': [26] * 81},
-               'initial_copper_reserve': {'type': 'float', 'unit': 'Mt', 'default': 3500},
+               'initial_copper_reserve': {'type': 'float', 'unit': 'Mt', 'default': 3500,'user_level': 2},
+
                'initial_copper_stock': {'type': 'float', 'unit': 'Mt', 'default': 880, 'user_level': 2}}
 
     DESC_OUT = {CopperModel.COPPER_RESERVE: {'type': 'dataframe', 'unit': 'million_tonnes'},

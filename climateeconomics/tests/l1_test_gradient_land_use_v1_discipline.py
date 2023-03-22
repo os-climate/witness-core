@@ -16,8 +16,8 @@ limitations under the License.
 
 from os.path import join, dirname
 from pandas import read_csv
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pandas as pd
 import numpy as np
 
@@ -93,15 +93,15 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.total_food_land_surface': self.total_food_land_surface,
                        f'{self.name}.forest_surface_df': self.deforested_surface_df
                        }
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_land_use_v1_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.land_demand_df',
                                     f'{self.name}.total_food_land_surface',
                                     f'{self.name}.forest_surface_df'],

@@ -19,7 +19,7 @@ import pandas as pd
 
 class MacroEconomics():
     '''
-    Economic model that compute the evolution of capital, population, consumption, output...
+    Economic pyworld3 that compute the evolution of capital, population, consumption, output...
     '''
 
     def __init__(self, param, inputs):

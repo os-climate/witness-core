@@ -25,7 +25,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'Diet Optimization Process',
+        'label': 'WITNESS Optimization Process',
         'description': '',
         'category': '',
         'version': '',

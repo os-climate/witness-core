@@ -16,12 +16,12 @@ limitations under the License.
 
 from pandas import DataFrame, concat
 
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy as datacase_witness
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
@@ -89,7 +89,7 @@ class Study(ClimateEconomicsStudyManager):
     def setup_usecase(self):
         setup_data_list = []
 
-        # -- load data from energy model
+        # -- load data from energy pyworld3
         # -- Start with energy to have it at first position in the list...
         self.dc_energy.study_name = self.study_name
         self.energy_mda_usecase = self.dc_energy
@@ -119,7 +119,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
+            f'{self.study_name}.sub_mda_class': 'MDANewtonRaphson',
             f'{self.study_name}.cache_type': 'SimpleCache'}
 
         setup_data_list.append(numerical_values_dict)
@@ -131,7 +131,7 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
 
-    print(len(uc_cls.execution_engine.root_process.sos_disciplines))
+    #print(len(uc_cls.execution_engine.root_process.sos_disciplines))
     #  self.exec_eng.dm.export_couplings(
     #     in_csv=True, f_name='couplings.csv')
 
@@ -148,7 +148,7 @@ if '__main__' == __name__:
 
     uc_cls.run()
 
-    ppf = PostProcessingFactory()
+    """ppf = PostProcessingFactory()
     for disc in uc_cls.execution_engine.root_process.sos_disciplines:
         if disc.sos_name == 'EnergyMix':
             filters = ppf.get_post_processing_filters_by_discipline(
@@ -157,4 +157,4 @@ if '__main__' == __name__:
                 disc, filters, as_json=False)
 
 #             for graph in graph_list:
-#                 graph.to_plotly().show()
+#                 graph.to_plotly().show()"""

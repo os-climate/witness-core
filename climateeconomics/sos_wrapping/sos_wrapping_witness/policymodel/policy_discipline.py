@@ -15,16 +15,16 @@ limitations under the License.
 '''
 # coding: utf-8
 
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
 
 from climateeconomics.core.core_witness.policy_model import PolicyModel
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
-class PolicyDiscipline(SoSDiscipline):
+class PolicyDiscipline(SoSWrapp):
 
     # ontology information
     _ontology_data = {
@@ -45,13 +45,13 @@ class PolicyDiscipline(SoSDiscipline):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
         'ccs_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
-                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                    'namespace': 'ns_witness', 'user_level': 2},
         'co2_damage_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
-                                   'visibility': SoSDiscipline.SHARED_VISIBILITY,
+                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                    'namespace': 'ns_witness', 'user_level': 2},
     }
 

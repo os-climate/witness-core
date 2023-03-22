@@ -22,7 +22,7 @@ from time import sleep
 from shutil import rmtree
 from pathlib import Path
 from os.path import dirname, join
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy
 import cProfile
 import pstats

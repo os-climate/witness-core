@@ -17,9 +17,9 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness.witness_optim_process.usecase_witness_optim import Study as witness_optim_usecase
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 
 
@@ -51,8 +51,10 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 6
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
+        len_scenarios = len(scenario_list)
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
 
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
         for scenario in scenario_list:
             scenarioUseCase = witness_optim_usecase(
                 bspline=self.bspline, execution_engine=self.execution_engine)
@@ -74,6 +76,7 @@ class Study(ClimateEconomicsStudyManager):
         years = np.arange(year_start, year_end + 1)
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5)/1e-4,np.ones(len(years)-5)/4), axis=None)
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
 
         return values_dict
 

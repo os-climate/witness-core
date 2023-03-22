@@ -19,12 +19,12 @@ import pandas as pd
 from copy import deepcopy
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from sos_trades_core.tools.cst_manager.constraint_manager import compute_func_with_exp_min, compute_dfunc_with_exp_min
+from sostrades_core.tools.cst_manager.constraint_manager import compute_func_with_exp_min, compute_dfunc_with_exp_min
 
 
 class Forest():
     """
-    Forest model class 
+    Forest pyworld3 class
     basic for now, to evolve 
 
     """
@@ -199,7 +199,7 @@ class Forest():
 
     def compute_managed_wood_surface(self):
         """
-        compute managed wood delta and cumulative surface from investments
+        compute managed wood delta and cumulative surface form onvestment
         Will be recalculate with deforestation impact in compute_reforestation_deforestation_surface method
         """
         construction_delay = self.techno_wood_info['construction_delay']

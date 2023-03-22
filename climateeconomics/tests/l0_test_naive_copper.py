@@ -1,7 +1,7 @@
 
 
 import unittest
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 import pandas as pd
 import random as rd
 
@@ -49,7 +49,7 @@ class TestSoSDiscipline(unittest.TestCase):
 
         values_dict = {'Test.CopperModel.copper_demand': copper_demand,
                        'Test.CopperModel.annual_extraction': extraction}
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 

@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sos_trades_core.study_manager.study_manager import StudyManager
-from sos_trades_core.tools.base_functions.specific_check import specific_check_years
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.base_functions.specific_check import specific_check_years
 
 
 class ClimateEconomicsStudyManager(StudyManager):
@@ -27,3 +27,4 @@ class ClimateEconomicsStudyManager(StudyManager):
         Check that the column years of the input dataframes are in [year_start, year_end]
         """
         specific_check_years(self.execution_engine.dm)
+

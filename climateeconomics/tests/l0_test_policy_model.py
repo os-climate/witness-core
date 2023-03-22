@@ -19,8 +19,8 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class PolicyDiscTest(unittest.TestCase):
@@ -59,7 +59,7 @@ class PolicyDiscTest(unittest.TestCase):
                        f'{self.name}.ccs_price_percentage': 50.,
                        f'{self.name}.co2_damage_price_percentage': 50.}
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 

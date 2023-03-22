@@ -112,7 +112,7 @@ class TempChange(object):
 
     def compute_exog_forcing_dice(self):
         """
-        Compute exogenous forcing for other greenhouse gases following DICE model
+        Compute exogenous forcing for other greenhouse gases following DICE pyworld3
         linear increase of exogenous forcing following a given scenario
         """
 
@@ -124,9 +124,9 @@ class TempChange(object):
 
     def compute_exog_forcing_myhre(self, atmo_conc):
         """
-        Compute exogenous forcing for CH4 and N2O gases following Myhre model
+        Compute exogenous forcing for CH4 and N2O gases following Myhre pyworld3
         Myhre et al, 1998, JGR, doi: 10.1029/98GL01908
-        Myhre model can be found in FUND, MAGICC and FAIR IAM models
+        Myhre pyworld3 can be found in FUND, MAGICC and FAIR IAM models
 
         in FUND 0.036 * 1.4(np.sqrt(ch4_conc) - np.sqrt(ch4_conc_init))
         in FAIR 0.036 (np.sqrt(ch4_conc) -*np.sqrt(ch4_conc_init))
@@ -150,7 +150,7 @@ class TempChange(object):
 
     def compute_forcing_etminan(self, atmo_conc):
         """
-        Compute radiative forcing following Etminan model (found in FAIR) 
+        Compute radiative forcing following Etminan pyworld3 (found in FAIR)
         Etminan, M., Myhre, G., Highwood, E., and Shine, K.: Radiative forcing of carbon dioxide, methane, and nitrous oxide: A
         significant revision of the methane radiative forcing, Geophysical Research Letters, 43, 2016.
         """
@@ -182,7 +182,7 @@ class TempChange(object):
 
     def compute_forcing_meinshausen(self, atmo_conc):
         """
-        Compute radiative forcing following MeinsHausen model (found in FAIR) 
+        Compute radiative forcing following MeinsHausen pyworld3 (found in FAIR)
         Meinshausen, M., Nicholls, Z.R., Lewis, J., Gidden, M.J., Vogel, E., Freund, 
         M., Beyerle, U., Gessner, C., Nauels, A., Bauer, N. and Canadell, J.G., 2020. 
         The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. 
@@ -349,7 +349,7 @@ class TempChange(object):
 
     def compute_dexog_forcing_myhre(self, atmo_conc):
         """
-        Compute gradient for exogenous forcing for CH4 and N2O gases following Myhre model
+        Compute gradient for exogenous forcing for CH4 and N2O gases following Myhre pyworld3
         Myhre et al, 1998, JGR, doi: 10.1029/98GL01908
         """
         ch4_conc = atmo_conc / self.ppm_to_gtc * self.ch4_conc_init_ppm / self.c0_ppm
@@ -383,7 +383,7 @@ class TempChange(object):
 
     def compute_dforcing_etminan(self, atmo_conc):
         """
-        Compute gradient for Etminan model
+        Compute gradient for Etminan pyworld3
         """
         atmo_conc_ppm = atmo_conc / self.ppm_to_gtc
         datmo_conc_ppm = 1.0 / self.ppm_to_gtc
@@ -433,7 +433,7 @@ class TempChange(object):
 
     def compute_dforcing_meinshausen(self, atmo_conc):
         """
-        Compute gradient for radiative forcing following MeinsHausen model
+        Compute gradient for radiative forcing following MeinsHausen pyworld3
 
         """
         a1 = -2.4785e-07

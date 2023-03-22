@@ -14,16 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
 
 from pathlib import Path
 from os.path import join, dirname
 from numpy import asarray, arange, array
 import pandas as pd
 import numpy as np
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
@@ -48,7 +48,7 @@ class Study(StudyManager):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         setup_data_list = []
-        # private values economics operator model
+        # private values economics operator pyworld3
         landuse_input = {}
         landuse_input[self.study_name + '.year_start'] = self.year_start
         landuse_input[self.study_name + '.year_end'] = self.year_end

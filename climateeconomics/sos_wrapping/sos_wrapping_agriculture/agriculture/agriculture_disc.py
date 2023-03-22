@@ -16,8 +16,8 @@ limitations under the License.
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_agriculture.agriculture import Agriculture,\
     OrderOfMagnitude
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import numpy as np
 import pandas as pd
@@ -25,7 +25,7 @@ from copy import deepcopy
 
 
 class AgricultureDiscipline(ClimateEcoDiscipline):
-    ''' Disscipline intended to host agricluture model
+    ''' Disscipline intended to host agricluture pyworld3
     '''
 
     # ontology information

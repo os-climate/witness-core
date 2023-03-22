@@ -15,15 +15,15 @@ limitations under the License.
 '''
 
 
-from sos_trades_core.execution_engine.sos_discipline import SoSDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.tempchange_model import TempChange
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
 import pandas as pd
 
 
-class TempChangeDiscipline(SoSDiscipline):
+class TempChangeDiscipline(SoSWrapp):
     "     Temperature evolution"
 
 
@@ -64,12 +64,12 @@ class TempChangeDiscipline(SoSDiscipline):
     _maturity = 'Research'
 
     def run(self):
-        ''' model execution '''
+        ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
 #         carboncycle_df = in_dict.pop('carboncycle_df')
 
-        # model execution
+        # pyworld3 execution
         model = TempChange()
         temperature_df = model.compute(in_dict)
 

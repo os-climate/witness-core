@@ -20,8 +20,8 @@ from os.path import join, dirname
 from pandas import DataFrame, read_csv
 from scipy.interpolate import interp1d
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class ServicesJacobianDiscTest(AbstractJacobianUnittest):
@@ -120,7 +120,7 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_services_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = {},
                             inputs=[f'{self.name}.energy_production',
                                     f'{self.name}.damage_df',
                                     f'{self.name}.workforce_df',
@@ -165,7 +165,7 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         disc_techno = self.ee.root_process.sos_disciplines[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_services_discipline_withoutdamage.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = {},
                             inputs=[f'{self.name}.energy_production',
                                     f'{self.name}.damage_df',
                                     f'{self.name}.workforce_df',

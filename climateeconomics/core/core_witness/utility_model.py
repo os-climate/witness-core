@@ -379,7 +379,7 @@ class UtilityModel():
         return d_obj_d_discounted_utility, d_obj_d_period_utility_pc
 
     def compute(self, economics_df, energy_mean_price, population_df):
-        ''' model execution
+        ''' pyworld3 execution
         '''
         self.economics_df = economics_df
         self.economics_df.index = self.economics_df['years'].values

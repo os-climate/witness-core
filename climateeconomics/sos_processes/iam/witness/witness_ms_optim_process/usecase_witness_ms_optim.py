@@ -17,9 +17,9 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness.witness_optim_process.usecase_witness_optim import Study as witness_optim_usecase
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(StudyManager):
@@ -48,8 +48,10 @@ class Study(StudyManager):
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 11
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
+        len_scenarios = len(scenario_list)
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
 
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
         for scenario in scenario_list:
             scenarioUseCase = witness_optim_usecase(
                 bspline=self.bspline, execution_engine=self.execution_engine)
@@ -59,6 +61,7 @@ class Study(StudyManager):
 
             for dict_data in scenarioData:
                 values_dict.update(dict_data)
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
 
         return values_dict
 

@@ -54,7 +54,7 @@ def compute_Hubbert_regression(past_production, production_years, regression_sta
     
 
     # sum of the available and recoverable reserve (predict by Hubbert
-    # model from the start of the exploitation to the end)
+    # pyworld3 from the start of the exploitation to the end)
     Q_inf = -1 * (w / fit[0])
 
 

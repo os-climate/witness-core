@@ -21,7 +21,7 @@ from copy import deepcopy
 
 class Forest():
     """
-    Forest model class 
+    Forest pyworld3 class
     basic for now, to evolve 
 
     """

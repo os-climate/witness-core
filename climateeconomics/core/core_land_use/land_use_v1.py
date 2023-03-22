@@ -36,7 +36,7 @@ class OrderOfMagnitude():
 
 class LandUseV1():
     """
-    Land use model class 
+    Land use pyworld3 class
 
     basic for now, to evolve 
 
@@ -118,7 +118,7 @@ class LandUseV1():
             {'years': self.land_demand_df['years']})
 
         # # ------------------------------------------------
-        # # deforestation effect coming from forest model in Gha
+        # # deforestation effect coming from forest pyworld3 in Gha
         self.land_surface_df['Deforestation (Gha)'] = np.cumsum(
             deforested_surface_df['forest_surface_evol'])
 
@@ -143,7 +143,7 @@ class LandUseV1():
         self.land_surface_df['Food Usage (Gha)'] = total_food_land_surface['total surface (Gha)'].values
         # --------------------------------------
         # Land surface for food is coupled with crops energy input
-        # To be removed and plug output from agriculture model directly!!
+        # To be removed and plug output from agriculture pyworld3 directly!!
         self.land_surface_for_food_df = pd.DataFrame({'years': self.land_demand_df['years'].values,
                                                       'Agriculture total (Gha)': total_food_land_surface['total surface (Gha)'].values})
 
@@ -328,7 +328,7 @@ class LandUseV1():
     def __extract_and_convert_superficie(self, category, name):
         '''
         Regarding the available surface dataframe extract a specific surface value and convert into
-        our unit model (ha)
+        our unit pyworld3 (ha)
 
         @param category: land category regarding the data
         @type category: str

@@ -15,8 +15,8 @@ limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.carbon_emissions_model import CarbonEmissions
-from sos_trades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sos_trades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_forest.forest_v1 import Forest
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from copy import deepcopy
@@ -350,7 +350,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         # Industrial emissions
         #---------------------
-        # To be replaced by sources and sinks from model
+        # To be replaced by sources and sinks from pyworld3
         cols_to_sum = []
         # Get all the sources and put them as columns in df
         sigma = CO2_emissions_df['sigma'].values

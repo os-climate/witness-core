@@ -15,11 +15,11 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from sos_trades_core.study_manager.study_manager import StudyManager
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
@@ -131,8 +131,8 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    print(
-        len(uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines[0].sos_disciplines))
+    #print(
+    #    len(uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines[0].sos_disciplines))
     # df_xvect = pd.read_pickle('df_xvect.pkl')
     # df_xvect.columns = [
     # f'{uc_cls.study_name}.{uc_cls.optim_name}.{uc_cls.coupling_name}.DesignVariables' + col for col in df_xvect.columns]

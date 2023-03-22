@@ -20,8 +20,8 @@ from pandas import DataFrame
 from os.path import join, dirname
 
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
@@ -100,9 +100,11 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macro_sectorization_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data= disc_techno.local_data,
                             inputs=[f'{self.name}.total_investment_share_of_gdp',
                                     f'{self.name}.{model_name}.Agriculture.production_df',
                                     f'{self.name}.{model_name}.Services.production_df',

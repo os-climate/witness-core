@@ -20,8 +20,8 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
-from sos_trades_core.execution_engine.execution_engine import ExecutionEngine
-from sos_trades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
@@ -92,7 +92,6 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(self.values_dict)
 
-        self.disc_techno = self.ee.root_process.sos_disciplines[0]
 
     def analytic_grad_entry(self):
         return [
@@ -103,7 +102,11 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_01_consumption_analytic_grad_welfare(self):
         np.set_printoptions(threshold=np.inf)
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_consumption_discipline_welfare.pkl', discipline=self.disc_techno, step=1e-15,
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_consumption_discipline_welfare.pkl',
+                            discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.economics_df',
                                     f'{self.name}.energy_mean_price',
                                     f'{self.name}.residential_energy',
@@ -123,8 +126,11 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.values_dict[f'{self.name}.welfare_obj_option'] = 'last_utility'
 
         self.ee.load_study_from_input_dict(self.values_dict)
+        self.ee.execute()
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_consumption_discipline_last_utility.pkl', discipline=self.disc_techno, step=1e-15,
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_consumption_discipline_last_utility.pkl',
+                            discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.economics_df',
                                     f'{self.name}.energy_mean_price',
                                     f'{self.name}.residential_energy',
@@ -151,8 +157,11 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.total_investment_share_of_gdp': self.total_investment_share_of_gdp}
 
         self.ee.load_study_from_input_dict(values_dict)
+        self.ee.execute()
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_consumption_low_economy.pkl', discipline=self.disc_techno, step=1e-15,
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_consumption_low_economy.pkl', discipline=disc_techno,
+                            step=1e-15, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.economics_df',
                                     f'{self.name}.energy_mean_price',
                                     f'{self.name}.residential_energy',
