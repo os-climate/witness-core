@@ -47,7 +47,9 @@ class Study(ClimateEconomicsStudyManager):
             scenario_i = 'scenario_\u03B1=%.2f' % alpha_i
             scenario_i = scenario_i.replace('.', ',')
             scenario_list.append(scenario_i)
-            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.alpha'] = alpha_i
+            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.co2_damage_price_percentage'] = alpha_i
+            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.ccs_price_percentage'] = alpha_i
+
         len_scenarios = len(scenario_list)
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
 
