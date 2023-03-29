@@ -106,6 +106,7 @@ def post_processings(execution_engine, namespace, filters):
         new_pareto_chart.add_pareto_front_optimal(pareto_front_serie)
 
         instanciated_charts.append(new_pareto_chart)
+        new_pareto_chart.to_plotly().show()
 #      
 
 #     if 'Temperature vs Utility' in graphs_list:

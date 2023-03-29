@@ -128,3 +128,6 @@ if '__main__' == __name__:
 
     charts = post_processing_factory.get_post_processing_by_namespace(
         uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', None)
+
+    print("")
+
