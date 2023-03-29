@@ -39,6 +39,17 @@ class ProcessBuilder(BaseProcessBuilder):
         self.ee.smaps_manager.add_build_map(
             'scenario_list', scenario_map)
         """
+        scenario_map = {
+            # 'input_name': 'scenario_list',
+            # 'input_ns': 'ns_scatter_scenario',
+            # 'output_name': 'scenario_name',
+            # 'scatter_ns': 'ns_scenario',
+            # 'gather_ns': 'ns_scatter_scenario',
+            'ns_not_to_update': [
+                'ns_dice',
+            ],
+        }
+        self.ee.scattermap_manager.add_build_map('scenario_list', scenario_map)
 
         builder_cdf_list = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.dice', 'dice_model')
@@ -54,7 +65,8 @@ class ProcessBuilder(BaseProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
         multi_scenario = self.ee.factory.create_driver(
-            'Control rate scenarios', builder_cdf_list, flatten_subprocess=False
+            'Control rate scenarios', builder_cdf_list, flatten_subprocess=False,
+            map_name='scenario_list',
         )
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
                                                                                 'climateeconomics.sos_wrapping.sos_wrapping_dice.post_proc_dice_ms.post_processing')
