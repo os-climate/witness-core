@@ -62,7 +62,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
         'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                        'namespace': 'ns_ref', 'user_level': 2},
-        'damage_constraint_factor': {'type': 'array', 'unit': '-', 'user_level': 2}
+        'damage_constraint_factor': {'type': 'array', 'unit': '-', 'user_level': 2},
+        'activate_damage': {'type': 'bool', 'unit': '-', 'default': True}
+    
     }
 
     DESC_OUT = {
