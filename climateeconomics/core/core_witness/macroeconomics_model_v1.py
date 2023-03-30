@@ -95,7 +95,7 @@ class MacroEconomics():
         self.employment_rate_base_value = self.param['employment_rate_base_value']
         self.ref_emax_enet_constraint = self.param['ref_emax_enet_constraint']
         self.usable_capital_ref = self.param['usable_capital_ref']
-        
+      
     def create_dataframe(self):
         '''
         Create the dataframe and fill it with values at year_start
@@ -201,7 +201,10 @@ class MacroEconomics():
         self.population_df.index = self.population_df['years'].values
         self.working_age_population_df = self.inputs['working_age_population_df']
         self.working_age_population_df.index = self.working_age_population_df['years'].values
-
+        self.compute_gdp = self.inputs['compute_gdp']
+        if not self.compute_gdp:
+            self.gross_output_in = self.inputs['gross_output_in']
+      
     def compute_employment_rate(self):
         """ 
         Compute the employment rate. based on prediction from ILO 
@@ -435,6 +438,13 @@ class MacroEconomics():
 
         return output
 
+    def set_gross_output(self): 
+        """
+        Set gross output according to input
+        """
+        self.economics_df = self.economics_df.drop('gross_output', axis=1)
+        self.economics_df = self.economics_df.merge(self.gross_output_in[['years', 'gross_output']], on = 'years', how='left').set_index(self.economics_df.index)
+
     def compute_output_growth(self, year):
         """
         Compute the output growth between year t and year t-1 
@@ -590,7 +600,9 @@ class MacroEconomics():
         self.damage_prod = damage_prod
         self.inputs = deepcopy(inputs)
         self.set_coupling_inputs()
-
+        # set gross ouput from input if necessary
+        if not self.compute_gdp:
+            self.set_gross_output()
         # Employment rate and workforce
         self.compute_employment_rate()
         self.compute_workforce()
@@ -606,6 +618,7 @@ class MacroEconomics():
         self.compute_consumption_pc(year_start)
         # for year 0 compute capital +1
         self.compute_capital(year_start +1)
+
         # Then iterate over years from year_start + tstep:
         for year in self.years_range[1:]:
             # First independant variables
@@ -614,7 +627,9 @@ class MacroEconomics():
             # Then others:
             self.compute_emax(year)
             self.compute_usable_capital(year)
-            self.compute_gross_output(year)
+            # compute only if compute_gdp is activated
+            if self.compute_gdp:
+                self.compute_gross_output(year)
             self.compute_output_net_of_damage(year)
             self.compute_energy_investment(year)
             self.compute_investment(year)
@@ -622,6 +637,8 @@ class MacroEconomics():
             self.compute_consumption_pc(year)
             # capital t+1 :
             self.compute_capital(year+1)
+        
+
         for year in self.years_range:
             self.compute_output_growth(year)
         self.economics_df = self.economics_df.replace(

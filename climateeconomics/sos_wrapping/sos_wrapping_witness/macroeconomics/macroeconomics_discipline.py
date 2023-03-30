@@ -100,6 +100,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'delta_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 50, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'compute_gdp' : {'type': 'bool', 'unit': '-', 'default': True, 'structuring': True }
     }
 
     DESC_OUT = {
@@ -126,7 +127,16 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     }
 
     def setup_sos_disciplines(self):
+        dynamic_inputs = {}
+        if self.get_data_in() is not None:
 
+            if 'compute_gdp' in self.get_data_in():
+                if not self.get_sosdisc_inputs('compute_gdp'):
+                    dynamic_inputs.update({'gross_output_in': {'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'dataframe_descriptor': {'years': ('float', None, False),
+                                                                                               'gross_output': ('float', None, True)}, 'dataframe_edition_locked': False,'namespace': 'ns_witness'}})
+
+        self.add_inputs(dynamic_inputs)
+            
         self.update_default_with_years()
 
     def update_default_with_years(self):
@@ -153,7 +163,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 {'CO2_tax_efficiency': co2_tax_efficiency_default,
                  'share_energy_investment': share_energy_investment,
                  'total_investment_share_of_gdp': total_investment_share_of_gdp})
-
+        
+            if 'gross_output_in' in self.get_data_in(): 
+                gross_output_df = pd.DataFrame({'years': years, 'gross_output': np.linspace(85. , 120. , len(years))})
+                self.set_dynamic_default_values({'gross_output_in': gross_output_df})
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
@@ -161,8 +174,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     def run(self):
         # Get inputs
-        inputs = list(self.DESC_IN.keys())
-        param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        #inputs = list(self.DESC_IN.keys())
+        param = self.get_sosdisc_inputs()
         damage_df = param.pop('damage_df')
         energy_production = param.pop('energy_production')
         share_energy_investment = param.pop('share_energy_investment')
@@ -175,7 +188,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         population_df = param.pop('population_df')
         working_age_population_df = param.pop('working_age_population_df')
         energy_capital_df = param['energy_capital']
-
+        compute_gdp = param['compute_gdp']
         macro_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                         'energy_production': energy_production,
                         'scaling_factor_energy_production': param['scaling_factor_energy_production'],
@@ -189,8 +202,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         'co2_invest_limit': co2_invest_limit,
                         'population_df': population_df[['years', 'population']],
                         'working_age_population_df': working_age_population_df[['years', 'population_1570']],
-                        'energy_capital_df': energy_capital_df
+                        'energy_capital_df': energy_capital_df, 
+                        'compute_gdp': compute_gdp
                         }
+        
+        if not compute_gdp:
+            macro_inputs.update({'gross_output_in': param['gross_output_in']})
+
         # Check inputs
         count = len(
             [i for i in list(share_energy_investment['share_investment']) if np.real(i) > 100.0])
