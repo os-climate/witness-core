@@ -18,9 +18,6 @@ from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import S
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 
-import cProfile
-from io import StringIO
-import pstats
 
 
 
