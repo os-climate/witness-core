@@ -8,7 +8,7 @@ ClimateEconomics is the Python package to evaluate the effect of energy way of p
 In order to satisfy dependencies, following prerequisites need to be satisfied:
 * deployment of gems package and its requirements (see requirements.txt of gems package)
 * deployment of energy\_models package and its requirements (see requirements.txt of energy\_models package)
-* deployment of sos\_trade\_core\_package and its requirements (see requirements.txt of sos\_trade\_core\_package package)
+* deployment of sostrades\_core\_package and its requirements (see requirements.txt of sostrades\_core\_package package)
 * libraries in requirements.txt
 
 The following command can be used to install the package listed in requirements.txt
