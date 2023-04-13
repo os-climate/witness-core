@@ -25,7 +25,7 @@ def post_processing_filters(execution_engine, namespace):
 
     filters = []
 
-    chart_list = ['Temperature vs Welfare']
+    chart_list = ['Temperature vs Welfare', 'Temperature Evolution Comparison']
     filters.append(ChartFilter('Charts', chart_list, chart_list, 'Charts'))
 
     return filters
@@ -41,7 +41,7 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == 'Charts':
                 graphs_list = chart_filter.selected_values
     else:
-        graphs_list = ['Temperature vs Welfare']
+        graphs_list = ['Temperature vs Welfare', 'Temperature Evolution Comparison']
 
     temperature_df_dict, utility_df_dict, scenario_list, year_end, namespace_w = get_df(
         execution_engine, namespace)
@@ -107,7 +107,86 @@ def post_processings(execution_engine, namespace, filters):
 
         instanciated_charts.append(new_pareto_chart)
         new_pareto_chart.to_plotly().show()
-#      
+
+    if 'Temperature Evolution Comparison' in graphs_list:
+
+        temperature = {}
+        for scenario in scenario_list:
+            temperature[scenario] = temperature_df_dict[scenario]['temp_atmo']
+
+        years = list(temperature[scenario_list[0]].index)
+        year_start = years[0]
+        year_end = years[len(years) - 1]
+
+        max_value = max(temperature[scenario].max() for scenario in scenario_list)
+        # min_value = min(temperature[scenario].min() for scenario in scenario_list)
+        min_value = 0
+
+        # serie_base = InstanciatedSeries(
+        #     years, temperature['Base case scenario'], 'Base case scenario', InstanciatedSeries.LINES_DISPLAY)
+        # serie_nordhaus = InstanciatedSeries(
+        #     years, temperature['Nordhaus optimal scenario'], 'Nordhaus optimal scenario', InstanciatedSeries.LINES_DISPLAY)
+        # serie_2020 = InstanciatedSeries(
+        #     years, temperature['Zero emission from 2020 scenario'], 'Zero emission from 2020 scenario', InstanciatedSeries.LINES_DISPLAY)
+        # serie_2030 = InstanciatedSeries(
+        #     years, temperature['Zero emission from 2030 scenario'], 'Zero emission from 2030 scenario', InstanciatedSeries.LINES_DISPLAY)
+        # serie_2050 = InstanciatedSeries(
+        #     years, temperature['Zero emission from 2050 scenario'], 'Zero emission from 2050 scenario', InstanciatedSeries.LINES_DISPLAY)
+
+        chart_name = 'Temperature Evolution Scenario Comparison'
+        new_chart = TwoAxesInstanciatedChart('Years',
+                                             'Temperature Increase',
+                                             [year_start - 5, year_end + 5],
+                                             [min_value * 0.9, max_value * 1.1],
+                                             chart_name)
+
+        for scenario in scenario_list:
+            new_serie = InstanciatedSeries(years,
+                                           list(temperature[scenario]),
+                                           scenario,
+                                           InstanciatedSeries.LINES_DISPLAY)
+            new_chart.add_series(new_serie)
+
+        instanciated_charts.append(new_chart)
+        new_chart.to_plotly().show()
+
+        # to_plot = ['temp_atmo', 'temp_ocean']
+        # temperature_df = self.get_sosdisc_outputs('temperature_df')
+        # temperature_df = resize_df(temperature_df)
+        #
+        # legend = {'temp_atmo': 'atmosphere temperature',
+        #           'temp_ocean': 'ocean temperature'}
+        #
+        # years = list(temperature_df.index)
+        #
+        # year_start = years[0]
+        # year_end = years[len(years) - 1]
+        #
+        # max_value = 0
+        # min_value = 0
+        #
+        # for key in to_plot:
+        #     max_value = max(temperature_df[key].values.max(), max_value)
+        #     min_value = min(temperature_df[key].values.min(), min_value)
+        #
+        # chart_name = 'temperature evolution over the years'
+        #
+        # new_chart = TwoAxesInstanciatedChart('years', 'temperature evolution (degrees Celsius above preindustrial)',
+        #                                      [year_start - 5, year_end + 5], [
+        #                                          min_value * 0.9, max_value * 1.1],
+        #                                      chart_name)
+        #
+        # for key in to_plot:
+        #     visible_line = True
+        #
+        #     ordonate_data = list(temperature_df[key])
+        #
+        #     new_series = InstanciatedSeries(
+        #         years, ordonate_data, legend[key], 'lines', visible_line)
+        #
+        #     new_chart.series.append(new_series)
+        #
+        # instanciated_charts.append(new_chart)
 
 #     if 'Temperature vs Utility' in graphs_list:
 # 

@@ -110,6 +110,8 @@ class Study(StudyManager):
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_D}.emissions_control_rate'] = control_rate_D
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_E}.emissions_control_rate'] = control_rate_E
         values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
+        values_dict[f'{self.study_name}.cache_type'] = 'SimpleCache'
+        values_dict[f'{self.study_name}.propagate_cache_to_children'] = True
         setup_data_list[0].update(values_dict)
 
         return setup_data_list
@@ -127,7 +129,7 @@ if '__main__' == __name__:
     # as_json=False, for_test=False)
 
     charts = post_processing_factory.get_post_processing_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', None)
+        uc_cls.execution_engine, f'{uc_cls.study_name}.{uc_cls.scatter_scenario}', None)
 
-    print("")
+
 
