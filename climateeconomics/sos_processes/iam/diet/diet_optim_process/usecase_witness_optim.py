@@ -17,8 +17,10 @@ import numpy as np
 import pandas as pd
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.sos_processes.iam.diet.diet_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
+from climateeconomics.sos_processes.iam.diet.diet_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_optim_sub_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
+    COUPLING_NAME, EXTRA_NAME
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from sostrades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
@@ -36,9 +38,9 @@ WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False,
+                 execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT):
-
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -100,10 +102,12 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "max_iter": 700,
                                                                       "disp": 30},
 
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-10,
-                                                                                                                   'max_iter': 10000},
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {'tol': 1.0e-10,
-                                                                                                                   'max_iter': 50000},
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {
+                                 'tol': 1.0e-10,
+                                 'max_iter': 10000},
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {
+                                 'tol': 1.0e-10,
+                                 'max_iter': 50000},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.epsilon0': 1.0,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.tolerance': 1.0e-10,
 
@@ -131,11 +135,11 @@ if '__main__' == __name__:
     # dict_xvect[f'{uc_cls.study_name}.{uc_cls.optim_name}.eval_mode'] = True
     # uc_cls.load_data(from_input_dict=dict_xvect)
     # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
-    # uc_cls.execution_engine.root_process.sos_disciplines[0].set_opt_scenario()
+    # uc_cls.execution_engine.root_process.proxy_disciplines[0].set_opt_scenario()
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 
-#     uc_cls.execution_engine.root_process.sos_disciplines[0].coupling_structure.graph.export_reduced_graph(
+#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_reduced_graph(
 #         "reduced.pdf")
-#     uc_cls.execution_engine.root_process.sos_disciplines[0].coupling_structure.graph.export_initial_graph(
+#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_initial_graph(
 #         "initial.pdf")

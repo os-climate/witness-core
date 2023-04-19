@@ -26,10 +26,9 @@ from sostrades_core.execution_engine.func_manager.func_manager_disc import Funct
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 
 
-
 class Study(StudyManager):
 
-    def __init__(self, year_start = 2020, year_end = 2100, time_step=1, execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.year_start = year_start
@@ -37,16 +36,12 @@ class Study(StudyManager):
         self.time_step = time_step
 
     def setup_usecase(self):
-
         setup_data_list = []
-        
 
         data_dir_resource = join(
             dirname(dirname(dirname(dirname(dirname(dirname(__file__)))))), 'tests', 'data')
         resources_demand = pd.read_csv(
             join(data_dir_resource, 'all_demand_variable.csv'))
-
-        
 
         config_data = {f'{self.study_name}.resources_demand': resources_demand,
                        f'{self.study_name}.year_start': self.year_start,
@@ -54,9 +49,7 @@ class Study(StudyManager):
 
         setup_data_list.append(config_data)
 
-
         return setup_data_list
-
 
 
 if '__main__' == __name__:
@@ -64,7 +57,7 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         filters = ppf.get_post_processing_filters_by_discipline(
             disc)
         graph_list = ppf.get_post_processing_by_discipline(

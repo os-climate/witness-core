@@ -50,7 +50,8 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
     if activated_elem is None:
         activated_elem = [True] * len(value)
     dspace_dict[name] = {'value': value,
-                         'lower_bnd': lower, 'upper_bnd': upper, 'enable_variable': enable_variable, 'activated_elem': activated_elem}
+                         'lower_bnd': lower, 'upper_bnd': upper, 'enable_variable': enable_variable,
+                         'activated_elem': activated_elem}
 
     dspace_dict['dspace_size'] += len(value)
 
@@ -67,7 +68,6 @@ class Study(StudyManager):
         self.nb_poles = 8
 
     def setup_usecase(self):
-
         setup_data_list = []
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -93,13 +93,13 @@ class Study(StudyManager):
         residue_percentage_for_energy = 0.48
 
         density_per_ha = residue_density_m3_per_ha + \
-            wood_density_m3_per_ha
+                         wood_density_m3_per_ha
 
         wood_percentage = wood_density_m3_per_ha / density_per_ha
         residue_percentage = residue_density_m3_per_ha / density_per_ha
 
         mean_density = wood_percentage * wood_density + \
-            residue_percentage * residues_density
+                       residue_percentage * residues_density
         years_between_harvest = 20
 
         recycle_part = 0.52  # 52%
@@ -215,7 +215,7 @@ if '__main__' == __name__:
     uc_cls.run()
 
     # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
     #     filters = ppf.get_post_processing_filters_by_discipline(
     #         disc)
     #     graph_list = ppf.get_post_processing_by_discipline(

@@ -34,7 +34,8 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Land_Use_V1', execution_engine=None, extra_name=''):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Land_Use_V1', execution_engine=None,
+                 extra_name=''):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.landuse_name = name
@@ -44,7 +45,6 @@ class Study(StudyManager):
         self.extra_name = extra_name
 
     def setup_usecase(self):
-
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         setup_data_list = []
@@ -97,7 +97,7 @@ if '__main__' == __name__:
     uc_cls.run()
 
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         filters = ppf.get_post_processing_filters_by_discipline(
             disc)
         graph_list = ppf.get_post_processing_by_discipline(

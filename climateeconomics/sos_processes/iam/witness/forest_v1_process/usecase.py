@@ -49,7 +49,8 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
     if activated_elem is None:
         activated_elem = [True] * len(value)
     dspace_dict[name] = {'value': value,
-                         'lower_bnd': lower, 'upper_bnd': upper, 'enable_variable': enable_variable, 'activated_elem': activated_elem}
+                         'lower_bnd': lower, 'upper_bnd': upper, 'enable_variable': enable_variable,
+                         'activated_elem': activated_elem}
 
     dspace_dict['dspace_size'] += len(value)
 
@@ -65,8 +66,8 @@ class Study(StudyManager):
         self.time_step = time_step
         self.nb_poles = 8
         self.additional_ns = ''
-    def setup_usecase(self):
 
+    def setup_usecase(self):
         setup_data_list = []
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -130,10 +131,14 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'deforested_surface_ctrl',
-                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
+                                list(self.design_space_ctrl['deforested_surface_ctrl'].values), [0.0] * self.nb_poles,
+                                [100.0] * self.nb_poles,
+                                activated_elem=[True, True, True, True, True, True, True, True])
 
         update_dspace_dict_with(ddict, 'forest_investment_array_mix',
-                                list(self.design_space_ctrl['forest_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True, True, True, True, True, True, True, True])
+                                list(self.design_space_ctrl['forest_investment_array_mix'].values),
+                                [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
+                                activated_elem=[True, True, True, True, True, True, True, True])
         return ddict
 
 
@@ -145,7 +150,7 @@ if '__main__' == __name__:
     uc_cls.run()
 
     # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
     #     filters = ppf.get_post_processing_filters_by_discipline(
     #         disc)
     #     graph_list = ppf.get_post_processing_by_discipline(

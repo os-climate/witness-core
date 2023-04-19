@@ -19,17 +19,24 @@ import numpy as np
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_sub_proc_usecase
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
-    obj_const = ['welfare_objective', 'min_utility_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective', 'co2_emissions_objective', 'CO2_tax_minus_CO2_damage_constraint_df', 'EnergyMix.methane.demand_violation', 'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation', 'EnergyMix.biogas.demand_violation', 'EnergyMix.syngas.demand_violation', 'EnergyMix.liquid_fuel.demand_violation',
-                 'EnergyMix.solid_fuel.demand_violation', 'EnergyMix.biomass_dry.demand_violation', 'EnergyMix.electricity.demand_violation', 'EnergyMix.biodiesel.demand_violation', 'EnergyMix.hydrogen.liquid_hydrogen.demand_violation', 'primary_energies_production', 'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
+    obj_const = ['welfare_objective', 'min_utility_objective', 'temperature_objective', 'CO2_objective',
+                 'ppm_objective', 'co2_emissions_objective', 'CO2_tax_minus_CO2_damage_constraint_df',
+                 'EnergyMix.methane.demand_violation', 'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation',
+                 'EnergyMix.biogas.demand_violation', 'EnergyMix.syngas.demand_violation',
+                 'EnergyMix.liquid_fuel.demand_violation',
+                 'EnergyMix.solid_fuel.demand_violation', 'EnergyMix.biomass_dry.demand_violation',
+                 'EnergyMix.electricity.demand_violation', 'EnergyMix.biodiesel.demand_violation',
+                 'EnergyMix.hydrogen.liquid_hydrogen.demand_violation', 'primary_energies_production',
+                 'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
 
     def setUp(self):
 
@@ -59,7 +66,8 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         techno_dict = DEFAULT_TECHNO_DICT
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=techno_dict,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[1])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
@@ -80,7 +88,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
 
         values_dict_design_var = {}
         df_xvect = pd.read_csv(
@@ -101,7 +109,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         i = 49
 
-        for disc in self.ee.root_process.sos_disciplines[0].sos_disciplines:
+        for disc in self.ee.root_process.proxy_disciplines[0].proxy_disciplines:
             #         disc = self.ee.dm.get_disciplines_with_name(
             #             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix')[0]
             outputs = disc.get_output_data_names()
@@ -130,13 +138,13 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # filepath=filepath)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-8, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # filepath=filepath)
             i += 1

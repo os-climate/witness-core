@@ -52,13 +52,15 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
     if activated_elem is None:
         activated_elem = [True] * len(value)
     dspace_dict[name] = {'value': value,
-                         'lower_bnd': lower, 'upper_bnd': upper, 'enable_variable': enable_variable, 'activated_elem': activated_elem}
+                         'lower_bnd': lower, 'upper_bnd': upper, 'enable_variable': enable_variable,
+                         'activated_elem': activated_elem}
 
     dspace_dict['dspace_size'] += len(value)
 
 
 class Study(StudyManager):
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None,
+                 agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  model_list=AGRI_MIX_MODEL_LIST):
         super().__init__(__file__, execution_engine=execution_engine)
         self.year_start = year_start
@@ -115,7 +117,8 @@ class Study(StudyManager):
             {'years': years, 'transport': np.ones(len(years)) * 7.6})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {'years': years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0,
+             'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
         deforestation_surface = np.linspace(10, 5, year_range)
         self.deforestation_surface_df = pd.DataFrame(
@@ -145,7 +148,7 @@ class Study(StudyManager):
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
-                     29.01,  34.05,   39.08,  44.69,   50.29]
+                     29.01, 34.05, 39.08, 44.69, 50.29]
         func = sc.interp1d(co2_taxes_year, co2_taxes,
                            kind='linear', fill_value='extrapolate')
 
@@ -181,7 +184,6 @@ class Study(StudyManager):
         managed_wood_investment_array_mix = np.linspace(
             2.0, 3.0, self.nb_poles)
 
-
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl
         design_space_ctrl_dict['white_meat_percentage_ctrl'] = white_meat_percentage_ctrl
@@ -209,22 +211,31 @@ class Study(StudyManager):
         # -----------------------------------------
         # Crop related
         update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles, [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles,
+                                [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values),
+                                [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         update_dspace_dict_with(ddict, 'deforestation_investment_ctrl',
-                                list(self.design_space_ctrl['deforestation_investment_ctrl'].values), [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['deforestation_investment_ctrl'].values),
+                                [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         # -----------------------------------------
         # Invests
         update_dspace_dict_with(ddict, 'forest_investment_array_mix',
-                                list(self.design_space_ctrl['forest_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['forest_investment_array_mix'].values),
+                                [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
+                                activated_elem=[True] * self.nb_poles)
         if 'CropEnergy' in self.techno_list:
             update_dspace_dict_with(ddict, 'crop_investment_array_mix',
-                                    list(self.design_space_ctrl['crop_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False,)
+                                    list(self.design_space_ctrl['crop_investment_array_mix'].values),
+                                    [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
+                                    activated_elem=[True] * self.nb_poles, enable_variable=False, )
         if 'ManagedWood' in self.techno_list:
             update_dspace_dict_with(ddict, 'managed_wood_investment_array_mix',
-                                    list(self.design_space_ctrl['managed_wood_investment_array_mix'].values), [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles, enable_variable=False)
+                                    list(self.design_space_ctrl['managed_wood_investment_array_mix'].values),
+                                    [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
+                                    activated_elem=[True] * self.nb_poles, enable_variable=False)
 
         return ddict
 
@@ -234,7 +245,7 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         filters = ppf.get_post_processing_filters_by_discipline(
             disc)
         graph_list = ppf.get_post_processing_by_discipline(

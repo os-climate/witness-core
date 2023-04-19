@@ -18,15 +18,21 @@ import numpy as np
 import pandas as pd
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_sub_proc_usecase
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective', 'co2_emissions_objective',  'EnergyMix.methane.demand_violation', 'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation', 'EnergyMix.biogas.demand_violation', 'EnergyMix.syngas.demand_violation', 'EnergyMix.liquid_fuel.demand_violation',
-                 'EnergyMix.solid_fuel.demand_violation', 'EnergyMix.biomass_dry.demand_violation', 'EnergyMix.electricity.demand_violation', 'EnergyMix.biodiesel.demand_violation', 'EnergyMix.hydrogen.liquid_hydrogen.demand_violation', 'primary_energies_production', 'land_demand_constraint_df']
+    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',
+                 'co2_emissions_objective', 'EnergyMix.methane.demand_violation',
+                 'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation', 'EnergyMix.biogas.demand_violation',
+                 'EnergyMix.syngas.demand_violation', 'EnergyMix.liquid_fuel.demand_violation',
+                 'EnergyMix.solid_fuel.demand_violation', 'EnergyMix.biomass_dry.demand_violation',
+                 'EnergyMix.electricity.demand_violation', 'EnergyMix.biodiesel.demand_violation',
+                 'EnergyMix.hydrogen.liquid_hydrogen.demand_violation', 'primary_energies_production',
+                 'land_demand_constraint_df']
 
     def setUp(self):
 
@@ -62,11 +68,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             f'{designvariable_name}', design_var_path)
         chain_builders.append(design_var_builder)
 
-#         # function manager builder
-#         fmanager_path = 'sos_trades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
-#         fmanager_builder = self.ee.factory.get_builder_from_module(
-#             f'{func_manager_name}', fmanager_path)
-#         chain_builders.append(fmanager_builder)
+        #         # function manager builder
+        #         fmanager_path = 'sos_trades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
+        #         fmanager_builder = self.ee.factory.get_builder_from_module(
+        #             f'{func_manager_name}', fmanager_path)
+        #         chain_builders.append(fmanager_builder)
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
@@ -111,7 +117,8 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             input_full_names.append(input_name)
             full_values_dict[input_name] = np.linspace(1, 2, nb_poles)
 
-            for technology in full_values_dict[f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.technologies_list']:
+            for technology in full_values_dict[
+                f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.technologies_list']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_name = f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'
                 input_full_names.append(input_name)
@@ -120,14 +127,16 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             join(dirname(__file__), 'data/design_space_last_ite.csv'))})
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
         namespace = 'Test.WITNESS_Eval.WITNESS'
         output_full_names = [
             f'{namespace}.CO2_tax_minus_CO2_damage_constraint_df']
         self.ee.display_treeview_nodes(display_variables=True)
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_constraint_wrt_design_var_bspline.pkl', discipline=disc, inputs=input_full_names,
-                            outputs=output_full_names, derr_approx='complex_step', step=1.0e-15,local_data = {}, parallel=True)
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_constraint_wrt_design_var_bspline.pkl',
+                            discipline=disc, inputs=input_full_names,
+                            outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, local_data={},
+                            parallel=True)
 
 
 if '__main__' == __name__:

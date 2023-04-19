@@ -18,18 +18,19 @@ import numpy as np
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_sub_proc_usecase
 
 
 class WitnessFullGradient(AbstractJacobianUnittest):
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective', 'co2_emissions_objective',
-                 'CO2_tax_minus_CO2_damage_constraint_df', 'primary_energies_production', 'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
+    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',
+                 'co2_emissions_objective',
+                 'CO2_tax_minus_CO2_damage_constraint_df', 'primary_energies_production',
+                 'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
 
     def setUp(self):
-
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
@@ -42,7 +43,6 @@ class WitnessFullGradient(AbstractJacobianUnittest):
         ]
 
     def test_01_gradient_objective_wrt_design_var_on_witness_full(self):
-
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
@@ -66,7 +66,7 @@ class WitnessFullGradient(AbstractJacobianUnittest):
             values_dict.update(dict_item)
 
         values_dict['Test.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
-        #values_dict['Test.WITNESS_Eval.max_mda_iter'] = 1
+        # values_dict['Test.WITNESS_Eval.max_mda_iter'] = 1
         values_dict['Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix'] = 81 * [30.]
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -77,7 +77,7 @@ class WitnessFullGradient(AbstractJacobianUnittest):
         input_full_names = [
             'Test.WITNESS_Eval.WITNESS.EnergyMix.methane.FossilGas.methane_FossilGas_array_mix']
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
         disc.add_differentiated_inputs(input_full_names)
         disc.add_differentiated_outputs(output_full_names)
 

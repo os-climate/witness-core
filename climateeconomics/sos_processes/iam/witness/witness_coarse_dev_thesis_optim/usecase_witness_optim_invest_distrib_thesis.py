@@ -17,8 +17,10 @@ import numpy as np
 import pandas as pd
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_optim_sub_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
+    COUPLING_NAME, EXTRA_NAME
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
@@ -35,9 +37,9 @@ EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False,
+                 execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT):
-
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -50,12 +52,11 @@ class Study(ClimateEconomicsStudyManager):
         self.techno_dict = techno_dict
 
         self.witness_uc = witness_optim_sub_usecase(
-            self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level= 'thesis')
+            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level='thesis')
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
     def setup_process(self):
-
         witness_optim_sub_usecase.setup_process(self)
 
     def setup_usecase(self):
@@ -102,12 +103,14 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "disp": 30},
                              # f'{ns}.{self.optim_name}.{witness_uc.coupling_name}.linear_solver_MDO':
                              # 'GMRES',
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-10,
-                                                                                                                   'max_iter': 10000},
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {
+                                 'tol': 1.0e-10,
+                                 'max_iter': 10000},
                              # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA':
                              # 'GMRES',
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {'tol': 1.0e-10,
-                                                                                                                   'max_iter': 50000},
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {
+                                 'tol': 1.0e-10,
+                                 'max_iter': 50000},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.epsilon0': 1.0,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.tolerance': 1.0e-10,
                              f'{ns}.{self.optim_name}.parallel_options': {"parallel": False,  # True
@@ -116,10 +119,10 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "wait_time_between_fork": 0},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50, }
-# f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
-# True}
+        # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
+        # True}
 
-        #print("Design space dimension is ", dspace_size)
+        # print("Design space dimension is ", dspace_size)
 
         return [values_dict] + [optim_values_dict]
 
@@ -135,11 +138,11 @@ if '__main__' == __name__:
     # dict_xvect[f'{uc_cls.study_name}.{uc_cls.optim_name}.eval_mode'] = True
     # uc_cls.load_data(from_input_dict=dict_xvect)
     # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
-    # uc_cls.execution_engine.root_process.sos_disciplines[0].set_opt_scenario()
+    # uc_cls.execution_engine.root_process.proxy_disciplines[0].set_opt_scenario()
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 
-#     uc_cls.execution_engine.root_process.sos_disciplines[0].coupling_structure.graph.export_reduced_graph(
+#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_reduced_graph(
 #         "reduced.pdf")
-#     uc_cls.execution_engine.root_process.sos_disciplines[0].coupling_structure.graph.export_initial_graph(
+#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_initial_graph(
 #         "initial.pdf")

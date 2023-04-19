@@ -22,7 +22,6 @@ import platform
 
 
 class WitnessJacobianDiscTest(AbstractJacobianUnittest):
-
     # Parallel computation if platform is not windows
     PARALLEL = False
     if platform.system() != 'Windows':
@@ -52,7 +51,7 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
 
         # loop over all disciplines
 
-        all_disc = self.ee.root_process.sos_disciplines[0].sos_disciplines
+        all_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines
 
         # specify a list of disciplines to check
         if optional_disciplines_list:
@@ -91,7 +90,7 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                     self.ee.dm.delete_complex_in_df_and_arrays()
                     AbstractJacobianUnittest.DUMP_JACOBIAN = True
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                         inputs=inputs,
                                         outputs=outputs,
                                         directory=directory,
@@ -103,7 +102,7 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                         print('Testing jacobian vs existing pkl file')
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs,
                                             directory=directory,
@@ -113,7 +112,8 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
                             print('Jacobian may have changed, dumping pkl...')
                             self.ee.dm.delete_complex_in_df_and_arrays()
                             AbstractJacobianUnittest.DUMP_JACOBIAN = True
-                            self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,local_data = {},
+                            self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
+                                                local_data={},
                                                 step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
                                                 inputs=inputs,
                                                 outputs=outputs,
@@ -179,7 +179,7 @@ class WitnessJacobianDiscTest(AbstractJacobianUnittest):
     #
     #     excluded_disc = []
     #
-    #     all_disc = self.ee.root_process.sos_disciplines[0].sos_disciplines
+    #     all_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines
     #     total_disc = len(all_disc)
     #     counter = 0
     #     for disc in tqdm(all_disc):

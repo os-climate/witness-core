@@ -15,13 +15,13 @@ limitations under the License.
 '''
 
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_MODEL_LIST
-from energy_models.core.energy_process_builder import EnergyProcessBuilder,\
+from energy_models.core.energy_process_builder import EnergyProcessBuilder, \
     INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 import re
 
-class ProcessBuilder(EnergyProcessBuilder):
 
+class ProcessBuilder(EnergyProcessBuilder):
     # ontology information
     _ontology_data = {
         'label': 'Agriculture Mix',
@@ -29,6 +29,7 @@ class ProcessBuilder(EnergyProcessBuilder):
         'category': '',
         'version': '',
     }
+
     def __init__(self, ee):
         EnergyProcessBuilder.__init__(self, ee)
         self.model_list = AGRI_MIX_MODEL_LIST
@@ -47,44 +48,58 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_witness': f'{ns_study}',
                    'ns_biomass_dry': f'{ns_study}',
                    'ns_land_use': f'{ns_study}',
-                   'ns_crop': f'{ns_study}.{ns_agriculture_mix}.{ns_crop}',
                    'ns_forest': f'{ns_study}.{ns_agriculture_mix}.{ns_forest}',
                    'ns_invest': f'{ns_study}'}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+        self.ee.ns_manager.add_ns('ns_crop', f'{ns_study}.{ns_agriculture_mix}.{ns_crop}',
+                                  display_value=f'{ns_study}.{ns_agriculture_mix}.Food')
+        builder_list = []
 
-        mods_dict = {}
-        agricultureDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture'
-        mods_dict[f'{ns_agriculture_mix}'] = agricultureDiscPath + '.agriculture_mix_disc.AgricultureMixDiscipline'
+        agricultureDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc.AgricultureMixDiscipline'
+
+        agrimix_builder = self.ee.factory.get_builder_from_module(
+            ns_agriculture_mix, agricultureDiscPath)
+        builder_list.append(agrimix_builder)
+
         for model_name in self.model_list:
-            #technoDiscPath = self.get_techno_disc_path(techno_name,agricultureDiscPath)
+            # technoDiscPath = self.get_techno_disc_path(techno_name,agricultureDiscPath)
             # fix just while crop and forest are not in the right folder
             if model_name == "Crop":
-                technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'
+                technoDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc.CropDiscipline'
+                builder = self.ee.factory.get_builder_from_module(
+                    f'{ns_agriculture_mix}.{model_name}', technoDiscPath)
             elif model_name == "Forest":
-                technoDiscPath ='climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
-            mods_dict[f'{ns_agriculture_mix}.{model_name}'] = technoDiscPath
+                technoDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.forest.forest_disc.ForestDiscipline'
 
-        builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
+            builder = self.ee.factory.get_builder_from_module(
+                f'{ns_agriculture_mix}.{model_name}', technoDiscPath)
+            # Replace the display name of Crop by Food
+            # Crop is necessary to deal with energy model genericity but food is more appropriate to understand what is behind the model
+            # Diet + Crop energy with residues from diet
+            if model_name == "Crop":
+                self.ee.ns_manager.add_display_ns_to_builder(
+                    builder, f'{ns_study}.{ns_agriculture_mix}.Food')
+            builder_list.append(builder)
 
         return builder_list
-
 
     def get_techno_disc_path(self, techno_name, techno_dir_path, sub_dir=None):
         list_name = re.findall('[A-Z][^A-Z]*', techno_name)
         test = [len(l) for l in list_name]
-        #-- in case only one letter is capital, support all are capital and don't add _
+        # -- in case only one letter is capital, support all are capital and don't add _
         if 1 in test:
             mod_name = "".join(l.lower() for l in list_name)
         else:
             mod_name = "_".join(l.lower() for l in list_name)
-        #--case of CO2... to be generalized
+        # --case of CO2... to be generalized
         if '2' in mod_name:
             mod_name = "2_".join(mod_name.split('2'))
-        #-- try to find rule for electrolysis case
-        #-- get correct disc name in case of dot in name
+        # -- try to find rule for electrolysis case
+        # -- get correct disc name in case of dot in name
         dot_plit = mod_name.split('.')
         dot_name = "_".join(dot_plit)
         disc_name = f'{dot_name}_disc'
-        #-- fix techno name in case of dot in name
+        # -- fix techno name in case of dot in name
         dot_tech_split = techno_name.split('.')
         mod_techno_name = "".join(dot_tech_split)
 

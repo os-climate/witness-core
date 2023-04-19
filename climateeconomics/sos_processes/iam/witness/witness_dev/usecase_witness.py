@@ -16,7 +16,8 @@ limitations under the License.
 
 import pandas as pd
 from sostrades_core.study_manager.study_manager import StudyManager
-from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import DataStudy as datacase_witness_dev
+from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
+    DataStudy as datacase_witness_dev
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
@@ -35,8 +36,10 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False, execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT_DEV, process_level='dev'):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False,
+                 execution_engine=None,
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT_DEV,
+                 process_level='dev'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -105,7 +108,8 @@ class Study(ClimateEconomicsStudyManager):
         # WITNESS
         # setup objectives
         self.func_df = pd.concat(
-            [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(), self.dc_energy.setup_objectives(), land_use_df_constraint])
+            [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(),
+             self.dc_energy.setup_objectives(), land_use_df_constraint])
 
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
@@ -134,8 +138,8 @@ if '__main__' == __name__:
 
     # uc_cls.execution_engine.root_process.coupling_structure.graph.export_initial_graph(
     #     "initial.pdf")
-#     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
-#         "reduced.pdf")
+    #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
+    #         "reduced.pdf")
 
     # DEBUG MIN MAX COUPLINGS
     # uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
@@ -146,7 +150,7 @@ if '__main__' == __name__:
     uc_cls.run()
 
     # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
     #     if disc.sos_name == 'Resources':
     #         filters = ppf.get_post_processing_filters_by_discipline(
     #             disc)

@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model_v2 import TempChange
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from copy import deepcopy
 import pandas as pd
@@ -48,7 +48,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2, 'unit': '°C'},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'unit': '-', 'default': 3.1, 'user_level': 3},
-        'temperature_model': {'type': 'string', 'default': 'FUND', 'possible_values': ['DICE', 'FUND', 'FAIR'], 'structuring': True},
+        'temperature_model': {'type': 'string', 'default': 'FUND', 'possible_values': ['DICE', 'FUND', 'FAIR'],
+                              'structuring': True},
         'climate_upper': {'type': 'float', 'default': 0.1005, 'user_level': 3, 'unit': '-'},
         'transfer_upper': {'type': 'float', 'default': 0.088, 'user_level': 3, 'unit': '-'},
         'transfer_lower': {'type': 'float', 'default': 0.025, 'user_level': 3, 'unit': '-'},
@@ -66,10 +67,12 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                                                        TempChange.INTEGRAL_OBJECTIVE],
                                    'default': TempChange.INTEGRAL_OBJECTIVE,
                                    'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'temperature_change_ref': {'type': 'float', 'default': 0.2, 'unit': '°C', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+        'temperature_change_ref': {'type': 'float', 'default': 0.2, 'unit': '°C',
+                                   'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                    'namespace': 'ns_ref', 'user_level': 2},
 
-        'scale_factor_atmo_conc': {'type': 'float', 'default': 1e-2, 'unit': '-', 'user_level': 2, 'visibility': 'Shared',
+        'scale_factor_atmo_conc': {'type': 'float', 'default': 1e-2, 'unit': '-', 'user_level': 2,
+                                   'visibility': 'Shared',
                                    'namespace': 'ns_witness'},
         'temperature_end_constraint_limit': {'type': 'float', 'default': 1.5, 'unit': '°C', 'user_level': 2},
         'temperature_end_constraint_ref': {'type': 'float', 'default': 3., 'unit': '°C', 'user_level': 2},
@@ -127,10 +130,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                     'type': 'float', 'default': 722., 'unit': 'ppm', 'user_level': 2}
                 dynamic_inputs['pre_indus_n2o_concentration_ppm'] = {
                     'type': 'float', 'default': 273., 'unit': 'ppm', 'user_level': 2}
-        var_names = ['forcing_model','init_forcing_nonco','hundred_forcing_nonco','pre_indus_ch4_concentration_ppm','pre_indus_n2o_concentration_ppm']
-        for var_name in var_names:
-            if var_name in self.get_data_in():
-                self.clean_variables([var_name], self.IO_TYPE_IN)
+        # var_names = ['forcing_model','init_forcing_nonco','hundred_forcing_nonco','pre_indus_ch4_concentration_ppm','pre_indus_n2o_concentration_ppm']
+        # for var_name in var_names:
+        #     if var_name in self.get_data_in():
+        #         self.clean_variables([var_name], self.IO_TYPE_IN)
         self.add_inputs(dynamic_inputs)
 
     def init_execution(self):
@@ -161,7 +164,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         year_start = self.get_sosdisc_inputs('year_start')
         year_end = self.get_sosdisc_inputs('year_end')
         temperature_constraint_ref = self.get_sosdisc_inputs('temperature_end_constraint_ref')
-        identity = np.identity(year_end-year_start+1)
+        identity = np.identity(year_end - year_start + 1)
 
         # forcing_detail
         self.model.compute_d_forcing()
@@ -169,7 +172,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         if forcing_model == 'DICE':
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'CO2 forcing'),  ('ghg_cycle_df', 'co2_ppm'), identity * d_forcing_datmo_conc['CO2 forcing'],)
+                ('forcing_detail_df', 'CO2 forcing'), ('ghg_cycle_df', 'co2_ppm'),
+                identity * d_forcing_datmo_conc['CO2 forcing'], )
 
         elif forcing_model == 'Myhre':
             self.set_partial_derivative_for_other_types(
@@ -230,16 +234,20 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             elif forcing_model == 'Etminan' or forcing_model == 'Meinshausen':
 
-                d_temp_d_co2_ppm = np.matmul(d_temp_d_forcing_fund, identity * (d_forcing_datmo_conc['CO2 forcing CO2 ppm'] + d_forcing_datmo_conc['N2O forcing CO2 ppm']))
-                d_temp_d_ch4_ppm = np.matmul(d_temp_d_forcing_fund, identity * (d_forcing_datmo_conc['CH4 forcing CH4 ppm'] + d_forcing_datmo_conc['N2O forcing CH4 ppm']))
-                d_temp_d_n2o_ppm = np.matmul(d_temp_d_forcing_fund, identity * (d_forcing_datmo_conc['CO2 forcing N2O ppm'] + d_forcing_datmo_conc['CH4 forcing N2O ppm'] + d_forcing_datmo_conc['N2O forcing N2O ppm']))
+                d_temp_d_co2_ppm = np.matmul(d_temp_d_forcing_fund, identity * (
+                            d_forcing_datmo_conc['CO2 forcing CO2 ppm'] + d_forcing_datmo_conc['N2O forcing CO2 ppm']))
+                d_temp_d_ch4_ppm = np.matmul(d_temp_d_forcing_fund, identity * (
+                            d_forcing_datmo_conc['CH4 forcing CH4 ppm'] + d_forcing_datmo_conc['N2O forcing CH4 ppm']))
+                d_temp_d_n2o_ppm = np.matmul(d_temp_d_forcing_fund, identity * (
+                            d_forcing_datmo_conc['CO2 forcing N2O ppm'] + d_forcing_datmo_conc['CH4 forcing N2O ppm'] +
+                            d_forcing_datmo_conc['N2O forcing N2O ppm']))
 
             self.set_partial_derivative_for_other_types(
-                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'co2_ppm'), d_temp_d_co2_ppm,)
+                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'co2_ppm'), d_temp_d_co2_ppm, )
             self.set_partial_derivative_for_other_types(
-                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'ch4_ppm'), d_temp_d_ch4_ppm,)
+                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'ch4_ppm'), d_temp_d_ch4_ppm, )
             self.set_partial_derivative_for_other_types(
-                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'n2o_ppm'), d_temp_d_n2o_ppm,)
+                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'n2o_ppm'), d_temp_d_n2o_ppm, )
 
             # temperature_constraint
             self.set_partial_derivative_for_other_types(

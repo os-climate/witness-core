@@ -1,6 +1,3 @@
-
-
-
 from os.path import join, dirname
 import numpy as np
 import pandas as pd
@@ -20,21 +17,19 @@ class Study(StudyManager):
 
         year, year_end = 2020, 2100
 
-        copper_demand = pd.DataFrame(columns = ['Year', 'Demand'])
+        copper_demand = pd.DataFrame(columns=['Year', 'Demand'])
 
         period_of_exploitation = np.arange(year, year_end + 1, 1)
 
-        copper_demand['Year']= period_of_exploitation
+        copper_demand['Year'] = period_of_exploitation
         copper_demand.index = copper_demand['Year'].values
-        copper_demand['Demand'] = [0]*len(period_of_exploitation) 
+        copper_demand['Demand'] = [0] * len(period_of_exploitation)
         annual_extraction = []
 
-        while year < year_end +1 :
+        while year < year_end + 1:
             copper_demand.at[year, 'Demand'] = rd.gauss(26, 0.5) * 1.056467 ** (year - 2020)
             annual_extraction += [26 * 1.056467 ** (year - 2020)]
-            year+=1
-
-        
+            year += 1
 
         config_data = {f'{self.study_name}.CopperModel.copper_demand': copper_demand,
                        f'{self.study_name}.CopperModel.annual_extraction': annual_extraction}
@@ -47,7 +42,7 @@ if '__main__' == __name__:
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         filters = ppf.get_post_processing_filters_by_discipline(
             disc)
         graph_list = ppf.get_post_processing_by_discipline(
