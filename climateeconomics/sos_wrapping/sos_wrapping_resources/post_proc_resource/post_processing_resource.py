@@ -15,8 +15,10 @@ limitations under the License.
 '''
 
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import InstantiatedPlotlyNativeChart
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 
 import numpy as np
@@ -28,6 +30,7 @@ import pandas as pd
 from plotly.express.colors import qualitative
 
 RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
+
 
 def post_processing_filters(execution_engine, namespace):
     '''
@@ -56,7 +59,7 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == 'Charts':
                 graphs_list.extend(chart_filter.selected_values)
 
-    #---
+    # ---
     if 'Resource Consumption' in graphs_list:
         chart_name = f'Resource Consumption'
         new_chart = get_chart_resource_consumption(
@@ -87,16 +90,22 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     resource_consumed = pd.DataFrame({'years': years})
     energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
     for energy in energy_list:
+        if energy == 'biomass_dry':
+            namespace_disc = f'{WITNESS_ns}.AgricultureMix'
+        else:
+            namespace_disc = f'{WITNESS_ns}.EnergyMix.{energy}'
+
         energy_disc = execution_engine.dm.get_disciplines_with_name(
-            f'{WITNESS_ns}.EnergyMix.{energy}')[0]
+            f'{namespace_disc}')[0]
         techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
-                f'{WITNESS_ns}.EnergyMix.{energy}.{techno}')[0]
+                f'{namespace_disc}.{techno}')[0]
             consumption_techno = techno_disc.get_sosdisc_outputs(
                 'techno_consumption')
             if f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})' in consumption_techno.columns:
-                resource_consumed[f'{energy} {techno}'] = consumption_techno[f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})'] * techno_disc.get_sosdisc_inputs(
+                resource_consumed[f'{energy} {techno}'] = consumption_techno[
+                                                              f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})'] * techno_disc.get_sosdisc_inputs(
                     'scaling_factor_techno_consumption')
     CCUS = execution_engine.dm.get_disciplines_with_name(
         f'{WITNESS_ns}.CCUS')[0]
@@ -111,7 +120,8 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
             consumption_techno = techno_disc.get_sosdisc_outputs(
                 'techno_consumption')
             if f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})' in consumption_techno.columns:
-                resource_consumed[f'{stream} {techno}'] = consumption_techno[f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})'] * techno_disc.get_sosdisc_inputs(
+                resource_consumed[f'{stream} {techno}'] = consumption_techno[
+                                                              f'{resource_name} ({RESOURCE_CONSUMPTION_UNIT})'] * techno_disc.get_sosdisc_inputs(
                     'scaling_factor_techno_consumption')
 
     # Create Figure

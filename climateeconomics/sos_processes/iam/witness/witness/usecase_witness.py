@@ -202,16 +202,13 @@ if '__main__' == __name__:
 #     result = result.getvalue()
 #     print(result)
 
-# ppf = PostProcessingFactory()
-# for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-#     if disc.sos_name == 'Resources':
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
+ppf = PostProcessingFactory()
+all_post_processings = ppf.get_all_post_processings(
+    execution_engine=uc_cls.execution_engine, filters_only=False,
+    as_json=False, for_test=False)
 
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+# for graph in graph_list:
+#     graph.to_plotly().show()
 
 #     if disc.sos_name == 'EnergyMix.electricity.Nuclear':
 #         filters = ppf.get_post_processing_filters_by_discipline(
