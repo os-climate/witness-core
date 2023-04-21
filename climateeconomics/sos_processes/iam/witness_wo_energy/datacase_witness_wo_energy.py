@@ -22,13 +22,15 @@ from pathlib import Path
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as datacase_agriculture_mix
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
+
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 EQ_CONSTRAINT = FunctionManagerDisc.EQ_CONSTRAINT
@@ -40,7 +42,8 @@ AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 
 class DataStudy():
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1,
+                 agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT):
         self.study_name = 'default_name'
         self.year_start = year_start
         self.year_end = year_end
@@ -81,8 +84,8 @@ class DataStudy():
         # Relax constraint for 15 first years
         witness_input[self.study_name + '.Damage.damage_constraint_factor'] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
-#         witness_input[self.study_name +
-#                       '.Damage.damage_constraint_factor'] = np.asarray([1] * len(years))
+        #         witness_input[self.study_name +
+        #                       '.Damage.damage_constraint_factor'] = np.asarray([1] * len(years))
         witness_input[f'{self.study_name}.InvestmentDistribution.forest_investment'] = self.forest_invest_df
         # get population from csv file
         # get file from the data folder 3 folder up.
@@ -136,7 +139,6 @@ class DataStudy():
         CO2_emitted_land['Crop'] = np.zeros(len(years))
         CO2_emitted_land['Forest'] = cum_emission
 
-
         witness_input[self.study_name +
                       '.CO2_land_emissions'] = CO2_emitted_land
 
@@ -159,17 +161,17 @@ class DataStudy():
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
 
-        #-- load data from resource
+        # -- load data from resource
         dc_resource = datacase_resource(
             self.year_start, self.year_end)
         dc_resource.study_name = self.study_name
 
-        #-- load data from land use
+        # -- load data from land use
         dc_landuse = datacase_landuse(
             self.year_start, self.year_end, self.time_step, name='.Land_Use_V2', extra_name='.EnergyMix')
         dc_landuse.study_name = self.study_name
 
-        #-- load data from agriculture
+        # -- load data from agriculture
         dc_agriculture_mix = datacase_agriculture_mix(
             self.year_start, self.year_end, self.time_step, agri_techno_list=self.techno_dict)
         dc_agriculture_mix.additional_ns = '.InvestmentDistribution'
@@ -207,7 +209,6 @@ class DataStudy():
         witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
-        witness_input[f'{self.study_name}.is_dev'] = True
         # 
 
         GHG_total_energy_emissions = pd.DataFrame({'years': years,
@@ -215,14 +216,14 @@ class DataStudy():
                                                    'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
                                                    'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
-        #witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
-#         self.exec_eng.dm.export_couplings(
-#             in_csv=True, f_name='couplings.csv')
+        # witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
+        #         self.exec_eng.dm.export_couplings(
+        #             in_csv=True, f_name='couplings.csv')
 
-#         self.exec_eng.root_process.coupling_structure.graph.export_initial_graph(
-#             "initial.pdf")
-# self.exec_eng.root_process.coupling_structure.graph.export_reduced_graph(
-# "reduced.pdf")
+        #         self.exec_eng.root_process.coupling_structure.graph.export_initial_graph(
+        #             "initial.pdf")
+        # self.exec_eng.root_process.coupling_structure.graph.export_reduced_graph(
+        # "reduced.pdf")
         setup_data_list.append(witness_input)
 
         return setup_data_list
@@ -237,11 +238,13 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective', 'ppm_objective', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted'])
+            ['welfare_objective', 'ppm_objective', 'non_use_capital_objective', 'delta_capital_objective',
+             'delta_capital_objective_weighted'])
         list_parent.extend(['utility_objective',
-                            'CO2_obj', 'non_use_capital_objective', 'delta_capital_objective', 'delta_capital_objective_weighted'])
+                            'CO2_obj', 'non_use_capital_objective', 'delta_capital_objective',
+                            'delta_capital_objective_weighted'])
         list_ns.extend(['ns_functions',
-                        'ns_functions', 'ns_witness','ns_functions', 'ns_functions'])
+                        'ns_functions', 'ns_witness', 'ns_functions', 'ns_functions'])
         list_ftype.extend(
             [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
         list_weight.extend([1.0, 0.0, 0.0, 0.0, 0.0])

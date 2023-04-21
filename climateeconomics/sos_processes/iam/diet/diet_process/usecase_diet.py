@@ -210,7 +210,6 @@ class Study(ClimateEconomicsStudyManager):
         witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
-        witness_input[f'{self.study_name}.is_dev'] = True
         #
 
         GHG_total_energy_emissions = pd.DataFrame({'years': years,

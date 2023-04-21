@@ -67,9 +67,6 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        # WIP is_dev to remove once its validated on dev processes
-        'is_dev': {'type': 'bool', 'default': False, 'user_level': 2, 'structuring': True,
-                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_public'},
 
     }
     DESC_OUT = {
@@ -88,34 +85,32 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
         # Recover the full techno list to get all non_use capital by energy mix
         energy_techno_dict = {}
-        if 'is_dev' in self.get_data_in():
-            is_dev = self.get_sosdisc_inputs('is_dev')
-            if is_dev:
-                dynamic_inputs['forest_lost_capital'] = {'type': 'dataframe',
-                                                         'unit': 'G$',
-                                                         'user_level': 2,
-                                                         'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                         'namespace': 'ns_forest',
-                                                         'structuring': True}
-                dynamic_inputs['forest_lost_capital_cons_ref'] = {'type': 'float',
-                                                                  'unit': 'G$',
-                                                                  'default': 20.,
-                                                                  'user_level': 2,
-                                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                  'namespace': 'ns_ref',
-                                                                  'structuring': True}
-                dynamic_inputs['forest_lost_capital_cons_limit'] = {'type': 'float',
-                                                                    'unit': 'G$',
-                                                                    'default': 40.,
-                                                                    'user_level': 2,
-                                                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                    'namespace': 'ns_ref',
-                                                                    'structuring': True}
+
+        dynamic_inputs['forest_lost_capital'] = {'type': 'dataframe',
+                                                 'unit': 'G$',
+                                                 'user_level': 2,
+                                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                 'namespace': 'ns_forest',
+                                                 'structuring': True}
+        dynamic_inputs['forest_lost_capital_cons_ref'] = {'type': 'float',
+                                                          'unit': 'G$',
+                                                          'default': 20.,
+                                                          'user_level': 2,
+                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                          'namespace': 'ns_ref',
+                                                          'structuring': True}
+        dynamic_inputs['forest_lost_capital_cons_limit'] = {'type': 'float',
+                                                            'unit': 'G$',
+                                                            'default': 40.,
+                                                            'user_level': 2,
+                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                                            'namespace': 'ns_ref',
+                                                            'structuring': True}
         if 'energy_list' in self.get_data_in():
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
                 for energy in energy_list:
-                    if energy == BiomassDry.name and is_dev == True:
+                    if energy == BiomassDry.name:
                         pass
                     else:
                         dynamic_inputs[f'{energy}.technologies_list'] = {'type': 'list',
@@ -217,7 +212,6 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         non_use_capital_obj_ref = inputs_dict['non_use_capital_obj_ref']
         alpha, gamma = inputs_dict['alpha'], inputs_dict['gamma']
         non_use_capital_cons_ref = inputs_dict['non_use_capital_cons_ref']
-        is_dev = inputs_dict['is_dev']
         outputs_dict = self.get_sosdisc_outputs()
         non_use_capital_df = outputs_dict['non_use_capital_df']
         input_nonusecapital_list = [
@@ -240,19 +234,19 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                 col for col in inputs_dict[capital].columns if col != 'years'][0]
             self.set_partial_derivative_for_other_types(
                 ('energy_capital', 'energy_capital'), (capital, column_name), np.identity(len(years)) / 1.e3)
-        if is_dev:
-            forest_lost_capital_cons_ref = inputs_dict['forest_lost_capital_cons_ref']
-            self.set_partial_derivative_for_other_types(
-                ('forest_lost_capital_cons',
-                 ), ('forest_lost_capital', 'reforestation'),
-                - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
-            self.set_partial_derivative_for_other_types(
-                ('forest_lost_capital_cons',), ('forest_lost_capital', 'managed_wood'),
-                - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
-            self.set_partial_derivative_for_other_types(
-                ('forest_lost_capital_cons',
-                 ), ('forest_lost_capital', 'deforestation'),
-                - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
+
+        forest_lost_capital_cons_ref = inputs_dict['forest_lost_capital_cons_ref']
+        self.set_partial_derivative_for_other_types(
+            ('forest_lost_capital_cons',
+             ), ('forest_lost_capital', 'reforestation'),
+            - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
+        self.set_partial_derivative_for_other_types(
+            ('forest_lost_capital_cons',), ('forest_lost_capital', 'managed_wood'),
+            - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
+        self.set_partial_derivative_for_other_types(
+            ('forest_lost_capital_cons',
+             ), ('forest_lost_capital', 'deforestation'),
+            - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
 
     def get_chart_filter_list(self):
 
@@ -275,7 +269,6 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         # value of ToT with a shift of five year between then
 
         instanciated_charts = []
-        is_dev = self.get_sosdisc_inputs('is_dev')
         if chart_filters is not None:
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
@@ -328,7 +321,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
-        if 'Forest Management Lost Capital' in chart_list and is_dev:
+        if 'Forest Management Lost Capital' in chart_list:
             forest_lost_capital = self.get_sosdisc_inputs(
                 'forest_lost_capital')
 
