@@ -202,10 +202,10 @@ if '__main__' == __name__:
 #     result = result.getvalue()
 #     print(result)
 
-ppf = PostProcessingFactory()
-all_post_processings = ppf.get_all_post_processings(
-    execution_engine=uc_cls.execution_engine, filters_only=False,
-    as_json=False, for_test=False)
+# ppf = PostProcessingFactory()
+# all_post_processings = ppf.get_all_post_processings(
+#     execution_engine=uc_cls.execution_engine, filters_only=False,
+#     as_json=False, for_test=False)
 
 # for graph in graph_list:
 #     graph.to_plotly().show()
