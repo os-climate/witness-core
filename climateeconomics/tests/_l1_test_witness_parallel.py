@@ -18,7 +18,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_c
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from tempfile import gettempdir
 from copy import deepcopy
-from gemseo.utils.compare_data_manager_tooling import delete_keys_from_dict,\
+from gemseo.utils.compare_data_manager_tooling import delete_keys_from_dict, \
     compare_dict
 import numpy as np
 
@@ -96,12 +96,12 @@ class WITNESSParallelTest(unittest.TestCase):
                      dm_dict_8, '', dict_error)
 
         residual_history8 = self.ee8.root_process.sub_mda_list[0].residual_history
-        #self.assertListEqual(residual_history, residual_history8)
+        # self.assertListEqual(residual_history, residual_history8)
         for key, value in dict_error.items():
             print(key)
             print(value)
 
-        for disc1, disc2 in zip(self.ee.root_process.sos_disciplines, self.ee8.root_process.sos_disciplines):
+        for disc1, disc2 in zip(self.ee.root_process.proxy_disciplines, self.ee8.root_process.proxy_disciplines):
             if disc1.jac is not None:
                 # print(disc1)
                 for keyout, subjac in disc1.jac.items():
@@ -116,16 +116,14 @@ class WITNESSParallelTest(unittest.TestCase):
                             np.set_printoptions(threshold=1e6)
                             for arr, arr2 in zip(disc1.jac[keyout][keyin], disc2.jac[keyout][keyin]):
                                 if not (arr.toarray() == arr2.toarray()).all():
-
                                     print(arr)
                                     print(arr2)
         # The only different value is n_processes
         self.assertDictEqual(dict_error, {
-                             '.<study_ph>.n_processes.value': "1 and 16 don't match"})
+            '.<study_ph>.n_processes.value': "1 and 16 don't match"})
 
 
 if '__main__' == __name__:
-
     cls = WITNESSParallelTest()
     cls.setUp()
     cls.test_01_exec_parallel()

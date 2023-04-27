@@ -44,7 +44,6 @@ class Study(StudyManager):
         self.time_step = time_step
 
     def setup_usecase(self):
-
         setup_data_list = []
         nb_per = round(
             (self.year_end - self.year_start) / self.time_step + 1)
@@ -85,7 +84,7 @@ if '__main__' == __name__:
     uc_cls.run()
 
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         filters = ppf.get_post_processing_filters_by_discipline(
             disc)
         graph_list = ppf.get_post_processing_by_discipline(

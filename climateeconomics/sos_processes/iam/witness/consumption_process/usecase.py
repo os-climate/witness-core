@@ -51,7 +51,8 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
     if activated_elem is None:
         activated_elem = [True] * len(value)
     dspace_dict[name] = {'value': value,
-                         'lower_bnd': lower, 'upper_bnd': upper, 'enable_variable': enable_variable, 'activated_elem': activated_elem}
+                         'lower_bnd': lower, 'upper_bnd': upper, 'enable_variable': enable_variable,
+                         'activated_elem': activated_elem}
 
     dspace_dict['dspace_size'] += len(value)
 
@@ -69,14 +70,11 @@ class Study(StudyManager):
         self.nb_poles = 8
 
     def setup_usecase(self):
-
         setup_data_list = []
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
-        
-        
-             
+
         invest_init = 31.489
         invest_serie = np.zeros(self.nb_per)
         invest_serie[0] = invest_init
@@ -85,35 +83,37 @@ class Study(StudyManager):
             agri_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.0187})
             indus_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.18737})
             services_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.7939})
-        #Energy
-        brut_net = 1/1.45
+        # Energy
+        brut_net = 1 / 1.45
         energy_outlook = pd.DataFrame({
-                 'year': [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
-                 'energy': [118.112,134.122 ,149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
+            'year': [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
+            'energy': [118.112, 134.122, 149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842,
+                       206.1201182, 220.000, 250.0, 300.0]})
         f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
-        #Find values for 2020, 2050 and concat dfs 
-        energy_supply = f2(np.arange(self.year_start, self.year_end+1))
-        energy_supply_values = energy_supply * brut_net 
+        # Find values for 2020, 2050 and concat dfs
+        energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
+        energy_supply_values = energy_supply * brut_net
         indus_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.2894})
-        agri_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values *  0.02136})
+        agri_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.02136})
         services_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.37})
-        
-        #workforce share     
+
+        # workforce share
         agrishare = 27.4
         indusshare = 21.7
         serviceshare = 50.9
-        workforce_share = pd.DataFrame({'years': years, 'Agriculture': agrishare, 
-                                     'Industry': indusshare, 'Services': serviceshare})
-        
-        #Damage
-        damage_df = pd.DataFrame({'years': years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
-                                       'base_carbon_price': np.zeros(self.nb_per)})
+        workforce_share = pd.DataFrame({'years': years, 'Agriculture': agrishare,
+                                        'Industry': indusshare, 'Services': serviceshare})
+
+        # Damage
+        damage_df = pd.DataFrame(
+            {'years': years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
+             'base_carbon_price': np.zeros(self.nb_per)})
         data_dir = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
-        
-        #data for consumption
+
+        # data for consumption
         temperature = np.linspace(1, 3, len(years))
-        temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temperature, 'temp_ocean': temperature/100})
+        temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temperature, 'temp_ocean': temperature / 100})
         temperature_df.index = years
         residential_energy = np.linspace(21, 58, len(years))
         residential_energy_df = pd.DataFrame(
@@ -121,44 +121,44 @@ class Study(StudyManager):
         energy_price = np.arange(110, 110 + len(years))
         energy_mean_price = pd.DataFrame(
             {'years': years, 'energy_price': energy_price})
-        #Share invest
+        # Share invest
         share_invest = np.asarray([27.0] * self.nb_per)
-        share_invest = pd.DataFrame({'years':years, 'share_investment': share_invest})
+        share_invest = pd.DataFrame({'years': years, 'share_investment': share_invest})
         share_invest_df = share_invest
-        
-        #economisc df to init mda 
+
+        # economisc df to init mda
         # Test With a GDP that grows at 2%
-        gdp= [130.187]*len(years)
+        gdp = [130.187] * len(years)
         economics_df = pd.DataFrame({'years': years, 'output_net_of_d': gdp})
         economics_df.index = years
 
         cons_input = {}
         cons_input[self.study_name + '.year_start'] = self.year_start
         cons_input[self.study_name + '.year_end'] = self.year_end
-        
-        cons_input[self.study_name + self.macro_name +'.Agriculture.sector_investment'] = agri_invest
-        cons_input[self.study_name + self.macro_name +'.Services.sector_investment'] = services_invest
-        cons_input[self.study_name + self.macro_name +'.Industry.sector_investment'] = indus_invest
-        
-        cons_input[self.study_name + self.macro_name +'.Industry.energy_production'] = indus_energy
-        cons_input[self.study_name + self.macro_name +'.Agriculture.energy_production'] = agri_energy
-        cons_input[self.study_name + self.macro_name +'.Services.energy_production'] = services_energy
-    
-        cons_input[self.study_name + self.macro_name +'.Industry.damage_df'] = damage_df
-        cons_input[self.study_name + self.macro_name +'.Agriculture.damage_df'] = damage_df
-        cons_input[self.study_name + self.macro_name +'.Services.damage_df'] = damage_df
-        
+
+        cons_input[self.study_name + self.macro_name + '.Agriculture.sector_investment'] = agri_invest
+        cons_input[self.study_name + self.macro_name + '.Services.sector_investment'] = services_invest
+        cons_input[self.study_name + self.macro_name + '.Industry.sector_investment'] = indus_invest
+
+        cons_input[self.study_name + self.macro_name + '.Industry.energy_production'] = indus_energy
+        cons_input[self.study_name + self.macro_name + '.Agriculture.energy_production'] = agri_energy
+        cons_input[self.study_name + self.macro_name + '.Services.energy_production'] = services_energy
+
+        cons_input[self.study_name + self.macro_name + '.Industry.damage_df'] = damage_df
+        cons_input[self.study_name + self.macro_name + '.Agriculture.damage_df'] = damage_df
+        cons_input[self.study_name + self.macro_name + '.Services.damage_df'] = damage_df
+
         cons_input[self.study_name + '.total_investment_share_of_gdp'] = share_invest_df
 
         cons_input[self.study_name + '.temperature_df'] = temperature_df
         cons_input[self.study_name + '.residential_energy'] = residential_energy_df
         cons_input[self.study_name + '.energy_mean_price'] = energy_mean_price
-        
+
         cons_input[self.study_name + self.labormarket_name + '.workforce_share_per_sector'] = workforce_share
         cons_input[self.study_name + '.economics_df'] = economics_df
-             
+
         setup_data_list.append(cons_input)
-        
+
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
             f'{self.study_name}.max_mda_iter': 70,
@@ -176,11 +176,11 @@ if '__main__' == __name__:
     uc_cls = Study()
     uc_cls.load_data()
     # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    #uc_cls.execution_engine.set_debug_mode()
+    # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
-    
+
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         filters = ppf.get_post_processing_filters_by_discipline(
             disc)
         graph_list = ppf.get_post_processing_by_discipline(

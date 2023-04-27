@@ -17,12 +17,13 @@ from os.path import join, dirname, exists
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
-from climateeconomics.sos_processes.iam.witness.witness_dev_optim_process.usecase_witness_optim_invest_distrib import Study as witness_usecase
+from climateeconomics.sos_processes.iam.witness.witness_dev_optim_process.usecase_witness_optim_invest_distrib import \
+    Study as witness_usecase
 
 
 class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -82,10 +83,11 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
             full_values_dict[f'{self.name}.max_mda_iter'] = i
             self.ee.load_study_from_input_dict(full_values_dict)
             self.ee.execute()
-            for j, disc in enumerate(self.ee.root_process.sos_disciplines):
+            for j, disc in enumerate(self.ee.root_process.proxy_disciplines):
                 inputs = disc.get_input_data_names()
                 inputs = [input for input in inputs if self.ee.dm.get_data(
-                    input, 'coupling') and not input.endswith('resources_price') and not input.endswith('resources_CO2_emissions')]
+                    input, 'coupling') and not input.endswith('resources_price') and not input.endswith(
+                    'resources_CO2_emissions')]
                 outputs = disc.get_output_data_names()
                 outputs = [output for output in outputs if self.ee.dm.get_data(
                     output, 'coupling')]
@@ -104,8 +106,9 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
                                 pkl_name)
                 if (len(inputs) != 0) and (len(outputs) != 0):
                     self.ee.dm.delete_complex_in_df_and_arrays()
-                    self.check_jacobian(location=dirname(__file__), filename='l2_witness_dev/' + pkl_name, discipline=disc,
-                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                    self.check_jacobian(location=dirname(__file__), filename='l2_witness_dev/' + pkl_name,
+                                        discipline=disc,
+                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                         inputs=inputs,
                                         outputs=outputs)
 
@@ -143,7 +146,8 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         disc = self.ee.root_process
         inputs = disc.get_input_data_names()
         inputs = [input for input in inputs if self.ee.dm.get_data(
-            input, 'coupling') and not input.endswith('resources_price') and not input.endswith('resources_CO2_emissions')]
+            input, 'coupling') and not input.endswith('resources_price') and not input.endswith(
+            'resources_CO2_emissions')]
         outputs = disc.get_output_data_names()
         outputs = [output for output in outputs if self.ee.dm.get_data(
             output, 'coupling')]
@@ -163,7 +167,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         if (len(inputs) != 0) and (len(outputs) != 0):
             self.ee.dm.delete_complex_in_df_and_arrays()
             self.check_jacobian(location=dirname(__file__), filename='l2_witness_dev/' + pkl_name, discipline=disc,
-                                step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                 inputs=inputs,
                                 outputs=outputs)
 
@@ -200,7 +204,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
 
         values_dict_design_var = {}
         # df_xvect = pd.read_csv(
@@ -219,7 +223,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
         i = 0
 
-        for disc in self.ee.root_process.sos_disciplines:
+        for disc in self.ee.root_process.proxy_disciplines:
             #         disc = self.ee.dm.get_disciplines_with_name(
             #             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix')[0]
             outputs = disc.get_output_data_names()
@@ -250,13 +254,13 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
             i += 1
@@ -283,7 +287,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
         # self.ee.load_study_from_dict(inp_dict)
         i = 0
 
-        for disc in self.ee.root_process.sos_disciplines[0].sos_disciplines:
+        for disc in self.ee.root_process.proxy_disciplines[0].proxy_disciplines:
             #         disc = self.ee.dm.get_disciplines_with_name(
             #             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix')[0]
             outputs = disc.get_output_data_names()
@@ -295,10 +299,11 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
                     'objective_lagrangian')[0])
             inputs = disc.get_input_data_names()
             inputs = [input for input in inputs if self.ee.dm.get_data(
-                input, 'coupling') and not input.endswith('resources_price') and not input.endswith('resources_CO2_emissions')]
+                input, 'coupling') and not input.endswith('resources_price') and not input.endswith(
+                'resources_CO2_emissions')]
             print(disc.name)
             print(i)
-            if i not in [6, 27,  53, 58, 62]:
+            if i not in [6, 27, 53, 58, 62]:
 
                 print(inputs)
                 print(outputs)
@@ -313,14 +318,14 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
 
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
 
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
             i += 1

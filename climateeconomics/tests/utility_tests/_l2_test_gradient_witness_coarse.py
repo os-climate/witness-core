@@ -19,19 +19,22 @@ import pandas as pd
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as witness_coarse_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_sub_proc_usecase
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import \
+    Study as witness_coarse_usecase
 import unittest
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
-    obj_const = ['welfare_objective', 'min_utility_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',
-                 'total_prod_minus_min_prod_constraint_df', 'co2_emissions_objective', 'energy_production_objective', 'syngas_prod_objective', 'land_demand_constraint_df']
+    obj_const = ['welfare_objective', 'min_utility_objective', 'temperature_objective', 'CO2_objective',
+                 'ppm_objective',
+                 'total_prod_minus_min_prod_constraint_df', 'co2_emissions_objective', 'energy_production_objective',
+                 'syngas_prod_objective', 'land_demand_constraint_df']
 
     def setUp(self):
 
@@ -59,7 +62,8 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         extra_name = 'WITNESS'
         # retrieve energy process
         chain_builders = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
+            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
@@ -91,7 +95,8 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.factory.set_builders_to_coupling_builder(coupling_builder)
         self.ee.configure()
         usecase = witness_sub_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
+            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -106,7 +111,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
 
         output_full_names = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{obj}' for obj in self.obj_const]
@@ -118,7 +123,8 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix')
 
-            for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
+            for technology in full_values_dict[
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
@@ -128,14 +134,15 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{energy_wo_dot}_array_mix')
 
-            for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
+            for technology in full_values_dict[
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        disc_techno = self.ee.root_process.proxy_disciplines[0]
 
-        disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names,local_data = {},
+        disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names, local_data={},
                                    outputs=output_full_names,
                                    load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                       f'jacobian_objectives_constraint_wrt_design_var_on_witness_coarse.pkl'))
@@ -150,12 +157,14 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
+            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_sub_proc_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
+            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -170,7 +179,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
 
         output_full_names = [
             f'{self.name}.objective_lagrangian']
@@ -182,7 +191,8 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix')
 
-            for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
+            for technology in full_values_dict[
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
@@ -192,15 +202,16 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{energy_wo_dot}_array_mix')
 
-            for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
+            for technology in full_values_dict[
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
         self.ee.display_treeview_nodes(display_variables=True)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        disc_techno = self.ee.root_process.proxy_disciplines[0]
 
-        disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names,local_data = {},
+        disc_techno.check_jacobian(derr_approx='complex_step', inputs=input_full_names, local_data={},
                                    outputs=output_full_names,
                                    load_jac_path=join(dirname(__file__), 'jacobian_pkls',
                                                       f'jacobian_lagrangian_objective_wrt_design_var_on_witness_coarse.pkl'))
@@ -220,12 +231,14 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
+            'climateeconomics.sos_processes.iam.witness', 'witness', techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_coarse_usecase(
-            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
+            bspline=True, execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -248,7 +261,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.sub_mda_class'] = 'GSNewtonMDA'
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
 
         values_dict_design_var = {}
         df_xvect = pd.read_csv(
@@ -272,22 +285,28 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         energy_list = self.ee.dm.get_value(ns)
 
         inputs_names = [
-            f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.energy_prices' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']]
+            f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.energy_prices' for energy in energy_list if
+            energy not in ['carbon_capture', 'carbon_storage']]
         inputs_names.extend([
-            f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.energy_production' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']])
+            f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.energy_production' for energy in energy_list if
+            energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
-            [f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.energy_consumption' for energy in energy_list if energy not in ['carbon_capture', 'carbon_storage']])
+            [f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.energy_consumption' for energy in energy_list if
+             energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
-            [f'{self.name}.WITNESS_Eval.WITNESS.CCUS.{energy}.energy_consumption' for energy in ['carbon_capture', 'carbon_storage']])
+            [f'{self.name}.WITNESS_Eval.WITNESS.CCUS.{energy}.energy_consumption' for energy in
+             ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
-            [f'{self.name}.WITNESS_Eval.WITNESS.CCUS.{energy}.energy_production' for energy in ['carbon_capture', 'carbon_storage']])
+            [f'{self.name}.WITNESS_Eval.WITNESS.CCUS.{energy}.energy_production' for energy in
+             ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
-            f'{self.name}.WITNESS_Eval.WITNESS.CCUS.{energy}.energy_prices' for energy in ['carbon_capture', 'carbon_storage']])
+            f'{self.name}.WITNESS_Eval.WITNESS.CCUS.{energy}.energy_prices' for energy in
+            ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
             [f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.syngas.syngas_ratio'])
         i = 0
 
-        for disc in self.ee.root_process.sos_disciplines:
+        for disc in self.ee.root_process.proxy_disciplines:
             #         disc = self.ee.dm.get_disciplines_with_name(
             #             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix')[0]
 
@@ -318,13 +337,13 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)
             i += 1
@@ -341,12 +360,14 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process', techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=True)
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',
+            techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=True)
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
         usecase = witness_sub_proc_usecase(
-            execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT, invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
+            execution_engine=self.ee, techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+            invest_discipline=INVEST_DISCIPLINE_OPTIONS[0])
         usecase.study_name = self.name
         values_dict = usecase.setup_usecase()
 
@@ -381,7 +402,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
         i = 0
 
-        for disc in self.ee.root_process.sos_disciplines[0].sos_disciplines:
+        for disc in self.ee.root_process.proxy_disciplines[0].proxy_disciplines:
             outputs = disc.get_output_data_names()
             outputs = [output for output in outputs if self.ee.dm.get_data(
                 output, 'coupling')]
@@ -404,13 +425,13 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
             i += 1
@@ -427,7 +448,8 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_process_one_distrib', techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=True)
+            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_process_one_distrib',
+            techno_dict=DEFAULT_COARSE_TECHNO_DICT, one_invest_discipline=True)
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
@@ -440,7 +462,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
 
         i = 0
 
-        for disc in self.ee.root_process.sos_disciplines[0].sos_disciplines:
+        for disc in self.ee.root_process.proxy_disciplines[0].proxy_disciplines:
             outputs = disc.get_output_data_names()
             outputs = [output for output in outputs if self.ee.dm.get_data(
                 output, 'coupling')]
@@ -463,13 +485,13 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                         self.ee.dm.delete_complex_in_df_and_arrays()
                         AbstractJacobianUnittest.DUMP_JACOBIAN = True
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
                     else:
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs)  # , filepath=filepath)
             i += 1

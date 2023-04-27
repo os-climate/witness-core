@@ -22,15 +22,14 @@ from pathlib import Path
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as datacase_agriculture_mix
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-
-
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -40,6 +39,7 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
+
 
 class Study(ClimateEconomicsStudyManager):
     def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None):
@@ -210,7 +210,6 @@ class Study(ClimateEconomicsStudyManager):
         witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
-        witness_input[f'{self.study_name}.is_dev'] = True
         #
 
         GHG_total_energy_emissions = pd.DataFrame({'years': years,
@@ -244,7 +243,7 @@ class Study(ClimateEconomicsStudyManager):
         list_var.extend(
             ['CO2_em_objective'])
         list_parent.extend([
-                            'CO2_obj'])
+            'CO2_obj'])
         list_ns.extend(['ns_functions'])
         list_ftype.extend(
             [OBJECTIVE])
@@ -291,8 +290,6 @@ class Study(ClimateEconomicsStudyManager):
 
         return func_df
 
-
-
     def setup_constraint_land_use(self):
         func_df = DataFrame(
             columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
@@ -330,6 +327,6 @@ if '__main__' == __name__:
     # dict_xvect[f'{uc_cls.study_name}.{uc_cls.optim_name}.eval_mode'] = True
     # uc_cls.load_data(from_input_dict=dict_xvect)
     # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
-    # uc_cls.execution_engine.root_process.sos_disciplines[0].set_opt_scenario()
+    # uc_cls.execution_engine.root_process.proxy_disciplines[0].set_opt_scenario()
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()

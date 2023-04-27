@@ -19,7 +19,8 @@ import numpy as np
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_sub_proc_usecase
 from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from tqdm import tqdm
@@ -27,7 +28,7 @@ from tqdm import tqdm
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -65,7 +66,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         # loop over all disciplines
 
-        all_disc = self.ee.root_process.sos_disciplines[0].sos_disciplines
+        all_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines
 
         # specify a list of disciplines to check
         if optional_disciplines_list:
@@ -104,7 +105,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                     self.ee.dm.delete_complex_in_df_and_arrays()
                     AbstractJacobianUnittest.DUMP_JACOBIAN = True
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                        step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                         inputs=inputs,
                                         outputs=outputs,
                                         directory=directory)
@@ -115,7 +116,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                         print('Testing jacobian vs existing pkl file')
                         AbstractJacobianUnittest.DUMP_JACOBIAN = False
                         self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                             inputs=inputs,
                                             outputs=outputs,
                                             directory=directory)
@@ -125,7 +126,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                             self.ee.dm.delete_complex_in_df_and_arrays()
                             AbstractJacobianUnittest.DUMP_JACOBIAN = True
                             self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
-                                                step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+                                                step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                                 inputs=inputs,
                                                 outputs=outputs,
                                                 directory=directory)
@@ -181,7 +182,8 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         self.ee = ExecutionEngine(self.name)
 
         builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',  techno_dict=DEFAULT_COARSE_TECHNO_DICT)
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',
+            techno_dict=DEFAULT_COARSE_TECHNO_DICT)
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
@@ -244,7 +246,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
     #
     #     excluded_disc = []
     #
-    #     all_disc = self.ee.root_process.sos_disciplines[0].sos_disciplines
+    #     all_disc = self.ee.root_process.proxy_disciplines[0].proxy_disciplines
     #     total_disc = len(all_disc)
     #     counter = 0
     #     for disc in tqdm(all_disc):

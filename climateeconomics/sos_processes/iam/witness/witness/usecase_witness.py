@@ -18,15 +18,19 @@ from pandas import DataFrame, concat
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 from sostrades_core.study_manager.study_manager import StudyManager
-from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy as datacase_witness
-from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import DataStudy as datacase_witness_dev
-from climateeconomics.sos_processes.iam.witness_wo_energy_thesis.datacase_witness_wo_energy_solow import DataStudy as datacase_witness_thesis
+from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import \
+    DataStudy as datacase_witness
+from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
+    DataStudy as datacase_witness_dev
+from climateeconomics.sos_processes.iam.witness_wo_energy_thesis.datacase_witness_wo_energy_solow import \
+    DataStudy as datacase_witness_thesis
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -43,7 +47,8 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False, execution_engine=None,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False,
+                 execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[
                      2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
                  process_level='val'):
@@ -99,45 +104,25 @@ class Study(ClimateEconomicsStudyManager):
         if self.process_level == 'val':
             dc_witness = datacase_witness(
                 self.year_start, self.year_end, self.time_step)
-            dc_witness.study_name = self.study_name
 
-            witness_input_list = dc_witness.setup_usecase()
-            setup_data_list = setup_data_list + witness_input_list
-
-            energy_input_list = self.dc_energy.setup_usecase()
-            setup_data_list = setup_data_list + energy_input_list
-
-            dspace_energy = self.dc_energy.dspace
-
-            self.merge_design_spaces([dspace_energy, dc_witness.dspace])
         elif self.process_level == 'thesis':
             dc_witness = datacase_witness_thesis(
                 self.year_start, self.year_end, self.time_step)
-            dc_witness.study_name = self.study_name
 
-            witness_input_list = dc_witness.setup_usecase()
-            setup_data_list = setup_data_list + witness_input_list
-
-            energy_input_list = self.dc_energy.setup_usecase()
-            setup_data_list = setup_data_list + energy_input_list
-
-            dspace_energy = self.dc_energy.dspace
-
-            self.merge_design_spaces([dspace_energy, dc_witness.dspace])
         else:
             dc_witness = datacase_witness_dev(
                 self.year_start, self.year_end, self.time_step, agri_techno_list=self.agri_techno_list)
-            dc_witness.study_name = self.study_name
 
-            witness_input_list = dc_witness.setup_usecase()
-            setup_data_list = setup_data_list + witness_input_list
+        dc_witness.study_name = self.study_name
+        witness_input_list = dc_witness.setup_usecase()
+        setup_data_list = setup_data_list + witness_input_list
 
-            energy_input_list = self.dc_energy.setup_usecase()
-            setup_data_list = setup_data_list + energy_input_list
+        energy_input_list = self.dc_energy.setup_usecase()
+        setup_data_list = setup_data_list + energy_input_list
 
-            dspace_energy = self.dc_energy.dspace
+        dspace_energy = self.dc_energy.dspace
 
-            self.merge_design_spaces([dspace_energy, dc_witness.dspace])
+        self.merge_design_spaces([dspace_energy, dc_witness.dspace])
 
         # constraint land use
         land_use_df_constraint = self.setup_constraint_land_use()
@@ -145,7 +130,8 @@ class Study(ClimateEconomicsStudyManager):
         # WITNESS
         # setup objectives
         self.func_df = concat(
-            [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(), self.dc_energy.setup_objectives(), land_use_df_constraint])
+            [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(),
+             self.dc_energy.setup_objectives(), land_use_df_constraint])
 
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
@@ -188,22 +174,22 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
 
-    #print(len(uc_cls.execution_engine.root_process.sos_disciplines))
+    # print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
     #  self.exec_eng.dm.export_couplings(
     #     in_csv=True, f_name='couplings.csv')
 
     # uc_cls.execution_engine.root_process.coupling_structure.graph.export_initial_graph(
     #     "initial.pdf")
-#     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
-#         "reduced.pdf")
+    #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
+    #         "reduced.pdf")
 
     # DEBUG MIN MAX COUPLINGS
-#     uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
-#     pd.set_option('display.max_rows', None)
-#     pd.set_option('display.max_columns', None)
-# #     pd.set_option('display.width', None)
-#     profil = cProfile.Profile()
-#     profil.enable()
+    #     uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
+    #     pd.set_option('display.max_rows', None)
+    #     pd.set_option('display.max_columns', None)
+    # #     pd.set_option('display.width', None)
+    #     profil = cProfile.Profile()
+    #     profil.enable()
 
     uc_cls.run()
 #     profil.disable()
@@ -216,40 +202,37 @@ if '__main__' == __name__:
 #     result = result.getvalue()
 #     print(result)
 
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.sos_disciplines:
-    #     if disc.sos_name == 'Resources':
-    #         filters = ppf.get_post_processing_filters_by_discipline(
-    #             disc)
-    #         graph_list = ppf.get_post_processing_by_discipline(
-    #             disc, filters, as_json=False)
+# ppf = PostProcessingFactory()
+# all_post_processings = ppf.get_all_post_processings(
+#     execution_engine=uc_cls.execution_engine, filters_only=False,
+#     as_json=False, for_test=False)
 
-    #         for graph in graph_list:
-    #             graph.to_plotly().show()
+# for graph in graph_list:
+#     graph.to_plotly().show()
 
-    #     if disc.sos_name == 'EnergyMix.electricity.Nuclear':
-    #         filters = ppf.get_post_processing_filters_by_discipline(
-    #             disc)
-    #         graph_list = ppf.get_post_processing_by_discipline(
-    #             disc, filters, as_json=False)
+#     if disc.sos_name == 'EnergyMix.electricity.Nuclear':
+#         filters = ppf.get_post_processing_filters_by_discipline(
+#             disc)
+#         graph_list = ppf.get_post_processing_by_discipline(
+#             disc, filters, as_json=False)
 
-    #         for graph in graph_list:
-    #             graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
 
-    #     if disc.sos_name == 'EnergyMix.electricity.WindOnshore':
-    #         filters = ppf.get_post_processing_filters_by_discipline(
-    #             disc)
-    #         graph_list = ppf.get_post_processing_by_discipline(
-    #             disc, filters, as_json=False)
+#     if disc.sos_name == 'EnergyMix.electricity.WindOnshore':
+#         filters = ppf.get_post_processing_filters_by_discipline(
+#             disc)
+#         graph_list = ppf.get_post_processing_by_discipline(
+#             disc, filters, as_json=False)
 
-    #         for graph in graph_list:
-    #             graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
 
-    #     if disc.sos_name == 'EnergyMix.electricity':
-    #         filters = ppf.get_post_processing_filters_by_discipline(
-    #             disc)
-    #         graph_list = ppf.get_post_processing_by_discipline(
-    #             disc, filters, as_json=False)
+#     if disc.sos_name == 'EnergyMix.electricity':
+#         filters = ppf.get_post_processing_filters_by_discipline(
+#             disc)
+#         graph_list = ppf.get_post_processing_by_discipline(
+#             disc, filters, as_json=False)
 
-    #         for graph in graph_list:
-    #             graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()

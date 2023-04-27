@@ -18,15 +18,17 @@ import numpy as np
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_sub_proc_usecase
 
 
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective', 'co2_emissions_objective',
-                 'CO2_tax_minus_CO2_damage_constraint_df', 'primary_energies_production', 'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
+    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',
+                 'co2_emissions_objective',
+                 'CO2_tax_minus_CO2_damage_constraint_df', 'primary_energies_production',
+                 'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
 
     def setUp(self):
 
@@ -81,8 +83,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         disc = self.ee.root_process
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_objective_wrt_state_var_on_witness_full.pkl', discipline=disc, inputs=input_full_names,
-                            outputs=output_full_names, derr_approx='complex_step', local_data = {}, step=1.0e-12, parallel=True)
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_objective_wrt_state_var_on_witness_full.pkl', discipline=disc,
+                            inputs=input_full_names,
+                            outputs=output_full_names, derr_approx='complex_step', local_data={}, step=1.0e-12,
+                            parallel=True)
 
     def test_02_gradient_residus_wrt_state_var_on_witness_full(self):
 
@@ -120,14 +125,17 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         disc = self.ee.root_process
 
         output_full_names = ['Test.temperature_df', 'Test.utility_df', 'Test.economics_df',
-                             'Test.carboncycle_df', 'Test.CO2_emissions_df', 'Test.damage_df', 'Test.EnergyMix.energy_production', 'Test.EnergyMix.energy_investment', 'Test.EnergyMix.co2_emissions_Gt', 'Test.EnergyMix.energy_mean_price']
+                             'Test.carboncycle_df', 'Test.CO2_emissions_df', 'Test.damage_df',
+                             'Test.EnergyMix.energy_production', 'Test.EnergyMix.energy_investment',
+                             'Test.EnergyMix.co2_emissions_Gt', 'Test.EnergyMix.energy_mean_price']
 
         input_full_names = ['Test.EnergyMix.invest_energy_mix',
                             'Test.CO2_taxes']
         input_full_names.extend(
             [f'Test.EnergyMix.{energy}.invest_techno_mix' for energy in usecase.energy_list])
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_wrt_state_var_on_witness_full.pkl', discipline=disc, inputs=input_full_names,local_data = {},
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_wrt_state_var_on_witness_full.pkl',
+                            discipline=disc, inputs=input_full_names, local_data={},
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, parallel=True)
 
     def test_03_gradient_residus_wrt_design_var_on_witness_full(self):
@@ -155,11 +163,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             f'{designvariable_name}', design_var_path)
         chain_builders.append(design_var_builder)
 
-#         # function manager builder
-#         fmanager_path = 'sos_trades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
-#         fmanager_builder = self.ee.factory.get_builder_from_module(
-#             f'{func_manager_name}', fmanager_path)
-#         chain_builders.append(fmanager_builder)
+        #         # function manager builder
+        #         fmanager_path = 'sos_trades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
+        #         fmanager_builder = self.ee.factory.get_builder_from_module(
+        #             f'{func_manager_name}', fmanager_path)
+        #         chain_builders.append(fmanager_builder)
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
@@ -198,30 +206,34 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
         namespace = 'Test.WITNESS_Eval.WITNESS'
         output_full_names = [f'{namespace}.temperature_df', f'{namespace}.utility_df', f'{namespace}.economics_df',
                              f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.damage_df',
                              f'{namespace}.EnergyMix.energy_production', f'{namespace}.EnergyMix.energy_investment',
                              f'{namespace}.EnergyMix.co2_emissions_Gt', f'{namespace}.EnergyMix.energy_mean_price',
                              f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',
-                             f'{namespace}.temperature_objective', f'{namespace}.CO2_tax_minus_CO2_damage_constraint_df', f'{namespace}.CO2_tax_minus_CCS_constraint_df']
+                             f'{namespace}.temperature_objective',
+                             f'{namespace}.CO2_tax_minus_CO2_damage_constraint_df',
+                             f'{namespace}.CO2_tax_minus_CCS_constraint_df']
 
         self.ee.display_treeview_nodes(display_variables=True)
-#         input_full_names = ['Test.WITNESS_Eval.CO2_taxes_array']
-#         for energy in full_values_dict[f'{self.name}.WITNESS_Eval.energy_list']:
-#             energy_wo_dot = energy.replace('.', '_')
-#             input_full_names.append(
-#                 f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{energy_wo_dot}_array_mix')
+        #         input_full_names = ['Test.WITNESS_Eval.CO2_taxes_array']
+        #         for energy in full_values_dict[f'{self.name}.WITNESS_Eval.energy_list']:
+        #             energy_wo_dot = energy.replace('.', '_')
+        #             input_full_names.append(
+        #                 f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{energy_wo_dot}_array_mix')
 
         # for technology in full_values_dict[f'Test.WITNESS_Eval.EnergyMix.{energy}.technologies_list']:
         #     technology_wo_dot = technology.replace('.', '_')
         #     input_full_names.append(
         #         f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_wrt_design_var_on_witness_full.pkl',local_data = {}, discipline=disc, inputs=[f'{namespace}.EnergyMix.electricity.CoalGen.electricity_CoalGen_array_mix',
-                                                                                                                                                  f'{namespace}.EnergyMix.liquid_fuel.Refinery.liquid_fuel_Refinery_array_mix',
-                                                                                                                                                  f'{namespace}.CO2_taxes_array'],
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_residus_wrt_design_var_on_witness_full.pkl',
+                            local_data={}, discipline=disc,
+                            inputs=[f'{namespace}.EnergyMix.electricity.CoalGen.electricity_CoalGen_array_mix',
+                                    f'{namespace}.EnergyMix.liquid_fuel.Refinery.liquid_fuel_Refinery_array_mix',
+                                    f'{namespace}.CO2_taxes_array'],
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, parallel=True)
 
     def test_04_gradient_objective_wrt_design_var_on_witness_full(self):
@@ -250,7 +262,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict['Test.WITNESS_Eval.sub_mda_class'] = 'MDAGaussSeidel'
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
 
         output_full_names = [
             f'Test.WITNESS_Eval.{obj}' for obj in self.obj_const]
@@ -260,13 +272,14 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             input_full_names.append(
                 f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{energy_wo_dot}_array_mix')
 
-#             for technology in full_values_dict[f'Test.WITNESS_Eval.EnergyMix.{energy}.technologies_list']:
-#                 technology_wo_dot = technology.replace('.', '_')
-#                 input_full_names.append(
-#                     f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
+        #             for technology in full_values_dict[f'Test.WITNESS_Eval.EnergyMix.{energy}.technologies_list']:
+        #                 technology_wo_dot = technology.replace('.', '_')
+        #                 input_full_names.append(
+        #                     f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_objective_wrt_design_var_on_witness_full.pkl', discipline=disc,
-                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = {},
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_objective_wrt_design_var_on_witness_full.pkl', discipline=disc,
+                            step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                             inputs=input_full_names,
                             outputs=output_full_names, parallel=True)
 
@@ -294,11 +307,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             f'{designvariable_name}', design_var_path)
         chain_builders.append(design_var_builder)
 
-#         # function manager builder
-#         fmanager_path = 'sos_trades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
-#         fmanager_builder = self.ee.factory.get_builder_from_module(
-#             f'{func_manager_name}', fmanager_path)
-#         chain_builders.append(fmanager_builder)
+        #         # function manager builder
+        #         fmanager_path = 'sos_trades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
+        #         fmanager_builder = self.ee.factory.get_builder_from_module(
+        #             f'{func_manager_name}', fmanager_path)
+        #         chain_builders.append(fmanager_builder)
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
@@ -343,25 +356,30 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             input_full_names.append(input_name)
             full_values_dict[input_name] = np.linspace(1, 2, nb_poles)
 
-            for technology in full_values_dict[f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.technologies_list']:
+            for technology in full_values_dict[
+                f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.technologies_list']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_name = f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'
                 input_full_names.append(input_name)
                 full_values_dict[input_name] = np.linspace(3, 4, nb_poles)
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.sos_disciplines[0]
+        disc = self.ee.root_process.proxy_disciplines[0]
         namespace = 'Test.WITNESS_Eval.WITNESS'
         output_full_names = [f'{namespace}.temperature_df', f'{namespace}.utility_df', f'{namespace}.economics_df',
                              f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.damage_df',
                              f'{namespace}.EnergyMix.energy_production', f'{namespace}.EnergyMix.energy_investment',
                              f'{namespace}.EnergyMix.co2_emissions_Gt', f'{namespace}.EnergyMix.energy_mean_price',
-                             f'{namespace}.CO2_objective', f'{namespace}.ppm_objective', f'{namespace}.utility_objective',
-                             f'{namespace}.temperature_objective', f'{namespace}.CO2_tax_minus_CO2_damage_constraint_df', f'{namespace}.CO2_tax_minus_CCS_constraint_df']
+                             f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',
+                             f'{namespace}.utility_objective',
+                             f'{namespace}.temperature_objective',
+                             f'{namespace}.CO2_tax_minus_CO2_damage_constraint_df',
+                             f'{namespace}.CO2_tax_minus_CCS_constraint_df']
 
         self.ee.display_treeview_nodes(display_variables=True)
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_adjoint_with_bsplines_witness_full.pkl', discipline=disc, local_data = {},inputs=input_full_names,
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_adjoint_with_bsplines_witness_full.pkl',
+                            discipline=disc, local_data={}, inputs=input_full_names,
                             outputs=output_full_names, derr_approx='complex_step', step=1.0e-15, parallel=True)
 
 

@@ -25,10 +25,9 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
-
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start = 2020
@@ -42,41 +41,42 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
 
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
-        total_workforce_df = total_workforce_df[total_workforce_df['years']<=self.year_end]
-        #multiply ageworking pop by employment rate and by % in agri
-        workforce = total_workforce_df['population_1570']* 0.659 * 0.274
+        total_workforce_df = total_workforce_df[total_workforce_df['years'] <= self.year_end]
+        # multiply ageworking pop by employment rate and by % in agri
+        workforce = total_workforce_df['population_1570'] * 0.659 * 0.274
         self.workforce_df = pd.DataFrame({'years': self.years, 'workforce': workforce})
 
-        #Energy_supply
-        brut_net = 1/1.45
-        share_agri =  0.02136
-        #prepare energy df  
+        # Energy_supply
+        brut_net = 1 / 1.45
+        share_agri = 0.02136
+        # prepare energy df
         energy_outlook = pd.DataFrame({
             'year': [2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
-            'energy': [149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
+            'energy': [149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182,
+                       220.000, 250.0, 300.0]})
         f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
-        #Find values for 2020, 2050 and concat dfs 
-        energy_supply = f2(np.arange(self.year_start, self.year_end+1))
+        # Find values for 2020, 2050 and concat dfs
+        energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
         energy_supply_values = energy_supply * brut_net * share_agri
         energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
         energy_supply_df.index = self.years
         self.energy_supply_df = energy_supply_df
-        #energy_supply_df.loc[2020, 'Total production'] = 91.936
+        # energy_supply_df.loc[2020, 'Total production'] = 91.936
 
-        #Investment growth at 2% 
+        # Investment growth at 2%
         init_value = 0.589
         invest_serie = []
         invest_serie.append(init_value)
         for year in np.arange(1, self.nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.02)
         self.total_invest = pd.DataFrame({'years': self.years, 'investment': invest_serie})
-        
-        #damage
-        self.damage_df = pd.DataFrame({'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
-                                       'base_carbon_price': np.zeros(self.nb_per)})
+
+        # damage
+        self.damage_df = pd.DataFrame(
+            {'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
+             'base_carbon_price': np.zeros(self.nb_per)})
         self.damage_df.index = self.years
-        
-        
+
     def analytic_grad_entry(self):
         return [
             self.test_agriculture_sector_analytic_grad,
@@ -84,15 +84,14 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         ]
 
     def _test_agriculture_sector_analytic_grad(self):
-
         self.model_name = 'Agriculture'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}', 
-                   'ns_macro': f'{self.name}' }
-        
+                   'ns_ref': f'{self.name}',
+                   'ns_macro': f'{self.name}'}
+
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline'
@@ -118,27 +117,26 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
+        disc_techno = self.ee.root_process.proxy_disciplines[0]
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_sector_discipline.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = {},
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data={},
                             inputs=[f'{self.name}.energy_production',
                                     f'{self.name}.damage_df',
                                     f'{self.name}.workforce_df',
                                     f'{self.name}.sector_investment'],
-                            outputs=[f'{self.name}.production_df', 
+                            outputs=[f'{self.name}.production_df',
                                      f'{self.name}.capital_df',
                                      f'{self.name}.emax_enet_constraint'])
-        
-    def test_agriculture_sector_withoutdamagetoproductivity(self):
 
+    def test_agriculture_sector_withoutdamagetoproductivity(self):
         self.model_name = 'Agriculture'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}', 
-                   'ns_macro': f'{self.name}' }
-        
+                   'ns_ref': f'{self.name}',
+                   'ns_macro': f'{self.name}'}
+
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline'
@@ -164,14 +162,15 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
-        disc_techno = self.ee.root_process.sos_disciplines[0]
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_sector_discipline_withoutdamage.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = {},
+        disc_techno = self.ee.root_process.proxy_disciplines[0]
+        self.check_jacobian(location=dirname(__file__),
+                            filename=f'jacobian_agriculture_sector_discipline_withoutdamage.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data={},
                             inputs=[f'{self.name}.{self.model_name}.energy_production',
                                     f'{self.name}.{self.model_name}.damage_df',
                                     f'{self.name}.{self.model_name}.workforce_df',
                                     f'{self.name}.{self.model_name}.sector_investment'],
-                            outputs=[f'{self.name}.{self.model_name}.production_df', 
+                            outputs=[f'{self.name}.{self.model_name}.production_df',
                                      f'{self.name}.{self.model_name}.capital_df',
                                      f'{self.name}.{self.model_name}.emax_enet_constraint'])
 

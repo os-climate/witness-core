@@ -17,7 +17,8 @@ limitations under the License.
 from pandas import DataFrame, concat
 
 from sostrades_core.study_manager.study_manager import StudyManager
-from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import DataStudy as datacase_witness
+from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
+    DataStudy as datacase_witness
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
@@ -31,7 +32,8 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 DEFAULT_COARSE_TECHNO_DICT = {'renewable': {'type': 'energy', 'value': ['RenewableSimpleTechno']},
                               'fossil': {'type': 'energy', 'value': ['FossilSimpleTechno']},
-                              'carbon_capture': {'type': 'CCUS', 'value': ['direct_air_capture.DirectAirCaptureTechno', 'flue_gas_capture.FlueGasTechno']},
+                              'carbon_capture': {'type': 'CCUS', 'value': ['direct_air_capture.DirectAirCaptureTechno',
+                                                                           'flue_gas_capture.FlueGasTechno']},
                               'carbon_storage': {'type': 'CCUS', 'value': ['CarbonStorageTechno']}}
 DEFAULT_ENERGY_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 ) if value['type'] == 'energy']
@@ -41,7 +43,8 @@ DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False, execution_engine=None,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False,
+                 execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -57,7 +60,6 @@ class Study(ClimateEconomicsStudyManager):
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_process(self):
-
         datacase_energy.setup_process(self)
 
     def setup_constraint_land_use(self):
@@ -136,19 +138,19 @@ if '__main__' == __name__:
 
     # uc_cls.execution_engine.root_process.coupling_structure.graph.export_initial_graph(
     #     "initial.pdf")
-#     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
-#         "reduced.pdf")
+    #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
+    #         "reduced.pdf")
 
     # DEBUG MIN MAX COUPLINGS
-#     uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
-#     pd.set_option('display.max_rows', None)
-#     pd.set_option('display.max_columns', None)
-#     pd.set_option('display.width', None)
+    #     uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
+    #     pd.set_option('display.max_rows', None)
+    #     pd.set_option('display.max_columns', None)
+    #     pd.set_option('display.width', None)
 
     uc_cls.run()
 
     ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.sos_disciplines:
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         if disc.sos_name == 'EnergyMix':
             filters = ppf.get_post_processing_filters_by_discipline(
                 disc)
