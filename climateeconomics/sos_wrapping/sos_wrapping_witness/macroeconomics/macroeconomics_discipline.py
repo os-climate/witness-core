@@ -100,7 +100,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'delta_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 50, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'compute_gdp' : {'type': 'bool', 'unit': '-', 'default': True, 'structuring': True }
+        'climate_effects_activation_dict': ClimateEcoDiscipline.CLIMATE_EFFECTS_DESC_IN
     }
 
     DESC_OUT = {
@@ -130,8 +130,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dynamic_inputs = {}
         if self.get_data_in() is not None:
 
-            if 'compute_gdp' in self.get_data_in():
-                if not self.get_sosdisc_inputs('compute_gdp'):
+            if 'climate_effects_activation_dict' in self.get_data_in():
+                climate_effects_activation_dict = self.get_sosdisc_inputs('climate_effects_activation_dict')
+                compute_gdp_bool = climate_effects_activation_dict['compute_gdp'] if climate_effects_activation_dict['all_effects'] else False
+                # if compute gdp is not activated, we add gdp input
+                if not compute_gdp_bool:
                     dynamic_inputs.update({'gross_output_in': {'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'dataframe_descriptor': {'years': ('float', None, False),
                                                                                                'gross_output': ('float', None, True)}, 'dataframe_edition_locked': False,'namespace': 'ns_witness'}})
 
@@ -188,7 +191,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         population_df = param.pop('population_df')
         working_age_population_df = param.pop('working_age_population_df')
         energy_capital_df = param['energy_capital']
-        compute_gdp = param['compute_gdp']
+        climate_effects_activation_dict = param['climate_effects_activation_dict']
+        compute_gdp_bool = climate_effects_activation_dict['compute_gdp'] if climate_effects_activation_dict['all_effects'] else False
         macro_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                         'energy_production': energy_production,
                         'scaling_factor_energy_production': param['scaling_factor_energy_production'],
@@ -203,10 +207,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         'population_df': population_df[['years', 'population']],
                         'working_age_population_df': working_age_population_df[['years', 'population_1570']],
                         'energy_capital_df': energy_capital_df, 
-                        'compute_gdp': compute_gdp
+                        'compute_gdp': compute_gdp_bool
                         }
         
-        if not compute_gdp:
+
+        if not compute_gdp_bool:
             macro_inputs.update({'gross_output_in': param['gross_output_in']})
 
         # Check inputs
