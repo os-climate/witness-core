@@ -30,7 +30,8 @@ WITNESS_SERIES_NAME = 'WITNESS'
 
 REGION = 'Region'
 SCENARIO = 'Scenario'
-CSV_SEP = ','
+CSV_SEP = ';'
+CSV_DEC = ','
 CSV_YRS = [str(_yr) for _yr in range(2020, 2101, 10)]
 
 YEARS = 'years'
@@ -43,13 +44,15 @@ FILE_NAME = 'file_name'
 VAR_NAME = 'var_name'
 COLUMN = 'column'
 CHART_TITLE = 'chart_title'
+UNIT_CONV_FACTOR = 'unit_conv_factor'
 Y_AXIS = 'y_axis'
 # POSTPROCESSING DICTS WITH ALL THE INFOS TO CONSTRUCT GRAPHS
 _gdp = {FILE_NAME: 'gdp_ppp.csv',
-        VAR_NAME: 'Macroeconomics.economics_df',
+        VAR_NAME: 'economics_df',
         COLUMN: 'gross_output',
         CHART_TITLE: 'GDP comparison: WITNESS vs. baseline SSP scenarios',
-        Y_AXIS: None} #FIXME: manage units
+        UNIT_CONV_FACTOR: 1E-3, # FIXME: 2005 dollars
+        Y_AXIS: 'World Output [trillion $]'}
 CHARTS_DATA = {GDP: _gdp,
                       }
 
@@ -57,9 +60,11 @@ CHART_LIST = list(CHARTS_DATA.keys())
 
 def get_ssp_data(data_name, region='World'):
     data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
-    var_df = pd.read_csv(os.path.join(data_dir, CHARTS_DATA[data_name]['file']), sep=CSV_SEP)
+    var_df = pd.read_csv(os.path.join(data_dir, CHARTS_DATA[data_name][FILE_NAME]), sep=CSV_SEP, decimal=CSV_DEC)
     var_df = var_df[var_df[REGION] == region]
     var_df = var_df[[SCENARIO] + CSV_YRS].set_index(SCENARIO).transpose().reset_index().rename(columns={'index': YEARS})
+    var_df[YEARS] = pd.to_numeric(var_df[YEARS])
+    var_df.loc[:, var_df.columns != YEARS] *= CHARTS_DATA[data_name][UNIT_CONV_FACTOR]
     var_df.reindex(sorted(var_df.columns), axis=1, copy=False)  # sort the scenarios by name for clarity
     return var_df
 
