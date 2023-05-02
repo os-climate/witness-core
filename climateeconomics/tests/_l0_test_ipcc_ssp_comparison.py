@@ -20,7 +20,7 @@ from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness_wo_damage_gdp_input import Study as uc
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness_wo_damage import Study as uc
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
@@ -28,7 +28,7 @@ class TestIPCCSSPComparison(unittest.TestCase):
 
     def setUp(self):
 
-        self.study_name = 'Test_IPCC_SSP_copmarison'
+        self.study_name = 'Test_IPCC_SSP_comparison'
         self.repo = 'climateeconomics.sos_processes.iam.witness'
         self.proc_name = 'witness'
 
@@ -37,21 +37,23 @@ class TestIPCCSSPComparison(unittest.TestCase):
                                                            mod_id=self.proc_name)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
-        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_witness',
-            'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_ssp_comparison.post_processing_ssp_comparison')
+        # self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_witness',
+        #     'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_ssp_comparison.post_processing_ssp_comparison')
         self.ee.configure()
         self.usecase = uc()
-        # self.usecase.study_name = self.study_name
-        # values_dict = self.usecase.setup_usecase()
-        # for values_dict_i in values_dict:
-        #     self.ee.load_study_from_input_dict(values_dict_i)
-
+        self.usecase.study_name = self.study_name
+        values_dict = self.usecase.setup_usecase()
+        for values_dict_i in values_dict:
+            self.ee.load_study_from_input_dict(values_dict_i)
+        self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',#})
+                                            f'{self.study_name}.max_mda_iter': 1})
 
     def test_ssps_scenario_plot(self):
 
-        # self.ee.execute()
+        self.ee.execute()
         from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
-        self.usecase.static_load_data('.', self.ee, DirectLoadDump())
+        # self.usecase.static_dump_data()
+        # self.usecase.static_load_data('.', self.ee, DirectLoadDump())
         ppf = PostProcessingFactory()
         filters = ppf.get_post_processing_filters_by_namespace(self.ee, self.study_name)
         graph_list = ppf.get_post_processing_by_namespace(self.ee, self.study_name, filters,
