@@ -21,6 +21,12 @@ class ClimateEcoDiscipline(SoSWrapp):
     Climate Economics Discipline
     """
 
+    climate_effects_activation_dict_default = {'all_effects': True, 
+                                               'compute_gdp': True, 
+                                               'compute_damage_on_climate': True, 
+                                               'activate_climate_effect_population': True
+                                               }
+
     YEAR_START_DESC_IN = {'type': 'int', 'default': 2020,
                           'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public'}
     YEAR_END_DESC_IN = {'type': 'int', 'default': 2100,
@@ -29,6 +35,8 @@ class ClimateEcoDiscipline(SoSWrapp):
                         'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}
     ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                      'user_level': 1, 'unit': '-'}
+    CLIMATE_EFFECTS_DESC_IN = {'type': 'dict', 'default': climate_effects_activation_dict_default , 'visibility': 'Shared', 'namespace': 'ns_witness', 'structuring': True, 'unit': '-'}
+
     # ontology information
     _ontology_data = {
         'label': 'WITNESS Climate Economics Model',

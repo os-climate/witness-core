@@ -49,7 +49,6 @@ class Population:
         self.br_phi = inputs['birth_rate_phi']
         self.br_nu = inputs['birth_rate_nu']
         self.br_delta = inputs['birth_rate_delta']
-        self.climate_mortality_param_df = deepcopy(inputs['climate_mortality_param_df'])
         self.cal_temp_increase = inputs['calibration_temperature_increase']
         self.theta = inputs['theta']
         self.dr_param_df = deepcopy(inputs['death_rate_param'])
@@ -66,6 +65,12 @@ class Population:
         self.share_know = inputs['share_know_birthrate']
         # First year of the regression of knowledge function
         self.year_reg_know = 1800
+        climate_effects_activation_dict = inputs['climate_effects_activation_dict']
+        compute_death_climate = climate_effects_activation_dict['activate_climate_effect_population'] if climate_effects_activation_dict['all_effects'] else False
+        self.climate_mortality_param_df = deepcopy(inputs['climate_mortality_param_df'])
+        # if climate death are not computed, we set beta to 0
+        if not compute_death_climate: 
+            self.climate_mortality_param_df['beta'] = 0.
 
     def create_dataframe(self):
         '''
