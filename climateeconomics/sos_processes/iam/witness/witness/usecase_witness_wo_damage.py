@@ -34,7 +34,11 @@ class Study(ClimateEconomicsStudyManager):
         witness_uc.study_name = self.study_name
         data_witness = witness_uc.setup_usecase()
         # Create a dictionary with a key-value pair indicating that damage activation should be False for this study
-        updated_data = {f'{self.study_name}.Damage.activate_damage': False}
+        updated_data = {f'{self.study_name}.climate_effects_activation_dict': {'all_effects': True, 
+                                               'compute_gdp': True, 
+                                               'compute_damage_on_climate': False, 
+                                               'activate_climate_effect_population': True
+                                               }}
         data_witness.append(updated_data)
         return data_witness
 

@@ -51,7 +51,8 @@ class DamageModel():
         self.damage_constraint_factor = self.param['damage_constraint_factor']
         self.co2_damage_price_df = None
         self.CO2_TAX_MINUS_CO2_DAMAGE_CONSTRAINT_DF = None
-        self.activate_damage = self.param['activate_damage']
+        climate_effects_activation_dict = self.param['climate_effects_activation_dict']
+        self.activate_damage = climate_effects_activation_dict['compute_damage_on_climate'] if climate_effects_activation_dict['all_effects'] else False
 
     def create_dataframe(self):
         '''

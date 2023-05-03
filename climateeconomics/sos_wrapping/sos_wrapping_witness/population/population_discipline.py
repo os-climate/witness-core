@@ -53,6 +53,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     # World Health Organization.
     default_climate_mortality_param_df = pd.read_csv(
         join(global_data_dir, 'climate_additional_deaths_V2.csv'))
+    
     # ADD DICTIONARY OF VALUES FOR DEATH RATE
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -83,7 +84,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'alpha_birthrate_know': {'type': 'float', 'default': 1.02007061e-01, 'user_level': 3, 'unit': '-'},
         'beta_birthrate_know': {'type': 'float', 'default': 8.01923418e-01, 'user_level': 3, 'unit': '-'},
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
-    }
+        'climate_effects_activation_dict': ClimateEcoDiscipline.CLIMATE_EFFECTS_DESC_IN
+        }
 
     DESC_OUT = {
         'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
@@ -98,6 +100,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     }
 
     _maturity = 'Research'
+        
 
     def init_execution(self):
         in_dict = self.get_sosdisc_inputs()
