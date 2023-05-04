@@ -19,6 +19,7 @@ from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
 
+
 class MacroEconomics():
     '''
     Economic pyworld3 that compute the evolution of capital, consumption, output...
