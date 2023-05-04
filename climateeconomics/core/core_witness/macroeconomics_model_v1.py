@@ -202,8 +202,8 @@ class MacroEconomics():
         self.population_df.index = self.population_df['years'].values
         self.working_age_population_df = self.inputs['working_age_population_df']
         self.working_age_population_df.index = self.working_age_population_df['years'].values
-        self.compute_gdp = self.inputs['compute_gdp']
-        if not self.compute_gdp:
+        self.compute_gdp_and_usable_capital = self.inputs['compute_gdp_and_usable_capital']
+        if not self.compute_gdp_and_usable_capital:
             self.gross_output_in = self.inputs['gross_output_in']
       
     def compute_employment_rate(self):
@@ -602,7 +602,7 @@ class MacroEconomics():
         self.inputs = deepcopy(inputs)
         self.set_coupling_inputs()
         # set gross ouput from input if necessary
-        if not self.compute_gdp:
+        if not self.compute_gdp_and_usable_capital:
             self.set_gross_output()
         # Employment rate and workforce
         self.compute_employment_rate()
@@ -611,7 +611,8 @@ class MacroEconomics():
         year_start = self.year_start
         self.compute_capital(year_start)
         self.compute_emax(year_start)
-        self.compute_usable_capital(year_start)
+        if self.compute_gdp_and_usable_capital:
+            self.compute_usable_capital(year_start)
         self.compute_output_net_of_damage(year_start)
         self.compute_energy_investment(year_start)
         self.compute_investment(year_start)
@@ -627,9 +628,9 @@ class MacroEconomics():
             self.compute_productivity(year)
             # Then others:
             self.compute_emax(year)
-            self.compute_usable_capital(year)
-            # compute only if compute_gdp is activated
-            if self.compute_gdp:
+            # compute only if compute_gdp_and_usable_capital is activated
+            if self.compute_gdp_and_usable_capital:
+                self.compute_usable_capital(year)
                 self.compute_gross_output(year)
             self.compute_output_net_of_damage(year)
             self.compute_energy_investment(year)
