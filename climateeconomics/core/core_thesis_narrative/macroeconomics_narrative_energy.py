@@ -685,7 +685,7 @@ class MacroEconomics():
                                                             'energy_investment_wo_tax']
             net_output = self.economics_df.at[years[i], 'net_output']
 
-            ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  # T$
+            ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12# T$
 
             for j in range(0, i + 1):
 

@@ -794,6 +794,77 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.delta_capital_constraint_dc',
                                      f'{self.name}.delta_capital_lintoquad'])
 
+    def test_macro_economics_analytic_grad_deactive_co2_tax_investment(self):
+        """
+        Test of analytic gradient when invest_co2_tax_in_renawables is set to False
+        """
+        self.model_name = 'Macroeconomics'
+        ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_energy_mix': f'{self.name}',
+                   'ns_public': f'{self.name}',
+                   'ns_functions': f'{self.name}',
+                   'ns_ref': f'{self.name}'}
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        inputs_dict = {f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.time_step': self.time_step,
+                       f'{self.name}.init_rate_time_pref': 0.015,
+                       f'{self.name}.conso_elasticity': 1.45,
+                       f'{self.name}.{self.model_name}.damage_to_productivity': False,
+                       f'{self.name}.frac_damage_prod': 0.3,
+                       f'{self.name}.share_energy_investment': self.share_energy_investment,
+                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.damage_df': self.damage_df,
+                       f'{self.name}.population_df': self.population_df,
+                       f'{self.name}.total_investment_share_of_gdp': self.total_invest,
+                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
+                       f'{self.name}.co2_emissions_Gt': self.co2_emissions_gt,
+                       f'{self.name}.working_age_population_df': self.working_age_population_df,
+                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{self.model_name}.invest_co2_tax_in_renawables': False,
+                       }
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_without_invest_co2_tax_in_renewables.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
+                            inputs=[f'{self.name}.energy_production',
+                                    f'{self.name}.damage_df',
+                                    f'{self.name}.share_energy_investment',
+                                    f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.co2_emissions_Gt',
+                                    f'{self.name}.CO2_taxes',
+                                    f'{self.name}.population_df',
+                                    f'{self.name}.working_age_population_df',
+                                    f'{self.name}.energy_capital'],
+                            outputs=[f'{self.name}.economics_df',
+                                     f'{self.name}.energy_investment',
+                                     f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.global_investment_constraint',
+                                     f'{self.name}.emax_enet_constraint',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc',
+                                     f'{self.name}.delta_capital_lintoquad'])
 
 
 if '__main__' == __name__:
