@@ -27,45 +27,198 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 import os.path
 
 WITNESS_SERIES_NAME = 'WITNESS'
+WITNESS_YEARS = np.arange(2020, 2101, 1)
 
+# CSV files keys
 REGION = 'Region'
 SCENARIO = 'Scenario'
+MODEL = 'Model'
 CSV_SEP = ';'
 CSV_DEC = ','
 CSV_YRS = [str(_yr) for _yr in range(2020, 2101, 10)]
-
 YEARS = 'years'
-
-
-GDP = 'GDP'
 
 # POSTPROCESSING DICTS KEYS (INTERNAL USAGE)
 FILE_NAME = 'file_name'
 VAR_NAME = 'var_name'
 COLUMN = 'column'
+WITNESS_VAR_COL = f'({VAR_NAME}, {COLUMN})'
 CHART_TITLE = 'chart_title'
 UNIT_CONV_FACTOR = 'unit_conv_factor'
 Y_AXIS = 'y_axis'
-# POSTPROCESSING DICTS WITH ALL THE INFOS TO CONSTRUCT GRAPHS
+
+# POSTPROCESSING DICTS WITH INFOS TO PRODUCE COMPARISON GRAPHS
+GDP = 'GDP' # FIXME: 2005 dollars
 _gdp = {FILE_NAME: 'gdp_ppp.csv',
         VAR_NAME: 'economics_df',
         COLUMN: 'gross_output',
-        CHART_TITLE: 'GDP comparison: WITNESS vs. baseline SSP scenarios',
-        UNIT_CONV_FACTOR: 1E-3, # FIXME: 2005 dollars
+        CHART_TITLE: 'GDP: WITNESS vs. SSP scenarios (IPCC)',
+        UNIT_CONV_FACTOR: 1E-3,
         Y_AXIS: 'World Output [trillion $]'}
-CHARTS_DATA = {GDP: _gdp,
-                      }
 
-CHART_LIST = list(CHARTS_DATA.keys())
+POPULATION = 'Population'
+_population = {FILE_NAME: 'population.csv',
+               VAR_NAME: 'population_df',
+               COLUMN: 'population',
+               CHART_TITLE: 'Population: WITNESS vs. SSP scenarios (IPCC)',
+               UNIT_CONV_FACTOR: 1.0,
+               Y_AXIS: 'World Population [million people]'}
 
-def get_ssp_data(data_name, region='World'):
+CONSUMPTION = 'Consumption' # FIXME: 2005 dollars
+_consumption = {FILE_NAME: 'consumption_global.csv',
+                VAR_NAME: 'Macroeconomics.economics_detail_df',
+                COLUMN: 'consumption',
+                CHART_TITLE: 'Consumption: WITNESS vs. SSP scenarios (IPCC)',
+                UNIT_CONV_FACTOR: 1E-3,
+                Y_AXIS: 'Global Consumption [trillion $]'}
+
+MEAN_TEMPERATURE = 'Mean_temperature'
+_mean_temperature = {FILE_NAME: 'mean_temperature_global.csv',
+                     VAR_NAME: 'temperature_df',
+                     COLUMN: 'temp_atmo',
+                     CHART_TITLE: 'Atmospheric temperature: WITNESS vs. SSP scenarios (IPCC)',
+                     UNIT_CONV_FACTOR: 1.0,
+                     Y_AXIS: 'Mean Temperature [ºC above pre-industrial]'}
+
+FORCING = 'Forcing'
+_forcing = {FILE_NAME: 'forcing_global.csv',
+            VAR_NAME: 'Temperature_change.temperature_detail_df',
+            COLUMN: 'forcing',
+            CHART_TITLE: 'Total radiative forcing: WITNESS vs. SSP scenarios (IPCC)',
+            UNIT_CONV_FACTOR: 1.0,
+            Y_AXIS: 'Total Forcing [W/m^2]'}
+
+CO2_CONCENTRATION = 'CO2_concentration'
+_co2_concentration = {FILE_NAME: 'CO2_concentration_global.csv',
+                      VAR_NAME: 'ghg_cycle_df',
+                      COLUMN: 'co2_ppm',
+                      CHART_TITLE: 'Atmospheric CO2 concentration: WITNESS vs. SSP scenarios (IPCC)',
+                      UNIT_CONV_FACTOR: 1.0,
+                      Y_AXIS: 'CO2 concentration [ppm]'}
+
+CH4_CONCENTRATION = 'CH4_concentration'
+_ch4_concentration = {FILE_NAME: 'CH4_concentration_global.csv',
+                      VAR_NAME: 'ghg_cycle_df',
+                      COLUMN: 'ch4_ppm',
+                      CHART_TITLE: 'Atmospheric CH4 concentration: WITNESS vs. SSP scenarios (IPCC)',
+                      UNIT_CONV_FACTOR: 1.0,
+                      Y_AXIS: 'CH4 concentration [ppm]'}
+
+N2O_CONCENTRATION = 'N2O_concentration'
+_n2o_concentration = {FILE_NAME: 'N2O_concentration_global.csv',
+                      VAR_NAME: 'ghg_cycle_df',
+                      COLUMN: 'n2o_ppm',
+                      CHART_TITLE: 'Atmospheric N2O concentration: WITNESS vs. SSP scenarios (IPCC)',
+                      UNIT_CONV_FACTOR: 1.0,
+                      Y_AXIS: 'N2O concentration [ppm]'}
+
+CO2_EMISSIONS = 'CO2_emissions'
+_co2_emissions = {FILE_NAME: 'CO2_emissions_global.csv',
+                  VAR_NAME: 'GHGEmissions.GHG_emissions_detail_df',
+                  COLUMN: 'Total CO2 emissions',
+                  CHART_TITLE: 'Total CO2 Emissions: WITNESS vs. SSP scenarios (IPCC)',
+                  UNIT_CONV_FACTOR: 1e-3,
+                  Y_AXIS: 'Total CO2 Emissions [GtCO2]'}
+
+CH4_EMISSIONS = 'CH4_emissions'
+_ch4_emissions = {FILE_NAME: 'CH4_emissions_global.csv',
+                  VAR_NAME: 'GHGEmissions.GHG_emissions_detail_df',
+                  COLUMN: 'Total CH4 emissions',
+                  CHART_TITLE: 'Total CH4 Emissions: WITNESS vs. SSP scenarios (IPCC)',
+                  UNIT_CONV_FACTOR: 1e-3,
+                  Y_AXIS: 'Total CH4 Emissions [GtCH4]'}
+
+N2O_EMISSIONS = 'N2O_emissions'
+_n2o_emissions = {FILE_NAME: 'N2O_emissions_global.csv',
+                  VAR_NAME: 'GHGEmissions.GHG_emissions_detail_df',
+                  COLUMN: 'Total N2O emissions',
+                  CHART_TITLE: 'Total N2O Emissions: WITNESS vs. SSP scenarios (IPCC)',
+                  UNIT_CONV_FACTOR: 1e-6,
+                  Y_AXIS: 'Total N2O Emissions [GtN2O]'}
+
+FOREST_SURFACE = 'Forest_surface'
+_forest_surface = {FILE_NAME: 'land_cover_forest_global.csv',
+                   VAR_NAME: 'Land_Use.land_surface_detail_df',
+                   COLUMN: 'Total Forest Surface (Gha)',
+                   CHART_TITLE: 'Total Forest Surface: WITNESS vs. SSP scenarios (IPCC)',
+                   UNIT_CONV_FACTOR: 1e-3,
+                   Y_AXIS: 'Forest Surface [Gha]'}
+
+AGRICULTURE_SURFACE = 'Agriculture_surface' # TODO: compare pasture and cropland separately?
+_agriculture_surface = {FILE_NAME: 'land_cover_pasture+cropland_global.csv',
+                        VAR_NAME: 'Land_Use.land_surface_detail_df',
+                        COLUMN: 'Total Agriculture Surface (Gha)',
+                        CHART_TITLE: 'Total Agriculture Surface: WITNESS vs. SSP scenarios (IPCC)',
+                        UNIT_CONV_FACTOR: 1e-3,
+                        Y_AXIS: 'Agriculture Surface [Gha]'}
+
+FINAL_ENERGY = 'energy'
+_final_energy = {FILE_NAME: 'final_energy_global.csv',
+                 VAR_NAME: 'EnergyMix.energy_production',
+                 COLUMN: 'Total production',
+                 CHART_TITLE: 'World Energy Production: WITNESS vs. SSP scenarios (IPCC)',
+                 UNIT_CONV_FACTOR: 0.27777777777,
+                 Y_AXIS: 'Final Energy Production [PWh]'}
+
+CHARTS_DATA = {
+    # GDP: _gdp,
+    # POPULATION: _population,
+    # CONSUMPTION: _consumption,
+    # MEAN_TEMPERATURE: _mean_temperature,
+    # FORCING: _forcing,
+    # CO2_CONCENTRATION: _co2_concentration,
+    # CH4_CONCENTRATION: _ch4_concentration,
+    # N2O_CONCENTRATION: _n2o_concentration,
+    # CO2_EMISSIONS: _co2_emissions,
+    # CH4_EMISSIONS: _ch4_emissions,
+    # N2O_EMISSIONS: _n2o_emissions,
+    # FOREST_SURFACE: _forest_surface,
+    # AGRICULTURE_SURFACE: _agriculture_surface,
+    FINAL_ENERGY: _final_energy
+    }
+
+
+# special chart: primary energy fractions
+PRIMARY_ENERGY = 'Primary energy fraction'
+COAL = 'Coal'
+_coal = {FILE_NAME: 'coal_fraction.csv', UNIT_CONV_FACTOR: 1.0,
+         WITNESS_VAR_COL: [('EnergyMix.solid_fuel.energy_production_detailed', 'solid_fuel CoalExtraction (TWh)'),
+                           ('EnergyMix.electricity.energy_production_detailed', 'electricity CoalGen (TWh)')]}
+OIL_GAS = 'Oil & Gas'
+_oil_gas = {FILE_NAME: 'oil_gas_fraction.csv', UNIT_CONV_FACTOR: 1.0,
+            WITNESS_VAR_COL: [('EnergyMix.methane.energy_production_detailed', 'methane FossilGas (TWh)'),
+                              # ('EnergyMix.fuel.energy_production_detailed', 'fuel.biodiesel Transesterification (TWh)'),
+                              # ('EnergyMix.fuel.energy_production_detailed', 'fuel.ethanol BiomassFermentation (TWh)'),
+                              ('EnergyMix.fuel.energy_production_detailed', 'fuel.hydrotreated_oil_fuel HefaDecarboxylation (TWh)'),
+                              ('EnergyMix.fuel.energy_production_detailed', 'fuel.hydrotreated_oil_fuel HefaDeoxygenation (TWh)'),
+                              ('EnergyMix.fuel.energy_production_detailed', 'fuel.liquid_fuel FischerTropsch (TWh)'),
+                              ('EnergyMix.fuel.energy_production_detailed', 'fuel.liquid_fuel Refinery (TWh)'),
+                              ('EnergyMix.electricity.energy_production_detailed', 'electricity CombinedCycleGasTurbine (TWh)'),
+                              ('EnergyMix.electricity.energy_production_detailed', 'electricity GasTurbine (TWh)'),
+                              ('EnergyMix.electricity.energy_production_detailed', 'electricity OilGen (TWh)'),
+                               ]
+            }
+# TODO: add hydrogen category including methanation in it
+NON_FOSSIL = 'Non-fossil'
+_non_fossil = {FILE_NAME: 'non-fossil_fraction.csv', UNIT_CONV_FACTOR: 1.0}
+PRIMARY_ENERGY_DATA = {
+    COAL: _coal,
+    OIL_GAS: _oil_gas,
+    NON_FOSSIL: _non_fossil
+}
+
+CHART_LIST = list(CHARTS_DATA.keys()) + [PRIMARY_ENERGY]
+
+def get_ssp_data(data_name, data_dict, region='World'):
     data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
-    var_df = pd.read_csv(os.path.join(data_dir, CHARTS_DATA[data_name][FILE_NAME]), sep=CSV_SEP, decimal=CSV_DEC)
+    var_df = pd.read_csv(os.path.join(data_dir, data_dict[data_name][FILE_NAME]), sep=CSV_SEP, decimal=CSV_DEC)
     var_df = var_df[var_df[REGION] == region]
-    var_df = var_df[[SCENARIO] + CSV_YRS].set_index(SCENARIO).transpose().reset_index().rename(columns={'index': YEARS})
+    var_df[SCENARIO] = [f"{_sc.split('-Baseline')[0]} ({_model})" for _sc, _model in var_df[[SCENARIO, MODEL]].values.tolist()]
+    var_df = var_df[[SCENARIO] + CSV_YRS].set_index(SCENARIO, drop=True).transpose().reset_index().rename(columns={'index': YEARS})
     var_df[YEARS] = pd.to_numeric(var_df[YEARS])
-    var_df.loc[:, var_df.columns != YEARS] *= CHARTS_DATA[data_name][UNIT_CONV_FACTOR]
-    var_df.reindex(sorted(var_df.columns), axis=1, copy=False)  # sort the scenarios by name for clarity
+    var_df.loc[:, var_df.columns != YEARS] *= data_dict[data_name][UNIT_CONV_FACTOR]
+    var_df = var_df.reindex(columns=[YEARS] + sorted(set(var_df.columns) - {YEARS}))  # sort the scenarios by name for clarity
+    var_df.columns.name = None
     return var_df
 
 def post_processing_filters(execution_engine, namespace):
@@ -82,7 +235,7 @@ def post_processing_filters(execution_engine, namespace):
     #                            scenario_list, 'Scenarios'))
     return filters
 
-def _get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
+def get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
     years = comp_df[YEARS].values.tolist()
     series = comp_df.loc[:, comp_df.columns != YEARS]
     min_x = min(years)
@@ -99,22 +252,56 @@ def _get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
         new_chart.series.append(new_series)
     return new_chart
 
-def post_processings(execution_engine, namespace, filters):
+def get_ssp_primary_energy_charts():
+    primary_energy_charts = []
+    var_dfs = {}
+    for key, value in PRIMARY_ENERGY_DATA.items():
+        var_dfs[key] = get_ssp_data(key, PRIMARY_ENERGY_DATA)
 
+    scenario_dfs = {}
+    for energy_type, energy_type_df in var_dfs.items():
+        scenarios = set(energy_type_df.columns) - {YEARS}
+        for scenario in scenarios:
+            if scenario not in scenario_dfs:
+                scenario_dfs[scenario] = pd.DataFrame({YEARS: WITNESS_YEARS})
+            f_interp = interp1d(energy_type_df[YEARS], energy_type_df[scenario])
+            scenario_energy_type_data = f_interp(WITNESS_YEARS)
+            scenario_dfs[scenario][energy_type] = scenario_energy_type_data
+    min_x = min(WITNESS_YEARS)
+    max_x = max(WITNESS_YEARS)
+    min_y = 0.0
+    max_y = 1.0
+    for scenario, scenario_df in scenario_dfs.items():
+        new_chart = TwoAxesInstanciatedChart(YEARS, f'{PRIMARY_ENERGY} [-]',
+                                             [min_x - 5, max_x + 5], [
+                                             min_y - max_y * 0.05, max_y * 1.05],
+                                             f'{PRIMARY_ENERGY} for {scenario}',
+                                             stacked_bar=True)
+        for energy_type in var_dfs:
+            series = InstanciatedSeries(list(WITNESS_YEARS), scenario_df[energy_type].values.tolist(),
+                                        energy_type, InstanciatedSeries.BAR_DISPLAY)
+            new_chart.add_series(series)
+        primary_energy_charts.append(new_chart)
+    return primary_energy_charts
+
+def post_processings(execution_engine, namespace, filters):
     def get_comparison_chart(data_name):
         var_f_name = f"{namespace}.{CHARTS_DATA[data_name][VAR_NAME]}"
         column = CHARTS_DATA[data_name][COLUMN]
         witness_data = execution_engine.dm.get_value(var_f_name)[
-            [YEARS, column]].rename(columns={column: WITNESS_SERIES_NAME})
-        ssp_data = get_ssp_data(data_name, region='World')
+            [column]].rename(columns={column: WITNESS_SERIES_NAME})
+        # [YEARS, column]].rename(columns={column: WITNESS_SERIES_NAME})
+        witness_data[YEARS] = WITNESS_YEARS  # Not all witness vars include years
+        ssp_data = get_ssp_data(data_name, CHARTS_DATA, region='World')
         for scenario in ssp_data.columns:
-            f_interp = interp1d(ssp_data[YEARS], ssp_data[scenario])
-            scenario_data = f_interp(witness_data[YEARS])
-            witness_data[scenario] = scenario_data
-        return _get_comp_chart_from_df(witness_data, data_name, CHARTS_DATA[data_name][CHART_TITLE]) # FIXME: manage units
-
+            if scenario != YEARS:
+                f_interp = interp1d(ssp_data[YEARS], ssp_data[scenario])
+                scenario_data = f_interp(witness_data[YEARS])
+                witness_data[scenario] = scenario_data
+        return get_comp_chart_from_df(witness_data, CHARTS_DATA[data_name][Y_AXIS], CHARTS_DATA[data_name][CHART_TITLE])
     instanciated_charts = []
 
+    graphs_list = CHART_LIST
     # Overload default value with chart filter
     if filters is not None:
         for chart_filter in filters:
@@ -122,11 +309,17 @@ def post_processings(execution_engine, namespace, filters):
                 graphs_list = chart_filter.selected_values
             # if chart_filter.filter_key == 'Scenarios':
             #     selected_scenarios = chart_filter.selected_values
-    else:
-        graphs_list = CHART_LIST
-        # selected_scenarios = scenario_list
 
-    instanciated_charts.extend(map(get_comparison_chart, graphs_list))
+    _graphs_set = set(graphs_list)
+    _primary_energy_chart = False
+    if PRIMARY_ENERGY in _graphs_set:
+        _primary_energy_chart = True
+        _graphs_set.discard(PRIMARY_ENERGY)
+
+
+    instanciated_charts.extend(map(get_comparison_chart, _graphs_set))
+    if _primary_energy_chart:
+        instanciated_charts.extend(get_ssp_primary_energy_charts())
     return instanciated_charts
 
 #     df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.year_start',

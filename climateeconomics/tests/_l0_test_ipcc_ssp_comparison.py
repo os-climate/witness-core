@@ -20,7 +20,7 @@ from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness_wo_damage import Study as uc
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness_wo_damage_gdp_input import Study as uc
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
@@ -48,12 +48,14 @@ class TestIPCCSSPComparison(unittest.TestCase):
         self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',})
                                             # f'{self.study_name}.max_mda_iter': 1})
 
-    def test_ssps_scenario_plot(self):
+    def test_ssps_scenario_plots(self):
 
-        self.ee.execute()
+        # self.ee.execute()
+        # self.usecase.static_dump_data('.', self.ee, DirectLoadDump())
+
         from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
-        # self.usecase.static_dump_data()
-        # self.usecase.static_load_data('.', self.ee, DirectLoadDump())
+        self.usecase.static_load_data('.', self.ee, DirectLoadDump())
+
         ppf = PostProcessingFactory()
         filters = ppf.get_post_processing_filters_by_namespace(self.ee, self.study_name)
         graph_list = ppf.get_post_processing_by_namespace(self.ee, self.study_name, filters,

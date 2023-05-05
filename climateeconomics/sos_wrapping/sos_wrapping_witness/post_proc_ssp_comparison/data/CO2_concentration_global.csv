@@ -1,0 +1,9 @@
+﻿Model;Scenario;Region;Variable;Unit;2005;2010;2020;2030;2040;2050;2060;2070;2080;2090;2100;Notes
+AIM/CGE;SSP3-Baseline;World;Diagnostics|MAGICC6|Concentration|CO2;ppm;379,850;390,505;417,889;451,997;491,255;535,221;583,692;636,942;695,674;760,992;834,341;
+GCAM4;SSP4-Baseline;World;Diagnostics|MAGICC6|Concentration|CO2;ppm;379,850;390,505;415,996;446,626;482,375;520,960;561,378;602,931;643,132;681,199;718,373;
+IMAGE;SSP1-Baseline;World;Diagnostics|MAGICC6|Concentration|CO2;ppm;379,850;390,505;415,347;442,302;470,478;498,174;524,976;550,828;573,511;592,259;608,354;
+MESSAGE-GLOBIOM;SSP2-Baseline;World;Diagnostics|MAGICC6|Concentration|CO2;ppm;379,850;390,505;414,709;442,001;474,015;511,306;553,628;600,758;655,141;718,601;789,849;
+REMIND-MAGPIE;SSP5-Baseline;World;Diagnostics|MAGICC6|Concentration|CO2;ppm;379,850;390,505;417,249;452,767;499,678;559,692;635,793;730,026;841,520;963,842;1088,970;
+"© SSP Public Database (Version 2.0) https://tntcat.iiasa.ac.at/SspDb 
+ generated: 2023-04-24 15:28:26";;;;;;;;;;;;;;;;
+For recommended citation please follow this link: https://tntcat.iiasa.ac.at/SspDb/dsd?Action=htmlpage&page=citation;;;;;;;;;;;;;;;;
