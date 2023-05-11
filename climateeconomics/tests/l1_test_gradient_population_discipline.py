@@ -15,6 +15,8 @@ limitations under the License.
 '''
 
 from os.path import join, dirname
+
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pandas as pd
@@ -366,3 +368,57 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data = disc_techno.local_data,  inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
                             outputs=[
                                 f'{self.name}.population_df',f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
+
+    def test_population_discipline_analytic_w_climate_effect(self):
+        '''
+        Test gradient population with climate effect
+        '''
+        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+                       f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.temperature_df': self.temperature_df,
+                       f'{self.name}.climate_effects_activation_dict':
+                           {'all_effects': True,
+                            'compute_gdp_and_usable_capital': True,
+                            'compute_damage_on_climate': True,
+                            'activate_climate_effect_population': True
+                            }
+                       }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
+                            discipline=disc_techno, local_data=disc_techno.local_data,
+                            inputs=[f'{self.name}.economics_df'], outputs=[
+                f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
+
+    def test_population_discipline_analytic_wo_climate_effect(self):
+        '''
+        Test gradient population without climate effect
+        '''
+        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+                       f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.temperature_df': self.temperature_df,
+                       f'{self.name}.climate_effects_activation_dict':
+                           {'all_effects': True,
+                            'compute_gdp_and_usable_capital': True,
+                            'compute_damage_on_climate': True,
+                            'activate_climate_effect_population': False
+                            }
+                       }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_analytic_wo_climate_effect_output.pkl',
+                            discipline=disc_techno, local_data=disc_techno.local_data,
+                            inputs=[f'{self.name}.economics_df'], outputs=[
+                f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
