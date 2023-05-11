@@ -1,0 +1,9 @@
+﻿Model;Scenario;Region;Variable;Unit;2005;2010;2020;2030;2040;2050;2060;2070;2080;2090;2100;Notes
+AIM/CGE;SSP3-Baseline;World;Land Cover|Pasture + Cropland;million ha;4904,794;5042,072;5272,816;5408,638;5485,895;5562,125;5662,194;5762,997;5850,057;5919,237;5985,578;
+GCAM4;SSP4-Baseline;World;Land Cover|Pasture + Cropland;million ha;4828,277;4755,782;4823,548;4924,38;5038,343;5142,379;5256,71;5345,095;5407,275;5436,068;5452,683;
+IMAGE;SSP1-Baseline;World;Land Cover|Pasture + Cropland;million ha;4737,262;4770,203;4690,622;4606,86;4565,811;4465,436;4346,279;4274,422;4232,177;4186,009;4088,259;
+MESSAGE-GLOBIOM;SSP2-Baseline;World;Land Cover|Pasture + Cropland;million ha;4961,657;4963,57;5037,563;5114,99;5202,861;5285,73;5366,673;5437,589;5495,672;5543,095;5570,274;
+REMIND-MAGPIE;SSP5-Baseline;World;Land Cover|Pasture + Cropland;million ha;4591,742;4609,016;4639,088;4714,151;4748,264;4788,144;4794,621;4793,735;4775,374;4696,529;4636,126;
+"© SSP Public Database (Version 2.0) https://tntcat.iiasa.ac.at/SspDb 
+ generated: 2023-05-04 12:05:55";;;;;;;;;;;;;;;;
+For recommended citation please follow this link: https://tntcat.iiasa.ac.at/SspDb/dsd?Action=htmlpage&page=citation;;;;;;;;;;;;;;;;
