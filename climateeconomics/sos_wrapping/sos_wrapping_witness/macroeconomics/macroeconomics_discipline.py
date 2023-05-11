@@ -100,7 +100,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'delta_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 50, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'climate_effects_activation_dict': ClimateEcoDiscipline.CLIMATE_EFFECTS_DESC_IN
+        'climate_effects_activation_dict': ClimateEcoDiscipline.CLIMATE_EFFECTS_DESC_IN,
+        'invest_co2_tax_in_renawables': {'type': 'bool', 'default': True},
     }
 
     DESC_OUT = {
@@ -313,8 +314,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         # Compute gradient for coupling variable Total production
         dcapitalu_denergy = self.macro_model.dusablecapital_denergy()
+        compute_gdp = inputs_dict["climate_effects_activation_dict"]["compute_gdp"]
         dgross_output = self.macro_model.dgrossoutput_denergy(
-            dcapitalu_denergy)
+            dcapitalu_denergy) if compute_gdp else npzeros
         dnet_output = self.macro_model.dnet_output(dgross_output)
         denergy_investment, dinvestment, dne_investment = self.macro_model.dinvestment(
             dnet_output)
@@ -371,7 +373,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('delta_capital_lintoquad',), ('energy_production', 'Total production'), ddelta_capital_lintoquad)
 #        Compute gradient for coupling variable damage
         dproductivity = self.macro_model.compute_dproductivity()
-        dgross_output = self.macro_model.dgross_output_ddamage(dproductivity)
+        dgross_output = self.macro_model.dgross_output_ddamage(dproductivity) if compute_gdp else npzeros
         dnet_output = self.macro_model.dnet_output_ddamage(dgross_output)
         denergy_investment, dinvestment, dne_investment = self.macro_model.dinvestment(
             dnet_output)
@@ -430,7 +432,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dworkforce_dworkingagepop = self.macro_model.compute_dworkforce_dworkagepop()
         self.set_partial_derivative_for_other_types(
             ('workforce_df', 'workforce'), ('working_age_population_df', 'population_1570'), dworkforce_dworkingagepop)
-        dgross_output = self.macro_model.dgrossoutput_dworkingpop()
+        dgross_output = self.macro_model.dgrossoutput_dworkingpop() if compute_gdp else npzeros
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'gross_output'), ('working_age_population_df', 'population_1570'), dworkforce_dworkingagepop * dgross_output)
         dnet_output = self.macro_model.dnet_output(dgross_output)

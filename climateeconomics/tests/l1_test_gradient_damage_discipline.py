@@ -87,3 +87,65 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data= disc_techno.local_data,
                             step=1e-15, inputs=[f'{self.name}.temperature_df', f'{self.name}.economics_df'],
                             outputs=[f'{self.name}.damage_df', f'{self.name}.CO2_damage_price'], derr_approx='complex_step')
+
+    def test_damage_analytic_grad_wo_damage_on_climate(self):
+        """
+        Test analytic gradient with damage on climate deactivated
+        """
+
+        self.model_name = 'Test'
+        ns_dict = {'ns_witness': f'{self.name}',
+                   'ns_public': f'{self.name}',
+                   'ns_energy_mix': f'{self.name}',
+                   'ns_ref': f'{self.name}'}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        data_dir = join(dirname(__file__), 'data')
+
+        economics_df_all = read_csv(
+            join(data_dir, 'economics_data_onestep.csv'))
+        temperature_df_all = read_csv(
+            join(data_dir, 'temperature_data_onestep.csv'))
+
+        economics_df_y = economics_df_all[economics_df_all['years'] >= 2020][[
+            'years', 'gross_output']]
+        temperature_df_y = temperature_df_all[temperature_df_all['years'] >= 2020][[
+            'years', 'temp_atmo']]
+
+        years = np.arange(2020, 2101, 1)
+        economics_df_y.index = years
+        temperature_df_y.index = years
+
+        inputs_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
+                       f'{self.name}.economics_df': economics_df_y,
+                       f'{self.name}.CO2_taxes': pd.DataFrame({'years': years, 'CO2_tax': np.linspace(50, 500, len(years))}),
+                       f'{self.name}.temperature_df': temperature_df_y,
+                       f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15)))),
+                       f'{self.name}.climate_effects_activation_dict':
+                           {'all_effects': True,
+                            'compute_gdp': True,
+                            'compute_damage_on_climate': False,
+                            'activate_climate_effect_population': False
+                            }
+                       }
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline_wo_damage_on_climate.pkl',
+                            discipline=disc_techno, local_data= disc_techno.local_data,
+                            step=1e-15, inputs=[f'{self.name}.temperature_df', f'{self.name}.economics_df'],
+                            outputs=[f'{self.name}.damage_df', f'{self.name}.CO2_damage_price'], derr_approx='complex_step')
