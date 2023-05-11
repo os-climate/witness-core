@@ -37,24 +37,25 @@ class TestIPCCSSPComparison(unittest.TestCase):
                                                            mod_id=self.proc_name)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
-        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_witness',
-            'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_ssp_comparison.post_processing_ssp_comparison')
+        # Added directly to witness process
+        # self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_witness',
+        #     'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_ssp_comparison.post_processing_ssp_comparison')
         self.ee.configure()
         self.usecase = uc()
         self.usecase.study_name = self.study_name
         values_dict = self.usecase.setup_usecase()
         for values_dict_i in values_dict:
             self.ee.load_study_from_input_dict(values_dict_i)
-        self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',})
-                                            # f'{self.study_name}.max_mda_iter': 1})
+        self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
+                                            f'{self.study_name}.max_mda_iter': 2})
 
     def test_ssps_scenario_plots(self):
 
-        # self.ee.execute()
-        # self.usecase.static_dump_data('.', self.ee, DirectLoadDump())
+        self.ee.execute()
 
-        from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
-        self.usecase.static_load_data('.', self.ee, DirectLoadDump())
+        # self.usecase.static_dump_data('.', self.ee, DirectLoadDump())
+        # from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
+        # self.usecase.static_load_data('.', self.ee, DirectLoadDump())
 
         ppf = PostProcessingFactory()
         filters = ppf.get_post_processing_filters_by_namespace(self.ee, self.study_name)
