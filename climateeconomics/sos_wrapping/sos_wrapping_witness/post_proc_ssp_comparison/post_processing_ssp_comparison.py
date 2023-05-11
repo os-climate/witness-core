@@ -227,6 +227,9 @@ WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
 CHART_LIST = list(CHARTS_DATA.keys()) + [PRIMARY_ENERGY]
 
 def get_ssp_data(data_name, data_dict, region='World'):
+    """
+    Get ssp dataframes for each variable.
+    """
     data_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'data')
     var_df = pd.read_csv(os.path.join(data_dir, data_dict[data_name][FILE_NAME]), sep=CSV_SEP, decimal=CSV_DEC)
     var_df = var_df[var_df[REGION] == region]
@@ -242,6 +245,9 @@ def post_processing_filters(execution_engine, namespace):
     return [ChartFilter('Charts', CHART_LIST, CHART_LIST, 'Charts')]
 
 def get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
+    """
+    Create comparison chart from df with all series to compare.
+    """
     years = comp_df[YEARS].values.tolist()
     series = comp_df.loc[:, comp_df.columns != YEARS]
     min_x = min(years)
@@ -259,6 +265,9 @@ def get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
     return new_chart
 
 def get_witness_primary_energy_chart(execution_engine, namespace):
+    """
+    Create the primary energy fractions chart for witness scenario.
+    """
     varname, colname = WITNESS_BRUT_ENERGY_TOTAL
     var_f_name = f'{namespace}.{varname}'
     total_brut_energy = execution_engine.dm.get_value(var_f_name)[colname].values
@@ -298,6 +307,9 @@ def get_witness_primary_energy_chart(execution_engine, namespace):
     return new_chart
 
 def get_ssp_primary_energy_charts():
+    """
+    Create the primary energy fractions charts for ssp.
+    """
     primary_energy_charts = []
     var_dfs = {}
     for key, value in PRIMARY_ENERGY_DATA.items():
@@ -330,7 +342,13 @@ def get_ssp_primary_energy_charts():
     return primary_energy_charts
 
 def post_processings(execution_engine, namespace, filters):
+    """
+    Instantiate postprocessing charts.
+    """
     def get_comparison_chart(data_name):
+        """
+        Gets ssp data, gets witness data, interpolates the former and instantiates the graph.
+        """
         var_f_name = f"{namespace}.{CHARTS_DATA[data_name][VAR_NAME]}"
         column = CHARTS_DATA[data_name][COLUMN]
         witness_data = execution_engine.dm.get_value(var_f_name)[

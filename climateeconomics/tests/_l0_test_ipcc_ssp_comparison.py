@@ -27,7 +27,9 @@ from sostrades_core.tools.post_processing.post_processing_factory import PostPro
 class TestIPCCSSPComparison(unittest.TestCase):
 
     def setUp(self):
-
+        """
+        setup of test
+        """
         self.study_name = 'Test_IPCC_SSP_comparison'
         self.repo = 'climateeconomics.sos_processes.iam.witness'
         self.proc_name = 'witness'
@@ -50,7 +52,9 @@ class TestIPCCSSPComparison(unittest.TestCase):
                                             f'{self.study_name}.max_mda_iter': 2})
 
     def test_ssps_scenario_plots(self):
-
+        """
+        Test to check the generation of plots to compare WITNESS to IPCC SSP baseline scenarios 1-5
+        """
         self.ee.execute()
 
         # self.usecase.static_dump_data('.', self.ee, DirectLoadDump())
@@ -61,8 +65,8 @@ class TestIPCCSSPComparison(unittest.TestCase):
         filters = ppf.get_post_processing_filters_by_namespace(self.ee, self.study_name)
         graph_list = ppf.get_post_processing_by_namespace(self.ee, self.study_name, filters,
                                                           as_json=False)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 #
 if '__main__' == __name__:
 
