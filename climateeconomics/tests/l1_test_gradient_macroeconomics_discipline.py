@@ -834,7 +834,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.working_age_population_df': self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
                        f'{self.name}.alpha': 0.5,
-                       f'{self.name}.{self.model_name}.invest_co2_tax_in_renawables': False,
+                       f'{self.name}.climate_effects_activation_dict':
+                           {'all_effects': True,
+                            'compute_gdp_and_usable_capital': True,
+                            'compute_damage_on_climate': True,
+                            'activate_climate_effect_population': True,
+                            'invest_co2_tax_in_renewables': False,
+                            },
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)

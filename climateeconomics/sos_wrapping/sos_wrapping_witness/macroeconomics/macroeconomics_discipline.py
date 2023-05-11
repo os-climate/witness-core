@@ -101,7 +101,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'delta_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 50, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'climate_effects_activation_dict': ClimateEcoDiscipline.CLIMATE_EFFECTS_DESC_IN,
-        'invest_co2_tax_in_renawables': {'type': 'bool', 'default': True},
     }
 
     DESC_OUT = {

@@ -24,7 +24,8 @@ class ClimateEcoDiscipline(SoSWrapp):
     climate_effects_activation_dict_default = {'all_effects': True, 
                                                'compute_gdp_and_usable_capital': True,
                                                'compute_damage_on_climate': True, 
-                                               'activate_climate_effect_population': True
+                                               'activate_climate_effect_population': True,
+                                               'invest_co2_tax_in_renewables': True,
                                                }
 
     YEAR_START_DESC_IN = {'type': 'int', 'default': 2020,
