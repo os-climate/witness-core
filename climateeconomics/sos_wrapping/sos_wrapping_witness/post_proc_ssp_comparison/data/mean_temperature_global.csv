@@ -1,0 +1,9 @@
+﻿Model;Scenario;Region;Variable;Unit;2005;2010;2020;2030;2040;2050;2060;2070;2080;2090;2100;Notes
+AIM/CGE;SSP3-Baseline;World;Diagnostics|MAGICC6|Temperature|Global Mean;°C;0,913;0,988;1,226;1,524;1,864;2,203;2,551;2,912;3,284;3,672;4,071;
+GCAM4;SSP4-Baseline;World;Diagnostics|MAGICC6|Temperature|Global Mean;°C;0,913;0,989;1,237;1,533;1,874;2,216;2,546;2,875;3,201;3,494;3,758;
+IMAGE;SSP1-Baseline;World;Diagnostics|MAGICC6|Temperature|Global Mean;°C;0,913;0,988;1,223;1,506;1,771;2,022;2,246;2,460;2,669;2,856;3,018;
+MESSAGE-GLOBIOM;SSP2-Baseline;World;Diagnostics|MAGICC6|Temperature|Global Mean;°C;0,913;0,989;1,241;1,483;1,762;2,053;2,356;2,681;3,023;3,388;3,763;
+REMIND-MAGPIE;SSP5-Baseline;World;Diagnostics|MAGICC6|Temperature|Global Mean;°C;0,913;0,989;1,266;1,603;2,013;2,480;2,976;3,504;4,050;4,576;5,052;
+"© SSP Public Database (Version 2.0) https://tntcat.iiasa.ac.at/SspDb 
+ generated: 2023-04-24 15:26:00";;;;;;;;;;;;;;;;
+For recommended citation please follow this link: https://tntcat.iiasa.ac.at/SspDb/dsd?Action=htmlpage&page=citation;;;;;;;;;;;;;;;;

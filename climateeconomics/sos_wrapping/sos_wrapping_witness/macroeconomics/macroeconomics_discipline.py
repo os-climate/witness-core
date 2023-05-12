@@ -100,7 +100,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'delta_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 50, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'compute_gdp' : {'type': 'bool', 'unit': '-', 'default': True, 'structuring': True }
+        'climate_effects_activation_dict': ClimateEcoDiscipline.CLIMATE_EFFECTS_DESC_IN,
     }
 
     DESC_OUT = {
@@ -130,8 +130,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dynamic_inputs = {}
         if self.get_data_in() is not None:
 
-            if 'compute_gdp' in self.get_data_in():
-                if not self.get_sosdisc_inputs('compute_gdp'):
+            if 'climate_effects_activation_dict' in self.get_data_in():
+                climate_effects_activation_dict = self.get_sosdisc_inputs('climate_effects_activation_dict')
+                compute_gdp_and_usable_capital: bool = climate_effects_activation_dict['compute_gdp_and_usable_capital'] if climate_effects_activation_dict['all_effects'] else False
+                # if compute gdp is not activated, we add gdp input
+                if not compute_gdp_and_usable_capital:
                     dynamic_inputs.update({'gross_output_in': {'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'dataframe_descriptor': {'years': ('float', None, False),
                                                                                                'gross_output': ('float', None, True)}, 'dataframe_edition_locked': False,'namespace': 'ns_witness'}})
 
@@ -188,7 +191,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         population_df = param.pop('population_df')
         working_age_population_df = param.pop('working_age_population_df')
         energy_capital_df = param['energy_capital']
-        compute_gdp = param['compute_gdp']
+        climate_effects_activation_dict = param['climate_effects_activation_dict']
+        compute_gdp_and_usable_capital: bool = climate_effects_activation_dict['compute_gdp_and_usable_capital'] if climate_effects_activation_dict['all_effects'] else False
         macro_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                         'energy_production': energy_production,
                         'scaling_factor_energy_production': param['scaling_factor_energy_production'],
@@ -203,10 +207,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         'population_df': population_df[['years', 'population']],
                         'working_age_population_df': working_age_population_df[['years', 'population_1570']],
                         'energy_capital_df': energy_capital_df, 
-                        'compute_gdp': compute_gdp
+                        'compute_gdp_and_usable_capital': compute_gdp_and_usable_capital
                         }
         
-        if not compute_gdp:
+
+        if not compute_gdp_and_usable_capital:
             macro_inputs.update({'gross_output_in': param['gross_output_in']})
 
         # Check inputs
@@ -273,6 +278,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         demaxconstraint = self.macro_model.demaxconstraint(dcapital)
         ddelta_capital_objective_dco2_emissions = (
             capital_ratio * dcapital / usable_capital_ref) * compute_dfunc_with_exp_min(delta_capital_objective_wo_exp_min, 1e-15)
+
         ne_capital = self.macro_model.capital_df['non_energy_capital'].values
         usable_capital = self.macro_model.capital_df['usable_capital'].values
         ref_usable_capital = self.macro_model.usable_capital_ref * self.macro_model.nb_years
@@ -306,10 +312,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('delta_capital_constraint',), ('co2_emissions_Gt', 'Total CO2 emissions'),
             -ddelta_capital_cons / usable_capital_ref)
 
+        compute_gdp_and_usable_capital = inputs_dict["climate_effects_activation_dict"]["compute_gdp_and_usable_capital"]
+
         # Compute gradient for coupling variable Total production
-        dcapitalu_denergy = self.macro_model.dusablecapital_denergy()
+        dcapitalu_denergy = self.macro_model.dusablecapital_denergy() if compute_gdp_and_usable_capital else npzeros
         dgross_output = self.macro_model.dgrossoutput_denergy(
-            dcapitalu_denergy)
+            dcapitalu_denergy) if compute_gdp_and_usable_capital else npzeros
         dnet_output = self.macro_model.dnet_output(dgross_output)
         denergy_investment, dinvestment, dne_investment = self.macro_model.dinvestment(
             dnet_output)
@@ -320,7 +328,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dcapital = self.macro_model.dcapital(dne_investment)
         demaxconstraint = self.macro_model.demaxconstraint(dcapital)
         ddelta_capital_objective_denergy_production = (scaling_factor_energy_production * (capital_ratio * dcapital - np.identity(
-            nb_years) * capital_ratio * capital_df['energy_efficiency'].values / 1000) / usable_capital_ref) * compute_dfunc_with_exp_min(delta_capital_objective_wo_exp_min, 1e-15)
+            nb_years) * capital_ratio * capital_df['energy_efficiency'].values / 1000) / usable_capital_ref) * compute_dfunc_with_exp_min(delta_capital_objective_wo_exp_min, 1e-15) if compute_gdp_and_usable_capital else npzeros
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'gross_output'), ('energy_production', 'Total production'), scaling_factor_energy_production * dgross_output)
         self.set_partial_derivative_for_other_types(
@@ -344,7 +352,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             alpha * ddelta_capital_objective_denergy_production)
         ddelta_capital_cons = self.compute_ddelta_capital_cons(scaling_factor_energy_production * (
             capital_ratio * dcapital - np.identity(nb_years) * capital_ratio * capital_df[
-                'energy_efficiency'].values / 1000), delta_capital_objective_wo_exp_min * usable_capital_ref)
+                'energy_efficiency'].values / 1000), delta_capital_objective_wo_exp_min * usable_capital_ref) if compute_gdp_and_usable_capital else npzeros
         self.set_partial_derivative_for_other_types(
             ('delta_capital_constraint',), ('energy_production', 'Total production'),
             - ddelta_capital_cons / usable_capital_ref)
@@ -366,7 +374,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('delta_capital_lintoquad',), ('energy_production', 'Total production'), ddelta_capital_lintoquad)
 #        Compute gradient for coupling variable damage
         dproductivity = self.macro_model.compute_dproductivity()
-        dgross_output = self.macro_model.dgross_output_ddamage(dproductivity)
+        dgross_output = self.macro_model.dgross_output_ddamage(dproductivity) if compute_gdp_and_usable_capital else npzeros
         dnet_output = self.macro_model.dnet_output_ddamage(dgross_output)
         denergy_investment, dinvestment, dne_investment = self.macro_model.dinvestment(
             dnet_output)
@@ -425,7 +433,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dworkforce_dworkingagepop = self.macro_model.compute_dworkforce_dworkagepop()
         self.set_partial_derivative_for_other_types(
             ('workforce_df', 'workforce'), ('working_age_population_df', 'population_1570'), dworkforce_dworkingagepop)
-        dgross_output = self.macro_model.dgrossoutput_dworkingpop()
+        dgross_output = self.macro_model.dgrossoutput_dworkingpop() if compute_gdp_and_usable_capital else npzeros
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'gross_output'), ('working_age_population_df', 'population_1570'), dworkforce_dworkingagepop * dgross_output)
         dnet_output = self.macro_model.dnet_output(dgross_output)

@@ -13,19 +13,21 @@ limitations under the License.
 '''
 
 
-from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy as datacase_witness
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as usecase_witness
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 
 
-
+from pandas import DataFrame
+from numpy import arange, linspace
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, run_usecase = False, execution_engine=None):
+    def __init__(self, run_usecase = False, execution_engine=None, year_start = 2020, year_end = 2100, time_step = 1):
         super().__init__(__file__,  run_usecase = run_usecase, execution_engine=execution_engine)
-
+        self.year_start = year_start
+        self.year_end = year_end 
+        self.time_step = time_step
 
     def setup_usecase(self):
         
@@ -33,12 +35,16 @@ class Study(ClimateEconomicsStudyManager):
         witness_uc = usecase_witness()
         witness_uc.study_name = self.study_name
         data_witness = witness_uc.setup_usecase()
-        # Create a dictionary with a key-value pair indicating that damage activation should be False for this study
-        updated_data = {f'{self.study_name}.climate_effects_activation_dict': {'all_effects': True, 
-                                               'compute_gdp_and_usable_capital': True,
+        years = arange(self.year_start, self.year_end + 1, self.time_step)
+        gross_output = linspace(85,145, len(years))
+        df_gross_output = DataFrame({'years':years, 
+                                     'gross_output': gross_output})
+        updated_data = {f'{self.study_name}.climate_effects_activation_dict': {'all_effects': False, 
+                                               'compute_gdp_and_usable_capital': False,
                                                'compute_damage_on_climate': False, 
-                                               'activate_climate_effect_population': True
-                                               }}
+                                               'activate_climate_effect_population': False
+                                               },
+                        f'{self.study_name}.gross_output_in': df_gross_output}
         data_witness.append(updated_data)
         return data_witness
 
@@ -47,3 +53,4 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
+    print('-----')

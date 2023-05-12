@@ -272,9 +272,9 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
     for energy in energy_list:
         if energy == 'biomass_dry':
-            namespace_disc = f'{namespace}.EnergyMix.{energy}'
-        else:
             namespace_disc = f'{namespace}.AgricultureMix'
+        else:
+            namespace_disc = f'{namespace}.EnergyMix.{energy}'
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace_disc)[0]
         techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
         for techno in techno_list:
@@ -284,6 +284,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                 'techno_production')[f'{energy} (TWh)'].values * \
                                 techno_disc.get_sosdisc_inputs(
                                     'scaling_factor_techno_production')
+            # crop had not invest_level but crop_investment
             invest_techno = techno_disc.get_sosdisc_inputs('invest_level')[
                                 f'invest'].values * \
                             techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
