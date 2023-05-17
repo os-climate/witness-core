@@ -1,3 +1,6 @@
+# Credentials / Secrets
+credentials.env
+
 __pycache__
 .project
 .pydevproject
