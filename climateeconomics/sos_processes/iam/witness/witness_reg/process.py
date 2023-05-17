@@ -52,6 +52,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         list_ns_to_associate = self.ee.ns_manager.update_namespace_list_with_extra_ns('US', self.ee.study_name, namespace_list = list(self.ee.ns_manager.shared_ns_dict.values()))
         for build in chain_builders_witness:
             build.associate_namespaces(list_ns_to_associate)
+            build.set_builder_info('local_namespace_database', True)
+
+        for ns in list_ns_to_associate:
+            ns_obj = self.ee.ns_manager.all_ns_dict[ns]
+            ns_obj.get_from_database = True
 
         chain_builders_witness_UE = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness')
@@ -65,5 +70,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         list_ns_to_associate = self.ee.ns_manager.update_namespace_list_with_extra_ns('UE', self.ee.study_name, namespace_list = list(difference_dict.values()))
         for build in chain_builders_witness_UE:
             build.associate_namespaces(list_ns_to_associate)
+            build.set_builder_info('local_namespace_database', True)
+
+        for ns in list_ns_to_associate:
+            ns_obj = self.ee.ns_manager.all_ns_dict[ns]
+            ns_obj.get_from_database = True
+
+        self.ee.ns_manager.database_activated = True 
 
         return chain_builders
