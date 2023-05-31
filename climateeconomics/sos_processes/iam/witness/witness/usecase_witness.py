@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from os.path import join, dirname
 from pandas import DataFrame, concat
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
@@ -34,6 +35,7 @@ from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase 
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.tools.jsonhandling import convert_to_editable_json, preprocess_data_and_save_json, insert_json_to_mongodb_bis
 
 import cProfile
 from io import StringIO
@@ -43,6 +45,39 @@ INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
 AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
+
+def generate_json_by_discipline(data, json_name):
+    json_data = convert_to_editable_json(data)
+    json_data_updt = create_fake_regions(json_data, ['US', 'UE'])
+    json_data_updt['id'] = json_name.split('.')[-1]
+    output_path = join(dirname(__file__), 'data', f'{json_name}.json')
+    preprocess_data_and_save_json(json_data_updt, output_path)
+
+
+def prepare_data(data):
+    """
+    Prepare data by getting only values
+    """
+
+    dict_data = {}
+    for disc_id in list(uc_cls.ee.dm.disciplines_dict.keys()):
+        disc = dm.get_discipline(disc_id)
+        data_in = disc.get_data_in()
+        dict_data[disc.sos_name] = {}
+        for k,v in data_in.items():
+            if not v['numerical']:
+                dict_data[disc.sos_name][k] = v['value']
+    return dict_data
+
+
+def create_fake_regions(data, regions_list): 
+    """
+    Add regions 
+    """
+    data_updt = {}
+    for reg in regions_list:
+        data_updt[reg] = data 
+    return data_updt
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -174,65 +209,22 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
 
-    # print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
-    #  self.exec_eng.dm.export_couplings(
-    #     in_csv=True, f_name='couplings.csv')
 
-    # uc_cls.execution_engine.root_process.coupling_structure.graph.export_initial_graph(
-    #     "initial.pdf")
-    #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
-    #         "reduced.pdf")
+    data = uc_cls.ee.dm.get_discipline(list(uc_cls.ee.dm.disciplines_dict.keys())[3]).get_data_in()
+    dm = uc_cls.ee.dm
 
-    # DEBUG MIN MAX COUPLINGS
-    #     uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
-    #     pd.set_option('display.max_rows', None)
-    #     pd.set_option('display.max_columns', None)
-    # #     pd.set_option('display.width', None)
-    #     profil = cProfile.Profile()
-    #     profil.enable()
+    #dict_data = prepare_data(dm)
+    #for k,v in dict_data.items():
+    #    generate_json_by_discipline(v, k)
+    connection_string = ''
+    database_name = 'regionalization'
+    container_name = 'regionalizationv0'
+    json_path = join(dirname(__file__), 'data', 'AgricultureMix.Crop.json')
+    import os
+    """    for f in os.listdir(join(dirname(__file__), 'data')):
+        insert_json_to_mongodb_bis(join(dirname(__file__), 'data' ,f), container_name, database_name, connection_string)
+    """
+
 
     uc_cls.run()
-#     profil.disable()
-#
-#     result = StringIO()
-#
-#     ps = pstats.Stats(profil, stream=result)
-#     ps.sort_stats('cumulative')
-#     ps.print_stats(500)
-#     result = result.getvalue()
-#     print(result)
 
-# ppf = PostProcessingFactory()
-# all_post_processings = ppf.get_all_post_processings(
-#     execution_engine=uc_cls.execution_engine, filters_only=False,
-#     as_json=False, for_test=False)
-
-# for graph in graph_list:
-#     graph.to_plotly().show()
-
-#     if disc.sos_name == 'EnergyMix.electricity.Nuclear':
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
-
-#         for graph in graph_list:
-#             graph.to_plotly().show()
-
-#     if disc.sos_name == 'EnergyMix.electricity.WindOnshore':
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
-
-#         for graph in graph_list:
-#             graph.to_plotly().show()
-
-#     if disc.sos_name == 'EnergyMix.electricity':
-#         filters = ppf.get_post_processing_filters_by_discipline(
-#             disc)
-#         graph_list = ppf.get_post_processing_by_discipline(
-#             disc, filters, as_json=False)
-
-#         for graph in graph_list:
-#             graph.to_plotly().show()

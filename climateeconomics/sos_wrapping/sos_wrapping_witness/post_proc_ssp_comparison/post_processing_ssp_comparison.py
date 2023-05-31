@@ -215,7 +215,7 @@ PRIMARY_ENERGY_DATA = {
 WITNESS_PRIMARY_ENERGY_DATA = {
     COAL: _coal,
     OIL_GAS: _oil_gas,
-    HYDROGEN: _hydrogen
+    # HYDROGEN: _hydrogen
 } # NON-FOSSIL is deduced from total
 WITNESS_BRUT_ENERGY_TOTAL = ('EnergyMix.energy_production_brut_detailed', 'Total production')
 WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
@@ -223,6 +223,10 @@ WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
     ('EnergyMix.electricity.energy_production_detailed', 'electricity CombinedCycleGasTurbine (TWh)'),
     ('EnergyMix.electricity.energy_production_detailed', 'electricity GasTurbine (TWh)'),
     ('EnergyMix.electricity.energy_production_detailed', 'electricity OilGen (TWh)'),
+
+    ('EnergyMix.methane.energy_production_detailed', 'methane Methanation (TWh)'),
+    ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.gaseous_hydrogen (TWh)'),
+    ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.liquid_hydrogen (TWh)'),
 ]
 CHART_LIST = list(CHARTS_DATA.keys()) + [PRIMARY_ENERGY]
 
@@ -279,7 +283,8 @@ def get_witness_primary_energy_chart(execution_engine, namespace):
                               COAL: 0.,
                               OIL_GAS: 0.,
                               NON_FOSSIL: 1.,
-                              HYDROGEN: 0.})
+                              # HYDROGEN: 0.
+                              })
 
     for energy_type, _energy_dict in WITNESS_PRIMARY_ENERGY_DATA.items():
         for varname, colname in _energy_dict[WITNESS_VARS_COLS]:
