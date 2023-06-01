@@ -67,7 +67,7 @@ class TestIPCCSSPComparison(unittest.TestCase):
                                                           as_json=False)
         # for graph in graph_list:
         #     graph.to_plotly().show()
-#
+
 if '__main__' == __name__:
 
     cls = TestIPCCSSPComparison()
