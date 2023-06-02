@@ -679,7 +679,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                            {'all_effects': True,
                             'compute_gdp_and_usable_capital': False,
                             'compute_damage_on_climate': True,
-                            'activate_climate_effect_population': True
+                            'activate_climate_effect_population': True,
+                            'invest_co2_tax_in_renewables': True,
                             },
                        f'{self.name}.gross_output_in': pd.DataFrame({'years': self.years, 'gross_output': .02}, index=self.years),
                        }
@@ -690,7 +691,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_without_compute_gdp.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
@@ -759,7 +760,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                            {'all_effects': True,
                             'compute_gdp_and_usable_capital': False,
                             'compute_damage_on_climate': True,
-                            'activate_climate_effect_population': True
+                            'activate_climate_effect_population': True,
+                            'invest_co2_tax_in_renewables': True,
                             },
                        f'{self.name}.gross_output_in': pd.DataFrame({'years': self.years, 'gross_output': .02}, index=self.years),
                        }
