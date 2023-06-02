@@ -40,7 +40,7 @@ class Study(ClimateEconomicsStudyManager):
         df_gross_output = DataFrame({'years':years, 
                                      'gross_output': gross_output})
         updated_data = {f'{self.study_name}.climate_effects_activation_dict': {'all_effects': True, 
-                                               'compute_gdp_and_usable_capital': False,
+                                               'compute_gdp': False,
                                                'compute_damage_on_climate': False, 
                                                'activate_climate_effect_population': True,
                                                'invest_co2_tax_in_renewables': False
