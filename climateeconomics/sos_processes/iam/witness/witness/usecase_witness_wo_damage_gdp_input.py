@@ -39,12 +39,11 @@ class Study(ClimateEconomicsStudyManager):
         gross_output = linspace(85,145, len(years))
         df_gross_output = DataFrame({'years':years, 
                                      'gross_output': gross_output})
-        updated_data = {f'{self.study_name}.climate_effects_activation_dict': {'all_effects': True, 
-                                               'compute_gdp': False,
-                                               'compute_damage_on_climate': False, 
-                                               'activate_climate_effect_population': True,
-                                               'invest_co2_tax_in_renewables': False
-                                               },
+        updated_data = {f'{self.study_name}.assumptions_dict': {'compute_gdp': False,
+                                                                'compute_damage_on_climate': False,
+                                                                'activate_climate_effect_population': True,
+                                                                'invest_co2_tax_in_renewables': False
+                                                                },
                         f'{self.study_name}.gross_output_in': df_gross_output}
         data_witness.append(updated_data)
         return data_witness

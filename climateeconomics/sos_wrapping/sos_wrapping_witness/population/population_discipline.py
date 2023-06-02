@@ -84,7 +84,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'alpha_birthrate_know': {'type': 'float', 'default': 1.02007061e-01, 'user_level': 3, 'unit': '-'},
         'beta_birthrate_know': {'type': 'float', 'default': 8.01923418e-01, 'user_level': 3, 'unit': '-'},
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
-        'climate_effects_activation_dict': ClimateEcoDiscipline.CLIMATE_EFFECTS_DESC_IN
+        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN
         }
 
     DESC_OUT = {

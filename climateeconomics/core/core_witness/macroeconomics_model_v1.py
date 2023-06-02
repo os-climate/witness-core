@@ -96,7 +96,7 @@ class MacroEconomics():
         self.employment_rate_base_value = self.param['employment_rate_base_value']
         self.ref_emax_enet_constraint = self.param['ref_emax_enet_constraint']
         self.usable_capital_ref = self.param['usable_capital_ref']
-        self.invest_co2_tax_in_renawables = self.param['climate_effects_activation_dict']['invest_co2_tax_in_renewables'] if self.param['climate_effects_activation_dict']['all_effects'] else False
+        self.invest_co2_tax_in_renawables = self.param['assumptions_dict']['invest_co2_tax_in_renewables']
       
     def create_dataframe(self):
         '''

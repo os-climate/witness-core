@@ -100,7 +100,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'delta_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 50, 'user_level': 3, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'climate_effects_activation_dict': ClimateEcoDiscipline.CLIMATE_EFFECTS_DESC_IN,
+        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
     }
 
     DESC_OUT = {
@@ -129,10 +129,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
         if self.get_data_in() is not None:
-
-            if 'climate_effects_activation_dict' in self.get_data_in():
-                climate_effects_activation_dict = self.get_sosdisc_inputs('climate_effects_activation_dict')
-                compute_gdp: bool = climate_effects_activation_dict['compute_gdp'] if climate_effects_activation_dict['all_effects'] else False
+            if 'assumptions_dict' in self.get_data_in():
+                assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
+                compute_gdp: bool = assumptions_dict['compute_gdp']
                 # if compute gdp is not activated, we add gdp input
                 if not compute_gdp:
                     dynamic_inputs.update({'gross_output_in': {'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'dataframe_descriptor': {'years': ('float', None, False),
@@ -191,8 +190,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         population_df = param.pop('population_df')
         working_age_population_df = param.pop('working_age_population_df')
         energy_capital_df = param['energy_capital']
-        climate_effects_activation_dict = param['climate_effects_activation_dict']
-        compute_gdp: bool = climate_effects_activation_dict['compute_gdp'] if climate_effects_activation_dict['all_effects'] else False
+        compute_gdp: bool = param['assumptions_dict']['compute_gdp']
         macro_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                         'energy_production': energy_production,
                         'scaling_factor_energy_production': param['scaling_factor_energy_production'],
@@ -209,7 +207,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         'energy_capital_df': energy_capital_df, 
                         'compute_gdp': compute_gdp
                         }
-        
 
         if not compute_gdp:
             macro_inputs.update({'gross_output_in': param['gross_output_in']})
@@ -312,7 +309,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('delta_capital_constraint',), ('co2_emissions_Gt', 'Total CO2 emissions'),
             -ddelta_capital_cons / usable_capital_ref)
 
-        compute_gdp = inputs_dict["climate_effects_activation_dict"]["compute_gdp"]
+        compute_gdp = inputs_dict["assumptions_dict"]["compute_gdp"]
 
         # Compute gradient for coupling variable Total production
         dcapitalu_denergy = self.macro_model.dusablecapital_denergy() #if compute_gdp else npzeros
