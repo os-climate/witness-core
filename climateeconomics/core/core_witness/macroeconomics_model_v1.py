@@ -630,7 +630,7 @@ class MacroEconomics():
             self.compute_productivity(year)
             # Then others:
             self.compute_emax(year)
-            # compute only if compute_gdp is activated
+            self.compute_usable_capital(year)
             if self.compute_gdp:
                 self.compute_gross_output(year)
             self.compute_output_net_of_damage(year)

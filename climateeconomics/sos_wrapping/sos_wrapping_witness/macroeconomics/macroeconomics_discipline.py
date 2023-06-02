@@ -315,7 +315,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         compute_gdp = inputs_dict["climate_effects_activation_dict"]["compute_gdp"]
 
         # Compute gradient for coupling variable Total production
-        dcapitalu_denergy = self.macro_model.dusablecapital_denergy() if compute_gdp else npzeros
+        dcapitalu_denergy = self.macro_model.dusablecapital_denergy() #if compute_gdp else npzeros
         dgross_output = self.macro_model.dgrossoutput_denergy(
             dcapitalu_denergy) if compute_gdp else npzeros
         dnet_output = self.macro_model.dnet_output(dgross_output)
@@ -328,7 +328,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dcapital = self.macro_model.dcapital(dne_investment)
         demaxconstraint = self.macro_model.demaxconstraint(dcapital)
         ddelta_capital_objective_denergy_production = (scaling_factor_energy_production * (capital_ratio * dcapital - np.identity(
-            nb_years) * capital_ratio * capital_df['energy_efficiency'].values / 1000) / usable_capital_ref) * compute_dfunc_with_exp_min(delta_capital_objective_wo_exp_min, 1e-15) if compute_gdp else npzeros
+            nb_years) * capital_ratio * capital_df['energy_efficiency'].values / 1000) / usable_capital_ref) * compute_dfunc_with_exp_min(delta_capital_objective_wo_exp_min, 1e-15)
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'gross_output'), ('energy_production', 'Total production'), scaling_factor_energy_production * dgross_output)
         self.set_partial_derivative_for_other_types(
@@ -352,7 +352,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             alpha * ddelta_capital_objective_denergy_production)
         ddelta_capital_cons = self.compute_ddelta_capital_cons(scaling_factor_energy_production * (
             capital_ratio * dcapital - np.identity(nb_years) * capital_ratio * capital_df[
-                'energy_efficiency'].values / 1000), delta_capital_objective_wo_exp_min * usable_capital_ref) if compute_gdp else npzeros
+                'energy_efficiency'].values / 1000), delta_capital_objective_wo_exp_min * usable_capital_ref) # if compute_gdp else npzeros
         self.set_partial_derivative_for_other_types(
             ('delta_capital_constraint',), ('energy_production', 'Total production'),
             - ddelta_capital_cons / usable_capital_ref)
