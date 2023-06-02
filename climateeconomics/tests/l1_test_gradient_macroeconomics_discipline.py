@@ -636,7 +636,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_macro_economics_without_compute_gdp_analytic_grad(self):
         """
-        Test of analytic gradients when compute_gdp_and_usable_capital is deactivated
+        Test of analytic gradients when compute_gdp is deactivated
         """
 
         self.model_name = 'Macroeconomics'
@@ -677,9 +677,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.climate_effects_activation_dict':
                            {'all_effects': True,
-                            'compute_gdp_and_usable_capital': False,
+                            'compute_gdp': False,
                             'compute_damage_on_climate': True,
-                            'activate_climate_effect_population': True
+                            'activate_climate_effect_population': True,
+                            'invest_co2_tax_in_renewables': True
                             },
                        f'{self.name}.gross_output_in': pd.DataFrame({'years': self.years, 'gross_output': .02}, index=self.years),
                        }
@@ -716,7 +717,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_macro_economics_without_compute_gdp_w_damage_to_productivity_analytic_grad(self):
         """
-        Test of analytic gradients when compute_gdp_and_usable_capital is deactivated
+        Test of analytic gradients when compute_gdp is deactivated
         """
 
         self.model_name = 'Macroeconomics'
@@ -757,9 +758,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.climate_effects_activation_dict':
                            {'all_effects': True,
-                            'compute_gdp_and_usable_capital': False,
+                            'compute_gdp': False,
                             'compute_damage_on_climate': True,
-                            'activate_climate_effect_population': True
+                            'activate_climate_effect_population': True,
+                            'invest_co2_tax_in_renewables': True
                             },
                        f'{self.name}.gross_output_in': pd.DataFrame({'years': self.years, 'gross_output': .02}, index=self.years),
                        }
@@ -836,7 +838,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.climate_effects_activation_dict':
                            {'all_effects': True,
-                            'compute_gdp_and_usable_capital': True,
+                            'compute_gdp': True,
                             'compute_damage_on_climate': True,
                             'activate_climate_effect_population': True,
                             'invest_co2_tax_in_renewables': False,
