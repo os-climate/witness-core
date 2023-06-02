@@ -42,7 +42,8 @@ class Study(ClimateEconomicsStudyManager):
         updated_data = {f'{self.study_name}.climate_effects_activation_dict': {'all_effects': True, 
                                                'compute_gdp_and_usable_capital': False,
                                                'compute_damage_on_climate': False, 
-                                               'activate_climate_effect_population': True
+                                               'activate_climate_effect_population': True,
+                                               'invest_co2_tax_in_renewables': False
                                                },
                         f'{self.study_name}.gross_output_in': df_gross_output}
         data_witness.append(updated_data)
