@@ -130,9 +130,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_taxes': pd.DataFrame({'years': years, 'CO2_tax': np.linspace(50, 500, len(years))}),
                        f'{self.name}.temperature_df': temperature_df_y,
                        f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15)))),
-                       f'{self.name}.climate_effects_activation_dict':
-                           {'all_effects': True,
-                            'compute_gdp': True,
+                       f'{self.name}.assumptions_dict':
+                           {'compute_gdp': True,
                             'compute_damage_on_climate': False,
                             'activate_climate_effect_population': False
                             }

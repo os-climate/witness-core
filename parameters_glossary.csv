@@ -1,5 +1,6 @@
 id,label,unit,definition,definitionSource,ACLTag
 All_Demand,Demand for all resources,Mt,All resource demand.,,
+assumptions_dict, Assumptions dict,,"Assumptions made in the model",,
 CCS_price,Price of CCS,$/tCO2,Price of CCS.,,
 CO2_damage_price,CO2 damage price,$/tCO2,Cost of CO2 damage on environment.,,
 CO2_emissions_detail_df,Emissions detailed,,Detailed data of carbon emissions outputs.,,

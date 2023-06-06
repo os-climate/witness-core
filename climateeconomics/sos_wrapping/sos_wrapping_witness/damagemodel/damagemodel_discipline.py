@@ -63,7 +63,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                        'namespace': 'ns_ref', 'user_level': 2},
         'damage_constraint_factor': {'type': 'array', 'unit': '-', 'user_level': 2},
-        'climate_effects_activation_dict': ClimateEcoDiscipline.CLIMATE_EFFECTS_DESC_IN
+        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN
     }
 
     DESC_OUT = {
