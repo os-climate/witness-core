@@ -13,11 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'Climate Process Multiscenario Process',
@@ -27,7 +26,6 @@ class ProcessBuilder(BaseProcessBuilder):
     }
 
     def get_builders(self):
-
         # scenario build map
         scenario_map = {'input_name': 'scenario_list',
 

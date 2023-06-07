@@ -15,19 +15,21 @@ limitations under the License.
 '''
 
 import pandas as pd
-from sos_trades_core.study_manager.study_manager import StudyManager
-from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import DataStudy as datacase_witness_dev
-from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy as datacase_witness_val
+from sostrades_core.study_manager.study_manager import StudyManager
+from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
+    DataStudy as datacase_witness_dev
+from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import \
+    DataStudy as datacase_witness_val
 
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 
 from copy import deepcopy
-from sos_trades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
@@ -35,21 +37,23 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
 DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
-streams_to_add=['fuel.ethanol']
+streams_to_add = ['fuel.ethanol']
 technos_to_add = ['Methanation', 'BiomassFermentation']
 for key in DEFAULT_TECHNO_DICT_DEV.keys():
     if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
-        DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
+        DEFAULT_TECHNO_DICT[key] = dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value': []})
     for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
         try:
             if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
-                DEFAULT_TECHNO_DICT[key]['value']+=[value,]
+                DEFAULT_TECHNO_DICT[key]['value'] += [value, ]
         except:
             pass
 
+
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False, execution_engine=None,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False,
+                 execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
                  techno_dict=DEFAULT_TECHNO_DICT,
                  process_level='val'):
@@ -110,7 +114,7 @@ class Study(ClimateEconomicsStudyManager):
 
         witness_val_input_list = dc_witness_val.setup_usecase()
         witness_dev_input_list = dc_witness_dev.setup_usecase()
-        i_to_pop, i_to_add =[],[]
+        i_to_pop, i_to_add = [], []
         for i in i_to_pop:
             witness_val_input_list.pop(i)
         for i in i_to_add:
@@ -122,7 +126,7 @@ class Study(ClimateEconomicsStudyManager):
 
         dspace_energy = self.dc_energy.dspace
 
-        dspace_witness=dc_witness_val.dspace
+        dspace_witness = dc_witness_val.dspace
         self.merge_design_spaces([dspace_energy, dspace_witness])
 
         # constraint land use
@@ -131,7 +135,8 @@ class Study(ClimateEconomicsStudyManager):
         # WITNESS
         # setup objectives
         self.func_df = pd.concat(
-            [dc_witness_val.setup_objectives(), dc_witness_val.setup_constraints(), self.dc_energy.setup_constraints(), self.dc_energy.setup_objectives(), land_use_df_constraint])
+            [dc_witness_val.setup_objectives(), dc_witness_val.setup_constraints(), self.dc_energy.setup_constraints(),
+             self.dc_energy.setup_objectives(), land_use_df_constraint])
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
         self.dict_technos = self.dc_energy.dict_technos
@@ -162,8 +167,8 @@ if '__main__' == __name__:
 
     # uc_cls.execution_engine.root_process.coupling_structure.graph.export_initial_graph(
     #     "initial.pdf")
-#     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
-#         "reduced.pdf")
+    #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
+    #         "reduced.pdf")
 
     # DEBUG MIN MAX COUPLINGS
     # uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
