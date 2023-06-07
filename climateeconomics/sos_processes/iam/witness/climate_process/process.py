@@ -14,11 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sos_trades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'WITNESS Climate process',
@@ -26,8 +25,8 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
-    def get_builders(self):
 
+    def get_builders(self):
         ns_scatter = self.ee.study_name
 
         ns_dict = {'ns_witness': ns_scatter,
@@ -36,9 +35,10 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_ref': ns_scatter
                    }
 
-        mods_dict = {'CarbonCycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
-                     'Temperature': 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange.tempchange_discipline.TempChangeDiscipline' 
-                     }
+        mods_dict = {
+            'CarbonCycle': 'climateeconomics.sos_wrapping.sos_wrapping_witness.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
+            'Temperature': 'climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange.tempchange_discipline.TempChangeDiscipline'
+            }
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 
         return builder_list
