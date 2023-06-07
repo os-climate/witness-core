@@ -195,7 +195,7 @@ class GHGCycle():
         """
         if specie not in self.ghg_list:
             raise ValueError(f"'specie' must be in {self.ghg_list}")
-        return self.d_total_co2_equivalent_d_conc(d_conc=d_ppm, specie=specie) / self.pred_indus_gwp
+        return self.d_total_co2_equivalent_d_conc(d_conc=d_ppm, specie=specie).mean(axis=0) / self.pred_indus_gwp
 
 
     def compute_objective(self):
@@ -272,4 +272,4 @@ class GHGCycle():
         Computes the derivative of the total_co2_equivalent w.r.t to the concentration of a species, which can be
         CO2, CH4 or N2O
         """
-        return d_conc * self.ppm_to_gt[specie]
+        return d_conc * self.ppm_to_gt[specie] * self.gwp_100[specie]
