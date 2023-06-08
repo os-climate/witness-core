@@ -17,9 +17,9 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
-from sos_trades_core.study_manager.study_manager import StudyManager
+from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness.climate_process.usecase import Study as climate_usecase
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(StudyManager):
@@ -44,7 +44,8 @@ class Study(StudyManager):
             scenario_i = f'scenario_{forcing_model}'
             scenario_i = scenario_i.replace('.', ',')
             scenario_list.append(scenario_i)
-            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.Temperature.forcing_model'] = forcing_model
+            values_dict[
+                f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.Temperature.forcing_model'] = forcing_model
 
         values_dict[f'{self.study_name}.scenario_list'] = scenario_list
 

@@ -15,12 +15,14 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
-from sos_trades_core.study_manager.study_manager import StudyManager
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.sos_processes.iam.witness.witness_dev_to_val_optim_sub_process.usecase_witness_optim_sub import Study as witness_optim_sub_usecase
-from climateeconomics.sos_processes.iam.witness.witness_dev_to_val_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sos_trades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from climateeconomics.sos_processes.iam.witness.witness_dev_to_val_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_optim_sub_usecase
+from climateeconomics.sos_processes.iam.witness.witness_dev_to_val_optim_sub_process.usecase_witness_optim_sub import \
+    OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -35,23 +37,24 @@ EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 
 DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
-streams_to_add=['fuel.ethanol']
+streams_to_add = ['fuel.ethanol']
 technos_to_add = ['Methanation', 'BiomassFermentation']
 for key in DEFAULT_TECHNO_DICT_DEV.keys():
     if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
-        DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
+        DEFAULT_TECHNO_DICT[key] = dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value': []})
     for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
         try:
             if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
-                DEFAULT_TECHNO_DICT[key]['value']+=[value,]
+                DEFAULT_TECHNO_DICT[key]['value'] += [value, ]
         except:
             pass
 
+
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False,
+                 execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, process_level='dev'):
-
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -69,7 +72,6 @@ class Study(ClimateEconomicsStudyManager):
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
     def setup_process(self):
-
         witness_optim_sub_usecase.setup_process(self)
 
     def setup_usecase(self):
@@ -120,12 +122,14 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "disp": 30},
                              # f'{ns}.{self.optim_name}.{witness_uc.coupling_name}.linear_solver_MDO':
                              # 'GMRES',
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-10,
-                                                                                                                   'max_iter': 10000},
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {
+                                 'tol': 1.0e-10,
+                                 'max_iter': 10000},
                              # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA':
                              # 'GMRES',
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {'tol': 1.0e-10,
-                                                                                                                   'max_iter': 50000},
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {
+                                 'tol': 1.0e-10,
+                                 'max_iter': 50000},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.epsilon0': 1.0,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.tolerance': 1.0e-10,
                              f'{ns}.{self.optim_name}.parallel_options': {"parallel": False,  # True
@@ -135,8 +139,8 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
                              f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False}
-# f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
-# True}
+        # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables.{WRITE_XVECT}':
+        # True}
 
         # print("Design space dimension is ", dspace_size)
 
