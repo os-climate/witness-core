@@ -148,6 +148,8 @@ frac_damage_prod,Productivity Damage Fraction,,The fraction of damage applied to
 gamma,Gamma,,Weigh parameter in the problem formulation.,,
 global_investment_constraint,Global investment constraint,,Constraint on global investm. Used for optimisation.,,
 gr_base_carbonprice,Growth rate of base carbon price,,Growth rate of the base carbon price.,,
+gwp20_objective,GWP20 objective,,"Value of the GWP over 20 years objective. A value of 1 indicates that the GWP20 is exactly the one of the pre-industrial era.",,
+gwp100_objective,GWP100 objective,,"Value of the GWP over 100 years objective. A value of 1 indicates that the GWP100 is exactly the one of the pre-industrial era.",,
 hi_per_capita_conso,hi per capita conso,k$,Conso data concerning per.,,
 hundred_forcing_nonco,2100 forcings of non-CO2 GHG ,,2100 forcings of non-CO2 GHG. Parameter used in forcing equation. ,,
 hydrogen_gaseous_hydrogen_Electrolysis_AWE_array_mix,Hydrogen gaseous hydrogen Electrolysis AWE array mix,%,Mix data concerning gaseous_hydrogen_Electrolysis_AWE.,,
