@@ -70,10 +70,10 @@ setup(
         'sos-trades-core',
         'nose2==0.9.1',
         'scikit-learn>=0.24.2',
-        'numpy==1.20.3',
+        'numpy==1.24.3',
         'pandas==1.3.0',
         'plotly==5.3.0',
-        'scipy==1.7.1',
+        'scipy==1.10.1',
         'seaborn==0.9.0',
         'matplotlib==3.4.3'
     ]

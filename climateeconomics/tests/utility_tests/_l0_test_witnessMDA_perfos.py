@@ -16,7 +16,7 @@ limitations under the License.
 import csv
 
 import pandas as pd
-import seaborn as sns
+import seaborn as sns  # pylint: disable=E0401
 import numpy as np
 
 from gemseo.utils.compare_data_manager_tooling import compare_dict, \

@@ -14,9 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-import numpy as np
-import pandas as pd
+import logging
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
@@ -45,6 +43,7 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
+        self.ee.logger.setLevel(logging.DEBUG)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.ghgcycle.ghgcycle_discipline.GHGCycleDiscipline'
         builder = self.ee.factory.get_builder_from_module(
@@ -77,6 +76,7 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.GHG_emissions_df'],
                             outputs=[f'{self.name}.ghg_cycle_df',
-                                     f'{self.name}.ppm_objective',
+                                     f'{self.name}.gwp20_objective',
+                                     f'{self.name}.gwp100_objective',
                                      f'{self.name}.rockstrom_limit_constraint',
                                      f'{self.name}.minimum_ppm_constraint'])

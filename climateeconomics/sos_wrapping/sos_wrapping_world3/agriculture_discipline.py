@@ -191,23 +191,6 @@ class AgricultureDiscipline(SoSWrapp):
         # put new field value in data_out
         self.store_sos_outputs_values(dict_values)
 
-    def get_post_processing_list(self, chart_filters=None):
-        '''
-        For the outputs, making a graph for tco vs year for each range and for specific
-        value of ToT with a shift of five year between then
-        '''
-        instanciated_charts = []
-
-        # Overload default value with chart filter
-        if chart_filters is not None:
-            for chart_filter in chart_filters:
-                if chart_filter.filter_key == 'charts':
-                    chart_list = chart_filter.selected_values
-
-
-
-        return instanciated_charts
-
 
     def get_chart_filter_list(self):
 

@@ -3,16 +3,17 @@
 # All rights reserved.
 
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sos_trades_core.study_manager.study_manager import StudyManager
-from sos_trades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 from climateeconomics.sos_processes.iam.witness.witness_dev_to_val.usecase_witness import Study as witness_usecase
-from sos_trades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 import pandas as pd
 import numpy as np
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from copy import deepcopy
@@ -27,21 +28,23 @@ COUPLING_NAME = "WITNESS_Eval"
 EXTRA_NAME = "WITNESS"
 
 DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
-streams_to_add=['fuel.ethanol']
+streams_to_add = ['fuel.ethanol']
 technos_to_add = ['Methanation', 'BiomassFermentation']
 for key in DEFAULT_TECHNO_DICT_DEV.keys():
     if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
-        DEFAULT_TECHNO_DICT[key]=dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value':[]})
+        DEFAULT_TECHNO_DICT[key] = dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value': []})
     for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
         try:
             if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
-                DEFAULT_TECHNO_DICT[key]['value']+=[value,]
+                DEFAULT_TECHNO_DICT[key]['value'] += [value, ]
         except:
             pass
 
+
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False, execution_engine=None,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False,
+                 execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=[],
                  process_level='val'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
@@ -61,7 +64,7 @@ class Study(ClimateEconomicsStudyManager):
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level
         self.witness_uc = witness_usecase(
-            self.year_start, self.year_end, self.time_step,  bspline=self.bspline, execution_engine=execution_engine,
+            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
@@ -72,7 +75,7 @@ class Study(ClimateEconomicsStudyManager):
         """
         setup_data_list = []
 
-        #-- retrieve energy input data
+        # -- retrieve energy input data
 
         self.witness_mda_usecase = self.witness_uc
         self.witness_uc.study_name = f'{self.study_name}.{self.coupling_name}.{self.extra_name}'
@@ -94,86 +97,97 @@ class Study(ClimateEconomicsStudyManager):
 
             for technology in self.witness_uc.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[
+                dv_arrays_dict[
+                    f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = \
+                dspace_df[
                     f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                                                             'out_type': 'dataframe',
-                                                                                                             'key': f'{energy}.{technology}',
-                                                                                                             'index': years,
-                                                                                                             'index_name': 'years',
-                                                                                                             'namespace_in': 'ns_energy_mix',
-                                                                                                             'namespace_out': 'ns_invest'
-                                                                                                             }
+                design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
+                    'out_name': 'invest_mix',
+                    'out_type': 'dataframe',
+                    'key': f'{energy}.{technology}',
+                    'index': years,
+                    'index_name': 'years',
+                    'namespace_in': 'ns_energy_mix',
+                    'namespace_out': 'ns_invest'
+                    }
 
         for ccs in self.witness_uc.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
 
             for technology in self.witness_uc.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = dspace_df[
+                dv_arrays_dict[
+                    f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
+                dspace_df[
                     f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
-                                                                                                       'out_type': 'dataframe',
-                                                                                                       'key': f'{ccs}.{technology}',
-                                                                                                       'index': years,
-                                                                                                       'index_name': 'years',
-                                                                                                       'namespace_in': 'ns_ccs',
-                                                                                                       'namespace_out': 'ns_invest'
-                                                                                                       }
+                design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
+                    'out_name': 'invest_mix',
+                    'out_type': 'dataframe',
+                    'key': f'{ccs}.{technology}',
+                    'index': years,
+                    'index_name': 'years',
+                    'namespace_in': 'ns_ccs',
+                    'namespace_out': 'ns_invest'
+                    }
 
-        dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']
+        dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = \
+        dspace_df[f'forest_investment_array_mix']['value']
         design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
-                                                    'out_type': 'dataframe',
-                                                    'key': 'forest_investment',
-                                                    'index': years,
-                                                    'index_name': 'years',
-                                                    'namespace_in': 'ns_witness',
-                                                    'namespace_out': 'ns_invest'
-                                                    }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.deforested_surface_ctrl'] = dspace_df[f'deforested_surface_ctrl']['value']
+                                                                'out_type': 'dataframe',
+                                                                'key': 'forest_investment',
+                                                                'index': years,
+                                                                'index_name': 'years',
+                                                                'namespace_in': 'ns_witness',
+                                                                'namespace_out': 'ns_invest'
+                                                                }
+        dv_arrays_dict[f'{self.witness_uc.study_name}.deforested_surface_ctrl'] = dspace_df[f'deforested_surface_ctrl'][
+            'value']
         design_var_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforestation_surface',
-                                                        'out_type': 'dataframe',
-                                                        'key': 'deforested_surface',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_witness'}
-        dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = dspace_df[f'red_meat_percentage_ctrl']['value']
+                                                            'out_type': 'dataframe',
+                                                            'key': 'deforested_surface',
+                                                            'index': years,
+                                                            'index_name': 'years',
+                                                            'namespace_in': 'ns_witness',
+                                                            'namespace_out': 'ns_witness'}
+        dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = \
+        dspace_df[f'red_meat_percentage_ctrl']['value']
         design_var_descriptor['red_meat_percentage_ctrl'] = {'out_name': 'red_meat_percentage',
-                                                    'out_type': 'dataframe',
-                                                        'key': 'red_meat_percentage',
-                                                    'index': years,
-                                                    'index_name': 'years',
-                                                    'namespace_in': 'ns_witness',
-                                                    'namespace_out': 'ns_agriculture'
-                                                    }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_percentage_ctrl'] = dspace_df[f'white_meat_percentage_ctrl']['value']
+                                                             'out_type': 'dataframe',
+                                                             'key': 'red_meat_percentage',
+                                                             'index': years,
+                                                             'index_name': 'years',
+                                                             'namespace_in': 'ns_witness',
+                                                             'namespace_out': 'ns_agriculture'
+                                                             }
+        dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_percentage_ctrl'] = \
+        dspace_df[f'white_meat_percentage_ctrl']['value']
         design_var_descriptor['white_meat_percentage_ctrl'] = {'out_name': 'white_meat_percentage',
-                                                        'out_type': 'dataframe',
-                                                        'key': 'white_meat_percentage',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_agriculture'
-                                                        }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.share_energy_investment_ctrl'] = dspace_df[f'share_energy_investment_ctrl']['value']
+                                                               'out_type': 'dataframe',
+                                                               'key': 'white_meat_percentage',
+                                                               'index': years,
+                                                               'index_name': 'years',
+                                                               'namespace_in': 'ns_witness',
+                                                               'namespace_out': 'ns_agriculture'
+                                                               }
+        dv_arrays_dict[f'{self.witness_uc.study_name}.share_energy_investment_ctrl'] = \
+        dspace_df[f'share_energy_investment_ctrl']['value']
         design_var_descriptor['share_energy_investment_ctrl'] = {'out_name': 'share_energy_investment',
-                                                        'out_type': 'dataframe',
-                                                        'key': 'share_investment',
-                                                        'index': years,
-                                                        'index_name': 'years',
-                                                        'namespace_in': 'ns_witness',
-                                                        'namespace_out': 'ns_witness'
-                                                        }
-
+                                                                 'out_type': 'dataframe',
+                                                                 'key': 'share_investment',
+                                                                 'index': years,
+                                                                 'index_name': 'years',
+                                                                 'namespace_in': 'ns_witness',
+                                                                 'namespace_out': 'ns_witness'
+                                                                 }
 
         self.func_df = self.witness_uc.func_df
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df
 
-        values_dict[f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
+        values_dict[
+            f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
         values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSPureNewtonMDA'
-        #values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
+        # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
