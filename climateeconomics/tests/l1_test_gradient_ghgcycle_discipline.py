@@ -76,6 +76,7 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.GHG_emissions_df'],
                             outputs=[f'{self.name}.ghg_cycle_df',
-                                     f'{self.name}.gwp_objective',
+                                     f'{self.name}.gwp20_objective',
+                                     f'{self.name}.gwp100_objective',
                                      f'{self.name}.rockstrom_limit_constraint',
                                      f'{self.name}.minimum_ppm_constraint'])
