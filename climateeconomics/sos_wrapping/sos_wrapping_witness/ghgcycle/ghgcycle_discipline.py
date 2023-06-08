@@ -70,6 +70,11 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         'rockstrom_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'minimum_ppm_limit': {'type': 'float', 'unit': 'ppm', 'default': 250, 'user_level': 2},
         'minimum_ppm_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 10, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'GHG_global_warming_potential20': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
+                                           'unit': 'kgCO2eq/kg',
+                                           'default': ClimateEcoDiscipline.GWP_20_default,
+                                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                           'namespace': 'ns_witness', 'user_level': 3},
         'GHG_global_warming_potential100': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
                                             'unit': 'kgCO2eq/kg',
                                             'default': ClimateEcoDiscipline.GWP_100_default,
@@ -81,7 +86,8 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'ghg_cycle_df': {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'ghg_cycle_df_detailed': {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'gwp_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
+        'gwp20_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
+        'gwp100_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
         'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
         'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'}
     }
@@ -100,7 +106,8 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         dict_values = {
             'ghg_cycle_df': self.ghg_cycle.ghg_cycle_df[['years', 'co2_ppm', 'ch4_ppm', 'n2o_ppm']],
             'ghg_cycle_df_detailed': self.ghg_cycle.ghg_cycle_df,
-            'gwp_objective': self.ghg_cycle.gwp_obj,
+            'gwp20_objective': self.ghg_cycle.gwp20_obj,
+            'gwp100_objective': self.ghg_cycle.gwp100_obj,
             'rockstrom_limit_constraint': self.ghg_cycle.rockstrom_limit_constraint,
             'minimum_ppm_constraint': self.ghg_cycle.minimum_ppm_constraint}
 
@@ -121,19 +128,44 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('ghg_cycle_df', 'n2o_ppm'), ('GHG_emissions_df', 'Total N2O emissions'), d_ghg_ppm_d_emissions['N2O'])
 
-        d_gwp_objective_d_total_co2_emissions = self.ghg_cycle.d_gwp_objective_d_ppm(d_ppm=d_ghg_ppm_d_emissions['CO2'],
-                                                                                     specie='CO2')
-        d_gwp_objective_d_total_ch4_emissions = self.ghg_cycle.d_gwp_objective_d_ppm(d_ppm=d_ghg_ppm_d_emissions['CH4'],
-                                                                                     specie='CH4')
-        d_gwp_objective_d_total_n2o_emissions = self.ghg_cycle.d_gwp_objective_d_ppm(d_ppm=d_ghg_ppm_d_emissions['N2O'],
-                                                                                     specie='N2O')
+        # derivative gwp20 objective
+        d_gwp20_objective_d_total_co2_emissions = self.ghg_cycle.d_gwp20_objective_d_ppm(
+            d_ppm=d_ghg_ppm_d_emissions['CO2'],
+            specie='CO2')
+        d_gwp20_objective_d_total_ch4_emissions = self.ghg_cycle.d_gwp20_objective_d_ppm(
+            d_ppm=d_ghg_ppm_d_emissions['CH4'],
+            specie='CH4')
+        d_gwp20_objective_d_total_n2o_emissions = self.ghg_cycle.d_gwp20_objective_d_ppm(
+            d_ppm=d_ghg_ppm_d_emissions['N2O'],
+            specie='N2O')
 
         self.set_partial_derivative_for_other_types(
-            ('gwp_objective',), ('GHG_emissions_df', 'Total CO2 emissions'), d_gwp_objective_d_total_co2_emissions)
+            ('gwp20_objective',), ('GHG_emissions_df', 'Total CO2 emissions'), d_gwp20_objective_d_total_co2_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp_objective',), ('GHG_emissions_df', 'Total CH4 emissions'), d_gwp_objective_d_total_ch4_emissions)
+            ('gwp20_objective',), ('GHG_emissions_df', 'Total CH4 emissions'), d_gwp20_objective_d_total_ch4_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp_objective',), ('GHG_emissions_df', 'Total N2O emissions'), d_gwp_objective_d_total_n2o_emissions)
+            ('gwp20_objective',), ('GHG_emissions_df', 'Total N2O emissions'), d_gwp20_objective_d_total_n2o_emissions)
+
+        # derivative gwp100 objective
+        d_gwp100_objective_d_total_co2_emissions = self.ghg_cycle.d_gwp100_objective_d_ppm(
+            d_ppm=d_ghg_ppm_d_emissions['CO2'],
+            specie='CO2')
+        d_gwp100_objective_d_total_ch4_emissions = self.ghg_cycle.d_gwp100_objective_d_ppm(
+            d_ppm=d_ghg_ppm_d_emissions['CH4'],
+            specie='CH4')
+        d_gwp100_objective_d_total_n2o_emissions = self.ghg_cycle.d_gwp100_objective_d_ppm(
+            d_ppm=d_ghg_ppm_d_emissions['N2O'],
+            specie='N2O')
+
+        self.set_partial_derivative_for_other_types(
+            ('gwp100_objective',), ('GHG_emissions_df', 'Total CO2 emissions'),
+            d_gwp100_objective_d_total_co2_emissions)
+        self.set_partial_derivative_for_other_types(
+            ('gwp100_objective',), ('GHG_emissions_df', 'Total CH4 emissions'),
+            d_gwp100_objective_d_total_ch4_emissions)
+        self.set_partial_derivative_for_other_types(
+            ('gwp100_objective',), ('GHG_emissions_df', 'Total N2O emissions'),
+            d_gwp100_objective_d_total_n2o_emissions)
 
         self.set_partial_derivative_for_other_types(
             ('rockstrom_limit_constraint',), ('GHG_emissions_df', 'Total CO2 emissions'),

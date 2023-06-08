@@ -37,7 +37,7 @@ class GHGCycle():
         self.year_end = self.param['year_end']
         self.time_step = self.param['time_step']
 
-        self.gwp_obj = 0.
+        self.gwp100_obj = 0.
         # Conversion factor 1Gtc = 44/12 GT of CO2
         # Molar masses C02 (12+2*16=44) / C (12)
         self.gtco2_to_gtc = 44 / 12
@@ -63,6 +63,7 @@ class GHGCycle():
         self.conc_n2o = self.param['n2o_init_conc']
 
         self.ghg_list = ['CO2', 'CH4', 'N2O']
+        self.gwp_20 = self.param['GHG_global_warming_potential20']
         self.gwp_100 = self.param['GHG_global_warming_potential100']
 
         atmosphere_total_mass_kg = 5.1480 * 10 ** 18
@@ -76,9 +77,14 @@ class GHGCycle():
             "N2O": n_moles_in_atmosphere * molar_mass_n2o * kg_to_gt * 10 ** -6,
         }
 
-        self.pred_indus_gwp = self.total_co2_equivalent(co2_conc=self.pre_indus_conc_co2,
-                                                        ch4_conc=self.pre_indus_conc_ch4,
-                                                        n2o_conc=self.pre_indus_conc_n2o)
+        self.pred_indus_gwp20 = self.total_co2_equivalent(co2_conc=self.pre_indus_conc_co2,
+                                                          ch4_conc=self.pre_indus_conc_ch4,
+                                                          n2o_conc=self.pre_indus_conc_n2o,
+                                                          gwp=self.gwp_100)
+        self.pred_indus_gwp100 = self.total_co2_equivalent(co2_conc=self.pre_indus_conc_co2,
+                                                           ch4_conc=self.pre_indus_conc_ch4,
+                                                           n2o_conc=self.pre_indus_conc_n2o,
+                                                           gwp=self.gwp_20)
 
     def create_dataframe(self):
         """
@@ -179,26 +185,21 @@ class GHGCycle():
                 'N2O': mat_n2o,
                 'CO2': self.compute_dco2_ppm_d_emissions()}
 
-    def d_gwp_objective_d_ppm(self, d_ppm: pd.Series, specie: str) -> float:
+    def d_gwp100_objective_d_ppm(self, d_ppm: pd.Series, specie: str) -> float:
         """
-        Computes the derivative of the total_co2_equivalent w.r.t to the concentration of a species, which can be
+        Computes the derivative of the gwp100 objective w.r.t to the concentration of a species, which can be
         CO2, CH4 or N2O
         """
-        if specie not in self.ghg_list:
-            raise ValueError(f"'specie' must be in {self.ghg_list}")
-        return self.d_total_co2_equivalent_d_conc(d_conc=d_ppm, specie=specie).mean(axis=0) / self.pred_indus_gwp
+        return self.d_total_co2_equivalent_d_conc(d_conc=d_ppm, specie=specie, gwp=self.gwp_100).mean(axis=0) / self.pred_indus_gwp100
 
-    def d_gwp_objective_d_ppm(self, d_ppm: pd.Series, specie: str):
+    def d_gwp20_objective_d_ppm(self, d_ppm: pd.Series, specie: str) -> float:
         """
-        Computes the derivative of the total_co2_equivalent w.r.t to the concentration of a species, which can be
+        Computes the derivative of the gwp20 objective w.r.t to the concentration of a species, which can be
         CO2, CH4 or N2O
         """
-        if specie not in self.ghg_list:
-            raise ValueError(f"'specie' must be in {self.ghg_list}")
-        return self.d_total_co2_equivalent_d_conc(d_conc=d_ppm, specie=specie).mean(axis=0) / self.pred_indus_gwp
+        return self.d_total_co2_equivalent_d_conc(d_conc=d_ppm, specie=specie, gwp=self.gwp_20).mean(axis=0) / self.pred_indus_gwp20
 
-
-    def compute_objective(self):
+    def compute_objectives(self):
         """
         Compute objective,
         defined as :
@@ -208,11 +209,19 @@ class GHGCycle():
 
 
         """
-        gwp_all_years: pd.Series = self.total_co2_equivalent(co2_conc=self.ghg_cycle_df['co2_ppm'],
-                                                             ch4_conc=self.ghg_cycle_df['ch4_ppm'],
-                                                             n2o_conc=self.ghg_cycle_df['n2o_ppm'])
+        gwp100_all_years: pd.Series = self.total_co2_equivalent(co2_conc=self.ghg_cycle_df['co2_ppm'],
+                                                                ch4_conc=self.ghg_cycle_df['ch4_ppm'],
+                                                                n2o_conc=self.ghg_cycle_df['n2o_ppm'],
+                                                                gwp=self.gwp_100)
 
-        self.gwp_obj = np.asarray([gwp_all_years.mean() / self.pred_indus_gwp])
+        self.gwp100_obj = np.asarray([gwp100_all_years.mean() / self.pred_indus_gwp100])
+
+        gwp20_all_years: pd.Series = self.total_co2_equivalent(co2_conc=self.ghg_cycle_df['co2_ppm'],
+                                                               ch4_conc=self.ghg_cycle_df['ch4_ppm'],
+                                                               n2o_conc=self.ghg_cycle_df['n2o_ppm'],
+                                                               gwp=self.gwp_20)
+
+        self.gwp20_obj = np.asarray([gwp20_all_years.mean() / self.pred_indus_gwp20])
 
     def compute_rockstrom_limit_constraint(self):
         """
@@ -248,14 +257,14 @@ class GHGCycle():
 
         self.ghg_cycle_df[f'co2_ppm'] = self.ghg_cycle_df[f'co2_ppm_b1']
 
-        self.compute_objective()
+        self.compute_objectives()
         self.compute_rockstrom_limit_constraint()
         self.compute_minimum_ppm_limit_constraint()
 
     def total_co2_equivalent(self,
                              co2_conc: Union[float, pd.Series],
                              ch4_conc: Union[float, pd.Series],
-                             n2o_conc: Union[float, pd.Series]) -> Union[float, pd.Series]:
+                             n2o_conc: Union[float, pd.Series], gwp: dict) -> Union[float, pd.Series]:
         """
         Compute the global warming potential (CO2 equivalent) (over 100 years) given the concentrations of
         CO2 (in ppm), CH4 (in ppm), and N20 (in ppm)
@@ -264,12 +273,12 @@ class GHGCycle():
         n2o_total_mass = n2o_conc * self.ppm_to_gt["N2O"]
         co2_total_mass = co2_conc * self.ppm_to_gt["CO2"]
 
-        total_mass_co2_eq = ch4_total_mass * self.gwp_100["CH4"] + n2o_total_mass * self.gwp_100["N2O"] + co2_total_mass * self.gwp_100["CO2"]
+        total_mass_co2_eq = ch4_total_mass * gwp["CH4"] + n2o_total_mass * gwp["N2O"] + co2_total_mass * gwp["CO2"]
         return total_mass_co2_eq
 
-    def d_total_co2_equivalent_d_conc(self, d_conc: pd.Series, specie: str):
+    def d_total_co2_equivalent_d_conc(self, d_conc: pd.Series, specie: str, gwp: dict):
         """
         Computes the derivative of the total_co2_equivalent w.r.t to the concentration of a species, which can be
         CO2, CH4 or N2O
         """
-        return d_conc * self.ppm_to_gt[specie] * self.gwp_100[specie]
+        return d_conc * self.ppm_to_gt[specie] * gwp[specie]
