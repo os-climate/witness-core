@@ -35,6 +35,13 @@ class ClimateEcoDiscipline(SoSWrapp):
                         'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}
     ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                      'user_level': 1, 'unit': '-'}
+    GWP_100_default = {'CO2': 1.0,
+                       'CH4': 28.,
+                       'N2O': 265.}
+
+    GWP_20_default = {'CO2': 1.0,
+                      'CH4': 85.,
+                      'N2O': 265.}
     ASSUMPTIONS_DESC_IN = {'type': 'dict', 'default': assumptions_dict_default , 'visibility': 'Shared', 'namespace': 'ns_witness', 'structuring': True, 'unit': '-'}
 
     # ontology information

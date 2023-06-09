@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,22 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 import numpy as np
 import pandas as pd
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
 class GHGEmissions():
-    '''
+    """
     Used to compute ghg emissions from different sectors
-    '''
+    """
     GHG_TYPE_LIST = [N2O.name, 'CO2', 'CH4']
 
     def __init__(self, param):
-        '''
+        """
         Constructor
-        '''
+        """
         self.param = param
         self.configure_parameters()
         self.create_dataframe()
@@ -60,9 +60,9 @@ class GHGEmissions():
         self.create_dataframe()
 
     def create_dataframe(self):
-        '''
+        """
         Create the dataframe and fill it with values at year_start
-        '''
+        """
         # declare class variable as local variable
         year_start = self.year_start
         year_end = self.year_end
@@ -74,9 +74,9 @@ class GHGEmissions():
         self.gwp_emissions = pd.DataFrame({'years': self.years_range})
 
     def compute_land_emissions(self):
-        '''
+        """
         Compute emissions from land
-        '''
+        """
 
         self.ghg_emissions_df['CO2 land_emissions'] = self.CO2_land_emissions.drop(
             'years', axis=1).sum(axis=1).values
@@ -86,9 +86,9 @@ class GHGEmissions():
             'years', axis=1).sum(axis=1).values
 
     def compute_total_emissions(self):
-        '''
+        """
         Total emissions taking energy emissions as inputs
-        '''
+        """
         self.ghg_emissions_df['CO2 industry_emissions'] = self.CO2_indus_emissions_df['indus_emissions'].values
         self.ghg_emissions_df['CH4 industry_emissions'] = 0.
         self.ghg_emissions_df['N2O industry_emissions'] = 0.
@@ -120,3 +120,5 @@ class GHGEmissions():
         self.compute_land_emissions()
         self.compute_total_emissions()
         self.compute_gwp()
+
+
