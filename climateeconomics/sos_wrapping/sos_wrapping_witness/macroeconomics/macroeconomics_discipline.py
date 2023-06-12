@@ -722,7 +722,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         chart_list = ['output of damage', 'gross output and gross output bis',
                       'investment', 'energy_investment', 'consumption',
                       'Output growth rate', 'energy supply',
-                      'usable capital', 'energy to sustain capital', 'capital', 'employment_rate', 'workforce',
+                      'usable capital', # 'energy to sustain capital', # TODO: wip on post-pro
+                      'capital', 'employment_rate', 'workforce',
                       'productivity', 'energy efficiency', 'e_max']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -884,51 +885,52 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
-        if 'energy to sustain capital' in chart_list:
-            capital_df = self.get_sosdisc_outputs('capital_df')
-            first_serie = capital_df['emax']
-            second_serie = self.get_sosdisc_inputs('capital_df')
-            years = list(capital_df.index)
 
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-
-            max_values = {}
-            min_values = {}
-            min_values['usable_capital'], max_values['usable_capital'] = self.get_greataxisrange(
-                first_serie)
-            min_values['capital'], max_values['capital'] = self.get_greataxisrange(
-                second_serie)
-
-            min_value = min(min_values.values())
-            max_value = max(max_values.values())
-
-            chart_name = 'Productive capital stock and usable capital for production'
-
-            new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value],
-                                                 chart_name)
-            note = {'Productive Capital': ' Non energy capital'}
-            new_chart.annotation_upper_left = note
-
-            visible_line = True
-            ordonate_data = list(first_serie)
-            percentage_productive_capital_stock = list(
-                first_serie * capital_utilisation_ratio)
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'Productive Capital Stock', 'lines', visible_line)
-            new_chart.series.append(new_series)
-            ordonate_data_bis = list(second_serie)
-            new_series = InstanciatedSeries(
-                years, ordonate_data_bis, 'Usable capital', 'lines', visible_line)
-            new_chart.series.append(new_series)
-            new_series = InstanciatedSeries(
-                years, percentage_productive_capital_stock,
-                f'{capital_utilisation_ratio * 100}% of Productive Capital Stock', 'lines', visible_line)
-            new_chart.series.append(new_series)
-
-            instanciated_charts.append(new_chart)
+        # if 'energy to sustain capital' in chart_list:
+        #     capital_df = self.get_sosdisc_outputs('capital_df')
+        #     first_serie = capital_df['e_max']
+        #     # second_serie = self.get_sosdisc_inputs('capital_df')
+        #     years = list(capital_df.index)
+        #
+        #     year_start = years[0]
+        #     year_end = years[len(years) - 1]
+        #
+        #     max_values = {}
+        #     min_values = {}
+        #     min_values['usable_capital'], max_values['usable_capital'] = self.get_greataxisrange(
+        #         first_serie)
+        #     min_values['capital'], max_values['capital'] = self.get_greataxisrange(
+        #         second_serie)
+        #
+        #     min_value = min(min_values.values())
+        #     max_value = max(max_values.values())
+        #
+        #     chart_name = 'Productive capital stock and usable capital for production'
+        #
+        #     new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+        #                                          [year_start - 5, year_end + 5],
+        #                                          [min_value, max_value],
+        #                                          chart_name)
+        #     note = {'Productive Capital': ' Non energy capital'}
+        #     new_chart.annotation_upper_left = note
+        #
+        #     visible_line = True
+        #     ordonate_data = list(first_serie)
+        #     percentage_productive_capital_stock = list(
+        #         first_serie * capital_utilisation_ratio)
+        #     new_series = InstanciatedSeries(
+        #         years, ordonate_data, 'Productive Capital Stock', 'lines', visible_line)
+        #     new_chart.series.append(new_series)
+        #     ordonate_data_bis = list(second_serie)
+        #     new_series = InstanciatedSeries(
+        #         years, ordonate_data_bis, 'Usable capital', 'lines', visible_line)
+        #     new_chart.series.append(new_series)
+        #     new_series = InstanciatedSeries(
+        #         years, percentage_productive_capital_stock,
+        #         f'{capital_utilisation_ratio * 100}% of Productive Capital Stock', 'lines', visible_line)
+        #     new_chart.series.append(new_series)
+        #
+        #     instanciated_charts.append(new_chart)
 
         if 'usable capital' in chart_list:
             capital_df = self.get_sosdisc_outputs('capital_df')
