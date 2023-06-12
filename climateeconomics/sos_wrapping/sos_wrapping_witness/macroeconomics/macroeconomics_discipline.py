@@ -886,7 +886,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
         if 'energy to sustain capital' in chart_list:
             capital_df = self.get_sosdisc_outputs('capital_df')
-            first_serie = capital_df['emax']
+            first_serie = capital_df['e_max']
             second_serie = self.get_sosdisc_inputs('capital_df')
             years = list(capital_df.index)
 
