@@ -6,17 +6,18 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
-from climateeconomics.sos_processes.iam.witness.witness_dev_to_val.usecase_witness import Study as witness_usecase
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 import pandas as pd
 import numpy as np
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from copy import deepcopy
+
+from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import Study as usecase_diet
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -27,26 +28,13 @@ OPTIM_NAME = "WITNESS_MDO"
 COUPLING_NAME = "WITNESS_Eval"
 EXTRA_NAME = "WITNESS"
 
-DEFAULT_TECHNO_DICT = deepcopy(DEFAULT_TECHNO_DICT)
-streams_to_add = ['fuel.ethanol']
-technos_to_add = ['Methanation', 'BiomassFermentation']
-for key in DEFAULT_TECHNO_DICT_DEV.keys():
-    if key not in DEFAULT_TECHNO_DICT.keys() and key in streams_to_add:
-        DEFAULT_TECHNO_DICT[key] = dict({'type': DEFAULT_TECHNO_DICT_DEV[key]['type'], 'value': []})
-    for value in DEFAULT_TECHNO_DICT_DEV[key]['value']:
-        try:
-            if value not in DEFAULT_TECHNO_DICT[key]['value'] and value in technos_to_add:
-                DEFAULT_TECHNO_DICT[key]['value'] += [value, ]
-        except:
-            pass
-
 
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False,
                  execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=[],
-                 process_level='val'):
+                 agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
+                 process_level='dev'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -59,14 +47,10 @@ class Study(ClimateEconomicsStudyManager):
         self.energy_mix_name = 'EnergyMix'
         self.ccs_mix_name = 'CCUS'
         self.bspline = bspline
-        self.invest_discipline = invest_discipline
-        self.techno_dict = techno_dict
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level
-        self.witness_uc = witness_usecase(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level)
-        self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
+        self.witness_uc = usecase_diet(
+            self.year_start, self.year_end, self.time_step)
 
     def setup_usecase(self):
         """ Overloaded method to initialize witness multiscenario optimization process
@@ -92,46 +76,8 @@ class Study(ClimateEconomicsStudyManager):
         design_var_descriptor = {}
         years = np.arange(self.year_start, self.year_end + 1, self.time_step)
 
-        for energy in self.witness_uc.energy_list:
-            energy_wo_dot = energy.replace('.', '_')
-
-            for technology in self.witness_uc.dict_technos[energy]:
-                technology_wo_dot = technology.replace('.', '_')
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = \
-                dspace_df[
-                    f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
-                    'out_name': 'invest_mix',
-                    'out_type': 'dataframe',
-                    'key': f'{energy}.{technology}',
-                    'index': years,
-                    'index_name': 'years',
-                    'namespace_in': 'ns_energy_mix',
-                    'namespace_out': 'ns_invest'
-                    }
-
-        for ccs in self.witness_uc.ccs_list:
-            ccs_wo_dot = ccs.replace('.', '_')
-
-            for technology in self.witness_uc.dict_technos[ccs]:
-                technology_wo_dot = technology.replace('.', '_')
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
-                dspace_df[
-                    f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
-                    'out_name': 'invest_mix',
-                    'out_type': 'dataframe',
-                    'key': f'{ccs}.{technology}',
-                    'index': years,
-                    'index_name': 'years',
-                    'namespace_in': 'ns_ccs',
-                    'namespace_out': 'ns_invest'
-                    }
-
         dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = \
-        dspace_df[f'forest_investment_array_mix']['value']
+            dspace_df[f'forest_investment_array_mix']['value']
         design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
                                                                 'out_type': 'dataframe',
                                                                 'key': 'forest_investment',
@@ -140,37 +86,61 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'namespace_in': 'ns_witness',
                                                                 'namespace_out': 'ns_invest'
                                                                 }
-        dv_arrays_dict[f'{self.witness_uc.study_name}.deforested_surface_ctrl'] = dspace_df[f'deforested_surface_ctrl'][
-            'value']
-        design_var_descriptor['deforested_surface_ctrl'] = {'out_name': 'deforestation_surface',
-                                                            'out_type': 'dataframe',
-                                                            'key': 'deforested_surface',
-                                                            'index': years,
-                                                            'index_name': 'years',
-                                                            'namespace_in': 'ns_witness',
-                                                            'namespace_out': 'ns_witness'}
+        if 'CropEnergy' in self.agri_techno_list:
+            dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = \
+                dspace_df[f'crop_investment_array_mix']['value']
+            design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
+                                                                  'out_type': 'dataframe',
+                                                                  'key': 'investment',
+                                                                  'index': years,
+                                                                  'index_name': 'years',
+                                                                  'namespace_in': 'ns_witness',
+                                                                  'namespace_out': 'ns_crop'
+                                                                  }
+        if 'ManagedWood' in self.agri_techno_list:
+            dv_arrays_dict[f'{self.witness_uc.study_name}.managed_wood_investment_array_mix'] = \
+                dspace_df[f'managed_wood_investment_array_mix']['value']
+            design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
+                                                                          'out_type': 'dataframe',
+                                                                          'key': 'investment',
+                                                                          'index': years,
+                                                                          'index_name': 'years',
+                                                                          'namespace_in': 'ns_witness',
+                                                                          'namespace_out': 'ns_forest'
+                                                                          }
+        dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_ctrl'] = \
+            dspace_df[f'deforestation_investment_ctrl']['value']
+        design_var_descriptor['deforestation_investment_ctrl'] = {'out_name': 'deforestation_investment',
+                                                                  'out_type': 'dataframe',
+                                                                  'key': 'investment',
+                                                                  'index': years,
+                                                                  'index_name': 'years',
+                                                                  'namespace_in': 'ns_witness',
+                                                                  'namespace_out': 'ns_forest'
+                                                                  }
         dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = \
-        dspace_df[f'red_meat_percentage_ctrl']['value']
+            dspace_df[f'red_meat_percentage_ctrl']['value']
         design_var_descriptor['red_meat_percentage_ctrl'] = {'out_name': 'red_meat_percentage',
                                                              'out_type': 'dataframe',
                                                              'key': 'red_meat_percentage',
                                                              'index': years,
                                                              'index_name': 'years',
                                                              'namespace_in': 'ns_witness',
-                                                             'namespace_out': 'ns_agriculture'
+                                                             'namespace_out': 'ns_crop'
                                                              }
         dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_percentage_ctrl'] = \
-        dspace_df[f'white_meat_percentage_ctrl']['value']
+            dspace_df[f'white_meat_percentage_ctrl']['value']
         design_var_descriptor['white_meat_percentage_ctrl'] = {'out_name': 'white_meat_percentage',
                                                                'out_type': 'dataframe',
                                                                'key': 'white_meat_percentage',
                                                                'index': years,
                                                                'index_name': 'years',
                                                                'namespace_in': 'ns_witness',
-                                                               'namespace_out': 'ns_agriculture'
+                                                               'namespace_out': 'ns_crop'
                                                                }
+
         dv_arrays_dict[f'{self.witness_uc.study_name}.share_energy_investment_ctrl'] = \
-        dspace_df[f'share_energy_investment_ctrl']['value']
+            dspace_df[f'share_energy_investment_ctrl']['value']
         design_var_descriptor['share_energy_investment_ctrl'] = {'out_name': 'share_energy_investment',
                                                                  'out_type': 'dataframe',
                                                                  'key': 'share_investment',
@@ -205,20 +175,19 @@ class Study(ClimateEconomicsStudyManager):
             dspace_df = dspace_df.append(dict_var, ignore_index=True)
 
         self.dspace = dspace_df
-        values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.energy_list'] = self.witness_uc.energy_list
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         setup_data_list.append(values_dict)
         setup_data_list.append(dv_arrays_dict)
+
         return setup_data_list
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    print(
-        len(uc_cls.execution_engine.root_process.sos_disciplines[0].sos_disciplines))
+
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 
-#     uc_cls.execution_engine.root_process.sos_disciplines[0].coupling_structure.graph.export_initial_graph(
+#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_initial_graph(
 #         "initial.pdf")
