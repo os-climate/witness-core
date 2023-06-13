@@ -238,11 +238,12 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective', 'delta_capital_objective',
+            ['welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective',
+             'delta_capital_objective',
              'delta_capital_objective_weighted'])
         list_parent.extend(['utility_objective',
                             'GWP_short_term_obj',
-                            'GWP_long_term_obj','non_use_capital_objective', 'delta_capital_objective',
+                            'GWP_long_term_obj', 'non_use_capital_objective', 'delta_capital_objective',
                             'delta_capital_objective_weighted'])
         list_ns.extend(['ns_functions',
                         'ns_functions',
