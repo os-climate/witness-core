@@ -75,16 +75,35 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
         join(dirname(__file__), f'../resources_data/{resource_name}_consumed_data.csv'))
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '-', 'default': default_resource_data,
-                                 'user_level': 2, 'namespace': 'ns_platinum_resource'},
+                                 'user_level': 2, 'namespace': 'ns_platinum_resource',
+                                 'dataframe_descriptor':
+                                     {
+                                         'years': ('float', None, False),
+                                         'platinum_type': ('string', None, True),
+                                         'Price': ('float', None, True),
+                                         'Price_unit': ('string', None, True),
+                                         'Reserve': ('float', None, True),
+                                         'Reserve_unit': ('string', None, True),
+                                         'Region': ('string', None, True),
+                                     }
+               },
                'resource_production_data': {'type': 'dataframe', 'unit': 'Mt', 'optional': True,
-                                            'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_platinum_resource'},
+                                            'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_platinum_resource',
+                                            'dataframe_descriptor': {
+                                                'years': ('float', None, False),
+                                                'platinum': ('float', None, True),}
+                                            },
                'resource_price_data': {'type': 'dataframe', 'unit': 'USD/t', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {'resource_type': ('string', None, False),
                                                                 'price': ('float', None, False),
                                                                 'unit': ('string', None, False)},
                                        'namespace': 'ns_platinum_resource'},
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'Mt', 'default': default_resource_consumed_data,
-                                          'user_level': 2, 'namespace': 'ns_platinum_resource'},
+                                          'user_level': 2, 'namespace': 'ns_platinum_resource',
+                                          'dataframe_descriptor': {
+                                              'years': ('float', None, False),
+                                              'platinum_consumption': ('float', None, True),}
+                                          },
                'production_start': {'type': 'int', 'default': default_regression_start, 'unit': '-',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_platinum_resource'},
                'regression_stop': {'type': 'int', 'default': default_regression_stop, 'unit': '-',

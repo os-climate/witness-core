@@ -74,12 +74,18 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.CO2_land_emission_df'] = {
-                        'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'}
+                        'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'emitted_CO2_evol_cumulative': ('float', None, True),}}
                     if techno == 'Crop':
                         dynamic_inputs[f'{techno}.CH4_land_emission_df'] = {
-                            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'}
+                            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'emitted_CH4_evol_cumulative': ('float', None, True),}}
                         dynamic_inputs[f'{techno}.N2O_land_emission_df'] = {
-                            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'}
+                            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
+                        'dataframe_descriptor': {'years': ('float', None, True),
+                                                 'emitted_N2O_evol_cumulative': ('float', None, True),}}
 
         self.add_inputs(dynamic_inputs, clean_inputs=False)
 

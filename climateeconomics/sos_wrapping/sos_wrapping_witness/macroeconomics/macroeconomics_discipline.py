@@ -45,7 +45,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     _maturity = 'Research'
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
+        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$',
+                      'dataframe_descriptor': {'years': ('float', None, False),
+                                               'damages': ('float', None, False),
+                                               'damage_frac_output': ('float', None, False),
+                                               'base_carbon_price': ('float', None, False),
+                                               }
+                      },
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
@@ -54,9 +60,17 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                               'namespace': 'ns_witness', 'user_level': 2},
         'capital_start_non_energy': {'type': 'float', 'unit': 'T$', 'default': 360.5487346, 'user_level': 2},
         'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
-                          'namespace': 'ns_witness'},
+                          'namespace': 'ns_witness',
+                          'dataframe_descriptor': {'years': ('float', None, False),
+                                                   'population': ('float', None, False),
+                                                   }
+                          },
         'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
-                                      'namespace': 'ns_witness'},
+                                      'namespace': 'ns_witness',
+                                      'dataframe_descriptor': {'years': ('float', None, False),
+                                                               'population_1570': ('float', None, False),
+                                                               }
+                                      },
         'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 0.02387787, 'user_level': 3, 'unit': '-'},
         # Usable capital
@@ -95,7 +109,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                     'dataframe_edition_locked': False, 'visibility': 'Shared',
                                     'namespace': 'ns_witness'},
         # energy_production stored in PetaWh for coupling variables scaling
-        'energy_production': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'PWh', 'namespace': 'ns_energy_mix'},
+        'energy_production': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'PWh', 'namespace': 'ns_energy_mix',
+                              'dataframe_descriptor': {'years': ('float', None, False),
+                                                       'Total production': ('float', None, False),
+                                                       }
+                              },
+
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                              'visibility': 'Shared', 'namespace': 'ns_witness'},
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'unit': '-', 'user_level': 2,
@@ -103,10 +122,20 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'unit': '-', 'user_level': 2},
         'co2_emissions_Gt': {'type': 'dataframe', 'visibility': 'Shared',
-                             'namespace': 'ns_energy_mix', 'unit': 'Gt'},
-        'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%'},
+                             'namespace': 'ns_energy_mix', 'unit': 'Gt',
+                             'dataframe_descriptor': {'years': ('float', None, False),
+                                                      'Total CO2 emissions': ('float', None, False),}
+                             },
+        'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%',
+                               'dataframe_descriptor': {'years': ('float', None, False),
+                                                        'CO2_tax_efficiency': ('float', None, False), }
+                               },
         'co2_invest_limit': {'type': 'float', 'default': 2.0, 'unit': 'factor of energy investment'},
-        'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness',
+                      'dataframe_descriptor': {'years': ('float', None, False),
+                                               'CO2_tax': ('float', None, False),
+                                               }
+                      },
         # Employment rate param
         'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
@@ -115,7 +144,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                      'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness',
+                           'dataframe_descriptor': {'years': ('float', None, False),
+                                                    'energy_capital': ('float', None, False), }
+                           },
         'delta_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 50, 'user_level': 3,
                                      'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
