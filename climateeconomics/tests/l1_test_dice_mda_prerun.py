@@ -20,6 +20,7 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from time import time
 from pandas.core.frame import DataFrame
 from tempfile import gettempdir
+import logging
 
 
 class DICEMDAPrerunTest(unittest.TestCase):
@@ -29,6 +30,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
         self.name = 'Test'
         self.root_dir = gettempdir()
         self.ee = ExecutionEngine(self.name)
+        logging.disable(logging.INFO)
 
     def test_execute(self):
 
@@ -105,7 +107,8 @@ class DICEMDAPrerunTest(unittest.TestCase):
             'cum_indus_emissions': data,
             'total_emissions': data,
             'cum_total_emissions': data,
-            'emissions_control_rate': data}, index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+            'emissions_control_rate': data},
+            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
 
         carboncycle_df = DataFrame({
             'year': years,
@@ -114,13 +117,15 @@ class DICEMDAPrerunTest(unittest.TestCase):
             'shallow_ocean_conc': data,
             'ppm': data,
             'atmo_share_since1850': data,
-            'atmo_share_sinceystart': data}, index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+            'atmo_share_sinceystart': data},
+            index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
 
         temperature_df = DataFrame({'year': years,
                                     'exog_forcing': data,
                                     'forcing': data,
                                     'temp_atmo': data,
-                                    'temp_ocean': data}, index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
+                                    'temp_ocean': data},
+                                   index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
         ee2 = ExecutionEngine(self.name)
         builder = ee2.factory.get_builder_from_process(
             repo, 'dice_model')
