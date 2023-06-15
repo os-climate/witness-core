@@ -26,8 +26,8 @@ def fast_world3(name):
 
 class Study(StudyManager):
 
-    def __init__(self, execution_engine=None):
-        super().__init__(__file__, execution_engine=execution_engine, run_usecase=False)
+    def __init__(self, execution_engine=None, run_usecase=False):
+        super().__init__(__file__, execution_engine=execution_engine, run_usecase=run_usecase)
 
     def setup_usecase(self):
         setup_data_list = []
@@ -52,7 +52,7 @@ class Study(StudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=False)
+    uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
 
