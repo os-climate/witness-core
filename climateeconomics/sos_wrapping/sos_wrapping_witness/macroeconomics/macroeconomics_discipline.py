@@ -124,7 +124,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'co2_emissions_Gt': {'type': 'dataframe', 'visibility': 'Shared',
                              'namespace': 'ns_energy_mix', 'unit': 'Gt',
                              'dataframe_descriptor': {'years': ('float', None, False),
-                                                      'Total CO2 emissions': ('float', None, False),}
+                                                      'Total CO2 emissions': ('float', None, False),
+                                                      'cumulative_total_energy_supply': ('float', None, False),}
                              },
         'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%',
                                'dataframe_descriptor': {'years': ('float', None, False),

@@ -91,6 +91,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                                                                   'CO2 from energy mix (Gt)': ('float', None, False)}},
         'CO2_emissions_by_use_sinks':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs',
                                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                                 'CO2_resource removed by energy mix (Gt)': ('float', None, False),
                                                                  'CO2 removed by energy mix (Gt)': ('float', None, False),}},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy',
                                                'dataframe_descriptor': {'years': ('float', None, False),

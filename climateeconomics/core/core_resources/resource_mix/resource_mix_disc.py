@@ -194,7 +194,7 @@ class ResourceMixDiscipline(SoSWrapp):
         ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION:  {'type': 'dataframe', 'unit': 'million_tonnes'} ,
         ResourceMixModel.RATIO_USABLE_DEMAND: {'type': 'dataframe', 'default': ratio_available_resource_default,
                                                'visibility': SoSWrapp.SHARED_VISIBILITY, 'unit': '%',
-                                               'namespace': 'ns_resource'},
+                                               'namespace': 'ns_resource',},
         ResourceMixModel.ALL_RESOURCE_DEMAND: {'type': 'dataframe', 'unit': '-',
                                                'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                'namespace': 'ns_resource'},
