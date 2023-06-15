@@ -668,7 +668,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = CoarseJacobianTestCase()
     cls.setUp()
     # self.launch_data_pickle_generation()
