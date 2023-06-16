@@ -261,8 +261,26 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
 
     @return multilevel_df: Dataframe
     '''
+
+    # TODO quick fix but need to do a cleaner way but needs deeper reflexion 
+    ns_list = execution_engine.ns_manager.get_all_namespace_with_name('ns_energy_mix')
+    max_length = 0
+    longest_object = None
+
+    # get ns_object with longest 
+    for ns in ns_list:
+        if hasattr(ns, 'value') and isinstance(ns.value, str):
+            if namespace in ns.value and len(ns.value) > max_length:
+                max_length = len(ns.value)
+                longest_object = ns  
+    ns_energy_mix = longest_object.value     
+    index = ns_energy_mix.find('.EnergyMix')
+    if index != -1:
+        namespace = ns_energy_mix[:index]
+
     EnergyMix = execution_engine.dm.get_disciplines_with_name(
         f'{namespace}.EnergyMix')[0]
+       
     # Construct a DataFrame to organize the data on two levels: energy and
     # techno
     idx = pd.MultiIndex.from_tuples([], names=['energy', 'techno'])

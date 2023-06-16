@@ -30,7 +30,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
     """
     Ratio jacobian test class
     """
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -96,7 +97,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
                        'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
@@ -108,7 +110,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -131,15 +134,15 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         self.ee.execute()
 
-
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5, local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_02_coarse_fossil_techno_discipline_jacobian(self):
         '''
@@ -177,7 +180,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
                        'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
@@ -189,7 +193,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -214,12 +219,13 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_03_coarse_dac_techno_discipline_jacobian(self):
         '''
@@ -257,7 +263,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
                        'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
@@ -269,7 +276,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -294,12 +302,13 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_04_coarse_flue_gas_capture_techno_discipline_jacobian(self):
         '''
@@ -338,7 +347,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
                        'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
@@ -351,7 +361,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -376,12 +387,13 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_05_coarse_carbon_storage_techno_discipline_jacobian(self):
         '''
@@ -419,7 +431,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'max_mda_iter', 'n_processes', 'chain_linearize', 'tolerance', 'use_lu_fact',
                        'warm_start', 'acceleration', 'warm_start_threshold', 'n_subcouplings_parallel',
                        'max_mda_iter_gs', 'relax_factor', 'epsilon0',
-                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA', 'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
+                       'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
+                       'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
                        'transport_cost', 'transport_margin', 'year_start', 'year_end',
                        'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
@@ -431,7 +444,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key]['value']
+                inputs_dict[f'{namespace}.{self.techno_name}.{key}'] = mda_data_input_dict[self.techno_name][key][
+                    'value']
                 if mda_data_input_dict[self.techno_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.techno_name}.{key}']
 
@@ -456,12 +470,13 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.techno_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.techno_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_06_coarse_renewable_stream_discipline_jacobian(self):
         '''
@@ -502,7 +517,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -522,12 +538,13 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_07_coarse_fossil_stream_discipline_jacobian(self):
         '''
@@ -567,7 +584,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{key}']
             else:
-                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
+                inputs_dict[f'{namespace}.{self.energy_name}.{key}'] = mda_data_input_dict[self.energy_name][key][
+                    'value']
                 if mda_data_input_dict[self.energy_name][key]['is_coupling']:
                     coupled_inputs += [f'{namespace}.{self.energy_name}.{key}']
 
@@ -587,12 +605,13 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-18, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
     def test_08_coarse_energymix_discipline_jacobian(self):
         '''
@@ -626,7 +645,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             join(dirname(__file__), 'data/mda_coarse_data_energymix_input_dict.pkl'), 'rb')
         mda_data_input_dict = pickle.load(pkl_file)
         pkl_file.close()
-        #mda_data_input_dict['renewable.energy_production']['value']['renewable'] = 1e-16
+        # mda_data_input_dict['renewable.energy_production']['value']['renewable'] = 1e-16
         namespace = f'{self.name}'
         inputs_dict = {}
         coupled_inputs = []
@@ -659,18 +678,18 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.energy_name}')[0].mdo_discipline_wrapp.mdo_discipline
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_{self.energy_name}.pkl',
-                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,local_data = disc.local_data,
+                            discipline=disc, step=1.0e-15, derr_approx='complex_step', threshold=1e-5,
+                            local_data=disc.local_data,
                             inputs=coupled_inputs,
-                            outputs=coupled_outputs,)
+                            outputs=coupled_outputs, )
 
 
 if '__main__' == __name__:
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = CoarseJacobianTestCase()
     cls.setUp()
     # self.launch_data_pickle_generation()
     cls.test_05_coarse_carbon_storage_techno_discipline_jacobian()
-
