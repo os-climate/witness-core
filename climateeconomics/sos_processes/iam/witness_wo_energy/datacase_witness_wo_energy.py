@@ -238,16 +238,22 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective', 'non_use_capital_objective', 'delta_capital_objective',
+            ['welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective',
+             'delta_capital_objective',
              'delta_capital_objective_weighted'])
-        list_parent.extend(['utility_objective', 'non_use_capital_objective', 'delta_capital_objective',
+        list_parent.extend(['utility_objective',
+                            'GWP_short_term_obj',
+                            'GWP_long_term_obj', 'non_use_capital_objective', 'delta_capital_objective',
                             'delta_capital_objective_weighted'])
-        list_ns.extend(['ns_functions', 'ns_witness', 'ns_functions', 'ns_functions'])
+        list_ns.extend(['ns_functions',
+                        'ns_functions',
+                        'ns_functions',
+                        'ns_witness', 'ns_functions', 'ns_functions'])
         list_ftype.extend(
-            [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1.0, 0.0, 0.0, 0.0])
+            [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
+        list_weight.extend([1.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
