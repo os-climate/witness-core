@@ -132,7 +132,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15)))),
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
-                            'compute_damage_on_climate': False,
+                            'compute_climate_impact_on_gdp': False,
                             'activate_climate_effect_population': False
                             }
                        }

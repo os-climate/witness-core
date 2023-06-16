@@ -52,7 +52,7 @@ class DamageModel():
         self.co2_damage_price_df = None
         self.CO2_TAX_MINUS_CO2_DAMAGE_CONSTRAINT_DF = None
         assumptions_dict = self.param['assumptions_dict']
-        self.activate_damage = assumptions_dict['compute_damage_on_climate'] # ''
+        self.activate_damage_on_gdp = assumptions_dict['compute_climate_impact_on_gdp'] # ''
 
     def create_dataframe(self):
         '''
@@ -83,7 +83,7 @@ class DamageModel():
 
         return damage_df
 
-    def compute_damage_fraction(self, year):
+    def compute_damage_fraction_on_gdp(self, year):
         """
         Compute damages fraction of output at t
         using variables at t
@@ -103,9 +103,9 @@ class DamageModel():
         self.damage_df.loc[year, 'damage_frac_output'] = damage_frac_output
         return damage_frac_output
 
-    def compute_damages(self, year) -> pd.DataFrame:
+    def compute_damages_on_gdp(self, year) -> pd.DataFrame:
         """
-        Compute damages (t) (trillions 2005 USD per year)
+        Compute damages (t) (trillions 2005 USD per year) on GDP
         using variables at t
         """
         gross_output = self.economics_df.at[year, 'gross_output']
@@ -161,7 +161,7 @@ class DamageModel():
         ddamage_frac_output_temp_atmo = np.zeros((nb_years, nb_years))
         ddamages_temp_atmo = np.zeros((nb_years, nb_years))
         ddamages_gross_output = np.zeros((nb_years, nb_years))
-        if self.activate_damage:
+        if self.activate_damage_on_gdp:
             for i in range(nb_years):
                 for line in range(nb_years):
                     if i == line:
@@ -235,10 +235,10 @@ class DamageModel():
         self.temperature_df.index = self.temperature_df['years'].values
 
         self.damage_df = self.create_dataframe()
-        if self.activate_damage:
+        if self.activate_damage_on_gdp:
             for year in self.years_range:
-                self.compute_damage_fraction(year)
-                self.compute_damages(year)
+                self.compute_damage_fraction_on_gdp(year)
+                self.compute_damages_on_gdp(year)
 
         self.damage_df = self.damage_df.replace([np.inf, -np.inf], np.nan)
         self.compute_CO2_tax_minus_CO2_damage_constraint()

@@ -379,7 +379,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.temperature_df': self.temperature_df,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
-                            'compute_damage_on_climate': True,
+                            'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True
                             }
                        }
@@ -405,7 +405,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.temperature_df': self.temperature_df,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
-                            'compute_damage_on_climate': True,
+                            'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': False
                             }
                        }
