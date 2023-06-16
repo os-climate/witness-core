@@ -52,7 +52,7 @@ class DamageModel():
         self.co2_damage_price_df = None
         self.CO2_TAX_MINUS_CO2_DAMAGE_CONSTRAINT_DF = None
         assumptions_dict = self.param['assumptions_dict']
-        self.activate_damage = assumptions_dict['compute_damage_on_climate']
+        self.activate_damage = assumptions_dict['compute_damage_on_climate'] # ''
 
     def create_dataframe(self):
         '''
@@ -103,7 +103,7 @@ class DamageModel():
         self.damage_df.loc[year, 'damage_frac_output'] = damage_frac_output
         return damage_frac_output
 
-    def compute_damages(self, year):
+    def compute_damages(self, year) -> pd.DataFrame:
         """
         Compute damages (t) (trillions 2005 USD per year)
         using variables at t
