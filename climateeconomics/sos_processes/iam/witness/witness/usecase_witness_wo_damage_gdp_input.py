@@ -21,6 +21,7 @@ from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEcon
 from pandas import DataFrame
 from numpy import arange, linspace
 
+
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, run_usecase = False, execution_engine=None, year_start = 2020, year_end = 2100, time_step = 1):

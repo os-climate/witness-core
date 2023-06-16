@@ -64,16 +64,52 @@ class UraniumResourceDiscipline(ResourceDiscipline):
         join(dirname(__file__), f'../resources_data/{resource_name}_consumed_data.csv'))
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '[-]', 'default': default_resource_data,
-                                 'user_level': 2, 'namespace': 'ns_uranium_resource'},
+                                 'user_level': 2, 'namespace': 'ns_uranium_resource',
+                                 'dataframe_descriptor':
+                                     {
+                                         'years': ('float', None, False),
+                                         'Accessibility': ('string', None, True),
+                                         'Price': ('float', None, True),
+                                         'Price_unit': ('string', None, True),
+                                         'Reserve': ('float', None, True),
+                                         'Reserve_unit': ('string', None, True),
+                                         'Region': ('string', None, True),
+                                      }
+                                 },
                'resource_production_data': {'type': 'dataframe', 'unit': 't', 'optional': True,
-                                            'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_uranium_resource'},
+                                            'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_uranium_resource',
+                                            'dataframe_descriptor':{
+                                                 'years': ('float', None, False),
+                                                'uranium_40': ('float', None, True),
+                                                 'uranium_80': ('float', None, True),
+                                                 'uranium_130': ('float', None, True),
+                                                 'uranium_260': ('float', None, True),
+                                                 'uranium_260_consumption': ('float', None, True),
+                                              }},
                'resource_price_data': {'type': 'dataframe', 'unit': '$/kg', 'default': default_resource_price_data, 'user_level': 2,
-                                       'dataframe_descriptor': {'resource_type': ('string', None, False),
-                                                                'price': ('float', None, False),
-                                                                'unit': ('string', None, False)},
+                                       'dataframe_descriptor': {
+                                                 'years': ('float', None, False),
+                                                 'uranium_40_consumption': ('float', None, True),
+                                                 'uranium_80_consumption': ('float', None, True),
+                                                 'uranium_130_consumption': ('float', None, True),
+                                                 'uranium_260_consumption': ('float', None, True),
+                                                 'resource_type': ('string', None, True),
+                                           'price': ('float', None, True),
+                                           'unit': ('string', None, True),
+                                              },
                                        'namespace': 'ns_uranium_resource'},
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[t]', 'default': default_resource_consumed_data,
-                                          'user_level': 2, 'namespace': 'ns_uranium_resource'},
+                                          'user_level': 2, 'namespace': 'ns_uranium_resource',
+                                          'dataframe_descriptor':
+                                             {
+                                                 'years': ('float', None, False),
+                                                 'uranium_40_consumption': ('float', None, True),
+                                                 'uranium_80_consumption': ('float', None, True),
+                                                 'uranium_130_consumption': ('float', None, True),
+                                                 'uranium_260_consumption': ('float', None, True),
+                                                 'Reserve_unit': ('float', None, True),
+                                              }
+                                         },
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_uranium_resource'},
                'regression_start': {'type': 'int', 'default': default_regression_start, 'unit': '[-]',

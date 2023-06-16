@@ -258,7 +258,15 @@ class CropDiscipline(ClimateEcoDiscipline):
                                   'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
 
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop'},
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
+        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius',
+                           'dataframe_descriptor': {'years': ('float', None, False),
+                                                    'exog_forcing': ('float', None, False),
+                                                    'forcing': ('float', None, False),
+                                                    'temp_ocean': ('float', None, False),
+                                                    'temp_atmo': ('float', None, False),
+                                                    }
+
+                           },
         'param_a': {'type': 'float', 'default':-0.00833, 'unit': '-', 'user_level': 3},
         'param_b': {'type': 'float', 'default':-0.04167, 'unit': '-', 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',
@@ -268,7 +276,10 @@ class CropDiscipline(ClimateEcoDiscipline):
         'scaling_factor_crop_investment': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-        'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_witness'},
+        'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_witness',
+                   'dataframe_descriptor': {'years': ('float', None, False),
+                                            'margin': ('float', None, False),}
+              },
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                     'transport': ('float', None, True)},
@@ -283,7 +294,12 @@ class CropDiscipline(ClimateEcoDiscipline):
         'techno_infos_dict': {'type': 'dict', 'unit': 'defined in dict',
                               'default': techno_infos_dict_default},
         'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-        'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
+        'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                'dataframe_descriptor': {'years': ('float', None, False),
+                                                         'age': ('float', None, False),
+                                                         'distrib': ('float', None, False),
+                                },
+              },
         'co2_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg', 'default': default_co2_emissions},
         'ch4_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg', 'default': default_ch4_emissions},
         'n2o_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg', 'default': default_n2o_emissions},
@@ -307,21 +323,22 @@ class CropDiscipline(ClimateEcoDiscipline):
         'techno_consumption': {
             'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop', 'unit': 'TWh or Mt'},
         'techno_consumption_woratio': {
-            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop', 'unit': 'TWh or Mt'},
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop', 'unit': 'TWh or Mt',
+        },
         'land_use_required': {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         # emissions from production that goes into energy mix
         'CO2_emissions': {
             'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         # crop land emissions
-        'CO2_land_emission_df': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+        'CO2_land_emission_df': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop',},
         'CO2_land_emission_detailed': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'CH4_land_emission_df': {'type': 'dataframe', 'unit': 'GtCH4',
-                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop',},
         'CH4_land_emission_detailed': {'type': 'dataframe', 'unit': 'GtCH4',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'N2O_land_emission_df': {'type': 'dataframe', 'unit': 'GtN2O',
-                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
+                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop',},
         'N2O_land_emission_detailed': {'type': 'dataframe', 'unit': 'GtN2O',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
     }

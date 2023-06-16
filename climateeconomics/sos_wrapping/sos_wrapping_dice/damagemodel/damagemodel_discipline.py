@@ -60,8 +60,14 @@ class DamageDiscipline(SoSWrapp):
         'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
+                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                  'Total CO2 emissions': ('float', None, False),
+                                                  'Total N2O emissions': ('float', None, False),
+                                                  'Total CH4 emissions': ('float', None, False),
+                                                  }
+                         },
+        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',},
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                                    'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
                                    'dataframe_edition_locked': False}

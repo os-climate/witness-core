@@ -47,14 +47,22 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$'
     
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'unit': 'G$'},
+        'damage_df': {'type': 'dataframe', 'unit': 'G$',
+                      'dataframe_descriptor': {'years': ('float', None, False),
+                                               'damages': ('float', None, False),
+                                               'damage_frac_output': ('float', None, False),
+                                               'base_carbon_price': ('float', None, False),}
+                      },
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.4903228, 'user_level': 2, 'unit': '-'},
         'capital_start': {'type': 'float', 'unit': 'T$', 'default':88.5051, 'user_level': 2},
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                         'namespace': 'ns_witness'},
+                         'namespace': 'ns_witness',
+                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                  'Industry': ('float', None, False),}
+                         },
         'productivity_gr_start': {'type': 'float', 'default': 0.00019, 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 1e-05, 'user_level': 3, 'unit': '-'},
         # Usable capital
@@ -89,9 +97,25 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
-        'production_df': {'type': 'dataframe', 'unit': 'T$'},
+        'production_df': {'type': 'dataframe', 'unit': 'T$',
+                          'dataframe_descriptor':
+                              {
+                                  'years': ('float', None, False),
+                                  'co2_ppm': ('float', None, True),
+                                  'ch4_ppm': ('float', None, True),
+                                  'n2o_ppm': ('float', None, True),
+                              }
+                          },
         'capital_df':  {'type': 'dataframe', 'unit': 'T$'},
-        'detailed_capital_df': {'type': 'dataframe', 'unit': 'T$'}, 
+        'detailed_capital_df': {'type': 'dataframe', 'unit': 'T$',
+                                'dataframe_descriptor':
+                                    {
+                                        'years': ('float', None, False),
+                                        'co2_ppm': ('float', None, True),
+                                        'ch4_ppm': ('float', None, True),
+                                        'n2o_ppm': ('float', None, True),
+                                    }
+                                },
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint':  {'type': 'array'},
     }

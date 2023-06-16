@@ -45,8 +45,20 @@ class PolicyDiscipline(SoSWrapp):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+                      'dataframe_descriptor':
+                          {
+                              'years': ('float', None, False),
+                              'ccs_price_per_tCO2': ('float', None, True),
+                          }
+                      },
+        'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+                             'dataframe_descriptor':
+                                 {
+                                     'years': ('float', None, False),
+                                     'CO2_damage_price': ('float', None, True),
+                                 }
+                             },
         'ccs_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
                                    'namespace': 'ns_witness', 'user_level': 2},

@@ -91,21 +91,31 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                  'user_level': 2,
                                                  'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                  'namespace': 'ns_forest',
-                                                 'structuring': True}
+                                                 'structuring': True,
+                                                 'dataframe_descriptor':
+                                                     {
+                                                         'years': ('float', None, False),
+                                                         'reforestation': ('float', None, True),
+                                                         'managed_wood': ('float', None, True),
+                                                         'deforestation': ('float', None, True),
+                                                     }
+                                                 }
         dynamic_inputs['forest_lost_capital_cons_ref'] = {'type': 'float',
                                                           'unit': 'G$',
                                                           'default': 20.,
                                                           'user_level': 2,
                                                           'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                           'namespace': 'ns_ref',
-                                                          'structuring': True}
+                                                          'structuring': True,
+                                                          }
         dynamic_inputs['forest_lost_capital_cons_limit'] = {'type': 'float',
                                                             'unit': 'G$',
                                                             'default': 40.,
                                                             'user_level': 2,
                                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                             'namespace': 'ns_ref',
-                                                            'structuring': True}
+                                                            'structuring': True,
+                                                            }
         if 'energy_list' in self.get_data_in():
             energy_list = self.get_sosdisc_inputs('energy_list')
             if energy_list is not None:
@@ -164,11 +174,42 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             dynamic_inputs[f'{non_use_capital_tuple[0]}non_use_capital'] = {'type': 'dataframe',
                                                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                             'namespace': non_use_capital_tuple[1],
-                                                                            'unit': 'G$'}
+                                                                            'unit': 'G$',
+                                                                            'dataframe_descriptor':
+                                                                                {
+                                                                                    'years': ('float', None, False),
+                                                                                    'Forest': ('float', None, True),
+                                                                                    'FischerTropsch': ('float', None, True),
+                                                                                    'FossilGas': ('float', None, True),
+                                                                                    'UpgradingBiogas': ('float', None, True),
+                                                                                    'direct_air_capture.AmineScrubbing': (
+                                                                                    'float', None, True),
+                                                                                    'Refinery': (
+                                                                                    'float', None, True),
+                                                                                    'base_carbon_price': (
+                                                                                    'float', None, True),
+                                                                                }
+                                                                            }
             dynamic_inputs[f'{non_use_capital_tuple[0]}techno_capital'] = {'type': 'dataframe',
                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                            'namespace': non_use_capital_tuple[1],
-                                                                           'unit': 'G$'}
+                                                                           'unit': 'G$',
+                                                                           'dataframe_descriptor':
+                                                                                {
+                                                                                    'years': ('float', None, False),
+                                                                                    'Forest': ('float', None, True),
+                                                                                    'FischerTropsch': (
+                                                                                    'float', None, True),
+                                                                                    'FossilGas': ('float', None, True),
+                                                                                    'UpgradingBiogas': ('float', None, True),
+                                                                                    'direct_air_capture.AmineScrubbing': (
+                                                                                    'float', None, True),
+                                                                                    'Refinery': (
+                                                                                    'float', None, True),
+                                                                                    'base_carbon_price': (
+                                                                                    'float', None, True),
+                                                                                }
+                                                                           }
 
         self.add_inputs(dynamic_inputs)
 
