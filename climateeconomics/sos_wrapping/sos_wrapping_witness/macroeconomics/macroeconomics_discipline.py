@@ -803,9 +803,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             min_value = min(min_values.values())
             max_value = max(max_values.values())
 
-            chart_name = 'Economics output'
+            chart_name = 'Economics output (Power Purchase Parity)'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -846,7 +846,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Total investment capacities and energy investment capacities'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'investment [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'investment [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -891,7 +891,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 max_value *= co2_invest_limit
             chart_name = 'Breakdown of energy investments'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'investment [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'investment [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -940,7 +940,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         #
         #     chart_name = 'Productive capital stock and usable capital for production'
         #
-        #     new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+        #     new_chart = TwoAxesInstanciatedChart('years', 'Trillion $2020 PPP',
         #                                          [year_start - 5, year_end + 5],
         #                                          [min_value, max_value],
         #                                          chart_name)
@@ -986,7 +986,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Productive capital stock and usable capital for production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+            new_chart = TwoAxesInstanciatedChart('years', 'Trillion $2020 PPP',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -1035,7 +1035,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Capital stock per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+            new_chart = TwoAxesInstanciatedChart('years', 'Trillion $2020 PPP',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name, stacked_bar=True)
@@ -1069,7 +1069,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Global consumption over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' global consumption [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', ' global consumption [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -1278,7 +1278,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Energy supply'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
