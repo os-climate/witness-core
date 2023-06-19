@@ -93,7 +93,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'damage_df': {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
     }
 
@@ -117,10 +116,10 @@ class DamageDiscipline(ClimateEcoDiscipline):
                 compute_climate_impact_on_gdp: bool = assumptions_dict['compute_climate_impact_on_gdp']
                 # if compute gdp is not activated, we add gdp input
                 if compute_climate_impact_on_gdp:
-                    dynamic_outputs.update({'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}})
+                    dynamic_outputs.update({'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}})
                 else:
                     dynamic_outputs.update(
-                        {'damage_df': {'type': 'dataframe',}})
+                        {'damage_df': {'type': 'dataframe', 'namespace': 'ns_witness'}})
 
         self.add_outputs(dynamic_outputs)
 
@@ -138,8 +137,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
                 (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
             self.set_dynamic_default_values(
                 {'damage_constraint_factor': damage_constraint_factor_default})
-
-
 
     def run(self):
         ''' pyworld3 execution '''
