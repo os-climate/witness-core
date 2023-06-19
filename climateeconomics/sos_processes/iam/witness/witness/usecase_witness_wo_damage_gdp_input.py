@@ -21,6 +21,7 @@ from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEcon
 from pandas import DataFrame
 from numpy import arange, linspace
 
+
 class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, run_usecase = False, execution_engine=None, year_start = 2020, year_end = 2100, time_step = 1):
@@ -40,7 +41,7 @@ class Study(ClimateEconomicsStudyManager):
         df_gross_output = DataFrame({'years':years, 
                                      'gross_output': gross_output})
         updated_data = {f'{self.study_name}.assumptions_dict': {'compute_gdp': False,
-                                                                'compute_damage_on_climate': False,
+                                                                'compute_climate_impact_on_gdp': False,
                                                                 'activate_climate_effect_population': True,
                                                                 'invest_co2_tax_in_renewables': False
                                                                 },

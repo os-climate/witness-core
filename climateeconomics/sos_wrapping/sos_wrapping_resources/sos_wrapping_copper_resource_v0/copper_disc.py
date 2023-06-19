@@ -25,7 +25,12 @@ class CopperDisc(SoSWrapp):
     }
     _maturity = 'Fake'
 
-    DESC_IN = {'copper_demand': {'type': 'dataframe', 'unit': 'Mt'},
+    DESC_IN = {'copper_demand': {'type': 'dataframe', 'unit': 'Mt',
+                                 'dataframe_descriptor': {'years': ('float', None, False),
+                                                          'Year': ('float', None, False),
+                                                          'Demand': ('float', None, False),
+                                                          'unit': ('string', None, False),}
+                                 },
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
 

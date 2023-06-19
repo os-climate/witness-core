@@ -58,8 +58,34 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'tp_a3': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.081, 'user_level': 3, 'unit': '-'},
         'tp_a4': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.754, 'user_level': 3, 'unit': '-'},
         'frac_damage_prod': {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
+        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
+                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                  'gross_output': ('float', None, False),
+                                                  'population': ('float', None, False),
+                                                  'productivity': ('float', None, False),
+                                                  'productivity_gr': ('float', None, False),
+                                                  'energy_productivity_gr': ('float', None, False),
+                                                  'energy_productivity': ('float', None, False),
+                                                  'consumption': ('float', None, False),
+                                                  'capital': ('float', None, False),
+                                                  'investment': ('float', None, False),
+                                                  'interest_rate': ('float', None, False),
+                                                  'output_growth': ('float', None, False),
+                                                  'energy_investment': ('float', None, False),
+                                                  'pc_consumption': ('float', None, False),
+                                                  'output_net_of_d': ('float', None, False),
+                                                  'net_output': ('float', None, False),
+
+                                                  },
+                         },
+        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius',
+                           'dataframe_descriptor': {'years': ('float', None, False),
+                                                    'exog_forcing': ('float', None, False),
+                                                    'forcing': ('float', None, False),
+                                                    'temp_ocean': ('float', None, False),
+                                                    'temp_atmo': ('float', None, False),
+                                                    }
+                           },
         'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                        'namespace': 'ns_ref', 'user_level': 2},
         'damage_constraint_factor': {'type': 'array', 'unit': '-', 'user_level': 2},
@@ -67,7 +93,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'damage_df': {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
     }
 
@@ -78,6 +103,25 @@ class DamageDiscipline(ClimateEcoDiscipline):
         self.model = DamageModel(in_dict)
 
     def setup_sos_disciplines(self):
+        """
+        Check if flag 'compute_climate_impact_on_gdp' is on or not.
+        If so, then the output 'damage_df' is shared with other disciplines that requires it as input,
+        else it is not, and therefore others discipline will demand to specify t input
+        """
+
+        dynamic_outputs = {}
+        if self.get_data_in() is not None:
+            if 'assumptions_dict' in self.get_data_in():
+                assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
+                compute_climate_impact_on_gdp: bool = assumptions_dict['compute_climate_impact_on_gdp']
+                # if compute gdp is not activated, we add gdp input
+                if compute_climate_impact_on_gdp:
+                    dynamic_outputs.update({'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}})
+                else:
+                    dynamic_outputs.update(
+                        {'damage_df': {'type': 'dataframe', 'namespace': 'ns_witness'}})
+
+        self.add_outputs(dynamic_outputs)
 
         self.update_default_with_years()
 

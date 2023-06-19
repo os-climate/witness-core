@@ -65,16 +65,39 @@ class CopperResourceDiscipline(ResourceDiscipline):
 
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '-', 'default': default_resource_data,
-                                 'user_level': 2, 'namespace': 'ns_copper_resource'},
+                                 'user_level': 2, 'namespace': 'ns_copper_resource',
+                                 'dataframe_descriptor':
+                                     {
+                                         'years': ('float', None, False),
+                                         'copper_type': ('string', None, False),
+                                         'Price': ('float', None, True),
+                                         'Price_unit': ('string', None, True),
+                                         'Reserve': ('float', None, True),
+                                         'Reserve_unit': ('string', None, True),
+                                         'Region': ('string', None, True),
+                                     }
+                                 },
                'resource_production_data': {'type': 'dataframe', 'unit': 'Mt', 'optional': True,
-                                            'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_copper_resource'},
+                                            'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_copper_resource',
+                                            'dataframe_descriptor':
+                                                {
+                                                    'years': ('float', None, False),
+                                                    'copper': ('float', None, False),
+                                                }
+               },
                'resource_price_data': {'type': 'dataframe', 'unit': '$/t', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {'resource_type': ('string', None, False),
                                                                 'price': ('float', None, False),
                                                                 'unit': ('string', None, False)},
                                        'namespace': 'ns_copper_resource'},
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'Mt', 'optional': True,
-                                            'default': default_resource_consumed_data, 'user_level': 2, 'namespace': 'ns_copper_resource'},
+                                            'default': default_resource_consumed_data, 'user_level': 2, 'namespace': 'ns_copper_resource',
+                                          'dataframe_descriptor':
+                                              {
+                                                  'years': ('float', None, False),
+                                                  'copper_consumption': ('float', None, True),
+                                              }
+               },
                'production_start': {'type': 'float', 'default': default_production_start, 'unit': '-',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},
                'stock_start': {'type': 'float', 'default': default_stock_start, 'user_level': 2, 'unit': 'Mt', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_copper_resource'},

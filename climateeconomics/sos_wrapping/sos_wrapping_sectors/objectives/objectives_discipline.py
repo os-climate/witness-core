@@ -76,10 +76,16 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                               'Agriculture': ('float', None, True),
                                                               'Industry': ('float', None, True),
                                                               'Services': ('float', None, True),
-                                                              'total': ('float', None, True)},
+                                                              'total': ('float', None, True),
+                                                              'Total': ('float', None, True),},
                                      'dataframe_edition_locked': False, },
                'economics_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                'namespace': 'ns_witness'},
+                                'namespace': 'ns_witness',
+                                'dataframe_descriptor': {'years': ('float', None, False),
+                                                         'capital': ('float', None, False),
+                                                         'usable_capital': ('float', None, False),
+                                                         'output': ('float', None, False),
+                                                         'output_net_of_d': ('float', None, False),}},
                'weights_df': {'type': 'dataframe', 'unit': '-', 'default' : default_weight_df,
                                'dataframe_descriptor': {'years': ('float', None, False),
                                                               'weight': ('float', None, True)},
@@ -116,13 +122,25 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.detailed_capital_df'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
+                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro',
+                    'dataframe_descriptor': {'years': ('float', None, False),
+                                             'capital': ('float', None, False),
+                                             'usable_capital': ('float', None, False),
+                                             'energy_efficiency': ('float', None, False),}
+                }
                 dynamic_inputs[f'{sector}.production_df'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
+                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro',
+                    'dataframe_descriptor': {'years': ('float', None, False),
+                                             'output': ('float', None, False),
+                                             'output_net_of_damage': ('float', None, False),}
+                }
                 dynamic_inputs[f'{sector}.longterm_energy_efficiency'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro'}
+                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro',
+                    'dataframe_descriptor': {'years': ('float', None, False),
+                                             'energy_efficiency': ('float', None, False),}
+                }
                 dynamic_outputs[f'{sector}.gdp_error'] = {
                     'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                     'namespace': 'ns_obj'}

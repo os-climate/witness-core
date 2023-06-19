@@ -55,7 +55,17 @@ class ResourceDiscipline(SoSWrapp):
     resource_name = 'Fill with the resource name'
 
     DESC_IN = {'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
-                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
+                                    'dataframe_descriptor': {
+                                        'years': ('float', None, False),
+                                        'natural_gas_resource': ('float', None, True),
+                                    'uranium_resource': ('float', None, True),
+                                    'coal_resource': ('float', None, True),
+                                    'oil_resource': ('float', None, True),
+                                    'copper_resource': ('float', None, True),
+                                    'platinum_resource': ('float', None, True),},
+
+                                    },
                'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
 
