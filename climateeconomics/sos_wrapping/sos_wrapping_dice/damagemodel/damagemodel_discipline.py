@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.damage_model import DamageModel
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -70,12 +70,34 @@ class DamageDiscipline(SoSWrapp):
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',},
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                                    'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
-                                   'dataframe_edition_locked': False}
+                                   'dataframe_edition_locked': False},
+        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
     }
 
     DESC_OUT = {
         'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
     _maturity = 'Research'
+
+    def setup_sos_disciplines(self):  # type: (...) -> None
+        """
+        Check if flag 'compute_climate_impact_on_gdp' is on or not.
+        If so, then the output 'damage_df' is shared with other disciplines that requires it as input,
+        else it is not, and therefore others discipline will demand to specify t input
+        """
+
+        dynamic_outputs = {}
+        if self.get_data_in() is not None:
+            if 'assumptions_dict' in self.get_data_in():
+                assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
+                compute_climate_impact_on_gdp: bool = assumptions_dict['compute_climate_impact_on_gdp']
+                # if compute gdp is not activated, we add gdp input
+                if compute_climate_impact_on_gdp:
+                    dynamic_outputs.update({'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}})
+                else:
+                    dynamic_outputs.update(
+                        {'damage_df': {'type': 'dataframe',}})
+
+        self.add_outputs(dynamic_outputs)
 
     def run(self):
         ''' pyworld3 execution '''

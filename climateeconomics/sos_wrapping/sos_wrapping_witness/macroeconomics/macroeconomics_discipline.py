@@ -294,7 +294,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        'energy_investment_wo_renewable': energy_investment_wo_renewable,
                        'pc_consumption_constraint': pc_consumption_constraint,
                        'workforce_df': workforce_df,
-                       'emax_enet_constraint': emax_enet_constraint,
                        'delta_capital_objective': self.macro_model.delta_capital_objective,
                        'delta_capital_objective_wo_exp_min': self.macro_model.delta_capital_objective_wo_exp_min,
                        'capital_df': capital_df,
