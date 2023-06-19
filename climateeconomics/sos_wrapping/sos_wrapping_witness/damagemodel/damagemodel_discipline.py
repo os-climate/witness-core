@@ -93,7 +93,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'damage_df': {'type': 'dataframe', 'unit': 'G$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
     }
 
@@ -104,6 +103,25 @@ class DamageDiscipline(ClimateEcoDiscipline):
         self.model = DamageModel(in_dict)
 
     def setup_sos_disciplines(self):
+        """
+        Check if flag 'compute_climate_impact_on_gdp' is on or not.
+        If so, then the output 'damage_df' is shared with other disciplines that requires it as input,
+        else it is not, and therefore others discipline will demand to specify t input
+        """
+
+        dynamic_outputs = {}
+        if self.get_data_in() is not None:
+            if 'assumptions_dict' in self.get_data_in():
+                assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
+                compute_climate_impact_on_gdp: bool = assumptions_dict['compute_climate_impact_on_gdp']
+                # if compute gdp is not activated, we add gdp input
+                if compute_climate_impact_on_gdp:
+                    dynamic_outputs.update({'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}})
+                else:
+                    dynamic_outputs.update(
+                        {'damage_df': {'type': 'dataframe', 'namespace': 'ns_witness'}})
+
+        self.add_outputs(dynamic_outputs)
 
         self.update_default_with_years()
 
