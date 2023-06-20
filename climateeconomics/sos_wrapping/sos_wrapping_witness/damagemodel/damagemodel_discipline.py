@@ -114,13 +114,16 @@ class DamageDiscipline(ClimateEcoDiscipline):
             if 'assumptions_dict' in self.get_data_in():
                 assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
                 compute_climate_impact_on_gdp: bool = assumptions_dict['compute_climate_impact_on_gdp']
-                # if compute gdp is not activated, we add gdp input
                 if compute_climate_impact_on_gdp:
-                    dynamic_outputs.update({'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}})
+                   dynamic_outputs['damage_df'] = {'type': 'dataframe', 'visibility': 'Shared',
+                                                    'namespace': 'ns_witness'}
                 else:
-                    dynamic_outputs.update(
-                        {'damage_df': {'type': 'dataframe', 'namespace': 'ns_witness'}})
+                    dynamic_outputs['damage_df'] = {'type': 'dataframe'}
 
+                try:
+                    self.clean_variables(['damage_df'], self.IO_TYPE_OUT)
+                except Exception as e:
+                    pass
         self.add_outputs(dynamic_outputs)
 
         self.update_default_with_years()
