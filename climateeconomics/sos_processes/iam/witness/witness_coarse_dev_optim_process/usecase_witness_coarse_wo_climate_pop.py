@@ -33,7 +33,8 @@ class Study(ClimateEconomicsStudyManager):
         data_witness = witness_uc.setup_usecase()
         updated_data = {f'{self.study_name}.assumptions_dict': {'compute_damage_on_climate': False,
                                                                 'activate_climate_effect_population': False,
-                                                                'invest_co2_tax_in_renewables': False
+                                                                'invest_co2_tax_in_renewables': False,
+                                                                'compute_climate_impact_on_gdp': False
                                                                }}
         data_witness.append(updated_data)
         return data_witness

@@ -208,10 +208,10 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles,
+                                self.design_space_ctrl['red_meat_percentage_ctrl'].values, [1.0] * self.nb_poles,
                                 [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values),
+                                self.design_space_ctrl['white_meat_percentage_ctrl'].values,
                                 [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         return ddict

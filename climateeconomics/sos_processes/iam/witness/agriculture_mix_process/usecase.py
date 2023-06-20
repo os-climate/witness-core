@@ -211,29 +211,29 @@ class Study(StudyManager):
         # -----------------------------------------
         # Crop related
         update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles,
+                                self.design_space_ctrl['red_meat_percentage_ctrl'].values, [1.0] * self.nb_poles,
                                 [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
-                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values),
+                                self.design_space_ctrl['white_meat_percentage_ctrl'].values,
                                 [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         update_dspace_dict_with(ddict, 'deforestation_investment_ctrl',
-                                list(self.design_space_ctrl['deforestation_investment_ctrl'].values),
+                                self.design_space_ctrl['deforestation_investment_ctrl'].values,
                                 [0.0] * self.nb_poles, [100.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         # -----------------------------------------
         # Invests
         update_dspace_dict_with(ddict, 'forest_investment_array_mix',
-                                list(self.design_space_ctrl['forest_investment_array_mix'].values),
+                                self.design_space_ctrl['forest_investment_array_mix'].values,
                                 [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
                                 activated_elem=[True] * self.nb_poles)
         if 'CropEnergy' in self.techno_list:
             update_dspace_dict_with(ddict, 'crop_investment_array_mix',
-                                    list(self.design_space_ctrl['crop_investment_array_mix'].values),
+                                    self.design_space_ctrl['crop_investment_array_mix'].values,
                                     [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
                                     activated_elem=[True] * self.nb_poles, enable_variable=False, )
         if 'ManagedWood' in self.techno_list:
             update_dspace_dict_with(ddict, 'managed_wood_investment_array_mix',
-                                    list(self.design_space_ctrl['managed_wood_investment_array_mix'].values),
+                                    self.design_space_ctrl['managed_wood_investment_array_mix'].values,
                                     [1.0e-6] * self.nb_poles, [3000.0] * self.nb_poles,
                                     activated_elem=[True] * self.nb_poles, enable_variable=False)
 
