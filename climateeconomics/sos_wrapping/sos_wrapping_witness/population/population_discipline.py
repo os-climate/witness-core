@@ -41,8 +41,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-users fa-fw',
         'version': '',
     }
-    years = np.arange(1960, 2101)
-    list_years = years.tolist()
+    years = np.arange(2020, 2101)
     global_data_dir = join(Path(__file__).parents[3], 'data')
     pop_init_df = pd.read_csv(
         join(global_data_dir, 'population_by_age_2020.csv'))
@@ -53,7 +52,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     # World Health Organization.
     default_climate_mortality_param_df = pd.read_csv(
         join(global_data_dir, 'climate_additional_deaths_V2.csv'))
-    
+    cal_pc_init = pd.DataFrame({'years': years, 'kcal_pc': np.linspace(2400,2400,len(years))})
+    default_diet_mortality_param_df = pd.read_csv(
+        join(global_data_dir, 'diet_mortality_param.csv'))
     # ADD DICTIONARY OF VALUES FOR DEATH RATE
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -123,7 +124,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'alpha_birthrate_know': {'type': 'float', 'default': 1.02007061e-01, 'user_level': 3, 'unit': '-'},
         'beta_birthrate_know': {'type': 'float', 'default': 8.01923418e-01, 'user_level': 3, 'unit': '-'},
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
-        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN
+        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN, 
+        'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'kcal'},
+        'diet_mortality_param_df': {'type': 'dataframe', 'default': default_diet_mortality_param_df, 'user_level': 3, 'unit': '-'},
+        'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
+        'kcal_pc_ref': {'type': 'float', 'default': 2000.0, 'user_level': 3, 'unit': 'kcal'},
         }
 
     DESC_OUT = {
@@ -146,11 +151,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         self.model = Population(in_dict)
 
     def run(self):
-        ''' pyworld3 execution '''
+        ''' model execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
 
-        # pyworld3 execution
+        # model execution
         population_detail_df, birth_rate_df, death_rate_dict, birth_df, death_dict, life_expectancy_df, working_age_population_df = self.model.compute(
             in_dict)
 
@@ -191,6 +196,12 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             ('population_df', 'population'), ('temperature_df', 'temp_atmo'), d_pop_d_temp / self.model.million)
         self.set_partial_derivative_for_other_types(
             ('working_age_population_df', 'population_1570'), ('temperature_df', 'temp_atmo'), d_working_pop_d_temp / self.model.million)
+        
+        d_pop_d_kcal_pc, d_working_pop_d_kcal_pc = self.model.compute_d_pop_d_kcal_pc()
+        self.set_partial_derivative_for_other_types(
+            ('population_df', 'population'), ('calories_pc_df', 'kcal_pc'), d_pop_d_kcal_pc / self.model.million)
+        self.set_partial_derivative_for_other_types(
+            ('working_age_population_df', 'population_1570'), ('calories_pc_df', 'kcal_pc'), d_working_pop_d_kcal_pc / self.model.million)
 
     def get_chart_filter_list(self):
 
@@ -202,6 +213,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         chart_list = ['World population', 'Population detailed', 'Population detailed year start', 'Population detailed mid year', '15-49 age range birth rate',
                       'knowledge', 'death rate per age range', 'Number of birth and death per year',
                       'Cumulative climate deaths', 'Number of climate death per year',
+                      'Cumulative malnutrition deaths', 'Number of malnutrition death per year', 'Malnutrition death rate per age range',
                       'Life expectancy evolution', 'working-age population over years']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -384,6 +396,41 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
+        if 'Malnutrition death rate per age range' in chart_list:
+
+            years = list(pop_df.index)
+            headers = list(death_rate_dict['diet'].columns.values)
+            to_plot = headers[:]
+
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+
+            min_values = {}
+            max_values = {}
+            for key in to_plot:
+                min_values[key], max_values[key] = self.get_greataxisrange(
+                    death_rate_dict['diet'][key])
+
+            min_value = min(min_values.values())
+            max_value = max(max_values.values())
+
+            chart_name = 'malnutrition death rate per age range'
+
+            new_chart = TwoAxesInstanciatedChart('years', ' death rate',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
+                                                 chart_name)
+            for key in to_plot:
+                visible_line = True
+                ordonate_data = list(death_rate_dict['diet'][key])
+
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, f'death rate imputable to malnutrition for age range {key}', 'lines', visible_line)
+
+                new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+
         if 'Number of birth and death per year' in chart_list:
 
             years = list(birth_df.index)
@@ -483,6 +530,70 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             new_series = InstanciatedSeries(
                 years, ordonate_data, f'cumulative climatic deaths', 'bar')
+
+            new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+            
+        if 'Number of malnutrition death per year' in chart_list:
+
+            years = list(death_dict['total'].index)
+
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+
+            min_value, max_value = self.get_greataxisrange(
+                death_dict['diet']['total'])
+
+            chart_name = 'Human cost of malnutrition per year'
+
+            new_chart = TwoAxesInstanciatedChart('years', ' Number of death',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
+                                                 chart_name)
+
+            visible_line = True
+
+            ordonate_data = list(death_dict['diet']['total'])
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Number of death due to malnutrition per year', 'lines', visible_line)
+
+            note = {'Malnutrition': 'Undernutrition or overnutrion'}
+            new_chart.annotation_upper_left = note
+            new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+
+        if 'Cumulative malnutrition deaths' in chart_list:
+
+            years = list(death_dict['diet']['cum_total'].index)
+            headers = list(death_dict['diet'].columns.values)
+            to_plot = headers[:]
+
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+
+            min_values = {}
+            max_values = {}
+            for key in to_plot:
+                min_values[key], max_values[key] = self.get_greataxisrange(
+                    death_dict['diet'][key])
+
+            min_value = min(min_values.values())
+            max_value = max(max_values.values())
+
+            chart_name = 'Cumulative malnutrition deaths'
+
+            new_chart = TwoAxesInstanciatedChart('years', ' cumulative malnutrition deaths',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
+                                                 chart_name)
+
+            visible_line = True
+            ordonate_data = list(death_dict['diet']['cum_total'])
+
+            new_series = InstanciatedSeries(
+                years, ordonate_data, f'cumulative malnutrition deaths', 'bar')
 
             new_chart.series.append(new_series)
 

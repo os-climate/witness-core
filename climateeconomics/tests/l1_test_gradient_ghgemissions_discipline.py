@@ -44,6 +44,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_agriculture': f'{self.name}',
                    'ns_ref': f'{self.name}',
                    'ns_ccs': f'{self.name}',
                    'ns_energy': f'{self.name}'}

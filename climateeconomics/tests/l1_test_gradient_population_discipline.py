@@ -24,7 +24,7 @@ import numpy as np
 
 
 class PopulationJacobianDiscTest(AbstractJacobianUnittest):
-    
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     def setUp(self):
 
         self.name = 'Test'
@@ -72,7 +72,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             self.test_population_discipline_analytic_big_pop,
             self.test_population_discipline_analytic_grad_big_temp,
             self.test_population_discipline_analytic_small_pop,
-            self.test_population_discipline_analytic_grad_temp_negative
+            self.test_population_discipline_analytic_grad_temp_negative,
+            self.test_population_discipline_analytic_3000_calories_pc
         ]
 
     def test_population_discipline_analytic_grad_output(self):
