@@ -62,16 +62,41 @@ class OilResourceDiscipline(ResourceDiscipline):
         join(dirname(__file__), f'../resources_data/{resource_name}_consumed_data.csv'))
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '[-]', 'default': default_resource_data,
-                                 'user_level': 2, 'namespace': 'ns_oil_resource'},
+                                 'user_level': 2, 'namespace': 'ns_oil_resource',
+                                 'dataframe_descriptor':
+                                     {
+                                         'years': ('float', None, False),
+                                         'oil_type': ('string', None, True),
+                                         'Price': ('float', None, True),
+                                         'Price_unit': ('string', None, True),
+                                         'Reserve': ('float', None, True),
+                                         'Reserve_unit': ('string', None, True),
+                                         'Region': ('string', None, True),
+                                     }
+                                 },
                'resource_production_data': {'type': 'dataframe', 'unit': 'million_barrels', 'optional': True,
-                                            'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_oil_resource'},
+                                            'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_oil_resource',
+                                            'dataframe_descriptor': {'years': ('float', None, False),
+                                                                     'light': ('float', None, True),
+                                                                     'medium': ('float', None, True),
+                                                                     'heavy': ('float', None, True),
+                                                                     'unassigned_production': ('float', None, True),
+                                                                     }
+                                            },
                'resource_price_data': {'type': 'dataframe', 'unit': 'USD/barrel', 'default': default_resource_price_data, 'user_level': 2,
                                        'dataframe_descriptor': {'resource_type': ('string', None, False),
                                                                 'price': ('float', None, False),
                                                                 'unit': ('string', None, False)},
                                        'namespace': 'ns_oil_resource'},
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[million_barrels]', 'default': default_resource_consumed_data,
-                                          'user_level': 2, 'namespace': 'ns_oil_resource'},
+                                          'user_level': 2, 'namespace': 'ns_oil_resource',
+                                          'dataframe_descriptor': {
+                                              'years': ('float', None, False),
+                                              'light_consumption': ('float', None, True),
+                                              'medium_consumption': ('float', None, True),
+                                              'heavy_consumption': ('float', None, True),
+                                              'unassigned_production_consumption': ('float', None, True),}
+               },
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_oil_resource'},
                'stock_start': {'type': 'float', 'default': default_stock_start, 'unit': '[Mt]'},

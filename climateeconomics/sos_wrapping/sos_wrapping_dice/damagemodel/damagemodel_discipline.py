@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.damage_model import DamageModel
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -60,11 +60,18 @@ class DamageDiscipline(SoSWrapp):
         'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
+                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                  'Total CO2 emissions': ('float', None, False),
+                                                  'Total N2O emissions': ('float', None, False),
+                                                  'Total CH4 emissions': ('float', None, False),
+                                                  }
+                         },
+        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',},
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                                    'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
-                                   'dataframe_edition_locked': False}
+                                   'dataframe_edition_locked': False},
+        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
     }
 
     DESC_OUT = {

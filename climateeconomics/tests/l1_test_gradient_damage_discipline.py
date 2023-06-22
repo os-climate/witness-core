@@ -132,7 +132,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15)))),
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
-                            'compute_damage_on_climate': False,
+                            'compute_climate_impact_on_gdp': False,
                             'activate_climate_effect_population': False
                             }
                        }
@@ -143,8 +143,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline_wo_damage_on_climate.pkl',
                             discipline=disc_techno, local_data= disc_techno.local_data,
                             step=1e-15, inputs=[f'{self.name}.temperature_df', f'{self.name}.economics_df'],
-                            outputs=[f'{self.name}.damage_df', f'{self.name}.CO2_damage_price'], derr_approx='complex_step')
+                            outputs=[f'{self.name}.{self.model_name}.damage_df', f'{self.name}.CO2_damage_price'], derr_approx='complex_step')

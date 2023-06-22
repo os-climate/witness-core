@@ -106,7 +106,10 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                                  'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
 
                'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'default': default_other_use, 'namespace': 'ns_agriculture'},
-               'temperature_df': {'type': 'dataframe', 'unit': 'degree Celsius', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+               'temperature_df': {'type': 'dataframe', 'unit': 'degree Celsius', 'visibility': 'Shared', 'namespace': 'ns_witness',
+                                  'dataframe_descriptor': {'years': ('float', None, False),
+                                                           'temp_atmo': ('float', None, False), }
+                                  },
                'param_a': {'type': 'float', 'unit': '-', 'default': - 0.00833, 'user_level': 3},
                'param_b': {'type': 'float', 'unit': '-', 'default': - 0.04167, 'user_level': 3}
                }

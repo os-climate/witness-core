@@ -47,13 +47,27 @@ class ServicesDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$'
     
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'unit': 'G$'},
+        'damage_df': {'type': 'dataframe', 'unit': 'G$',
+                      'dataframe_descriptor':
+                          {
+                              'years': ('float', None, False),
+                              'damages': ('float', None, True),
+                              'damage_frac_output': ('float', None, True),
+                              'base_carbon_price': ('float', None, True),
+                          },
+                      },
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.1328496, 'user_level': 2, 'unit': '-'},
         'capital_start': {'type': 'float', 'unit': 'T$', 'default': 281.2092, 'user_level': 2},
-        'workforce_df':{'type': 'dataframe', 'unit': 'millions of people', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+        'workforce_df':{'type': 'dataframe',
+                        'dataframe_descriptor':
+                            {
+                                'years': ('float', None, False),
+                                'Services': ('float', None, True),
+                            },
+                        'unit': 'millions of people', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                          'namespace': 'ns_witness'},
         'productivity_gr_start': {'type': 'float', 'default': 0.00161432, 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 0.088925, 'user_level': 3, 'unit': '-'},
@@ -89,9 +103,31 @@ class ServicesDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
-        'production_df': {'type': 'dataframe', 'unit': 'T$'},
+        'production_df': {'type': 'dataframe', 'unit': 'T$',
+                          'dataframe_descriptor':
+                              {
+                                  'years': ('float', None, False),
+                                  'Accessibility': ('string', None, True),
+                                  'Price': ('float', None, True),
+                                  'Price_unit': ('string', None, True),
+                                  'Reserve': ('float', None, True),
+                                  'Reserve_unit': ('string', None, True),
+                                  'Region': ('string', None, True),
+                              }
+                          },
         'capital_df':  {'type': 'dataframe', 'unit': 'T$'},
-        'detailed_capital_df': {'type': 'dataframe', 'unit': 'T$'}, 
+        'detailed_capital_df': {'type': 'dataframe', 'unit': 'T$',
+                                'dataframe_descriptor':
+                                    {
+                                        'years': ('float', None, False),
+                                        'Accessibility': ('string', None, True),
+                                        'Price': ('float', None, True),
+                                        'Price_unit': ('string', None, True),
+                                        'Reserve': ('float', None, True),
+                                        'Reserve_unit': ('string', None, True),
+                                        'Region': ('string', None, True),
+                                    }
+                                },
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint':  {'type': 'array'},
     }
@@ -105,7 +141,8 @@ class ServicesDiscipline(ClimateEcoDiscipline):
             prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
             if prod_function_fitting == True:
                 dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 5}
-                dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
+                dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-',
+                                                                  }
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
                 self.add_outputs(dynamic_outputs)
                 self.add_inputs(dynamic_inputs)
