@@ -170,7 +170,7 @@ class PopDiscTest(unittest.TestCase):
                        f'{self.name}.calories_pc_df': calories_pc_df
                        }
 
-        self.ee.dm.set_values_from_dict(values_dict)
+        self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
@@ -181,8 +181,8 @@ class PopDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            graph.to_plotly().show()
+        # for graph in graph_list:
+        #    graph.to_plotly().show()
 
 
 #     def test_ssps_scenario(self):
