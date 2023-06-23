@@ -24,7 +24,7 @@ import numpy as np
 
 
 class PopulationJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     def setUp(self):
 
         self.name = 'Test'
@@ -436,7 +436,6 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.economics_df'], outputs=[
                 f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
-
     def test_population_discipline_analytic_3000_calories_pc(self):
         '''
         Test gradient population with a huge increase in calories intake
@@ -471,4 +470,3 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             outputs=[f'{self.name}.population_df',f'{self.name}.working_age_population_df'],
                             step=1e-15,
                             derr_approx='complex_step')
-
