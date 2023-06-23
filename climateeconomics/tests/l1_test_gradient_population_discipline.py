@@ -24,7 +24,7 @@ import numpy as np
 
 
 class PopulationJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
     def setUp(self):
 
         self.name = 'Test'
@@ -180,10 +180,12 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temp_serie})
         temperature_df.index = years
 
+        calories_pc = pd.DataFrame({'years': years, 'kcal_pc': np.linspace(2400,2400,len(years))})
         values_dict = {f'{self.name}.economics_df': economics_df_y,
                        f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
-                       f'{self.name}.temperature_df': temperature_df
+                       f'{self.name}.temperature_df': temperature_df,
+                       f'{self.name}.calories_pc_df': calories_pc
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -421,3 +423,9 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.economics_df'], outputs=[
                 f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
+        
+    
+if '__main__' == __name__:
+    testcls = PopulationJacobianDiscTest()
+    testcls.setUp()
+    testcls.test_population_discipline_analytic_grad_temp_negative()
