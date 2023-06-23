@@ -69,6 +69,7 @@ class Study(StudyManager):
         self.nb_poles = 8
 
     def setup_usecase(self):
+
         setup_data_list = []
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -102,14 +103,23 @@ class Study(StudyManager):
             {"years": years, "population": population})
         population_df.index = years
 
-        red_meat_percentage = np.linspace(6.82, 1, year_range)
-        white_meat_percentage = np.linspace(13.95, 5, year_range)
+        red_meat_percentage = np.linspace(600, 700, year_range)
+        white_meat_percentage = np.linspace(700, 600, year_range)
+        vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
         self.red_meat_percentage = pd.DataFrame({
-            'years': years,
-            'red_meat_percentage': red_meat_percentage})
+                            'years': years,
+                            'red_meat_calories_per_day': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-            'years': years,
-            'white_meat_percentage': white_meat_percentage})
+                                'years': years,
+                                'white_meat_calories_per_day': white_meat_percentage})
+        self.veg_calories_per_day = pd.DataFrame({
+                                'years': years,
+                                'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
+
+        self.milk_eggs_calories_per_day = pd.DataFrame({
+                                'years': years,
+                                'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
+
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -121,7 +131,7 @@ class Study(StudyManager):
                                 })
         other = np.array(np.linspace(0.102, 0.102, year_range))
 
-        # private values economics operator pyworld3
+        # private values economics operator model
         agriculture_input = {}
         agriculture_input[self.study_name + '.year_start'] = self.year_start
         agriculture_input[self.study_name + '.year_end'] = self.year_end
@@ -130,9 +140,14 @@ class Study(StudyManager):
                           '.diet_df'] = diet_df
 
         agriculture_input[self.study_name +
-                          '.red_meat_percentage'] = self.red_meat_percentage
+                          '.red_meat_calories_per_day'] = self.red_meat_percentage
         agriculture_input[self.study_name +
-                          '.white_meat_percentage'] = self.white_meat_percentage
+                          '.white_meat_calories_per_day'] = self.white_meat_percentage
+        agriculture_input[self.study_name +
+                          '.vegetables_and_carbs_calories_per_day'] = self.veg_calories_per_day
+        agriculture_input[self.study_name +
+                          '.milk_and_eggs_calories_per_day'] = self.milk_eggs_calories_per_day
+        
         agriculture_input[self.study_name + self.agriculture_name +
                           '.other_use_crop'] = other
 
@@ -141,6 +156,7 @@ class Study(StudyManager):
 
         agriculture_input[self.study_name +
                           '.temperature_df'] = temperature_df
+
 
         # investment: 1Mha of crop land each year
         crop_investment = pd.DataFrame(
@@ -161,7 +177,7 @@ class Study(StudyManager):
         density_per_ha = 2903 * 1.25
         # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
         # energy of all surfaces
-        initial_production = 4.8 * density_per_ha * 3.6 * energy_crop_percentage  # in Twh
+        initial_production =  4.8 * density_per_ha * 3.6 * energy_crop_percentage   # in Twh
         lifetime = 50
         initial_age_distribution = pd.DataFrame({'age': np.arange(1, lifetime),
                                                  'distrib': [0.16, 0.24, 0.31, 0.39, 0.47, 0.55, 0.63, 0.71, 0.78, 0.86,
@@ -208,11 +224,9 @@ class Study(StudyManager):
 
         # Design variables:
         update_dspace_dict_with(ddict, 'red_meat_percentage_ctrl',
-                                self.design_space_ctrl['red_meat_percentage_ctrl'].values, [1.0] * self.nb_poles,
-                                [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['red_meat_percentage_ctrl'].values), [1.0] * self.nb_poles, [10.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_percentage_ctrl',
-                                self.design_space_ctrl['white_meat_percentage_ctrl'].values,
-                                [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                list(self.design_space_ctrl['white_meat_percentage_ctrl'].values), [5.0] * self.nb_poles, [20.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         return ddict
 

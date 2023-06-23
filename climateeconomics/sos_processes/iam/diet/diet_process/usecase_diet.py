@@ -40,7 +40,6 @@ AGGR_TYPE_SUM = FunctionManager.AGGR_TYPE_SUM
 AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
-
 class Study(ClimateEconomicsStudyManager):
     def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
@@ -63,7 +62,7 @@ class Study(ClimateEconomicsStudyManager):
         self.forest_invest_df = pd.DataFrame(
             {"years": years, "forest_investment": forest_invest})
 
-        # private values economics operator pyworld3
+        # private values economics operator model
         witness_input = {}
         witness_input[self.study_name + '.year_start'] = self.year_start
         witness_input[self.study_name + '.year_end'] = self.year_end
@@ -110,12 +109,10 @@ class Study(ClimateEconomicsStudyManager):
             {'years': years, 'share_investment': self.share_energy_investment_array}, index=years)
         witness_input[self.study_name +
                       '.share_energy_investment'] = share_energy_investment
-        data = arange(1.0, nb_per + 1.0, 1)
+        gdp = [130.187]*len(years)
 
         df_eco = DataFrame({'years': years,
-                            'gross_output': data,
-                            'pc_consumption': data,
-                            'output_net_of_d': data},
+                            'output_net_of_d': gdp},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
         witness_input[self.study_name + '.economics_df'] = df_eco
@@ -210,6 +207,7 @@ class Study(ClimateEconomicsStudyManager):
         witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
+        witness_input[f'{self.study_name}.is_dev'] = True
         #
 
         GHG_total_energy_emissions = pd.DataFrame({'years': years,
@@ -241,15 +239,15 @@ class Study(ClimateEconomicsStudyManager):
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['CO2_em_objective'])
+            ['co2_eq_100', 'co2_eq_20'])
         list_parent.extend([
-            'CO2_obj'])
-        list_ns.extend(['ns_functions'])
+                            'CO2_obj','CO2_obj'])
+        list_ns.extend(['ns_functions', 'ns_functions'])
         list_ftype.extend(
-            [OBJECTIVE])
-        list_weight.extend([5.0])
+            [OBJECTIVE, OBJECTIVE])
+        list_weight.extend([2.0, 2.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -290,6 +288,8 @@ class Study(ClimateEconomicsStudyManager):
 
         return func_df
 
+
+
     def setup_constraint_land_use(self):
         func_df = DataFrame(
             columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
@@ -300,13 +300,13 @@ class Study(ClimateEconomicsStudyManager):
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['land_demand_constraint'])
-        list_parent.extend(['agriculture_constraint'])
-        list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-2.0])
+            ['land_demand_constraint', 'calories_per_day_constraint'])
+        list_parent.extend(['agriculture_constraint', 'agriculture_constraint'])
+        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
+        list_weight.extend([-1.0, -3.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions'])
+            [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+        list_ns.extend(['ns_functions', 'ns_functions'])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype
@@ -327,6 +327,6 @@ if '__main__' == __name__:
     # dict_xvect[f'{uc_cls.study_name}.{uc_cls.optim_name}.eval_mode'] = True
     # uc_cls.load_data(from_input_dict=dict_xvect)
     # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
-    # uc_cls.execution_engine.root_process.proxy_disciplines[0].set_opt_scenario()
+    # uc_cls.execution_engine.root_process.sos_disciplines[0].set_opt_scenario()
     # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()

@@ -21,7 +21,7 @@ from copy import deepcopy
 
 class Population:
     """
-    Population pyworld3 mostly based on McIsaac, F., 2020. A Representation of the World Population Dynamics for Integrated Assessment Models.
+    Population model mostly based on McIsaac, F., 2020. A Representation of the World Population Dynamics for Integrated Assessment Models.
      Environmental Modeling & Assessment, 25(5), pp.611-632.
     """
 
@@ -49,6 +49,7 @@ class Population:
         self.br_phi = inputs['birth_rate_phi']
         self.br_nu = inputs['birth_rate_nu']
         self.br_delta = inputs['birth_rate_delta']
+        self.climate_mortality_param_df = deepcopy(inputs['climate_mortality_param_df'])
         self.cal_temp_increase = inputs['calibration_temperature_increase']
         self.theta = inputs['theta']
         self.dr_param_df = deepcopy(inputs['death_rate_param'])
@@ -63,13 +64,11 @@ class Population:
         self.alpha_br_k = inputs['alpha_birthrate_know']
         self.beta_br_k = inputs['beta_birthrate_know']
         self.share_know = inputs['share_know_birthrate']
+        self.diet_mortality_param_df = inputs['diet_mortality_param_df']
+        self.kcal_pc_ref = inputs['kcal_pc_ref']
+        self.theta_diet = inputs['theta_diet']
         # First year of the regression of knowledge function
         self.year_reg_know = 1800
-        compute_death_climate = inputs['assumptions_dict']['activate_climate_effect_population']
-        self.climate_mortality_param_df = deepcopy(inputs['climate_mortality_param_df'])
-        # if climate death are not computed, we set beta to 0
-        if not compute_death_climate: 
-            self.climate_mortality_param_df['beta'] = 0.
 
     def create_dataframe(self):
         '''
@@ -129,13 +128,15 @@ class Population:
         self.base_death_rate_df_dict = {}
         # CLIMATE => calculated from temperature increase
         self.climate_death_rate_df_dict = {}
+        # DIET => calculated from kcal intake
+        self.diet_death_rate_df_dict = {}
         # TOTAL => sum of all effects
         self.death_rate_df_dict = {}
 
         # CONTAINER => dictionnary containing death rates dictionaties
 
         self.death_rate_dict = {'base': self.base_death_rate_df_dict, 'climate': self.climate_death_rate_df_dict,
-                                'total': self.death_rate_df_dict}
+                                'diet': self.diet_death_rate_df_dict, 'total': self.death_rate_df_dict}
         # DEATH NUMBER - one column per age
         # BASE => calculated from GDP
         init_dict = {'years': years_range}
@@ -240,8 +241,11 @@ class Population:
         temp = self.temperature_df.loc[year, 'temp_atmo']
         param = self.dr_param_df
         add_death = self.climate_mortality_param_df
+        kcal_pc = self.calories_pc_df.loc[year, 'kcal_pc']
+        kcal_pc_ref = self.kcal_pc_ref
         cal_temp_increase = self.cal_temp_increase
         theta = self.theta
+        theta_diet = self.theta_diet
         # For all age range compute death rate
         death_rate = param['death_rate_upper'].values + (param['death_rate_lower'].values - param['death_rate_upper'].values) / (
             1 + np.exp(-param['death_rate_delta'].values * 
@@ -250,11 +254,25 @@ class Population:
         climate_death_rate = add_death['beta'].values * \
             (temp / cal_temp_increase) ** theta
 
+        # Add diet impact on death rate
+        alpha_diet = self.diet_mortality_param_df['undernutrition'].values
+        if kcal_pc >= kcal_pc_ref:
+            alpha_diet = self.diet_mortality_param_df['overnutrition'].values
+
+        if np.real(kcal_pc - kcal_pc_ref) >= 0:
+            diet_death_rate = alpha_diet * (kcal_pc - kcal_pc_ref)/(theta_diet * kcal_pc_ref)
+        else:
+            diet_death_rate = alpha_diet * (kcal_pc_ref - kcal_pc)/(theta_diet * kcal_pc_ref)
+
+        for i in range(len(death_rate)):
+            if diet_death_rate[i] >= 1 - death_rate[i] * (1 + climate_death_rate[i]):
+                diet_death_rate[i] =  (1 - death_rate[i] * (1 + climate_death_rate[i]))/ (1 + np.exp(-diet_death_rate[i]))
+
         # Fill the year key in each death rate dict
         self.base_death_rate_df_dict[year] = death_rate
         self.climate_death_rate_df_dict[year] = climate_death_rate * death_rate
-        self.death_rate_df_dict[year] = death_rate * (1 + climate_death_rate)
-        return self.death_rate_dict
+        self.diet_death_rate_df_dict[year] = diet_death_rate
+        self.death_rate_df_dict[year] = death_rate * (1 + climate_death_rate) + diet_death_rate
 
     def compute_death_number(self, year):
         """Compute number of dead people per year
@@ -361,6 +379,8 @@ class Population:
         self.economics_df.index = self.economics_df['years'].values
         self.temperature_df = in_dict['temperature_df']
         self.temperature_df.index = self.temperature_df['years'].values
+        self.calories_pc_df = in_dict['calories_pc_df']
+        self.calories_pc_df.index = self.calories_pc_df['years'].values
         self.compute_knowledge()
         # Loop over year to compute population evolution. except last year
 
@@ -387,6 +407,8 @@ class Population:
         # reconstruction of the dataframes with the dictionaries
         self.climate_death_rate_df = DataFrame.from_dict(
             self.climate_death_rate_df_dict, orient='index', columns=self.column_list)
+        self.diet_death_rate_df = DataFrame.from_dict(
+            self.diet_death_rate_df_dict, orient='index', columns=self.column_list)
         self.base_death_rate_df = DataFrame.from_dict(
             self.base_death_rate_df_dict, orient='index', columns=self.column_list)
         self.death_rate_df = DataFrame.from_dict(
@@ -396,6 +418,7 @@ class Population:
         # ditionaries at the end of the year loop
         self.death_rate_dict = {'base': self.base_death_rate_df,
                                 'climate': self.climate_death_rate_df,
+                                'diet': self.diet_death_rate_df,
                                 'total': self.death_rate_df}
         # Calculation of cumulative deaths
         for effect in self.death_rate_dict:
@@ -868,3 +891,186 @@ class Population:
             d_climate_deathrate_d_temp[age_range] = u_prime_v + v_prime_u
 
         return d_climate_deathrate_d_temp
+
+    # WRT KCAL PC
+    def compute_d_pop_d_kcal_pc(self):
+        """ Compute the derivative of population wrt calories per capita
+        """
+        nb_years = (self.year_end - self.year_start + 1)
+
+        # derivative of population of the current year for each age
+        d_pop_d_kcal_pc = {}
+        d_working_pop_d_kcal_pc = np.zeros((nb_years, nb_years))
+        d_pop_tot_d_kcal_pc = np.zeros((nb_years, nb_years))
+        d_birthrate_d_kcal_pc = np.zeros((nb_years, nb_years))
+        d_birth_d_kcal_pc = np.zeros((nb_years, nb_years))
+        d_base_death_rate = {}
+        d_diet_death_rate = {}
+        d_death_d_kcal_pc = {}
+        d_pop_1549_d_kcal_pc = np.zeros((nb_years, nb_years))
+
+        for year in self.years_range:
+            if year == self.year_end:
+                pass
+            else:
+                d_birthrate_d_kcal_pc += self.d_birthrate_d_kcal_pc(
+                    year, d_pop_tot_d_kcal_pc)
+                d_birth_d_kcal_pc += self.d_birth_d_generic(
+                    year, d_birthrate_d_kcal_pc, d_pop_1549_d_kcal_pc)
+                d_base_death_rate[year] = self.d_base_death_rate_d_kcal_pc(
+                    year, d_pop_tot_d_kcal_pc)
+                d_diet_death_rate[year] = self.d_diet_death_rate_d_kcal_pc(year, d_base_death_rate)
+                d_death_d_kcal_pc[year] = self.d_death_d_generic(
+                    year, d_base_death_rate, d_diet_death_rate, d_pop_d_kcal_pc)
+                d_pop_d_kcal_pc, d_pop_1549_d_kcal_pc, d_pop_tot_d_kcal_pc, d_working_pop_d_kcal_pc = self.d_poptotal_generic(year, d_pop_d_kcal_pc,
+                                                                                                                  d_death_d_kcal_pc,
+                                                                                                                  d_birth_d_kcal_pc,
+                                                                                                                  d_pop_1549_d_kcal_pc,
+                                                                                                                  d_pop_tot_d_kcal_pc,
+                                                                                                                  d_working_pop_d_kcal_pc)
+        return d_pop_tot_d_kcal_pc, d_working_pop_d_kcal_pc
+
+    def d_birthrate_d_kcal_pc(self, year, d_pop_tot_d_kcal_pc):
+        """ Compute the derivative of birth rate wrt kcal_pc
+        f_knowledge = self.cst_br_k + self.alpha_br_k * (1- knowledge/100)**self.beta_br_k
+        f_gdp = self.br_upper + (self.br_lower - self.br_upper)/(1+np.exp(-self.br_delta*(gdp/pop -self.br_phi)))**(1/self.br_nu)
+        birth_rate = self.share_know * f_knowledge + (1-self.share_know) * f_gdp
+        """
+        nb_years = (self.year_end - self.year_start + 1)
+        d_birthrate_d_kcal_pc = np.zeros((nb_years, nb_years))
+        iyear = year - self.year_start
+        # Param of birth rate equation
+        delta = self.br_delta
+        phi = self.br_phi
+        br_upper = self.br_upper
+        br_lower = self.br_lower
+        nu = self.br_nu
+        pop = self.population_df.loc[year, 'total']
+        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        d_pop = d_pop_tot_d_kcal_pc[iyear]
+        idty = np.zeros(nb_years)
+        idty[iyear] = 1
+        # f gdp = br_upper + (self.br_lower - self.br_upper)/ u
+        # -> fprime = (self.br_lower - self.br_upper)*u_prime/u_squared
+        u_squared = ((1 + np.exp(-delta * (gdp / pop - phi)))
+                     ** (1 / nu)) ** 2
+        # u = g(f(x))  #u = g(f(x)) with g = f**(1/nu) and f = 1+
+        # exp(-delta(gdp/pop-phi))
+        g_prime_f = (1 / nu) * (1 + np.exp(-delta * 
+                                           (gdp / pop - phi))) ** (1 / nu - 1)
+        f_prime = -delta * (-gdp * d_pop) / (pop ** 2) * \
+            np.exp(-delta * (gdp / pop - phi))
+        u_prime = g_prime_f * f_prime
+        d_f_gdp_d_kcal_pc = -(br_lower - br_upper) * u_prime / u_squared
+
+        d_f_gdp_d_net_kcal_pc = d_f_gdp_d_kcal_pc
+        # and lastly multiply by (1-share now)
+        d_birthrate_d_kcal_pc[iyear] = (1 - self.share_know) * d_f_gdp_d_net_kcal_pc
+
+        return d_birthrate_d_kcal_pc
+
+    def d_base_death_rate_d_kcal_pc(self, year, d_pop_tot_d_kcal_pc):
+        """
+        for every columns of death rate dataframe create a dictionary that contains all derivatives wrt kcal_pc
+        """
+        nb_years = (self.year_end - self.year_start + 1)
+        iyear = year - self.year_start
+        idty = np.zeros(nb_years)
+        idty[iyear] = 1
+
+        param = self.dr_param_df
+        param.index = param['param'].values
+
+        d_base_deathrate_d_kcal_pc = {}
+        pop = self.population_df.loc[year, 'total']
+        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        temp = self.temperature_df.loc[year, 'temp_atmo']
+        add_death = self.climate_mortality_param_df
+        add_death.index = add_death['param'].values
+        cal_temp_increase = self.cal_temp_increase
+        theta = self.theta
+        add_death = self.climate_mortality_param_df
+        d_pop = d_pop_tot_d_kcal_pc[iyear]
+
+        for age_range in param['param'].values:
+            # Param of death rate equation
+            delta = param.loc[age_range, 'death_rate_delta']
+            beta = add_death.loc[age_range, 'beta']
+            phi = param.loc[age_range, 'death_rate_phi']
+            dr_upper = param.loc[age_range, 'death_rate_upper']
+            dr_lower = param.loc[age_range, 'death_rate_lower']
+            nu = param.loc[age_range, 'death_rate_nu']
+
+            # Value on the diagonal. death rate t depends on kcal_pc t
+            # dr = u + u * v
+            # u = upper + (lower - upper) / (1 + np.exp(-delta * (gdp / pop - phi))) ** (1 / nu)
+            # v = beta * (temp / cal_temp_increase) ** theta
+            # u' = (lower-upper)*w'/w^2
+            # w = g(f(x)) with g = f**(1:nu) and f = (1+ exp(-delta(gdp/pop-phi))
+            # v' = beta * tetha / cal_temp_increase * (temp /
+            # cal_temp_increase) ** (theta - 1)
+            w_squared = ((1 + np.exp(-delta * (gdp / pop - phi)))
+                         ** (1 / nu)) ** 2
+            # w = g(f(x)) with g = f**(1:nu) and f = (1+
+            # exp(-delta(gdp/pop-phi))
+            g_prime_f = (1 / nu) * (1 + np.exp(-delta * 
+                                               (gdp / pop - phi))) ** (1 / nu - 1)
+            f_prime = -delta * (-d_pop * gdp) / (pop ** 2) * \
+                np.exp(-delta * (gdp / pop - phi))
+            w_prime = g_prime_f * f_prime
+            # dr' = u'v + uv'
+            d_base_death_rate = (-(dr_lower - dr_upper) * w_prime / w_squared)
+
+            d_base_deathrate_d_kcal_pc[age_range] = d_base_death_rate + d_base_death_rate * beta * (temp / cal_temp_increase) ** theta
+
+        return d_base_deathrate_d_kcal_pc
+
+    def d_diet_death_rate_d_kcal_pc(self, year, d_base_death_rate):
+        """
+        for every columns of death rate dataframe create a dictionary that contains all derivatives wrt kcal_pc
+        """
+        nb_years = (self.year_end - self.year_start + 1)
+        iyear = year - self.year_start
+        idty = np.zeros(nb_years)
+        idty[iyear] = 1
+        param = self.dr_param_df
+        param.index = param['param'].values
+
+        d_diet_deathrate_d_kcal_pc = {}
+        base_death_rate = self.base_death_rate_df.iloc[iyear, :]
+        climate_death_rate = self.climate_death_rate_df.iloc[iyear, :]
+        add_death = self.climate_mortality_param_df
+        add_death.index = add_death['param'].values
+        diet_death_param = self.diet_mortality_param_df
+        diet_death_param.index = diet_death_param['param'].values
+        kcal_pc = self.calories_pc_df.loc[year, 'kcal_pc']
+        kcal_pc_ref = self.kcal_pc_ref
+        theta_diet = self.theta_diet
+        risk_type = 'undernutrition'
+        if kcal_pc >= kcal_pc_ref:
+            risk_type = 'overnutrition'
+        alpha_diet = diet_death_param[risk_type]
+        if np.real(kcal_pc - kcal_pc_ref) >= 0:
+            diet_death_rate = alpha_diet * (kcal_pc - kcal_pc_ref)/(theta_diet * kcal_pc_ref)
+        else:
+            diet_death_rate = alpha_diet * (kcal_pc_ref - kcal_pc)/(theta_diet * kcal_pc_ref)
+
+        for age_range in param['param'].values:
+            # Param of death rate equation
+            alpha_diet = diet_death_param.loc[age_range, risk_type]
+            if np.real(kcal_pc - kcal_pc_ref) >= 0:
+                d_diet_deathrate_d_kcal_pc[age_range] = alpha_diet * idty / (theta_diet * kcal_pc_ref)
+            else:
+                d_diet_deathrate_d_kcal_pc[age_range] = - alpha_diet * idty / (theta_diet * kcal_pc_ref)
+
+            if diet_death_rate[age_range] >= 1 - base_death_rate[age_range] - climate_death_rate[age_range]:
+                # self.diet_death_rate_df_dict[year][age_range] = (1 - death_rate[i] * (1 + climate_death_rate[age_range]))/ (1 + np.exp(-self.diet_death_rate_df_dict[year][age_range]))
+                # self.diet_death_rate_df_dict[year][age_range] = u / v
+                # d_diet_death_rate_df_dict[year][age_range] = (du*v - dv*u)/v2
+                u = 1 - base_death_rate[age_range]  - climate_death_rate[age_range]
+                u_prime = - d_base_death_rate[year][age_range]
+                v = 1 + np.exp(-diet_death_rate[age_range])
+                v_prime = -d_diet_deathrate_d_kcal_pc[age_range] * np.exp(-diet_death_rate[age_range])
+                d_diet_deathrate_d_kcal_pc[age_range] = (u_prime*v - v_prime * u)/(v**2)
+
+        return d_diet_deathrate_d_kcal_pc
