@@ -25,10 +25,9 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
-
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
@@ -38,7 +37,6 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         ]
 
     def test_damage_analytic_grad(self):
-
         self.model_name = 'Test'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -73,9 +71,11 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
                        f'{self.name}.economics_df': economics_df_y,
-                       f'{self.name}.CO2_taxes': pd.DataFrame({'years': years, 'CO2_tax': np.linspace(50, 500, len(years))}),
+                       f'{self.name}.CO2_taxes': pd.DataFrame(
+                           {'years': years, 'CO2_tax': np.linspace(50, 500, len(years))}),
                        f'{self.name}.temperature_df': temperature_df_y,
-                       f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15))))}
+                       f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate(
+                           (np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15))))}
 
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -84,9 +84,10 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline.pkl',
-                            discipline=disc_techno, local_data= disc_techno.local_data,
+                            discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15, inputs=[f'{self.name}.temperature_df', f'{self.name}.economics_df'],
-                            outputs=[f'{self.name}.damage_df', f'{self.name}.CO2_damage_price'], derr_approx='complex_step')
+                            outputs=[f'{self.name}.damage_df', f'{self.name}.CO2_damage_price'],
+                            derr_approx='complex_step')
 
     def test_damage_analytic_grad_wo_damage_on_climate(self):
         """
@@ -127,9 +128,11 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         inputs_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
                        f'{self.name}.economics_df': economics_df_y,
-                       f'{self.name}.CO2_taxes': pd.DataFrame({'years': years, 'CO2_tax': np.linspace(50, 500, len(years))}),
+                       f'{self.name}.CO2_taxes': pd.DataFrame(
+                           {'years': years, 'CO2_tax': np.linspace(50, 500, len(years))}),
                        f'{self.name}.temperature_df': temperature_df_y,
-                       f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15)))),
+                       f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate(
+                           (np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15)))),
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
                             'compute_climate_impact_on_gdp': False,
@@ -143,8 +146,9 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline_wo_damage_on_climate.pkl',
-                            discipline=disc_techno, local_data= disc_techno.local_data,
+                            discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15, inputs=[f'{self.name}.temperature_df', f'{self.name}.economics_df'],
-                            outputs=[f'{self.name}.{self.model_name}.damage_df', f'{self.name}.CO2_damage_price'], derr_approx='complex_step')
+                            outputs=[f'{self.name}.{self.model_name}.damage_df', f'{self.name}.CO2_damage_price'],
+                            derr_approx='complex_step')
