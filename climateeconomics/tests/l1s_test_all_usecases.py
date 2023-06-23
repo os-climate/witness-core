@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,11 +12,11 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import unittest
 import pprint
-from sostrades_core.sos_processes.multiple_configure_and_run_tools import run_twice_all_usecases_and_compare_dm, configure_twice_all_usecases_and_compare_dm
+from sostrades_core.sos_processes.script_test_all_usecases import test_all_usecases
 
 
 class TestUseCases(unittest.TestCase):
@@ -25,21 +25,12 @@ class TestUseCases(unittest.TestCase):
     """
 
     def setUp(self):
-        '''
-        Initialize third data needed for testing
-        '''
+        """Initialize third data needed for testing"""
         self.pp = pprint.PrettyPrinter(indent=4, compact=True)
         self.processes_repo = 'climateeconomics.sos_processes'
         self.maxDiff = None
 
-    def _test_01_configure_usecases_twice(self):
-        test_passed, output_error = configure_twice_all_usecases_and_compare_dm(
-            self.processes_repo)
-        if not test_passed:
-            raise Exception(f'{output_error}')
-
-    def test_02_run_usecases_twice(self):
-        test_passed, output_error = run_twice_all_usecases_and_compare_dm(
-            self.processes_repo)
+    def test_all_usecases(self):
+        test_passed, output_error = test_all_usecases(processes_repo=self.processes_repo)
         if not test_passed:
             raise Exception(f'{output_error}')
