@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
@@ -45,7 +45,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     _maturity = 'Research'
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
@@ -53,10 +52,24 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'init_gross_output': {'type': 'float', 'unit': 'T$', 'visibility': 'Shared', 'default': 130.187,
                               'namespace': 'ns_witness', 'user_level': 2},
         'capital_start_non_energy': {'type': 'float', 'unit': 'T$', 'default': 360.5487346, 'user_level': 2},
+        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$',
+                      'dataframe_descriptor': {'years': ('float', None, False),
+                                               'damages': ('float', None, False),
+                                               'damage_frac_output': ('float', None, False),
+                                               'base_carbon_price': ('float', None, False)}
+                      },
         'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
-                          'namespace': 'ns_witness'},
+                          'namespace': 'ns_witness',
+                          'dataframe_descriptor': {'years': ('float', None, False),
+                                                   'population': ('float', None, False),
+                                                   }
+                          },
         'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
-                                      'namespace': 'ns_witness'},
+                                      'namespace': 'ns_witness',
+                                      'dataframe_descriptor': {'years': ('float', None, False),
+                                                               'population_1570': ('float', None, False),
+                                                               }
+                                      },
         'productivity_gr_start': {'type': 'float', 'default': 0.004781, 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 0.02387787, 'user_level': 3, 'unit': '-'},
         # Usable capital
@@ -95,7 +108,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                     'dataframe_edition_locked': False, 'visibility': 'Shared',
                                     'namespace': 'ns_witness'},
         # energy_production stored in PetaWh for coupling variables scaling
-        'energy_production': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'PWh', 'namespace': 'ns_energy_mix'},
+        'energy_production': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'PWh', 'namespace': 'ns_energy_mix',
+                              'dataframe_descriptor': {'years': ('float', None, False),
+                                                       'Total production': ('float', None, False),
+                                                       }
+                              },
+
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                              'visibility': 'Shared', 'namespace': 'ns_witness'},
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'unit': '-', 'user_level': 2,
@@ -103,10 +121,21 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'unit': '-', 'user_level': 2},
         'co2_emissions_Gt': {'type': 'dataframe', 'visibility': 'Shared',
-                             'namespace': 'ns_energy_mix', 'unit': 'Gt'},
-        'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%'},
+                             'namespace': 'ns_energy_mix', 'unit': 'Gt',
+                             'dataframe_descriptor': {'years': ('float', None, False),
+                                                      'Total CO2 emissions': ('float', None, False),
+                                                      'cumulative_total_energy_supply': ('float', None, False),}
+                             },
+        'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%',
+                               'dataframe_descriptor': {'years': ('float', None, False),
+                                                        'CO2_tax_efficiency': ('float', None, False), }
+                               },
         'co2_invest_limit': {'type': 'float', 'default': 2.0, 'unit': 'factor of energy investment'},
-        'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness',
+                      'dataframe_descriptor': {'years': ('float', None, False),
+                                               'CO2_tax': ('float', None, False),
+                                               }
+                      },
         # Employment rate param
         'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
@@ -115,7 +144,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                      'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness',
+                           'dataframe_descriptor': {'years': ('float', None, False),
+                                                    'energy_capital': ('float', None, False), }
+                           },
         'delta_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 50, 'user_level': 3,
                                      'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
@@ -172,9 +204,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.update_default_with_years()
 
     def update_default_with_years(self):
-        '''
+        """
         Update all default dataframes with years 
-        '''
+        """
         if 'year_start' in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 ['year_start', 'year_end'])
@@ -191,10 +223,15 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             total_investment_share_of_gdp = pd.DataFrame(
                 {'years': years, 'share_investment': np.ones(len(years)) * 27.0}, index=years)
 
+            damage_df_default = pd.DataFrame({
+                'years': years, 'damages': np.zeros_like(year_start),
+                'damage_frac_output': np.zeros_like(years), 'base_carbon_price': np.zeros_like(years)})
+
             self.set_dynamic_default_values(
                 {'CO2_tax_efficiency': co2_tax_efficiency_default,
                  'share_energy_investment': share_energy_investment,
-                 'total_investment_share_of_gdp': total_investment_share_of_gdp})
+                 'total_investment_share_of_gdp': total_investment_share_of_gdp,
+                 'damage_df': damage_df_default})
 
             if 'gross_output_in' in self.get_data_in():
                 gross_output_df = pd.DataFrame({'years': years, 'gross_output': np.linspace(85., 120., len(years))})
@@ -261,7 +298,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        'energy_investment_wo_renewable': energy_investment_wo_renewable,
                        'pc_consumption_constraint': pc_consumption_constraint,
                        'workforce_df': workforce_df,
-                       'emax_enet_constraint': emax_enet_constraint,
                        'delta_capital_objective': self.macro_model.delta_capital_objective,
                        'delta_capital_objective_wo_exp_min': self.macro_model.delta_capital_objective_wo_exp_min,
                        'capital_df': capital_df,
@@ -703,9 +739,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ddelta_capital_lintoquad)
 
     def compute_ddelta_capital_cons(self, ddelta, delta_wo_exp_min):
-        '''
+        """
         Compute ddelta capital constraint
-        '''
+        """
 
         return ddelta * delta_wo_exp_min * np.sign(delta_wo_exp_min) * compute_dfunc_with_exp_min(delta_wo_exp_min ** 2,
                                                                                                   1e-15) / np.sqrt(
@@ -770,9 +806,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             min_value = min(min_values.values())
             max_value = max(max_values.values())
 
-            chart_name = 'Economics output'
+            chart_name = 'Economics output (Power Purchase Parity)'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -813,7 +849,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Total investment capacities and energy investment capacities'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'investment [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'investment [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -858,7 +894,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 max_value *= co2_invest_limit
             chart_name = 'Breakdown of energy investments'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'investment [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'investment [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -907,7 +943,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         #
         #     chart_name = 'Productive capital stock and usable capital for production'
         #
-        #     new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+        #     new_chart = TwoAxesInstanciatedChart('years', 'Trillion $2020 PPP',
         #                                          [year_start - 5, year_end + 5],
         #                                          [min_value, max_value],
         #                                          chart_name)
@@ -953,7 +989,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Productive capital stock and usable capital for production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+            new_chart = TwoAxesInstanciatedChart('years', 'Trillion $2020 PPP',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -1002,7 +1038,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Capital stock per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Trillion dollars',
+            new_chart = TwoAxesInstanciatedChart('years', 'Trillion $2020 PPP',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name, stacked_bar=True)
@@ -1036,7 +1072,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Global consumption over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' global consumption [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', ' global consumption [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -1245,7 +1281,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Energy supply'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $]',
+            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)

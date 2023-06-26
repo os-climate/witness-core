@@ -46,13 +46,14 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
                    'ns_witness': f'{ns_study}',
+                    'ns_ref': f'{ns_study}',
+                   'ns_functions': f'{ns_study}',
                    'ns_biomass_dry': f'{ns_study}',
                    'ns_land_use': f'{ns_study}',
                    'ns_forest': f'{ns_study}.{ns_agriculture_mix}.{ns_forest}',
                    'ns_invest': f'{ns_study}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
-        self.ee.ns_manager.add_ns('ns_crop', f'{ns_study}.{ns_agriculture_mix}.{ns_crop}',
-                                  display_value=f'{ns_study}.{ns_agriculture_mix}.Food')
+        self.ee.ns_manager.add_ns('ns_crop', f'{ns_study}.{ns_agriculture_mix}.{ns_crop}')
         builder_list = []
 
         agricultureDiscPath = 'climateeconomics.sos_wrapping.sos_wrapping_agriculture.agriculture.agriculture_mix_disc.AgricultureMixDiscipline'
@@ -76,9 +77,9 @@ class ProcessBuilder(EnergyProcessBuilder):
             # Replace the display name of Crop by Food
             # Crop is necessary to deal with energy model genericity but food is more appropriate to understand what is behind the model
             # Diet + Crop energy with residues from diet
-            if model_name == "Crop":
-                self.ee.ns_manager.add_display_ns_to_builder(
-                    builder, f'{ns_study}.{ns_agriculture_mix}.Food')
+            # if model_name == "Crop":
+            #     self.ee.ns_manager.add_display_ns_to_builder(
+            #         builder, f'{ns_study}.{ns_agriculture_mix}.Food')
             builder_list.append(builder)
 
         return builder_list

@@ -677,7 +677,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
-                            'compute_damage_on_climate': True,
+                            'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True,
                             'invest_co2_tax_in_renewables': True
                             },
@@ -757,7 +757,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
-                            'compute_damage_on_climate': True,
+                            'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True,
                             'invest_co2_tax_in_renewables': True,
                             },
@@ -836,7 +836,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
-                            'compute_damage_on_climate': True,
+                            'compute_climate_impact_on_gdp': True,
                             'activate_climate_effect_population': True,
                             'invest_co2_tax_in_renewables': False,
                             },

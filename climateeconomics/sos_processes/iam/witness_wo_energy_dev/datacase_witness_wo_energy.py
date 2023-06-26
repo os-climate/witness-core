@@ -27,7 +27,6 @@ from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase 
 from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as datacase_agriculture_mix
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
-from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 
@@ -189,7 +188,7 @@ class DataStudy():
         self.dspace.update(dc_agriculture_mix.dspace)
         nb_poles = 8
         update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                [1.65] * nb_poles, [1.5] * nb_poles, [5.0] * nb_poles, enable_variable=False)
+                                asarray([1.65] * nb_poles), asarray([1.5] * nb_poles), asarray([5.0] * nb_poles), enable_variable=False)
         # WITNESS
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
@@ -238,18 +237,21 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective', 'non_use_capital_objective', 'delta_capital_objective',
+            ['welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective',
+             'delta_capital_objective',
              'delta_capital_objective_weighted'])
         list_parent.extend(['utility_objective',
-                            'non_use_capital_objective', 'delta_capital_objective',
+                            'GWP_short_term_obj',
+                            'GWP_long_term_obj', 'non_use_capital_objective', 'delta_capital_objective',
                             'delta_capital_objective_weighted'])
         list_ns.extend(['ns_functions',
-                        'ns_witness', 'ns_functions', 'ns_functions'])
+                        'ns_functions',
+                        'ns_functions', 'ns_witness', 'ns_functions', 'ns_functions'])
         list_ftype.extend(
-            [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1.0, 0.0, 0.0, 0.0])
+            [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
+        list_weight.extend([1.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
