@@ -47,14 +47,28 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$'
       
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'unit': 'G$'},
+        'damage_df': {'type': 'dataframe', 'unit': 'G$',
+                      'dataframe_descriptor':
+                          {
+                              'years': ('float', None, False),
+                              'damages': ('float', None, True),
+                              'damage_frac_output': ('float', None, True),
+                              'base_carbon_price': ('float', None, True),
+                          }
+              },
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 1.31162, 'user_level': 2, 'unit': '-'},
         'capital_start': {'type': 'float', 'unit': 'T$', 'default': 6.92448579, 'user_level': 2},
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                         'namespace': 'ns_witness'},
+                         'namespace': 'ns_witness',
+                         'dataframe_descriptor':
+                             {
+                                 'years': ('float', None, False),
+                                 'Agriculture': ('float', None, True),
+                             }
+                         },
         'productivity_gr_start': {'type': 'float', 'default': 0.0027844, 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 0.098585, 'user_level': 3, 'unit': '-'},
         # Usable capital
@@ -75,7 +89,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                                                                                    'investment': ('float', None, True)}, 'dataframe_edition_locked': False},
 
         # energy_production stored in PetaWh for coupling variables scaling
-        'energy_production': {'type': 'dataframe','unit': 'PWh'},
+        'energy_production': {'type': 'dataframe','unit': 'PWh',
+                              'dataframe_descriptor':
+                                  {
+                                      'years': ('float', None, False),
+                                      'Total production': ('float', None, True),
+                                  }
+                              },
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1, 'unit': '-'},
@@ -88,7 +108,10 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
-        'production_df': {'type': 'dataframe', 'unit': 'T$'},
+        'production_df': {'type': 'dataframe', 'unit': 'T$',
+                          'dataframe_descriptor': {'years': ('float', None, False),
+                                                   'gross_output': ('float', None, False),}
+               },
         'capital_df':  {'type': 'dataframe', 'unit': 'T$'},
         'detailed_capital_df': {'type': 'dataframe', 'unit': 'T$'},
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
@@ -104,7 +127,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
             if prod_function_fitting == True:
                 dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 20}
-                dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
+                dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-',}
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
                 self.add_outputs(dynamic_outputs)
                 self.add_inputs(dynamic_inputs)

@@ -56,7 +56,8 @@ class TempChangeDiscipline(SoSWrapp):
         'lo_tocean': {'type': 'float', 'default': -1},
         'up_tatmo': {'type': 'float', 'default': 12},
         'up_tocean': {'type': 'float', 'default' : 20},
-        'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
+        'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
+                           }}
 
     DESC_OUT = {
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}

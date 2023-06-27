@@ -18,13 +18,12 @@ import numpy as np
 import pandas as pd
 from os.path import dirname
 
-
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -60,74 +59,6 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-
-    def test_01_grad_non_use_capital_objective(self):
-        year_end = 2100
-        year_start = 2020
-        loss_fg = 12
-        loss_ct = 2
-        loss_ub = 22
-        loss_rf = 16
-        loss_ft = 4
-        loss_ref = 3
-        non_use_capital_fg = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
-                                           'FossilGas': loss_fg})
-        non_use_capital_ub = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
-                                           'UpgradingBiogas': loss_ub})
-        non_use_capital_rf = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
-                                           'Refinery': loss_rf})
-        non_use_capital_ft = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
-                                           'FischerTropsch': loss_ft})
-        non_use_capital_ct = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
-                                           'direct_air_capture.AmineScrubbing': loss_ct})
-        non_use_capital_ref = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
-                                            'Forest': loss_ref})
-        non_use_capital_obj_ref = 100.
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
-                       f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
-                       f'{self.name}.energy_list': ['fuel.liquid_fuel', 'methane'],
-                       f'{self.name}.ccs_list': ['carbon_capture'],
-                       f'{self.name}.agri_capital_techno_list': ['Forest'],
-                       f'{self.name}.EnergyMix.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
-                       f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing'],
-                       f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.non_use_capital': non_use_capital_ct,
-                       f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital': non_use_capital_fg,
-                       f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital': non_use_capital_ub,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital': non_use_capital_rf,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital': non_use_capital_ft,
-                       f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_capital': non_use_capital_ct,
-                       f'{self.name}.EnergyMix.methane.FossilGas.techno_capital': non_use_capital_fg,
-                       f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': non_use_capital_ub,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': non_use_capital_rf,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': non_use_capital_ft,
-                       f'{self.name}.alpha': 0.5,
-                       f'{self.name}.gamma': 0.5,
-                       f'{self.name}.AgricultureMix.Forest.non_use_capital': non_use_capital_ref,
-                       f'{self.name}.AgricultureMix.Forest.techno_capital': non_use_capital_ref, }
-
-        self.ee.load_study_from_input_dict(values_dict)
-
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_non_use_capital_objective.pkl', discipline=disc_techno,
-                            step=1e-15, local_data= disc_techno.local_data,
-                            inputs=[f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital',
-                                    f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital',
-                                    f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.non_use_capital',
-                                    f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital',
-                                    f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital',
-                                    f'{self.name}.AgricultureMix.Forest.non_use_capital',
-                                    f'{self.name}.AgricultureMix.Forest.techno_capital'],
-                            outputs=[f'{self.name}.non_use_capital_objective',
-                                     f'{self.name}.non_use_capital_cons',
-                                     f'{self.name}.energy_capital'],
-                            derr_approx='complex_step')
-
-    def test_02_grad_non_use_capital_objective_dev(self):
-
         year_end = 2100
         year_start = 2020
         year_range = year_end - year_start + 1
@@ -159,51 +90,51 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
         forest_lost_capital_cons_limit = 10
 
         non_use_capital_obj_ref = 100.
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
-                       f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
-                       f'{self.name}.energy_list': ['fuel.liquid_fuel', 'methane'],
-                       f'{self.name}.ccs_list': ['carbon_capture'],
-                       f'{self.name}.agri_capital_techno_list': ['Forest'],
-                       f'{self.name}.is_dev': True,
-                       f'{self.name}.EnergyMix.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
-                       f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing'],
-                       f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.non_use_capital': non_use_capital_ct,
-                       f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital': non_use_capital_fg,
-                       f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital': non_use_capital_ub,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital': non_use_capital_rf,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital': non_use_capital_ft,
-                       f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_capital': non_use_capital_ct,
-                       f'{self.name}.EnergyMix.methane.FossilGas.techno_capital': non_use_capital_fg,
-                       f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': non_use_capital_ub,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': non_use_capital_rf,
-                       f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': non_use_capital_ft,
-                       f'{self.name}.alpha': 0.5,
-                       f'{self.name}.gamma': 0.5,
-                       f'{self.name}.AgricultureMix.Forest.non_use_capital': non_use_capital_ref,
-                       f'{self.name}.AgricultureMix.Forest.techno_capital': non_use_capital_ref,
-                       f'{self.name}.AgricultureMix.Forest.forest_lost_capital': forest_lost_capital,
-                       f'{self.name}.forest_lost_capital_cons_limit': forest_lost_capital_cons_limit,
-                       f'{self.name}.forest_lost_capital_cons_ref': forest_lost_capital_cons_ref}
+        self.values_dict = {f'{self.name}.year_start': year_start,
+                            f'{self.name}.year_end': year_end,
+                            f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
+                            f'{self.name}.energy_list': ['fuel.liquid_fuel', 'methane'],
+                            f'{self.name}.ccs_list': ['carbon_capture'],
+                            f'{self.name}.agri_capital_techno_list': ['Forest'],
+                            f'{self.name}.is_dev': True,
+                            f'{self.name}.EnergyMix.methane.technologies_list': ['FossilGas', 'UpgradingBiogas'],
+                            f'{self.name}.EnergyMix.fuel.liquid_fuel.technologies_list': ['Refinery', 'FischerTropsch'],
+                            f'{self.name}.CCUS.carbon_capture.technologies_list': ['direct_air_capture.AmineScrubbing'],
+                            f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.non_use_capital': non_use_capital_ct,
+                            f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital': non_use_capital_fg,
+                            f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital': non_use_capital_ub,
+                            f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital': non_use_capital_rf,
+                            f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital': non_use_capital_ft,
+                            f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.techno_capital': non_use_capital_ct,
+                            f'{self.name}.EnergyMix.methane.FossilGas.techno_capital': non_use_capital_fg,
+                            f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': non_use_capital_ub,
+                            f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': non_use_capital_rf,
+                            f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': non_use_capital_ft,
+                            f'{self.name}.alpha': 0.5,
+                            f'{self.name}.gamma': 0.5,
+                            f'{self.name}.AgricultureMix.Forest.non_use_capital': non_use_capital_ref,
+                            f'{self.name}.AgricultureMix.Forest.techno_capital': non_use_capital_ref,
+                            f'{self.name}.AgricultureMix.Forest.forest_lost_capital': forest_lost_capital,
+                            f'{self.name}.forest_lost_capital_cons_limit': forest_lost_capital_cons_limit,
+                            f'{self.name}.forest_lost_capital_cons_ref': forest_lost_capital_cons_ref}
 
-        self.ee.load_study_from_input_dict(values_dict)
+    def test_01_grad_non_use_capital_objective(self):
+        self.ee.load_study_from_input_dict(self.values_dict)
 
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_non_use_capital_objective_dev.pkl', discipline=disc_techno,
-                            step=1e-15, local_data= disc_techno.local_data, 
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_non_use_capital_objective.pkl',
+                            discipline=disc_techno,
+                            step=1e-15, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital',
                                     f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital',
                                     f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.non_use_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital',
                                     f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital',
                                     f'{self.name}.AgricultureMix.Forest.non_use_capital',
-                                    f'{self.name}.AgricultureMix.Forest.techno_capital',
-                                    f'{self.name}.AgricultureMix.Forest.forest_lost_capital'],
+                                    f'{self.name}.AgricultureMix.Forest.techno_capital'],
                             outputs=[f'{self.name}.non_use_capital_objective',
                                      f'{self.name}.non_use_capital_cons',
-                                     f'{self.name}.energy_capital',
-                                     f'{self.name}.forest_lost_capital_cons'],
+                                     f'{self.name}.energy_capital'],
                             derr_approx='complex_step')

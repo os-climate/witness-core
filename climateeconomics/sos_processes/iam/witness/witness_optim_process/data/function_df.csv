@@ -3,6 +3,8 @@ welfare_objective,utility_objective,objective,0.0,sum,ns_functions
 temperature_objective,CO2_obj,objective,0.0,sum,ns_functions
 CO2_objective,CO2_obj,objective,0.0,sum,ns_functions
 ppm_objective,CO2_obj,objective,0.0,sum,ns_functions
+gwp20_objective,GWP_obj,objective,0.0,sum,ns_witness
+gwp100_objective,GWP_obj,objective,0.0,sum,ns_witness
 non_use_capital_objective,non_use_capital_objective,objective,0.0,sum,ns_witness
 delta_capital_objective,delta_capital_objective,objective,0.0,sum,ns_functions
 delta_capital_objective_weighted,delta_capital_objective_weighted,objective,0.0,sum,ns_functions

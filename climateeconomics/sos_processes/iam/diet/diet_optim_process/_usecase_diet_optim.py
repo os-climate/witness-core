@@ -17,8 +17,8 @@ import numpy as np
 import pandas as pd
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.sos_processes.iam.diet.diet_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_optim_sub_usecase
+from climateeconomics.sos_processes.iam.diet.diet_optim_sub_process._usecase_diet_optim_sub import \
+    Study as diet_optim_sub_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
     COUPLING_NAME, EXTRA_NAME
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
@@ -52,7 +52,7 @@ class Study(ClimateEconomicsStudyManager):
         self.invest_discipline = invest_discipline
         self.techno_dict = techno_dict
 
-        self.witness_uc = witness_optim_sub_usecase(
+        self.witness_uc = diet_optim_sub_usecase(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine)
 
     def setup_usecase(self):
@@ -102,12 +102,10 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "max_iter": 700,
                                                                       "disp": 30},
 
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {
-                                 'tol': 1.0e-10,
-                                 'max_iter': 10000},
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {
-                                 'tol': 1.0e-10,
-                                 'max_iter': 50000},
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {'tol': 1.0e-10,
+                                                                                                                   'max_iter': 10000},
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {'tol': 1.0e-10,
+                                                                                                                   'max_iter': 50000},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.epsilon0': 1.0,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.tolerance': 1.0e-10,
 
@@ -128,18 +126,5 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
 
-    # df_xvect = pd.read_pickle('df_xvect.pkl')
-    # df_xvect.columns = [
-    # f'{uc_cls.study_name}.{uc_cls.optim_name}.{uc_cls.coupling_name}.DesignVariables' + col for col in df_xvect.columns]
-    # dict_xvect = df_xvect.iloc[-1].to_dict()
-    # dict_xvect[f'{uc_cls.study_name}.{uc_cls.optim_name}.eval_mode'] = True
-    # uc_cls.load_data(from_input_dict=dict_xvect)
-    # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
-    # uc_cls.execution_engine.root_process.proxy_disciplines[0].set_opt_scenario()
-    # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
 
-#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_reduced_graph(
-#         "reduced.pdf")
-#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_initial_graph(
-#         "initial.pdf")

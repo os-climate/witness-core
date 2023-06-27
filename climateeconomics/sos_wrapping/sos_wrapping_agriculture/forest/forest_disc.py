@@ -226,7 +226,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'techno_consumption': {
             'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest', 'unit': 'TWh or Mt'},
         'techno_consumption_woratio': {
-            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest', 'unit': 'TWh or Mt'},
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest', 'unit': 'TWh or Mt',
+        },
         'land_use_required': {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
         'CO2_emissions': {

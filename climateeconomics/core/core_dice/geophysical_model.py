@@ -152,7 +152,7 @@ class CarbonEmissions():
                                                           self.time_step, 'cum_indus_emissions']
             indus_emissions = self.emissions_df.loc[year, 'indus_emissions']
             cum_indus_emissions = p_cum_indus_emissions + \
-                indus_emissions * np.float(self.time_step) / 3.666
+                indus_emissions * float(self.time_step) / 3.666
             self.emissions_df.loc[year,
                                   'cum_indus_emissions'] = cum_indus_emissions
             return cum_indus_emissions

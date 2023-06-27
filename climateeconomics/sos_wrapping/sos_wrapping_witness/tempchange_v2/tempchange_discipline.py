@@ -58,7 +58,15 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'lo_tocean': {'type': 'float', 'default': -1.0, 'user_level': 3, 'unit': '°C'},
         'up_tatmo': {'type': 'float', 'default': 12.0, 'user_level': 3, 'unit': '°C'},
         'up_tocean': {'type': 'float', 'default': 20.0, 'user_level': 3, 'unit': '°C'},
-        'ghg_cycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'ghg_cycle_df': {'type': 'dataframe',
+                         'dataframe_descriptor':
+                                     {
+                                         'years': ('float', None, False),
+                                         'co2_ppm': ('float', None, True),
+                                         'ch4_ppm': ('float', None, True),
+                                         'n2o_ppm': ('float', None, True),
+                                      },
+                         'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},

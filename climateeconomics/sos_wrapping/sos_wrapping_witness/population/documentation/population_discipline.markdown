@@ -54,7 +54,43 @@ $$\beta_i := \sum_{\mathclap{j \in J}} \alpha_{i,j}$$
 
 ![](climate_death_multipliers.PNG)
 
-We then have one death rate per age category and per year. 
+Finally [^10], death rate is impacted by average calorie intake and deviating from a parametrable reference value will have a significant impact on death rate in both ways. Death rate age range is impacted differently whether the average calorie intake rises or decreases: youger people will be more impacted by undernutrition whereas older one by overnutrition due to cardiovascular deseases [^11]. It is modelized such as:
+$$DR_i = \widetilde{DR}_i + \overline{DR}_i$$
+With $\widetilde{DR}_i$ death rate related to economy and temperature, $\overline{DR}_i$ related to calorie intake.
+$$\overline{DR}_i = \alpha_{i,j}*|\frac{kcal-kcal_{ref}}{\theta*kcal_{ref}}|$$
+With $kcal$ average food intake per capita per day, $kcal_ref$ food intake recommended per capita per day, $\alpha$ relative increase in the probability of dying due to risk j for age-group i, $\theta$ fitting value.
+
+The following table shows the relative increase in mortality $\alpha$:
+
+|Age range|Undernutrition|Overnutrition|
+| ------ |:--------:| ------ |
+|0-4|1|0|
+|5-9|0.5|0|
+|10-14|0.1|0|
+|15-19|0.1|0|
+|20-24|0.1|0|
+|25-29|0.1|0|
+|30-34|0.1|0.05|
+|35-39|0.1|0.05|
+|40-44|0.1|0.05|
+|45-49|0.1|0.05|
+|50-54|0.1|0.1|
+|55-59|0.1|0.1|
+|60-64|0.1|0.1|
+|65-69|0.1|0.1|
+|70-74|0.2|0.1|
+|75-79|0.2|0.1|
+|80-84|0.2|0.2|
+|85-89|0.2|0.2|
+|90-94|0.5|0.2|
+|95-99|1|0.2|
+|100+|1|0.2|
+
+To avoid death rate greater than 1 and non physical behavior, we use a logistic function:
+$$\overline{DR}_i = \frac{1-\widetilde{DR}_i}{1+e^{-\overline{DR}_i}}$$
+
+We then have one death rate per age category and per year.
+
 Having a different GDP from McIsaac (2017)[^1] we could not use values of parameters from the paper so we fitted the death using data detailed in the data section below. 
 
 ## Working age population
@@ -104,3 +140,7 @@ The following graphs shows the results of our birth rate fitting:
 [^8]: Our world in data. Literate and illiterate world population. Available at: https://ourworldindata.org/grapher/literate-and-illiterate-world-population?country=~OWID_WRL
 
 [^9]: Vollset, S.E., Goren, E., Yuan, C.W., Cao, J., Smith, A.E., Hsiao, T., Bisignano, C., Azhar, G.S., Castro, E., Chalek, J. and Dolgert, A.J., 2020. Fertility, mortality, migration, and population scenarios for 195 countries and territories from 2017 to 2100: a forecasting analysis for the Global Burden of Disease Study. The Lancet, 396(10258), pp.1285-1306. 
+
+[^10]: Comité Permanent Inter-Etats de Lutte contre la Sécheresse dans le Sahel, NORMES DE CONSOMMATION DES PRINCIPAUX PRODUITS ALIMENTAIRES DANS LES PAYS DU CILSS, Jily 2004. Data available at : http://www.hubrural.org/IMG/pdf/cilss_rapport_normes_conso_alimentaires.pdf
+
+[^11]: Donnette Wright, Nutrition and Hospital Mortality, Morbidity and Health Outcomes, May 16th, 2019. Data available at : https://www.intechopen.com/chapters/66044
