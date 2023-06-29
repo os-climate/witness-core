@@ -52,6 +52,7 @@ class SectorModel():
         self.prod_function_fitting = inputs_dict['prod_function_fitting']
         if self.prod_function_fitting == True:
             self.energy_eff_max_range_ref = inputs_dict['energy_eff_max_range_ref']
+            self.hist_sector_invest = inputs_dict['hist_sector_investment']
         
         self.year_start = inputs_dict['year_start']  # year start
         self.year_end = inputs_dict['year_end']  # year end
@@ -103,8 +104,13 @@ class SectorModel():
         """
         Set couplings inputs with right index, scaling... 
         """
-        self.investment_df = inputs['sector_investment']
-        self.investment_df.index = self.investment_df['years'].values
+        #If fitting takes investment from historical input not coupling
+        if self.prod_function_fitting == True:
+            self.investment_df = self.hist_sector_invest
+            self.investment_df.index = self.investment_df['years'].values
+        else:
+            self.investment_df = inputs['sectors_investment_df']
+            self.investment_df.index = self.investment_df['years'].values
         #scale energy production
         self.energy_production = inputs['energy_production'].copy(deep=True)
         self.energy_production['Total production'] *= self.scaling_factor_energy_production
@@ -163,8 +169,8 @@ class SectorModel():
         if year > self.year_end:
             pass
         else: 
-            # Capital 
-            investment = self.investment_df.loc[year - self.time_step, 'investment']
+            # Capital
+            investment = self.investment_df.loc[year - self.time_step, self.sector_name]
             capital = self.capital_df.at[year - self.time_step, 'capital']
             capital_a = capital * (1 - self.depreciation_capital) + investment
             self.capital_df.loc[year, 'capital'] = capital_a

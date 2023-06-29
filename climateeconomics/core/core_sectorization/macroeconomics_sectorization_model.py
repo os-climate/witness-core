@@ -40,6 +40,7 @@ class MacroeconomicsModel():
         '''
         self.economics_df = None
         self.investment_df = None
+        self.sectors_investment_df = None
         self.configure_parameters(inputs_dict)
 
     def configure_parameters(self, inputs_dict):
@@ -54,6 +55,7 @@ class MacroeconomicsModel():
         self.nb_years = len(self.years_range)
         share_invest_df = inputs_dict['total_investment_share_of_gdp']
         self.share_invest = share_invest_df['share_investment'].values
+        self.sectors_invest_share = inputs_dict['sectors_investment_share']
         #self.scaling_factor_invest = inputs_dict['scaling_factor_investment']      
         
     def set_coupling_inputs(self, inputs):
@@ -77,6 +79,7 @@ class MacroeconomicsModel():
                 arr_type_output = 'complex128'
             if 'complex128' in [inputs[f'{sector}.production_df']['output_net_of_damage'].dtype]:
                 arr_type_netoutput = 'complex128'
+
                 
         self.sum_output = np.zeros(self.nb_years, dtype= arr_type_output)
         self.sum_net_output = np.zeros(self.nb_years, dtype= arr_type_netoutput)
@@ -115,7 +118,20 @@ class MacroeconomicsModel():
         """ Compute total investement available 
         Investment = net_output * share_invest 
         """
+        #TODO SWITCH THIS TO SUM OF INVEST ?
         self.investment = self.sum_net_output * self.share_invest/100
+
+    def compute_investment_per_sectors(self):
+        """ take share of gdp invested by sector in input and gdp
+        and compute the invest in each sector"""
+
+        sectors_invest_share = self.sectors_invest_share.copy(deep=True).drop(['years'], axis = 1)
+        #invest_sectors = sectors_invest_share * net_output/100
+        invest_sectors = sectors_invest_share.multiply(self.sum_net_output/100, axis = 0)
+        #Add years column
+        invest_sectors.insert(0, 'years', self.years_range)
+        self.sectors_investment_df = invest_sectors
+        return self.sectors_investment_df
     
     def compute_output_growth(self):
         """
@@ -140,10 +156,11 @@ class MacroeconomicsModel():
         self.set_coupling_inputs(inputs)
         self.sum_all()
         self.compute_investment()
+        self.compute_investment_per_sectors()
         self.compute_output_growth()
         self.create_dataframes()
 
-        return self.economics_df, self.investment_df
+        return self.economics_df, self.investment_df, self.sectors_investment_df
     
     ### GRADIENTS ###
     def get_derivative_sectors(self):
@@ -153,7 +170,16 @@ class MacroeconomicsModel():
         grad_netoutput = np.identity(self.nb_years)
         #Invest = net_output * share_invest (share invest in%)
         grad_invest = grad_netoutput * self.share_invest/100
+
         return grad_netoutput, grad_invest
+
+    def get_derivative_dsectinvest_dsectoutput(self, sector, grad_netoutput):
+        """
+        Compute gradient for sector invest wrt sectors outputs
+        """
+        # Sector invest = net output * sector_share_invest (share invest in%)
+        grad_sector_invest = grad_netoutput * self.sectors_invest_share[f'{sector}'].values / 100
+        return grad_sector_invest
     
     def get_derivative_dinvest_dshare(self):
         """
@@ -162,3 +188,4 @@ class MacroeconomicsModel():
         #Invest = net_output * share_invest
         dinvest = np.identity(self.nb_years)/100 * self.sum_net_output
         return dinvest
+

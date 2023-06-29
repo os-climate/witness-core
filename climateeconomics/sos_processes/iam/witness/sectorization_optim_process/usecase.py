@@ -252,6 +252,10 @@ class Study(StudyManager):
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         extra_data = pd.read_csv(join(data_dir, 'extra_data_for_energy_eff.csv'))
         weights = pd.read_csv(join(data_dir, 'weights_df.csv'))
+        hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
+        agri_invest = pd.DataFrame({'years': hist_invest['years'], 'Agriculture': hist_invest['Agriculture']})
+        services_invest = pd.DataFrame({'years': hist_invest['years'], 'Services': hist_invest['Services']})
+        indus_invest = pd.DataFrame({'years': hist_invest['years'], 'Industry': hist_invest['Industry']})
 
         sect_input = {}
         sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
@@ -260,6 +264,9 @@ class Study(StudyManager):
         sect_input[ns_coupling + self.macro_name + '.prod_function_fitting'] = True
         sect_input[ns_coupling + self.obj_name + '.data_for_earlier_energy_eff'] = extra_data
         sect_input[ns_coupling + self.obj_name + '.weights_df'] = weights
+        sect_input[self.ns_agriculture + '.hist_sector_investment'] = agri_invest
+        sect_input[self.ns_services + '.hist_sector_investment'] = services_invest
+        sect_input[self.ns_industry + '.hist_sector_investment'] = indus_invest
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'
