@@ -64,6 +64,12 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.cap_agri_df = DataFrame({'years':self. years,'capital': cap_agri, 'usable_capital': cap_agri*0.8})
         self.cap_indus_df = DataFrame({'years':self. years,'capital': cap_indus, 'usable_capital': cap_indus*0.8})
         self.cap_service_df = DataFrame({'years':self. years,'capital': cap_service, 'usable_capital': cap_service*0.8})
+        indus_invest = np.asarray([6.8998] * nb_per)
+        agri_invest = np.asarray([0.4522] * nb_per)
+        services_invest = np.asarray([19.1818] * nb_per)
+        share_sector_invest = DataFrame(
+            {'years': self.years, 'Industry': indus_invest, 'Agriculture': agri_invest, 'Services': services_invest})
+        self.share_sector_invest = share_sector_invest
         
         
     def analytic_grad_entry(self):
@@ -90,7 +96,8 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.total_investment_share_of_gdp': self.total_invest, 
+                       f'{self.name}.total_investment_share_of_gdp': self.total_invest,
+                       f'{self.name}.sectors_investment_share': self.share_sector_invest,
                        f'{self.name}.{model_name}.Agriculture.production_df': self.prod_agri,
                        f'{self.name}.{model_name}.Services.production_df': self.prod_service,
                        f'{self.name}.{model_name}.Industry.production_df': self.prod_indus,
@@ -106,6 +113,7 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macro_sectorization_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data= disc_techno.local_data,
                             inputs=[f'{self.name}.total_investment_share_of_gdp',
+                                    f'{self.name}.sectors_investment_share',
                                     f'{self.name}.{model_name}.Agriculture.production_df',
                                     f'{self.name}.{model_name}.Services.production_df',
                                     f'{self.name}.{model_name}.Industry.production_df',
@@ -113,6 +121,7 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{model_name}.Services.capital_df',
                                     f'{self.name}.{model_name}.Agriculture.capital_df'],
                             outputs=[f'{self.name}.economics_df', 
-                                     f'{self.name}.investment_df'])
+                                     f'{self.name}.investment_df', f'{self.name}.sectors_investment_df'],
+                            )
         
    

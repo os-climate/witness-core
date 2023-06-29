@@ -79,8 +79,8 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         'damage_to_productivity': {'type': 'bool', 'default': True, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                     'unit': '-','namespace': 'ns_witness'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2, 'unit': '-'},
-        'sector_investment': {'type': 'dataframe', 'unit': 'T$', 'dataframe_descriptor': {'years': ('float', None, False),
-                            'investment': ('float', None, True)}, 'dataframe_edition_locked': False},
+        'sectors_investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                          'namespace': 'ns_witness'},
 
         # energy_production stored in PetaWh for coupling variables scaling
         'energy_production': {'type': 'dataframe', 'unit': 'PWh', 
@@ -131,6 +131,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
                 dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 20}
                 dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
+                dynamic_inputs['hist_sector_investment'] = {'type': 'dataframe', 'unit': '-'}
                 self.add_outputs(dynamic_outputs)
                 self.add_inputs(dynamic_inputs)
                 
@@ -156,13 +157,13 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         #coupling df 
         damage_df = param['damage_df']
         energy_production = param['energy_production']
-        investment = param['sector_investment']
+        investment = param['sectors_investment_df']
         workforce_df = param['workforce_df']
         prod_function_fitting = param['prod_function_fitting']
 
         industrial_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                              'energy_production': energy_production,
-                             'sector_investment': investment,
+                             'sectors_investment_df': investment,
                              'workforce_df': workforce_df}
         # Model execution
         production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.industrial_model.compute(
@@ -234,12 +235,18 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             ('production_df', 'output_net_of_damage'), ('damage_df', 'damage_frac_output'), dnetoutput_ddamage)
 
         # gradients wrt invest
+        # If production fitting = true we use the investment from another input
+        prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
+        if prod_function_fitting == True:
+            invest_df = 'hist_sector_investment'
+        else:
+            invest_df = 'sectors_investment_df'
         dcapital_dinvest = self.industrial_model.dcapital_dinvest()
         demax_cstrt_dinvest = self.industrial_model.demaxconstraint(dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
-            ('capital_df', 'capital'), ('sector_investment', 'investment'), dcapital_dinvest)
+            ('capital_df', 'capital'), (invest_df, self.sector_name), dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
-            ('emax_enet_constraint',), ('sector_investment', 'investment'), demax_cstrt_dinvest)
+            ('emax_enet_constraint',), (invest_df, self.sector_name), demax_cstrt_dinvest)
 
     def get_chart_filter_list(self):
 

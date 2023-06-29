@@ -81,11 +81,6 @@ class Study(StudyManager):
         if self.year_start == 2000 and self.year_end == 2020:
             data_dir = join(
                 dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
-            # Invest
-            hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-            agri_invest = pd.DataFrame({'years': hist_invest['years'], 'investment': hist_invest['Agriculture']})
-            services_invest = pd.DataFrame({'years': hist_invest['years'], 'investment': hist_invest['Services']})
-            indus_invest = pd.DataFrame({'years': hist_invest['years'], 'investment': hist_invest['Industry']})
             # Energy
             hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
             agri_energy = pd.DataFrame({'years': hist_energy['years'], 'Total production': hist_energy['Agriculture']})
@@ -94,16 +89,14 @@ class Study(StudyManager):
             # Workforce
             hist_workforce = pd.read_csv(join(data_dir, 'hist_workforce_sect.csv'))
             workforce_df = hist_workforce
+            #Tshare sectors invest
+            hist_share = pd.read_csv(join(data_dir, 'hist_invest_share_sectors.csv'))
+            share_sectors_invest = hist_share
 
         else:
-            invest_init = 31.489
-            invest_serie = np.zeros(self.nb_per)
-            invest_serie[0] = invest_init
-            for year in np.arange(1, self.nb_per):
-                invest_serie[year] = invest_serie[year - 1] * 1.02
-                agri_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.0187})
-                indus_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.18737})
-                services_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.7939})
+            one = np.ones(self.nb_per)
+            share_sectors_invest =  pd.DataFrame({'years': years, 'Agriculture': one * 0.4522,
+                                            'Industry': one * 6.8998, 'Services': one * 19.1818})
             # Energy
             brut_net = 1 / 1.45
             energy_outlook = pd.DataFrame({
@@ -132,6 +125,10 @@ class Study(StudyManager):
         damage_df = pd.DataFrame(
             {'years': years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
              'base_carbon_price': np.zeros(self.nb_per)})
+        #Sectors invest
+        base_dummy_data = pd.DataFrame(
+            {'years': years, 'Agriculture': np.ones(self.nb_per), 'Industry': np.ones(self.nb_per),
+             'Services': np.ones(self.nb_per)})
 
         # Share invest
         share_invest = np.asarray([27.0] * self.nb_per)
@@ -144,13 +141,13 @@ class Study(StudyManager):
 
         sect_input[self.study_name + '.workforce_df'] = workforce_df
 
-        sect_input[self.study_name + self.macro_name + '.Agriculture.sector_investment'] = agri_invest
-        sect_input[self.study_name + self.macro_name + '.Services.sector_investment'] = services_invest
-        sect_input[self.study_name + self.macro_name + '.Industry.sector_investment'] = indus_invest
+        sect_input[self.study_name + '.sectors_investment_share'] = share_sectors_invest
 
         sect_input[self.study_name + self.macro_name + '.Industry.energy_production'] = indus_energy
         sect_input[self.study_name + self.macro_name + '.Agriculture.energy_production'] = agri_energy
         sect_input[self.study_name + self.macro_name + '.Services.energy_production'] = services_energy
+
+        sect_input[self.study_name + '.sectors_investment_df'] = base_dummy_data
 
         sect_input[self.study_name + self.macro_name + '.Industry.damage_df'] = damage_df
         sect_input[self.study_name + self.macro_name + '.Agriculture.damage_df'] = damage_df

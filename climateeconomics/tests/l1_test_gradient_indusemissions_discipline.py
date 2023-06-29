@@ -50,8 +50,7 @@ class IndusEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline.IndusemissionsDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
+        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 

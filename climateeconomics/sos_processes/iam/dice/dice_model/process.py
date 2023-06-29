@@ -17,7 +17,6 @@ from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'DICE Process',
@@ -25,19 +24,20 @@ class ProcessBuilder(BaseProcessBuilder):
         'category': '',
         'version': '',
     }
-    def get_builders(self):
 
+    def get_builders(self):
         ns_scatter = self.ee.study_name
 
-        ns_dict = {'ns_dice': ns_scatter, 'ns_scenario': ns_scatter}
+        ns_dict = {'ns_dice': ns_scatter, 'ns_witness': ns_scatter, 'ns_scenario': ns_scatter}
 
-        mods_dict = {'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_dice.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
-                     'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_dice.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
+        mods_dict = {
+            'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_dice.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',
+            'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_dice.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',
 
-                     'Temperature_change': 'climateeconomics.sos_wrapping.sos_wrapping_dice.tempchange.tempchange_discipline.TempChangeDiscipline',
-                     'Damage': 'climateeconomics.sos_wrapping.sos_wrapping_dice.damagemodel.damagemodel_discipline.DamageDiscipline',
-                     'Carbon_emissions': 'climateeconomics.sos_wrapping.sos_wrapping_dice.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline',
-                     'Utility': 'climateeconomics.sos_wrapping.sos_wrapping_dice.utilitymodel.utilitymodel_discipline.UtilityModelDiscipline'}
+            'Temperature_change': 'climateeconomics.sos_wrapping.sos_wrapping_dice.tempchange.tempchange_discipline.TempChangeDiscipline',
+            'Damage': 'climateeconomics.sos_wrapping.sos_wrapping_dice.damagemodel.damagemodel_discipline.DamageDiscipline',
+            'Carbon_emissions': 'climateeconomics.sos_wrapping.sos_wrapping_dice.carbonemissions.carbonemissions_discipline.CarbonemissionsDiscipline',
+            'Utility': 'climateeconomics.sos_wrapping.sos_wrapping_dice.utilitymodel.utilitymodel_discipline.UtilityModelDiscipline'}
 
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
         return builder_list

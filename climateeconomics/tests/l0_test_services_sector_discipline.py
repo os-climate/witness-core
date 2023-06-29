@@ -95,7 +95,7 @@ class ServicesDiscTest(unittest.TestCase):
         invest_serie.append(init_value)
         for year in np.arange(1, nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.02)
-        self.total_invest = pd.DataFrame({'years': years, 'investment': invest_serie})
+        self.total_invest = pd.DataFrame({'years': years, 'Services': invest_serie})
         
         #damage
         self.damage_df = pd.DataFrame({'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
@@ -109,7 +109,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.time_step': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.{self.model_name}.sector_investment': self.total_invest,
+                       f'{self.name}.sectors_investment_df': self.total_invest,
                        f'{self.name}.{self.model_name}.energy_production': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.damage_df': self.damage_df,
                        f'{self.name}.workforce_df': self.workforce_df, 
@@ -133,7 +133,8 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.time_step': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.{self.model_name}.sector_investment': self.total_invest,
+                       f'{self.name}.sectors_investment_df': self.damage_df, #To check if not used
+                       f'{self.name}.{self.model_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{self.model_name}.energy_production': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.damage_df': self.damage_df,
                        f'{self.name}.workforce_df': self.workforce_df, 

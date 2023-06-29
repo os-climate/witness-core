@@ -9,10 +9,12 @@ The goal of the macroeconomics model is to gather and sum the outputs from the e
 - Sector capital_df: Dataframe with capital and usable capital quantity from each sector in T\$.
 -  Sector production df: Dataframe with output and output net of damage in T\$ from each sector. 
 - Total investement share of gdp: Dataframe with the percentage of the output that is invested.
+- Sectors investment share of gdp: Dataframe with the percentage of the output invested in each sector.
   
 ### Outputs 
 - Economics df: Dataframe with total net output per year in T\$.
 - Investment df: Dataframe with total investment per year in T\$.
+- Sectors investment df: Dataframe with investment per sector per year in T\$.
 - Economics detail df: Dataframe with capital, usable capital, output and net output per year in T\$. 
            
 ### Time Step 
@@ -34,3 +36,7 @@ $$Total\_capital = \sum_{s=i}^{j} capital_s$$
 A portion defined by the input $total\_investment\_share\_of\_gdp$ of the total net output is used for investment. The total investment is then:  
 $$Investment = total\_net\_output * total\_investment\_share\_of\_gdp$$
 The remaining output is used for consumption. 
+
+#### Sectors investment
+For each sector a defined portion of the net ouptut is use for investment:   
+$$Sector\_investment = total\_net\_output * sector\_invest\_share$$. 
