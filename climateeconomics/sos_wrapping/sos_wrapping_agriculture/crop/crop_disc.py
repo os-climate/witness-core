@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from os.path import join, dirname
 import matplotlib.pyplot as plt
-
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -231,6 +231,19 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                          1.73, 1.81, 1.88, 1.96, 2.04, 2.12, 2.2, 2.28, 2.35, 2.43,
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
+    diet_df_default = pd.DataFrame({"red meat": [11.02],
+               "white meat": [31.11],
+               "milk": [79.27],
+               "eggs": [9.68],
+               "rice and maize": [97.76],
+               "potatoes": [32.93],
+               "fruits and vegetables": [217.62]
+               })
+
+    other_use_crop_default = np.array([0.102] * len(initial_age_distribution))
+
+    crop_investment_default = pd.read_csv(join(dirname(__file__), 'data/crop_investment.csv'), index_col=0)
+
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
@@ -239,10 +252,14 @@ class CropDiscipline(ClimateEcoDiscipline):
                           'dataframe_descriptor': {'years': ('float', None, False),
                                                    'population': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year',
-                    'dataframe_descriptor': {'years': ('float', None, False),
-                                             'red meat': ('float', [0, 1e9], True), 'white meat': ('float', [0, 1e9], True), 'milk': ('float', [0, 1e9], True),
-                                             'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),
+        'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year','default' : diet_df_default,
+                    'dataframe_descriptor': {#'years': ('float', None, False),
+                                             'red meat': ('float', [0, 1e9], True),
+                                             'white meat': ('float', [0, 1e9], True),
+                                             'milk': ('float', [0, 1e9], True),
+                                             'eggs': ('float', [0, 1e9], True),
+                                             'rice and maize': ('float', [0, 1e9], True),
+                                             'potatoes': ('float', [0, 1e9], True),
                                              'fruits and vegetables': ('float', [0, 1e9], True)},
                     'dataframe_edition_locked': False, 'namespace': 'ns_crop'},
         'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_crop'},
@@ -250,36 +267,48 @@ class CropDiscipline(ClimateEcoDiscipline):
         # design variables of changing diet
         'red_meat_calories_per_day': {'type': 'dataframe', 'default': default_red_meat_percentage,
                                 'dataframe_descriptor': {'years': ('float', None, False),
-                                                         'red_meat_calories_per_day': ('float', [0, 100], True)},
+                                                         'red_meat_calories_per_day': ('float', None, True)},
                                 'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'white_meat_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
                                   'dataframe_descriptor': {'years': ('float', None, False),
-                                                           'white_meat_calories_per_day': ('float', [0, 100], True)},
+                                                           'white_meat_calories_per_day': ('float', None, True)},
                                   'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'vegetables_and_carbs_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
                                         'dataframe_descriptor': {'years': ('float', None, False),
                                                                  'vegetables_and_carbs_calories_per_day': (
-                                                                 'float', [0, 100], True)},
+                                                                 'float', None, True)},
                                         'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                         'namespace': 'ns_crop'},
         'milk_and_eggs_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
                                                   'dataframe_descriptor': {'years': ('float', None, False),
                                                                            'milk_and_eggs_calories_per_day': (
-                                                                               'float', [0, 100], True)},
+                                                                               'float', None, True)},
                                                   'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                                   'namespace': 'ns_crop'},
-        'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop'},
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius'},
+        'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop', 'default': other_use_crop_default},
+
+        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius',
+                           'dataframe_descriptor': {'years': ('float', None, False),
+                                                    'exog_forcing': ('float', None, False),
+                                                    'forcing': ('float', None, False),
+                                                    'temp_atmo': ('float', None, False),
+                                                    'temp_ocean': ('float', None, False), }
+                           }
+        ,
         'param_a': {'type': 'float', 'default':-0.00833, 'unit': '-', 'user_level': 3},
         'param_b': {'type': 'float', 'default':-0.04167, 'unit': '-', 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',
                             'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                      'investment': ('float', None, True)},
-                            'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop'},
+                            'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop',
+                            'default': crop_investment_default},
         'scaling_factor_crop_investment': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
         'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-        'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%', 'namespace': 'ns_witness'},
+        'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%',
+                   'namespace': 'ns_witness',
+                   'dataframe_descriptor': {'years': ('float', None, True),
+                                            'margin': ('float', None, True)}},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
                                                     'transport': ('float', None, True)},
@@ -294,7 +323,10 @@ class CropDiscipline(ClimateEcoDiscipline):
         'techno_infos_dict': {'type': 'dict', 'unit': 'defined in dict',
                               'default': techno_infos_dict_default},
         'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
-        'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution},
+        'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
+                                'dataframe_descriptor': {'years': ('float', None, True),
+                                                                'age': ('float', None, True),
+                                                                'distrib': ('float', None, True)}},
         'co2_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg', 'default': default_co2_emissions},
         'ch4_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg', 'default': default_ch4_emissions},
         'n2o_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg', 'default': default_n2o_emissions},
@@ -562,7 +594,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'), ('crop_investment', 'investment'),
-                                                    -CO2_from_production / high_calorific_value * 
+                                                    -CO2_from_production / high_calorific_value *
                                                     dprod_dinvest * scaling_factor_crop_investment
                                                     * calorific_value / scaling_factor_techno_production)
         # --------------------------------------------------------------
@@ -596,7 +628,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'), ('crop_investment', 'investment'),
-                                                    -CO2_from_production / high_calorific_value * 
+                                                    -CO2_from_production / high_calorific_value *
                                                     dprod_dinvest * scaling_factor_crop_investment
                                                     * calorific_value / scaling_factor_techno_production)
 
@@ -1289,5 +1321,5 @@ class CropDiscipline(ClimateEcoDiscipline):
                         f'N2O Emissions of food and energy production in {year}', food_names, values)
                     instanciated_charts.append(pie_chart)
 
-        
+
         return instanciated_charts

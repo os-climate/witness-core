@@ -125,8 +125,17 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'beta_birthrate_know': {'type': 'float', 'default': 8.01923418e-01, 'user_level': 3, 'unit': '-'},
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN, 
-        'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'kcal'},
-        'diet_mortality_param_df': {'type': 'dataframe', 'default': default_diet_mortality_param_df, 'user_level': 3, 'unit': '-'},
+        'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'kcal',
+                           'dataframe_descriptor': {'years': ('float', None, False),
+                                                    'kcal_pc': ('float', None, False),
+                                                    }
+                           },
+        'diet_mortality_param_df': {'type': 'dataframe', 'default': default_diet_mortality_param_df, 'user_level': 3, 'unit': '-',
+                                    'dataframe_descriptor': {'param': ('string', None, False),
+                                                             'undernutrition': ('float', None, False),
+                                                             'overnutrition': ('float', None, False),
+                                                             }
+                                    },
         'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
         'kcal_pc_ref': {'type': 'float', 'default': 2000.0, 'user_level': 3, 'unit': 'kcal'},
         }
