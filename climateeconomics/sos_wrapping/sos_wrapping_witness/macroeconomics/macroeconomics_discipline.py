@@ -223,15 +223,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             total_investment_share_of_gdp = pd.DataFrame(
                 {'years': years, 'share_investment': np.ones(len(years)) * 27.0}, index=years)
 
-            damage_df_default = pd.DataFrame({
-                'years': years, 'damages': np.zeros_like(year_start),
-                'damage_frac_output': np.zeros_like(years), 'base_carbon_price': np.zeros_like(years)})
 
             self.set_dynamic_default_values(
                 {'CO2_tax_efficiency': co2_tax_efficiency_default,
                  'share_energy_investment': share_energy_investment,
-                 'total_investment_share_of_gdp': total_investment_share_of_gdp,
-                 'damage_df': damage_df_default})
+                 'total_investment_share_of_gdp': total_investment_share_of_gdp})
 
             if 'gross_output_in' in self.get_data_in():
                 gross_output_df = pd.DataFrame({'years': years, 'gross_output': np.linspace(85., 120., len(years))})
