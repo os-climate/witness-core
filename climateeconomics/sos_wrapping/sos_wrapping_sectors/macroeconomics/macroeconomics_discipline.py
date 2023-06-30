@@ -56,9 +56,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                                           'share_investment': ('float', None, True)},
                                                  'dataframe_edition_locked': False, 'visibility': 'Shared',
                                                  'namespace': 'ns_witness'},
-               'sectors_investment_share':  {'type': 'dataframe', 'unit': '%',
-                                                 'dataframe_edition_locked': False, 'visibility': 'Shared',
-                                                 'namespace': 'ns_witness'},
                # 'scaling_factor_investment': {'type': 'float', 'default': 1e2, 'unit': '-', 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'}
                }
 
@@ -68,7 +65,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                           'namespace': 'ns_witness'},
         'sectors_investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                          'namespace': 'ns_witness'},
+                          'namespace': 'ns_witness', 'dataframe_descriptor': {},'dynamic_dataframe_columns': True},
         'economics_detail_df': {'type': 'dataframe'},
     }
 
@@ -82,6 +79,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'sector_list' in self.get_data_in():
             sector_list = self.get_sosdisc_inputs('sector_list')
+            df_descriptor = {'years': ('float', None, False)}
+            df_descriptor.update({col: ('float', None, True)
+                                  for col in sector_list})
+            dynamic_inputs['sectors_investment_share'] = {'type': 'dataframe', 'unit': '%',
+                                                          'dataframe_edition_locked': False, 'visibility': 'Shared',
+                                                          'namespace': 'ns_witness',
+                                                          'dataframe_descriptor': df_descriptor}
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.capital_df'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
