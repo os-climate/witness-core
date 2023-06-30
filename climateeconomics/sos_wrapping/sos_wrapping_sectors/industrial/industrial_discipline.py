@@ -58,11 +58,9 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.4903228, 'user_level': 2, 'unit': '-'},
         'capital_start': {'type': 'float', 'unit': 'T$', 'default':88.5051, 'user_level': 2},
-        'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                         'namespace': 'ns_witness',
-                         'dataframe_descriptor': {'years': ('float', None, False),
-                                                  'Industry': ('float', None, False),}
-                         },
+        'workforce_df': {'type': 'dataframe', 'dataframe_descriptor': {},'dynamic_dataframe_columns': True,
+                        'unit': 'millions of people', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                        'namespace': 'ns_witness'},
         'productivity_gr_start': {'type': 'float', 'default': 0.00019, 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 1e-05, 'user_level': 3, 'unit': '-'},
         # Usable capital
@@ -80,7 +78,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
                                     'unit': '-','namespace': 'ns_witness'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3, 'user_level': 2, 'unit': '-'},
         'sectors_investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                          'namespace': 'ns_witness'},
+                          'namespace': 'ns_witness', 'dataframe_descriptor': {},'dynamic_dataframe_columns': True},
 
         # energy_production stored in PetaWh for coupling variables scaling
         'energy_production': {'type': 'dataframe', 'unit': 'PWh', 
@@ -129,9 +127,9 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
             prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
             if prod_function_fitting == True:
                 dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 20}
-                dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
+                dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-','dataframe_descriptor': {},'dynamic_dataframe_columns': True}
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
-                dynamic_inputs['hist_sector_investment'] = {'type': 'dataframe', 'unit': '-'}
+                dynamic_inputs['hist_sector_investment'] = {'type': 'dataframe', 'unit': '-','dataframe_descriptor': {},'dynamic_dataframe_columns': True}
                 self.add_outputs(dynamic_outputs)
                 self.add_inputs(dynamic_inputs)
                 
