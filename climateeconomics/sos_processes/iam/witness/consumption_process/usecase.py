@@ -74,15 +74,10 @@ class Study(StudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
+        one = np.ones(self.nb_per)
+        share_sectors_invest = pd.DataFrame({'years': years, 'Agriculture': one * 0.4522,
+                                             'Industry': one * 6.8998, 'Services': one * 19.1818})
 
-        invest_init = 31.489
-        invest_serie = np.zeros(self.nb_per)
-        invest_serie[0] = invest_init
-        for year in np.arange(1, self.nb_per):
-            invest_serie[year] = invest_serie[year - 1] * 1.02
-            agri_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.0187})
-            indus_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.18737})
-            services_invest = pd.DataFrame({'years': years, 'investment': invest_serie * 0.7939})
         # Energy
         brut_net = 1 / 1.45
         energy_outlook = pd.DataFrame({
@@ -126,6 +121,11 @@ class Study(StudyManager):
         share_invest = pd.DataFrame({'years': years, 'share_investment': share_invest})
         share_invest_df = share_invest
 
+        # Sectors invest
+        base_dummy_data = pd.DataFrame(
+            {'years': years, 'Agriculture': np.ones(self.nb_per), 'Industry': np.ones(self.nb_per),
+             'Services': np.ones(self.nb_per)})
+
         # economisc df to init mda
         # Test With a GDP that grows at 2%
         gdp = [130.187] * len(years)
@@ -136,9 +136,7 @@ class Study(StudyManager):
         cons_input[self.study_name + '.year_start'] = self.year_start
         cons_input[self.study_name + '.year_end'] = self.year_end
 
-        cons_input[self.study_name + self.macro_name + '.Agriculture.sector_investment'] = agri_invest
-        cons_input[self.study_name + self.macro_name + '.Services.sector_investment'] = services_invest
-        cons_input[self.study_name + self.macro_name + '.Industry.sector_investment'] = indus_invest
+        cons_input[self.study_name +  '.sectors_investment_share'] = share_sectors_invest
 
         cons_input[self.study_name + self.macro_name + '.Industry.energy_production'] = indus_energy
         cons_input[self.study_name + self.macro_name + '.Agriculture.energy_production'] = agri_energy
@@ -153,6 +151,8 @@ class Study(StudyManager):
         cons_input[self.study_name + '.temperature_df'] = temperature_df
         cons_input[self.study_name + '.residential_energy'] = residential_energy_df
         cons_input[self.study_name + '.energy_mean_price'] = energy_mean_price
+
+        cons_input[self.study_name + '.sectors_investment_df'] = base_dummy_data
 
         cons_input[self.study_name + self.labormarket_name + '.workforce_share_per_sector'] = workforce_share
         cons_input[self.study_name + '.economics_df'] = economics_df

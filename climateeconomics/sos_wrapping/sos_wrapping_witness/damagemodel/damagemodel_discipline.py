@@ -94,6 +94,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'damage_df': {'type': 'dataframe', 'visibility': 'Shared',
+                      'namespace': 'ns_witness'},
+        'expected_damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
     _maturity = 'Research'
@@ -110,20 +113,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         """
 
         dynamic_outputs = {}
-        if self.get_data_in() is not None:
-            if 'assumptions_dict' in self.get_data_in():
-                assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
-                compute_climate_impact_on_gdp: bool = assumptions_dict['compute_climate_impact_on_gdp']
-                if compute_climate_impact_on_gdp:
-                   dynamic_outputs['damage_df'] = {'type': 'dataframe', 'visibility': 'Shared',
-                                                    'namespace': 'ns_witness'}
-                else:
-                    dynamic_outputs['damage_df'] = {'type': 'dataframe'}
 
-                try:
-                    self.clean_variables(['damage_df'], self.IO_TYPE_OUT)
-                except Exception as e:
-                    pass
         self.add_outputs(dynamic_outputs)
 
         self.update_default_with_years()
@@ -149,12 +139,14 @@ class DamageDiscipline(ClimateEcoDiscipline):
         temperature_df = in_dict.pop('temperature_df')
 
         # pyworld3 execution
-        damage_df, co2_damage_price_df = self.model.compute(
+        damage_df, expected_damage_df, co2_damage_price_df = self.model.compute(
             economics_df, temperature_df)
 
         # store output data
-        out_dict = {'damage_df': damage_df,
+        out_dict = {'expected_damage_df': expected_damage_df,
+                    'damage_df': damage_df,
                     'CO2_damage_price': co2_damage_price_df}
+
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):
@@ -172,13 +164,24 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         # fill jacobians
         self.set_partial_derivative_for_other_types(
-            ('damage_df', 'damage_frac_output'), ('temperature_df', 'temp_atmo'),  ddamage_frac_output_temp_atmo)
+            ('expected_damage_df', 'damage_frac_output'), ('temperature_df', 'temp_atmo'),  ddamage_frac_output_temp_atmo)
 
         self.set_partial_derivative_for_other_types(
-            ('damage_df', 'damages'), ('temperature_df', 'temp_atmo'),  ddamages_temp_atmo)
+            ('expected_damage_df', 'damages'), ('temperature_df', 'temp_atmo'),  ddamages_temp_atmo)
 
         self.set_partial_derivative_for_other_types(
-            ('damage_df', 'damages'), ('economics_df', 'gross_output'),  ddamages_gross_output)
+            ('expected_damage_df', 'damages'), ('economics_df', 'gross_output'),  ddamages_gross_output)
+
+        compute_climate_impact_on_gdp = bool(self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']) * 1.0
+        self.set_partial_derivative_for_other_types(
+            ('damage_df', 'damage_frac_output'), ('temperature_df', 'temp_atmo'),
+            ddamage_frac_output_temp_atmo * compute_climate_impact_on_gdp)
+
+        self.set_partial_derivative_for_other_types(
+            ('damage_df', 'damages'), ('temperature_df', 'temp_atmo'), ddamages_temp_atmo * compute_climate_impact_on_gdp)
+
+        self.set_partial_derivative_for_other_types(
+            ('damage_df', 'damages'), ('economics_df', 'gross_output'), ddamages_gross_output * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
             ('CO2_damage_price', 'CO2_damage_price'), ('temperature_df', 'temp_atmo'),  dconstraint_temp_atmo)
@@ -216,9 +219,10 @@ class DamageDiscipline(ClimateEcoDiscipline):
         if 'Damage' in chart_list:
 
             to_plot = ['damages']
-            damage_df = deepcopy(self.get_sosdisc_outputs('damage_df'))
-
+            damage_df = deepcopy(self.get_sosdisc_outputs('expected_damage_df'))
+            compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
             damage = damage_df['damages']
+
 
             years = list(damage_df.index)
 
@@ -228,6 +232,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
             min_value, max_value = self.get_greataxisrange(damage)
 
             chart_name = 'Environmental damage on GDP'
+            if not compute_climate_impact_on_gdp:
+                chart_name += ' (assumed null in macro-economics)'
 
             new_chart = TwoAxesInstanciatedChart('years', 'Damage (trill $)',
                                                  [year_start - 5, year_end + 5],

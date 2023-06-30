@@ -62,13 +62,8 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         'productivity_start': {'type': 'float', 'default': 0.1328496, 'user_level': 2, 'unit': '-'},
         'capital_start': {'type': 'float', 'unit': 'T$', 'default': 281.2092, 'user_level': 2},
         'workforce_df':{'type': 'dataframe',
-                        'dataframe_descriptor':
-                            {
-                                'years': ('float', None, False),
-                                'Services': ('float', None, True),
-                            },
                         'unit': 'millions of people', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                         'namespace': 'ns_witness'},
+                         'namespace': 'ns_witness', 'dataframe_descriptor': {},'dynamic_dataframe_columns': True},
         'productivity_gr_start': {'type': 'float', 'default': 0.00161432, 'user_level': 2, 'unit': '-'},
         'decline_rate_tfp': {'type': 'float', 'default': 0.088925, 'user_level': 3, 'unit': '-'},
         # Usable capital
@@ -86,8 +81,8 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                                     'unit': '-','namespace': 'ns_witness'},
         'frac_damage_prod': {'type': 'float', 'default': 0.3, 'user_level': 2, 'unit': '-',  
                              'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'sector_investment': {'type': 'dataframe', 'unit': 'T$', 'dataframe_descriptor': {'years': ('float', None, False),
-                            'investment': ('float', None, True)}, 'dataframe_edition_locked': False},
+        'sectors_investment_df': {'type': 'dataframe', 'unit': 'T$','visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                          'namespace': 'ns_witness', 'dataframe_descriptor': {},'dynamic_dataframe_columns': True},
         # energy_production stored in PetaWh for coupling variables scaling
         'energy_production': {'type': 'dataframe',  'unit': 'PWh',  
                               'dataframe_descriptor': {'years': ('float', None, False),'Total production': ('float', None, True)}, 'dataframe_edition_locked': False},
@@ -141,9 +136,9 @@ class ServicesDiscipline(ClimateEcoDiscipline):
             prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
             if prod_function_fitting == True:
                 dynamic_inputs['energy_eff_max_range_ref'] = {'type': 'float', 'unit': '-', 'default': 5}
-                dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-',
-                                                                  }
-                dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-'}
+                dynamic_inputs['hist_sector_investment'] = {'type': 'dataframe', 'unit': '-','dataframe_descriptor': {},'dynamic_dataframe_columns': True}
+                dynamic_outputs['longterm_energy_efficiency'] =  {'type': 'dataframe', 'unit': '-'}
+                dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-','dataframe_descriptor': {},'dynamic_dataframe_columns': True}
                 self.add_outputs(dynamic_outputs)
                 self.add_inputs(dynamic_inputs)
 
@@ -169,14 +164,14 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         #coupling df 
         damage_df = param['damage_df']
         energy_production = param['energy_production']
-        sector_investment = param['sector_investment']
+        sector_investment = param['sectors_investment_df']
         workforce_df = param['workforce_df']
         prod_function_fitting = param['prod_function_fitting']
         
 
         services_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
                            'energy_production': energy_production,
-                           'sector_investment': sector_investment,
+                           'sectors_investment_df': sector_investment,
                            'workforce_df': workforce_df}
         # Model execution
         production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.services_model.compute(services_inputs)
@@ -245,12 +240,18 @@ class ServicesDiscipline(ClimateEcoDiscipline):
             ('production_df', 'output_net_of_damage'), ('damage_df', 'damage_frac_output'), dnetoutput_ddamage)
         
         # gradients wrt invest
+        # If production fitting = true we use the investment from another input
+        prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
+        if prod_function_fitting == True:
+            invest_df = 'hist_sector_investment'
+        else:
+            invest_df = 'sectors_investment_df'
         dcapital_dinvest = self.services_model.dcapital_dinvest()
         demax_cstrt_dinvest = self.services_model.demaxconstraint(dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
-            ('capital_df', 'capital'), ('sector_investment', 'investment'), dcapital_dinvest)
+            ('capital_df', 'capital'), ('sectors_investment_df', self.sector_name), dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
-            ('emax_enet_constraint',), ('sector_investment', 'investment'), demax_cstrt_dinvest)
+            ('emax_enet_constraint',), ('sectors_investment_df', self.sector_name), demax_cstrt_dinvest)
 
     def get_chart_filter_list(self):
 

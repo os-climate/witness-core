@@ -51,6 +51,7 @@ class DamageModel():
         self.damage_constraint_factor = self.param['damage_constraint_factor']
         self.co2_damage_price_df = None
         self.CO2_TAX_MINUS_CO2_DAMAGE_CONSTRAINT_DF = None
+        self.compute_climate_impact_on_gdp = self.param['assumptions_dict']['compute_climate_impact_on_gdp']
 
     def create_dataframe(self):
         '''
@@ -98,7 +99,7 @@ class DamageModel():
         else:
             damage_frac_output = self.damag_int * temp_atmo + \
                 self.damag_quad * temp_atmo**self.damag_expo
-        self.damage_df.loc[year, 'damage_frac_output'] = damage_frac_output
+        self.expected_damage_df.loc[year, 'damage_frac_output'] = damage_frac_output
         return damage_frac_output
 
     def compute_damages_on_gdp(self, year) -> pd.DataFrame:
@@ -107,9 +108,9 @@ class DamageModel():
         using variables at t
         """
         gross_output = self.economics_df.at[year, 'gross_output']
-        damage_frac_output = self.damage_df.at[year, 'damage_frac_output']
+        damage_frac_output = self.expected_damage_df.at[year, 'damage_frac_output']
         damages = gross_output * damage_frac_output
-        self.damage_df.loc[year, 'damages'] = damages
+        self.expected_damage_df.loc[year, 'damages'] = damages
 
         return damages
 
@@ -119,17 +120,17 @@ class DamageModel():
                  CO2 tax - fact * CO2_damage_price  > 0  
             with CO2_damage_price[year] = 1e3 * 1.01**(year_start-year) * mean(damage_df[year:year+25] (T$)) / total_emissions_ref (Gt)
         """
-        if 'complex128' in [self.damage_df['damages'].values.dtype]:
+        if 'complex128' in [self.expected_damage_df['damages'].values.dtype]:
             arr_type = 'complex128'
         else:
             arr_type = 'float64'
 
         co2_damage_price = np.zeros(
-            len(self.damage_df.index), dtype=arr_type)
+            len(self.expected_damage_df.index), dtype=arr_type)
 
-        damages = self.damage_df['damages'].values.tolist()
+        damages = self.expected_damage_df['damages'].values.tolist()
 
-        for i, year in enumerate(self.damage_df.index):
+        for i, year in enumerate(self.expected_damage_df.index):
 
             if year == self.year_end:
                 co2_damage_price[i] = 1e3 * 1.01**i * \
@@ -140,7 +141,7 @@ class DamageModel():
                     np.mean(damages[i:i + 25 - k]) / self.total_emissions_ref
 
         self.co2_damage_price_df = pd.DataFrame(
-            {'years': self.damage_df.index, 'CO2_damage_price': co2_damage_price})
+            {'years': self.expected_damage_df.index, 'CO2_damage_price': co2_damage_price})
 
     def compute_gradient(self):
         """
@@ -180,7 +181,7 @@ class DamageModel():
                     ddamages_temp_atmo[line, i] = ddamage_frac_output_temp_atmo[line,
                                                                                 i] * self.economics_df.at[years[line], 'gross_output']
                     ddamages_gross_output[line,
-                                        i] = self.damage_df.at[years[line], 'damage_frac_output']
+                                        i] = self.expected_damage_df.at[years[line], 'damage_frac_output']
 
         dconstraint_temp_atmo, dconstraint_economics = self.compute_dconstraint(
             ddamages_temp_atmo, ddamages_gross_output)
@@ -229,12 +230,19 @@ class DamageModel():
         self.temperature_df = temperature_df
         self.temperature_df.index = self.temperature_df['years'].values
 
-        self.damage_df = self.create_dataframe()
+        self.expected_damage_df = self.create_dataframe()
         for year in self.years_range:
             self.compute_damage_fraction_on_gdp(year)
             self.compute_damages_on_gdp(year)
 
-        self.damage_df = self.damage_df.replace([np.inf, -np.inf], np.nan)
+        self.expected_damage_df = self.expected_damage_df.replace([np.inf, -np.inf], np.nan)
         self.compute_CO2_tax_minus_CO2_damage_constraint()
+        self.expected_damage_df.fillna(0.0, inplace=True)
 
-        return self.damage_df.fillna(0.0), self.co2_damage_price_df
+        damage_df = pd.DataFrame.copy(self.expected_damage_df)
+        if not self.compute_climate_impact_on_gdp:
+            damage_df['damages'] = 0
+            damage_df['damage_frac_output'] = 0
+            damage_df['base_carbon_price'] = 0
+
+        return damage_df, self.expected_damage_df, self.co2_damage_price_df

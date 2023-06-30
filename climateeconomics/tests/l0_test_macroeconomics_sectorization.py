@@ -40,6 +40,12 @@ class MacroeconomicsTestCase(unittest.TestCase):
         total_invest = DataFrame({'years':self. years, 'share_investment': total_invest})
         self.total_invest = total_invest
 
+        indus_invest = np.asarray([6.8998] * nb_per)
+        agri_invest = np.asarray([0.4522] * nb_per)
+        services_invest = np.asarray([19.1818] * nb_per)
+        share_sector_invest = DataFrame({'years': self.years, 'Industry': indus_invest, 'Agriculture': agri_invest, 'Services': services_invest})
+        self.share_sector_invest = share_sector_invest
+
         # Test With a GDP and capital that grows at 2%
         gdp_year_start = 130.187
         capital_year_start = 376.6387
@@ -96,7 +102,8 @@ class MacroeconomicsTestCase(unittest.TestCase):
         ee.display_treeview_nodes()
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
-                       f'{name}.total_investment_share_of_gdp': self.total_invest, 
+                       f'{name}.total_investment_share_of_gdp': self.total_invest,
+                       f'{name}.sectors_investment_share': self.share_sector_invest,
                        f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
                        f'{name}.{model_name}.Services.production_df': self.prod_service,
                        f'{name}.{model_name}.Industry.production_df': self.prod_indus,
@@ -111,5 +118,5 @@ class MacroeconomicsTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-#         for graph in graph_list:
-#           graph.to_plotly().show()
+#        for graph in graph_list:
+#            graph.to_plotly().show()

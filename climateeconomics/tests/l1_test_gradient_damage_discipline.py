@@ -25,7 +25,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
@@ -86,7 +86,9 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15, inputs=[f'{self.name}.temperature_df', f'{self.name}.economics_df'],
-                            outputs=[f'{self.name}.damage_df', f'{self.name}.CO2_damage_price'],
+                            outputs=[f'{self.name}.damage_df',
+                                     f'{self.name}.expected_damage_df',
+                                     f'{self.name}.CO2_damage_price'],
                             derr_approx='complex_step')
 
     def test_damage_analytic_grad_wo_damage_on_climate(self):
@@ -150,5 +152,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline_wo_damage_on_climate.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15, inputs=[f'{self.name}.temperature_df', f'{self.name}.economics_df'],
-                            outputs=[f'{self.name}.{self.model_name}.damage_df', f'{self.name}.CO2_damage_price'],
+                            outputs=[f'{self.name}.damage_df',
+                                     f'{self.name}.expected_damage_df',
+                                     f'{self.name}.CO2_damage_price'],
                             derr_approx='complex_step')
