@@ -224,13 +224,13 @@ class Study(StudyManager):
         # -----------------------------------------
         # Crop related
         update_dspace_dict_with(ddict, 'red_meat_calories_per_day_ctrl',
-                                list(self.design_space_ctrl['red_meat_calories_per_day_ctrl'].values), [1.0] * self.nb_poles, [1000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                np.asarray(self.design_space_ctrl['red_meat_calories_per_day_ctrl']), [1.0] * self.nb_poles, [1000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_calories_per_day_ctrl',
-                                list(self.design_space_ctrl['white_meat_calories_per_day_ctrl'].values), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                np.asarray(self.design_space_ctrl['white_meat_calories_per_day_ctrl']), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'vegetables_and_carbs_calories_per_day_ctrl',
-                                list(self.design_space_ctrl['vegetables_and_carbs_calories_per_day_ctrl'].values), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                np.asarray(self.design_space_ctrl['vegetables_and_carbs_calories_per_day_ctrl']), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'milk_and_eggs_calories_per_day_ctrl',
-                                list(self.design_space_ctrl['milk_and_eggs_calories_per_day_ctrl'].values), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                np.asarray(self.design_space_ctrl['milk_and_eggs_calories_per_day_ctrl']), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         update_dspace_dict_with(ddict, 'deforestation_investment_ctrl',
                                 self.design_space_ctrl['deforestation_investment_ctrl'].values,
