@@ -293,6 +293,16 @@ class DataStudy():
             AGGR_TYPE_SMAX)
 
         # -------------------------------------------------
+        # calories_per_day_constraint
+        list_var.append('calories_per_day_constraint')
+        list_parent.append('agriculture_constraints')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(-1.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
+
+        # -------------------------------------------------
         # pc_consumption_constraint
         list_var.append('pc_consumption_constraint')
         list_parent.append('macroeconomics_constraints')
