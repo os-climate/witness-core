@@ -275,7 +275,7 @@ if '__main__' == __name__:
     print(
         len(uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines))
     # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.test()
+    uc_cls.run()
 
 #     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_initial_graph(
 #         "initial.pdf")
