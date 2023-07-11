@@ -37,7 +37,7 @@ class Study(StudyManager):
 
     def __init__(self, year_start=2000, year_end=2020, time_step=1, name='', execution_engine=None, run_usecase=False):
         super().__init__(__file__, execution_engine=execution_engine, run_usecase=run_usecase)
-        self.study_name = 'usecase_industry'
+        self.study_name = 'usecase_indus_only'
         self.macro_name = '.Macroeconomics'
         self.obj_name = '.Objectives'
         self.coupling_name = ".Sectorization_Eval"

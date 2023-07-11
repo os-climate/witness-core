@@ -37,7 +37,7 @@ class Study(StudyManager):
 
     def __init__(self, year_start=2000, year_end=2020, time_step=1, name='', execution_engine=None, run_usecase=False):
         super().__init__(__file__, execution_engine=execution_engine, run_usecase=run_usecase)
-        self.study_name = 'usecase_services'
+        self.study_name = 'usecase_services_only'
         self.macro_name = '.Macroeconomics'
         self.obj_name = '.Objectives'
         self.coupling_name = ".Sectorization_Eval"
@@ -194,10 +194,10 @@ class Study(StudyManager):
         #         disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = 23.70064183
 
         # other inputs
-        disc_dict[f'{self.ns_services}.energy_eff_k'] = np.array([0.039609214])
-        disc_dict[f'{self.ns_services}.energy_eff_cst'] = np.array([2.867328682])
-        disc_dict[f'{self.ns_services}.energy_eff_xzero'] = np.array([2041.038019])
-        disc_dict[f'{self.ns_services}.energy_eff_max'] = np.array([11.4693228])
+        disc_dict[f'{self.ns_services}.energy_eff_k'] = 0.039609214
+        disc_dict[f'{self.ns_services}.energy_eff_cst'] = 2.867328682
+        disc_dict[f'{self.ns_services}.energy_eff_xzero'] = 2041.038019
+        disc_dict[f'{self.ns_services}.energy_eff_max'] = 11.4693228
 
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
@@ -227,6 +227,11 @@ class Study(StudyManager):
         agri_invest = pd.DataFrame({'years': hist_invest['years'], 'Agriculture': hist_invest['Agriculture']})
         services_invest = pd.DataFrame({'years': hist_invest['years'], 'Services': hist_invest['Services']})
 
+
+        long_term_energy_eff =  pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
+        lt_enef_agri = pd.DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Agriculture']})
+        lt_enef_indus = pd.DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Industry']})
+        lt_enef_services = pd.DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Services']})
         sect_input = {}
         sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
         sect_input[ns_coupling + self.obj_name + '.historical_capital'] = hist_capital
@@ -234,6 +239,10 @@ class Study(StudyManager):
         sect_input[self.ns_industry + '.hist_sector_investment'] = hist_invest
         sect_input[self.ns_agriculture + '.hist_sector_investment'] = hist_invest
         sect_input[self.ns_services + '.hist_sector_investment'] = hist_invest
+        sect_input[self.ns_industry + '.longterm_energy_efficiency'] = lt_enef_indus
+        sect_input[self.ns_agriculture + '.longterm_energy_efficiency'] = lt_enef_agri
+        sect_input[self.ns_services + '.longterm_energy_efficiency'] = lt_enef_services
+
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'
