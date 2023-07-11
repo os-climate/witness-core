@@ -536,8 +536,9 @@ class Population:
         self._update_fcfpc(0)
         self._update_fce(0)
         self._update_tf(0)
-        self._update_cbr(0, 0)  # replace (0, -1) by (0, 0) at init
         self._update_b(0, 0)
+        self._update_cbr(0, 0)  # replace (0, -1) by (0, 0) at init
+        
         # recompute supplementary initial conditions
         self._update_frsn(0)
 

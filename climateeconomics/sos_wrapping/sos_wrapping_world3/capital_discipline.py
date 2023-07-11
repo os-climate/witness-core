@@ -41,7 +41,7 @@ class CapitalDiscipline(SoSWrapp):
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 1900, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
         'year_end': {'type': 'int', 'default': 2100, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
-        'time_step': {'type': 'int', 'default': 0.5, 'unit': 'year per period', 'visibility': 'Shared',
+        'time_step': {'type': 'float', 'default': 0.5, 'unit': 'year per period', 'visibility': 'Shared',
                       'namespace': 'ns_data'},
         'pyear': {'type': 'int', 'default': 1975, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
         'fcaor': {'type': 'array', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_coupling'},
@@ -206,9 +206,9 @@ class CapitalDiscipline(SoSWrapp):
         if CapitalDiscipline.CAPITAL_CHARTS in chart_list:
 
             agriculture_df = self.get_sosdisc_outputs()
-            years_start = CapitalDiscipline._get_sosdisc_inputs(self)['year_start']
-            years_end = CapitalDiscipline._get_sosdisc_inputs(self)['year_end']
-            time_step = CapitalDiscipline._get_sosdisc_inputs(self)['time_step']
+            years_start = self.get_sosdisc_inputs('year_start')
+            years_end = self.get_sosdisc_inputs('year_end')
+            time_step = self.get_sosdisc_inputs('time_step')
 
             years = np.arange(years_start, years_end, time_step)
 
