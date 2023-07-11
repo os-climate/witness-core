@@ -38,7 +38,7 @@ class ResourceDiscipline(SoSWrapp):
     DESC_IN = {
         'year_start': {'type': 'int', 'default': 1900, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
         'year_end': {'type': 'int', 'default': 2100, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
-        'time_step': {'type': 'int', 'default': 0.5, 'unit': 'year per period', 'visibility': 'Shared',
+        'time_step': {'type': 'float', 'default': 0.5, 'unit': 'year per period', 'visibility': 'Shared',
                       'namespace': 'ns_data'},
         'pyear': {'type': 'int', 'default': 1975, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
         'iopc': {'type': 'array', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_coupling'},
