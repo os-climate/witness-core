@@ -224,9 +224,9 @@ class AgricultureDiscipline(SoSWrapp):
         if AgricultureDiscipline.AGRICULTURE_CHARTS in chart_list:
 
             agriculture_df = self.get_sosdisc_outputs()
-            years_start = AgricultureDiscipline._get_sosdisc_inputs(self)['year_start']
-            years_end = AgricultureDiscipline._get_sosdisc_inputs(self)['year_end']
-            time_step = AgricultureDiscipline._get_sosdisc_inputs(self)['time_step']
+            years_start = self.get_sosdisc_inputs('year_start')
+            years_end = self.get_sosdisc_inputs('year_end')
+            time_step = self.get_sosdisc_inputs('time_step')
 
             years = np.arange(years_start, years_end, time_step)
 
