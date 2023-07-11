@@ -131,14 +131,14 @@ class Study(StudyManager):
         }
 
         # design var inputs
-        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = ([0.715])
-        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = ([0.001])
-        disc_dict[f'{ns_optim}.decl_rate_tfp_indus_in'] = ([0.071])
-        disc_dict[f'{ns_optim}.prod_start_indus_in'] = ([0.203])
-        disc_dict[f'{ns_optim}.energy_eff_k_indus_in'] = ([0.051])
-        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = ([0.16])
-        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = ([2015.0])
-        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = ([4.19])
+        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = np.array([0.715])
+        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = np.array([0.001])
+        disc_dict[f'{ns_optim}.decl_rate_tfp_indus_in'] = np.array([0.071])
+        disc_dict[f'{ns_optim}.prod_start_indus_in'] = np.array([0.203])
+        disc_dict[f'{ns_optim}.energy_eff_k_indus_in'] = np.array([0.051])
+        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = np.array([0.16])
+        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = np.array([2015.0])
+        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = np.array([4.19])
 
         # other inputs
         #         disc_dict[f'{self.ns_services}.energy_eff_k'] = 0.039609214
@@ -170,10 +170,18 @@ class Study(StudyManager):
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
+        hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
+        indus_invest = pd.DataFrame({'years': hist_invest['years'], 'Industry': hist_invest['Industry']})
+        agri_invest = pd.DataFrame({'years': hist_invest['years'], 'Agriculture': hist_invest['Agriculture']})
+        services_invest = pd.DataFrame({'years': hist_invest['years'], 'Services': hist_invest['Services']})
+
         sect_input = {}
         sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
         sect_input[ns_coupling + self.obj_name + '.historical_capital'] = hist_capital
         sect_input[ns_coupling + self.obj_name + '.historical_energy'] = hist_energy
+        sect_input[self.ns_industry + '.hist_sector_investment'] = hist_invest
+        sect_input[self.ns_agriculture + '.hist_sector_investment'] = hist_invest
+        sect_input[self.ns_services + '.hist_sector_investment'] = hist_invest
         sect_input[ns_coupling + self.macro_name + '.prod_function_fitting'] = True
         disc_dict.update(sect_input)
 

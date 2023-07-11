@@ -184,20 +184,20 @@ class Study(StudyManager):
         }
 
         # design var inputs
-        disc_dict[f'{ns_optim}.output_alpha_services_in'] = 0.87
-        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = 0.02
-        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = 0.02
-        disc_dict[f'{ns_optim}.prod_start_services_in'] = 0.27
+        disc_dict[f'{ns_optim}.output_alpha_services_in'] = np.array([0.87])
+        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = np.array([0.02])
+        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = np.array([0.02])
+        disc_dict[f'{ns_optim}.prod_start_services_in'] = np.array([0.27])
         #         disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = 0.031947197
         #         disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = 2.63340451
         #         disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = 2072.605142
         #         disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = 23.70064183
 
         # other inputs
-        disc_dict[f'{self.ns_services}.energy_eff_k'] = 0.039609214
-        disc_dict[f'{self.ns_services}.energy_eff_cst'] = 2.867328682
-        disc_dict[f'{self.ns_services}.energy_eff_xzero'] = 2041.038019
-        disc_dict[f'{self.ns_services}.energy_eff_max'] = 11.4693228
+        disc_dict[f'{self.ns_services}.energy_eff_k'] = np.array([0.039609214])
+        disc_dict[f'{self.ns_services}.energy_eff_cst'] = np.array([2.867328682])
+        disc_dict[f'{self.ns_services}.energy_eff_xzero'] = np.array([2041.038019])
+        disc_dict[f'{self.ns_services}.energy_eff_max'] = np.array([11.4693228])
 
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
@@ -222,10 +222,18 @@ class Study(StudyManager):
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
+        hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
+        indus_invest = pd.DataFrame({'years': hist_invest['years'], 'Industry': hist_invest['Industry']})
+        agri_invest = pd.DataFrame({'years': hist_invest['years'], 'Agriculture': hist_invest['Agriculture']})
+        services_invest = pd.DataFrame({'years': hist_invest['years'], 'Services': hist_invest['Services']})
+
         sect_input = {}
         sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
         sect_input[ns_coupling + self.obj_name + '.historical_capital'] = hist_capital
         sect_input[ns_coupling + self.obj_name + '.historical_energy'] = hist_energy
+        sect_input[self.ns_industry + '.hist_sector_investment'] = hist_invest
+        sect_input[self.ns_agriculture + '.hist_sector_investment'] = hist_invest
+        sect_input[self.ns_services + '.hist_sector_investment'] = hist_invest
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'
