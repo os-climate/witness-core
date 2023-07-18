@@ -78,7 +78,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             self.ee.post_processing_manager.add_post_processing_module_to_namespace(
                 resource_namespace, 'climateeconomics.sos_wrapping.sos_wrapping_resources.post_proc_resource.post_processing_resource')
         
-        if self.is_full:
-            self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_witness',
-                'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_ssp_comparison.post_processing_ssp_comparison')
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_witness',
+            'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_ssp_comparison.post_processing_ssp_comparison')
         return chain_builders
