@@ -90,7 +90,6 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '°C'},
         'temperature_detail_df': {'type': 'dataframe', 'unit': '°C'},
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
-        'temperature_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'temperature_constraint': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}}
 
     _maturity = 'Research'
