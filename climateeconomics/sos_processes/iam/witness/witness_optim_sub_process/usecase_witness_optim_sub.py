@@ -238,6 +238,8 @@ class Study(ClimateEconomicsStudyManager):
                                                                  }
 
         self.func_df = self.witness_uc.func_df
+        self.design_var_descriptor = design_var_descriptor
+        
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df
 
         values_dict[
