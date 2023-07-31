@@ -188,7 +188,7 @@ class DataStudy():
         self.dspace.update(dc_agriculture_mix.dspace)
         nb_poles = 8
         update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                [1.65] * nb_poles, [0.5] * nb_poles, [5.0] * nb_poles, enable_variable=True)
+                                [1.65] * nb_poles, [0.5] * nb_poles, [5.0] * nb_poles, enable_variable=False)
         # WITNESS
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
