@@ -222,24 +222,25 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         gross_output_df = None
         if isfile(gross_output_ssp3_file):
             gross_output_df = pd.read_csv(gross_output_ssp3_file)[['years','gross_output']]
-            gross_output_df.index = gross_output_df['years']
 
             if gross_output_df.iloc[0]['years'] > year_start:
                 gross_output_df = gross_output_df.append([{'years':year,'gross_output':gross_output_df.iloc[0]['gross_output']} for year in np.arange(year_start,gross_output_df.iloc[0]['years'])], ignore_index=True)
-                gross_output_df.index = gross_output_df['years']
-                gross_output_df = gross_output_df.sort_index()
+                gross_output_df = gross_output_df.sort_values(by='years')
+                gross_output_df = gross_output_df.reset_index()
+                gross_output_df = gross_output_df.drop(columns=['index'])
+
             elif gross_output_df.iloc[0]['years'] < year_start:
-                gross_output_df = gross_output_df.drop(index=np.arange(gross_output_df.iloc[0]['years'],year_start))
+                gross_output_df = gross_output_df[gross_output_df['years']>year_start-1]
             if gross_output_df.iloc[-1]['years'] > year_end:
-                gross_output_df = gross_output_df.drop(index=np.arange(year_end+1, gross_output_df.iloc[-1]['years']+1))
+                gross_output_df = gross_output_df[gross_output_df['years']<year_end+1]
             elif gross_output_df.iloc[-1]['years'] < year_end:
                 gross_output_df=gross_output_df.append([{'years':year,'gross_output':gross_output_df.iloc[-1]['gross_output']} for year in np.arange(gross_output_df.iloc[-1]['years']+1, year_end+1)], ignore_index=True)
                 
              
         else:
             gross_output_df = pd.DataFrame({'years': years, 'gross_output': np.linspace(130., 255., len(years))})
-        gross_output_df.index = gross_output_df['years']
-        gross_output_df = gross_output_df.sort_index()
+        gross_output_df = gross_output_df.reset_index()
+        gross_output_df = gross_output_df.drop(columns=['index'])
 
         return gross_output_df
     
