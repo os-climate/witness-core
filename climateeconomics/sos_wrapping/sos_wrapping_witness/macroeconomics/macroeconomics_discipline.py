@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
+from pathlib import Path
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
@@ -21,6 +22,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import pandas as pd
 import numpy as np
+from os.path import join, isfile
 from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
@@ -230,7 +232,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                  'total_investment_share_of_gdp': total_investment_share_of_gdp})
 
             if 'gross_output_in' in self.get_data_in():
-                gross_output_df = pd.DataFrame({'years': years, 'gross_output': np.linspace(85., 120., len(years))})
+                # get GDP/PPP data in US$ 2020
+                global_data_dir = join(Path(__file__).parents[3], 'data')
+                gross_output_ssp3_file = join(global_data_dir, 'economics_df_ssp3.csv')
+                gross_output_df = None
+                if isfile(gross_output_ssp3_file):
+                    gross_output_df = pd.read_csv(gross_output_ssp3_file)[['years','gross_output']]
+                else:
+                    gross_output_df = pd.DataFrame({'years': years, 'gross_output': np.linspace(130., 255., len(years))})
                 self.set_dynamic_default_values({'gross_output_in': gross_output_df})
 
     def init_execution(self):

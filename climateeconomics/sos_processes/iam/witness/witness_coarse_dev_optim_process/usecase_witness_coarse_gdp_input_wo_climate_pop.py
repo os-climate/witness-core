@@ -32,15 +32,12 @@ class Study(ClimateEconomicsStudyManager):
         witness_uc.study_name = self.study_name
         data_witness = witness_uc.setup_usecase()
         years = arange(self.year_start, self.year_end + 1, self.time_step)
-        gross_output = linspace(85, 145, len(years))
-        df_gross_output = DataFrame({'years': years,
-                                     'gross_output': gross_output})
+        
         updated_data = {f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.assumptions_dict': {'compute_gdp': False,
                                                                 'compute_climate_impact_on_gdp': False,
                                                                 'activate_climate_effect_population': False,
                                                                 'invest_co2_tax_in_renewables': False
-                                                               },
-                        f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.gross_output_in': df_gross_output}
+                                                               }}
         data_witness.append(updated_data)
         return data_witness
 

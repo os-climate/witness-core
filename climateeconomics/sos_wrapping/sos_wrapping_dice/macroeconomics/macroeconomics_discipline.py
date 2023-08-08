@@ -135,9 +135,9 @@ class MacroeconomicsDiscipline(SoSWrapp):
                 max_value = max(economics_df[key].values.max(), max_value)
                 min_value = min(economics_df[key].values.min(), min_value)
 
-            chart_name = 'Economic output'
+            chart_name = 'Economic output (Power Purchase Parity)'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output (trill $)',
+            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $2020]',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)
