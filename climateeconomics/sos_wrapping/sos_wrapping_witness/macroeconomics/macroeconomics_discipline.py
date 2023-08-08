@@ -193,11 +193,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 compute_gdp: bool = assumptions_dict['compute_gdp']
                 # if compute gdp is not activated, we add gdp input
                 if not compute_gdp:
+                    gross_output_df = self.get_default_gross_output_in()
                     dynamic_inputs.update({'gross_output_in': {'type': 'dataframe', 'unit': 'G$',
                                                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                                                'dataframe_descriptor': {'years': ('float', None, False),
                                                                                         'gross_output': (
                                                                                             'float', None, True)},
+                                                               'default':gross_output_df,
                                                                'dataframe_edition_locked': False,
                                                                'namespace': 'ns_witness'}})
 
@@ -205,6 +207,43 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         self.update_default_with_years()
 
+    def get_default_gross_output_in(self):
+        '''
+        Get default values for gross_output_in into GDP PPP economics_df_ssp3.csv file
+        '''
+        year_start = 2020
+        year_end = 2100
+        if 'year_start' in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
+                ['year_start', 'year_end'])
+        years = np.arange(year_start, year_end + 1)
+        global_data_dir = join(Path(__file__).parents[3], 'data')
+        gross_output_ssp3_file = join(global_data_dir, 'economics_df_ssp3.csv')
+        gross_output_df = None
+        if isfile(gross_output_ssp3_file):
+            gross_output_df = pd.read_csv(gross_output_ssp3_file)[['years','gross_output']]
+            gross_output_df.index = gross_output_df['years']
+
+            if gross_output_df.iloc[0]['years'] > year_start:
+                gross_output_df = gross_output_df.append([{'years':year,'gross_output':gross_output_df.iloc[0]['gross_output']} for year in np.arange(year_start,gross_output_df.iloc[0]['years'])], ignore_index=True)
+                gross_output_df.index = gross_output_df['years']
+                gross_output_df = gross_output_df.sort_index()
+            elif gross_output_df.iloc[0]['years'] < year_start:
+                gross_output_df = gross_output_df.drop(index=np.arange(gross_output_df.iloc[0]['years'],year_start))
+            if gross_output_df.iloc[-1]['years'] > year_end:
+                gross_output_df = gross_output_df.drop(index=np.arange(year_end+1, gross_output_df.iloc[-1]['years']+1))
+            elif gross_output_df.iloc[-1]['years'] < year_end:
+                gross_output_df=gross_output_df.append([{'years':year,'gross_output':gross_output_df.iloc[-1]['gross_output']} for year in np.arange(gross_output_df.iloc[-1]['years']+1, year_end+1)], ignore_index=True)
+                
+             
+        else:
+            gross_output_df = pd.DataFrame({'years': years, 'gross_output': np.linspace(130., 255., len(years))})
+        gross_output_df.index = gross_output_df['years']
+        gross_output_df = gross_output_df.sort_index()
+
+        return gross_output_df
+    
+    
     def update_default_with_years(self):
         """
         Update all default dataframes with years 
@@ -231,16 +270,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                  'share_energy_investment': share_energy_investment,
                  'total_investment_share_of_gdp': total_investment_share_of_gdp})
 
-            if 'gross_output_in' in self.get_data_in():
-                # get GDP/PPP data in US$ 2020
-                global_data_dir = join(Path(__file__).parents[3], 'data')
-                gross_output_ssp3_file = join(global_data_dir, 'economics_df_ssp3.csv')
-                gross_output_df = None
-                if isfile(gross_output_ssp3_file):
-                    gross_output_df = pd.read_csv(gross_output_ssp3_file)[['years','gross_output']]
-                else:
-                    gross_output_df = pd.DataFrame({'years': years, 'gross_output': np.linspace(130., 255., len(years))})
-                self.set_dynamic_default_values({'gross_output_in': gross_output_df})
+            
 
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
