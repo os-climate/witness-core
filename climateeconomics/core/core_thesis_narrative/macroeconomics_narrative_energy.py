@@ -199,10 +199,13 @@ class MacroEconomics():
         # Investment in energy
         self.share_energy_investment = pd.Series(
             self.inputs['share_energy_investment']['share_investment'].values / 100.0, index=self.years_range)
-        self.total_share_investment = pd.Series(
-            self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0, index=self.years_range)
-        self.share_n_energy_investment = self.total_share_investment - \
-                                         self.share_energy_investment
+        #self.total_share_investment = pd.Series(
+        #    self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0, index=self.years_range)
+        self.share_n_energy_investment = pd.Series(
+            self.inputs['share_n_energy_investment']['share_investment'].values / 100.0, index=self.years_range)
+
+        self.total_share_investment = self.share_energy_investment + self.share_n_energy_investment
+
         # Population dataframes
         self.population_df = self.inputs['population_df']
         self.population_df.index = self.population_df['years'].values
@@ -2213,9 +2216,9 @@ class MacroEconomics():
             self.inputs['share_energy_investment'])
 
         self.global_investment_constraint['share_investment'] = self.global_investment_constraint[
-                                                                    'share_investment'].values / 100.0 + \
-                                                                self.share_n_energy_investment.values - \
-                                                                self.inputs['total_investment_share_of_gdp'][
+                                                                    'share_investment'].values / 100.0 - \
+                                                                self.total_share_investment.values + \
+                                                                self.inputs['share_n_energy_investment'][
                                                                     'share_investment'].values / 100.0
 
         return self.economics_df.fillna(0.0), self.workforce_df, self.energy_investment.fillna(0.0), self.global_investment_constraint, \
