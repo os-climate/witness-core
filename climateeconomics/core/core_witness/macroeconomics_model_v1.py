@@ -192,10 +192,13 @@ class MacroEconomics():
         #Investment in energy
         self.share_energy_investment = pd.Series(
             self.inputs['share_energy_investment']['share_investment'].values / 100.0, index=self.years_range)
-        self.total_share_investment = pd.Series(
-            self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0, index=self.years_range)
-        self.share_n_energy_investment = self.total_share_investment - \
-            self.share_energy_investment
+        #self.total_share_investment = pd.Series(
+        #    self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0, index=self.years_range)
+        self.share_n_energy_investment = pd.Series(
+            self.inputs['share_n_energy_investment']['share_investment'].values / 100.0, index=self.years_range)
+
+        self.total_share_investment = self.share_energy_investment + self.share_n_energy_investment
+
         self.energy_capital = self.inputs['energy_capital_df']
         self.energy_capital.index = self.energy_capital['years'].values
         # Population dataframes
@@ -530,9 +533,15 @@ class MacroEconomics():
         self.global_investment_constraint = deepcopy(
             self.inputs['share_energy_investment'])
 
-        self.global_investment_constraint['share_investment'] = self.global_investment_constraint['share_investment'].values / 100.0 + \
-            self.share_n_energy_investment.values - \
-            self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0
+        #self.global_investment_constraint['share_investment'] = self.global_investment_constraint['share_investment'].values / 100.0 + \
+        #    self.share_n_energy_investment.values - \
+        #    self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0
+
+        self.global_investment_constraint['share_investment'] = self.global_investment_constraint[
+                                                                    'share_investment'].values / 100.0 - \
+                                                                self.total_share_investment.values + \
+                                                                self.inputs['share_n_energy_investment'][
+                                                                    'share_investment'].values / 100.0
 
     def compute_emax_enet_constraint(self):
         """ Equation for Emax constraint 
@@ -905,34 +914,47 @@ class MacroEconomics():
         return dren_investments
 
     def dinvestment(self, dnet_output):
+        """
+        Computes the gradient of investment
+        """
         years = self.years_range
         nb_years = len(years)
-        dinvestment = np.zeros((nb_years, nb_years))
+        #dinvestment = np.zeros((nb_years, nb_years))
+        dne_investment = np.zeros((nb_years, nb_years))
         denergy_investment = self.share_energy_investment.values * dnet_output
         # Saturation of renewable invest at n * invest wo tax with n ->
         # co2_invest_limit entry parameter
         for i in range(0, nb_years):
             emissions = self.co2_emissions_Gt.at[years[i],
-                                                 'Total CO2 emissions']
+            'Total CO2 emissions']
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
-                                                     'CO2_tax_efficiency']
+            'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],
-                                                            'energy_investment_wo_tax']
+            'energy_investment_wo_tax']
             net_output = self.economics_df.at[years[i], 'output_net_of_d']
-            ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  if self.invest_co2_tax_in_renawables else 0# T$
+            ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12 if self.invest_co2_tax_in_renawables else 0  # T$
             for j in range(0, i + 1):
                 if ren_investments > self.co2_invest_limit * energy_investment_wo_tax:
+                    denergy_investment[i, j] += self.co2_invest_limit * self.share_energy_investment[years[i]] * \
+                                                dnet_output[i, j] * 9 / 10 \
+                                                + self.co2_invest_limit * self.share_energy_investment[years[i]] * \
+                                                dnet_output[i, j] / 10 * np.exp(
+                        - self.co2_invest_limit * energy_investment_wo_tax / ren_investments) \
+                                                + self.co2_invest_limit * self.share_energy_investment[
+                                                    years[i]] * net_output / 10 * (-1) * self.co2_invest_limit * \
+                                                self.share_energy_investment[years[i]] * dnet_output[
+                                                    i, j] / ren_investments \
+                                                * np.exp(
+                        - self.co2_invest_limit * energy_investment_wo_tax / ren_investments)
 
-                    denergy_investment[i, j] += self.co2_invest_limit * self.share_energy_investment[years[i]] * dnet_output[i, j] * 9 / 10 \
-                        + self.co2_invest_limit * self.share_energy_investment[years[i]] * dnet_output[i, j] / 10 * np.exp(- self.co2_invest_limit * energy_investment_wo_tax / ren_investments) \
-                        + self.co2_invest_limit * self.share_energy_investment[years[i]] * net_output / 10 * (-1) * self.co2_invest_limit * self.share_energy_investment[years[i]] * dnet_output[i, j] / ren_investments \
-                        * np.exp(- self.co2_invest_limit * energy_investment_wo_tax / ren_investments)
-
-                dinvestment[i, j] = denergy_investment[i, j] +  self.share_n_energy_investment[years[i] ] * dnet_output[i, j]
-        #and compute d non energy ivnestment 
-        dne_investment = dinvestment - denergy_investment
-                                                 
+                #dinvestment[i, j] = denergy_investment[i, j] + self.share_n_energy_investment[years[i]] * dnet_output[
+                #    i, j]
+                dne_investment[i, j] = self.share_n_energy_investment[years[i]] * dnet_output[i, j]
+        ## and compute d non energy ivnestment
+        #dne_investment = dinvestment - denergy_investment
+        #compute d(total investement)
+        dinvestment = denergy_investment + dne_investment
         return denergy_investment, dinvestment, dne_investment
 
     def compute_dinvestment_dtotal_share_of_gdp(self):
