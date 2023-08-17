@@ -67,9 +67,9 @@ class MacroDiscTest(unittest.TestCase):
         # Energy invest divided by 1e2 (scaling factor invest)
         energy_invest = np.asarray([2.6] * nb_per)
 
-        total_invest = np.asarray([27.0] * nb_per)
-        total_invest = DataFrame(
-            {'years': years, 'share_investment': total_invest})
+        share_n_energy_investment = np.asarray([1.65] * nb_per)
+        share_n_energy_investment = DataFrame(
+            {'years': years, 'share_investment': share_n_energy_investment})
         share_energy_investment = DataFrame(
             {'years': years, 'share_investment': energy_invest})
 
@@ -139,9 +139,8 @@ class MacroDiscTest(unittest.TestCase):
                        # f'{self.name}.{self.model_name}.total_energy_capacity':
                        # 0.0,
                        f'{self.name}.share_energy_investment': share_energy_investment,
-                       # f'{self.name}.share_non_energy_investment':
-                       # share_non_energy_investment,
-                       f'{self.name}.total_investment_share_of_gdp': total_invest,
+                       f'{self.name}.share_n_energy_investment': share_n_energy_investment,
+                       #f'{self.name}.total_investment_share_of_gdp': total_invest,
                        f'{self.name}.energy_production': energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.population_df': population_df,

@@ -70,8 +70,9 @@ class ConsumptionDiscTest(unittest.TestCase):
         residential_energy_df = pd.DataFrame(
             {'years': years, 'residential_energy': residential_energy})
         #Share invest
-        share_invest = np.asarray([27.0] * len(years))
-        total_investment_share_of_gdp = pd.DataFrame({'years':years, 'share_investment': share_invest})
+        share_invest = np.asarray([1.65] * len(years))
+        # total_investment_share_of_gdp = pd.DataFrame({'years':years, 'share_investment': share_invest})
+        share_n_energy_investment = pd.DataFrame({'years': years, 'share_investment': share_invest})
         np.set_printoptions(threshold=np.inf)
         values_dict = {f'{self.name}.year_start': 2020,
                        f'{self.name}.year_end': 2100,
@@ -83,7 +84,7 @@ class ConsumptionDiscTest(unittest.TestCase):
                        f'{self.name}.energy_mean_price': energy_mean_price,
                        f'{self.name}.residential_energy_conso_ref': residential_energy_conso_ref,
                        f'{self.name}.residential_energy': residential_energy_df,
-                       f'{self.name}.total_investment_share_of_gdp': total_investment_share_of_gdp}
+                       f'{self.name}.share_n_energy_investment': share_n_energy_investment}
 
         self.ee.load_study_from_input_dict(values_dict)
 

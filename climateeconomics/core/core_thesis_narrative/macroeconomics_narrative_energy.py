@@ -2216,10 +2216,16 @@ class MacroEconomics():
             self.inputs['share_energy_investment'])
 
         self.global_investment_constraint['share_investment'] = self.global_investment_constraint[
-                                                                    'share_investment'].values / 100.0 - \
-                                                                self.total_share_investment.values + \
+                                                                    'share_investment'].values / 100.0 + \
                                                                 self.inputs['share_n_energy_investment'][
-                                                                    'share_investment'].values / 100.0
+                                                                    'share_investment'].values / 100.0 - \
+                                                                self.total_share_investment.values
+
+        # self.global_investment_constraint['share_investment'] = self.global_investment_constraint[
+        #                                                              'share_investment'].values / 100.0 + \
+        #    self.share_n_energy_investment.values - \
+        #    self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0
+
 
         return self.economics_df.fillna(0.0), self.workforce_df, self.energy_investment.fillna(0.0), self.global_investment_constraint, \
                self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint
