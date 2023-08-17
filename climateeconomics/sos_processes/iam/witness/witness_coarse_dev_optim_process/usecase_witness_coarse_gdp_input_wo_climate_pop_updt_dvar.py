@@ -16,7 +16,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 
 from pandas import DataFrame
-from numpy import arange, linspace
+from numpy import arange, linspace, full
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -31,13 +31,31 @@ class Study(ClimateEconomicsStudyManager):
         witness_uc = usecase_witness()
         witness_uc.study_name = self.study_name
         data_witness = witness_uc.setup_usecase()
-        years = arange(self.year_start, self.year_end + 1, self.time_step)
         
+        dspace = witness_uc.witness_uc.dspace 
+        list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl', 'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl', 'forest_investment_array_mix', 'deforestation_investment_ctrl']
+
+        # clean dspace
+        dspace.drop(dspace.loc[dspace['variable'].isin(list_design_var_to_clean)].index, inplace=True)
+
+        # clean dspace descriptor 
+        dvar_descriptor = witness_uc.witness_uc.design_var_descriptor
+        
+        updated_dvar_descriptor = {k:v for k,v in dvar_descriptor.items() if k not in list_design_var_to_clean}
+        array_value_start = full(16,1e-6)
+        list_to_var_not_to_updt = ['fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix', 'share_energy_investment_ctrl']
+
+        condition = ~dspace['variable'].isin(list_to_var_not_to_updt)
+        # change starting point for all variables except fossil
+        dspace.loc[condition, 'value'] = dspace.loc[condition, 'value'].apply(lambda x : array_value_start)
+        dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
         updated_data = {f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.assumptions_dict': {'compute_gdp': False,
                                                                 'compute_climate_impact_on_gdp': False,
                                                                 'activate_climate_effect_population': False,
                                                                 'invest_co2_tax_in_renewables': False
-                                                               }}
+                                                               },
+                        f'{self.study_name}.{witness_uc.optim_name}.design_space' : dspace,
+                        f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor}
         data_witness.append(updated_data)
         return data_witness
 

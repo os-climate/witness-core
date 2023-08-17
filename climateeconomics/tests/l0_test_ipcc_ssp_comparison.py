@@ -46,6 +46,7 @@ class TestIPCCSSPComparison(unittest.TestCase):
         self.usecase = uc()
         self.usecase.study_name = self.study_name
         values_dict = self.usecase.setup_usecase()
+
         for values_dict_i in values_dict:
             self.ee.load_study_from_input_dict(values_dict_i)
         self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
@@ -72,4 +73,4 @@ if '__main__' == __name__:
 
     cls = TestIPCCSSPComparison()
     cls.setUp()
-    cls.test_ssps_scenario_plot()
+    cls.test_ssps_scenario_plots()

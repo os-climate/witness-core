@@ -228,7 +228,7 @@ WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
     ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.gaseous_hydrogen (TWh)'),
     ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.liquid_hydrogen (TWh)'),
 ]
-CHART_LIST = list(CHARTS_DATA.keys()) + [PRIMARY_ENERGY]
+CHART_LIST = list(CHARTS_DATA.keys()) 
 
 def get_ssp_data(data_name, data_dict, region='World'):
     """
@@ -246,7 +246,17 @@ def get_ssp_data(data_name, data_dict, region='World'):
     return var_df
 
 def post_processing_filters(execution_engine, namespace):
-    return [ChartFilter('Charts', CHART_LIST, CHART_LIST, 'Charts')]
+
+    # get energy list 
+    energy_list = execution_engine.dm.get_value(f'{namespace}.energy_list')
+    # if renewable not in energy list, we are not in coarse 
+    chart_l = CHART_LIST
+
+    if 'renewable' not in energy_list:
+        # if not in coarse, add primary energy chart
+        chart_l = chart_l + [PRIMARY_ENERGY]
+
+    return [ChartFilter('Charts', chart_l, chart_l, 'Charts')]
 
 def get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
     """
@@ -369,8 +379,15 @@ def post_processings(execution_engine, namespace, filters):
         return get_comp_chart_from_df(witness_data, CHARTS_DATA[data_name][Y_AXIS], CHARTS_DATA[data_name][CHART_TITLE])
 
     instanciated_charts = []
+    energy_list = execution_engine.dm.get_value(f'{namespace}.energy_list')
+    # if renewable not in energy list, we are not in coarse 
+    chart_l = CHART_LIST
 
-    graphs_list = CHART_LIST
+    if 'renewable' not in energy_list:
+        # if not in coarse, add primary energy chart
+        chart_l = chart_l + [PRIMARY_ENERGY]
+
+    graphs_list = chart_l
     # Overload default value with chart filter
     if filters is not None:
         for chart_filter in filters:

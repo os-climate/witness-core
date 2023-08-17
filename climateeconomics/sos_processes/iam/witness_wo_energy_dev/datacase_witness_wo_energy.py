@@ -188,7 +188,7 @@ class DataStudy():
         self.dspace.update(dc_agriculture_mix.dspace)
         nb_poles = 8
         update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                asarray([1.65] * nb_poles), asarray([1.5] * nb_poles), asarray([5.0] * nb_poles), enable_variable=False)
+                                [1.65] * nb_poles, [0.5] * nb_poles, [5.0] * nb_poles, enable_variable=False)
         # WITNESS
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
@@ -286,6 +286,16 @@ class DataStudy():
         # e_max_constraint
         list_var.append('emax_enet_constraint')
         list_parent.append('macroeconomics_constraints')
+        list_ns.extend(['ns_functions'])
+        list_ftype.append(INEQ_CONSTRAINT)
+        list_weight.append(-1.0)
+        list_aggr_type.append(
+            AGGR_TYPE_SMAX)
+
+        # -------------------------------------------------
+        # calories_per_day_constraint
+        list_var.append('calories_per_day_constraint')
+        list_parent.append('agriculture_constraints')
         list_ns.extend(['ns_functions'])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)

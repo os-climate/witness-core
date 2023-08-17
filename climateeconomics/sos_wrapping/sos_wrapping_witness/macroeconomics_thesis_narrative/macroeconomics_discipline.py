@@ -503,9 +503,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             min_value = min(min_values.values())
             max_value = max(max_values.values())
 
-            chart_name = 'Economics output'
+            chart_name = 'Economics output (Power Purchase Parity)'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output (trill $)',
+            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)

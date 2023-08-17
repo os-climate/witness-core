@@ -45,7 +45,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            extra_name, after_name=self.ee.study_name)
+            extra_name, after_name=self.ee.study_name, clean_namespaces = True, clean_all_ns_with_name = True)
         self.ee.factory.update_builder_list_with_extra_name(
             extra_name, builder_list=chain_builders)
 
@@ -63,7 +63,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            coupling_name, after_name=self.ee.study_name)
+            coupling_name, after_name=self.ee.study_name, clean_namespaces = True, clean_all_ns_with_name = True)
 
         ns_dict = {'ns_functions': f'{self.ee.study_name}.{coupling_name}.{extra_name}',
                    #'ns_public': f'{self.ee.study_name}',

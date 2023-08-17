@@ -118,7 +118,6 @@ class MacroeconomicsModel():
         """ Compute total investement available 
         Investment = net_output * share_invest 
         """
-        #TODO SWITCH THIS TO SUM OF INVEST ?
         self.investment = self.sum_net_output * self.share_invest/100
 
     def compute_investment_per_sectors(self):

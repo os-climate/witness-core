@@ -37,7 +37,7 @@ class Study(StudyManager):
 
     def __init__(self, year_start=2000, year_end=2020, time_step=1, name='', execution_engine=None, run_usecase=False):
         super().__init__(__file__, execution_engine=execution_engine, run_usecase=run_usecase)
-        self.study_name = 'usecase_services'
+        self.study_name = 'usecase_services_only'
         self.macro_name = '.Macroeconomics'
         self.obj_name = '.Objectives'
         self.coupling_name = ".Sectorization_Eval"
@@ -184,10 +184,10 @@ class Study(StudyManager):
         }
 
         # design var inputs
-        disc_dict[f'{ns_optim}.output_alpha_services_in'] = 0.87
-        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = 0.02
-        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = 0.02
-        disc_dict[f'{ns_optim}.prod_start_services_in'] = 0.27
+        disc_dict[f'{ns_optim}.output_alpha_services_in'] = np.array([0.87])
+        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = np.array([0.02])
+        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = np.array([0.02])
+        disc_dict[f'{ns_optim}.prod_start_services_in'] = np.array([0.27])
         #         disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = 0.031947197
         #         disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = 2.63340451
         #         disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = 2072.605142
@@ -222,10 +222,27 @@ class Study(StudyManager):
         hist_gdp = pd.read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
+        hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
+        indus_invest = pd.DataFrame({'years': hist_invest['years'], 'Industry': hist_invest['Industry']})
+        agri_invest = pd.DataFrame({'years': hist_invest['years'], 'Agriculture': hist_invest['Agriculture']})
+        services_invest = pd.DataFrame({'years': hist_invest['years'], 'Services': hist_invest['Services']})
+
+
+        long_term_energy_eff =  pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
+        lt_enef_agri = pd.DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Agriculture']})
+        lt_enef_indus = pd.DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Industry']})
+        lt_enef_services = pd.DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Services']})
         sect_input = {}
         sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
         sect_input[ns_coupling + self.obj_name + '.historical_capital'] = hist_capital
         sect_input[ns_coupling + self.obj_name + '.historical_energy'] = hist_energy
+        sect_input[self.ns_industry + '.hist_sector_investment'] = hist_invest
+        sect_input[self.ns_agriculture + '.hist_sector_investment'] = hist_invest
+        sect_input[self.ns_services + '.hist_sector_investment'] = hist_invest
+        sect_input[self.ns_industry + '.longterm_energy_efficiency'] = lt_enef_indus
+        sect_input[self.ns_agriculture + '.longterm_energy_efficiency'] = lt_enef_agri
+        sect_input[self.ns_services + '.longterm_energy_efficiency'] = lt_enef_services
+
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'

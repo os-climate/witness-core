@@ -106,10 +106,11 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
     '''
 
     # Prepare data
-    multilevel_df, years = get_multilevel_df(
+    multilevel_df, years, updated_ns = get_multilevel_df(
         execution_engine, namespace,
         columns=['price_per_kWh', 'price_per_kWh_wotaxes', 'CO2_per_kWh', 'production', 'invest'])
     energy_list = list(set(multilevel_df.index.droplevel(1)))
+    namespace = updated_ns
 
     # Create Figure
     chart_name = f'{chart_name}'
@@ -262,21 +263,15 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     @return multilevel_df: Dataframe
     '''
 
-    # TODO quick fix but need to do a cleaner way but needs deeper reflexion 
     ns_list = execution_engine.ns_manager.get_all_namespace_with_name('ns_energy_mix')
-    max_length = 0
-    longest_object = None
 
     # get ns_object with longest 
     for ns in ns_list:
         if hasattr(ns, 'value') and isinstance(ns.value, str):
-            if namespace in ns.value and len(ns.value) > max_length:
-                max_length = len(ns.value)
-                longest_object = ns  
-    ns_energy_mix = longest_object.value     
-    index = ns_energy_mix.find('.EnergyMix')
-    if index != -1:
-        namespace = ns_energy_mix[:index]
+            if namespace in ns.value:
+                namespace_full = ns.value
+                # split namespace to get the name without EnergyMix
+                namespace = namespace_full.rsplit('.', 1)[0]
 
     EnergyMix = execution_engine.dm.get_disciplines_with_name(
         f'{namespace}.EnergyMix')[0]
@@ -288,6 +283,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
         index=idx,
         columns=['production', 'invest', 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
     energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
+    
     for energy in energy_list:
         if energy == 'biomass_dry':
             namespace_disc = f'{namespace}.AgricultureMix'
@@ -349,7 +345,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     if columns != None and type(columns) == list:
         multilevel_df = pd.DataFrame(multilevel_df[columns])
 
-    return multilevel_df, years
+    return multilevel_df, years, namespace
 
 
 def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_name, summary=True):
@@ -604,6 +600,17 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 
     @return multilevel_df: Dataframe
     '''
+    
+    ns_list = execution_engine.ns_manager.get_all_namespace_with_name('ns_energy_mix')
+
+    # get ns_object with longest 
+    for ns in ns_list:
+        if hasattr(ns, 'value') and isinstance(ns.value, str):
+            if namespace in ns.value:
+                namespace_full = ns.value
+                # split namespace to get the name without EnergyMix
+                namespace = namespace_full.rsplit('.', 1)[0]
+
     EnergyMix = execution_engine.dm.get_disciplines_with_name(
         f'{namespace}.EnergyMix')[0]
     energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
