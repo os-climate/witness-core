@@ -126,14 +126,14 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN, 
         'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'kcal',
-                           'dataframe_descriptor': {'years': ('float', None, False),
-                                                    'kcal_pc': ('float', None, False),
+                           'dataframe_descriptor': {'years': ('float', None, True),
+                                                    'kcal_pc': ('float', None, True),
                                                     }
                            },
         'diet_mortality_param_df': {'type': 'dataframe', 'default': default_diet_mortality_param_df, 'user_level': 3, 'unit': '-',
                                     'dataframe_descriptor': {'param': ('string', None, False),
-                                                             'undernutrition': ('float', None, False),
-                                                             'overnutrition': ('float', None, False),
+                                                             'undernutrition': ('float', None, True),
+                                                             'overnutrition': ('float', None, True),
                                                              }
                                     },
         'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
