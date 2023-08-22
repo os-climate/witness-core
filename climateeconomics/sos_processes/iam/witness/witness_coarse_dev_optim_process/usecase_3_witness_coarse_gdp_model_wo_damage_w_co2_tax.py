@@ -48,17 +48,18 @@ class Study(ClimateEconomicsStudyManager):
         # change starting point for all variables except fossil
         dspace.loc[condition, 'value'] = dspace.loc[condition, 'value'].apply(lambda x : array_value_start)
         dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
-        updated_data = {f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.assumptions_dict': {'compute_gdp': False,
+        updated_data = {f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.assumptions_dict': {'compute_gdp': True,
                                                                 'compute_climate_impact_on_gdp': False,
                                                                 'activate_climate_effect_population': False,
-                                                                'invest_co2_tax_in_renewables': False
+                                                                'invest_co2_tax_in_renewables': True
                                                                },
                         f'{self.study_name}.{witness_uc.optim_name}.design_space' : dspace,
                         f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor}
         data_witness.append(updated_data)
 
+        # TODO: change these percentages with biblio research
         data_witness.append({
-            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.ccs_price_percentage": 0.0,
+            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.ccs_price_percentage": 25.0,
             f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.co2_damage_price_percentage": 0.0,
         })
 
