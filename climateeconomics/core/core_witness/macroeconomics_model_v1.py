@@ -92,6 +92,7 @@ class MacroEconomics():
         self.scaling_factor_energy_investment = None
         self.alpha = None
         self.delta_capital_cons_limit = None
+        self.test_df = None # todo: remove
 
         self.set_data()
         self.create_dataframe()
@@ -691,6 +692,7 @@ class MacroEconomics():
         self.compute_delta_capital_constraint_dc()
         self.compute_delta_capital_lin_to_quad_constraint()
 
+        self.test_df = self.economics_df[['non_energy_investment']]
         return self.economics_df.fillna(0.0), self.energy_investment.fillna(0.0), \
             self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint, self.workforce_df, \
             self.capital_df, self.emax_enet_constraint
@@ -924,7 +926,7 @@ class MacroEconomics():
         return dren_investments
 
     def d_investment_d_user_input(self, d_net_output_d_user_input):
-        """derivative of investment wrt user input"""
+        """derivative of investment wrt X, user should provide the derivative of net output wrt X"""
         years = self.years_range
         nb_years = len(years)
         d_energy_investment_d_user_input = self.share_energy_investment.values * d_net_output_d_user_input
@@ -938,7 +940,7 @@ class MacroEconomics():
             energy_investment_wo_tax = self.economics_df.at[years[i],
                                                             'energy_investment_wo_tax']
             net_output = self.economics_df.at[years[i], 'output_net_of_d']
-            ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  if self.invest_co2_tax_in_renawables else 0# T$
+            ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  if self.invest_co2_tax_in_renawables else 0  # T$
             for j in range(0, i + 1):
                 if ren_investments > self.co2_invest_limit * energy_investment_wo_tax:
 
@@ -947,9 +949,7 @@ class MacroEconomics():
                                                 + self.co2_invest_limit * self.share_energy_investment[years[i]] * net_output / 10 * (-1) * self.co2_invest_limit * self.share_energy_investment[years[i]] * d_net_output_d_user_input[i, j] / ren_investments \
                                                 * np.exp(- self.co2_invest_limit * energy_investment_wo_tax / ren_investments)
 
-                #d_investment_d_user_input[i, j] = denergy_investment[i, j] + self.share_non_energy_investment[years[i]] * d_net_output_d_user_input[i, j]
-
-        d_non_energy_investment_d_user_input = np.diag(self.share_non_energy_investment.values) * d_net_output_d_user_input # todo: not GOOD
+        d_non_energy_investment_d_user_input = np.diag(self.share_non_energy_investment.values) @ d_net_output_d_user_input
 
         d_investment_d_user_input = d_energy_investment_d_user_input + d_non_energy_investment_d_user_input
 
@@ -1018,7 +1018,7 @@ class MacroEconomics():
         d_gross_output_d_damage_frac_output = d_gross_output_d_productivity @ d_productivity_d_damage_frac_output
         return d_gross_output_d_damage_frac_output
 
-    def d_net_output_d_damage_frac_output(self, d_gross_output_d_damage_frac_output):
+    def d_net_output_d_damage_frac_output(self, d_gross_output_d_damage_frac_output): # todo : might be wrong when self.damage to productivity is true, when j > i
         """derivative of net output wrt damage frac output #todo: refactor!!!"""
         nb_years = len(self.years_range)
         d_net_output_d_damage_frac_output = self._null_derivative()
@@ -1111,5 +1111,9 @@ class MacroEconomics():
         d_investment_d_share_investment_non_energy = d_non_energy_investment_d_share_investment_non_energy
 
         return d_investment_d_share_investment_non_energy, d_non_energy_investment_d_share_investment_non_energy
+
+    def d_net_output_d_share_energy_invest(self):
+        """derivative of net output wrt share energy_invest"""
+        return self._null_derivative()
 
     """-------------------END of Gradient functions-------------------"""

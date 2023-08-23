@@ -187,13 +187,14 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
+                                     #f'{self.name}.test_df',
                                      f'{self.name}.energy_investment',
-                                     #f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     #f'{self.name}.delta_capital_objective',
-                                     #f'{self.name}.delta_capital_objective_weighted',
-                                     #f'{self.name}.delta_capital_constraint',
-                                     #f'{self.name}.delta_capital_constraint_dc',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc',
                                      f'{self.name}.delta_capital_lintoquad',])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
@@ -224,8 +225,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.share_energy_investment': self.share_energy_investment,
                        f'{self.name}.share_non_energy_investment': self.share_non_energy_investment,
-                       # f'{self.name}.share_non_energy_investment':
-                       # share_non_energy_investment,
                        f'{self.name}.energy_production': self.energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.population_df': self.population_df,
@@ -254,12 +253,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
+                                     #f'{self.name}.test_df',
                                      f'{self.name}.energy_investment',
-                                     #f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     #f'{self.name}.delta_capital_objective',
-                                     #f'{self.name}.delta_capital_objective_weighted',
-                                     #f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
                                      f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_analytic_grad_max_damage(self):
@@ -292,8 +292,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.share_energy_investment': self.share_energy_investment,
                        f'{self.name}.share_non_energy_investment': self.share_non_energy_investment,
-                       # f'{self.name}.share_non_energy_investment':
-                       # share_non_energy_investment,
                        f'{self.name}.energy_production': self.energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.population_df': self.population_df,
@@ -322,12 +320,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
+                                     #f'{self.name}.test_df',
                                      f'{self.name}.energy_investment',
-                                     #f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     #f'{self.name}.delta_capital_objective',
-                                     #f'{self.name}.delta_capital_objective_weighted',
-                                     #f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
                                      f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
@@ -349,9 +348,12 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        share_investment = DataFrame(
+        share_energy_investment = DataFrame(
             {'years': self.years,
-             'energy': [60.0] * self.nb_per,
+             'energy': [60.0] * self.nb_per,})
+
+        share_non_energy_investment = DataFrame(
+            {'years': self.years,
              'non_energy': [20.0] * self.nb_per})
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
@@ -361,9 +363,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': False,
                        f'{self.name}.frac_damage_prod': 0.3,
-                       f'{self.name}.share_investment': share_investment,
-                       # f'{self.name}.share_non_energy_investment':
-                       # share_non_energy_investment,
+                       f'{self.name}.share_energy_investment': share_energy_investment,
+                       f'{self.name}.share_non_energy_investment': share_non_energy_investment,
                        f'{self.name}.energy_production': self.energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.population_df': self.population_df,
@@ -392,12 +393,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
+                                     #f'{self.name}.test_df',
                                      f'{self.name}.energy_investment',
-                                     #f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     #f'{self.name}.delta_capital_objective',
-                                     #f'{self.name}.delta_capital_objective_weighted',
-                                     #f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
                                      f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_very_high_emissions(self):
@@ -440,8 +442,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.share_energy_investment': self.share_energy_investment,
                        f'{self.name}.share_non_energy_investment': self.share_non_energy_investment,
-                       # f'{self.name}.share_non_energy_investment':
-                       # share_non_energy_investment,
                        f'{self.name}.energy_production': self.energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.population_df': self.population_df,
@@ -469,12 +469,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
+                                     #f'{self.name}.test_df',
                                      f'{self.name}.energy_investment',
-                                     #f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     #f'{self.name}.delta_capital_objective',
-                                     #f'{self.name}.delta_capital_objective_weighted',
-                                     #f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
                                      f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_negativeco2_emissions(self):
@@ -518,8 +519,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.share_energy_investment': self.share_energy_investment,
                        f'{self.name}.share_non_energy_investment': self.share_non_energy_investment,
-                       # f'{self.name}.share_non_energy_investment':
-                       # share_non_energy_investment,
                        f'{self.name}.energy_production': self.energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.population_df': self.population_df,
@@ -547,12 +546,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
+                                     #f'{self.name}.test_df',
                                      f'{self.name}.energy_investment',
-                                     #f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     #f'{self.name}.delta_capital_objective',
-                                     #f'{self.name}.delta_capital_objective_weighted',
-                                     #f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
                                      f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_negativeco2_tax(self):
@@ -586,8 +586,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.share_energy_investment': self.share_energy_investment,
                        f'{self.name}.share_non_energy_investment': self.share_non_energy_investment,
-                       # f'{self.name}.share_non_energy_investment':
-                       # share_non_energy_investment,
                        f'{self.name}.energy_production': self.energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.population_df': self.population_df,
@@ -615,12 +613,13 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.working_age_population_df',
                                      f'{self.name}.energy_capital'],
                              outputs=[f'{self.name}.economics_df',
+                                      #f'{self.name}.test_df',
                                       f'{self.name}.energy_investment',
-                                      #f'{self.name}.pc_consumption_constraint',
+                                      f'{self.name}.pc_consumption_constraint',
                                       f'{self.name}.emax_enet_constraint',
-                                      #f'{self.name}.delta_capital_objective',
-                                      #f'{self.name}.delta_capital_objective_weighted',
-                                      #f'{self.name}.delta_capital_constraint',
+                                      f'{self.name}.delta_capital_objective',
+                                      f'{self.name}.delta_capital_objective_weighted',
+                                      f'{self.name}.delta_capital_constraint',
                                       f'{self.name}.delta_capital_constraint_dc'])
 
     def test_macro_economics_without_compute_gdp_analytic_grad(self):
@@ -693,13 +692,14 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
+                                     #f'{self.name}.test_df',
                                      f'{self.name}.energy_investment',
-                                     #f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     #f'{self.name}.delta_capital_objective',
-                                     #f'{self.name}.delta_capital_objective_weighted',
-                                     #f'{self.name}.delta_capital_constraint',
-                                     #f'{self.name}.delta_capital_constraint_dc',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc',
                                      f'{self.name}.delta_capital_lintoquad'])
 
     def test_macro_economics_without_compute_gdp_w_damage_to_productivity_analytic_grad(self):
@@ -772,13 +772,14 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
+                                     #f'{self.name}.test_df',
                                      f'{self.name}.energy_investment',
-                                     #f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     #f'{self.name}.delta_capital_objective',
-                                     #f'{self.name}.delta_capital_objective_weighted',
-                                     #f'{self.name}.delta_capital_constraint',
-                                     #f'{self.name}.delta_capital_constraint_dc',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc',
                                      f'{self.name}.delta_capital_lintoquad'])
 
     def test_macro_economics_analytic_grad_deactive_co2_tax_investment(self):
@@ -848,13 +849,14 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
                             outputs=[f'{self.name}.economics_df',
+                                     #f'{self.name}.test_df',
                                      f'{self.name}.energy_investment',
-                                     #f'{self.name}.pc_consumption_constraint',
+                                     f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
-                                     #f'{self.name}.delta_capital_objective',
-                                     #f'{self.name}.delta_capital_objective_weighted',
-                                     #f'{self.name}.delta_capital_constraint',
-                                     #f'{self.name}.delta_capital_constraint_dc',
+                                     f'{self.name}.delta_capital_objective',
+                                     f'{self.name}.delta_capital_objective_weighted',
+                                     f'{self.name}.delta_capital_constraint',
+                                     f'{self.name}.delta_capital_constraint_dc',
                                      f'{self.name}.delta_capital_lintoquad'])
 
 
