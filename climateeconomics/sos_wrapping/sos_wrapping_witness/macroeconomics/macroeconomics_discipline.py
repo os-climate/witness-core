@@ -132,7 +132,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'test_df': {'type': 'dataframe', 'visibility': 'Shared', 'unit': '100G$', 'namespace': 'ns_witness'},
         'economics_detail_df': {'type': 'dataframe', 'unit': '-'},
         Glossary.Economics_df['var_name']: Glossary.Economics_df,
         'energy_investment': {'type': 'dataframe', 'visibility': 'Shared', 'unit': '100G$', 'namespace': 'ns_witness'},
@@ -303,7 +302,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        'delta_capital_constraint': self.macro_model.delta_capital_cons,
                        'delta_capital_constraint_dc': self.macro_model.delta_capital_cons_dc, #todo: useless, to remove
                        'delta_capital_lintoquad': self.macro_model.delta_capital_lintoquad,
-                       'test_df': self.macro_model.test_df,
                        }
 
         self.store_sos_outputs_values(dict_values)
@@ -472,9 +470,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         ddelta_capital_cons = self.compute_ddelta_capital_cons(
             capital_ratio * d_capital_d_damage_frac_output, delta_capital_objective_wo_exp_min * usable_capital_ref)
-        # TODO TEST:
-        self.set_partial_derivative_for_other_types(
-            ('test_df', 'non_energy_investment'), ('damage_df', 'damage_frac_output'), d_non_energy_investment_d_damage_frac_output)
 
         self.set_partial_derivative_for_other_types(
             ('economics_df', 'gross_output'), ('damage_df', 'damage_frac_output'), d_gross_output_d_damage_frac_output)

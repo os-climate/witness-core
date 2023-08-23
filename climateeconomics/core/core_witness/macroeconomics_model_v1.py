@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,25 +12,25 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 import numpy as np
 import pandas as pd
 from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
-from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint, compute_ddelta_constraint
+from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint
 from climateeconomics.glossary import Glossary
 
 
 class MacroEconomics():
-    '''
+    """
     Economic pyworld3 that compute the evolution of capital, consumption, output...
-    '''
+    """
     PC_CONSUMPTION_CONSTRAINT = 'pc_consumption_constraint'
 
     def __init__(self, param):
-        '''
+        """
         Constructor
-        '''
+        """
         self.param = param
         self.inputs = None
         self.economics_df = None
@@ -92,7 +92,6 @@ class MacroEconomics():
         self.scaling_factor_energy_investment = None
         self.alpha = None
         self.delta_capital_cons_limit = None
-        self.test_df = None # todo: remove
 
         self.set_data()
         self.create_dataframe()
@@ -292,11 +291,11 @@ class MacroEconomics():
         return workforce
 
     def compute_productivity_growthrate(self, year: int):
-        '''
+        """
         A_g, Growth rate of total factor productivity.
         Returns:
             :returns: A_g(0) * exp(-Δ_a * (t-1))
-        '''
+        """
         t = ((year - self.year_start) / self.time_step) + 1
         productivity_gr = self.productivity_gr_start * \
             np.exp(-self.decline_rate_tfp * self.time_step * (t - 1))
@@ -304,11 +303,11 @@ class MacroEconomics():
         return productivity_gr
 
     def compute_productivity(self, year: int):
-        '''
+        """
         productivity
         if damage_to_productivity= True add damage to the the productivity
         if  not: productivity evolves independently from other variables (except productivity growthrate)
-        '''
+        """
         damage_to_productivity = self.damage_to_productivity
         p_productivity = self.economics_df.at[year -
                                               self.time_step, 'productivity']
@@ -692,7 +691,6 @@ class MacroEconomics():
         self.compute_delta_capital_constraint_dc()
         self.compute_delta_capital_lin_to_quad_constraint()
 
-        self.test_df = self.economics_df[['non_energy_investment']]
         return self.economics_df.fillna(0.0), self.energy_investment.fillna(0.0), \
             self.energy_investment_wo_renewable.fillna(0.0), self.pc_consumption_constraint, self.workforce_df, \
             self.capital_df, self.emax_enet_constraint
