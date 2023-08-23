@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossary import Glossary
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.carbon_emissions_model import CarbonEmissions
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -74,7 +75,6 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                                                   }},
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2, 'unit': '-'},
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'},
-        #'co2_emissions_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': 'Shared', 'namespace': 'ns_energy_mix'},
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
@@ -109,8 +109,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
         'CO2_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
         'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''},
-        'co2_emissions_Gt': {'type': 'dataframe', 'visibility': 'Shared',
-                             'namespace': 'ns_energy_mix', 'unit': 'Gt'}
+        Glossary.CO2EmissionsGt['var_name']: Glossary.CO2EmissionsGt,
     }
 
     def init_execution(self):

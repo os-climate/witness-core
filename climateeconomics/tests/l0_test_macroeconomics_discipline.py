@@ -64,14 +64,11 @@ class MacroDiscTest(unittest.TestCase):
         nb_per = round(
             (year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
-        # Energy invest divided by 1e2 (scaling factor invest)
-        energy_invest = np.asarray([2.6] * nb_per)
 
-        share_n_energy_investment = np.asarray([1.65] * nb_per)
-        share_n_energy_investment = DataFrame(
-            {'years': years, 'share_investment': share_n_energy_investment})
-        share_energy_investment = DataFrame(
-            {'years': years, 'share_investment': energy_invest})
+        share_investment = DataFrame(
+            {'years': years,
+             'energy': np.asarray([2.6] * nb_per),
+             'non_energy': np.asarray([4.6] * nb_per)})
 
         # Our world in data Direct primary energy conso data until 2019, then for 2020 drop in 6% according to IEA
         # then IEA data*0.91 (WEO 2020 stated) until 2040 then invented. 0.91 =
@@ -138,9 +135,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
                        # f'{self.name}.{self.model_name}.total_energy_capacity':
                        # 0.0,
-                       f'{self.name}.share_energy_investment': share_energy_investment,
-                       f'{self.name}.share_n_energy_investment': share_n_energy_investment,
-                       #f'{self.name}.total_investment_share_of_gdp': total_invest,
+                       f'{self.name}.share_investment': share_investment,
                        f'{self.name}.energy_production': energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.population_df': population_df,

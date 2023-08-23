@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 
 
-class ConsumptionModel():
+class ConsumptionModel:
     '''
     Used to compute population welfare, utility and consumption. Based on utility pyworld3
     '''

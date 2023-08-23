@@ -22,11 +22,11 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 import numpy as np
 import pandas as pd
 from copy import deepcopy
+from climateeconomics.glossary import Glossary
 
 
 class AgricultureDiscipline(ClimateEcoDiscipline):
-    ''' Disscipline intended to host agricluture pyworld3
-    '''
+    '''Disscipline intended to host agricluture pyworld3'''
 
     # ontology information
     _ontology_data = {
@@ -84,10 +84,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-               'population_df': {'type': 'dataframe', 'unit': 'millions of people',
-                                         'dataframe_descriptor': {'years': ('float', None, False),
-                                                                  'population': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+               Glossary.PopulationDF['var_name']: Glossary.PopulationDF,
                'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
                                    'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True), 'white meat': ('float', [0, 1e9], True), 'milk': ('float', [0, 1e9], True),
                                                             'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),

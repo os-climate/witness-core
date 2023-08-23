@@ -1,0 +1,3 @@
+dp Test.economics_df/d Test.share_non_energy_investment is wrong by 18.363050924115747%.
+dp Test.emax_enet_constraint/d Test.share_energy_investment is wrong by 0.002069350705288278%.
+dp Test.delta_capital_lintoquad/d Test.share_energy_investment is wrong by 0.02738710288851547%.
