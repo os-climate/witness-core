@@ -230,7 +230,7 @@ class Study(ClimateEconomicsStudyManager):
             np.array(dspace_df[f'share_energy_investment_ctrl']['value'])
         design_var_descriptor['share_energy_investment_ctrl'] = {'out_name': 'share_energy_investment',
                                                                  'out_type': 'dataframe',
-                                                                 'key': 'share_investment',
+                                                                 'key': 'energy',
                                                                  'index': years,
                                                                  'index_name': 'years',
                                                                  'namespace_in': 'ns_witness',
@@ -272,13 +272,10 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
+    uc_cls = Study()
     uc_cls.load_data()
-    print(
-        len(uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines))
-    # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
-    #uc_cls.test()
+    #uc_cls.run()
+    uc_cls.test()
 
 #     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_initial_graph(
 #         "initial.pdf")
