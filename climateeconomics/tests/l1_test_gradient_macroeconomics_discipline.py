@@ -135,6 +135,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref':f'{self.name}' }
@@ -201,6 +202,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref':f'{self.name}'}
@@ -265,6 +267,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}'}
@@ -331,6 +334,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref':f'{self.name}'}
@@ -403,6 +407,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref':f'{self.name}'}
@@ -478,6 +483,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref':f'{self.name}'}
@@ -554,6 +560,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref':f'{self.name}'}
@@ -623,6 +630,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}'}
@@ -702,6 +710,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}'}
@@ -780,6 +789,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'Macroeconomics'
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}'}

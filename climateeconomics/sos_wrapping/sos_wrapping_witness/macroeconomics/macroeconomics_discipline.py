@@ -217,7 +217,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     def update_default_with_years(self):
         """
-        Update all default dataframes with years 
+        Update all default dataframes with years
         """
         if 'year_start' in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
@@ -232,8 +232,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             share_energy_investment = pd.DataFrame(
                 {'years': years,
-                 'energy': [2.6] * len(years),
-                 'non_energy': [27.0 - 2.6] * len(years)})
+                 'energy': [2.6] * len(years),})
 
             share_non_energy_investment = pd.DataFrame(
                 {'years': years,
@@ -307,9 +306,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
-        """ 
-        Compute jacobian for each coupling variable 
-        gradiant of coupling variable 
+        """
+        Compute jacobian for each coupling variable
+        gradiant of coupling variable
 
         """
 
@@ -687,7 +686,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             d_consumption_d_share_investment_non_energy)
         d_capital_d_share_investment_non_energy = self.macro_model.d_capital_d_user_input(d_non_energy_invest_d_share_investment_non_energy)
         demaxconstraint = self.macro_model.d_emax_constraint_d_user_input(d_capital_d_share_investment_non_energy)
-        ddelta_capital_objective_dtotal_invest = (
+        ddelta_capital_objective_d_share_investment_non_energy = (
                                                          capital_ratio * d_capital_d_share_investment_non_energy / usable_capital_ref) * compute_dfunc_with_exp_min(
             delta_capital_objective_wo_exp_min, 1e-15)
 
@@ -716,10 +715,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('emax_enet_constraint',), ('share_non_energy_investment', 'non_energy'), demaxconstraint)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective',), ('share_non_energy_investment', 'non_energy'),
-            ddelta_capital_objective_dtotal_invest)
+            ddelta_capital_objective_d_share_investment_non_energy)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',), ('share_non_energy_investment', 'non_energy'),
-            alpha * ddelta_capital_objective_dtotal_invest)
+            alpha * ddelta_capital_objective_d_share_investment_non_energy)
 
         self.set_partial_derivative_for_other_types(
             ('delta_capital_constraint',
