@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_thesis_narrative.macroeconomics_narrative_energy import MacroEconomics
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -20,6 +21,7 @@ from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import pandas as pd
 import numpy as np
 from copy import deepcopy
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -50,8 +52,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'default': 130.187,
                               'namespace': 'ns_witness', 'user_level': 2},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 355.9210491, 'user_level': 2},
-        'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
-                          'namespace': 'ns_witness'},
+        GlossaryCore.PopulationDF['var_name']: GlossaryCore.PopulationDF,
         'productivity_gr_start': {'type': 'float', 'default': 0.042925, 'user_level': 2},
         'decline_rate_tfp': {'type': 'float', 'default': 0.02351234, 'user_level': 3},
         'depreciation_capital': {'type': 'float', 'default': 0.08, 'user_level': 2},
@@ -104,8 +105,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'decline_rate_energy_productivity': {'type': 'float', 'default': 0.01345699, 'user_level': 3},
         'init_energy_productivity': {'type': 'float', 'default': 3.045177, 'user_level': 2},
         'init_energy_productivity_gr': {'type': 'float', 'default': 0.0065567, 'user_level': 2},
-        'co2_emissions_Gt': {'type': 'dataframe', 'visibility': 'Shared',
-                             'namespace': 'ns_energy_mix', 'unit': 'Gt'},
+        GlossaryCore.CO2EmissionsGt['var_name']: GlossaryCore.CO2EmissionsGt,
         'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%'},
         'co2_invest_limit': {'type': 'float', 'default': 2.0},
         'CO2_taxes': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},

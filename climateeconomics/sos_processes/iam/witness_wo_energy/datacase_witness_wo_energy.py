@@ -99,17 +99,19 @@ class DataStudy():
         witness_input[self.study_name +
                       '.working_age_population_df'] = working_age_population_df
 
-        self.share_energy_investment_array = asarray([1.65] * nb_per)
-
-        total_invest = asarray([27.0] * nb_per)
-        total_invest = DataFrame(
-            {'years': years, 'share_investment': total_invest})
-        witness_input[self.study_name +
-                      '.total_investment_share_of_gdp'] = total_invest
         share_energy_investment = DataFrame(
-            {'years': years, 'share_investment': self.share_energy_investment_array}, index=years)
-        witness_input[self.study_name +
-                      '.share_energy_investment'] = share_energy_investment
+            {'years': years,
+             'energy': asarray([1.65] * nb_per)},
+            index=years)
+
+        share_non_energy_investment = DataFrame(
+            {'years': years,
+             'non_energy': asarray([27. - 1.65] * nb_per)},
+            index=years)
+
+        witness_input[f'{self.study_name}.share_energy_investment'] = share_energy_investment
+        witness_input[f'{self.study_name}.share_non_energy_investment'] = share_non_energy_investment
+
         data = arange(1.0, nb_per + 1.0, 1)
 
         df_eco = DataFrame({'years': years,
@@ -192,12 +194,18 @@ class DataStudy():
                                 asarray([1.65] * nb_poles), asarray([1.5] * nb_poles), asarray([5.0] * nb_poles), enable_variable=False)
         # WITNESS
         # setup objectives
-        self.share_energy_investment_array = asarray([1.65] * len(years))
-
         share_energy_investment = DataFrame(
-            {'years': years, 'share_investment': self.share_energy_investment_array}, index=years)
-        witness_input[self.study_name +
-                      '.share_energy_investment'] = share_energy_investment
+            {'years': years,
+             'energy': asarray([1.65] * nb_per)},
+            index=years)
+
+        share_non_energy_investment = DataFrame(
+            {'years': years,
+             'non_energy': asarray([27. - 1.65] * nb_per)},
+            index=years)
+
+        witness_input[f'{self.study_name}.share_energy_investment'] = share_energy_investment
+        witness_input[f'{self.study_name}.share_non_energy_investment'] = share_non_energy_investment
         witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0

@@ -14,23 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from os.path import join, dirname
-import matplotlib.pyplot as plt
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from climateeconomics.core.core_agriculture.crop import Crop, \
-    OrderOfMagnitude
+from climateeconomics.core.core_agriculture.crop import Crop
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart import InstanciatedPieChart
-from plotly import graph_objects as go
 import numpy as np
 import pandas as pd
 from copy import deepcopy
-
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class CropDiscipline(ClimateEcoDiscipline):
@@ -248,10 +242,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'population_df': {'type': 'dataframe', 'unit': 'millions of people',
-                          'dataframe_descriptor': {'years': ('float', None, False),
-                                                   'population': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+        GlossaryCore.PopulationDF['var_name']: GlossaryCore.PopulationDF,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year','default' : diet_df_default,
                     'dataframe_descriptor': {#'years': ('float', None, False),
                                              'red meat': ('float', [0, 1e9], True),

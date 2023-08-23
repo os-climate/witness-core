@@ -41,7 +41,8 @@ class MacroDiscTest(unittest.TestCase):
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   'ns_ref': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -64,14 +65,14 @@ class MacroDiscTest(unittest.TestCase):
         nb_per = round(
             (year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
-        # Energy invest divided by 1e2 (scaling factor invest)
-        energy_invest = np.asarray([2.6] * nb_per)
 
-        total_invest = np.asarray([27.0] * nb_per)
-        total_invest = DataFrame(
-            {'years': years, 'share_investment': total_invest})
         share_energy_investment = DataFrame(
-            {'years': years, 'share_investment': energy_invest})
+            {'years': years,
+             'energy': np.asarray([2.6] * nb_per)})
+
+        share_non_energy_investment = DataFrame(
+            {'years': years,
+             'non_energy': np.asarray([27. - 2.6] * nb_per)})
 
         # Our world in data Direct primary energy conso data until 2019, then for 2020 drop in 6% according to IEA
         # then IEA data*0.91 (WEO 2020 stated) until 2040 then invented. 0.91 =
@@ -127,7 +128,6 @@ class MacroDiscTest(unittest.TestCase):
         co2_emissions_gt.index = years
         default_co2_efficiency = pd.DataFrame(
             {'years': years, 'CO2_tax_efficiency': 40.0}, index=years)
-    
 
         # out dict definition
         values_dict = {f'{self.name}.year_start': year_start,
@@ -136,12 +136,8 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
-                       # f'{self.name}.{self.model_name}.total_energy_capacity':
-                       # 0.0,
                        f'{self.name}.share_energy_investment': share_energy_investment,
-                       # f'{self.name}.share_non_energy_investment':
-                       # share_non_energy_investment,
-                       f'{self.name}.total_investment_share_of_gdp': total_invest,
+                       f'{self.name}.share_non_energy_investment': share_non_energy_investment,
                        f'{self.name}.energy_production': energy_supply_df,
                        f'{self.name}.damage_df': self.damage_df,
                        f'{self.name}.population_df': population_df,
