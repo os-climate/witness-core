@@ -1,4 +1,4 @@
-class Glossary:
+class GlossaryCore:
     """Glossary gathering variables used in witness core"""
     # todo : Continue filling gathering values here ..
     Years = 'years'

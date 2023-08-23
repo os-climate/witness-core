@@ -26,7 +26,7 @@ from os.path import join, isfile
 from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.constraint_manager import compute_ddelta_constraint
-from climateeconomics.glossary import Glossary
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -55,8 +55,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'init_gross_output': {'type': 'float', 'unit': 'T$', 'visibility': 'Shared', 'default': 130.187,
                               'namespace': 'ns_witness', 'user_level': 2},
         'capital_start_non_energy': {'type': 'float', 'unit': 'T$', 'default': 360.5487346, 'user_level': 2},
-        Glossary.DamageDf['var_name']: Glossary.DamageDf,
-        Glossary.PopulationDF['var_name']: Glossary.PopulationDF,
+        GlossaryCore.DamageDf['var_name']: GlossaryCore.DamageDf,
+        GlossaryCore.PopulationDF['var_name']: GlossaryCore.PopulationDF,
 
         'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
                                       'namespace': 'ns_witness',
@@ -92,8 +92,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3,
                              'unit': '-', 'user_level': 2},
 
-        Glossary.ShareEnergyInvestment['var_name']: Glossary.ShareEnergyInvestment,
-        Glossary.ShareNonEnergyInvestment['var_name']: Glossary.ShareNonEnergyInvestment,
+        GlossaryCore.ShareEnergyInvestment['var_name']: GlossaryCore.ShareEnergyInvestment,
+        GlossaryCore.ShareNonEnergyInvestment['var_name']: GlossaryCore.ShareNonEnergyInvestment,
         # energy_production stored in PetaWh for coupling variables scaling
         'energy_production': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'PWh', 'namespace': 'ns_energy_mix',
                               'dataframe_descriptor': {'years': ('float', None, False),
@@ -107,13 +107,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                              'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'unit': '-', 'user_level': 2},
-        Glossary.CO2EmissionsGt['var_name']: Glossary.CO2EmissionsGt,
+        GlossaryCore.CO2EmissionsGt['var_name']: GlossaryCore.CO2EmissionsGt,
         'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%',
                                'dataframe_descriptor': {'years': ('float', None, False),
                                                         'CO2_tax_efficiency': ('float', None, False), }
                                },
         'co2_invest_limit': {'type': 'float', 'default': 2.0, 'unit': 'factor of energy investment'},
-        Glossary.CO2Taxes['var_name']: Glossary.CO2Taxes,
+        GlossaryCore.CO2Taxes['var_name']: GlossaryCore.CO2Taxes,
         # Employment rate param
         'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
@@ -133,7 +133,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'economics_detail_df': {'type': 'dataframe', 'unit': '-'},
-        Glossary.Economics_df['var_name']: Glossary.Economics_df,
+        GlossaryCore.Economics_df['var_name']: GlossaryCore.Economics_df,
         'energy_investment': {'type': 'dataframe', 'visibility': 'Shared', 'unit': '100G$', 'namespace': 'ns_witness'},
         'energy_investment_wo_renewable': {'type': 'dataframe', 'unit': '100G$'},
         'pc_consumption_constraint': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,

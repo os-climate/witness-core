@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossary import Glossary
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.carbon_emissions_model import CarbonEmissions
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -109,7 +109,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
         'CO2_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
         'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''},
-        Glossary.CO2EmissionsGt['var_name']: Glossary.CO2EmissionsGt,
+        GlossaryCore.CO2EmissionsGt['var_name']: GlossaryCore.CO2EmissionsGt,
     }
 
     def init_execution(self):

@@ -18,7 +18,7 @@ import pandas as pd
 from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint
-from climateeconomics.glossary import Glossary
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class MacroEconomics():
@@ -165,7 +165,7 @@ class MacroEconomics():
         param = self.param
         economics_df = pd.DataFrame(
             index=default_index,
-            columns=list(Glossary.Economics_df['dataframe_descriptor'].keys()))
+            columns=list(GlossaryCore.Economics_df['dataframe_descriptor'].keys()))
 
         for key in economics_df.keys():
             economics_df[key] = 0

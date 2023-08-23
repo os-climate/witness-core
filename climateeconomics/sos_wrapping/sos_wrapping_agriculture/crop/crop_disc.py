@@ -24,7 +24,7 @@ from sostrades_core.tools.post_processing.pie_charts.instanciated_pie_chart impo
 import numpy as np
 import pandas as pd
 from copy import deepcopy
-from climateeconomics.glossary import Glossary
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class CropDiscipline(ClimateEcoDiscipline):
@@ -242,7 +242,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        Glossary.PopulationDF['var_name']: Glossary.PopulationDF,
+        GlossaryCore.PopulationDF['var_name']: GlossaryCore.PopulationDF,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year','default' : diet_df_default,
                     'dataframe_descriptor': {#'years': ('float', None, False),
                                              'red meat': ('float', [0, 1e9], True),

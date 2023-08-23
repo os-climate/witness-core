@@ -18,7 +18,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
 from climateeconomics.core.core_emissions.ghg_emissions_model import GHGEmissions
-from climateeconomics.glossary import Glossary
+from climateeconomics.glossarycore import GlossaryCore
 
 class GHGemissionsDiscipline(ClimateEcoDiscipline):
     "GHGemissions discipline for DICE"
@@ -79,7 +79,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                                         },
     }
     DESC_OUT = {
-        Glossary.CO2EmissionsGt['var_name']: Glossary.CO2EmissionsGt,
+        GlossaryCore.CO2EmissionsGt['var_name']: GlossaryCore.CO2EmissionsGt,
         'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
         'GHG_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'}
