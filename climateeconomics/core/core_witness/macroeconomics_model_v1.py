@@ -431,20 +431,17 @@ class MacroEconomics():
         emissions = self.co2_emissions_Gt.at[year,
                                              'Total CO2 emissions'] * 1e9  # t CO2
         co2_taxes = self.co2_taxes.loc[year, 'CO2_tax']  # $/t
-        co2_tax_eff = self.co2_tax_efficiency.at[year,
-                                                 'CO2_tax_efficiency'] / 100.  # %
+        co2_tax_eff = self.co2_tax_efficiency.at[year, 'CO2_tax_efficiency'] / 100.  # %
         ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
-        i = 0
+
         # if emissions is zero the right gradient (positive) is not zero but the left gradient is zero
         # when complex step we add ren_invest with the complex step and it is
         # not good
         if ren_investments.real == 0.0:
-            i += 1
             ren_investments = 0.0
         # Saturation of renewable invest at n * invest wo tax with n ->
         # co2_invest_limit entry parameter
         if ren_investments > co2_invest_limit * energy_investment_wo_tax and ren_investments != 0.0:
-            i += 1
             ren_investments = co2_invest_limit * energy_investment_wo_tax / 10.0 * \
                 (9.0 + np.exp(- co2_invest_limit *
                               energy_investment_wo_tax / ren_investments))
@@ -616,19 +613,19 @@ class MacroEconomics():
 
     def check_values(self, inputs: dict):
         """check inputs"""
-        if any(np.real(inputs['share_investment']['energy']) > 100.):
+        if any(np.real(inputs['share_energy_investment']['energy']) > 100.):
             print('The share of energy investment is above 100% of total investment')
 
-        if any(np.real(inputs['share_investment']['energy']) < 0.):
+        if any(np.real(inputs['share_energy_investment']['energy']) < 0.):
             print('The share of energy investment is below 0% of total investment')
 
-        if any(np.real(inputs['share_investment']['non_energy']) > 100.):
+        if any(np.real(inputs['share_non_energy_investment']['non_energy']) > 100.):
             print('The share of non energy investment is above 100% of total investment')
 
-        if any(np.real(inputs['share_investment']['non_energy']) < 0.):
+        if any(np.real(inputs['share_non_energy_investment']['non_energy']) < 0.):
             print('The share of non energy investment is below 0% of total investment')
 
-        if any(np.real(inputs['share_investment']['energy'] + inputs['share_investment']['non_energy']) > 100.):
+        if any(np.real(inputs['share_energy_investment']['energy'] + inputs['share_non_energy_investment']['non_energy']) > 100.):
             print('The share of investment (energy + non energy) exceeds 100% of total investment')
 
     def compute(self, inputs: dict):
@@ -636,7 +633,7 @@ class MacroEconomics():
         Compute all models for year range
         """
 
-        #self.check_values(inputs) # todo: remettre
+        self.check_values(inputs)
         self.create_dataframe()
         self.inputs = deepcopy(inputs)
         self.set_coupling_inputs()
@@ -894,8 +891,8 @@ class MacroEconomics():
         co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
 
         ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
-        d_ren_investments_dco2_taxes = emissions * \
-            co2_tax_eff / 1e12 * np.identity(nb_years) # todo: np.diag instead
+        d_ren_investments_dco2_taxes = np.diag(emissions * co2_tax_eff / 1e12)
+
         # derivative matrix initialization
         dren_investments = self._null_derivative()
         if self.invest_co2_tax_in_renawables:
@@ -998,25 +995,23 @@ class MacroEconomics():
 
     def d_gross_output_d_damage_frac_output(self):
         """derivative of gross output wrt damage frac output"""
-        nb_years = len(self.years_range)
         if not self.compute_gdp or not self.damage_to_productivity:
-            return np.zeros((nb_years, nb_years))
+            return self._null_derivative()
 
         d_productivity_d_damage_frac_output = self.d_productivity_d_damage_frac_output()
 
-        d_gross_output_d_productivity = np.identity(nb_years)
         working_pop = self.workforce_df['workforce'].values
         capital_u = self.capital_df['usable_capital'].values
 
-        d_gross_output_d_productivity *= (self.output_alpha * capital_u ** self.output_gamma + (1 - self.output_alpha)
-                                          * (working_pop) ** self.output_gamma) ** (1 / self.output_gamma)
+        d_gross_output_d_productivity = np.diag(
+            (self.output_alpha * capital_u ** self.output_gamma + (1 - self.output_alpha)
+             * working_pop ** self.output_gamma) ** (1 / self.output_gamma))
 
         d_gross_output_d_productivity[0, 0] = 0  # at year start gross output is an input
-        # Then doutput = doutput_d_prod * dproductivity
         d_gross_output_d_damage_frac_output = d_gross_output_d_productivity @ d_productivity_d_damage_frac_output
         return d_gross_output_d_damage_frac_output
 
-    def d_net_output_d_damage_frac_output(self, d_gross_output_d_damage_frac_output): # todo : might be wrong when self.damage to productivity is true, when j > i
+    def d_net_output_d_damage_frac_output(self, d_gross_output_d_damage_frac_output):
         """derivative of net output wrt damage frac output #todo: refactor!!!"""
         nb_years = len(self.years_range)
         d_net_output_d_damage_frac_output = self._null_derivative()
