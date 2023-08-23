@@ -9,4 +9,3 @@ build/
 dist/
 climateeconomics.egg-info/
 pytest.ini
-__init__.py
