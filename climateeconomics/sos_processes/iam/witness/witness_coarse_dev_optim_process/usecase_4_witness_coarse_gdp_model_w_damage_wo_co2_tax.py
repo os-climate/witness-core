@@ -50,7 +50,7 @@ class Study(ClimateEconomicsStudyManager):
         dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
         updated_data = {f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.assumptions_dict': {'compute_gdp': True,
                                                                 'compute_climate_impact_on_gdp': True,
-                                                                'activate_climate_effect_population': False,
+                                                                'activate_climate_effect_population': True,
                                                                 'invest_co2_tax_in_renewables': False
                                                                },
                         f'{self.study_name}.{witness_uc.optim_name}.design_space' : dspace,
