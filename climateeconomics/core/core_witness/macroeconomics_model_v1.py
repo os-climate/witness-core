@@ -34,7 +34,9 @@ class MacroEconomics():
         self.param = param
         self.inputs = None
         self.economics_df = None
-
+        # FIXME: following comment section avoids a pylint error E1130,
+        #  but implies definition of attributes outside the __init__ function
+        """ 
         self.damefrac = None
         self.scaling_factor_energy_production = None
         self.energy_production = None
@@ -92,6 +94,7 @@ class MacroEconomics():
         self.scaling_factor_energy_investment = None
         self.alpha = None
         self.delta_capital_cons_limit = None
+        """
 
         self.set_data()
         self.create_dataframe()
