@@ -92,8 +92,8 @@ and the total investment $I_t =  I_t^E + I_t^{NE}$ is limited to a certain share
 
 ### Consumption
 Consumption is such that: 
-$$C_t = Y_t - I_t$$
-The part of the output not invested is used for consumption. 
+$$C_t = Q_t - I_t$$
+The part of the net output not invested is used for consumption. 
 
 ### Notes on the fitting of the production function
 To obtain the value of the production function parameters we fitted our calculated production to historical data from IMF[^5] of GDP PPP (Purchasing Power Parity) in current US dollars that we calibrated to be in constant 2020 US dollars using the GDP deflator. We also used data from the IMF[^6] for the capital stock value, for population we took data from the World Bank databank[^7] and lastly for energy we used Total Final Consumption from International Energy Agency[^10].
