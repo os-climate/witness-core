@@ -23,7 +23,7 @@ from pathlib import Path
 from copy import deepcopy
 import pandas as pd
 import numpy as np
-
+from climateeconomics.glossarycore import GlossaryCore
 
 class PopulationDiscipline(ClimateEcoDiscipline):
     "     Temperature evolution"
@@ -53,9 +53,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     default_climate_mortality_param_df = pd.read_csv(
         join(global_data_dir, 'climate_additional_deaths_V2.csv'))
     cal_pc_init = pd.DataFrame({'years': years, 'kcal_pc': np.linspace(2400,2400,len(years))})
-    default_diet_mortality_param_df = pd.read_csv(
-        join(global_data_dir, 'diet_mortality_param.csv'))
     # ADD DICTIONARY OF VALUES FOR DEATH RATE
+
+    desc_in_default_diet_mortality_param = GlossaryCore.DietMortalityParamDf
+    desc_in_default_diet_mortality_param['default'] = pd.read_csv(join(global_data_dir, 'diet_mortality_param.csv'))
+
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
@@ -130,12 +132,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                                     'kcal_pc': ('float', None, True),
                                                     }
                            },
-        'diet_mortality_param_df': {'type': 'dataframe', 'default': default_diet_mortality_param_df, 'user_level': 3, 'unit': '-',
-                                    'dataframe_descriptor': {'param': ('string', None, False),
-                                                             'undernutrition': ('float', None, True),
-                                                             'overnutrition': ('float', None, True),
-                                                             }
-                                    },
+        GlossaryCore.DietMortalityParamDf['var_name']: desc_in_default_diet_mortality_param,
         'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
         'kcal_pc_ref': {'type': 'float', 'default': 2000.0, 'user_level': 3, 'unit': 'kcal'},
         }

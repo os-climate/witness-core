@@ -29,6 +29,7 @@ from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase 
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
+from climateeconomics.glossarycore import GlossaryCore
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -110,6 +111,13 @@ class DataStudy():
 
         witness_input[f'{self.study_name}.share_energy_investment'] = share_energy_investment
         witness_input[f'{self.study_name}.share_non_energy_investment'] = share_non_energy_investment
+
+        # deactive mortality due to undernutrition/overnutrition:
+        diet_mortality = pd.read_csv(join(global_data_dir, 'diet_mortality_param.csv'))
+        diet_mortality['undernutrition'] = 0.
+        diet_mortality['overnutrition'] = 0.
+
+        witness_input[f'{self.study_name}.Population.{GlossaryCore.DietMortalityParamDf["var_name"]}'] = diet_mortality
 
         data = arange(1.0, nb_per + 1.0, 1)
 

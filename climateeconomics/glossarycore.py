@@ -30,6 +30,16 @@ class GlossaryCore:
         "dataframe_edition_locked": False,
     }
 
+    DietMortalityParamDf = {'var_name': 'diet_mortality_param_df',
+                            'type': 'dataframe',
+                            'default': 'default_diet_mortality_param_df', 'user_level': 3,
+                            'unit': '-',
+                            'dataframe_descriptor': {'param': ('string', None, False),
+                                                     'undernutrition': ('float', None, True),
+                                                     'overnutrition': ('float', None, True),
+                                                     }
+                            }
+
     DamageDf = {
         "var_name": "damage_df",
         "type": "dataframe",
