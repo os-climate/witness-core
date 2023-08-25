@@ -65,6 +65,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                           'rice and maize': 1150,
                           'potatoes': 670,
                           'fruits and vegetables': 624,
+                          'vegetables': 200 # https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
                           }
 
     # Our World in Data (emissions per kg of food product)
@@ -148,14 +149,24 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     year_range = default_year_end - default_year_start + 1
     total_kcal = 414542.4
-    red_meat_percentage = default_kg_to_kcal['red meat'] / total_kcal * 100
-    white_meat_percentage = default_kg_to_kcal['white meat'] / total_kcal * 100
-    default_red_meat_percentage = pd.DataFrame({
+    # average daily intake source : https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8926870/#:~:text=fold%20cross%2Dvalidation.-,Findings,(100%20g)%20per%20day.
+    red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * 0.051 # 51 g/day
+    milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * 0.021 + default_kg_to_kcal['milk'] * 0.088 # 21 g/day eggs and 88g/day milk
+    white_meat_average_ca_daily_intake = default_kg_to_kcal['white meat'] * 0.035  # 20 - 50 g/day (Lemming & Pitsi, 2022).
+    vegetables_and_carbs_average_ca_daily_intake = 0.338 * default_kg_to_kcal['vegetables'] + 0.56 * 2250 # carbs source: first line of https://www.cambridge.org/core/books/abs/evolving-human-nutrition/feed-the-world-with-carbohydrates/3848C6733E4D2FC315E14B7CA8C007D8
+    default_red_meat_ca_per_day = pd.DataFrame({
         'years': default_years,
-        'red_meat_percentage': np.linspace(red_meat_percentage, 0.3 * red_meat_percentage, year_range)})
-    default_white_meat_percentage = pd.DataFrame({
+        'red_meat_calories_per_day': [red_meat_average_ca_daily_intake] * year_range})
+    default_white_meat_ca_per_day = pd.DataFrame({
         'years': default_years,
-        'white_meat_percentage': np.linspace(white_meat_percentage, 0.3 * white_meat_percentage, year_range)})
+        'white_meat_calories_per_day': [white_meat_average_ca_daily_intake] * year_range})
+    default_vegetables_and_carbs_calories_per_day = pd.DataFrame({
+        'years': default_years,
+        'vegetables_and_carbs_calories_per_day': [vegetables_and_carbs_average_ca_daily_intake] * year_range})
+    default_milk_and_eggs_calories_per_day = pd.DataFrame({
+        'years': default_years,
+        'milk_and_eggs_calories_per_day': [milk_eggs_average_ca_daily_intake] * year_range})
+
 
     # mdpi: according to the NASU recommendations,
     # a fixed value of 0.25 is applied to all crops
@@ -256,21 +267,21 @@ class CropDiscipline(ClimateEcoDiscipline):
         'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal, 'unit': 'kcal/kg', 'namespace': 'ns_crop'},
         'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg', 'namespace': 'ns_crop'},
         # design variables of changing diet
-        'red_meat_calories_per_day': {'type': 'dataframe', 'default': default_red_meat_percentage,
+        'red_meat_calories_per_day': {'type': 'dataframe', 'default': default_red_meat_ca_per_day,
                                 'dataframe_descriptor': {'years': ('float', None, False),
                                                          'red_meat_calories_per_day': ('float', None, True)},
                                 'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
-        'white_meat_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
+        'white_meat_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_ca_per_day,
                                   'dataframe_descriptor': {'years': ('float', None, False),
                                                            'white_meat_calories_per_day': ('float', None, True)},
                                   'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
-        'vegetables_and_carbs_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
+        'vegetables_and_carbs_calories_per_day': {'type': 'dataframe', 'default': default_vegetables_and_carbs_calories_per_day,
                                         'dataframe_descriptor': {'years': ('float', None, False),
                                                                  'vegetables_and_carbs_calories_per_day': (
                                                                  'float', None, True)},
                                         'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                         'namespace': 'ns_crop'},
-        'milk_and_eggs_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_percentage,
+        'milk_and_eggs_calories_per_day': {'type': 'dataframe', 'default': default_milk_and_eggs_calories_per_day,
                                                   'dataframe_descriptor': {'years': ('float', None, False),
                                                                            'milk_and_eggs_calories_per_day': (
                                                                                'float', None, True)},
@@ -278,14 +289,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                   'namespace': 'ns_crop'},
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop', 'default': other_use_crop_default},
 
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius',
-                           'dataframe_descriptor': {'years': ('float', None, False),
-                                                    'exog_forcing': ('float', None, False),
-                                                    'forcing': ('float', None, False),
-                                                    'temp_atmo': ('float', None, False),
-                                                    'temp_ocean': ('float', None, False), }
-                           }
-        ,
+        GlossaryCore.TemperatureDf['var_name']: GlossaryCore.TemperatureDf,
+
         'param_a': {'type': 'float', 'default':-0.00833, 'unit': '-', 'user_level': 3},
         'param_b': {'type': 'float', 'default':-0.04167, 'unit': '-', 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',

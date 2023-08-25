@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.damage_model import DamageModel
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -58,34 +58,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'tp_a3': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.081, 'user_level': 3, 'unit': '-'},
         'tp_a4': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.754, 'user_level': 3, 'unit': '-'},
         'frac_damage_prod': {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
-                         'dataframe_descriptor': {'years': ('float', None, False),
-                                                  'gross_output': ('float', None, False),
-                                                  'population': ('float', None, False),
-                                                  'productivity': ('float', None, False),
-                                                  'productivity_gr': ('float', None, False),
-                                                  'energy_productivity_gr': ('float', None, False),
-                                                  'energy_productivity': ('float', None, False),
-                                                  'consumption': ('float', None, False),
-                                                  'capital': ('float', None, False),
-                                                  'investment': ('float', None, False),
-                                                  'interest_rate': ('float', None, False),
-                                                  'output_growth': ('float', None, False),
-                                                  'energy_investment': ('float', None, False),
-                                                  'pc_consumption': ('float', None, False),
-                                                  'output_net_of_d': ('float', None, False),
-                                                  'net_output': ('float', None, False),
-
-                                                  },
-                         },
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'degree Celsius',
-                           'dataframe_descriptor': {'years': ('float', None, False),
-                                                    'exog_forcing': ('float', None, False),
-                                                    'forcing': ('float', None, False),
-                                                    'temp_ocean': ('float', None, False),
-                                                    'temp_atmo': ('float', None, False),
-                                                    }
-                           },
+        GlossaryCore.Economics_df['var_name']: GlossaryCore.Economics_df,
+        GlossaryCore.TemperatureDf['var_name']: GlossaryCore.TemperatureDf,
         'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                        'namespace': 'ns_ref', 'user_level': 2},
         'damage_constraint_factor': {'type': 'array', 'unit': '-', 'user_level': 2},
@@ -94,8 +68,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared',
-                      'namespace': 'ns_witness'},
+        GlossaryCore.DamageDf['var_name']: GlossaryCore.DamageDf,
         'expected_damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 

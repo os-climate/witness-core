@@ -108,3 +108,13 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": "ns_witness",
     }
+    TemperatureDf = {'var_name':'temperature_df',
+                     'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
+                     'unit': 'degree Celsius',
+                      'dataframe_descriptor': {'years': ('float', None, False),
+                                                'exog_forcing': ('float', None, False),
+                                                'forcing': ('float', None, False),
+                                                'temp_atmo': ('float', None, False),
+                                                'temp_ocean': ('float', None, False),
+                                               }
+                       }
