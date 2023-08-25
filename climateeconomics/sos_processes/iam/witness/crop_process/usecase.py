@@ -204,8 +204,8 @@ class Study(StudyManager):
 
         setup_data_list.append(agriculture_input)
 
-        red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
-        white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
+        red_meat_percentage_ctrl = np.linspace(300, 300, self.nb_poles)
+        white_meat_percentage_ctrl = np.linspace(200, 200, self.nb_poles)
 
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl

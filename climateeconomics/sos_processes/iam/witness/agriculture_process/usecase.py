@@ -99,7 +99,7 @@ class Study(StudyManager):
         population_df = pd.DataFrame(
             {"years": years, "population": population})
         population_df.index = years
-
+        """
         red_meat_percentage = np.linspace(6.82, 1, year_range)
         white_meat_percentage = np.linspace(13.95, 5, year_range)
         self.red_meat_percentage = pd.DataFrame({
@@ -108,7 +108,7 @@ class Study(StudyManager):
         self.white_meat_percentage = pd.DataFrame({
             'years': years,
             'white_meat_percentage': white_meat_percentage})
-
+        """
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
                                 'milk': [79.27],
@@ -127,10 +127,10 @@ class Study(StudyManager):
         agriculture_input[self.study_name + self.agriculture_name +
                           '.diet_df'] = diet_df
 
-        agriculture_input[self.study_name +
-                          '.red_meat_percentage'] = self.red_meat_percentage
-        agriculture_input[self.study_name +
-                          '.white_meat_percentage'] = self.white_meat_percentage
+        # agriculture_input[self.study_name +
+        #                   '.red_meat_percentage'] = self.red_meat_percentage
+        # agriculture_input[self.study_name +
+        #                   '.white_meat_percentage'] = self.white_meat_percentage
         agriculture_input[self.study_name + self.agriculture_name +
                           '.other_use_agriculture'] = other
 
@@ -142,8 +142,8 @@ class Study(StudyManager):
 
         setup_data_list.append(agriculture_input)
 
-        red_meat_percentage_ctrl = np.linspace(6.82, 6.82, self.nb_poles)
-        white_meat_percentage_ctrl = np.linspace(13.95, 13.95, self.nb_poles)
+        red_meat_percentage_ctrl = np.linspace(300, 300, self.nb_poles)
+        white_meat_percentage_ctrl = np.linspace(200, 200, self.nb_poles)
 
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_percentage_ctrl'] = red_meat_percentage_ctrl

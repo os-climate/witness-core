@@ -167,7 +167,6 @@ class CropDiscipline(ClimateEcoDiscipline):
         'years': default_years,
         'milk_and_eggs_calories_per_day': [milk_eggs_average_ca_daily_intake] * year_range})
 
-
     # mdpi: according to the NASU recommendations,
     # a fixed value of 0.25 is applied to all crops
     # 50% of crops are left on the field,
