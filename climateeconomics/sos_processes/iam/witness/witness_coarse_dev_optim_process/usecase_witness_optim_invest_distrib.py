@@ -109,7 +109,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "pg_tol": 1e-16,
                                                                       "xtol_rel": 1e-16,
                                                                       "xtol_abs": 1e-16,
-                                                                      "max_iter": 700,
+                                                                      "max_iter": 1,
                                                                       "disp": 30},
                              # f'{ns}.{self.optim_name}.{witness_uc.coupling_name}.linear_solver_MDO':
                              # 'GMRES',
