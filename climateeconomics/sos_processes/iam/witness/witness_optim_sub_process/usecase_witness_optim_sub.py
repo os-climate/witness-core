@@ -237,10 +237,13 @@ class Study(ClimateEconomicsStudyManager):
                                                                  'namespace_out': 'ns_witness'
                                                                  }
 
-
         func_df = self.witness_uc.func_df
         func_df.loc[func_df['variable'] == 'land_demand_constraint', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'invest_sum_eq_cons', 'weight'] = 0.
+        func_df.loc[func_df['variable'] == 'non_use_capital_cons', 'weight'] = 0.
+        func_df.loc[func_df['variable'] == 'calories_per_day_constraint', 'weight'] = 0.
+        func_df.loc[func_df['variable'] == 'forest_lost_capital_cons', 'weight'] = 0.
+        func_df.loc[func_df['variable'] == 'total_prod_minus_min_prod_constraint_df', 'weight'] = 0.
 
         new_row = {'variable':'invest_sum_ineq_cons',
                    'parent': 'invests_constraint',
