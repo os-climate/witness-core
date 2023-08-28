@@ -237,10 +237,21 @@ class Study(ClimateEconomicsStudyManager):
                                                                  'namespace_out': 'ns_witness'
                                                                  }
 
-        self.func_df = self.witness_uc.func_df
+
+        func_df = self.witness_uc.func_df
+        func_df.loc[func_df['variable'] == 'land_demand_constraint', 'weight'] = 0.
+        func_df.loc[func_df['variable'] == 'invest_sum_eq_constraint', 'weight'] = 0.
+
+        new_row = {'variable':'invest_sum_ineq_cons',
+                   'parent': 'invests_constraint',
+                   'ftype':'ineq_constraint',
+                   'weight': -1.,
+                   'aggr':'stype',
+                   'namespace':'ns_functions'}
+        func_df.append(new_row, ignore_index=True)
+        self.func_df = func_df
         self.design_var_descriptor = design_var_descriptor
-        
-        values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df
+        values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = func_df
 
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
