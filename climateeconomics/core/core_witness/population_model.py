@@ -252,8 +252,9 @@ class Population:
             1 + np.exp(-param['death_rate_delta'].values * 
                        (gdp / pop - param['death_rate_phi'].values))) ** (1 / param['death_rate_nu'].values)
         # Add climate impact on death rate
-        climate_death_rate = add_death['beta'].values * \
-            (temp / cal_temp_increase) ** theta
+        climate_death_rate = add_death['beta'].values * (temp / cal_temp_increase) ** theta
+        if not self.activate_climate_effect_on_population:
+            climate_death_rate *= 0
 
         # Add diet impact on death rate
         alpha_diet = self.diet_mortality_param_df['undernutrition'].values
@@ -299,8 +300,7 @@ class Population:
                     self.death_rate_dict[effect][year][-1])
 
                 nb_death = pop_year * np.array(full_dr_death)
-                if effect != 'climate' or self.activate_climate_effect_on_population:
-                    total_deaths = total_deaths + nb_death
+                total_deaths = total_deaths + nb_death
                 self.death_list_dict[effect].append(nb_death)
             else:
                 self.death_list_dict[effect].append(total_deaths)

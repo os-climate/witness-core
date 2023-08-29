@@ -260,8 +260,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         life_expectancy_df = deepcopy(
             self.get_sosdisc_outputs('life_expectancy_df'))
 
-        activate_climate_effect = self.get_sosdisc_inputs('assumptions_dict')['activate_climate_effect_population']
-
         if 'World population' in chart_list:
 
             years = list(pop_df.index)
@@ -491,9 +489,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Human cost of global warming per year'
 
-            if not activate_climate_effect:
-                chart_name += " (computed but not applied)"
-
             new_chart = TwoAxesInstanciatedChart('years', ' Number of death',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
@@ -529,9 +524,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             max_value = max(max_values.values())
 
             chart_name = 'Cumulative climate deaths'
-
-            if not activate_climate_effect:
-                chart_name += " (computed but not applied)"
 
             new_chart = TwoAxesInstanciatedChart('years', ' cumulative climatic deaths',
                                                  [year_start - 5, year_end + 5],
