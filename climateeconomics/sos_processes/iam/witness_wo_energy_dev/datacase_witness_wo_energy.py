@@ -102,12 +102,12 @@ class DataStudy():
 
         share_energy_investment = DataFrame(
             {'years': years,
-             'energy': asarray([1.65] * nb_per)},
+             'energy': asarray([0.3] * nb_per)},
             index=years)
 
         share_non_energy_investment = DataFrame(
             {'years': years,
-             'non_energy': asarray([27. - 1.65] * nb_per)},
+             'non_energy': asarray([27. - 0.3] * nb_per)},
             index=years)
 
         witness_input[f'{self.study_name}.share_energy_investment'] = share_energy_investment
