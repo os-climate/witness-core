@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from scipy.interpolate import interp1d
 import pickle
@@ -183,6 +184,55 @@ class PopDiscTest(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
         # for graph in graph_list:
         #    graph.to_plotly().show()
+
+    def test_deactivate_climate_effect_flag(self):
+
+        years = np.arange(2020, 2101, 1)
+        nb_per = 2101 - 2020
+        gdp_year_start = 130.187
+        gdp_serie = []
+        temp_serie = []
+        gdp_serie.append(gdp_year_start)
+        temp_serie.append(0.85)
+        for year in np.arange(1, nb_per):
+            gdp_serie.append(gdp_serie[year - 1] * 1.02)
+            temp_serie.append(temp_serie[year - 1] * 1.01)
+
+        economics_df_y = pd.DataFrame(
+            {'years': years, 'output_net_of_d': gdp_serie})
+        economics_df_y.index = years
+        temperature_df = pd.DataFrame(
+            {'years': years, 'temp_atmo': temp_serie})
+        temperature_df.index = years
+        # Test With a average calorie intake at 2000 kcal per capita
+        calories_pc_df = pd.DataFrame(
+            {'years': years, 'kcal_pc': np.linspace(2000,2000,len(years))})
+        calories_pc_df.index = years
+
+        assumptions_dict = ClimateEcoDiscipline.assumptions_dict_default
+        assumptions_dict['activate_climate_effect_population'] = False
+
+        values_dict = {f'{self.name}.year_start': 2020,
+                       f'{self.name}.year_end': 2100,
+                       f'{self.name}.economics_df': economics_df_y,
+                       f'{self.name}.temperature_df': temperature_df,
+                       f'{self.name}.calories_pc_df': calories_pc_df,
+                       f'{self.name}.assumptions_dict': assumptions_dict
+                       }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        self.ee.execute()
+
+        res_pop = self.ee.dm.get_value(f'{self.name}.population_df')
+#        print(res_pop)
+
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{self.model_name}')[0]
+        filter = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filter)
+        for graph in graph_list:
+           graph.to_plotly().show()
 
 
 #     def test_ssps_scenario(self):

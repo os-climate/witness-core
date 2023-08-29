@@ -126,7 +126,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'alpha_birthrate_know': {'type': 'float', 'default': 1.02007061e-01, 'user_level': 3, 'unit': '-'},
         'beta_birthrate_know': {'type': 'float', 'default': 8.01923418e-01, 'user_level': 3, 'unit': '-'},
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
-        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN, 
+        ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN['var_name']: ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'kcal',
                            'dataframe_descriptor': {'years': ('float', None, True),
                                                     'kcal_pc': ('float', None, True),
@@ -259,6 +259,8 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             self.get_sosdisc_outputs('death_dict'))
         life_expectancy_df = deepcopy(
             self.get_sosdisc_outputs('life_expectancy_df'))
+
+        activate_climate_effect = self.get_sosdisc_inputs('assumptions_dict')['activate_climate_effect_population']
 
         if 'World population' in chart_list:
 
@@ -489,6 +491,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Human cost of global warming per year'
 
+            if not activate_climate_effect:
+                chart_name += " (computed but not applied)"
+
             new_chart = TwoAxesInstanciatedChart('years', ' Number of death',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
@@ -507,7 +512,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'Cumulative climate deaths' in chart_list:
-
             years = list(death_dict['climate']['cum_total'].index)
             headers = list(death_dict['climate'].columns.values)
             to_plot = headers[:]
@@ -525,6 +529,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             max_value = max(max_values.values())
 
             chart_name = 'Cumulative climate deaths'
+
+            if not activate_climate_effect:
+                chart_name += " (computed but not applied)"
 
             new_chart = TwoAxesInstanciatedChart('years', ' cumulative climatic deaths',
                                                  [year_start - 5, year_end + 5],
