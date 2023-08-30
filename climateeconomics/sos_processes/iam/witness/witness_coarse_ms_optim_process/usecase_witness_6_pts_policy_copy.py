@@ -154,7 +154,8 @@ class Study(ClimateEconomicsStudyManager):
                     dspace.at[index, "upper_bnd"] = upper_bnd_array
                     dspace.at[index, "lower_bnd"] = lower_bnd_array
                     dspace.at[index, "activated_elem"] = activated_elem_array
-            
+                    values_dict_updt.update({f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.EnergyMix.{variable}':valeur_array,
+                                             f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.CCUS.{variable}':valeur_array})
             dspace['enable_variable'] = False
             dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
 
