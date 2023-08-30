@@ -114,7 +114,10 @@ class Study(ClimateEconomicsStudyManager):
         fossil_properties_df = pd.read_csv(join(dirname(__file__), 'data', 'fossil_properties.csv'))
         fossil_properties_dict = {}
         for index, row in fossil_properties_df.iterrows():
-            fossil_properties_dict[row["variable"]] = row["value"]
+            try:
+                fossil_properties_dict[row["variable"]] = eval(row["value"])
+            except:
+                fossil_properties_dict[row["variable"]] = row["value"]
         # overload values 
         values_dict_updt = {}
         for scenario in scenario_list:
@@ -156,9 +159,9 @@ class Study(ClimateEconomicsStudyManager):
             dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
 
             invest_mix_file = f'optimization scenarios.{scenario}.WITNESS_MDO.WITNESS_Eval.WITNESS.InvestmentDistribution.invest_mix.csv'
-            invest_mix = pd.read_csv(invest_mix_file)
+            invest_mix = pd.read_csv(join(dirname(__file__), 'data', 'invest_mix', invest_mix_file))
             forest_invest_file = f'optimization scenarios.{scenario}.forest_investment.csv'
-            forest_invest = pd.read_csv(forest_invest_file)
+            forest_invest = pd.read_csv(join(dirname(__file__), 'data', 'invest_mix', forest_invest_file))
 
             DAC_name = f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno'
             fossil_energy_name = f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.EnergyMix.fossil'
