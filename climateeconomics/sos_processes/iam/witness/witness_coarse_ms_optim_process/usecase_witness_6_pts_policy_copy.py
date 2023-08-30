@@ -159,7 +159,7 @@ class Study(ClimateEconomicsStudyManager):
             dspace['enable_variable'] = False
             dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
 
-            invest_mix_file = f'optimization scenarios.{scenario}.WITNESS_MDO.WITNESS_Eval.WITNESS.InvestmentDistribution.invest_mix.csv'
+            invest_mix_file = f'optimization scenarios.{scenario}.invest_mix.csv'
             invest_mix = pd.read_csv(join(dirname(__file__), 'data', 'invest_mix', invest_mix_file))
             forest_invest_file = f'optimization scenarios.{scenario}.forest_investment.csv'
             forest_invest = pd.read_csv(join(dirname(__file__), 'data', 'invest_mix', forest_invest_file))
