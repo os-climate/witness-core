@@ -135,7 +135,7 @@ class Study(ClimateEconomicsStudyManager):
 
             dspace_file_name = f'optimization scenarios.{scenario}.WITNESS_MDO.design_space_out.csv'
             dspace_out = pd.read_csv(join(dirname(__file__), 'data', 'data_dvar', dspace_file_name))
-            """
+            
             for index, row in dspace.iterrows():
                 variable = row["variable"]
                 
@@ -154,7 +154,7 @@ class Study(ClimateEconomicsStudyManager):
                     dspace.at[index, "upper_bnd"] = upper_bnd_array
                     dspace.at[index, "lower_bnd"] = lower_bnd_array
                     dspace.at[index, "activated_elem"] = activated_elem_array
-            """
+            
             dspace['enable_variable'] = False
             dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
 
