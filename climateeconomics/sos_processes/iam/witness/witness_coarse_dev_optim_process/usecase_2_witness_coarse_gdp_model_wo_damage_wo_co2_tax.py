@@ -43,11 +43,10 @@ class Study(ClimateEconomicsStudyManager):
         
         updated_dvar_descriptor = {k:v for k,v in dvar_descriptor.items() if k not in list_design_var_to_clean}
         array_value_start = full(16,1e-6)
-        list_to_var_not_to_updt = ['fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix', 'share_energy_investment_ctrl']
+        list_to_var_not_to_updt = ['share_energy_investment_ctrl']
         condition = ~dspace['variable'].isin(list_to_var_not_to_updt)
         # change starting point for all variables except fossil
         dspace.loc[condition, 'value'] = dspace.loc[condition, 'value'].apply(lambda x : array_value_start)
-        dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
         updated_data = {f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.assumptions_dict': {'compute_gdp': True,
                                                                 'compute_climate_impact_on_gdp': False,
                                                                 'activate_climate_effect_population': False,
