@@ -100,7 +100,7 @@ class Study(ClimateEconomicsStudyManager):
                 dv_arrays_dict[
                     f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = \
                     dspace_df[
-                        f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
+                        f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['lower_bnd']
                 design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
                     'out_name': 'invest_mix',
                     'out_type': 'dataframe',
@@ -130,7 +130,7 @@ class Study(ClimateEconomicsStudyManager):
                 dv_arrays_dict[
                     f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
                     dspace_df[
-                        f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
+                        f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['lower_bnd']
                 design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
                     'out_name': 'invest_mix',
                     'out_type': 'dataframe',
@@ -145,7 +145,7 @@ class Study(ClimateEconomicsStudyManager):
             dv_arrays_dict[f'{self.witness_uc.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array'][
                 'value']
 
-        dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']
+        dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['lower_bnd']
         design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',
                                                                 'out_type': 'dataframe',
                                                                 'key': 'forest_investment',
@@ -155,7 +155,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'namespace_out': 'ns_invest'
                                                                 }
         if 'CropEnergy' in self.agri_techno_list:
-            dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = dspace_df[f'crop_investment_array_mix']['value']
+            dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = dspace_df[f'crop_investment_array_mix']['lower_bnd']
             design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
                                                                     'out_type': 'dataframe',
                                                                     'key': 'investment',
@@ -238,7 +238,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                  }
 
         func_df = self.witness_uc.func_df
-        func_df.loc[func_df['variable'] == 'welfare_objective', 'weight'] = 1000.
+        func_df.loc[func_df['variable'] == 'welfare_objective', 'weight'] = 100.
         func_df.loc[func_df['variable'] == 'land_demand_constraint', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'invest_sum_eq_cons', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'non_use_capital_cons', 'weight'] = 0.

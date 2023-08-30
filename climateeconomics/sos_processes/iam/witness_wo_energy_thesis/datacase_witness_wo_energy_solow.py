@@ -179,8 +179,10 @@ class DataStudy():
         StudyManager.merge_design_spaces(
             self, [dc_forest.dspace, dc_agriculture.dspace])
         nb_poles = 8
-        update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                asarray([1.65] * nb_poles), asarray([1.5] * nb_poles), asarray([5.0] * nb_poles), enable_variable=False)
+        update_dspace_dict_with(self.dspace,
+                                'share_energy_investment_ctrl',
+                                asarray([0.2] * nb_poles), asarray([1e-6] * nb_poles), asarray([75.0] * nb_poles),
+                                enable_variable=False)
         # constraint land use
 
         # WITNESS

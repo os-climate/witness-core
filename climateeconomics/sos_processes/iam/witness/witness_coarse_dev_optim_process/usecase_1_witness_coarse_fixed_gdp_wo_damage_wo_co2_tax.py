@@ -33,7 +33,8 @@ class Study(ClimateEconomicsStudyManager):
         data_witness = witness_uc.setup_usecase()
         
         dspace = witness_uc.witness_uc.dspace 
-        list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl', 'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl', 'forest_investment_array_mix', 'deforestation_investment_ctrl']
+        list_design_var_to_clean = ['red_meat_calories_per_day_ctrl',
+                                    'white_meat_calories_per_day_ctrl', 'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl', 'forest_investment_array_mix', 'deforestation_investment_ctrl']
 
         # clean dspace
         dspace.drop(dspace.loc[dspace['variable'].isin(list_design_var_to_clean)].index, inplace=True)
@@ -43,7 +44,7 @@ class Study(ClimateEconomicsStudyManager):
         
         updated_dvar_descriptor = {k:v for k,v in dvar_descriptor.items() if k not in list_design_var_to_clean}
         array_value_start = full(16,1e-6)
-        list_to_var_not_to_updt = ['fossil.FossilSimpleTechno.fossil_FossilSimpleTechno_array_mix', 'share_energy_investment_ctrl']
+        list_to_var_not_to_updt = ['share_energy_investment_ctrl']
         condition = ~dspace['variable'].isin(list_to_var_not_to_updt)
         # change starting point for all variables except fossil
         dspace.loc[condition, 'value'] = dspace.loc[condition, 'value'].apply(lambda x : array_value_start)
