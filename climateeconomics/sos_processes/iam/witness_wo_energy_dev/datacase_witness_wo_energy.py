@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
+from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import CropDiscipline
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
@@ -101,12 +102,12 @@ class DataStudy():
 
         share_energy_investment = DataFrame(
             {'years': years,
-             'energy': asarray([1.65] * nb_per)},
+             'energy': asarray([0.3] * nb_per)},
             index=years)
 
         share_non_energy_investment = DataFrame(
             {'years': years,
-             'non_energy': asarray([27. - 1.65] * nb_per)},
+             'non_energy': asarray([27. - 0.3] * nb_per)},
             index=years)
 
         witness_input[f'{self.study_name}.share_energy_investment'] = share_energy_investment
@@ -116,8 +117,27 @@ class DataStudy():
         diet_mortality = pd.read_csv(join(global_data_dir, 'diet_mortality_param.csv'))
         diet_mortality['undernutrition'] = 0.
         diet_mortality['overnutrition'] = 0.
-
         witness_input[f'{self.study_name}.Population.{GlossaryCore.DietMortalityParamDf["var_name"]}'] = diet_mortality
+
+        witness_input[f'{self.study_name}.AgricultureMix.Crop.red_meat_calories_per_day'] = DataFrame(
+            {'years': years,
+             'red_meat_calories_per_day': [CropDiscipline.red_meat_average_ca_daily_intake] * len(years)}
+        )
+
+        witness_input[f'{self.study_name}.AgricultureMix.Crop.white_meat_calories_per_day'] = DataFrame(
+            {'years': years,
+             'white_meat_calories_per_day': [CropDiscipline.white_meat_average_ca_daily_intake] * len(years)}
+        )
+
+        witness_input[f'{self.study_name}.AgricultureMix.Crop.vegetables_and_carbs_calories_per_day'] = DataFrame(
+            {'years': years,
+             'vegetables_and_carbs_calories_per_day': [CropDiscipline.vegetables_and_carbs_average_ca_daily_intake] * len(years)}
+        )
+
+        witness_input[f'{self.study_name}.AgricultureMix.Crop.milk_and_eggs_calories_per_day'] = DataFrame(
+            {'years': years,
+             'milk_and_eggs_calories_per_day': [CropDiscipline.milk_eggs_average_ca_daily_intake] * len(years)}
+        )
 
         data = arange(1.0, nb_per + 1.0, 1)
 

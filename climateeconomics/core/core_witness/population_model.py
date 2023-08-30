@@ -67,6 +67,7 @@ class Population:
         self.diet_mortality_param_df = inputs['diet_mortality_param_df']
         self.kcal_pc_ref = inputs['kcal_pc_ref']
         self.theta_diet = inputs['theta_diet']
+        self.activate_climate_effect_on_population = inputs['assumptions_dict']['activate_climate_effect_population']
         # First year of the regression of knowledge function
         self.year_reg_know = 1800
 
@@ -251,8 +252,9 @@ class Population:
             1 + np.exp(-param['death_rate_delta'].values * 
                        (gdp / pop - param['death_rate_phi'].values))) ** (1 / param['death_rate_nu'].values)
         # Add climate impact on death rate
-        climate_death_rate = add_death['beta'].values * \
-            (temp / cal_temp_increase) ** theta
+        climate_death_rate = add_death['beta'].values * (temp / cal_temp_increase) ** theta
+        if not self.activate_climate_effect_on_population:
+            climate_death_rate *= 0
 
         # Add diet impact on death rate
         alpha_diet = self.diet_mortality_param_df['undernutrition'].values
@@ -298,14 +300,9 @@ class Population:
                     self.death_rate_dict[effect][year][-1])
 
                 nb_death = pop_year * np.array(full_dr_death)
-
                 total_deaths = total_deaths + nb_death
                 self.death_list_dict[effect].append(nb_death)
-#                 self.death_dict[effect].iloc[year -
-# self.year_start, 1:-1] = list(nb_death)
             else:
-                #                 self.death_dict[effect].iloc[year -
-                # self.year_start, 1:-1] = total_deaths
                 self.death_list_dict[effect].append(total_deaths)
         return total_deaths
 
@@ -629,7 +626,6 @@ class Population:
             dict_d_base_death_rate_d_temp[year].values())
         list_d_climate_dr_d_out = list(
             dict_d_climate_death_rate_d_temp[year].values())
-
         list_d_pop_d_out = {}
         if year in dict_d_population_d_output.keys():
             list_d_pop_d_out = dict_d_population_d_output[year]
@@ -663,8 +659,9 @@ class Population:
         for i in range(0, len(ages)):
             if ages[i] not in list_d_pop_d_out.keys():
                 list_d_pop_d_out[ages[i]] = np.zeros(number_of_values)
+            climate_list_d_dr_d_out_i = climate_list_d_dr_d_out[i] if self.activate_climate_effect_on_population else 0
             d_death[ages[i]] = list_d_pop_d_out[ages[i]] * full_dr_death[i] + \
-                (climate_list_d_dr_d_out[i] + 
+                (climate_list_d_dr_d_out_i +
                  base_list_d_dr_d_out[i]) * pop_year[i]
 
         return d_death
@@ -738,6 +735,8 @@ class Population:
         d_pop_d_temp = {}
         d_working_pop_d_temp = np.zeros((nb_years, nb_years))
         d_pop_tot_d_temp = np.zeros((nb_years, nb_years))
+        if not self.activate_climate_effect_on_population:
+            return d_pop_tot_d_temp, d_working_pop_d_temp
         d_birthrate_d_temp = np.zeros((nb_years, nb_years))
         d_birth_d_temp = np.zeros((nb_years, nb_years))
         d_base_death_rate = {}

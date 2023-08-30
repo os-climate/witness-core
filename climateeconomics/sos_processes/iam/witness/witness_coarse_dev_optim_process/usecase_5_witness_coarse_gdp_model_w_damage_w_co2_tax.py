@@ -60,7 +60,7 @@ class Study(ClimateEconomicsStudyManager):
         # TODO: change these percentages with biblio research
         data_witness.append({
             f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.ccs_price_percentage": 25.0,
-            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.co2_damage_price_percentage": 0.0,
+            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.co2_damage_price_percentage": 25.0,
         })
 
         return data_witness

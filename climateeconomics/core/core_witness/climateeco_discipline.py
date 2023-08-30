@@ -42,7 +42,8 @@ class ClimateEcoDiscipline(SoSWrapp):
     GWP_20_default = {'CO2': 1.0,
                       'CH4': 85.,
                       'N2O': 265.}
-    ASSUMPTIONS_DESC_IN = {'type': 'dict', 'default': assumptions_dict_default , 'visibility': 'Shared', 'namespace': 'ns_witness', 'structuring': True, 'unit': '-'}
+    ASSUMPTIONS_DESC_IN = {
+        'var_name': 'assumptions_dict', 'type': 'dict', 'default': assumptions_dict_default , 'visibility': 'Shared', 'namespace': 'ns_witness', 'structuring': True, 'unit': '-'}
 
     # ontology information
     _ontology_data = {

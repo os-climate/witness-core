@@ -73,7 +73,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             self.test_population_discipline_analytic_grad_big_temp,
             self.test_population_discipline_analytic_small_pop,
             self.test_population_discipline_analytic_grad_temp_negative,
-            self.test_population_discipline_analytic_3000_calories_pc
+            self.test_population_discipline_analytic_3000_calories_pc,
+            self.test_population_discipline_deactivate_climate_effect()
         ]
 
     def test_population_discipline_analytic_grad_output(self):
@@ -113,7 +114,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.economics_df'], outputs=[
@@ -134,7 +135,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.temperature_df'], outputs=[
@@ -397,59 +398,6 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                                 f'{self.name}.population_df', f'{self.name}.working_age_population_df'], step=1e-15,
                             derr_approx='complex_step')
 
-    def test_population_discipline_analytic_w_climate_effect(self):
-        '''
-        Test gradient population with climate effect
-        '''
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
-                       f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.temperature_df': self.temperature_df,
-                       f'{self.name}.assumptions_dict':
-                           {'compute_gdp': True,
-                            'compute_climate_impact_on_gdp': True,
-                            'activate_climate_effect_population': True
-                            }
-                       }
-
-        self.ee.load_study_from_input_dict(values_dict)
-
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
-                            discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df'], outputs=[
-                f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
-
-    def test_population_discipline_analytic_wo_climate_effect(self):
-        '''
-        Test gradient population without climate effect
-        '''
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
-                       f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.temperature_df': self.temperature_df,
-                       f'{self.name}.assumptions_dict':
-                           {'compute_gdp': True,
-                            'compute_climate_impact_on_gdp': True,
-                            'activate_climate_effect_population': False
-                            }
-                       }
-
-        self.ee.load_study_from_input_dict(values_dict)
-
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        # AbstractJacobianUnittest.DUMP_JACOBIAN = True
-        self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_working_population_discipline_analytic_wo_climate_effect_output.pkl',
-                            discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df'], outputs=[
-                f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
-
     def test_population_discipline_analytic_3000_calories_pc(self):
         '''
         Test gradient population with a huge increase in calories intake
@@ -481,6 +429,36 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.calories_pc_df'],
-                            outputs=[f'{self.name}.population_df', f'{self.name}.working_age_population_df'],
+                            outputs=[f'{self.name}.population_df',
+                                     f'{self.name}.working_age_population_df'],
                             step=1e-15,
                             derr_approx='complex_step')
+
+    def test_population_discipline_deactivate_climate_effect(self):
+        '''
+        Test gradient population wrt economics_df
+        '''
+
+        assumptions_dict = ClimateEcoDiscipline.assumptions_dict_default
+        assumptions_dict['activate_climate_effect_population'] = False
+        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+                       f'{self.name}.year_start': self.year_start,
+                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.temperature_df': self.temperature_df,
+                       f'{self.name}.assumptions_dict': assumptions_dict,
+                       }
+
+        self.ee.load_study_from_input_dict(values_dict)
+
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_output_wo_climate_effect.pkl',
+                            discipline=disc_techno, local_data=disc_techno.local_data,
+                            inputs=[f'{self.name}.economics_df',
+                                    f'{self.name}.temperature_df'],
+                            outputs=[f'{self.name}.population_df',
+                                     f'{self.name}.working_age_population_df'
+                                     ],
+                            step=1e-15, derr_approx='complex_step')

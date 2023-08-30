@@ -47,7 +47,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     }
     techno_name = 'CropEnergy'
     default_year_start = 2020
-    default_year_end = 2100
+    default_year_end = 2050
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
     default_kg_to_m2 = {'red meat': 348,
                         'white meat': 14.5,
