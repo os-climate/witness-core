@@ -90,7 +90,6 @@ class Study(StudyManager):
         population_df = pd.DataFrame(
             {"years": years, "population": population})
         population_df.index = years
-        """
         red_meat_percentage = np.linspace(6.82, 1, year_range)
         white_meat_percentage = np.linspace(13.95, 5, year_range)
         self.red_meat_calories_per_day = pd.DataFrame({
@@ -106,7 +105,6 @@ class Study(StudyManager):
         self.milk_and_eggs_calories_per_day = pd.DataFrame({
             'years': years,
             'milk_and_eggs_calories_per_day': white_meat_percentage})
-        """
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
                                 'milk': [79.27],
@@ -170,10 +168,10 @@ class Study(StudyManager):
             f'{self.study_name}.transport_margin': self.margin,
             f'{self.study_name}.CO2_taxes': self.co2_taxes,
             f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
-            #f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_calories_per_day,
-            #f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_calories_per_day,
-            #f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
-            #f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
+            f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_calories_per_day,
+            f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_calories_per_day,
+            f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
+            f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
             f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
             f'{self.study_name}.{energy_name}.Crop.crop_investment': self.crop_investment,
             f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
