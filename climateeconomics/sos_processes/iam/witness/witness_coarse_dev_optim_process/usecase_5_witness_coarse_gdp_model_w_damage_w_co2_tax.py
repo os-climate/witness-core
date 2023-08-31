@@ -46,7 +46,7 @@ class Study(ClimateEconomicsStudyManager):
         list_to_var_not_to_updt = ['share_energy_investment_ctrl']
         condition = ~dspace['variable'].isin(list_to_var_not_to_updt)
         # change starting point for all variables except fossil
-        dspace.loc[condition, 'value'] = dspace.loc[condition, 'value'].apply(lambda x: array_value_start)
+        #dspace.loc[condition, 'value'] = dspace.loc[condition, 'value'].apply(lambda x: array_value_start)
         updated_data = {f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.assumptions_dict': {'compute_gdp': True,
                                                                 'compute_climate_impact_on_gdp': True,
                                                                 'activate_climate_effect_population': True,
