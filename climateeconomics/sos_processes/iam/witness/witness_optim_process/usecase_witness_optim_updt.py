@@ -180,7 +180,7 @@ class Study(ClimateEconomicsStudyManager):
         })
 
         values_dict.update(values_dict_updt)
-
+        optim_values_dict.update(values_dict_updt)
         return [values_dict] + [optim_values_dict]
 
 
