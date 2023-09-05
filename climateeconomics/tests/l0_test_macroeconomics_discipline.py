@@ -19,6 +19,7 @@ import numpy as np
 from pandas import DataFrame, read_csv
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from scipy.interpolate import interp1d
 
@@ -66,13 +67,13 @@ class MacroDiscTest(unittest.TestCase):
             (year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
 
-        share_energy_investment = DataFrame(
-            {'years': years,
-             'energy': np.asarray([2.6] * nb_per)})
+        energy_investment_wo_tax = DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.EnergyInvestmentsWoTaxValue: np.asarray([14.] * nb_per)})
 
         share_non_energy_investment = DataFrame(
-            {'years': years,
-             'non_energy': np.asarray([27. - 2.6] * nb_per)})
+            {GlossaryCore.Years: years,
+             GlossaryCore.ShareNonEnergyInvestmentsValue: np.asarray([27. - 2.6] * nb_per)})
 
         # Our world in data Direct primary energy conso data until 2019, then for 2020 drop in 6% according to IEA
         # then IEA data*0.91 (WEO 2020 stated) until 2040 then invented. 0.91 =
@@ -88,16 +89,16 @@ class MacroDiscTest(unittest.TestCase):
         #Find values for 2020, 2050 and concat dfs 
         energy_supply = f2(np.arange(year_start, year_end+1))
         energy_supply_values = energy_supply * brut_net 
-        energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
+        energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, 'Total production': energy_supply_values})
         energy_supply_df.index = self.years
         energy_supply_df.loc[2021, 'Total production'] = 116.1036348
 
-        self.damage_df = pd.DataFrame({'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
+        self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
                                        'base_carbon_price': np.zeros(self.nb_per)})
         self.damage_df.index = self.years
 
         default_CO2_tax = pd.DataFrame(
-            {'years': years, 'CO2_tax': 50.0}, index=years)
+            {GlossaryCore.Years: years, 'CO2_tax': 50.0}, index=years)
         
         # energy_capital
         nb_per = len(self.years)
@@ -106,7 +107,7 @@ class MacroDiscTest(unittest.TestCase):
         energy_capital.append(energy_capital_year_start)
         for year in np.arange(1, nb_per):
             energy_capital.append(energy_capital[year - 1] * 1.02)
-        self.energy_capital_df = pd.DataFrame({'years': self.years, 'energy_capital': energy_capital})
+        self.energy_capital_df = pd.DataFrame({GlossaryCore.Years: self.years, 'energy_capital': energy_capital})
 
         # retrieve co2_emissions_gt input
         data_dir = join(dirname(__file__), 'data')
@@ -127,7 +128,7 @@ class MacroDiscTest(unittest.TestCase):
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
         co2_emissions_gt.index = years
         default_co2_efficiency = pd.DataFrame(
-            {'years': years, 'CO2_tax_efficiency': 40.0}, index=years)
+            {GlossaryCore.Years: years, 'CO2_tax_efficiency': 40.0}, index=years)
 
         # out dict definition
         values_dict = {f'{self.name}.year_start': year_start,
@@ -136,11 +137,11 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
-                       f'{self.name}.share_energy_investment': share_energy_investment,
-                       f'{self.name}.share_non_energy_investment': share_non_energy_investment,
+                       f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': energy_investment_wo_tax,
+                       f'{self.name}.{GlossaryCore.ShareNonEnergyInvestment["var_name"]}': share_non_energy_investment,
                        f'{self.name}.energy_production': energy_supply_df,
-                       f'{self.name}.damage_df': self.damage_df,
-                       f'{self.name}.population_df': population_df,
+                       f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': population_df,
                        f'{self.name}.CO2_taxes': default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': default_co2_efficiency,
                        f'{self.name}.co2_emissions_Gt': co2_emissions_gt,
@@ -155,5 +156,5 @@ class MacroDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        #for graph in graph_list:
+            #graph.to_plotly().show()

@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
@@ -95,26 +96,26 @@ class DataStudy():
         population_df.index = years
         witness_input[self.study_name + '.population_df'] = population_df
         working_age_population_df = pd.DataFrame(
-            {'years': years, 'population_1570': 6300}, index=years)
+            {GlossaryCore.Years: years, 'population_1570': 6300}, index=years)
         witness_input[self.study_name +
                       '.working_age_population_df'] = working_age_population_df
 
-        share_energy_investment = DataFrame(
-            {'years': years,
-             'energy': asarray([1.65] * nb_per)},
+        energy_investment_wo_tax = DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.EnergyInvestmentsWoTaxValue: asarray([1.65] * nb_per)},
             index=years)
 
         share_non_energy_investment = DataFrame(
-            {'years': years,
-             'non_energy': asarray([27. - 1.65] * nb_per)},
+            {GlossaryCore.Years: years,
+             GlossaryCore.ShareNonEnergyInvestmentsValue: asarray([27. - 1.65] * nb_per)},
             index=years)
 
-        witness_input[f'{self.study_name}.share_energy_investment'] = share_energy_investment
-        witness_input[f'{self.study_name}.share_non_energy_investment'] = share_non_energy_investment
+        witness_input[f'{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'] = energy_investment_wo_tax
+        witness_input[f'{self.study_name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}'] = share_non_energy_investment
 
         data = arange(1.0, nb_per + 1.0, 1)
 
-        df_eco = DataFrame({'years': years,
+        df_eco = DataFrame({GlossaryCore.Years: years,
                             'gross_output': data,
                             'pc_consumption': data,
                             'output_net_of_d': data},
@@ -124,7 +125,7 @@ class DataStudy():
 
         nrj_invest = arange(1000, nb_per + 1000, 1)
 
-        df_energy_investment = DataFrame({'years': years,
+        df_energy_investment = DataFrame({GlossaryCore.Years: years,
                                           'energy_investment': nrj_invest},
                                          index=arange(self.year_start, self.year_end + 1, self.time_step))
         df_energy_investment_before_year_start = DataFrame({'past_years': [2017, 2018, 2019],
@@ -157,7 +158,7 @@ class DataStudy():
             (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
-            {'years': years, 'CO2_tax_efficiency': CO2_tax_efficiency})
+            {GlossaryCore.Years: years, 'CO2_tax_efficiency': CO2_tax_efficiency})
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
@@ -194,18 +195,18 @@ class DataStudy():
                                 asarray([1.65] * nb_poles), asarray([1.5] * nb_poles), asarray([5.0] * nb_poles), enable_variable=False)
         # WITNESS
         # setup objectives
-        share_energy_investment = DataFrame(
-            {'years': years,
-             'energy': asarray([1.65] * nb_per)},
+        energy_investment_wo_tax = DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.EnergyInvestmentsWoTaxValue: asarray([10.] * nb_per)},
             index=years)
 
         share_non_energy_investment = DataFrame(
-            {'years': years,
-             'non_energy': asarray([27. - 1.65] * nb_per)},
+            {GlossaryCore.Years: years,
+             GlossaryCore.ShareNonEnergyInvestmentsValue: asarray([27. - 1.65] * nb_per)},
             index=years)
 
-        witness_input[f'{self.study_name}.share_energy_investment'] = share_energy_investment
-        witness_input[f'{self.study_name}.share_non_energy_investment'] = share_non_energy_investment
+        witness_input[f'{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'] = energy_investment_wo_tax
+        witness_input[f'{self.study_name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}'] = share_non_energy_investment
         witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0
@@ -219,7 +220,7 @@ class DataStudy():
         witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
         # 
 
-        GHG_total_energy_emissions = pd.DataFrame({'years': years,
+        GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    'Total CO2 emissions': np.linspace(37., 10., len(years)),
                                                    'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
                                                    'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
