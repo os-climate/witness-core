@@ -226,17 +226,6 @@ class Study(ClimateEconomicsStudyManager):
             'namespace_out': 'ns_crop'
             }
 
-        dv_arrays_dict[f'{self.witness_uc.study_name}.share_energy_investment_ctrl'] = \
-            np.array(dspace_df[f'share_energy_investment_ctrl']['value'])
-        design_var_descriptor['share_energy_investment_ctrl'] = {'out_name': 'share_energy_investment',
-                                                                 'out_type': 'dataframe',
-                                                                 'key': 'energy',
-                                                                 'index': years,
-                                                                 'index_name': 'years',
-                                                                 'namespace_in': 'ns_witness',
-                                                                 'namespace_out': 'ns_witness'
-                                                                 }
-
         func_df = self.witness_uc.func_df
         func_df.loc[func_df['variable'] == 'welfare_objective', 'weight'] = 100.
         func_df.loc[func_df['variable'] == 'land_demand_constraint', 'weight'] = 0.

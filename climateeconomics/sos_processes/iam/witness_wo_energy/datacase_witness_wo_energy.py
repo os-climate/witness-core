@@ -191,8 +191,7 @@ class DataStudy():
         self.dspace_size = dc_agriculture_mix.dspace.pop('dspace_size')
         self.dspace.update(dc_agriculture_mix.dspace)
         nb_poles = 8
-        update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                asarray([1.65] * nb_poles), asarray([1.5] * nb_poles), asarray([5.0] * nb_poles), enable_variable=False)
+
         # WITNESS
         # setup objectives
         energy_investment_wo_tax = DataFrame(

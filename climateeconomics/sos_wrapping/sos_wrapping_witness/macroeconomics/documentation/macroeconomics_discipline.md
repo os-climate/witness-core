@@ -78,17 +78,19 @@ The capital is divided into two types: energy capital and non energy capital. En
 The equation above is applied to both energy and non energy capital, the total capital stock being the sum. We apply to non energy capital the depreciation rate in input ($depreciation\_rate$) of this model. For energy capital the depreciation rate depends on the technology, the energy capital is therefore computed in each energy technology model and is an input of the macroeconomics model.  
 
 ### Investment
-Investment $I_t$ is defined using the input $share\ investements$, which contains share percentage allowed for the energy sector.
+Investment $I_t$ is defined using the inputs $I^E_{raw}$ and $share\ non\ energy\ investements$, which respectively are 
+direct investments in the energy sector (not resulting from CO2 tax, also called "without tax") and the share percentage of the net GDP output allowed to other sectors.
 
-The investment in energy $I^E$ is: $$I_{t}^E = share\_energy\_investment_t * Q_t + ren\_investments$$
+The investment in energy $I^E$ is:
+$$I^E = I^E_{raw} + I^E_{from CO2 tax}$$
 With:
-$$ren\_investments = emissions \cdot co2\_taxes \cdot co2\_tax\_eff$$
-However, investments coming from CO2 taxes are capped at the value of energy investment without tax multiplied by the model input factor co2_input_limit. It is 2 by default and smoothed with the following formula:
+$$I^E_{from CO2 tax} = emissions \cdot co2\_taxes \cdot co2\_tax\_eff$$
+However, investments in energy coming from CO2 taxes are capped at the value of energy investment without tax multiplied by the model input factor co2_input_limit. It is 2 by default and smoothed with the following formula:
 $$ren\_investments = co2\_invest\_limit \cdot \frac{energy\_investment\_wo\_tax}{10} \cdot(9.0 + e^{- \frac{co2\_invest\_limit \cdot energy\_investment\_wo\_tax}{ren\_investments}})$$
 
 The investment in non-energy $I^{NE}$ is :  
 $$I_{t}^{NE} = share\_non\_energy\_investment_t \cdot Q_t$$ 
-and the total investment $I_t =  I_t^E + I_t^{NE}$ is limited to a certain share of the net output set by $max\_invest$ input. 
+and the total investment $$I_t =  I_t^E + I_t^{NE}$$ is limited to a certain share of the net output set by $max\_invest$ input. 
 
 ### Consumption
 Consumption is such that: 

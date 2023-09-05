@@ -157,7 +157,6 @@ class Study(ClimateEconomicsStudyManager):
                     values_dict_updt.update({f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.EnergyMix.{variable}':valeur_array,
                                              f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.CCUS.{variable}':valeur_array})
             dspace['enable_variable'] = False
-            dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
 
             invest_mix_file = f'optimization scenarios.{scenario}.invest_mix.csv'
             invest_mix = pd.read_csv(join(dirname(__file__), 'data', 'invest_mix', invest_mix_file))

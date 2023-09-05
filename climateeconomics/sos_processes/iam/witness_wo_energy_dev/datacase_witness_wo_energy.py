@@ -62,7 +62,7 @@ class DataStudy():
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
 
         # private values economics operator pyworld3
         witness_input = {}
@@ -94,7 +94,7 @@ class DataStudy():
         population_df = pd.read_csv(
             join(global_data_dir, 'population_df.csv'))
         population_df.index = years
-        witness_input[self.study_name + '.population_df'] = population_df
+        witness_input[self.study_name + f'.{GlossaryCore.PopulationDfValue}'] = population_df
         working_age_population_df = pd.DataFrame(
             {GlossaryCore.Years: years, 'population_1570': 6300}, index=years)
         witness_input[self.study_name +
@@ -142,12 +142,12 @@ class DataStudy():
         data = arange(1.0, nb_per + 1.0, 1)
 
         df_eco = DataFrame({GlossaryCore.Years: years,
-                            'gross_output': data,
-                            'pc_consumption': data,
-                            'output_net_of_d': data},
+                            GlossaryCore.GrossOutput: data,
+                            GlossaryCore.PerCapitaConsumption: data,
+                            GlossaryCore.OutputNetOfDamage: data},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
-        witness_input[self.study_name + '.economics_df'] = df_eco
+        witness_input[self.study_name + f'.{GlossaryCore.EconomicsDfValue}'] = df_eco
 
         nrj_invest = arange(1000, nb_per + 1000, 1)
 
@@ -188,7 +188,7 @@ class DataStudy():
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
 
         # -- load data from resource
         dc_resource = datacase_resource(
@@ -217,10 +217,6 @@ class DataStudy():
         self.dspace_size = dc_agriculture_mix.dspace.pop('dspace_size')
         self.dspace.update(dc_agriculture_mix.dspace)
         nb_poles = 8
-        update_dspace_dict_with(self.dspace, 'share_energy_investment_ctrl',
-                                asarray([0.3] * nb_poles),
-                                asarray([1e-6] * nb_poles),
-                                asarray([75.] * nb_poles), enable_variable=True)
         # WITNESS
         # setup objectives
         energy_investment_wo_tax = DataFrame(
@@ -253,14 +249,7 @@ class DataStudy():
                                                    'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
                                                    'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
-        # witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
-        #         self.exec_eng.dm.export_couplings(
-        #             in_csv=True, f_name='couplings.csv')
 
-        #         self.exec_eng.root_process.coupling_structure.graph.export_initial_graph(
-        #             "initial.pdf")
-        # self.exec_eng.root_process.coupling_structure.graph.export_reduced_graph(
-        # "reduced.pdf")
         setup_data_list.append(witness_input)
 
         return setup_data_list
