@@ -42,7 +42,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
     years = np.arange(2020, 2101)
     CO2_tax = np.asarray([500.] * len(years))
     default_CO2_tax = pd.DataFrame(
-        {'years': years, 'CO2_tax': CO2_tax}, index=years)
+        {GlossaryCore.Years: years, 'CO2_tax': CO2_tax}, index=years)
 
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -81,7 +81,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
     def setup_sos_disciplines(self):
         """
         Check if flag 'compute_climate_impact_on_gdp' is on or not.
-        If so, then the output 'damage_df' is shared with other disciplines that requires it as input,
+        If so, then the output GlossaryCore.DamageDf['var_name' is shared with other disciplines that requires it as input,
         else it is not, and therefore others discipline will demand to specify t input
         """
 
@@ -108,8 +108,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
-        economics_df = in_dict.pop('economics_df')
-        temperature_df = in_dict.pop('temperature_df')
+        economics_df = in_dict.pop(GlossaryCore.EconomicsDfValue)
+        temperature_df = in_dict.pop\
+            (GlossaryCore.TemperatureDf['var_name'])
 
         # pyworld3 execution
         damage_df, expected_damage_df, co2_damage_price_df = self.model.compute(
@@ -117,7 +118,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         # store output data
         out_dict = {'expected_damage_df': expected_damage_df,
-                    'damage_df': damage_df,
+                    GlossaryCore.DamageDf['var_name']: damage_df,
                     'CO2_damage_price': co2_damage_price_df}
 
         self.store_sos_outputs_values(out_dict)
@@ -137,30 +138,34 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         # fill jacobians
         self.set_partial_derivative_for_other_types(
-            ('expected_damage_df', 'damage_frac_output'), ('temperature_df', 'temp_atmo'),  ddamage_frac_output_temp_atmo)
+            ('expected_damage_df', 'damage_frac_output'),
+            (GlossaryCore.TemperatureDf['var_name'], 'temp_atmo'),  ddamage_frac_output_temp_atmo)
 
         self.set_partial_derivative_for_other_types(
-            ('expected_damage_df', 'damages'), ('temperature_df', 'temp_atmo'),  ddamages_temp_atmo)
+            ('expected_damage_df', 'damages'),
+            (GlossaryCore.TemperatureDf['var_name'], 'temp_atmo'),  ddamages_temp_atmo)
 
         self.set_partial_derivative_for_other_types(
-            ('expected_damage_df', 'damages'), ('economics_df', 'gross_output'),  ddamages_gross_output)
+            ('expected_damage_df', 'damages'), (GlossaryCore.EconomicsDfValue, 'gross_output'),  ddamages_gross_output)
 
         compute_climate_impact_on_gdp = bool(self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']) * 1.0
         self.set_partial_derivative_for_other_types(
-            ('damage_df', 'damage_frac_output'), ('temperature_df', 'temp_atmo'),
+            (GlossaryCore.DamageDf['var_name'], 'damage_frac_output'),
+            (GlossaryCore.TemperatureDf['var_name'], 'temp_atmo'),
             ddamage_frac_output_temp_atmo * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
-            ('damage_df', 'damages'), ('temperature_df', 'temp_atmo'), ddamages_temp_atmo * compute_climate_impact_on_gdp)
+            (GlossaryCore.DamageDf['var_name'], 'damages'),
+            (GlossaryCore.TemperatureDf['var_name'], 'temp_atmo'), ddamages_temp_atmo * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
-            ('damage_df', 'damages'), ('economics_df', 'gross_output'), ddamages_gross_output * compute_climate_impact_on_gdp)
+            (GlossaryCore.DamageDf['var_name'], 'damages'), (GlossaryCore.EconomicsDfValue, 'gross_output'), ddamages_gross_output * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_damage_price', 'CO2_damage_price'), ('temperature_df', 'temp_atmo'),  dconstraint_temp_atmo)
-
+            ('CO2_damage_price', 'CO2_damage_price'),
+            (GlossaryCore.TemperatureDf['var_name'], 'temp_atmo'),  dconstraint_temp_atmo)
         self.set_partial_derivative_for_other_types(
-            ('CO2_damage_price', 'CO2_damage_price'), ('economics_df', 'gross_output'),  dconstraint_economics)
+            ('CO2_damage_price', 'CO2_damage_price'), (GlossaryCore.EconomicsDfValue, 'gross_output'),  dconstraint_economics)
 
     def get_chart_filter_list(self):
 
@@ -208,7 +213,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
             if not compute_climate_impact_on_gdp:
                 chart_name += ' (assumed null in macro-economics)'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Damage (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Damage (trill $)',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -232,7 +237,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             co2_damage_price = co2_damage_price_df['CO2_damage_price']
 
-            years = list(co2_damage_price_df['years'].values.tolist())
+            years = list(co2_damage_price_df[GlossaryCore.Years].values.tolist())
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -242,7 +247,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'CO2 damage price'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Price ($/tCO2)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Price ($/tCO2)',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value_1, max_value_1],
                                                  chart_name)

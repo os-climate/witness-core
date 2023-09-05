@@ -6,7 +6,12 @@ class GlossaryCore:
     Years = "years"
     InvestmentsValue = "investment"
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
+    CO2EmissionsGtValue = 'co2_emissions_Gt'
+    CO2TaxesValue = "CO2_taxes"
+    DamageDfValue = "damage_df"
     EconomicsDfValue = "economics_df"
+    PopulationDfValue = "population_df"
+    TemperatureDfValue = 'temperature_df'
     EnergyInvestmentsValue = "energy_investment"
     EnergyInvestmentsWoTaxValue = "energy_investment_wo_tax"
     EnergyInvestmentsWoRenewableValue = 'energy_investment_wo_renewable'
@@ -14,7 +19,7 @@ class GlossaryCore:
     EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"
 
     CO2EmissionsGt = {
-        "var_name": "co2_emissions_Gt",
+        "var_name": CO2EmissionsGtValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": "ns_energy_mix",
@@ -27,7 +32,7 @@ class GlossaryCore:
     }
 
     CO2Taxes = {
-        "var_name": "CO2_taxes",
+        "var_name": CO2TaxesValue,
         "type": "dataframe",
         "unit": "$/tCO2",
         "visibility": "Shared",
@@ -50,7 +55,7 @@ class GlossaryCore:
                             }
 
     DamageDf = {
-        "var_name": "damage_df",
+        "var_name": DamageDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": "ns_witness",
@@ -63,6 +68,11 @@ class GlossaryCore:
         },
     }
 
+
+    GrossOutput = "gross_output"
+    OutputNetOfDamage = "output_net_of_d"
+    Consumption = "consumption"
+    PerCapitaConsumption = "pc_consumption"
     Economics_df = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",
@@ -71,9 +81,9 @@ class GlossaryCore:
         "unit": "-",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "gross_output": ("float", None, False),
-            "output_net_of_d": ("float", None, False),
-            "pc_consumption": ("float", None, False),
+            GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
+            PerCapitaConsumption: ("float", None, False),
         },
     }
 
@@ -83,12 +93,12 @@ class GlossaryCore:
         'unit': '-',
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "gross_output": ("float", None, False),
-            "output_net_of_d": ("float", None, False),
+            GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
             "productivity": ("float", None, False),
             "productivity_gr": ("float", None, False),
-            "consumption": ("float", None, False),
-            "pc_consumption": ("float", None, False),
+            Consumption: ("float", None, False),
+            PerCapitaConsumption: ("float", None, False),
             InvestmentsValue: ("float", None, False),
             EnergyInvestmentsValue: ("float", None, False),
             EnergyInvestmentsWoTaxValue: ("float", None, False),
@@ -99,7 +109,7 @@ class GlossaryCore:
     }
 
     PopulationDF = {
-        "var_name": "population_df",
+        "var_name": PopulationDfValue,
         "type": "dataframe",
         "unit": "millions of people",
         "visibility": "Shared",
@@ -157,7 +167,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": "ns_witness",
     }
-    TemperatureDf = {'var_name':'temperature_df',
+    TemperatureDf = {'var_name': TemperatureDfValue,
                      'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
                      'unit': 'degree Celsius',
                       'dataframe_descriptor': {Years: ('float', None, False),

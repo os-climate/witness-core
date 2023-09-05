@@ -62,7 +62,7 @@ class DataStudy():
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
 
         # private values economics operator pyworld3
         witness_input = {}
@@ -162,7 +162,7 @@ class DataStudy():
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
 
         # -- load data from resource
         dc_resource = datacase_resource(
