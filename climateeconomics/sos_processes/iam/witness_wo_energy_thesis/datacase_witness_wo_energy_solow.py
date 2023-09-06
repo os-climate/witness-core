@@ -19,15 +19,14 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import Study as datacase_agriculture
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
-from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 from sostrades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -86,32 +85,32 @@ class DataStudy():
         population_df = pd.read_csv(
             join(global_data_dir, 'population_df.csv'))
         population_df.index = years
-        witness_input[self.study_name + '.population_df'] = population_df
+        witness_input[f'{self.study_name}.{GlossaryCore.PopulationDfValue}'] = population_df
 
-        self.share_energy_investment_array = asarray([1.65] * nb_per)
+        self.energy_investment_wo_tax_array = asarray([1.65] * nb_per)
 
         total_invest = asarray([25.0] * nb_per)
         total_invest = DataFrame(
-            {'years': years, 'share_investment': total_invest})
+            {GlossaryCore.Years: years, 'share_investment': total_invest})
         witness_input[self.study_name +
                       '.total_investment_share_of_gdp'] = total_invest
         share_energy_investment = DataFrame(
-            {'years': years, 'share_investment': self.share_energy_investment_array}, index=years)
+            {GlossaryCore.Years: years, 'share_investment': self.energy_investment_wo_tax_array}, index=years)
         witness_input[self.study_name +
                       '.share_energy_investment'] = share_energy_investment
         data = arange(1.0, nb_per + 1.0, 1)
 
-        df_eco = DataFrame({'years': years,
-                            'gross_output': data,
-                            'pc_consumption': data,
-                            'output_net_of_d': data},
+        df_eco = DataFrame({GlossaryCore.Years: years,
+                            GlossaryCore.GrossOutput: data,
+                            GlossaryCore.PerCapitaConsumption: data,
+                            GlossaryCore.OutputNetOfDamage: data},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
         witness_input[self.study_name + '.economics_df'] = df_eco
 
         nrj_invest = arange(1000, nb_per + 1000, 1)
 
-        df_energy_investment = DataFrame({'years': years,
+        df_energy_investment = DataFrame({GlossaryCore.Years: years,
                                           'energy_investment': nrj_invest},
                                          index=arange(self.year_start, self.year_end + 1, self.time_step))
         df_energy_investment_before_year_start = DataFrame({'past_years': [2017, 2018, 2019],
@@ -122,7 +121,7 @@ class DataStudy():
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest) + 3.21
-        CO2_emitted_forest['years'] = years
+        CO2_emitted_forest[GlossaryCore.Years] = years
         CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
         witness_input[self.study_name +
@@ -141,7 +140,7 @@ class DataStudy():
             (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
-            {'years': years, 'CO2_tax_efficiency': CO2_tax_efficiency})
+            {GlossaryCore.Years: years, 'CO2_tax_efficiency': CO2_tax_efficiency})
 
         #-- load data from resource
 
@@ -178,15 +177,6 @@ class DataStudy():
         setup_data_list = setup_data_list + forest_list
         StudyManager.merge_design_spaces(
             self, [dc_forest.dspace, dc_agriculture.dspace])
-        nb_poles = 8
-        update_dspace_dict_with(self.dspace,
-                                'share_energy_investment_ctrl',
-                                asarray([0.2] * nb_poles), asarray([1e-6] * nb_poles), asarray([75.0] * nb_poles),
-                                enable_variable=False)
-        # constraint land use
-
-        # WITNESS
-        # setup objectives
 
         witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
 
@@ -199,14 +189,7 @@ class DataStudy():
         witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name}.NormalizationReferences.total_emissions_ref'] = 12.0
-        #witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
-#         self.exec_eng.dm.export_couplings(
-#             in_csv=True, f_name='couplings.csv')
 
-#         self.exec_eng.root_process.coupling_structure.graph.export_initial_graph(
-#             "initial.pdf")
-# self.exec_eng.root_process.coupling_structure.graph.export_reduced_graph(
-# "reduced.pdf")
         setup_data_list.append(witness_input)
 
         return setup_data_list

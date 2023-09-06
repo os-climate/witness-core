@@ -2,10 +2,30 @@ class GlossaryCore:
     """Glossary gathering variables used in witness core"""
 
     # todo : Continue filling gathering values here ..
+    # dataframes columns/var_names :
     Years = "years"
+    InvestmentsValue = "investment"
+    ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
+    CO2EmissionsGtValue = 'co2_emissions_Gt'
+    CO2TaxesValue = "CO2_taxes"
+    DamageDfValue = "damage_df"
+    EconomicsDfValue = "economics_df"
+    PopulationDfValue = "population_df"
+    TemperatureDfValue = 'temperature_df'
+    EnergyInvestmentsValue = "energy_investment"
+    EnergyInvestmentsWoTaxValue = "energy_investment_wo_tax"
+    EnergyInvestmentsWoRenewableValue = 'energy_investment_wo_renewable'
+    NonEnergyInvestmentsValue = "non_energy_investment"
+    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"
+
+    energy_list = 'energy_list'
+    techno_list = 'technologies_list'
+    ccs_list = 'ccs_list'
+
+    invest_mix = 'invest_mix'
 
     CO2EmissionsGt = {
-        "var_name": "co2_emissions_Gt",
+        "var_name": CO2EmissionsGtValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": "ns_energy_mix",
@@ -18,7 +38,7 @@ class GlossaryCore:
     }
 
     CO2Taxes = {
-        "var_name": "CO2_taxes",
+        "var_name": CO2TaxesValue,
         "type": "dataframe",
         "unit": "$/tCO2",
         "visibility": "Shared",
@@ -41,7 +61,7 @@ class GlossaryCore:
                             }
 
     DamageDf = {
-        "var_name": "damage_df",
+        "var_name": DamageDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": "ns_witness",
@@ -54,35 +74,48 @@ class GlossaryCore:
         },
     }
 
+
+    GrossOutput = "gross_output"
+    OutputNetOfDamage = "output_net_of_d"
+    Consumption = "consumption"
+    PerCapitaConsumption = "pc_consumption"
     Economics_df = {
-        "var_name": "economics_df",
+        "var_name": EconomicsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": "ns_witness",
         "unit": "-",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "gross_output": ("float", None, False),
-            "output_net_of_d": ("float", None, False),
-            "net_output": ("float", None, False),
-            "population": ("float", None, False),
+            GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
+            PerCapitaConsumption: ("float", None, False),
+        },
+    }
+
+    EconomicsDetail_df = {
+        "var_name": 'economics_detail_df',
+        'type': 'dataframe',
+        'unit': '-',
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
             "productivity": ("float", None, False),
             "productivity_gr": ("float", None, False),
-            "energy_productivity_gr": ("float", None, False),
-            "energy_productivity": ("float", None, False),
-            "consumption": ("float", None, False),
-            "pc_consumption": ("float", None, False),
-            "capital": ("float", None, False),
-            "investment": ("float", None, False),
-            "interest_rate": ("float", None, False),
-            "energy_investment": ("float", None, False),
-            "non_energy_investment": ("float", None, False),
+            Consumption: ("float", None, False),
+            PerCapitaConsumption: ("float", None, False),
+            InvestmentsValue: ("float", None, False),
+            EnergyInvestmentsValue: ("float", None, False),
+            EnergyInvestmentsWoTaxValue: ("float", None, False),
+            NonEnergyInvestmentsValue: ("float", None, False),
+            EnergyInvestmentsFromTaxValue: ("float", None, False),
             "output_growth": ("float", None, False),
         },
     }
 
     PopulationDF = {
-        "var_name": "population_df",
+        "var_name": PopulationDfValue,
         "type": "dataframe",
         "unit": "millions of people",
         "visibility": "Shared",
@@ -93,35 +126,57 @@ class GlossaryCore:
         },
     }
 
-    ShareEnergyInvestment = {
-        "var_name": "share_energy_investment",
+    EnergyInvestments = {
+        "var_name": EnergyInvestmentsValue,
         "type": "dataframe",
-        "unit": "%",
+        "unit": '100G$',
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "energy": ("float", [0.0, 100.0], True),
+            EnergyInvestmentsValue: ("float", [0.0, 1e30], True),
         },
         "dataframe_edition_locked": False,
         "visibility": "Shared",
         "namespace": "ns_witness",
     }
 
-    ShareNonEnergyInvestment = {
-        "var_name": "share_non_energy_investment",
+    EnergyInvestmentsWoTax = {
+        "var_name": EnergyInvestmentsWoTaxValue,
         "type": "dataframe",
-        "unit": "%",
+        "unit": 'G$',
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "non_energy": ("float", [0.0, 100.0], True),
+            EnergyInvestmentsWoTaxValue: ("float", [0.0, 1e30], True),
         },
         "dataframe_edition_locked": False,
         "visibility": "Shared",
         "namespace": "ns_witness",
     }
-    TemperatureDf = {'var_name':'temperature_df',
+    EnergyInvestmentsWoRenewable = {
+        "var_name": EnergyInvestmentsWoRenewableValue,
+        'type': 'dataframe',
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            EnergyInvestmentsWoRenewableValue: ("float", [0.0, 1e30], True),
+        },
+        'unit': '100G$'
+    }
+
+    ShareNonEnergyInvestment = {
+        "var_name": ShareNonEnergyInvestmentsValue,
+        "type": "dataframe",
+        "unit": "%",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            ShareNonEnergyInvestmentsValue: ("float", [0.0, 100.0], True),
+        },
+        "dataframe_edition_locked": False,
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+    }
+    TemperatureDf = {'var_name': TemperatureDfValue,
                      'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
                      'unit': 'degree Celsius',
-                      'dataframe_descriptor': {'years': ('float', None, False),
+                      'dataframe_descriptor': {Years: ('float', None, False),
                                                 'exog_forcing': ('float', None, False),
                                                 'forcing': ('float', None, False),
                                                 'temp_atmo': ('float', None, False),
