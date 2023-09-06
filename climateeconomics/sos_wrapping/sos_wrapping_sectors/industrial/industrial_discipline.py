@@ -291,7 +291,6 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         if 'sector output' in chart_list:
 
             to_plot = ['output', 'output_net_of_damage']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             legend = {'output': 'sector gross output',
                       'output_net_of_damage': 'world output net of damage'}
@@ -422,7 +421,6 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         if 'productivity' in chart_list:
 
             to_plot = ['productivity']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(productivity_df.index)
 
@@ -451,7 +449,6 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         if 'energy efficiency' in chart_list:
 
             to_plot = ['energy_efficiency']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(capital_df.index)
 
@@ -489,7 +486,6 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
                 'scaling_factor_energy_production')
             total_production = energy_production['Total production'] * \
                 scaling_factor_energy_production
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(capital_df.index)
 
@@ -529,7 +525,6 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
         if 'Energy_supply' in chart_list:
             to_plot = ['Total production']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             legend = {
                 'Total production': 'energy supply with oil production from energy pyworld3'}

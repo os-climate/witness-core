@@ -18,6 +18,8 @@ from pandas import DataFrame, concat
 import numpy as np
 from copy import deepcopy
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class Population:
     """
@@ -103,23 +105,23 @@ class Population:
             pop_by_age + [self.total_pop])}
 
         column_list = self.age_list.copy()
-        column_list.insert(0, 'years')
+        column_list.insert(0, GlossaryCore.Years)
         self.column_list = self.age_list.copy()
         # WORKING POULATION
         self.working_age_population_df = DataFrame(index=years_range,
-                                                   columns=['years', 'population_1570'])
-        self.working_age_population_df['years'] = years_range
+                                                   columns=[GlossaryCore.Years, 'population_1570'])
+        self.working_age_population_df[GlossaryCore.Years] = years_range
 
         # BIRTH RATE
         # BASE => calculated from GDB and knowledge level
-        self.birth_rate = DataFrame({'years': years_range,
+        self.birth_rate = DataFrame({GlossaryCore.Years: years_range,
                                      'knowledge': 0,
                                      'birth_rate': 0},
                                     index=years_range)
 
         # BIRTH NUMBER
         # BASE => calculated from GDB and knowledge level
-        self.birth_df = DataFrame({'years': years_range,
+        self.birth_df = DataFrame({GlossaryCore.Years: years_range,
                                    'knowledge': 0,
                                    'birth_rate': 0},
                                   index=years_range)
@@ -140,7 +142,7 @@ class Population:
                                 'diet': self.diet_death_rate_df_dict, 'total': self.death_rate_df_dict}
         # DEATH NUMBER - one column per age
         # BASE => calculated from GDP
-        init_dict = {'years': years_range}
+        init_dict = {GlossaryCore.Years: years_range}
         init_dict.update({col: 0 for col in self.pop_df_column})
 
         self.base_death_df = DataFrame(init_dict, index=years_range)
@@ -154,7 +156,7 @@ class Population:
         self.death_list_dict = {effect: []
                                 for effect in self.death_rate_dict}
         # LIFE EXPECTANCY
-        self.life_expectancy_df = DataFrame({'years': years_range,
+        self.life_expectancy_df = DataFrame({GlossaryCore.Years: years_range,
                                              'life_expectancy': 0}, index=years_range)
 
     def compute_knowledge(self):
@@ -177,7 +179,7 @@ class Population:
         output : birth rate for the year 
         '''
         # COnvert GDP in $
-        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         pop = self.total_pop
         birth_rate = self.br_upper + (self.br_lower - self.br_upper) / (
             1 + np.exp(-self.br_delta * (gdp / pop - self.br_phi))) ** (1 / self.br_nu)
@@ -191,7 +193,7 @@ class Population:
         Inputs: knowledge (series per year), gdp (series per year, pop (series per year), params
         """
         # Convert GDP in $
-        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         pop = self.total_pop
         knowledge = self.birth_rate.loc[year, 'knowledge']
         # Compute in two steps
@@ -215,7 +217,7 @@ class Population:
                  - parameters of the function: 
         output : death rate for the year for each age range. type: pandas Series   
         '''
-        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         pop = self.total_pop
         param = self.dr_param_df
         # For all age range compute death rate
@@ -237,7 +239,7 @@ class Population:
                  - parameters of the function: 
         output : death rate for the year for each age range. type: pandas Series   
         '''
-        gdp = self.economics_df.at[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.at[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         pop = self.total_pop
         temp = self.temperature_df.loc[year, 'temp_atmo']
         param = self.dr_param_df
@@ -372,12 +374,12 @@ class Population:
         """
         self.create_dataframe()
         year_range = self.years_range
-        self.economics_df = in_dict['economics_df']
-        self.economics_df.index = self.economics_df['years'].values
-        self.temperature_df = in_dict['temperature_df']
-        self.temperature_df.index = self.temperature_df['years'].values
+        self.economics_df = in_dict[GlossaryCore.EconomicsDfValue]
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
+        self.temperature_df = in_dict[GlossaryCore.TemperatureDfValue]
+        self.temperature_df.index = self.temperature_df[GlossaryCore.Years].values
         self.calories_pc_df = in_dict['calories_pc_df']
-        self.calories_pc_df.index = self.calories_pc_df['years'].values
+        self.calories_pc_df.index = self.calories_pc_df[GlossaryCore.Years].values
         self.compute_knowledge()
         # Loop over year to compute population evolution. except last year
 
@@ -392,7 +394,7 @@ class Population:
         self.population_df = DataFrame.from_dict(
             self.population_dict, orient='index', columns=self.pop_df_column)
 
-        self.population_df.insert(loc=0, column='years',
+        self.population_df.insert(loc=0, column=GlossaryCore.Years,
                                   value=self.years_range)
         self.population_df = self.population_df.replace(
             [np.inf, -np.inf], np.nan)
@@ -495,7 +497,7 @@ class Population:
         br_lower = self.br_lower
         nu = self.br_nu
         pop = self.population_df.loc[year, 'total']
-        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         d_pop = d_pop_tot_d_output[iyear]
 
         # f gdp = br_upper + (self.br_lower - self.br_upper)/ u
@@ -550,7 +552,7 @@ class Population:
 
         d_deathrate_d_output = {}
         pop = self.population_df.loc[year, 'total']
-        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         d_pop = d_pop_tot_d_output[iyear]
 
         for age_range in param['param'].values:
@@ -784,7 +786,7 @@ class Population:
         br_lower = self.br_lower
         nu = self.br_nu
         pop = self.population_df.loc[year, 'total']
-        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         d_pop = d_pop_tot_d_temp[iyear]
         idty = np.zeros(nb_years)
         idty[iyear] = 1
@@ -821,7 +823,7 @@ class Population:
 
         d_base_deathrate_d_temp = {}
         pop = self.population_df.loc[year, 'total']
-        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         add_death = self.climate_mortality_param_df
         add_death.index = add_death['param'].values
 
@@ -945,7 +947,7 @@ class Population:
         br_lower = self.br_lower
         nu = self.br_nu
         pop = self.population_df.loc[year, 'total']
-        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         d_pop = d_pop_tot_d_kcal_pc[iyear]
         idty = np.zeros(nb_years)
         idty[iyear] = 1
@@ -982,7 +984,7 @@ class Population:
 
         d_base_deathrate_d_kcal_pc = {}
         pop = self.population_df.loc[year, 'total']
-        gdp = self.economics_df.loc[year, 'output_net_of_d'] * self.trillion
+        gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         temp = self.temperature_df.loc[year, 'temp_atmo']
         add_death = self.climate_mortality_param_df
         add_death.index = add_death['param'].values

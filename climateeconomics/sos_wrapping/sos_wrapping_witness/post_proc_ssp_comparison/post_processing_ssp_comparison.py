@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
     InstantiatedParetoFrontOptimalChart
@@ -36,7 +36,7 @@ MODEL = 'Model'
 CSV_SEP = ';'
 CSV_DEC = ','
 CSV_YRS = [str(_yr) for _yr in range(2020, 2101, 10)]
-YEARS = 'years'
+YEARS = GlossaryCore.Years
 
 # POSTPROCESSING DICTS KEYS (INTERNAL USAGE)
 FILE_NAME = 'file_name'
@@ -50,15 +50,15 @@ Y_AXIS = 'y_axis'
 # POSTPROCESSING DICTS WITH INFOS TO PRODUCE COMPARISON GRAPHS
 GDP = 'GDP'
 _gdp = {FILE_NAME: 'gdp_ppp_usd2020.csv',
-        VAR_NAME: 'economics_df',
-        COLUMN: 'gross_output',
+        VAR_NAME: GlossaryCore.EconomicsDfValue,
+        COLUMN: GlossaryCore.GrossOutput,
         CHART_TITLE: 'GDP: WITNESS vs. SSP scenarios (IPCC)',
         UNIT_CONV_FACTOR: 1E-3,
         Y_AXIS: 'World Output [trillion $]'}
 
 POPULATION = 'Population'
 _population = {FILE_NAME: 'population.csv',
-               VAR_NAME: 'population_df',
+               VAR_NAME: GlossaryCore.PopulationDfValue,
                COLUMN: 'population',
                CHART_TITLE: 'Population: WITNESS vs. SSP scenarios (IPCC)',
                UNIT_CONV_FACTOR: 1.0,
@@ -74,7 +74,7 @@ _consumption = {FILE_NAME: 'consumption_global_usd2020.csv',
 
 MEAN_TEMPERATURE = 'Mean_temperature'
 _mean_temperature = {FILE_NAME: 'mean_temperature_global.csv',
-                     VAR_NAME: 'temperature_df',
+                     VAR_NAME: GlossaryCore.TemperatureDfValue,
                      COLUMN: 'temp_atmo',
                      CHART_TITLE: 'Atmospheric temperature: WITNESS vs. SSP scenarios (IPCC)',
                      UNIT_CONV_FACTOR: 1.0,

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
@@ -54,9 +55,9 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         'init_gross_output': {'type': 'float', 'default': 130.187, 'unit': 'T$', 'user_level': 2,
                               'visibility': 'Shared', 'namespace': 'ns_witness'},
         'init_cum_indus_emissions': {'type': 'float', 'default': 577.31, 'unit': 'GtCO2', 'user_level': 2},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
                          'dataframe_descriptor': {'years': ('float', None, False),
-                                                  'gross_output': ('float', None, False),
+                                                  GlossaryCore.GrossOutput: ('float', None, False),
                                                   'output_net_of_d': ('float', None, False),
                                                   'net_output': ('float', None, False),
                                                   'population': ('float', None, False),
@@ -102,16 +103,16 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         gradient of coupling variable to compute: 
         CO2_emissions_df
           - 'indus_emissions':
-                - economics_df, 'gross_output'
+                - economics_df, GlossaryCore.GrossOutput
           - 'cum_indus_emissions'
-                - economics_df, 'gross_output'
+                - economics_df, GlossaryCore.GrossOutput
         """
 
         d_indus_emissions_d_gross_output, d_cum_indus_emissions_d_gross_output, d_cum_indus_emissions_d_total_CO2_emitted = self.emissions_model.compute_d_indus_emissions()
 
         # fill jacobians
         self.set_partial_derivative_for_other_types(
-            ('CO2_indus_emissions_df', 'indus_emissions'), ('economics_df', 'gross_output'),  d_indus_emissions_d_gross_output)
+            ('CO2_indus_emissions_df', 'indus_emissions'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  d_indus_emissions_d_gross_output)
 
     def get_chart_filter_list(self):
 

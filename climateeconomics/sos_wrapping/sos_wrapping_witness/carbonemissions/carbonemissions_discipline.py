@@ -54,9 +54,9 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'init_gross_output': {'type': 'float', 'default': 130.187, 'unit': 'T$', 'user_level': 2,
                               'visibility': 'Shared', 'namespace': 'ns_witness'},
         'init_cum_indus_emissions': {'type': 'float', 'default': 577.31, 'unit': 'GtCO2', 'user_level': 2},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
-                         'dataframe_descriptor': {'years': ('float', None, False),
-                                                  'gross_output': ('float', None, False),
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
+                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                                  GlossaryCore.GrossOutput: ('float', None, False),
                                                   'population': ('float', None, False),
                                                   'productivity': ('float', None, False),
                                                   'productivity_gr': ('float', None, False),
@@ -81,27 +81,27 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'min_co2_objective': {'type': 'float', 'default': -1000., 'unit': 'GtCO2', 'user_level': 2},
         'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'GtCO2', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs',
-                                  'dataframe_descriptor': {'years': ('float', None, False),
+                                  'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                            'carbon_storage Limited by capture (Gt)': ('float', None, False),}},
         'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs',
-                                         'dataframe_descriptor': {'years': ('float', None, False),
+                                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                   'carbon_capture from energy mix (Gt)': ('float', None, False),
                                                                   'Total CO2 by use (Gt)': ('float', None, False),
                                                                   'Total CO2 from Flue Gas (Gt)': ('float', None, False),
                                                                   'CO2 from energy mix (Gt)': ('float', None, False)}},
         'CO2_emissions_by_use_sinks':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs',
-                                        'dataframe_descriptor': {'years': ('float', None, False),
+                                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                  'CO2_resource removed by energy mix (Gt)': ('float', None, False),
                                                                  'CO2 removed by energy mix (Gt)': ('float', None, False),}},
         'co2_emissions_needed_by_energy_mix': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_energy',
-                                               'dataframe_descriptor': {'years': ('float', None, False),
+                                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                         'carbon_capture needed by energy mix (Gt)': ('float', None, False),}},
 
         # Ref in 2020 is around 34 Gt, the objective is normalized with this
         # reference
         'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                                'dataframe_descriptor': {
-                                   'years': ('float', None, False),
+                                   GlossaryCore.Years: ('float', None, False),
                                    'emitted_CO2_evol': ('float', None, False),
                                    'emitted_CO2_evol_cumulative': ('float', None, False),}},
     }
@@ -125,9 +125,9 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         self.emissions_model.compute_total_CO2_emissions()
         # Store output data
         dict_values = {'CO2_emissions_detail_df': CO2_emissions_df,
-                       'CO2_emissions_df': CO2_emissions_df[['years', 'total_emissions', 'cum_total_emissions']],
+                       'CO2_emissions_df': CO2_emissions_df[[GlossaryCore.Years, 'total_emissions', 'cum_total_emissions']],
                        'CO2_objective': CO2_objective,
-                       'co2_emissions_Gt': self.emissions_model.co2_emissions[['years', 'Total CO2 emissions']]}
+                       'co2_emissions_Gt': self.emissions_model.co2_emissions[[GlossaryCore.Years, 'Total CO2 emissions']]}
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
@@ -136,23 +136,23 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         gradient of coupling variable to compute: 
         CO2_emissions_df
           - 'indus_emissions':
-                - economics_df, 'gross_output'
+                - economics_df, GlossaryCore.GrossOutput
                 - co2_emissions_Gt, 'Total CO2 emissions'
           - 'cum_indus_emissions'
-                - economics_df, 'gross_output'
+                - economics_df, GlossaryCore.GrossOutput
                 - co2_emissions_Gt, 'Total CO2 emissions'
           - 'total_emissions',
                 - CO2_emissions_df, land_emissions
-                - economics_df, 'gross_output'
+                - economics_df, GlossaryCore.GrossOutput
                 - co2_emissions_Gt, Total CO2 emissions
           - 'cum_total_emissions'
                 - CO2_emissions_df, land_emissions
-                - economics_df, 'gross_output'
+                - economics_df, GlossaryCore.GrossOutput
                 - co2_emissions_Gt, Total CO2 emissions
           - 'CO2_objective'
                 - total_emissions:
                     - CO2_emissions_df, land_emissions
-                    - economics_df, 'gross_output'
+                    - economics_df, GlossaryCore.GrossOutput
                     - co2_emissions_Gt, Total CO2 emissions
         """
         inputs_dict = self.get_sosdisc_inputs()
@@ -168,13 +168,13 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             'CO2_emissions_by_use_sources').columns
         # fill jacobians
         self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'total_emissions'), ('economics_df', 'gross_output'),  d_indus_emissions_d_gross_output)
+            ('CO2_emissions_df', 'total_emissions'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  d_indus_emissions_d_gross_output)
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'cum_total_emissions'), ('economics_df', 'gross_output'),  d_cum_indus_emissions_d_gross_output)
+            ('CO2_emissions_df', 'cum_total_emissions'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  d_cum_indus_emissions_d_gross_output)
 
         for column_sources in columns_sources:
-            if column_sources != 'years':
+            if column_sources != GlossaryCore.Years:
                 self.set_partial_derivative_for_other_types(
                     ('CO2_emissions_df', 'total_emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
@@ -204,7 +204,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                 ('CO2_objective',), (df_name, col_name),  - d_CO2_obj_d_total_emission * dobjective_exp_min)
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_objective',), ('economics_df', 'gross_output'), dobjective_exp_min * d_CO2_obj_d_total_emission.dot(d_indus_emissions_d_gross_output))
+            ('CO2_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), dobjective_exp_min * d_CO2_obj_d_total_emission.dot(d_indus_emissions_d_gross_output))
 
 
         #land emissions
@@ -294,7 +294,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_name = 'Total carbon emissions'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions [GtCO2]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 emissions [GtCO2]',
                                              [year_start - 5, year_end + 5],
                                              [min_value, max_value],
                                              chart_name)
@@ -322,7 +322,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_name = f'Cumulated carbon emissions since {years[0]}'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions (GtCO2)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 emissions (GtCO2)',
                                              chart_name=chart_name)
 
         new_series = InstanciatedSeries(
@@ -338,7 +338,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             self.get_sosdisc_outputs('CO2_emissions_detail_df'))
         years = list(CO2_emissions_df.index)
 
-        CO2_emissions_breakdown = pd.DataFrame({'years': years})
+        CO2_emissions_breakdown = pd.DataFrame({GlossaryCore.Years: years})
         # Energy emissions
         #----------------
         cols_to_sum = []
@@ -346,7 +346,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         CO2_emissions_by_use_sources = self.get_sosdisc_inputs(
             'CO2_emissions_by_use_sources')
         for col in CO2_emissions_by_use_sources.columns:
-            if col != 'years':
+            if col != GlossaryCore.Years:
                 CO2_emissions_breakdown[col] = CO2_emissions_by_use_sources[col].values
                 cols_to_sum += [col, ]
         # Sum all the sources columns
@@ -358,21 +358,21 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         CO2_emissions_by_use_sinks = self.get_sosdisc_inputs(
             'CO2_emissions_by_use_sinks')
         for col in CO2_emissions_by_use_sinks.columns:
-            if col != 'years':
+            if col != GlossaryCore.Years:
                 CO2_emissions_breakdown[col] = - \
                     CO2_emissions_by_use_sinks[col].values
                 cols_to_sum += [col, ]
         co2_emissions_needed_by_energy_mix = self.get_sosdisc_inputs(
             'co2_emissions_needed_by_energy_mix')
         for col in co2_emissions_needed_by_energy_mix.columns:
-            if col != 'years':
+            if col != GlossaryCore.Years:
                 CO2_emissions_breakdown[col] = - \
                     co2_emissions_needed_by_energy_mix[col].values
                 cols_to_sum += [col, ]
         co2_emissions_ccus_Gt = self.get_sosdisc_inputs(
             'co2_emissions_ccus_Gt')
         for col in co2_emissions_ccus_Gt.columns:
-            if col != 'years':
+            if col != GlossaryCore.Years:
                 CO2_emissions_breakdown[col] = - \
                     co2_emissions_ccus_Gt[col].values
                 cols_to_sum += [col, ]
@@ -387,7 +387,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         # Get all the sources and put them as columns in df
         sigma = CO2_emissions_df['sigma'].values
         gross_output_ter = self.get_sosdisc_inputs(
-            'economics_df')['gross_output'].values
+            GlossaryCore.EconomicsDfValue)[GlossaryCore.GrossOutput].values
         energy_emis_share = self.get_sosdisc_inputs('energy_emis_share')
         share_land_emis = self.get_sosdisc_inputs('land_emis_share')
         indus_emissions = sigma * gross_output_ter * \
@@ -410,25 +410,25 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         chart_name = 'CO2 emissions breakdown'
         if detailed:
             chart_name = 'CO2 emissions breakdown detailed'
-        new_chart = TwoAxesInstanciatedChart('years', 'CO2 emissions [Gt]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 emissions [Gt]',
                                              chart_name=chart_name, stacked_bar=True)
 
         if detailed:
             for col in CO2_emissions_breakdown.columns:
-                if 'category' not in col and col != 'years':
+                if 'category' not in col and col != GlossaryCore.Years:
                     legend_title = f'{col}'.replace(
                         " (Gt)", "")
                     serie = InstanciatedSeries(
-                        CO2_emissions_breakdown['years'].values.tolist(),
+                        CO2_emissions_breakdown[GlossaryCore.Years].values.tolist(),
                         CO2_emissions_breakdown[col].values.tolist(), legend_title, 'bar')
                     new_chart.series.append(serie)
         else:
             for col in CO2_emissions_breakdown.columns:
-                if 'category' in col and col != 'years':
+                if 'category' in col and col != GlossaryCore.Years:
                     legend_title = f'{col}'.replace(
                         " (Gt)", "")
                     serie = InstanciatedSeries(
-                        CO2_emissions_breakdown['years'].values.tolist(),
+                        CO2_emissions_breakdown[GlossaryCore.Years].values.tolist(),
                         CO2_emissions_breakdown[col].values.tolist(), legend_title, 'bar')
                     new_chart.series.append(serie)
 

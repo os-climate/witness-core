@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class IndusEmissions():
     '''
@@ -181,7 +183,7 @@ class IndusEmissions():
         Compute outputs of the pyworld3
         """
         self.inputs_models = inputs_models
-        self.economics_df = self.inputs_models['economics_df']
+        self.economics_df = self.inputs_models[GlossaryCore.EconomicsDfValue]
         self.economics_df.index = self.economics_df['years'].values
 
         # Iterate over years

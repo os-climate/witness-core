@@ -423,7 +423,6 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         if 'productivity' in chart_list:
 
             to_plot = ['productivity']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(productivity_df.index)
 
@@ -452,7 +451,6 @@ class ServicesDiscipline(ClimateEcoDiscipline):
         if 'energy efficiency' in chart_list:
 
             to_plot = ['energy_efficiency']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(capital_df.index)
 
@@ -490,7 +488,6 @@ class ServicesDiscipline(ClimateEcoDiscipline):
                 'scaling_factor_energy_production')
             total_production = energy_production['Total production'] * \
                 scaling_factor_energy_production
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(capital_df.index)
 
@@ -530,7 +527,6 @@ class ServicesDiscipline(ClimateEcoDiscipline):
 
         if 'Energy_supply' in chart_list:
             to_plot = ['Total production']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             legend = {
                 'Total production': 'energy supply with oil production from energy pyworld3'}

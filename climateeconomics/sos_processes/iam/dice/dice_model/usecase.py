@@ -16,6 +16,7 @@ limitations under the License.
 from numpy import arange, zeros, append, asarray
 from pandas import DataFrame
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.study_manager.study_manager import StudyManager
 
 
@@ -200,7 +201,7 @@ class Study(StudyManager):
                             'interest_rate': data},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
-        dice_input[self.study_name + '.economics_df'] = df_eco
+        dice_input[self.study_name + f'.{GlossaryCore.EconomicsDfValue}'] = df_eco
 
 
 #         self.exec_eng.dm.export_couplings(

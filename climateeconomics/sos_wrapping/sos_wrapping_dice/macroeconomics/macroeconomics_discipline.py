@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.macroeconomics_model import MacroEconomics
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -65,7 +66,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
     }
 
     DESC_OUT = {
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
     }
 
     def run(self):
@@ -82,7 +83,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
         economics_df = macro_model.compute(damage_inputs)
 
         # Store output data
-        dict_values = {'economics_df': economics_df}
+        dict_values = {GlossaryCore.EconomicsDfValue: economics_df}
         self.store_sos_outputs_values(dict_values)
 
     def get_chart_filter_list(self):
@@ -113,7 +114,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        economics_df = self.get_sosdisc_outputs('economics_df')
+        economics_df = self.get_sosdisc_outputs(GlossaryCore.EconomicsDfValue)
         economics_df = resize_df(economics_df)
 
         if 'economic output' in chart_list:

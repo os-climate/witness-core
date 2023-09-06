@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model import MacroeconomicsModel
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
@@ -60,7 +61,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                }
 
     DESC_OUT = {
-        'economics_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                          'namespace': 'ns_witness'},
         'investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                           'namespace': 'ns_witness'},
@@ -112,7 +113,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # -- compute
         economics_df, investment_df, sectors_investment_df = self.macro_model.compute(inputs_dict)
 
-        outputs_dict = {'economics_df': economics_df[['years', 'output_net_of_d', 'capital']],
+        outputs_dict = {GlossaryCore.EconomicsDfValue: economics_df[['years', GlossaryCore.OutputNetOfDamage, 'capital']],
                         'investment_df': investment_df,
                         'sectors_investment_df': sectors_investment_df,
                         'economics_detail_df': economics_df}
@@ -135,10 +136,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # Gradient wrt each sector production df: same for all sectors
         grad_netoutput, grad_invest = self.macro_model.get_derivative_sectors()
         for sector in sector_list:
-            self.set_partial_derivative_for_other_types(('economics_df', 'output_net_of_d'),
+            self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
                                                         (f'{sector}.production_df', 'output_net_of_damage'),
                                                         grad_netoutput)
-            self.set_partial_derivative_for_other_types(('economics_df', 'capital'),
+            self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, 'capital'),
                                                         (f'{sector}.capital_df', 'capital'), grad_netoutput)
             self.set_partial_derivative_for_other_types(('investment_df', 'investment'),
                                                         (f'{sector}.production_df', 'output_net_of_damage'),
@@ -187,9 +188,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'output' in chart_list:
 
-            to_plot = ['output', 'output_net_of_d']
+            to_plot = ['output', GlossaryCore.OutputNetOfDamage]
             legend = {'output': 'world gross output',
-                      'output_net_of_d': 'world output net of damage'}
+                      GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
             years = list(economics_df.index)
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -291,7 +292,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'share output' in chart_list:
-            output = economics_df['output_net_of_d'].values
+            output = economics_df[GlossaryCore.OutputNetOfDamage].values
             chart_name = 'Sectors output share of total economics net output'
             new_chart = TwoAxesInstanciatedChart('years', 'share of total net output [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,

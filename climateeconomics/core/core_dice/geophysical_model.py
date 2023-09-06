@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class CarbonEmissions():
     '''
@@ -184,7 +186,7 @@ class CarbonEmissions():
         self.inputs_models = inputs_models
 
         self.create_dataframe()
-        self.economics_df = self.inputs_models['economics_df'].set_index(
+        self.economics_df = self.inputs_models[GlossaryCore.EconomicsDfValue].set_index(
             self.years_range)
         emissions_control_rate = emissions_control_rate.set_index(
             self.years_range)

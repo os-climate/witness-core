@@ -66,7 +66,7 @@ class DamageDiscTest(unittest.TestCase):
         temperature_df_y.index = years
 
         values_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
-                       f'{self.name}.economics_df': economics_df_y,
+                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.temperature_df': temperature_df_y,
                        f'{self.name}.total_emissions_ref': 37.,
                        f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15))))

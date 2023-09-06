@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
@@ -94,7 +95,7 @@ class Study(ClimateEconomicsStudyManager):
         population_df.index = years
         witness_input[self.study_name + '.population_df'] = population_df
         working_age_population_df = pd.DataFrame(
-            {'years': years, 'population_1570': 6300}, index=years)
+            {GlossaryCore.Years: years, 'population_1570': 6300}, index=years)
         witness_input[self.study_name +
                       '.working_age_population_df'] = working_age_population_df
 
@@ -102,24 +103,24 @@ class Study(ClimateEconomicsStudyManager):
 
         total_invest = asarray([27.0] * nb_per)
         total_invest = DataFrame(
-            {'years': years, 'share_investment': total_invest})
+            {GlossaryCore.Years: years, 'share_investment': total_invest})
         witness_input[self.study_name +
                       '.total_investment_share_of_gdp'] = total_invest
         share_energy_investment = DataFrame(
-            {'years': years, 'share_investment': self.share_energy_investment_array}, index=years)
+            {GlossaryCore.Years: years, 'share_investment': self.share_energy_investment_array}, index=years)
         witness_input[self.study_name +
                       '.share_energy_investment'] = share_energy_investment
         gdp = [130.187]*len(years)
 
-        df_eco = DataFrame({'years': years,
+        df_eco = DataFrame({GlossaryCore.Years: years,
                             'output_net_of_d': gdp},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
-        witness_input[self.study_name + '.economics_df'] = df_eco
+        witness_input[self.study_name + f'.{GlossaryCore.EconomicsDfValue}'] = df_eco
 
         nrj_invest = arange(1000, nb_per + 1000, 1)
 
-        df_energy_investment = DataFrame({'years': years,
+        df_energy_investment = DataFrame({GlossaryCore.Years: years,
                                           'energy_investment': nrj_invest},
                                          index=arange(self.year_start, self.year_end + 1, self.time_step))
         df_energy_investment_before_year_start = DataFrame({'past_years': [2017, 2018, 2019],
@@ -153,7 +154,7 @@ class Study(ClimateEconomicsStudyManager):
             (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
-            {'years': years, 'CO2_tax_efficiency': CO2_tax_efficiency})
+            {GlossaryCore.Years: years, 'CO2_tax_efficiency': CO2_tax_efficiency})
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
@@ -191,7 +192,7 @@ class Study(ClimateEconomicsStudyManager):
         self.share_energy_investment_array = asarray([1.65] * len(years))
 
         share_energy_investment = DataFrame(
-            {'years': years, 'share_investment': self.share_energy_investment_array}, index=years)
+            {GlossaryCore.Years: years, 'share_investment': self.share_energy_investment_array}, index=years)
         witness_input[self.study_name +
                       '.share_energy_investment'] = share_energy_investment
         witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
@@ -208,7 +209,7 @@ class Study(ClimateEconomicsStudyManager):
         witness_input[f'{self.study_name}.is_dev'] = True
         #
 
-        GHG_total_energy_emissions = pd.DataFrame({'years': years,
+        GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    'Total CO2 emissions': np.linspace(37., 10., len(years)),
                                                    'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
                                                    'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})

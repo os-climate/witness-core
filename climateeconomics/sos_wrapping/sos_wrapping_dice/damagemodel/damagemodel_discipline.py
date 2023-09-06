@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.damage_model import DamageModel
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -59,7 +60,7 @@ class DamageDiscipline(SoSWrapp):
         'tp_a4': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.754},
         'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                          'dataframe_descriptor': {'years': ('float', None, False),
                                                   'Total CO2 emissions': ('float', None, False),
@@ -82,9 +83,9 @@ class DamageDiscipline(SoSWrapp):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
-        economics_df = in_dict.pop('economics_df')
+        economics_df = in_dict.pop(GlossaryCore.EconomicsDfValue)
         emissions_df = in_dict.pop('emissions_df')
-        temperature_df = in_dict.pop('temperature_df')
+        temperature_df = in_dict.pop(GlossaryCore.TemperatureDfValue)
         emissions_control_rate = in_dict.pop('emissions_control_rate')
 
         # pyworld3 execution

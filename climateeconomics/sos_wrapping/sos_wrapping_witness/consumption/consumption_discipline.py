@@ -106,7 +106,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
 
         # compute utility
-        economics_df = inp_dict.pop('economics_df')
+        economics_df = inp_dict.pop(GlossaryCore.EconomicsDfValue)
         energy_mean_price = inp_dict['energy_mean_price']
         population_df = inp_dict.pop('population_df')
         total_investment_share_of_gdp = inp_dict.pop(
@@ -114,7 +114,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         residential_energy = inp_dict.pop(
             'residential_energy')
 
-        utility_inputs = {'economics_df': economics_df[['years', 'output_net_of_d']],
+        utility_inputs = {GlossaryCore.EconomicsDfValue: economics_df[['years', 'output_net_of_d']],
                           'population_df': population_df[['years', 'population']],
                           'energy_mean_price': energy_mean_price,
                           'total_investment_share_of_gdp': total_investment_share_of_gdp,
@@ -191,14 +191,14 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
         # fill jacobians
         self.set_partial_derivative_for_other_types(
-            ('utility_df', 'pc_consumption'), ('economics_df', 'output_net_of_d'),  d_pc_consumption_d_output_net_of_d)
+            ('utility_df', 'pc_consumption'), (GlossaryCore.EconomicsDfValue, 'output_net_of_d'),  d_pc_consumption_d_output_net_of_d)
         self.set_partial_derivative_for_other_types(
             ('utility_df', 'pc_consumption'), ('total_investment_share_of_gdp', 'share_investment'),  d_pc_consumption_d_share_investment)
         self.set_partial_derivative_for_other_types(
             ('utility_df', 'pc_consumption'), ('population_df', 'population'),  d_pc_consumption_d_population)
 
         self.set_partial_derivative_for_other_types(
-            ('utility_df', 'period_utility_pc'), ('economics_df', 'output_net_of_d'),  d_period_utility_pc_d_output_net_of_d)
+            ('utility_df', 'period_utility_pc'), (GlossaryCore.EconomicsDfValue, 'output_net_of_d'),  d_period_utility_pc_d_output_net_of_d)
         self.set_partial_derivative_for_other_types(
             ('utility_df', 'period_utility_pc'), ('total_investment_share_of_gdp', 'share_investment'),  d_period_utility_pc_d_share_investment)
         self.set_partial_derivative_for_other_types(
@@ -209,7 +209,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             ('utility_df', 'period_utility_pc'), ('population_df', 'population'),  d_period_utility_d_population)
 
         self.set_partial_derivative_for_other_types(
-            ('utility_df', 'discounted_utility'), ('economics_df', 'output_net_of_d'),  d_discounted_utility_d_output_net_of_d)
+            ('utility_df', 'discounted_utility'), (GlossaryCore.EconomicsDfValue, 'output_net_of_d'),  d_discounted_utility_d_output_net_of_d)
         self.set_partial_derivative_for_other_types(
             ('utility_df', 'discounted_utility'), ('total_investment_share_of_gdp', 'share_investment'),  d_discounted_utility_d_share_investment)
         self.set_partial_derivative_for_other_types(
@@ -220,7 +220,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             ('utility_df', 'discounted_utility'), ('population_df', 'population'),  d_discounted_utility_d_population)
 
         self.set_partial_derivative_for_other_types(
-            ('utility_df', 'welfare'), ('economics_df', 'output_net_of_d'),  d_welfare_d_output_net_of_d)
+            ('utility_df', 'welfare'), (GlossaryCore.EconomicsDfValue, 'output_net_of_d'),  d_welfare_d_output_net_of_d)
         self.set_partial_derivative_for_other_types(
             ('utility_df', 'welfare'), ('total_investment_share_of_gdp', 'share_investment'),  d_welfare_d_share_investment)
         self.set_partial_derivative_for_other_types(
@@ -232,7 +232,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
         if obj_option == 'last_utility':
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), ('economics_df', 'output_net_of_d'), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_output_net_of_d))
+                ('welfare_objective',), (GlossaryCore.EconomicsDfValue, 'output_net_of_d'), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_output_net_of_d))
             self.set_partial_derivative_for_other_types(
                 ('welfare_objective',), ('total_investment_share_of_gdp', 'share_investment'), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_share_investment))
             self.set_partial_derivative_for_other_types(
@@ -244,7 +244,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
         elif obj_option == 'welfare':
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), ('economics_df', 'output_net_of_d'), np.dot(d_obj_d_welfare, d_welfare_d_output_net_of_d))
+                ('welfare_objective',), (GlossaryCore.EconomicsDfValue, 'output_net_of_d'), np.dot(d_obj_d_welfare, d_welfare_d_output_net_of_d))
             self.set_partial_derivative_for_other_types(
                 ('welfare_objective',), ('total_investment_share_of_gdp', 'share_investment'), np.dot(d_obj_d_welfare, d_welfare_d_share_investment))
             self.set_partial_derivative_for_other_types(
@@ -260,7 +260,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         d_neg_obj_d_welfare, x = self.conso_m.compute_gradient_negative_objective()
 
         self.set_partial_derivative_for_other_types(
-            ('negative_welfare_objective',), ('economics_df', 'output_net_of_d'),
+            ('negative_welfare_objective',), (GlossaryCore.EconomicsDfValue, 'output_net_of_d'),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_output_net_of_d))
         self.set_partial_derivative_for_other_types(
             ('negative_welfare_objective',), ('total_investment_share_of_gdp', 'share_investment'),
@@ -278,7 +278,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         d_obj_d_discounted_utility, d_obj_d_period_utility_pc = self.conso_m.compute_gradient_min_utility_objective()
 
         self.set_partial_derivative_for_other_types(
-            ('min_utility_objective',), ('economics_df', 'output_net_of_d'), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_output_net_of_d))
+            ('min_utility_objective',), (GlossaryCore.EconomicsDfValue, 'output_net_of_d'), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_output_net_of_d))
         self.set_partial_derivative_for_other_types(
             ('min_utility_objective',), ('total_investment_share_of_gdp', 'share_investment'), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_share_investment))
         self.set_partial_derivative_for_other_types(

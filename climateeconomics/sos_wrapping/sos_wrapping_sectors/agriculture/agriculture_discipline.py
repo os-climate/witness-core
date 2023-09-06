@@ -283,7 +283,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         if 'sector output' in chart_list:
 
             to_plot = ['output', 'output_net_of_damage']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             legend = {'output': 'sector gross output',
                       'output_net_of_damage': 'world output net of damage'}
@@ -414,7 +413,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         if 'productivity' in chart_list:
 
             to_plot = ['productivity']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(productivity_df.index)
 
@@ -443,7 +441,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         if 'energy efficiency' in chart_list:
 
             to_plot = capital_detail_df['energy_efficiency']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(capital_df.index)
 
@@ -510,7 +507,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 'scaling_factor_energy_production')
             total_production = energy_production['Total production'] * \
                 scaling_factor_energy_production
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(capital_detail_df.index)
 

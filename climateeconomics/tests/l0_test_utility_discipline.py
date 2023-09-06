@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -71,7 +72,7 @@ class UtilityDiscTest(unittest.TestCase):
                        f'{self.name}.time_step': 1,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,
-                       f'{self.name}.economics_df': economics_df,
+                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                        f'{self.name}.population_df': population_df,
                        f'{self.name}.energy_mean_price': energy_mean_price}
 

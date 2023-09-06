@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.utility_model import UtilityModel
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -48,9 +48,9 @@ class UtilityModelDiscipline(SoSWrapp):
         'init_rate_time_pref': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'scaleone': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.0302455265681763},
         'scaletwo': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': -10993.704},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.TemperatureDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
     }
     DESC_OUT = {
         'utility_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
@@ -62,9 +62,9 @@ class UtilityModelDiscipline(SoSWrapp):
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
 
         # compute utility
-        economics_df = inp_dict.pop('economics_df')
+        economics_df = inp_dict.pop(GlossaryCore.EconomicsDfValue)
         emissions_df = inp_dict.pop('emissions_df')
-        temperature_df = inp_dict.pop('temperature_df')
+        temperature_df = inp_dict.pop(GlossaryCore.TemperatureDfValue)
         utility_m = UtilityModel(inp_dict)
         utility_df = utility_m.compute(
             economics_df, emissions_df, temperature_df)

@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 import os
 from copy import deepcopy
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
@@ -50,7 +52,7 @@ class Crop():
     YEAR_START = 'year_start'
     YEAR_END = 'year_end'
     TIME_STEP = 'time_step'
-    POPULATION_DF = 'population_df'
+    POPULATION_DF = GlossaryCore.PopulationDfValue
     DIET_DF = 'diet_df'
     KG_TO_KCAL_DICT = 'kg_to_kcal_dict'
     KG_TO_M2_DICT = 'kg_to_m2_dict'
@@ -116,36 +118,36 @@ class Crop():
         Create the dataframe and fill it with values at year_start
         '''
 
-        self.food_land_surface_df = pd.DataFrame({'years': self.years})
-        self.total_food_land_surface = pd.DataFrame({'years': self.years})
-        self.mix_detailed_production = pd.DataFrame({'years': self.years})
-        self.mix_detailed_prices = pd.DataFrame({'years': self.years})
-        self.production = pd.DataFrame({'years': self.years})
-        self.land_use_required = pd.DataFrame({'years': self.years})
-        self.cost_details = pd.DataFrame({'years': self.years})
-        self.techno_prices = pd.DataFrame({'years': self.years})
+        self.food_land_surface_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.total_food_land_surface = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.mix_detailed_production = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.mix_detailed_prices = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.production = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.land_use_required = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.cost_details = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.techno_prices = pd.DataFrame({GlossaryCore.Years: self.years})
         self.column_dict = {'red meat (Gha)': 'red meat', 'white meat (Gha)': 'white meat',
                             'milk (Gha)': 'milk', 'eggs (Gha)': 'eggs', 'rice and maize (Gha)': 'rice and maize',
                             'potatoes (Gha)': 'potatoes', 'fruits and vegetables (Gha)': 'fruits and vegetables',
                             'other (Gha)': 'other', 'total surface (Gha)': 'total surface'}
-        self.techno_consumption = pd.DataFrame({'years': self.years})
-        self.techno_consumption_woratio = pd.DataFrame({'years': self.years})
-        self.CO2_emissions = pd.DataFrame({'years': self.years})
-        self.CO2_land_emissions = pd.DataFrame({'years': self.years})
-        self.CO2_land_emissions_detailed = pd.DataFrame({'years': self.years})
-        self.CH4_land_emissions = pd.DataFrame({'years': self.years})
-        self.CH4_land_emissions_detailed = pd.DataFrame({'years': self.years})
-        self.N2O_land_emissions = pd.DataFrame({'years': self.years})
-        self.N2O_land_emissions_detailed = pd.DataFrame({'years': self.years})
-        self.updated_diet_df = pd.DataFrame({'years': self.years})
-        self.calories_pc_df = pd.DataFrame({'years': self.years})
+        self.techno_consumption = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.techno_consumption_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.CO2_emissions = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.CO2_land_emissions_detailed = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.CH4_land_emissions = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.CH4_land_emissions_detailed = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.N2O_land_emissions_detailed = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.updated_diet_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.calories_pc_df = pd.DataFrame({GlossaryCore.Years: self.years})
 
     def configure_parameters_update(self, inputs_dict):
         '''
         Configure coupling variables with inputs_dict from the discipline
         '''
         if inputs_dict['margin'] is not None:
-            self.margin = inputs_dict['margin'].loc[inputs_dict['margin']['years']
+            self.margin = inputs_dict['margin'].loc[inputs_dict['margin'][GlossaryCore.Years]
                                                     <= self.year_end]
         # diet design variables
 
@@ -166,8 +168,8 @@ class Crop():
             sum_distrib = self.initial_age_distrib['distrib'].sum()
             raise Exception(
                 f'The distribution sum is not equal to 100 % : {sum_distrib}')
-        self.population_df = inputs_dict['population_df']
-        self.temperature_df = inputs_dict['temperature_df']
+        self.population_df = inputs_dict[GlossaryCore.PopulationDfValue]
+        self.temperature_df = inputs_dict[GlossaryCore.TemperatureDfValue]
         self.co2_emissions_per_kg = inputs_dict['co2_emissions_per_kg']
         self.ch4_emissions_per_kg = inputs_dict['ch4_emissions_per_kg']
         self.n2o_emissions_per_kg = inputs_dict['n2o_emissions_per_kg']
@@ -218,10 +220,10 @@ class Crop():
         # Add climate change impact to land required 
         surface_df = self.add_climate_impact(food_surface_df_before, self.temperature_df)
         # add years data
-        surface_df.insert(loc=0, column='years', value=self.years)
+        surface_df.insert(loc=0, column=GlossaryCore.Years, value=self.years)
 
         self.food_land_surface_df = surface_df
-        self.total_food_land_surface['years'] = surface_df['years']
+        self.total_food_land_surface[GlossaryCore.Years] = surface_df[GlossaryCore.Years]
         self.total_food_land_surface['total surface (Gha)'] = surface_df['total surface (Gha)']
 
         self.food_land_surface_percentage_df = self.convert_surface_to_percentage(
@@ -335,7 +337,7 @@ class Crop():
                 - update proportionally all vegetable kg/person/year
                 - compute new diet_df
         '''
-        changed_diet_df = pd.DataFrame({'years': self.years})
+        changed_diet_df = pd.DataFrame({GlossaryCore.Years: self.years})
         changed_diet_df['red meat'] = self.red_meat_calories_per_day * 365
         changed_diet_df['white meat'] = self.white_meat_calories_per_day * 365
         vegetables_and_carbs_calories = self.vegetables_and_carbs_calories_per_day * 365
@@ -358,7 +360,7 @@ class Crop():
                 changed_diet_df[key] = milk_and_eggs_calories * proportion
 
         for col in changed_diet_df:
-            if col != 'years':
+            if col != GlossaryCore.Years:
                 changed_diet_df[col] = changed_diet_df[col]  / self.kg_to_kcal_dict[col]
 
 
@@ -381,7 +383,7 @@ class Crop():
         """
         land_surface_percentage_df = deepcopy(surface_df)
         for key in land_surface_percentage_df.keys():
-            if key == 'years':
+            if key == GlossaryCore.Years:
                 pass
             else:
                 land_surface_percentage_df[key] = land_surface_percentage_df[key] / \
@@ -414,8 +416,8 @@ class Crop():
         Compute the cost details for crop & price
         """
         # Gather invests in crop for energy input
-        invest_inputs = self.crop_investment.loc[self.crop_investment['years']
-                                              <= self.cost_details['years'].max()]['investment'].values
+        invest_inputs = self.crop_investment.loc[self.crop_investment[GlossaryCore.Years]
+                                              <= self.cost_details[GlossaryCore.Years].max()]['investment'].values
 
         # Maximize with smooth exponential
         # this investment is not used in the price computation
@@ -439,8 +441,8 @@ class Crop():
             self.nb_years_amort_capex = self.techno_infos_dict['nb_years_amort_capex']
 
         # pylint: disable=no-member
-        len_y = max(self.cost_details['years']) + \
-            1 - min(self.cost_details['years'])
+        len_y = max(self.cost_details[GlossaryCore.Years]) + \
+            1 - min(self.cost_details[GlossaryCore.Years])
         self.cost_details['Crop_factory_amort'] = (np.tril(np.triu(np.ones((len_y, len_y)), k=0), k=self.nb_years_amort_capex - 1).transpose() * 
                                                            np.array(self.cost_details['Factory ($/MWh)'].values / self.nb_years_amort_capex)).T.sum(axis=0)
         # pylint: enable=no-member
@@ -457,10 +459,10 @@ class Crop():
         self.cost_details['Total ($/MWh)'] = self.cost_details['Energy costs ($/MWh)'] + self.cost_details['Factory ($/MWh)'] + self.cost_details['Transport ($/MWh)']
 
         # Add margin in %
-        self.cost_details['Total ($/MWh)'] *= self.margin.loc[self.margin['years']
-                                                        <= self.cost_details['years'].max()]['margin'].values / 100.0                                  
-        self.cost_details['Crop amort ($/MWh)'] *= self.margin.loc[self.margin['years']
-                                                                   <= self.cost_details['years'].max()]['margin'].values / 100.0
+        self.cost_details['Total ($/MWh)'] *= self.margin.loc[self.margin[GlossaryCore.Years]
+                                                        <= self.cost_details[GlossaryCore.Years].max()]['margin'].values / 100.0
+        self.cost_details['Crop amort ($/MWh)'] *= self.margin.loc[self.margin[GlossaryCore.Years]
+                                                                   <= self.cost_details[GlossaryCore.Years].max()]['margin'].values / 100.0
         # Total cost (t)
         self.cost_details['Total ($/t)'] = self.cost_details['Total ($/MWh)'] * self.data_fuel_dict['calorific_value']
         self.techno_prices['Crop'] = self.cost_details['Total ($/MWh)']
@@ -543,12 +545,12 @@ class Crop():
         # Finally compute the production by summing all aged production for
         # each year
 
-        age_distrib_prod_sum = self.age_distrib_prod_df.groupby(['years'], as_index=False).agg({f'distrib_prod (TWh)': 'sum'}
+        age_distrib_prod_sum = self.age_distrib_prod_df.groupby([GlossaryCore.Years], as_index=False).agg({f'distrib_prod (TWh)': 'sum'}
                                                                                                )
         if 'biomass_dry (TWh)' in self.production:
             del self.production['biomass_dry (TWh)']
 
-        self.production = pd.merge(self.production, age_distrib_prod_sum, how='left', on='years').rename(
+        self.production = pd.merge(self.production, age_distrib_prod_sum, how='left', on=GlossaryCore.Years).rename(
             columns={'distrib_prod (TWh)': 'biomass_dry (TWh)'}).fillna(0.0)
 
     def compute_aging_distribution_production(self):
@@ -581,7 +583,7 @@ class Crop():
         prod_array = production_from_invest['prod_from_invest'].values.tolist(
         ) * len_years
 
-        new_prod_aged = pd.DataFrame({'years': year_array, 'age': age_array, 'distrib_prod (TWh)': prod_array})
+        new_prod_aged = pd.DataFrame({GlossaryCore.Years: year_array, 'age': age_array, 'distrib_prod (TWh)': prod_array})
 
         # get the whole dataframe for old production with one line for each
         # year at each age
@@ -593,7 +595,7 @@ class Crop():
         prod_array = aging_distrib_year_df[f'distrib_prod (TWh)'].values.tolist(
         ) * len_years
 
-        old_prod_aged = pd.DataFrame({'years': year_array, 'age': age_array,
+        old_prod_aged = pd.DataFrame({GlossaryCore.Years: year_array, 'age': age_array,
                                       f'distrib_prod (TWh)': prod_array})
 
         # Concat the two created df
@@ -605,7 +607,7 @@ class Crop():
             (self.age_distrib_prod_df['age'] < 
              self.techno_infos_dict['lifetime'])
             # Suppress all lines where age is higher than lifetime
-            & (self.age_distrib_prod_df['years'] < self.year_end + 1)
+            & (self.age_distrib_prod_df[GlossaryCore.Years] < self.year_end + 1)
             # Fill Nan with zeros and suppress all zeros
             & (self.age_distrib_prod_df[f'distrib_prod (TWh)'] != 0.0)
         ]
@@ -616,22 +618,22 @@ class Crop():
         '''
         Compute the crop production from investment in t
         '''
-        prod_before_ystart = pd.DataFrame({'years': np.arange(self.year_start - construction_delay, self.year_start),
+        prod_before_ystart = pd.DataFrame({GlossaryCore.Years: np.arange(self.year_start - construction_delay, self.year_start),
                                            'investment': [0.0] * (construction_delay),
                                            'Capex ($/MWh)': self.cost_details.loc[self.cost_details[
-                                           'years'] == self.year_start, 'Capex ($/MWh)'].values[0]})
+                                           GlossaryCore.Years] == self.year_start, 'Capex ($/MWh)'].values[0]})
 
         production_from_invest = pd.concat(
-            [self.cost_details[['years', 'investment', 'Capex ($/MWh)']], prod_before_ystart], ignore_index=True)
+            [self.cost_details[[GlossaryCore.Years, 'investment', 'Capex ($/MWh)']], prod_before_ystart], ignore_index=True)
 
-        production_from_invest.sort_values(by=['years'], inplace=True)
+        production_from_invest.sort_values(by=[GlossaryCore.Years], inplace=True)
         # # Invest in M$ | Capex in $/MWh | Prod in TWh
         production_from_invest['prod_from_invest'] = production_from_invest['investment'].values / \
             production_from_invest[f'Capex ($/MWh)'].values
 
-        production_from_invest['years'] += construction_delay
+        production_from_invest[GlossaryCore.Years] += construction_delay
 
-        production_from_invest = production_from_invest[production_from_invest['years']
+        production_from_invest = production_from_invest[production_from_invest[GlossaryCore.Years]
                                                         <= self.year_end]
         return production_from_invest
         

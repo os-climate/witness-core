@@ -16,6 +16,8 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import ServicesDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import IndustrialDiscipline
@@ -59,8 +61,8 @@ class ObjectivesModel():
         self.delta_max_energy_eff = inputs_dict['delta_max_energy_eff']
    
     def set_coupling_inputs(self, inputs):
-        self.economics_df = inputs['economics_df']
-        self.economics_df.index = self.economics_df['years'].values
+        self.economics_df = inputs[GlossaryCore.EconomicsDfValue]
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
         #Put all inputs in dictionary 
         sectors_capital_dfs = {}
         sectors_production_dfs ={}
@@ -103,7 +105,7 @@ class ObjectivesModel():
                 weight = np.append(extra_weight, self.default_weight) 
             else:    
                 hist_energy_eff = self.compute_hist_energy_efficiency(self.historical_energy[sector].values, self.historical_capital[sector].values)
-                hist_energy_eff_dfs[sector] = pd.DataFrame({'years': self.years_range, 'energy_efficiency': hist_energy_eff})
+                hist_energy_eff_dfs[sector] = pd.DataFrame({GlossaryCore.Years: self.years_range, 'energy_efficiency': hist_energy_eff})
                 weight = self.default_weight
             
             #Energy eff errors
@@ -148,22 +150,22 @@ class ObjectivesModel():
         capital = extra_hist_data[f'{sector}.capital']
         energy = extra_hist_data[f'{sector}.energy']
         #find first year of extra data 
-        year_min_series = extra_hist_data['years'][(capital>0) & (energy>0)]
+        year_min_series = extra_hist_data[GlossaryCore.Years][(capital>0) & (energy>0)]
         year_min = year_min_series.min()
         
         if year_min < self.year_start: 
             self.year_min_energy_eff[sector] = year_min 
             #get extra data 
-            extra_hist_capital = extra_hist_data[f'{sector}.capital'][(extra_hist_data['years']>=year_min) & (extra_hist_data['years']< self.year_start)]
-            extra_hist_energy = extra_hist_data[f'{sector}.energy'][(extra_hist_data['years']>=year_min) & (extra_hist_data['years']< self.year_start)]
+            extra_hist_capital = extra_hist_data[f'{sector}.capital'][(extra_hist_data[GlossaryCore.Years]>=year_min) & (extra_hist_data[GlossaryCore.Years]< self.year_start)]
+            extra_hist_energy = extra_hist_data[f'{sector}.energy'][(extra_hist_data[GlossaryCore.Years]>=year_min) & (extra_hist_data[GlossaryCore.Years]< self.year_start)]
             #and append original data 
             hist_capital = np.append([extra_hist_capital],[self.historical_capital[sector].values])
             hist_energy = np.append([extra_hist_energy],[self.historical_energy[sector].values])
             #prepare data to compute error 
             lt_ene_eff_df = self.sectors_long_term_energy_eff_df[sector]
-            self.sim_energy_eff = lt_ene_eff_df['energy_efficiency'][(lt_ene_eff_df['years']<=self.year_end) & (lt_ene_eff_df['years']>=year_min)].values
+            self.sim_energy_eff = lt_ene_eff_df['energy_efficiency'][(lt_ene_eff_df[GlossaryCore.Years]<=self.year_end) & (lt_ene_eff_df[GlossaryCore.Years]>=year_min)].values
             #get weight for fitting 
-            extra_weight = extra_hist_data['weight'][(extra_hist_data['years']>=year_min) & (extra_hist_data['years']< self.year_start)].values
+            extra_weight = extra_hist_data['weight'][(extra_hist_data[GlossaryCore.Years]>=year_min) & (extra_hist_data[GlossaryCore.Years]< self.year_start)].values
             year_range = np.arange(year_min, self.year_end+1, self.time_step)
         else: 
             #if extra data not coherent use original data: eg not same year start for capital and energy
@@ -175,7 +177,7 @@ class ObjectivesModel():
         
         #compute energy efficiency
         hist_energy_eff = self.compute_hist_energy_efficiency(hist_energy, hist_capital)
-        hist_energy_eff_df = pd.DataFrame({'years': year_range, 'energy_efficiency': hist_energy_eff})
+        hist_energy_eff_df = pd.DataFrame({GlossaryCore.Years: year_range, 'energy_efficiency': hist_energy_eff})
 
         return hist_energy_eff_df, extra_weight 
         

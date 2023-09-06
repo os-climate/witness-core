@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -96,7 +97,7 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         CO2_emitted_forest['years'] = years
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
-        values_dict = {f'{self.name}.economics_df': economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
                        f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': co2_emissions_ccus_Gt,
@@ -192,7 +193,7 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
-        values_dict = {f'{self.name}.economics_df': economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
                        f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.{self.model_name}.min_co2_objective': min_co2_objective,

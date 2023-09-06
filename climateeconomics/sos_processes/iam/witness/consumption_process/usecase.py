@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -155,7 +155,7 @@ class Study(StudyManager):
         cons_input[self.study_name + '.sectors_investment_df'] = base_dummy_data
 
         cons_input[self.study_name + self.labormarket_name + '.workforce_share_per_sector'] = workforce_share
-        cons_input[self.study_name + '.economics_df'] = economics_df
+        cons_input[self.study_name + f'.{GlossaryCore.EconomicsDfValue}'] = economics_df
 
         setup_data_list.append(cons_input)
 

@@ -93,8 +93,9 @@ class GlossaryCore:
         },
     }
 
+    EconomicsDetailDfValue = 'economics_detail_df'
     EconomicsDetail_df = {
-        "var_name": 'economics_detail_df',
+        "var_name": EconomicsDetailDfValue,
         'type': 'dataframe',
         'unit': '-',
         "dataframe_descriptor": {

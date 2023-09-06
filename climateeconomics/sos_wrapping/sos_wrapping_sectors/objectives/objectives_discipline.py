@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_sectorization.sectorization_objectives_model import ObjectivesModel
 from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model import MacroeconomicsModel
@@ -79,7 +80,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                               'total': ('float', None, True),
                                                               'Total': ('float', None, True),},
                                      'dataframe_edition_locked': False, },
-               'economics_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+               GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'namespace': 'ns_witness',
                                 'dataframe_descriptor': {'years': ('float', None, False),
                                                          'capital': ('float', None, False),
@@ -201,7 +202,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        economics_df = deepcopy(self.get_sosdisc_inputs('economics_df'))
+        economics_df = deepcopy(self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue))
         sector_list = self.get_sosdisc_inputs('sector_list')
         historical_gdp = self.get_sosdisc_inputs('historical_gdp')
         historical_capital = self.get_sosdisc_inputs('historical_capital')

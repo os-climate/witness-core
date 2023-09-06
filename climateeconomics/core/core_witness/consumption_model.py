@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class ConsumptionModel:
     '''
@@ -60,7 +62,7 @@ class ConsumptionModel:
         self.years_range = years_range
         utility_df = pd.DataFrame(
             index=years_range,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'u_discount_rate',
                      'period_utility_pc',
                      'discounted_utility',
@@ -68,7 +70,7 @@ class ConsumptionModel:
 
         for key in utility_df.keys():
             utility_df[key] = 0
-        utility_df['years'] = years_range
+        utility_df[GlossaryCore.Years] = years_range
         self.utility_df = utility_df
         return utility_df
 
@@ -76,18 +78,18 @@ class ConsumptionModel:
         """
         Set couplings inputs with right index, scaling... 
         """
-        self.economics_df = self.inputs['economics_df']
-        self.economics_df.index = self.economics_df['years'].values
-        self.energy_mean_price = pd.DataFrame({'years': self.inputs['energy_mean_price']['years'].values,
+        self.economics_df = self.inputs[GlossaryCore.EconomicsDfValue]
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
+        self.energy_mean_price = pd.DataFrame({GlossaryCore.Years: self.inputs['energy_mean_price'][GlossaryCore.Years].values,
                                                'energy_price': self.inputs['energy_mean_price']['energy_price'].values})
-        self.energy_mean_price.index = self.energy_mean_price['years'].values
+        self.energy_mean_price.index = self.energy_mean_price[GlossaryCore.Years].values
         self.energy_price_ref = self.initial_raw_energy_price
-        self.population_df = self.inputs['population_df']
-        self.population_df.index = self.population_df['years'].values
+        self.population_df = self.inputs[GlossaryCore.PopulationDfValue]
+        self.population_df.index = self.population_df[GlossaryCore.Years].values
         self.total_investment_share_of_gdp = self.inputs['total_investment_share_of_gdp']
-        self.total_investment_share_of_gdp.index = self.total_investment_share_of_gdp['years'].values
+        self.total_investment_share_of_gdp.index = self.total_investment_share_of_gdp[GlossaryCore.Years].values
         self.residential_energy = self.inputs['residential_energy']
-        self.residential_energy.index = self.residential_energy['years'].values
+        self.residential_energy.index = self.residential_energy[GlossaryCore.Years].values
  
     def compute_consumption(self, year):
         """Equation for consumption
@@ -96,7 +98,7 @@ class ConsumptionModel:
             output: Utility output at t
             savings: Savings rate at t
         """
-        net_output = self.economics_df.at[year, 'output_net_of_d']
+        net_output = self.economics_df.at[year, GlossaryCore.OutputNetOfDamage]
         total_investment_share_of_gdp = self.total_investment_share_of_gdp.at[year, 'share_investment']
         consumption = (1 - total_investment_share_of_gdp / 100) * net_output
         # lower bound for conso
@@ -248,7 +250,7 @@ class ConsumptionModel:
                           self.year_end + 1, self.time_step)
         nb_years = len(years)
         total_investment_share_of_gdp = self.total_investment_share_of_gdp['share_investment'].values
-        net_output = self.economics_df['output_net_of_d'].values
+        net_output = self.economics_df[GlossaryCore.OutputNetOfDamage].values
         population = self.population_df['population'].values
         consumption = self.utility_df['consumption'].values
         pc_consumption = self.utility_df['pc_consumption'].values
