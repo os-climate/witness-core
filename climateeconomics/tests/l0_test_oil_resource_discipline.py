@@ -15,6 +15,8 @@ limitations under the License.
 '''
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -39,9 +41,9 @@ class OilModelTestCase(unittest.TestCase):
             join(data_dir, 'all_demand_from_energy_mix.csv'))
         # part to adapt lenght to the year range
 
-        self.energy_oil_demand_df = self.energy_oil_demand_df.loc[self.energy_oil_demand_df['years']
+        self.energy_oil_demand_df = self.energy_oil_demand_df.loc[self.energy_oil_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_oil_demand_df= self.energy_oil_demand_df.loc[self.energy_oil_demand_df['years']
+        self.energy_oil_demand_df= self.energy_oil_demand_df.loc[self.energy_oil_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_oil_demand_df,

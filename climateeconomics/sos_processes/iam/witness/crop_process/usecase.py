@@ -13,19 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import CropDiscipline
 
-from pathlib import Path
-from os.path import join, dirname
-from numpy import asarray, arange, array
 import pandas as pd
 import numpy as np
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
@@ -59,7 +54,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Crop', execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='Crop', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.agriculture_name = name
@@ -96,30 +91,29 @@ class Study(StudyManager):
         #         temperature = np.array(np.linspace(1.05, 1.05, year_range))
 
         temperature_df = pd.DataFrame(
-            {"years": years, "temp_atmo": temperature})
+            {GlossaryCore.Years: years, "temp_atmo": temperature})
         temperature_df.index = years
 
         population_df = pd.DataFrame(
-            {"years": years, "population": population})
+            {GlossaryCore.Years: years, "population": population})
         population_df.index = years
 
         red_meat_percentage = np.linspace(600, 700, year_range)
         white_meat_percentage = np.linspace(700, 600, year_range)
         vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
         self.red_meat_percentage = pd.DataFrame({
-                            'years': years,
+                            GlossaryCore.Years: years,
                             'red_meat_calories_per_day': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'white_meat_calories_per_day': white_meat_percentage})
         self.veg_calories_per_day = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
 
         self.milk_eggs_calories_per_day = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
-
 
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -133,40 +127,26 @@ class Study(StudyManager):
 
         # private values economics operator model
         agriculture_input = {}
-        agriculture_input[self.study_name + '.year_start'] = self.year_start
-        agriculture_input[self.study_name + '.year_end'] = self.year_end
-
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.diet_df'] = diet_df
-
-        agriculture_input[self.study_name +
-                          '.red_meat_calories_per_day'] = self.red_meat_percentage
-        agriculture_input[self.study_name +
-                          '.white_meat_calories_per_day'] = self.white_meat_percentage
-        agriculture_input[self.study_name +
-                          '.vegetables_and_carbs_calories_per_day'] = self.veg_calories_per_day
-        agriculture_input[self.study_name +
-                          '.milk_and_eggs_calories_per_day'] = self.milk_eggs_calories_per_day
-        
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.other_use_crop'] = other
-
-        agriculture_input[self.study_name +
-                          '.population_df'] = population_df
-
-        agriculture_input[self.study_name +
-                          '.temperature_df'] = temperature_df
-
+        agriculture_input[f"{self.study_name}.{'year_start'}"] = self.year_start
+        agriculture_input[f"{self.study_name}.{'year_end'}"] = self.year_end
+        agriculture_input[f"{self.study_name}.{self.agriculture_name}.{'diet_df'}"] = diet_df
+        agriculture_input[f"{self.study_name}.{'red_meat_calories_per_day'}"] = self.red_meat_percentage
+        agriculture_input[f"{self.study_name}.{'white_meat_calories_per_day'}"] = self.white_meat_percentage
+        agriculture_input[f"{self.study_name}.{'vegetables_and_carbs_calories_per_day'}"] = self.veg_calories_per_day
+        agriculture_input[f"{self.study_name}.{'milk_and_eggs_calories_per_day'}"] = self.milk_eggs_calories_per_day
+        agriculture_input[f"{self.study_name}.{self.agriculture_name}.{'other_use_crop'}"] = other
+        agriculture_input[f"{self.study_name}.{GlossaryCore.PopulationDfValue}"] = population_df
+        agriculture_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
 
         # investment: 1Mha of crop land each year
         crop_investment = pd.DataFrame(
-            {'years': years, 'investment': np.ones(len(years)) * 0.381})
+            {GlossaryCore.Years: years, 'investment': np.ones(len(years)) * 0.381})
 
         margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
         transport_cost = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 7.6})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.6})
 
         # bioenergyeurope.org : Dedicated energy crops
         # represent 0.1% of the total biomass production in 2018
@@ -185,22 +165,14 @@ class Study(StudyManager):
                                                              1.73, 1.81, 1.88, 1.96, 2.04, 2.12, 2.2, 2.28, 2.35, 2.43,
                                                              2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                              3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
-        agriculture_input[self.study_name +
-                          '.crop_investment'] = crop_investment
-        agriculture_input[self.study_name +
-                          '.margin'] = margin
-        agriculture_input[self.study_name +
-                          '.transport_margin'] = margin
-        agriculture_input[self.study_name +
-                          '.transport_cost'] = transport_cost
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.data_fuel_dict'] = BiomassDry.data_energy_dict
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.techno_infos_dict'] = CropDiscipline.techno_infos_dict_default
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.initial_age_distrib'] = initial_age_distribution
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.initial_production'] = initial_production
+        agriculture_input[f"{self.study_name}.{'crop_investment'}"] = crop_investment
+        agriculture_input[f"{self.study_name}.{'margin'}"] = margin
+        agriculture_input[f"{self.study_name}.{'transport_margin'}"] = margin
+        agriculture_input[f"{self.study_name}.{'transport_cost'}"] = transport_cost
+        agriculture_input[f"{self.study_name}.{self.agriculture_name}.{'data_fuel_dict'}"] = BiomassDry.data_energy_dict
+        agriculture_input[f"{self.study_name}.{self.agriculture_name}.{'techno_infos_dict'}"] = CropDiscipline.techno_infos_dict_default
+        agriculture_input[f"{self.study_name}.{self.agriculture_name}.{'initial_age_distrib'}"] = initial_age_distribution
+        agriculture_input[f"{self.study_name}.{self.agriculture_name}.{'initial_production'}"] = initial_production
 
         setup_data_list.append(agriculture_input)
 
@@ -233,17 +205,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
-
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-        filters = ppf.get_post_processing_filters_by_discipline(
-            disc)
-        graph_list = ppf.get_post_processing_by_discipline(
-            disc, filters, as_json=False)
-
-        for graph in graph_list:
-            graph.to_plotly().show()
+    uc_cls.test()

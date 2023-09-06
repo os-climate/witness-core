@@ -53,7 +53,7 @@ class UtilityDiscTest(unittest.TestCase):
 
         economics_df = read_csv(
             join(data_dir, 'economics_data_onestep.csv'))
-        economics_df = economics_df[economics_df['years'] >= 2020]
+        economics_df = economics_df[economics_df[GlossaryCore.Years] >= 2020]
 
         global_data_dir = join(dirname(dirname(__file__)), 'data')
         population_df = read_csv(
@@ -65,7 +65,7 @@ class UtilityDiscTest(unittest.TestCase):
         population_df.index = years
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
-            {'years': years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, 'energy_price': energy_price})
 
         values_dict = {f'{self.name}.year_start': 2020,
                        f'{self.name}.year_end': 2100,
@@ -73,7 +73,7 @@ class UtilityDiscTest(unittest.TestCase):
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
-                       f'{self.name}.population_df': population_df,
+                       f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.name}.energy_mean_price': energy_mean_price}
 
         self.ee.load_study_from_input_dict(values_dict)

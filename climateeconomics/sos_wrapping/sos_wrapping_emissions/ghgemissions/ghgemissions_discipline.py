@@ -56,23 +56,23 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         'GHG_global_warming_potential20':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_20_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
         'GHG_global_warming_potential100':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_100_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
         'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                  'dataframe_descriptor': {'years': ('float', None, False),
+                  'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Forest': ('float', None, False),
                                                           'Crop': ('float', None, False)}},
         'CH4_land_emissions': {'type': 'dataframe', 'unit': 'GtCH4', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                               'dataframe_descriptor': {'years': ('float', None, False),
+                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Crop': ('float', None, False),
                                                           'Forest': ('float', None, False),}},
         'N2O_land_emissions': {'type': 'dataframe', 'unit': 'GtN2O', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                               'dataframe_descriptor': {'years': ('float', None, False),
+                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Crop': ('float', None, False),
                                                           'Forest': ('float', None, False),}},
         'CO2_indus_emissions_df':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                                    'dataframe_descriptor': {'years': ('float', None, False),
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                              'indus_emissions': ('float', None, False),}
                                     },
         'GHG_total_energy_emissions':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                                        'dataframe_descriptor': {'years': ('float', None, False),
+                                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                  'Total CO2 emissions': ('float', None, False),
                                                                  'Total N2O emissions': ('float', None, False),
                                                                  'Total CH4 emissions': ('float', None, False), }
@@ -98,11 +98,11 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         # Store output data
 
         # co2_emissions_df = self.emissions_model.compute_co2_emissions_for_carbon_cycle()
-        cols = ['years'] + [f'Total {ghg} emissions' for ghg in self.emissions_model.GHG_TYPE_LIST]
+        cols = [GlossaryCore.Years] + [f'Total {ghg} emissions' for ghg in self.emissions_model.GHG_TYPE_LIST]
         emissions_df = self.emissions_model.ghg_emissions_df[cols]
 
         dict_values = {'GHG_emissions_detail_df': self.emissions_model.ghg_emissions_df,
-                       'co2_emissions_Gt': self.emissions_model.GHG_total_energy_emissions[['years', 'Total CO2 emissions']],
+                       'co2_emissions_Gt': self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, 'Total CO2 emissions']],
                        'GHG_emissions_df': emissions_df,
                        'GWP_emissions': self.emissions_model.gwp_emissions}
 
@@ -123,7 +123,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         for ghg in self.emissions_model.GHG_TYPE_LIST:
             ghg_land_emissions = inputs_dict[f'{ghg}_land_emissions']
             for column in ghg_land_emissions.columns:
-                if column != "years":
+                if column != GlossaryCore.Years:
                     self.set_partial_derivative_for_other_types(
                         ('GHG_emissions_df', f'Total {ghg} emissions'), (f'{ghg}_land_emissions', column),  np.identity(len(years)))
 
@@ -182,10 +182,10 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_name = f'Global warming potential at {gwp_year} years'
         new_chart = TwoAxesInstanciatedChart(
-            'years', 'GWP [GtCO2]', chart_name=chart_name, stacked_bar=True)
+            GlossaryCore.Years, 'GWP [GtCO2]', chart_name=chart_name, stacked_bar=True)
 
         for ghg in GHGEmissions.GHG_TYPE_LIST:
-            new_serie = InstanciatedSeries(list(GWP_emissions['years'].values), list(GWP_emissions[f'{ghg}_{gwp_year}'].values),
+            new_serie = InstanciatedSeries(list(GWP_emissions[GlossaryCore.Years].values), list(GWP_emissions[f'{ghg}_{gwp_year}'].values),
                                            ghg, 'bar')
 
             new_chart.series.append(new_serie)
@@ -198,12 +198,12 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_name = f'{ghg} emissions per sector'
         new_chart = TwoAxesInstanciatedChart(
-            'years', f'{ghg} Emissions [Gt]', chart_name=chart_name, stacked_bar=True)
+            GlossaryCore.Years, f'{ghg} Emissions [Gt]', chart_name=chart_name, stacked_bar=True)
 
         sector_list = ['energy', 'land', 'industry']
         for sector in sector_list:
             if f'{ghg} {sector}_emissions' in GHG_emissions_detail_df:
-                new_serie = InstanciatedSeries(list(GHG_emissions_detail_df['years'].values), list(GHG_emissions_detail_df[f'{ghg} {sector}_emissions'].values),
+                new_serie = InstanciatedSeries(list(GHG_emissions_detail_df[GlossaryCore.Years].values), list(GHG_emissions_detail_df[f'{ghg} {sector}_emissions'].values),
                                                sector, 'bar')
 
                 new_chart.series.append(new_serie)

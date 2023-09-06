@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -61,19 +62,19 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         loss_ft = 4
         loss_ref = 3
         loss_reforest = 3
-        non_use_capital_fg = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+        non_use_capital_fg = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
                                            'FossilGas': loss_fg})
-        non_use_capital_ub = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+        non_use_capital_ub = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
                                            'UpgradingBiogas': loss_ub})
-        non_use_capital_rf = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+        non_use_capital_rf = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
                                            'Refinery': loss_rf})
-        non_use_capital_ft = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+        non_use_capital_ft = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
                                            'FischerTropsch': loss_ft})
-        non_use_capital_ct = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+        non_use_capital_ct = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
                                            'direct_air_capture.AmineScrubbing': loss_ct})
-        non_use_capital_ref = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+        non_use_capital_ref = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
                                             'Forest': loss_ref})
-        forest_lost_capital = pd.DataFrame({'years': np.arange(year_start, year_end + 1),
+        forest_lost_capital = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),
                                             'reforestation': loss_reforest,
                                             'managed_wood': loss_reforest,
                                             'deforestation': loss_reforest})

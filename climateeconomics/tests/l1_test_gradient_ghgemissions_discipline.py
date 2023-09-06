@@ -20,6 +20,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -61,21 +62,21 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         year_start = 2020
         year_end = 2100
         years = np.arange(year_start, year_end + 1)
-        GHG_total_energy_emissions = pd.DataFrame({'years': years,
+        GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    'Total CO2 emissions': np.linspace(37., 10., len(years)),
                                                    'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
                                                    'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
-        CO2_land_emissions = pd.DataFrame({'years': years,
+        CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'Crop': np.linspace(0., 0., len(years)),
                                            'Forest': np.linspace(3., 4., len(years))})
-        CH4_land_emissions = pd.DataFrame({'years': years,
+        CH4_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'Crop': np.linspace(0., 0., len(years)),
                                            'Forest': np.linspace(3., 4., len(years))})
-        N2O_land_emissions = pd.DataFrame({'years': years,
+        N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'Crop': np.linspace(0., 0., len(years)),
                                            'Forest': np.linspace(3., 4., len(years))})
 
-        CO2_indus_emissions_df = pd.DataFrame({'years': years,
+        CO2_indus_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
                                                'indus_emissions': np.linspace(1., 2., len(years))})
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,

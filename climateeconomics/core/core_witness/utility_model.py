@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class UtilityModel():
     '''
@@ -57,7 +59,7 @@ class UtilityModel():
         self.years_range = years_range
         utility_df = pd.DataFrame(
             index=years_range,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'u_discount_rate',
                      'period_utility_pc',
                      'discounted_utility',
@@ -65,7 +67,7 @@ class UtilityModel():
 
         for key in utility_df.keys():
             utility_df[key] = 0
-        utility_df['years'] = years_range
+        utility_df[GlossaryCore.Years] = years_range
         self.utility_df = utility_df
         return utility_df
 
@@ -382,13 +384,13 @@ class UtilityModel():
         ''' pyworld3 execution
         '''
         self.economics_df = economics_df
-        self.economics_df.index = self.economics_df['years'].values
-        self.energy_mean_price = pd.DataFrame({'years': energy_mean_price['years'].values,
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
+        self.energy_mean_price = pd.DataFrame({GlossaryCore.Years: energy_mean_price[GlossaryCore.Years].values,
                                                'energy_price': energy_mean_price['energy_price'].values})
-        self.energy_mean_price.index = self.energy_mean_price['years'].values
+        self.energy_mean_price.index = self.energy_mean_price[GlossaryCore.Years].values
         self.energy_price_ref = self.initial_raw_energy_price
         self.population_df = population_df
-        self.population_df.index = self.population_df['years'].values
+        self.population_df.index = self.population_df[GlossaryCore.Years].values
         for year in self.years_range:
             self.compute__u_discount_rate(year)
             self.compute_period_utility(year)

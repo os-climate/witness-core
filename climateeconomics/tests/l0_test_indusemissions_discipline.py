@@ -58,8 +58,8 @@ class IndusEmissionDiscTest(unittest.TestCase):
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all['years'] >= 2020]
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020]
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020]
         energy_supply_df_y = energy_supply_df_y.rename(
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
 

@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 # coding: utf-8
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.geophysical_model import CarbonCycle
@@ -114,7 +115,7 @@ class CarbonCycleDiscipline(SoSWrapp):
 
             chart_name = 'atmosphere concentration of carbon'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'carbon concentration (Gtc)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'carbon concentration (Gtc)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)
@@ -144,7 +145,7 @@ class CarbonCycleDiscipline(SoSWrapp):
 
             chart_name = 'Atmospheric concentrations parts per million'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Atmospheric concentrations parts per million',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Atmospheric concentrations parts per million',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)

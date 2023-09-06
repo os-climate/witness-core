@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -83,9 +83,9 @@ class Study(StudyManager):
                 dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
             # Energy
             hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
-            agri_energy = pd.DataFrame({'years': hist_energy['years'], 'Total production': hist_energy['Agriculture']})
-            services_energy = pd.DataFrame({'years': hist_energy['years'], 'Total production': hist_energy['Services']})
-            indus_energy = pd.DataFrame({'years': hist_energy['years'], 'Total production': hist_energy['Industry']})
+            agri_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], 'Total production': hist_energy['Agriculture']})
+            services_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], 'Total production': hist_energy['Services']})
+            indus_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], 'Total production': hist_energy['Industry']})
             # Workforce
             hist_workforce = pd.read_csv(join(data_dir, 'hist_workforce_sect.csv'))
             workforce_df = hist_workforce
@@ -95,7 +95,7 @@ class Study(StudyManager):
 
         else:
             one = np.ones(self.nb_per)
-            share_sectors_invest =  pd.DataFrame({'years': years, 'Agriculture': one * 0.4522,
+            share_sectors_invest =  pd.DataFrame({GlossaryCore.Years: years, 'Agriculture': one * 0.4522,
                                             'Industry': one * 6.8998, 'Services': one * 19.1818})
             # Energy
             brut_net = 1 / 1.45
@@ -107,9 +107,9 @@ class Study(StudyManager):
             # Find values for 2020, 2050 and concat dfs
             energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
             energy_supply_values = energy_supply * brut_net
-            indus_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.2894})
-            agri_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.02136})
-            services_energy = pd.DataFrame({'years': years, 'Total production': energy_supply_values * 0.37})
+            indus_energy = pd.DataFrame({GlossaryCore.Years: years, 'Total production': energy_supply_values * 0.2894})
+            agri_energy = pd.DataFrame({GlossaryCore.Years: years, 'Total production': energy_supply_values * 0.02136})
+            services_energy = pd.DataFrame({GlossaryCore.Years: years, 'Total production': energy_supply_values * 0.37})
 
             total_workforce_df = pd.read_csv(join(data_dir, 'workingage_population_df.csv'))
             # multiply ageworking pop by employment rate
@@ -118,21 +118,21 @@ class Study(StudyManager):
             # 2020: 3389556200, 2021: 3450067707
             workforce[0] = 3389.556200
             workforce[1] = 3450.067707
-            workforce_df = pd.DataFrame({'years': years, 'Agriculture': workforce * 0.274,
+            workforce_df = pd.DataFrame({GlossaryCore.Years: years, 'Agriculture': workforce * 0.274,
                                          'Services': workforce * 0.509, 'Industry': workforce * 0.217})
 
         # Damage
         damage_df = pd.DataFrame(
-            {'years': years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
+            {GlossaryCore.Years: years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
              'base_carbon_price': np.zeros(self.nb_per)})
         #Sectors invest
         base_dummy_data = pd.DataFrame(
-            {'years': years, 'Agriculture': np.ones(self.nb_per), 'Industry': np.ones(self.nb_per),
+            {GlossaryCore.Years: years, 'Agriculture': np.ones(self.nb_per), 'Industry': np.ones(self.nb_per),
              'Services': np.ones(self.nb_per)})
 
         # Share invest
         share_invest = np.asarray([27.0] * self.nb_per)
-        share_invest = pd.DataFrame({'years': years, 'share_investment': share_invest})
+        share_invest = pd.DataFrame({GlossaryCore.Years: years, 'share_investment': share_invest})
         share_invest_df = share_invest
 
         sect_input = {}

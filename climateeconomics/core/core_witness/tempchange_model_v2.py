@@ -19,6 +19,8 @@ import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class TempChange(object):
     """
@@ -92,20 +94,20 @@ class TempChange(object):
         self.years_range = years_range
         temperature_df = DataFrame(
             index=years_range,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'exog_forcing',
                      'forcing',
                      'temp_atmo',
                      'temp_ocean'])
         for key in temperature_df.keys():
             temperature_df[key] = 0
-        temperature_df['years'] = years_range
+        temperature_df[GlossaryCore.Years] = years_range
         temperature_df.loc[self.year_start,
                            'temp_ocean'] = self.init_temp_ocean
         temperature_df.loc[self.year_start, 'temp_atmo'] = self.init_temp_atmo
         self.temperature_df = temperature_df
 
-        self.forcing_df = DataFrame({'years': self.years_range})
+        self.forcing_df = DataFrame({GlossaryCore.Years: self.years_range})
         return temperature_df
 
     def compute_exog_forcing_dice(self):
@@ -301,10 +303,10 @@ class TempChange(object):
                              beta_l * cs +
                              beta_q * cs * cs,
                              1)
-        radiative_forcing = self.temperature_df.loc[self.temperature_df['years'] == year, 'forcing'].values[0]
+        radiative_forcing = self.temperature_df.loc[self.temperature_df[GlossaryCore.Years] == year, 'forcing'].values[0]
         temperature = (1-1/e_folding_time)*temperature + cs/(5.35*np.log(2)*e_folding_time)*radiative_forcing
 
-        self.temperature_df.loc[self.temperature_df['years'] == year, 'temp_atmo'] = temperature
+        self.temperature_df.loc[self.temperature_df[GlossaryCore.Years] == year, 'temp_atmo'] = temperature
         return temperature
 
     def compute_sea_level_fund(self, year, sea_level, temperature):
@@ -315,7 +317,7 @@ class TempChange(object):
         gamma = 2
         seal_level = (1 - 1 / rho) * sea_level + gamma * temperature / rho
 
-        self.temperature_df.loc[self.temperature_df['years'] == year, 'sea_level'] = seal_level
+        self.temperature_df.loc[self.temperature_df[GlossaryCore.Years] == year, 'sea_level'] = seal_level
         return seal_level
 
     ######### CONSTRAINT ########

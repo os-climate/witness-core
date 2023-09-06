@@ -16,6 +16,8 @@ limitations under the License.
 
 from os.path import join, dirname
 from pandas import read_csv
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pandas as pd
@@ -65,24 +67,24 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(year_start, year_end + 1, 1)
         year_range = year_end - year_start + 1
 
-        land_demand_df = land_demand_df.loc[land_demand_df['years']
+        land_demand_df = land_demand_df.loc[land_demand_df[GlossaryCore.Years]
                                             >= year_start]
-        land_demand_df = land_demand_df.loc[land_demand_df['years']
+        land_demand_df = land_demand_df.loc[land_demand_df[GlossaryCore.Years]
                                             <= year_end]
 
         self.total_food_land_surface = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'total surface (Gha)'])
-        self.total_food_land_surface['years'] = years
+        self.total_food_land_surface[GlossaryCore.Years] = years
         self.total_food_land_surface['total surface (Gha)'] = np.linspace(
             5, 4, year_range)
 
         self.deforested_surface_df = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'forest_surface_evol'])
-        self.deforested_surface_df['years'] = years
+        self.deforested_surface_df[GlossaryCore.Years] = years
         # Gha
         self.deforested_surface_df['forest_surface_evol'] = np.linspace(
             -0.01, 0, year_range)

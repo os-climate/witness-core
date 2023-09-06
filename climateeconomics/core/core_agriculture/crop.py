@@ -278,7 +278,7 @@ class Crop():
         """
         result = pd.DataFrame()
         for key in diet_df.keys():
-            if key == "years":
+            if key == GlossaryCore.Years:
                 result[key] = diet_df[key]
             else:
                 result[key] = population_df['population'].values * diet_df[key].values * 1e6
@@ -308,7 +308,7 @@ class Crop():
         result = pd.DataFrame()
         sum = np.array(len(quantity_of_food_df.index) * [0])
         for key in quantity_of_food_df.keys():
-            if key == "years":
+            if key == GlossaryCore.Years:
                 pass
             else:
                 result[key + ' (Gha)'] = kg_food_to_surface[key] * \
@@ -405,7 +405,7 @@ class Crop():
         # Compute reduction in productivity due to increase in temperature 
         pdctivity_reduction = self.param_a * temp ** 2 + self.param_b * temp
         self.prod_reduction = pdctivity_reduction
-        self.productivity_evolution = pd.DataFrame({"years": self.years, 'productivity_evolution': pdctivity_reduction})
+        self.productivity_evolution = pd.DataFrame({GlossaryCore.Years: self.years, 'productivity_evolution': pdctivity_reduction})
         # Apply this reduction to increase land surface needed
         surface_df = surface_df_before.multiply(other=(1 - pdctivity_reduction), axis=0)
         

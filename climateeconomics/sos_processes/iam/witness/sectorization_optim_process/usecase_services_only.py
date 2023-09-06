@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -223,15 +223,15 @@ class Study(StudyManager):
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        indus_invest = pd.DataFrame({'years': hist_invest['years'], 'Industry': hist_invest['Industry']})
-        agri_invest = pd.DataFrame({'years': hist_invest['years'], 'Agriculture': hist_invest['Agriculture']})
-        services_invest = pd.DataFrame({'years': hist_invest['years'], 'Services': hist_invest['Services']})
+        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Industry': hist_invest['Industry']})
+        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Agriculture': hist_invest['Agriculture']})
+        services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Services': hist_invest['Services']})
 
 
         long_term_energy_eff =  pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
-        lt_enef_agri = pd.DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Agriculture']})
-        lt_enef_indus = pd.DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Industry']})
-        lt_enef_services = pd.DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Services']})
+        lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Agriculture']})
+        lt_enef_indus = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Industry']})
+        lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Services']})
         sect_input = {}
         sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
         sect_input[ns_coupling + self.obj_name + '.historical_capital'] = hist_capital

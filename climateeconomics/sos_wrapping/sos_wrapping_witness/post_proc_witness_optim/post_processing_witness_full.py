@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -307,15 +307,15 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             carbon_emissions = techno_disc.get_sosdisc_outputs(
                 'CO2_emissions_detailed')
             CO2_per_use = np.zeros(
-                len(carbon_emissions['years']))
+                len(carbon_emissions[GlossaryCore.Years]))
             if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
                 if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                        len(carbon_emissions[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
                                       'high_calorific_value']
                 elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use']
+                        len(carbon_emissions[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use']
             for emission_type in carbon_emissions:
                 if emission_type == techno:
                     total_carbon_emissions = CO2_per_use + \
@@ -640,18 +640,18 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
             carbon_emissions = techno_disc.get_sosdisc_outputs(
                 'CO2_emissions_detailed')
             CO2_per_use = np.zeros(
-                len(carbon_emissions['years']))
+                len(carbon_emissions[GlossaryCore.Years]))
             if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
                 if data_fuel_dict['CO2_per_use_unit'] == 'kg/kg':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
+                        len(carbon_emissions[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use'] / data_fuel_dict[
                                       'high_calorific_value']
                 elif data_fuel_dict['CO2_per_use_unit'] == 'kg/kWh':
                     CO2_per_use = np.ones(
-                        len(carbon_emissions['years'])) * data_fuel_dict['CO2_per_use']
+                        len(carbon_emissions[GlossaryCore.Years])) * data_fuel_dict['CO2_per_use']
             CO2_from_other_consumption = np.zeros(len(years))
             for emission_type in carbon_emissions:
-                if emission_type == 'years':
+                if emission_type == GlossaryCore.Years:
                     continue
                 elif emission_type == 'production':
                     CO2_from_production = carbon_emissions[emission_type].values

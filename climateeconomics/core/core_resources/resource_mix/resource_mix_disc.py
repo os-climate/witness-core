@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 # from climateeconomics.core.core_land_use.land_use import LandUse,\
 # OrderOfMagnitude
@@ -54,7 +55,7 @@ class ResourceMixDiscipline(SoSWrapp):
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
     years_default = np.arange(2020, 2051)
     ratio_available_resource_default = pd.DataFrame(
-        {'years': np.arange(2020, 2050 + 1)})
+        {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
     for resource in ResourceMixModel.RESOURCE_LIST:
         ratio_available_resource_default[resource] = np.linspace(
             1.0, 1.0, len(ratio_available_resource_default.index))
@@ -91,7 +92,7 @@ class ResourceMixDiscipline(SoSWrapp):
                                  'editable': False, 'structuring': True},
                ResourceMixModel.NON_MODELED_RESOURCE_PRICE: {'type': 'dataframe', 'unit': '$/t',
                                                              'namespace': 'ns_resource',
-                                                             'dataframe_descriptor': {'years': ('float', None, True),
+                                                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                                       'CO2': ('float', None, True),
                                                                                       'uranium_resource': ('float', None, True),
                                                                                       'biomass_dry': ('float', None, True),
@@ -160,7 +161,7 @@ class ResourceMixDiscipline(SoSWrapp):
                                                              },
                'resources_demand': {'type': 'dataframe', 'unit': 'Mt',
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                    'dataframe_descriptor': {'years': ('float', None, True),
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                              'natural_gas_resource': ('float', None, True),
                                                              'uranium_resource': ('float', None, True),
                                                              'coal_resource': ('float', None, True),
@@ -170,7 +171,7 @@ class ResourceMixDiscipline(SoSWrapp):
                                     },
                'resources_demand_woratio': {'type': 'dataframe', 'unit': 'Mt',
                                             'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_resource',
-                                            'dataframe_descriptor': {'years': ('float', None, True),
+                                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                                      'natural_gas_resource': ('float', None, True),
                                                                      'uranium_resource': ('float', None, True),
                                                                      'coal_resource': ('float', None, True),
@@ -217,11 +218,11 @@ class ResourceMixDiscipline(SoSWrapp):
             for resource in resource_list:
                 dynamic_inputs[f'{resource}.resource_price'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PRICE_UNIT[resource],
-                    'dataframe_descriptor': {'years': ('float', None, True),
+                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                              'price': ('float', None, True)}}
                 dynamic_inputs[f'{resource}.resource_stock'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource],
-                    'dataframe_descriptor': {'years': ('float', None, True),
+                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                              'heavy': ('float', None, True),
                                              'uranium_40': ('float', None, True),
                                              'uranium_80': ('float', None, True),
@@ -240,7 +241,7 @@ class ResourceMixDiscipline(SoSWrapp):
                                              'light': ('float', None, True),}}
                 dynamic_inputs[f'{resource}.use_stock'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource],
-                    'dataframe_descriptor': {'years': ('float', None, True),
+                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                              'heavy': ('float', None, True),
                                              'uranium_40': ('float', None, True),
                                              'uranium_80': ('float', None, True),
@@ -260,7 +261,7 @@ class ResourceMixDiscipline(SoSWrapp):
                                              }}
                 dynamic_inputs[f'{resource}.recycled_production'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_STOCK_UNIT[resource] ,
-                    'dataframe_descriptor': {'years': ('float', None, True),
+                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                              'heavy': ('float', None, True),
                                              'uranium_40': ('float', None, True),
                                              'uranium_80': ('float', None, True),
@@ -280,7 +281,7 @@ class ResourceMixDiscipline(SoSWrapp):
                                              }}
                 dynamic_inputs[f'{resource}.predictable_production'] = {
                     'type': 'dataframe', 'unit': ResourceMixModel.RESOURCE_PROD_UNIT[resource],
-                    'dataframe_descriptor': {'years': ('float', None, True),
+                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                              'heavy': ('float', None, True),
                                              'uranium_40': ('float', None, True),
                                              'uranium_80': ('float', None, True),
@@ -357,7 +358,7 @@ class ResourceMixDiscipline(SoSWrapp):
                 inputs_dict, resource_type, output_dict)
 
             for types in inputs_dict[f'{resource_type}.use_stock']:
-                if types != 'years':
+                if types != GlossaryCore.Years:
                     self.set_partial_derivative_for_other_types(
                         (ResourceMixModel.All_RESOURCE_USE,
                          resource_type), (f'{resource_type}.use_stock', types),
@@ -367,7 +368,7 @@ class ResourceMixDiscipline(SoSWrapp):
                 'resources_demand_woratio', resource_type), grad_ratio_on_demand)
 
             for types in inputs_dict[f'{resource_type}.resource_stock']:
-                if types != 'years':
+                if types != GlossaryCore.Years:
                     self.set_partial_derivative_for_other_types(
                         (ResourceMixModel.ALL_RESOURCE_STOCK, resource_type),
                         (f'{resource_type}.resource_stock', types), grad_stock)
@@ -376,7 +377,7 @@ class ResourceMixDiscipline(SoSWrapp):
                         (f'{resource_type}.resource_stock', types), grad_ratio_on_stock * grad_stock)
             
             for types in inputs_dict[f'{resource_type}.recycled_production']:
-                if types != 'years':
+                if types != GlossaryCore.Years:
                     self.set_partial_derivative_for_other_types(
                         (ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION, resource_type),
                         (f'{resource_type}.recycled_production', types), grad_recycling)
@@ -397,7 +398,7 @@ class ResourceMixDiscipline(SoSWrapp):
         data_frame_other_resource_price = inputs_dict['non_modeled_resource_price']
 
         for resource_type in data_frame_other_resource_price:
-            if resource_type not in resource_list and resource_type != 'years':
+            if resource_type not in resource_list and resource_type != GlossaryCore.Years:
                 self.set_partial_derivative_for_other_types((ResourceMixModel.ALL_RESOURCE_PRICE, resource_type), (
                     ResourceMixModel.NON_MODELED_RESOURCE_PRICE, resource_type),
                     np.identity(len(data_frame_other_resource_price)))
@@ -416,7 +417,7 @@ class ResourceMixDiscipline(SoSWrapp):
 
             stock_df = self.get_sosdisc_outputs(
                 ResourceMixModel.ALL_RESOURCE_STOCK)
-            years = stock_df['years'].values.tolist()
+            years = stock_df[GlossaryCore.Years].values.tolist()
             price_df = self.get_sosdisc_outputs(
                 ResourceMixModel.ALL_RESOURCE_PRICE)
             use_stock_df = self.get_sosdisc_outputs(
@@ -431,25 +432,25 @@ class ResourceMixDiscipline(SoSWrapp):
                 ResourceMixModel.ALL_RESOURCE_RECYCLED_PRODUCTION)
 
             # two charts for stock evolution and price evolution
-            stock_chart = TwoAxesInstanciatedChart('years', 'stocks (Mt)',
+            stock_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'stocks (Mt)',
                                                    chart_name='Resources stocks through the years', stacked_bar=True)
-            price_chart = TwoAxesInstanciatedChart('years', 'price ($/t)',
+            price_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'price ($/t)',
                                                    chart_name='Resource price through the years', stacked_bar=True)
-            use_stock_chart = TwoAxesInstanciatedChart('years', 'resource use (Mt) ',
+            use_stock_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'resource use (Mt) ',
                                                        chart_name='Resource use through the years', stacked_bar=True)
-            production_chart = TwoAxesInstanciatedChart('years',
+            production_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
                                                         'resource production (Mt)',
                                                         chart_name='Resource production through the years',
                                                         stacked_bar=True)
             ratio_use_demand_chart = TwoAxesInstanciatedChart(
-                'years', 'ratio usable stock / demand ',
+                GlossaryCore.Years, 'ratio usable stock / demand ',
                 chart_name='ratio usable stock and prod on demand through the years', stacked_bar=True)
             resource_demand_chart = TwoAxesInstanciatedChart(
-                'years', 'demand (Mt)', chart_name='resource demand through the years', stacked_bar=True)
+                GlossaryCore.Years, 'demand (Mt)', chart_name='resource demand through the years', stacked_bar=True)
             recycling_chart = TwoAxesInstanciatedChart(
-                'years', 'recycled production (Mt)', chart_name='recycled production through the years', stacked_bar=True)
+                GlossaryCore.Years, 'recycled production (Mt)', chart_name='recycled production through the years', stacked_bar=True)
             for resource_kind in stock_df:
-                if resource_kind != 'years':
+                if resource_kind != GlossaryCore.Years:
                     stock_serie = InstanciatedSeries(
                         years, (stock_df[resource_kind]
                                 ).values.tolist(), resource_kind,
@@ -484,7 +485,7 @@ class ResourceMixDiscipline(SoSWrapp):
                     recycling_chart.add_series(recycled_production_serie)
 
             for resource_types in price_df:
-                if resource_types != 'years':
+                if resource_types != GlossaryCore.Years:
                     price_serie = InstanciatedSeries(years, (price_df[resource_types]).values.tolist(
                     ), resource_types, InstanciatedSeries.LINES_DISPLAY)
                     price_chart.add_series(price_serie)

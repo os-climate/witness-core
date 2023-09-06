@@ -18,6 +18,8 @@ from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_model import OilResourceModel
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
@@ -65,7 +67,7 @@ class OilResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_oil_resource',
                                  'dataframe_descriptor':
                                      {
-                                         'years': ('float', None, False),
+                                         GlossaryCore.Years: ('float', None, False),
                                          'oil_type': ('string', None, True),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -76,7 +78,7 @@ class OilResourceDiscipline(ResourceDiscipline):
                                  },
                'resource_production_data': {'type': 'dataframe', 'unit': 'million_barrels', 'optional': True,
                                             'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_oil_resource',
-                                            'dataframe_descriptor': {'years': ('float', None, False),
+                                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                      'light': ('float', None, True),
                                                                      'medium': ('float', None, True),
                                                                      'heavy': ('float', None, True),
@@ -91,7 +93,7 @@ class OilResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[million_barrels]', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_oil_resource',
                                           'dataframe_descriptor': {
-                                              'years': ('float', None, False),
+                                              GlossaryCore.Years: ('float', None, False),
                                               'light_consumption': ('float', None, True),
                                               'medium_consumption': ('float', None, True),
                                               'heavy_consumption': ('float', None, True),

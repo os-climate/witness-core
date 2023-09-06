@@ -116,7 +116,7 @@ class UtilityModelDiscipline(SoSWrapp):
 
             chart_name = 'Utility'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Discounted Utility (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Discounted Utility (trill $)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)
@@ -150,7 +150,7 @@ class UtilityModelDiscipline(SoSWrapp):
 
             chart_name = 'Utility of per capita consumption'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Utility of pc consumption',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Utility of pc consumption',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)

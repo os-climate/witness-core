@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
@@ -86,16 +87,16 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.CO2_land_emission_df'] = {
                         'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
-                        'dataframe_descriptor': {'years': ('float', None, True),
+                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                  'emitted_CO2_evol_cumulative': ('float', None, True),}}
                     if techno == 'Crop':
                         dynamic_inputs[f'{techno}.CH4_land_emission_df'] = {
                             'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
-                        'dataframe_descriptor': {'years': ('float', None, True),
+                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                  'emitted_CH4_evol_cumulative': ('float', None, True),}}
                         dynamic_inputs[f'{techno}.N2O_land_emission_df'] = {
                             'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture',
-                        'dataframe_descriptor': {'years': ('float', None, True),
+                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                  'emitted_N2O_evol_cumulative': ('float', None, True),}}
 
         self.add_inputs(dynamic_inputs, clean_inputs=False)
@@ -119,23 +120,23 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         N2O_emissions_land_use_df = pd.DataFrame()
 
         # co2 aggregation
-        CO2_emissions_land_use_df['years'] = CO2_emitted_crop_df['years']
+        CO2_emissions_land_use_df[GlossaryCore.Years] = CO2_emitted_crop_df[GlossaryCore.Years]
         CO2_emissions_land_use_df['Crop'] = CO2_emitted_crop_df['emitted_CO2_evol_cumulative']
         CO2_emissions_land_use_df['Forest'] = CO2_emitted_forest_df['emitted_CO2_evol_cumulative']
         CO2_emissions_land_use_df['Other_emissions'] = other_land_CO2_emissions
 
         # ch4 aggregation
-        CH4_emissions_land_use_df['years'] = CH4_emitted_crop_df['years']
+        CH4_emissions_land_use_df[GlossaryCore.Years] = CH4_emitted_crop_df[GlossaryCore.Years]
         CH4_emissions_land_use_df['Crop'] = CH4_emitted_crop_df['emitted_CH4_evol_cumulative']
 
         # n2o aggregation
-        N2O_emissions_land_use_df['years'] = N2O_emitted_crop_df['years']
+        N2O_emissions_land_use_df[GlossaryCore.Years] = N2O_emitted_crop_df[GlossaryCore.Years]
         N2O_emissions_land_use_df['Crop'] = N2O_emitted_crop_df['emitted_N2O_evol_cumulative']
 
         co2_eq_20_ref = self.get_sosdisc_inputs('co2_eq_20_objective_ref')
         co2_eq_100_ref = self.get_sosdisc_inputs('co2_eq_100_objective_ref')
 
-        l_years = len(N2O_emitted_crop_df['years'])
+        l_years = len(N2O_emitted_crop_df[GlossaryCore.Years])
 
         co2_eq_20 = (CO2_emissions_land_use_df['Forest'].sum() + CO2_emissions_land_use_df['Crop'].sum() +
                         CH4_emissions_land_use_df['Crop'].sum() * self.GWP_20_default['CH4'] +
@@ -265,7 +266,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         # all ghg graph
         chart_name = f'Greenhouse Gas emissions of agriculture lands'
         new_chart = TwoAxesInstanciatedChart(
-            'years', 'GHG emissions (Gt)', chart_name=chart_name, stacked_bar=True)
+            GlossaryCore.Years, 'GHG emissions (Gt)', chart_name=chart_name, stacked_bar=True)
 
         technology_list = self.get_sosdisc_inputs('technologies_list')
 
@@ -280,11 +281,11 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         year_list = np.arange(year_start, year_end + 1).tolist()
 
         CO2_emissions_land_use = CO2_emissions_land_use_df.drop(
-            'years', axis=1).sum(axis=1).values.tolist()
+            GlossaryCore.Years, axis=1).sum(axis=1).values.tolist()
         CH4_emissions_land_use = CH4_emissions_land_use_df.drop(
-            'years', axis=1).sum(axis=1).values.tolist()
+            GlossaryCore.Years, axis=1).sum(axis=1).values.tolist()
         N2O_emissions_land_use = N2O_emissions_land_use_df.drop(
-            'years', axis=1).sum(axis=1).values.tolist()
+            GlossaryCore.Years, axis=1).sum(axis=1).values.tolist()
 
         serie = InstanciatedSeries(
             year_list, CO2_emissions_land_use, 'CO2 Emissions [GtCO2]', 'bar')
@@ -303,7 +304,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         # co2 per crop/forest
         chart_name = f'Comparison of CO2 emissions of agriculture lands'
         new_chart = TwoAxesInstanciatedChart(
-            'years', 'CO2 emissions (GtCO2)', chart_name=chart_name, stacked_bar=True)
+            GlossaryCore.Years, 'CO2 emissions (GtCO2)', chart_name=chart_name, stacked_bar=True)
 
         technology_list = self.get_sosdisc_inputs('technologies_list')
 
@@ -313,7 +314,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         year_end = self.get_sosdisc_inputs('year_end')
         year_list = np.arange(year_start, year_end + 1).tolist()
         for column in CO2_emissions_land_use_df.columns:
-            if column != 'years':
+            if column != GlossaryCore.Years:
                 techno_emissions = CO2_emissions_land_use_df[column]
                 serie = InstanciatedSeries(
                     year_list, techno_emissions.tolist(), column, 'bar')

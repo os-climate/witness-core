@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -39,7 +41,7 @@ class LaborMarketTestCase(unittest.TestCase):
         agrishare = 27.4
         indusshare = 21.7
         serviceshare = 50.9
-        workforce_share = DataFrame({'years':self. years, 'Agriculture': agrishare, 
+        workforce_share = DataFrame({GlossaryCore.Years:self. years, 'Agriculture': agrishare,
                                      'Industry': indusshare, 'Services': serviceshare})
         self.workforce_share = workforce_share
         data_dir = join(dirname(__file__), 'data')
@@ -93,7 +95,7 @@ class LaborMarketTestCase(unittest.TestCase):
             agri.append(agri[year - 1] * 0.99)
         service = np.array([100.0]*nb_per) - agri - indusshare
         #service = np.substract(total, agri)
-        workforce_share = DataFrame({'years':self. years, 'Agriculture': agri, 
+        workforce_share = DataFrame({GlossaryCore.Years:self. years, 'Agriculture': agri,
                                      'Industry': indusshare, 'Services': service})
         
         name = 'Test'

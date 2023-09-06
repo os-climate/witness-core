@@ -17,16 +17,19 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
+
 def compute_Hubbert_regression(past_production, production_years, regression_start, resource_type):
     
     '''
     Compute Hubbert Regression Curve from past production
     '''
     # initialization
-    past_production_years=past_production['years']
+    past_production_years=past_production[GlossaryCore.Years]
     cumulative_production = pd.DataFrame(
-        {'years': past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
-    ratio_P_by_Q = pd.DataFrame({'years': past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
+        {GlossaryCore.Years: past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
+    ratio_P_by_Q = pd.DataFrame({GlossaryCore.Years: past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
     
     # Cf documentation for the hubbert curve computing
     Q = 0  # Q is the cumulative production at one precise year
@@ -42,10 +45,10 @@ def compute_Hubbert_regression(past_production, production_years, regression_sta
     
     # keep only the part you want to make a regression on
     cumulative_sample = cumulative_production.loc[
-        cumulative_production['years'] >= regression_start]
+        cumulative_production[GlossaryCore.Years] >= regression_start]
     
 
-    ratio_sample = ratio_P_by_Q.loc[ratio_P_by_Q['years'] >= regression_start]
+    ratio_sample = ratio_P_by_Q.loc[ratio_P_by_Q[GlossaryCore.Years] >= regression_start]
 
     fit = np.polyfit(
         cumulative_sample[resource_type], ratio_sample[resource_type], 1)
@@ -64,7 +67,7 @@ def compute_Hubbert_regression(past_production, production_years, regression_sta
     # take the mean values
     for ind in cumulative_sample.index:
         tho = tho + np.log((Q_inf / cumulative_sample.loc[ind, resource_type] - 1) * np.exp(
-            cumulative_sample.loc[ind, 'years'] * w)) * (1 / w)
+            cumulative_sample.loc[ind, GlossaryCore.Years] * w)) * (1 / w)
     tho = tho / len(cumulative_sample.index)
 
     # compute hubbert curve values

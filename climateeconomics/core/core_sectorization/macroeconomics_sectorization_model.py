@@ -16,6 +16,8 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import ServicesDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import IndustrialDiscipline
@@ -93,10 +95,10 @@ class MacroeconomicsModel():
         '''
         Create dataframes with years
         '''
-        economics_df = pd.DataFrame({'years': self.years_range, 'capital': self.sum_capital, 'usable_capital': self.sum_u_capital,
+        economics_df = pd.DataFrame({GlossaryCore.Years: self.years_range, 'capital': self.sum_capital, 'usable_capital': self.sum_u_capital,
                                      'output': self.sum_output, 'output_net_of_d': self.sum_net_output, 
                                      'output_growth': self.output_growth})
-        investment_df = pd.DataFrame({'years': self.years_range, 'investment': self.investment})
+        investment_df = pd.DataFrame({GlossaryCore.Years: self.years_range, 'investment': self.investment})
         investment_df.index = self.years_range
         economics_df.index = self.years_range  
         self.economics_df = economics_df 
@@ -124,11 +126,11 @@ class MacroeconomicsModel():
         """ take share of gdp invested by sector in input and gdp
         and compute the invest in each sector"""
 
-        sectors_invest_share = self.sectors_invest_share.copy(deep=True).drop(['years'], axis = 1)
+        sectors_invest_share = self.sectors_invest_share.copy(deep=True).drop([GlossaryCore.Years], axis = 1)
         #invest_sectors = sectors_invest_share * net_output/100
         invest_sectors = sectors_invest_share.multiply(self.sum_net_output/100, axis = 0)
         #Add years column
-        invest_sectors.insert(0, 'years', self.years_range)
+        invest_sectors.insert(0, GlossaryCore.Years, self.years_range)
         self.sectors_investment_df = invest_sectors
         return self.sectors_investment_df
     

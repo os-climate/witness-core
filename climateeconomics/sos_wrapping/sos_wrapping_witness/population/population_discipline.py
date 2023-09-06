@@ -174,7 +174,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         population_detail_df['population_1570'] = working_age_population_df['population_1570']
         working_age_population_df['population_1570'] = working_age_population_df['population_1570'] / self.model.million
         # store output data
-        out_dict = {"population_df": population_df,
+        out_dict = {GlossaryCore.PopulationDfValue: population_df,
                     "working_age_population_df": working_age_population_df,
                     "population_detail_df": population_detail_df,
                     "birth_rate_df": birth_rate_df,

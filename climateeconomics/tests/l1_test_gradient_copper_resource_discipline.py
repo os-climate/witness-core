@@ -19,6 +19,8 @@ import unittest
 import numpy as np
 import pandas as pd
 from pandas import read_csv
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -50,21 +52,21 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         data_dir = join(dirname(__file__), 'data')
 
         self.energy_copper_demand_df = read_csv(
-            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=['years', 'copper_resource'])
+            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=[GlossaryCore.Years, 'copper_resource'])
         self.energy_copper_variable_demand_df = read_csv(
-            join(data_dir, 'all_demand_variable.csv'), usecols=['years', 'copper_resource'])
+            join(data_dir, 'all_demand_variable.csv'), usecols=[GlossaryCore.Years, 'copper_resource'])
         self.consumed_copper_df = read_csv(
             join(data_dir, 'copper_resource_consumed_data.csv'))
 
         # part to adapt lenght to the year range
 
-        self.energy_copper_demand_df = self.energy_copper_demand_df.loc[self.energy_copper_demand_df['years']
+        self.energy_copper_demand_df = self.energy_copper_demand_df.loc[self.energy_copper_demand_df[GlossaryCore.Years]
                                                                         >= self.year_start]
-        self.energy_copper_demand_df = self.energy_copper_demand_df.loc[self.energy_copper_demand_df['years']
+        self.energy_copper_demand_df = self.energy_copper_demand_df.loc[self.energy_copper_demand_df[GlossaryCore.Years]
                                                                         <= self.year_end]
-        self.energy_copper_variable_demand_df = self.energy_copper_variable_demand_df.loc[self.energy_copper_variable_demand_df['years']
+        self.energy_copper_variable_demand_df = self.energy_copper_variable_demand_df.loc[self.energy_copper_variable_demand_df[GlossaryCore.Years]
                                                                                           >= self.year_start]
-        self.energy_copper_variable_demand_df = self.energy_copper_variable_demand_df.loc[self.energy_copper_variable_demand_df['years']
+        self.energy_copper_variable_demand_df = self.energy_copper_variable_demand_df.loc[self.energy_copper_variable_demand_df[GlossaryCore.Years]
                                                                                           <= self.year_end]
 
     def test_copper_resource_analytic_grad(self):

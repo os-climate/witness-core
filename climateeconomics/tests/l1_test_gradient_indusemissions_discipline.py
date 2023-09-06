@@ -20,6 +20,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -61,9 +62,9 @@ class IndusEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         year_start = 2020
         economics_df_all = read_csv(
             join(data_dir, 'economics_data_onestep.csv'))
-        economics_df_y = economics_df_all[economics_df_all['years'] >= year_start][[
-            'years', 'gross_output']]
-        values_dict = {f'{self.name}.economics_df': economics_df_y}
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= year_start][[
+            GlossaryCore.Years, GlossaryCore.GrossOutput]]
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y}
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
@@ -72,5 +73,5 @@ class IndusEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_indus_emission_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}'],
                             outputs=[f'{self.name}.CO2_indus_emissions_df'])

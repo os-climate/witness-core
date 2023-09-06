@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -56,9 +57,9 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         years = np.arange(2020, 2101)
         CCS_price = pd.DataFrame(
-            {'years': years, 'ccs_price_per_tCO2': np.linspace(100, 900, len(years))})
+            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(100, 900, len(years))})
         CO2_damage = pd.DataFrame(
-            {'years': years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
+            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
                        f'{self.name}.CO2_damage_price': CO2_damage,
@@ -95,9 +96,9 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         years = np.arange(2020, 2101)
         CCS_price = pd.DataFrame(
-            {'years': years, 'ccs_price_per_tCO2': np.linspace(900, 900, len(years))})
+            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(900, 900, len(years))})
         CO2_damage = pd.DataFrame(
-            {'years': years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
+            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
                        f'{self.name}.CO2_damage_price': CO2_damage,
@@ -132,9 +133,9 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         years = np.arange(2020, 2101)
         CCS_price = pd.DataFrame(
-            {'years': years, 'ccs_price_per_tCO2': np.linspace(-100, -900, len(years))})
+            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(-100, -900, len(years))})
         CO2_damage = pd.DataFrame(
-            {'years': years, 'CO2_damage_price': np.linspace(-300, -700, len(years))})
+            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(-300, -700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
                        f'{self.name}.CO2_damage_price': CO2_damage,

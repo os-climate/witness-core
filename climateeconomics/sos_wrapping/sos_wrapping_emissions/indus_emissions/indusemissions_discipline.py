@@ -56,7 +56,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
                               'visibility': 'Shared', 'namespace': 'ns_witness'},
         'init_cum_indus_emissions': {'type': 'float', 'default': 577.31, 'unit': 'GtCO2', 'user_level': 2},
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
-                         'dataframe_descriptor': {'years': ('float', None, False),
+                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                   GlossaryCore.GrossOutput: ('float', None, False),
                                                   'output_net_of_d': ('float', None, False),
                                                   'net_output': ('float', None, False),
@@ -93,7 +93,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         CO2_indus_emissions_df = self.emissions_model.compute(in_dict)
         # Store output data
         dict_values = {
-            'CO2_indus_emissions_df': CO2_indus_emissions_df[['years', 'indus_emissions']],
+            'CO2_indus_emissions_df': CO2_indus_emissions_df[[GlossaryCore.Years, 'indus_emissions']],
             'CO2_indus_emissions_df_detailed': CO2_indus_emissions_df}
         self.store_sos_outputs_values(dict_values)
 
@@ -166,12 +166,12 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
 
         total_emission = CO2_indus_emissions_df_detailed['indus_emissions']
 
-        years = list(CO2_indus_emissions_df_detailed['years'].values)
+        years = list(CO2_indus_emissions_df_detailed[GlossaryCore.Years].values)
 
         chart_name = 'Total Industrial emissions'
 
         new_chart = TwoAxesInstanciatedChart(
-            'years', 'CO2 emissions [Gt]', chart_name=chart_name)
+            GlossaryCore.Years, 'CO2 emissions [Gt]', chart_name=chart_name)
 
         c_emission = list(total_emission.values)
 
@@ -189,11 +189,11 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
 
         cum_total_emissions = CO2_indus_emissions_df_detailed['cum_indus_emissions']
 
-        years = list(CO2_indus_emissions_df_detailed['years'].values)
+        years = list(CO2_indus_emissions_df_detailed[GlossaryCore.Years].values)
 
         chart_name = f'Cumulated industrial CO2 emissions since {years[0]}'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Cumulative CO2 emissions [Gt]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Cumulative CO2 emissions [Gt]',
                                              chart_name=chart_name)
 
         new_series = InstanciatedSeries(
@@ -210,11 +210,11 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
 
         sigma = CO2_indus_emissions_df_detailed['sigma']
 
-        years = list(CO2_indus_emissions_df_detailed['years'].values)
+        years = list(CO2_indus_emissions_df_detailed[GlossaryCore.Years].values)
 
         chart_name = f'Sigma to compute industrial CO2 emissions'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Sigma [-]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Sigma [-]',
                                              chart_name=chart_name)
 
         new_series = InstanciatedSeries(

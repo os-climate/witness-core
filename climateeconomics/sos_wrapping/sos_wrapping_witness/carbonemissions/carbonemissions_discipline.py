@@ -210,7 +210,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         #land emissions
         CO2_land_emissions = inputs_dict['CO2_land_emissions']
         for column in CO2_land_emissions.columns:
-            if column != "years":
+            if column != GlossaryCore.Years:
                 self.set_partial_derivative_for_other_types(
                     ('CO2_emissions_df', 'total_emissions'), ('CO2_land_emissions', column),  np.identity(len(years)))
 

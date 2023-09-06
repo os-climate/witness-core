@@ -1,7 +1,7 @@
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 # Copyright (c) 2021 Airbus SAS.
 # All rights reserved.
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
@@ -82,7 +82,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'out_type': 'dataframe',
                                                                 'key': 'forest_investment',
                                                                 'index': years,
-                                                                'index_name': 'years',
+                                                                'index_name': GlossaryCore.Years,
                                                                 'namespace_in': 'ns_witness',
                                                                 'namespace_out': 'ns_invest'
                                                                 }
@@ -92,7 +92,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                     'out_type': 'dataframe',
                                                                     'key': 'investment',
                                                                     'index': years,
-                                                                    'index_name': 'years',
+                                                                    'index_name': GlossaryCore.Years,
                                                                     'namespace_in': 'ns_witness',
                                                                     'namespace_out': 'ns_crop'
                                                                     }
@@ -102,7 +102,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                             'out_type': 'dataframe',
                                                                             'key': 'investment',
                                                                             'index': years,
-                                                                            'index_name': 'years',
+                                                                            'index_name': GlossaryCore.Years,
                                                                             'namespace_in': 'ns_witness',
                                                                             'namespace_out': 'ns_forest'
                                                                             }
@@ -111,7 +111,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                         'out_type': 'dataframe',
                                                                         'key': 'investment',
                                                                         'index': years,
-                                                                        'index_name': 'years',
+                                                                        'index_name': GlossaryCore.Years,
                                                                         'namespace_in': 'ns_witness',
                                                                         'namespace_out': 'ns_forest'
                                                                         }
@@ -120,7 +120,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'out_type': 'dataframe',
                                                                 'key': 'red_meat_calories_per_day',
                                                                 'index': years,
-                                                                'index_name': 'years',
+                                                                'index_name': GlossaryCore.Years,
                                                                 'namespace_in': 'ns_witness',
                                                                 'namespace_out': 'ns_crop'
                                                                 }
@@ -129,7 +129,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'out_type': 'dataframe',
                                                                 'key': 'white_meat_calories_per_day',
                                                                 'index': years,
-                                                                'index_name': 'years',
+                                                                'index_name': GlossaryCore.Years,
                                                                 'namespace_in': 'ns_witness',
                                                                 'namespace_out': 'ns_crop'
                                                                 }
@@ -138,7 +138,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'out_type': 'dataframe',
                                                                 'key': 'vegetables_and_carbs_calories_per_day',
                                                                 'index': years,
-                                                                'index_name': 'years',
+                                                                'index_name': GlossaryCore.Years,
                                                                 'namespace_in': 'ns_witness',
                                                                 'namespace_out': 'ns_crop'
                                                                 }
@@ -149,7 +149,7 @@ class Study(ClimateEconomicsStudyManager):
             'out_type': 'dataframe',
             'key': 'milk_and_eggs_calories_per_day',
             'index': years,
-            'index_name': 'years',
+            'index_name': GlossaryCore.Years,
             'namespace_in': 'ns_witness',
             'namespace_out': 'ns_crop'
             }

@@ -62,7 +62,7 @@ class Study(StudyManager):
             gdp_serie.append(gdp_serie[year - 1] * 1.02)
 
         economics_df_y = pd.DataFrame(
-            {'years': years, 'output_net_of_d': gdp_serie})
+            {GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
         temperature_df_all = read_csv(
             join(global_data_dir, 'temperature_data_onestep.csv'))

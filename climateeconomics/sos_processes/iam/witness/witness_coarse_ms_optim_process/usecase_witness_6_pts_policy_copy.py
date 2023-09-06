@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import Study as witness_optim_usecase
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
@@ -93,7 +94,7 @@ class Study(ClimateEconomicsStudyManager):
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 0.88,
                                  'Capex_init_unit': '$/kgCO2',
                                  'efficiency': 0.9,

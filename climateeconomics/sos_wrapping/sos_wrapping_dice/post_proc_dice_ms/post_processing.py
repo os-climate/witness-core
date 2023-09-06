@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
     InstantiatedParetoFrontOptimalChart
@@ -179,7 +179,7 @@ def get_df(execution_engine, namespace):
     scenario_list = execution_engine.dm.data_dict[scenario_key][DataManager.VALUE]
 
     for scenario in scenario_list:
-        temperature_df_namespace = f'{namespace_w}.{scenario}.temperature_df'
+        temperature_df_namespace = f'{namespace_w}.{scenario}.{GlossaryCore.TemperatureDfValue}'
         utility_df_namespace = f'{namespace_w}.{scenario}.utility_df'
 
         x_key = execution_engine.dm.get_data_id(temperature_df_namespace)

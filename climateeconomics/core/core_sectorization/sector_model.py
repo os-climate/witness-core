@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class SectorModel():
     """
@@ -90,14 +92,14 @@ class SectorModel():
         '''
         self.years = np.arange(self.year_start, self.year_end + 1)
         default_index = self.years
-        self.capital_df = pd.DataFrame(index=default_index,columns=['years','energy_efficiency', 'e_max', 'capital', 'usable_capital'])
-        self.production_df = pd.DataFrame(index=default_index,columns=['years','output', 'output_net_of_damage'])
-        self.productivity_df = pd.DataFrame(index=default_index,columns=['years','productivity_growth_rate', 'productivity'])
-        self.growth_rate_df = pd.DataFrame(index=default_index,columns=['years','net_output_growth_rate'])
-        self.production_df['years'] = self.years
-        self.capital_df['years'] = self.years
-        self.productivity_df['years'] = self.years
-        self.growth_rate_df['years'] = self.years
+        self.capital_df = pd.DataFrame(index=default_index,columns=[GlossaryCore.Years,'energy_efficiency', 'e_max', 'capital', 'usable_capital'])
+        self.production_df = pd.DataFrame(index=default_index,columns=[GlossaryCore.Years,'output', 'output_net_of_damage'])
+        self.productivity_df = pd.DataFrame(index=default_index,columns=[GlossaryCore.Years,'productivity_growth_rate', 'productivity'])
+        self.growth_rate_df = pd.DataFrame(index=default_index,columns=[GlossaryCore.Years,'net_output_growth_rate'])
+        self.production_df[GlossaryCore.Years] = self.years
+        self.capital_df[GlossaryCore.Years] = self.years
+        self.productivity_df[GlossaryCore.Years] = self.years
+        self.growth_rate_df[GlossaryCore.Years] = self.years
         self.capital_df.loc[self.year_start, 'capital'] = self.capital_start
     
     def set_coupling_inputs(self, inputs):
@@ -107,18 +109,18 @@ class SectorModel():
         #If fitting takes investment from historical input not coupling
         if self.prod_function_fitting == True:
             self.investment_df = self.hist_sector_invest
-            self.investment_df.index = self.investment_df['years'].values
+            self.investment_df.index = self.investment_df[GlossaryCore.Years].values
         else:
             self.investment_df = inputs['sectors_investment_df']
-            self.investment_df.index = self.investment_df['years'].values
+            self.investment_df.index = self.investment_df[GlossaryCore.Years].values
         #scale energy production
         self.energy_production = inputs['energy_production'].copy(deep=True)
         self.energy_production['Total production'] *= self.scaling_factor_energy_production
-        self.energy_production.index = self.energy_production['years'].values
+        self.energy_production.index = self.energy_production[GlossaryCore.Years].values
         self.workforce_df = inputs['workforce_df']
-        self.workforce_df.index = self.workforce_df['years'].values
+        self.workforce_df.index = self.workforce_df[GlossaryCore.Years].values
         self.damage_df = inputs['damage_df']
-        self.damage_df.index = self.damage_df['years'].values
+        self.damage_df.index = self.damage_df[GlossaryCore.Years].values
 
     def compute_productivity_growthrate(self):
         '''
@@ -295,7 +297,7 @@ class SectorModel():
         max_e = self.energy_eff_max
         # compute energy_efficiency
         energy_efficiency = cst + max_e / (1 + np.exp(-k * (years - xo)))
-        self.lt_energy_eff = pd.DataFrame({'years': years, 'energy_efficiency': energy_efficiency})
+        self.lt_energy_eff = pd.DataFrame({GlossaryCore.Years: years, 'energy_efficiency': energy_efficiency})
         return self.lt_energy_eff
     
     def compute_energy_eff_constraints(self):

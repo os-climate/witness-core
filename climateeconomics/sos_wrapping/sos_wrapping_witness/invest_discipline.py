@@ -15,6 +15,8 @@ limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model import MacroEconomics
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import pandas as pd
@@ -121,7 +123,7 @@ class InvestDiscipline(ClimateEcoDiscipline):
 
             energy_investment = self.get_sosdisc_inputs('energy_investment')
 
-            years = list(energy_investment_macro['years'].values)
+            years = list(energy_investment_macro[GlossaryCore.Years].values)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -129,7 +131,7 @@ class InvestDiscipline(ClimateEcoDiscipline):
             chart_name = 'Energy investments between macroeconomy output and energy input'
 
             new_chart = TwoAxesInstanciatedChart(
-                'years', 'Investments', chart_name=chart_name)
+                GlossaryCore.Years, 'Investments', chart_name=chart_name)
 
             energy_investment_series = InstanciatedSeries(
                 years, list(energy_investment['energy_investment'].values), 'energy investment (energy)', 'lines')
@@ -146,7 +148,7 @@ class InvestDiscipline(ClimateEcoDiscipline):
             chart_name = 'Differences between energy investments'
 
             new_chart = TwoAxesInstanciatedChart(
-                'years', 'Differences of investments', chart_name=chart_name)
+                GlossaryCore.Years, 'Differences of investments', chart_name=chart_name)
 
             energy_investment_series = InstanciatedSeries(
                 years, list(energy_investment_macro['energy_investment'].values - energy_investment['energy_investment'].values), '', 'lines')

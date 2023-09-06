@@ -17,6 +17,8 @@ import unittest
 import numpy as np
 import pandas as pd
 from os.path import join, dirname
+
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from tempfile import gettempdir
@@ -59,47 +61,47 @@ class DICEParallelTest(unittest.TestCase):
         data_dir = join(dirname(__file__), 'data')
         energy_supply_df_all = pd.read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020][[
-            'years', 'total_CO2_emitted']]
-        energy_supply_df_y["years"] = energy_supply_df_all['years']
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020][[
+            GlossaryCore.Years, 'total_CO2_emitted']]
+        energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df_y.rename(
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
         co2_emissions_gt.index = years
 
         energy_outlook = pd.DataFrame({
-            'years': [2010, 2017, 2018, 2019, 2020, 2025, 2030, 2040, 2050, 2060, 2100],
+            GlossaryCore.Years: [2010, 2017, 2018, 2019, 2020, 2025, 2030, 2040, 2050, 2060, 2100],
             'energy_demand': [141057, 153513, 157366, 158839, 158839 * 0.94, 174058 * 0.91, 183234.136 * 0.91,
                               198699.708 * 0.91, 220000 * 0.91, 250000 * 0.91, 300000 * 0.91]})
-        f2 = interp1d(energy_outlook['years'], energy_outlook['energy_demand'])
+        f2 = interp1d(energy_outlook[GlossaryCore.Years], energy_outlook['energy_demand'])
         energy_supply = f2(years)
         energy_supply_df = pd.DataFrame(
-            {'years': years, 'Total production': energy_supply})
+            {GlossaryCore.Years: years, 'Total production': energy_supply})
         energy_supply_df.index = years
 
         CCS_price = pd.DataFrame(
-            {'years': years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
+            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
-            {'years': years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, 'energy_price': energy_price})
 
         co2_emissions_ccus_Gt = pd.DataFrame()
-        co2_emissions_ccus_Gt['years'] = energy_supply_df_y["years"]
+        co2_emissions_ccus_Gt[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         co2_emissions_ccus_Gt['carbon_storage Limited by capture (Gt)'] = 0.02
 
         CO2_emissions_by_use_sources = pd.DataFrame()
-        CO2_emissions_by_use_sources['years'] = energy_supply_df_y["years"]
+        CO2_emissions_by_use_sources[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         CO2_emissions_by_use_sources['CO2 from energy mix (Gt)'] = 0.0
         CO2_emissions_by_use_sources['carbon_capture from energy mix (Gt)'] = 0.0
         CO2_emissions_by_use_sources['Total CO2 by use (Gt)'] = 20.0
         CO2_emissions_by_use_sources['Total CO2 from Flue Gas (Gt)'] = 3.2
 
         CO2_emissions_by_use_sinks = pd.DataFrame()
-        CO2_emissions_by_use_sinks['years'] = energy_supply_df_y["years"]
+        CO2_emissions_by_use_sinks[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         CO2_emissions_by_use_sinks[
             f'{self.RESSOURCE_CO2} removed by energy mix (Gt)'] = 0.0
 
         co2_emissions_needed_by_energy_mix = pd.DataFrame()
-        co2_emissions_needed_by_energy_mix['years'] = energy_supply_df_y["years"]
+        co2_emissions_needed_by_energy_mix[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         co2_emissions_needed_by_energy_mix[
             'carbon_capture needed by energy mix (Gt)'] = 0.0
         # put manually the index

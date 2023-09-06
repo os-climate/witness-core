@@ -138,7 +138,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             chart_name = 'Economic output (Power Purchase Parity)'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $2020]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion $2020]',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)
@@ -173,7 +173,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             chart_name = 'population evolution over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' population (million)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' population (million)',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)
@@ -208,7 +208,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             chart_name = 'Total Factor Productivity'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'global productivity',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'global productivity',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)
@@ -243,7 +243,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             chart_name = 'global consumption over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' global consumption (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' global consumption (trill $)',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)

@@ -62,13 +62,13 @@ class DamageDiscipline(SoSWrapp):
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
-                         'dataframe_descriptor': {'years': ('float', None, False),
+                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                   'Total CO2 emissions': ('float', None, False),
                                                   'Total N2O emissions': ('float', None, False),
                                                   'Total CH4 emissions': ('float', None, False),
                                                   }
                          },
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',},
+        GlossaryCore.TemperatureDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',},
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                                    'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
                                    'dataframe_edition_locked': False},
@@ -141,7 +141,7 @@ class DamageDiscipline(SoSWrapp):
 
             chart_name = 'environmental damage'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Damage (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Damage (trill $)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)
@@ -162,7 +162,7 @@ class DamageDiscipline(SoSWrapp):
 
             chart_name = 'Abatement cost'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Abatement cost (Trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Abatement cost (Trill $)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)

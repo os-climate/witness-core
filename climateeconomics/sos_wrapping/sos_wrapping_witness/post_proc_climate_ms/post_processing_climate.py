@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
     InstantiatedParetoFrontOptimalChart
@@ -78,7 +78,7 @@ def post_processings(execution_engine, namespace, filters):
                 f'{namespace_w}.{scenario}.Temperature.temperature_detail_df')
             temperature_dict[scenario] = temperature_detail_df['temp_atmo'].values.tolist(
             )
-            years = temperature_detail_df['years'].values.tolist(
+            years = temperature_detail_df[GlossaryCore.Years].values.tolist(
             )
         new_chart = get_scenario_comparison_chart(years, temperature_dict,
                                                   chart_name=chart_name,
@@ -97,7 +97,7 @@ def post_processings(execution_engine, namespace, filters):
                 f'{namespace_w}.{scenario}.Temperature.temperature_detail_df')
             temperature_dict[scenario] = temperature_detail_df['forcing'].values.tolist(
             )
-            years = temperature_detail_df['years'].values.tolist(
+            years = temperature_detail_df[GlossaryCore.Years].values.tolist(
             )
         new_chart = get_scenario_comparison_chart(years, temperature_dict,
                                                   chart_name=chart_name,
@@ -115,7 +115,7 @@ def post_processings(execution_engine, namespace, filters):
                 f'{namespace_w}.{scenario}.Temperature.forcing_detail_df')
             forcing_dict[scenario] = forcing_df['CO2 forcing'].values.tolist(
             )
-            years = forcing_df['years'].values.tolist(
+            years = forcing_df[GlossaryCore.Years].values.tolist(
             )
         new_chart = get_scenario_comparison_chart(years, forcing_dict,
                                                   chart_name=chart_name,
@@ -133,14 +133,14 @@ def post_processings(execution_engine, namespace, filters):
             forcing_df = deepcopy(execution_engine.dm.get_value(
                 f'{namespace_w}.{scenario}.Temperature.forcing_detail_df'))
             for col in forcing_df.columns:
-                if col not in ['years', 'CO2 forcing']:
+                if col not in [GlossaryCore.Years, 'CO2 forcing']:
                     if f'other RF {scenario}' in forcing_dict:
                         forcing_dict[f'other RF {scenario}'] += forcing_df[col].values
                     else:
                         forcing_dict[f'other RF {scenario}'] = forcing_df[col].values
                     if scenario in selected_scenarios:
                         selected_scenarios_other.append(f'other RF {scenario}')
-            years = forcing_df['years'].values.tolist(
+            years = forcing_df[GlossaryCore.Years].values.tolist(
             )
         forcing_dict_in_list = {key: value.tolist()
                                 for key, value in forcing_dict.items()}

@@ -61,13 +61,13 @@ class IndusEmissions():
         years_range = np.arange(
             year_start, year_end + 1, self.time_step)
         self.years_range = years_range
-        indus_emissions_df = pd.DataFrame(index=years_range, columns=['years',
+        indus_emissions_df = pd.DataFrame(index=years_range, columns=[GlossaryCore.Years,
                                                                       'gr_sigma', 'sigma', 'indus_emissions',
                                                                       'cum_indus_emissions'])
 
         for key in indus_emissions_df.keys():
             indus_emissions_df[key] = 0
-        indus_emissions_df['years'] = years_range
+        indus_emissions_df[GlossaryCore.Years] = years_range
         indus_emissions_df.loc[year_start, 'gr_sigma'] = init_gr_sigma
         indus_emissions_df.loc[year_start,
                                'indus_emissions'] = init_indus_emissions
@@ -184,7 +184,7 @@ class IndusEmissions():
         """
         self.inputs_models = inputs_models
         self.economics_df = self.inputs_models[GlossaryCore.EconomicsDfValue]
-        self.economics_df.index = self.economics_df['years'].values
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
 
         # Iterate over years
         for year in self.years_range:

@@ -24,6 +24,7 @@ from climateeconomics.core.core_resources.models.natural_gas_resource.natural_ga
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
 from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import PlatinumResourceDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
     compute_func_with_exp_min
@@ -115,7 +116,7 @@ class ResourceMixModel():
         Init dataframes with years
         '''
         self.years = np.arange(self.year_start, self.year_end + 1)
-        empty_dict = {'years': self.years}
+        empty_dict = {GlossaryCore.Years: self.years}
         empty_dict.update({f'{resource}': np.zeros(len(self.years))
                            for resource in self.resource_list})
         self.all_resource_stock = pd.DataFrame(empty_dict)
@@ -132,59 +133,59 @@ class ResourceMixModel():
         '''
 
         self.resources_demand = inputs_dict['resources_demand']
-        self.resources_demand = self.resources_demand.loc[self.resources_demand['years']
+        self.resources_demand = self.resources_demand.loc[self.resources_demand[GlossaryCore.Years]
                                                           >= self.year_start]
-        self.resources_demand = self.resources_demand.loc[self.resources_demand['years']
+        self.resources_demand = self.resources_demand.loc[self.resources_demand[GlossaryCore.Years]
                                                           <= self.year_end]
         self.resources_demand_woratio = inputs_dict['resources_demand_woratio']
-        self.resources_demand_woratio = self.resources_demand_woratio.loc[self.resources_demand_woratio['years']
+        self.resources_demand_woratio = self.resources_demand_woratio.loc[self.resources_demand_woratio[GlossaryCore.Years]
                                                                           >= self.year_start]
-        self.resources_demand_woratio = self.resources_demand_woratio.loc[self.resources_demand_woratio['years']
+        self.resources_demand_woratio = self.resources_demand_woratio.loc[self.resources_demand_woratio[GlossaryCore.Years]
                                                                           <= self.year_end]
         self.resource_list = inputs_dict['resource_list']
         self.init_dataframes()
 
     def prepare_dataframes(self, inputs_dict):
         '''
-        Set dataframes 'years' column to idx and concatenate inputs df
+        Set dataframes GlossaryCore.Years column to idx and concatenate inputs df
         '''
         # initialisation of dataframe:
-        self.all_resource_stock.set_index('years', inplace=True)
-        self.all_resource_price.set_index('years', inplace=True)
-        self.all_resource_use.set_index('years', inplace=True)
-        self.all_resource_production.set_index('years', inplace=True)
-        self.all_resource_recycled_production.set_index('years', inplace=True)
-        self.all_resource_ratio_prod_demand.set_index('years', inplace=True)
-        self.all_resource_ratio_usable_demand.set_index('years', inplace=True)
+        self.all_resource_stock.set_index(GlossaryCore.Years, inplace=True)
+        self.all_resource_price.set_index(GlossaryCore.Years, inplace=True)
+        self.all_resource_use.set_index(GlossaryCore.Years, inplace=True)
+        self.all_resource_production.set_index(GlossaryCore.Years, inplace=True)
+        self.all_resource_recycled_production.set_index(GlossaryCore.Years, inplace=True)
+        self.all_resource_ratio_prod_demand.set_index(GlossaryCore.Years, inplace=True)
+        self.all_resource_ratio_usable_demand.set_index(GlossaryCore.Years, inplace=True)
         for resource in self.resource_list:
             data_frame_price = deepcopy(
                 inputs_dict[f'{resource}.resource_price'])
             # set index:
-            if 'years' in data_frame_price.columns:
-                data_frame_price.set_index('years', inplace=True)
+            if GlossaryCore.Years in data_frame_price.columns:
+                data_frame_price.set_index(GlossaryCore.Years, inplace=True)
             data_frame_production = deepcopy(
                 inputs_dict[f'{resource}.predictable_production'])
-            if 'years' in data_frame_production.columns:
-                data_frame_production.set_index('years', inplace=True)
+            if GlossaryCore.Years in data_frame_production.columns:
+                data_frame_production.set_index(GlossaryCore.Years, inplace=True)
             data_frame_stock = deepcopy(
                 inputs_dict[f'{resource}.resource_stock'])
-            if 'years' in data_frame_stock.columns:
-                data_frame_stock.set_index('years', inplace=True)
+            if GlossaryCore.Years in data_frame_stock.columns:
+                data_frame_stock.set_index(GlossaryCore.Years, inplace=True)
             data_frame_use = deepcopy(inputs_dict[f'{resource}.use_stock'])
-            if 'years' in data_frame_use.columns:
-                data_frame_use.set_index('years', inplace=True)
+            if GlossaryCore.Years in data_frame_use.columns:
+                data_frame_use.set_index(GlossaryCore.Years, inplace=True)
             data_frame_recycled_production = deepcopy(inputs_dict[f'{resource}.recycled_production'])
-            if 'years' in data_frame_recycled_production.columns:
-                data_frame_recycled_production.set_index('years', inplace=True)
+            if GlossaryCore.Years in data_frame_recycled_production.columns:
+                data_frame_recycled_production.set_index(GlossaryCore.Years, inplace=True)
             self.resource_demand = deepcopy(inputs_dict[f'resources_demand'])
-            if 'years' in self.resource_demand.columns:
-                self.resource_demand.set_index('years', inplace=True)
+            if GlossaryCore.Years in self.resource_demand.columns:
+                self.resource_demand.set_index(GlossaryCore.Years, inplace=True)
             self.all_resource_price[resource] = data_frame_price['price']
 
             # add the different resource in one dataframe for production, stock, recycled production
             # and use resource per year:
             for types in data_frame_use:
-                if types != 'years':
+                if types != GlossaryCore.Years:
                     self.all_resource_production[resource] = self.all_resource_production[resource] + \
                         data_frame_production[types]
                     self.all_resource_stock[resource] = self.all_resource_stock[resource] + \
@@ -218,7 +219,7 @@ class ResourceMixModel():
         # price assignment for non modeled resource:
         data_frame_other_resource_price = deepcopy(
             inputs_dict['non_modeled_resource_price'])
-        data_frame_other_resource_price.set_index('years', inplace=True)
+        data_frame_other_resource_price.set_index(GlossaryCore.Years, inplace=True)
         for resource_non_modeled in data_frame_other_resource_price:
             if resource_non_modeled not in ResourceMixModel.RESOURCE_LIST:
                 self.all_resource_price[resource_non_modeled] = data_frame_other_resource_price[resource_non_modeled]
@@ -315,7 +316,7 @@ class ResourceMixModel():
         from each modeled resources
         '''
         # Create a dataframe
-        resources_CO2_emissions = pd.DataFrame({'years': years})
+        resources_CO2_emissions = pd.DataFrame({GlossaryCore.Years: years})
 
         for resource in non_modeled_resource_list + resource_list:
             if resource in self.CO2_emissions_dict.keys():

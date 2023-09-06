@@ -20,6 +20,7 @@ from os.path import join, dirname
 from pandas import DataFrame, read_csv
 from scipy.interpolate import interp1d
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -41,10 +42,10 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
 
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
-        total_workforce_df = total_workforce_df[total_workforce_df['years'] <= self.year_end]
+        total_workforce_df = total_workforce_df[total_workforce_df[GlossaryCore.Years] <= self.year_end]
         # multiply ageworking pop by employment rate and by % in agri
         workforce = total_workforce_df['population_1570'] * 0.659 * 0.274
-        self.workforce_df = pd.DataFrame({'years': self.years, 'Agriculture': workforce})
+        self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years, 'Agriculture': workforce})
 
         # Energy_supply
         brut_net = 1 / 1.45
@@ -58,7 +59,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         # Find values for 2020, 2050 and concat dfs
         energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
         energy_supply_values = energy_supply * brut_net * share_agri
-        energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
+        energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, 'Total production': energy_supply_values})
         energy_supply_df.index = self.years
         self.energy_supply_df = energy_supply_df
         # energy_supply_df.loc[2020, 'Total production'] = 91.936
@@ -69,11 +70,11 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         invest_serie.append(init_value)
         for year in np.arange(1, self.nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.002)
-        self.total_invest = pd.DataFrame({'years': self.years, 'Agriculture': invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years, 'Agriculture': invest_serie})
 
         # damage
         self.damage_df = pd.DataFrame(
-            {'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
+            {GlossaryCore.Years: self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
              'base_carbon_price': np.zeros(self.nb_per)})
         self.damage_df.index = self.years
 

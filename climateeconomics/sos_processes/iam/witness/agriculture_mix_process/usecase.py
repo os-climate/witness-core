@@ -18,6 +18,7 @@ import pandas as pd
 import scipy.interpolate as sc
 from numpy import asarray, arange, array
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -77,33 +78,33 @@ class Study(StudyManager):
         agriculture_mix = 'AgricultureMix'
         energy_name = f'{agriculture_mix}'
         years = np.arange(self.year_start, self.year_end + 1)
-        self.energy_prices = pd.DataFrame({'years': years,
+        self.energy_prices = pd.DataFrame({GlossaryCore.Years: years,
                                            'electricity': 16.0})
         year_range = self.year_end - self.year_start + 1
 
         temperature = np.array(np.linspace(1.05, 5.0, year_range))
         temperature_df = pd.DataFrame(
-            {"years": years, "temp_atmo": temperature})
+            {GlossaryCore.Years: years, "temp_atmo": temperature})
         temperature_df.index = years
 
         population = np.array(np.linspace(7800.0, 9000.0, year_range))
         population_df = pd.DataFrame(
-            {"years": years, "population": population})
+            {GlossaryCore.Years: years, "population": population})
         population_df.index = years
         red_meat_percentage = np.linspace(6.82, 1, year_range)
         white_meat_percentage = np.linspace(13.95, 5, year_range)
         self.red_meat_calories_per_day = pd.DataFrame({
-            'years': years,
+            GlossaryCore.Years: years,
             'red_meat_calories_per_day': red_meat_percentage})
         self.white_meat_calories_per_day = pd.DataFrame({
-            'years': years,
+            GlossaryCore.Years: years,
             'white_meat_calories_per_day': white_meat_percentage})
         self.vegetables_and_carbs_calories_per_day = pd.DataFrame({
-            'years': years,
+            GlossaryCore.Years: years,
             'vegetables_and_carbs_calories_per_day': white_meat_percentage})
 
         self.milk_and_eggs_calories_per_day = pd.DataFrame({
-            'years': years,
+            GlossaryCore.Years: years,
             'milk_and_eggs_calories_per_day': white_meat_percentage})
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -116,22 +117,22 @@ class Study(StudyManager):
         other = np.array(np.linspace(0.102, 0.102, year_range))
 
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 7.6})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.6})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {GlossaryCore.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
         deforestation_surface = np.linspace(10, 5, year_range)
         self.deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": deforestation_surface})
+            {GlossaryCore.Years: years, "deforested_surface": deforestation_surface})
 
         forest_invest = np.linspace(5, 8, year_range)
 
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
 
         if 'CropEnergy' in self.techno_list:
             crop_invest = np.linspace(0.5, 0.25, year_range)
@@ -143,12 +144,12 @@ class Study(StudyManager):
             mw_invest = [0] * year_range
 
         self.mw_invest_df = pd.DataFrame(
-            {"years": years, "investment": mw_invest})
+            {GlossaryCore.Years: years, "investment": mw_invest})
         self.crop_investment = pd.DataFrame(
-            {'years': years, 'investment': crop_invest})
+            {GlossaryCore.Years: years, 'investment': crop_invest})
         deforest_invest = np.linspace(10, 1, year_range)
         deforest_invest_df = pd.DataFrame(
-            {"years": years, "investment": deforest_invest})
+            {GlossaryCore.Years: years, "investment": deforest_invest})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
@@ -157,7 +158,7 @@ class Study(StudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, 'CO2_tax': func(years)})
 
         values_dict = {
             f'{self.study_name}.year_start': self.year_start,
@@ -178,8 +179,8 @@ class Study(StudyManager):
             f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
             f'{self.study_name}.{energy_name}.Forest.managed_wood_investment': self.mw_invest_df,
             f'{self.study_name}.{energy_name}.Forest.deforestation_investment': deforest_invest_df,
-            f'{self.study_name}.population_df': population_df,
-            f'{self.study_name}.temperature_df': temperature_df
+            f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
+            f'{self.study_name}.{GlossaryCore.TemperatureDfValue}': temperature_df
         }
 
         red_meat_percentage_ctrl = np.linspace(600, 900, self.nb_poles)

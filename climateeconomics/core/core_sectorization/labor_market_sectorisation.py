@@ -16,6 +16,8 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import ServicesDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import IndustrialDiscipline
@@ -61,13 +63,13 @@ class LaborMarketModel():
         
     def set_coupling_inputs(self, inputs):
         self.working_age_population_df = inputs['working_age_population_df']
-        self.working_age_population_df.index = self.working_age_population_df['years'].values
+        self.working_age_population_df.index = self.working_age_population_df[GlossaryCore.Years].values
     
 #     def create_dataframes(self):
 #         '''
 #         Create dataframes with years
 #         '''
-#         labor_market_df = pd.DataFrame({'years': self.years_range, 'workforce': self.workforce, 'employed': self.employed})
+#         labor_market_df = pd.DataFrame({GlossaryCore.Years: self.years_range, 'workforce': self.workforce, 'employed': self.employed})
 #         labor_market_df.index = self.years_range
 #         self.labor_market_df = labor_market_df           
     
@@ -96,7 +98,7 @@ class LaborMarketModel():
 #         for a sector: employed = share_sector * employed 
 #         """
 #         share_per_sector = self.workforce_share_per_sector
-#         employed_df = pd.DataFrame({'years': self.years_range, 'employed': sector_employed})
+#         employed_df = pd.DataFrame({GlossaryCore.Years: self.years_range, 'employed': sector_employed})
 #         for sector in sector_list:
 #             share_sector = share_per_sector[sector].values
 #             sector_employed =  self.employed * share_sector/100
@@ -113,8 +115,8 @@ class LaborMarketModel():
         year_covid = 2020
         year_end_recovery = 2031
         #create dataframe 
-        employment_df = pd.DataFrame(index=self.years_range, columns=['years','employment_rate'])
-        employment_df['years'] = self.years_range
+        employment_df = pd.DataFrame(index=self.years_range, columns=[GlossaryCore.Years,'employment_rate'])
+        employment_df[GlossaryCore.Years] = self.years_range
         # For all years employment_rate = base value
         employment_df['employment_rate'] = self.employment_rate_base_value
         # Compute recovery phase
@@ -123,7 +125,7 @@ class LaborMarketModel():
         employment_rate_recovery = self.employment_a_param * \
             x_recovery**self.employment_power_param
         employment_rate_recovery_df = pd.DataFrame(
-            {'years': years_recovery, 'employment_rate': employment_rate_recovery})
+            {GlossaryCore.Years: years_recovery, 'employment_rate': employment_rate_recovery})
         employment_rate_recovery_df.index = years_recovery
         # Then replace values in original dataframe by recoveries values
         employment_df.update(employment_rate_recovery_df)
@@ -140,14 +142,14 @@ class LaborMarketModel():
         """
         workforce_df = self.workforce_share_per_sector.copy(deep=True)
         #drop years for computation
-        workforce_df = workforce_df.drop(columns = ['years'])
+        workforce_df = workforce_df.drop(columns = [GlossaryCore.Years])
         working_age_pop = self.working_age_population_df['population_1570'].values
         employment_rate = self.employment_df['employment_rate'].values
         #per sector the workforce = share_per_sector * employment_rate *workingagepop
         workforce_df = workforce_df.apply(lambda x: x/100 * employment_rate * working_age_pop)
         #workforce total is the sum of all sectors 
         workforce_df['workforce'] = workforce_df.sum(axis = 1)
-        workforce_df.insert(0, 'years', self.years_range)
+        workforce_df.insert(0, GlossaryCore.Years, self.years_range)
         self.workforce_df = workforce_df
         share = self.workforce_share_per_sector['Agriculture'].values
         
@@ -173,7 +175,7 @@ class LaborMarketModel():
         workforce_df = pd.DataFrame.from_dict(workforce_df_dict)
         #workforce total is the sum of all sectors 
         workforce_df['workforce'] = workforce_df.sum(axis = 1)
-        workforce_df.insert(0, 'years', self.years_range)
+        workforce_df.insert(0, GlossaryCore.Years, self.years_range)
         self.workforce_df = workforce_df
         
         return workforce_df

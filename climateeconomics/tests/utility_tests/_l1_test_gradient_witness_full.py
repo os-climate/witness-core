@@ -15,6 +15,8 @@ limitations under the License.
 '''
 from os.path import join, dirname
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
@@ -124,8 +126,8 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.root_process
 
-        output_full_names = ['Test.temperature_df', 'Test.utility_df', 'Test.economics_df',
-                             'Test.carboncycle_df', 'Test.CO2_emissions_df', 'Test.damage_df',
+        output_full_names = ['Test.{GlossaryCore.TemperatureDfValue}', 'Test.utility_df', 'Test.{GlossaryCore.EconomicsDfValue}',
+                             'Test.carboncycle_df', 'Test.CO2_emissions_df', 'Test.{GlossaryCore.DamageDfValue}',
                              'Test.EnergyMix.energy_production', 'Test.EnergyMix.energy_investment',
                              'Test.EnergyMix.co2_emissions_Gt', 'Test.EnergyMix.energy_mean_price']
 
@@ -208,8 +210,8 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.root_process.proxy_disciplines[0]
         namespace = 'Test.WITNESS_Eval.WITNESS'
-        output_full_names = [f'{namespace}.temperature_df', f'{namespace}.utility_df', f'{namespace}.economics_df',
-                             f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.damage_df',
+        output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.utility_df', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
+                             f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.{GlossaryCore.DamageDfValue}',
                              f'{namespace}.EnergyMix.energy_production', f'{namespace}.EnergyMix.energy_investment',
                              f'{namespace}.EnergyMix.co2_emissions_Gt', f'{namespace}.EnergyMix.energy_mean_price',
                              f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',
@@ -366,8 +368,8 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.root_process.proxy_disciplines[0]
         namespace = 'Test.WITNESS_Eval.WITNESS'
-        output_full_names = [f'{namespace}.temperature_df', f'{namespace}.utility_df', f'{namespace}.economics_df',
-                             f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.damage_df',
+        output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.utility_df', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
+                             f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.{GlossaryCore.DamageDfValue}',
                              f'{namespace}.EnergyMix.energy_production', f'{namespace}.EnergyMix.energy_investment',
                              f'{namespace}.EnergyMix.co2_emissions_Gt', f'{namespace}.EnergyMix.energy_mean_price',
                              f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',

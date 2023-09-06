@@ -23,7 +23,7 @@ import pandas as pd
 from climateeconomics.core.tools.Hubbert_Curve import compute_Hubbert_regression
 from matplotlib import pyplot as plt
 
-
+from climateeconomics.glossarycore import GlossaryCore
 
 resource_name = CopperResourceModel.resource_name #CopperResourceModel.resource_name  PlatinumResourceModel.resource_name
 known_reserves = 2100 #2100    0.0354
@@ -44,10 +44,10 @@ def compute_Hubbert_parameters(past_production, production_years, regression_sta
     Compute Hubbert parameters from past production
     '''
     # initialization
-    past_production_years=past_production['years']
+    past_production_years=past_production[GlossaryCore.Years]
     cumulative_production = pd.DataFrame(
-        {'years': past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
-    ratio_P_by_Q = pd.DataFrame({'years': past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
+        {GlossaryCore.Years: past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
+    ratio_P_by_Q = pd.DataFrame({GlossaryCore.Years: past_production_years, f'{resource_type}': np.zeros(len(past_production_years))})
     
     # Cf documentation for the hubbert curve computing
     Q = 0  # Q is the cumulative production at one precise year
@@ -63,11 +63,11 @@ def compute_Hubbert_parameters(past_production, production_years, regression_sta
     
     # keep only the part you want to make a regression on
     cumulative_sample = cumulative_production.loc[
-        cumulative_production['years'] >= regression_start]
+        cumulative_production[GlossaryCore.Years] >= regression_start]
     
     
 
-    ratio_sample = ratio_P_by_Q.loc[ratio_P_by_Q['years'] >= regression_start]
+    ratio_sample = ratio_P_by_Q.loc[ratio_P_by_Q[GlossaryCore.Years] >= regression_start]
 
     fit = np.polyfit(
         cumulative_sample[resource_type], ratio_sample[resource_type], 1)
@@ -99,7 +99,7 @@ end_of_past_production = 0
 for evolving_year in past_production_years : 
     
     #loop also the last_year of regression
-    new_past_production = past_production.loc[past_production['years'] <= evolving_year]
+    new_past_production = past_production.loc[past_production[GlossaryCore.Years] <= evolving_year]
         
     print(evolving_year)
     for year in np.arange(production_start + 1, evolving_year):
@@ -125,7 +125,7 @@ error = ((Q_inf_th -final_Q_inf) / Q_inf_th) * 100
 # plt.title('Production according to Hubert vs real production')
 # plt.plot(list(production_years), list(production))
 # plt.plot(np.arange(production_start, 2021), list(past_production['copper']))
-# plt.xlabel('years')
+# plt.xlabel(GlossaryCore.Years)
 # plt.ylabel('Potential production [Mt]')
 # plt.show()
 

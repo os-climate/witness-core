@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -105,7 +105,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     years = np.arange(EnergyMix.get_sosdisc_inputs(
         'year_start'), EnergyMix.get_sosdisc_inputs('year_end') + 1)
     # Construct a DataFrame to organize the data
-    resource_consumed = pd.DataFrame({'years': years})
+    resource_consumed = pd.DataFrame({GlossaryCore.Years: years})
     energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
     for energy in energy_list:
         if energy == 'biomass_dry':
@@ -144,13 +144,13 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
 
     # Create Figure
     chart_name = f'{resource_name} consumption by technologies'
-    new_chart = TwoAxesInstanciatedChart('years', f'{resource_name} consumed by techno (Mt)',
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'{resource_name} consumed by techno (Mt)',
                                          chart_name=chart_name, stacked_bar=True)
     for col in resource_consumed.columns:
-        if 'category' not in col and col != 'years':
+        if 'category' not in col and col != GlossaryCore.Years:
             legend_title = f'{col}'
             serie = InstanciatedSeries(
-                resource_consumed['years'].values.tolist(),
+                resource_consumed[GlossaryCore.Years].values.tolist(),
                 resource_consumed[col].values.tolist(), legend_title, 'bar')
             new_chart.series.append(serie)
 

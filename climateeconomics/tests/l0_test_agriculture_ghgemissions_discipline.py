@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -53,14 +54,14 @@ class AgricultureGHGEmissionDiscTest(unittest.TestCase):
         year_end = 2100
         years = np.arange(year_start, year_end + 1)
 
-        CO2_land_emissions_crop = pd.DataFrame({'years': years,
+        CO2_land_emissions_crop = pd.DataFrame({GlossaryCore.Years: years,
                                                 'emitted_CO2_evol_cumulative': np.linspace(0.7, 0.7, len(years))})
-        CO2_land_emissions_forest = pd.DataFrame({'years': years,
+        CO2_land_emissions_forest = pd.DataFrame({GlossaryCore.Years: years,
                                                   'emitted_CO2_evol_cumulative': np.linspace(-7.6, -8, len(years))})
-        N2O_land_emissions = pd.DataFrame({'years': years,
+        N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'emitted_N2O_evol_cumulative': np.linspace(0., 0.4, len(years)),
                                            })
-        CH4_land_emissions = pd.DataFrame({'years': years,
+        CH4_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'emitted_CH4_evol_cumulative': np.linspace(0., 0.5, len(years)),
                                            })
 

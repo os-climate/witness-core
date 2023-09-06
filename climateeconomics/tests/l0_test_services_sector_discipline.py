@@ -19,6 +19,7 @@ import numpy as np
 from pandas import DataFrame, read_csv
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from scipy.interpolate import interp1d
 
@@ -72,7 +73,7 @@ class ServicesDiscTest(unittest.TestCase):
         total_workforce_df.index = years
         #multiply ageworking pop by employment rate and by % in services
         workforce = total_workforce_df['population_1570']* 0.659 * 0.509
-        self.workforce_df = pd.DataFrame({'years': years, 'Services': workforce})
+        self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, 'Services': workforce})
 
         #Energy_supply
         brut_net = 1/1.45
@@ -85,7 +86,7 @@ class ServicesDiscTest(unittest.TestCase):
         #Find values for 2020, 2050 and concat dfs 
         energy_supply = f2(np.arange(year_start, year_end+1))
         energy_supply_values = energy_supply * brut_net * share_indus
-        self.energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
+        self.energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, 'Total production': energy_supply_values})
         self.energy_supply_df.index = self.years
         #energy_supply_df.loc[2020, 'Total production'] = 91.936
 
@@ -95,10 +96,10 @@ class ServicesDiscTest(unittest.TestCase):
         invest_serie.append(init_value)
         for year in np.arange(1, nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.02)
-        self.total_invest = pd.DataFrame({'years': years, 'Services': invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: years, 'Services': invest_serie})
         
         #damage
-        self.damage_df = pd.DataFrame({'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
+        self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
                                        'base_carbon_price': np.zeros(self.nb_per)})
         self.damage_df.index = self.years
 

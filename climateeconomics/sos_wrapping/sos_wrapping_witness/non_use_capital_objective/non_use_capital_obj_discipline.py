@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -94,7 +94,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                  'structuring': True,
                                                  'dataframe_descriptor':
                                                      {
-                                                         'years': ('float', None, False),
+                                                         GlossaryCore.Years: ('float', None, False),
                                                          'reforestation': ('float', None, True),
                                                          'managed_wood': ('float', None, True),
                                                          'deforestation': ('float', None, True),
@@ -177,7 +177,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                             'unit': 'G$',
                                                                             'dataframe_descriptor':
                                                                                 {
-                                                                                    'years': ('float', None, False),
+                                                                                    GlossaryCore.Years: ('float', None, False),
                                                                                     'Forest': ('float', None, True),
                                                                                     'FischerTropsch': ('float', None, True),
                                                                                     'FossilGas': ('float', None, True),
@@ -196,7 +196,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                            'unit': 'G$',
                                                                            'dataframe_descriptor':
                                                                                 {
-                                                                                    'years': ('float', None, False),
+                                                                                    GlossaryCore.Years: ('float', None, False),
                                                                                     'Forest': ('float', None, True),
                                                                                     'FischerTropsch': (
                                                                                     'float', None, True),
@@ -257,10 +257,10 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         non_use_capital_df = outputs_dict['non_use_capital_df']
         input_nonusecapital_list = [
             key for key in inputs_dict.keys() if key.endswith('non_use_capital')]
-        delta_years = len(non_use_capital_df['years'].values)
+        delta_years = len(non_use_capital_df[GlossaryCore.Years].values)
         for non_use_capital in input_nonusecapital_list:
             column_name = [
-                col for col in inputs_dict[non_use_capital].columns if col != 'years'][0]
+                col for col in inputs_dict[non_use_capital].columns if col != GlossaryCore.Years][0]
             self.set_partial_derivative_for_other_types(
                 ('non_use_capital_objective',), (non_use_capital, column_name),
                 np.ones(len(years)) * alpha * (1 - gamma) / non_use_capital_obj_ref / delta_years)
@@ -272,7 +272,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
         for capital in input_capital_list:
             column_name = [
-                col for col in inputs_dict[capital].columns if col != 'years'][0]
+                col for col in inputs_dict[capital].columns if col != GlossaryCore.Years][0]
             self.set_partial_derivative_for_other_types(
                 ('energy_capital', 'energy_capital'), (capital, column_name), np.identity(len(years)) / 1.e3)
 
@@ -319,14 +319,14 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
             non_use_capital_df = self.get_sosdisc_outputs('non_use_capital_df')
 
-            years = list(non_use_capital_df['years'].values)
+            years = list(non_use_capital_df[GlossaryCore.Years].values)
 
             chart_name = 'Non-use Capital per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'non_use Capital [G$]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'non_use Capital [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
             for industry in non_use_capital_df.columns:
-                if industry not in ['years', 'Sum of non use capital'] and not (
+                if industry not in [GlossaryCore.Years, 'Sum of non use capital'] and not (
                         non_use_capital_df[industry] == 0.0).all():
                     new_series = InstanciatedSeries(
                         years, non_use_capital_df[industry].values.tolist(), industry, 'bar')
@@ -344,11 +344,11 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
             non_use_capital_df = self.get_sosdisc_outputs('non_use_capital_df')
 
-            years = list(techno_capital_df['years'].values)
+            years = list(techno_capital_df[GlossaryCore.Years].values)
 
             chart_name = 'Energy Mix total capital vs non-use capital per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Total Capital [G$]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Total Capital [G$]',
                                                  chart_name=chart_name)
 
             new_series = InstanciatedSeries(
@@ -366,11 +366,11 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             forest_lost_capital = self.get_sosdisc_inputs(
                 'forest_lost_capital')
 
-            years = list(forest_lost_capital['years'].values)
+            years = list(forest_lost_capital[GlossaryCore.Years].values)
 
             chart_name = 'Forest Management Lost Capital'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Total Capital [G$]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Total Capital [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
 
             new_serie_reforest = InstanciatedSeries(

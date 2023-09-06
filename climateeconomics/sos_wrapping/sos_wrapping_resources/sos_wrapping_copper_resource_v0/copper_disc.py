@@ -1,4 +1,5 @@
 # from sostrades_core.api import SoSDiscipline, InstanciatedSeries, TwoAxesInstanciatedChart, ChartFilter
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -26,7 +27,7 @@ class CopperDisc(SoSWrapp):
     _maturity = 'Fake'
 
     DESC_IN = {'copper_demand': {'type': 'dataframe', 'unit': 'Mt',
-                                 'dataframe_descriptor': {'years': ('float', None, False),
+                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Year': ('float', None, False),
                                                           'Demand': ('float', None, False),
                                                           'unit': ('string', None, False),}

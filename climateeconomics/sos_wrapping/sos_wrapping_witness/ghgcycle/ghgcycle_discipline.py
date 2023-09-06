@@ -16,6 +16,7 @@ limitations under the License.
 # coding: utf-8
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.ghg_cycle_model import GHGCycle
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
@@ -52,13 +53,13 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt',
-                             'dataframe_descriptor': {'years': ('float', None, False),
+                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                       'Total CO2 emissions': ('float', None, False),
                                                       'Total N2O emissions': ('float', None, False),
                                                       'Total CH4 emissions': ('float', None, False),
                                                       }},
         'co2_emissions_fractions': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': '-', 'default': [0.13, 0.20, 0.32, 0.25, 0.10], 'user_level': 2},
-        'co2_boxes_decays': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': 'years',
+        'co2_boxes_decays': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': GlossaryCore.Years,
                              'default': [1.0, 0.9972489701005488, 0.9865773841008381, 0.942873143854875, 0.6065306597126334],
                              'user_level': 2},
         'co2_boxes_init_conc': {'type': 'array', 'unit': 'ppm', 'default': co2_init_conc_fund, 'user_level': 2},
@@ -108,7 +109,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         self.ghg_cycle.compute(param_in)
 
         dict_values = {
-            'ghg_cycle_df': self.ghg_cycle.ghg_cycle_df[['years', 'co2_ppm', 'ch4_ppm', 'n2o_ppm']],
+            'ghg_cycle_df': self.ghg_cycle.ghg_cycle_df[[GlossaryCore.Years, 'co2_ppm', 'ch4_ppm', 'n2o_ppm']],
             'ghg_cycle_df_detailed': self.ghg_cycle.ghg_cycle_df,
             'gwp20_objective': self.ghg_cycle.gwp20_obj,
             'gwp100_objective': self.ghg_cycle.gwp100_obj,
@@ -214,7 +215,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
             min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 Atmospheric concentrations parts per million',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 Atmospheric concentrations parts per million',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value], chart_name)
 
@@ -251,7 +252,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
             min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart('years', 'CH4 Atmospheric concentrations parts per million',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CH4 Atmospheric concentrations parts per million',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value], chart_name)
 
@@ -269,7 +270,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
             min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart('years', 'N2O Atmospheric concentrations parts per million',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'N2O Atmospheric concentrations parts per million',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value], chart_name)
 

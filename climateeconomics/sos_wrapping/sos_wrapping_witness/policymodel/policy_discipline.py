@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 # coding: utf-8
 
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -48,14 +49,14 @@ class PolicyDiscipline(SoSWrapp):
         'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                       'dataframe_descriptor':
                           {
-                              'years': ('float', None, False),
+                              GlossaryCore.Years: ('float', None, False),
                               'ccs_price_per_tCO2': ('float', None, True),
                           }
                       },
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                              'dataframe_descriptor':
                                  {
-                                     'years': ('float', None, False),
+                                     GlossaryCore.Years: ('float', None, False),
                                      'CO2_damage_price': ('float', None, True),
                                  }
                              },
@@ -129,11 +130,11 @@ class PolicyDiscipline(SoSWrapp):
             CCS_price = self.get_sosdisc_inputs('CCS_price')
             CO2_damage_price = self.get_sosdisc_inputs('CO2_damage_price')
             CO2_tax = self.get_sosdisc_outputs('CO2_taxes')
-            years = list(CCS_price['years'].values)
+            years = list(CCS_price[GlossaryCore.Years].values)
 
             chart_name = 'CO2 tax chart'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 tax ($/tCO2)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 tax ($/tCO2)',
 
                                                  chart_name=chart_name)
 

@@ -19,6 +19,8 @@ import unittest
 import numpy as np
 import pandas as pd
 from pandas import read_csv
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -49,21 +51,21 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
         data_dir = join(dirname(__file__), 'data')
 
         self.energy_platinum_demand_df = read_csv(
-            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=['years', 'platinum_resource'])
+            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=[GlossaryCore.Years, 'platinum_resource'])
         self.energy_platinum_variable_demand_df = read_csv(
-            join(data_dir, 'all_demand_variable.csv'), usecols=['years', 'platinum_resource'])
+            join(data_dir, 'all_demand_variable.csv'), usecols=[GlossaryCore.Years, 'platinum_resource'])
         # self.consumed_platinum_df = read_csv(
         #     join(data_dir, 'platinum_resource_consumed_data.csv'))
 
         # part to adapt lenght to the year range
 
-        self.energy_platinum_demand_df = self.energy_platinum_demand_df.loc[self.energy_platinum_demand_df['years']
+        self.energy_platinum_demand_df = self.energy_platinum_demand_df.loc[self.energy_platinum_demand_df[GlossaryCore.Years]
                                                                         >= self.year_start]
-        self.energy_platinum_demand_df = self.energy_platinum_demand_df.loc[self.energy_platinum_demand_df['years']
+        self.energy_platinum_demand_df = self.energy_platinum_demand_df.loc[self.energy_platinum_demand_df[GlossaryCore.Years]
                                                                         <= self.year_end]
-        self.energy_platinum_variable_demand_df = self.energy_platinum_variable_demand_df.loc[self.energy_platinum_variable_demand_df['years']
+        self.energy_platinum_variable_demand_df = self.energy_platinum_variable_demand_df.loc[self.energy_platinum_variable_demand_df[GlossaryCore.Years]
                                                                                           >= self.year_start]
-        self.energy_platinum_variable_demand_df = self.energy_platinum_variable_demand_df.loc[self.energy_platinum_variable_demand_df['years']
+        self.energy_platinum_variable_demand_df = self.energy_platinum_variable_demand_df.loc[self.energy_platinum_variable_demand_df[GlossaryCore.Years]
                                                                                           <= self.year_end]
 
     def test_platinum_resource_analytic_grad(self):

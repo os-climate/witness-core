@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from climateeconomics.core.core_sectorization.labor_market_sectorisation import LaborMarketModel
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -53,7 +54,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
                'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
                'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness',
-                                             'dataframe_descriptor': {'years': ('float', None, False),
+                                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                       'population_1570': ('float', None, False),}
                                              },
               }
@@ -73,7 +74,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         if self.get_data_in() is not None:
             if 'sector_list' in self.get_data_in():
                 sector_list = self.get_sosdisc_inputs('sector_list')
-                df_descriptor = {'years': ('float', None, False)}
+                df_descriptor = {GlossaryCore.Years: ('float', None, False)}
                 df_descriptor.update({col: ('float', None, True)
                                  for col in sector_list})
                 
@@ -161,7 +162,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Employment rate'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'employment rate',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'employment rate',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -179,7 +180,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
             working_age_pop_df = self.get_sosdisc_inputs(
                 'working_age_population_df')
-            years = list(workforce_df['years'].values)
+            years = list(workforce_df[GlossaryCore.Years].values)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -189,7 +190,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Workforce'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Number of people [million]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Number of people [million]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -207,7 +208,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
         if 'workforce per sector' in chart_list:
             chart_name = 'Workforce per economic sector'
-            new_chart = TwoAxesInstanciatedChart('years', 'Workforce per sector [million of people]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Workforce per sector [million of people]',
                                                  [year_start - 5, year_end + 5],
                                                  chart_name=chart_name)
 
@@ -224,7 +225,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         if 'workforce share per sector' in chart_list:
             share_workforce = self.get_sosdisc_inputs('workforce_share_per_sector')
             chart_name = 'Workforce distribution per sector'
-            new_chart = TwoAxesInstanciatedChart('years', 'share of total workforce [%]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'share of total workforce [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,
                                                  chart_name=chart_name)
 

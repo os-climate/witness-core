@@ -17,6 +17,8 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class DamageModel():
     '''
@@ -64,7 +66,7 @@ class DamageModel():
         self.years_range = years_range
         damage_df = pd.DataFrame(
             index=years_range,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'damages',
                      'damage_frac_output',
                      ])
@@ -74,7 +76,7 @@ class DamageModel():
         else:
             arr_type = 'float64'
 
-        damage_df['years'] = self.years_range
+        damage_df[GlossaryCore.Years] = self.years_range
         damage_df['damages'] = np.zeros(
             len(self.years_range), dtype=arr_type)
         damage_df['damage_frac_output'] = np.zeros(
@@ -141,7 +143,7 @@ class DamageModel():
                     np.mean(damages[i:i + 25 - k]) / self.total_emissions_ref
 
         self.co2_damage_price_df = pd.DataFrame(
-            {'years': self.expected_damage_df.index, 'CO2_damage_price': co2_damage_price})
+            {GlossaryCore.Years: self.expected_damage_df.index, 'CO2_damage_price': co2_damage_price})
 
     def compute_gradient(self):
         """
@@ -225,10 +227,10 @@ class DamageModel():
         Compute the outputs of the pyworld3
         """
         self.economics_df = economics_df
-        self.economics_df.index = self.economics_df['years'].values
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
 
         self.temperature_df = temperature_df
-        self.temperature_df.index = self.temperature_df['years'].values
+        self.temperature_df.index = self.temperature_df[GlossaryCore.Years].values
 
         self.expected_damage_df = self.create_dataframe()
         for year in self.years_range:

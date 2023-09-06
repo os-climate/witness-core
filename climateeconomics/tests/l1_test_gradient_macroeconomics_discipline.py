@@ -59,8 +59,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         # csv data
         # co2 emissions
         energy_supply_csv = read_csv(join(self.data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_start = energy_supply_csv.loc[energy_supply_csv['years'] >= self.year_start]
-        energy_supply_end = energy_supply_csv.loc[energy_supply_csv['years'] <= self.year_end]
+        energy_supply_start = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] >= self.year_start]
+        energy_supply_end = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] <= self.year_end]
         energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
         # energy production divided by 1e3 (scaling factor production)
         energy_supply_csv['cumulative_total_energy_supply'] = energy_supply_csv['cumulative_total_energy_supply'] / 1e3
@@ -77,10 +77,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         # damage
         damage_csv = read_csv(join(self.data_dir, 'damage_data_onestep.csv'))
         # adapt lenght to the year range
-        damage_df_start = damage_csv.loc[damage_csv['years'] >= self.year_start]
-        damage_df_end = damage_csv.loc[damage_csv['years'] <= self.year_end]
+        damage_df_start = damage_csv.loc[damage_csv[GlossaryCore.Years] >= self.year_start]
+        damage_df_end = damage_csv.loc[damage_csv[GlossaryCore.Years] <= self.year_end]
         damage_df = pd.merge(damage_df_start, damage_df_end)
-        self.damage_df = damage_df[['years', 'damage_frac_output']]
+        self.damage_df = damage_df[[GlossaryCore.Years, 'damage_frac_output']]
         self.damage_df.index = self.years
         # -------------------------
         # csv data
@@ -88,8 +88,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
         population_csv = read_csv(
             join(global_data_dir, 'population_df.csv'))
-        population_df_start = population_csv.loc[population_csv['years'] >= self.year_start]
-        population_df_end = population_csv.loc[population_csv['years'] <= self.year_end]
+        population_df_start = population_csv.loc[population_csv[GlossaryCore.Years] >= self.year_start]
+        population_df_end = population_csv.loc[population_csv[GlossaryCore.Years] <= self.year_end]
         self.population_df = pd.merge(population_df_start, population_df_end)
         self.population_df.index = self.years
 
@@ -427,10 +427,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         energy_supply_csv = read_csv(
             join(self.data_dir, 'energy_supply_data_onestep_high_CO2.csv'))
         # adapt lenght to the year range
-        energy_supply_start = energy_supply_csv.loc[energy_supply_csv['years'] >= self.year_start]
-        energy_supply_end = energy_supply_csv.loc[energy_supply_csv['years'] <= self.year_end]
+        energy_supply_start = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] >= self.year_start]
+        energy_supply_end = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] <= self.year_end]
         energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
-        energy_supply_df["years"] = energy_supply_df['years']
+        energy_supply_df[GlossaryCore.Years] = energy_supply_df[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df.rename(
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
         co2_emissions_gt.index = self.years
@@ -502,10 +502,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         energy_supply_csv = read_csv(
             join(self.data_dir, 'energy_supply_data_onestep_negative_CO2.csv'))
         # adapt lenght to the year range
-        energy_supply_start = energy_supply_csv.loc[energy_supply_csv['years'] >= self.year_start]
-        energy_supply_end = energy_supply_csv.loc[energy_supply_csv['years'] <= self.year_end]
+        energy_supply_start = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] >= self.year_start]
+        energy_supply_end = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] <= self.year_end]
         energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
-        energy_supply_df["years"] = energy_supply_df['years']
+        energy_supply_df[GlossaryCore.Years] = energy_supply_df[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df.rename(
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
         co2_emissions_gt.index = self.years

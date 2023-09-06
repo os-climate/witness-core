@@ -121,9 +121,9 @@ class MacroDiscTest(unittest.TestCase):
         working_age_pop_df.index = years
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020][[
-            'years', 'total_CO2_emitted']]
-        energy_supply_df_y["years"] = energy_supply_df_all['years']
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020][[
+            GlossaryCore.Years, 'total_CO2_emitted']]
+        energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df_y.rename(
             columns={'total_CO2_emitted': 'Total CO2 emissions'})
         co2_emissions_gt.index = years

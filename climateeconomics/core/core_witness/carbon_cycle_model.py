@@ -17,6 +17,8 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class CarbonCycle():
     """
@@ -75,12 +77,12 @@ class CarbonCycle():
         years_range = np.arange(
             self.year_start, self.year_end + 1, self.time_step)
         self.years_range = years_range
-        carboncycle_df = pd.DataFrame(index=years_range, columns=['years',
+        carboncycle_df = pd.DataFrame(index=years_range, columns=[GlossaryCore.Years,
                                                                   'atmo_conc', 'lower_ocean_conc', 'shallow_ocean_conc', 'ppm', 'atmo_share_since1850', 'atmo_share_sinceystart'])
 
         for key in carboncycle_df.keys():
             carboncycle_df[key] = 0
-        carboncycle_df['years'] = self.years_range
+        carboncycle_df[GlossaryCore.Years] = self.years_range
         carboncycle_df.loc[self.year_start, 'atmo_conc'] = self.init_conc_atmo
         carboncycle_df.loc[self.year_start,
                            'lower_ocean_conc'] = self.init_lower_strata
@@ -338,7 +340,7 @@ class CarbonCycle():
         self.create_dataframe()
         self.inputs_models = inputs_models
         self.CO2_emissions_df = deepcopy(self.inputs_models['CO2_emissions_df'])
-        self.CO2_emissions_df.index = self.CO2_emissions_df['years'].values
+        self.CO2_emissions_df.index = self.CO2_emissions_df[GlossaryCore.Years].values
         self.compute_ppm(self.year_start)
 
         for year in self.years_range[1:]:

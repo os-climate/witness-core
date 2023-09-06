@@ -21,6 +21,7 @@ from os.path import join, dirname
 from copy import deepcopy
 
 from climateeconomics.core.core_resources.resource_model.resource_model import ResourceModel
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from climateeconomics.core.tools.Hubbert_Curve import compute_Hubbert_regression
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
@@ -96,7 +97,7 @@ class CopperResourceModel(ResourceModel):
         # dataframe initialization
         self.resource_price['price'] = np.insert(np.zeros(len(self.years)-1), 0, self.resource_price_data.loc[0, 'price'])
         resource_price_dict = self.resource_price.to_dict()
-        self.resource_demand = self.resources_demand[['years', self.resource_name]]
+        self.resource_demand = self.resources_demand[[GlossaryCore.Years, self.resource_name]]
         self.get_global_demand(self.resource_demand)
 
         demand = deepcopy(self.resource_demand[self.resource_name].values)      

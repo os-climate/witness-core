@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -41,11 +43,11 @@ class AgricultureTestCase(unittest.TestCase):
 
         population = np.array(np.linspace(7800, 7800, year_range))
         self.population_df = pd.DataFrame(
-            {"years": years, "population": population})
+            {GlossaryCore.Years: years, "population": population})
         self.population_df.index = years
         temperature = np.array(np.linspace(0.0, 0.0, year_range))
         self.temperature_df = pd.DataFrame(
-            {"years": years, "temp_atmo": temperature})
+            {GlossaryCore.Years: years, "temp_atmo": temperature})
         self.temperature_df.index = years
 
         self.default_kg_to_m2 = {'red meat': 360,
@@ -67,10 +69,10 @@ class AgricultureTestCase(unittest.TestCase):
         red_meat_percentage = np.linspace(6, 1, year_range)
         white_meat_percentage = np.linspace(14, 5, year_range)
         self.red_meat_percentage = pd.DataFrame({
-            'years': years,
+            GlossaryCore.Years: years,
             'red_meat_percentage': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-            'years': years,
+            GlossaryCore.Years: years,
             'white_meat_percentage': white_meat_percentage})
 
         self.diet_df = pd.DataFrame({'red meat': [11.02],
@@ -88,8 +90,8 @@ class AgricultureTestCase(unittest.TestCase):
                       'time_step': self.time_step,
                       'diet_df': self.diet_df,
                       'kg_to_kcal_dict': self.default_kg_to_kcal,
-                      'population_df': self.population_df,
-                      'temperature_df': self.temperature_df,
+                      GlossaryCore.PopulationDfValue: self.population_df,
+                      GlossaryCore.TemperatureDfValue: self.temperature_df,
                       'kg_to_m2_dict': self.default_kg_to_m2,
                       'red_meat_percentage': self.red_meat_percentage,
                       'white_meat_percentage': self.white_meat_percentage,
@@ -140,7 +142,7 @@ class AgricultureTestCase(unittest.TestCase):
                        f'{name}.{model_name}.red_meat_percentage': self.red_meat_percentage,
                        f'{name}.{model_name}.white_meat_percentage': self.white_meat_percentage,
                        f'{name}.{model_name}.{Agriculture.OTHER_USE_AGRICULTURE}': self.other,
-                       f'{name}.{model_name}.temperature_df': self.temperature_df
+                       f'{name}.{model_name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
                        }
 
         ee.load_study_from_input_dict(inputs_dict)

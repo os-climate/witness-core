@@ -53,7 +53,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                'namespace': 'ns_witness', 'editable': False, 'structuring': True},
                'total_investment_share_of_gdp': {'type': 'dataframe', 'unit': '%',
-                                                 'dataframe_descriptor': {'years': ('float', None, False),
+                                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                           'share_investment': ('float', None, True)},
                                                  'dataframe_edition_locked': False, 'visibility': 'Shared',
                                                  'namespace': 'ns_witness'},
@@ -80,7 +80,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'sector_list' in self.get_data_in():
             sector_list = self.get_sosdisc_inputs('sector_list')
-            df_descriptor = {'years': ('float', None, False)}
+            df_descriptor = {GlossaryCore.Years: ('float', None, False)}
             df_descriptor.update({col: ('float', None, True)
                                   for col in sector_list})
             dynamic_inputs['sectors_investment_share'] = {'type': 'dataframe', 'unit': '%',
@@ -90,13 +90,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.capital_df'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'dataframe_descriptor': {'years': ('float', None, False),
+                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                              'capital': ('float', None, True),
                                              'usable_capital': ('float', None, True),}
                 }
                 dynamic_inputs[f'{sector}.production_df'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'dataframe_descriptor': {'years': ('float', None, False),
+                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                              'output': ('float', None, True),
                                              'output_net_of_damage': ('float', None, True),}
                 }
@@ -113,7 +113,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # -- compute
         economics_df, investment_df, sectors_investment_df = self.macro_model.compute(inputs_dict)
 
-        outputs_dict = {GlossaryCore.EconomicsDfValue: economics_df[['years', GlossaryCore.OutputNetOfDamage, 'capital']],
+        outputs_dict = {GlossaryCore.EconomicsDfValue: economics_df[[GlossaryCore.Years, GlossaryCore.OutputNetOfDamage, 'capital']],
                         'investment_df': investment_df,
                         'sectors_investment_df': sectors_investment_df,
                         'economics_detail_df': economics_df}
@@ -203,7 +203,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             max_value = max(max_values.values())
 
             chart_name = 'Economics output (Power Purchase Parity)'
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion $2020]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion $2020]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -224,7 +224,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
             chart_name = 'Total investment over years'
-            new_chart = TwoAxesInstanciatedChart('years', ' Investment [T$]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' Investment [T$]',
                                                  [year_start - 5, year_end + 5],
                                                  chart_name= chart_name)
             for key in to_plot:
@@ -258,7 +258,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             max_value = max(max_values.values())
 
             chart_name = 'Total capital stock and usable capital'
-            new_chart = TwoAxesInstanciatedChart('years', 'capital stock [T$]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'capital stock [T$]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -275,7 +275,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         if 'share capital' in chart_list:
             capital = economics_df['capital'].values
             chart_name = 'Capital distribution between economic sectors'
-            new_chart = TwoAxesInstanciatedChart('years', 'share of total capital stock [%]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'share of total capital stock [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,
                                                  chart_name=chart_name)
 
@@ -294,7 +294,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         if 'share output' in chart_list:
             output = economics_df[GlossaryCore.OutputNetOfDamage].values
             chart_name = 'Sectors output share of total economics net output'
-            new_chart = TwoAxesInstanciatedChart('years', 'share of total net output [%]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'share of total net output [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,
                                                  chart_name=chart_name)
 
@@ -313,7 +313,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         if 'share investment' in chart_list:
             invest = investment_df['investment'].values
             chart_name = 'Sectors investment share of total investment'
-            new_chart = TwoAxesInstanciatedChart('years', 'share of total investment [%]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'share of total investment [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,
                                                  chart_name=chart_name)
 
@@ -336,7 +336,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             year_end = years[len(years) - 1]
             min_value, max_value = self.get_greataxisrange(economics_df[to_plot])
             chart_name = 'Net output growth rate over years'
-            new_chart = TwoAxesInstanciatedChart('years', ' growth rate [-]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' growth rate [-]',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
