@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -54,6 +55,8 @@ class DamageDiscTest(unittest.TestCase):
             join(data_dir, 'economics_data_onestep.csv'))
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
+
+        economics_df_all = economics_df_all[GlossaryCore.Economics_df['dataframe_descriptor'].keys()]
 
         economics_df_y = economics_df_all[economics_df_all['years'] >= 2020]
         temperature_df_y = temperature_df_all[temperature_df_all['years'] >= 2020]

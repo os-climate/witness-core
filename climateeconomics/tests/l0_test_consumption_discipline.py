@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -53,6 +54,8 @@ class ConsumptionDiscTest(unittest.TestCase):
         economics_df = read_csv(
             join(data_dir, 'economics_data_onestep.csv'))
         economics_df = economics_df[economics_df['years'] >= 2020]
+
+        economics_df = economics_df[GlossaryCore.Economics_df['dataframe_descriptor'].keys()]
 
         global_data_dir = join(dirname(dirname(__file__)), 'data')
         population_df = read_csv(
