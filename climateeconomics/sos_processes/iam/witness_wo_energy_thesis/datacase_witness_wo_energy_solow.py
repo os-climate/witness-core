@@ -23,12 +23,10 @@ from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
-from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 from climateeconomics.sos_processes.iam.witness.land_use_v1_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import Study as datacase_agriculture
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
 from climateeconomics.sos_processes.iam.witness.forest_v1_process.usecase import Study as datacase_forest
-from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
 from sostrades_core.study_manager.study_manager import StudyManager
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -103,9 +101,9 @@ class DataStudy():
         data = arange(1.0, nb_per + 1.0, 1)
 
         df_eco = DataFrame({GlossaryCore.Years: years,
-                            'gross_output': data,
-                            'pc_consumption': data,
-                            'output_net_of_d': data},
+                            GlossaryCore.GrossOutput: data,
+                            GlossaryCore.PerCapitaConsumption: data,
+                            GlossaryCore.OutputNetOfDamage: data},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 
         witness_input[self.study_name + '.economics_df'] = df_eco
@@ -179,11 +177,6 @@ class DataStudy():
         setup_data_list = setup_data_list + forest_list
         StudyManager.merge_design_spaces(
             self, [dc_forest.dspace, dc_agriculture.dspace])
-        nb_poles = 8
-        # constraint land use
-
-        # WITNESS
-        # setup objectives
 
         witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
 
@@ -196,14 +189,7 @@ class DataStudy():
         witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
         witness_input[f'{self.study_name}.NormalizationReferences.total_emissions_ref'] = 12.0
-        #witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
-#         self.exec_eng.dm.export_couplings(
-#             in_csv=True, f_name='couplings.csv')
 
-#         self.exec_eng.root_process.coupling_structure.graph.export_initial_graph(
-#             "initial.pdf")
-# self.exec_eng.root_process.coupling_structure.graph.export_reduced_graph(
-# "reduced.pdf")
         setup_data_list.append(witness_input)
 
         return setup_data_list

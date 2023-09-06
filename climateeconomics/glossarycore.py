@@ -18,6 +18,12 @@ class GlossaryCore:
     NonEnergyInvestmentsValue = "non_energy_investment"
     EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"
 
+    energy_list = 'energy_list'
+    techno_list = 'technologies_list'
+    ccs_list = 'ccs_list'
+
+    invest_mix = 'invest_mix'
+
     CO2EmissionsGt = {
         "var_name": CO2EmissionsGtValue,
         "type": "dataframe",
