@@ -52,8 +52,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         'init_gr_sigma': {'type': 'float', 'default': -0.0152, 'user_level': 2, 'unit': '-'},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001, 'user_level': 2, 'unit': '-'},
         'init_indus_emissions': {'type': 'float', 'default': 34, 'unit': 'GtCO2 per year', 'user_level': 2},
-        'init_gross_output': {'type': 'float', 'default': 130.187, 'unit': 'T$', 'user_level': 2,
-                              'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'init_cum_indus_emissions': {'type': 'float', 'default': 577.31, 'unit': 'GtCO2', 'user_level': 2},
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -70,7 +69,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
                                                   'capital': ('float', None, False),
                                                   'investment': ('float', None, False),
                                                   'interest_rate': ('float', None, False),
-                                                  'energy_investment': ('float', None, False),
+                                                  GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   'output_growth': ('float', None, False),}
                          },
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2, 'unit': '-'},

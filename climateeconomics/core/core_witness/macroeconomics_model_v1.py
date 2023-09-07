@@ -18,7 +18,7 @@ import pandas as pd
 from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint
-from climateeconomics.glossarycore import GlossaryCore as GC
+from climateeconomics.glossarycore import GlossaryCore as GC, GlossaryCore
 
 
 class MacroEconomics():
@@ -44,7 +44,7 @@ class MacroEconomics():
         self.time_step = self.param['time_step']
 
         self.productivity_start = self.param['productivity_start']
-        self.init_gross_output = self.param['init_gross_output']
+        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start_ne = self.param['capital_start_non_energy']
         self.population_df = self.param[GC.PopulationDfValue]
         self.productivity_gr_start = self.param['productivity_gr_start']
@@ -81,7 +81,6 @@ class MacroEconomics():
         self.co2_emissions_Gt = self.param[GC.CO2EmissionsGtValue]
         self.co2_taxes = self.param[GC.CO2TaxesValue]
         self.co2_tax_efficiency = self.param['CO2_tax_efficiency']
-        self.scaling_factor_energy_investment = self.param['scaling_factor_energy_investment']
         self.alpha = self.param['alpha']
         self.delta_capital_cons_limit = self.param['delta_capital_cons_limit']
         if self.co2_tax_efficiency is not None:
@@ -167,7 +166,6 @@ class MacroEconomics():
         self.damefrac.index = self.damefrac[GC.Years].values
         # Scale energy production
         self.scaling_factor_energy_production = self.inputs['scaling_factor_energy_production']
-        self.scaling_factor_energy_investment = self.inputs['scaling_factor_energy_investment']
         self.energy_production = self.inputs['energy_production'].copy(deep=True)
         self.energy_production['Total production'] *= self.scaling_factor_energy_production
         self.co2_emissions_Gt = pd.DataFrame({GC.Years: self.inputs[GC.CO2EmissionsGtValue][GC.Years].values,
@@ -339,39 +337,36 @@ class MacroEconomics():
 
     def compute_energy_investment(self, year: int):
         """
-        energy_investment(t), trillions $USD (including renewable investments)
-        Share of the total output
+        Energy invests  = Energy invest without tax + Added invest in renewables from CO2 tax
         """
-        energy_investment_wo_tax = self.energy_investment_wo_tax[year]
+        energy_investment_wo_tax = self.energy_investment_wo_tax[year]  # in T$
 
         self.co2_emissions_Gt['Total CO2 emissions'].clip(lower=0.0, inplace=True)
 
-        # store invests without renewable energy
-        em_wo_ren = self.energy_investment_wo_renewable
-        em_wo_ren.loc[year, GC.EnergyInvestmentsWoRenewableValue] = energy_investment_wo_tax * 1e3
+        self.energy_investment_wo_renewable.loc[year, GC.EnergyInvestmentsWoRenewableValue] = energy_investment_wo_tax * 10. # in 100G$
 
-        ren_investments = self.compute_energy_renewable_investment(year, energy_investment_wo_tax)
-        energy_investment = energy_investment_wo_tax + ren_investments
+        ren_investments = self.compute_energy_renewable_investment(year, energy_investment_wo_tax)  # T$
+        energy_investment = energy_investment_wo_tax + ren_investments  # in T$
         self.economics_df.loc[year,
-                              [GC.EnergyInvestmentsValue,
-                               GC.EnergyInvestmentsWoTaxValue,
-                               GC.EnergyInvestmentsFromTaxValue]] = [energy_investment,
-                                                                               energy_investment_wo_tax,
-                                                                               ren_investments]
-        self.energy_investment.loc[year, GC.EnergyInvestmentsValue] = energy_investment * 1e3 / self.scaling_factor_energy_investment  # Invest from T$ to G$ coupling variable
+                              [GC.EnergyInvestmentsValue,  # T$
+                               GC.EnergyInvestmentsWoTaxValue,  # T$
+                               GC.EnergyInvestmentsFromTaxValue]] = \
+            [energy_investment,  # T$
+             energy_investment_wo_tax, # T$
+             ren_investments]  # T$
+        self.energy_investment.loc[year, GC.EnergyInvestmentsValue] = energy_investment * 10.  # 100G$
 
         return energy_investment
 
     def compute_energy_renewable_investment(self, year: int, energy_investment_wo_tax: float) -> float:
         """
-        computes energy investment for renewable part
+        computes energy investment for renewable part in T$
         for a given year: returns net CO2 emissions * CO2 taxes * a efficiency factor
         """
         if not self.invest_co2_tax_in_renawables:
-            return 0
+            return 0.
         co2_invest_limit = self.co2_invest_limit
-        emissions = self.co2_emissions_Gt.at[year,
-                                             'Total CO2 emissions'] * 1e9  # t CO2
+        emissions = self.co2_emissions_Gt.at[year, 'Total CO2 emissions'] * 1e9  # t CO2
         co2_taxes = self.co2_taxes.loc[year, 'CO2_tax']  # $/t
         co2_tax_eff = self.co2_tax_efficiency.at[year, 'CO2_tax_efficiency'] / 100.  # %
         ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
@@ -388,7 +383,7 @@ class MacroEconomics():
                 (9.0 + np.exp(- co2_invest_limit *
                               energy_investment_wo_tax / ren_investments))
 
-        return ren_investments
+        return ren_investments  # T$
 
     def compute_gross_output(self, year: int):
         """ Compute the gdp 
@@ -743,7 +738,7 @@ class MacroEconomics():
         Share of the total output
         """
         d_energy_investment_wo_tax_d_energy_investment_wo_tax = np.eye(self.nb_years)
-        d_energy_investment_wo_renewable_d_energy_investment_wo_tax = d_energy_investment_wo_tax_d_energy_investment_wo_tax * 1e3
+        d_energy_investment_wo_renewable_d_energy_investment_wo_tax = d_energy_investment_wo_tax_d_energy_investment_wo_tax * 1e3 # TODO ? Sure of 1e3 ?
 
         self.co2_emissions_Gt['Total CO2 emissions'].clip(
             lower=0.0, inplace=True)
@@ -755,7 +750,7 @@ class MacroEconomics():
 
         return d_energy_investment_d_energy_investment_wo_tax, d_energy_investment_wo_renewable_d_energy_investment_wo_tax
 
-    def d_investment_d_energy_investment(self):
+    def d_investment_d_energy_investment_wo_tax(self):
         """Derivative of investment wrt share energy investment"""
         d_energy_investment_d_energy_investment_wo_tax, d_energy_investment_wo_renewable_d_energy_investment_wo_tax = \
             self._d_energy_investment_d_energy_investement_wo_tax()
@@ -770,7 +765,7 @@ class MacroEconomics():
         computes gradients for energy investment for renewable part by energy_investment_wo_tax
         for a given year: returns net CO2 emissions * CO2 taxes * a efficiency factor
         """
-        energy_investment_wo_tax = self.energy_investment_wo_tax.values
+        energy_investment_wo_tax = self.economics_detail_df[GlossaryCore.EnergyInvestmentsWoTaxValue].values  # T$
         co2_invest_limit = self.co2_invest_limit
         # t CO2
         emissions = self.co2_emissions_Gt['Total CO2 emissions'].values * 1e9
@@ -782,7 +777,7 @@ class MacroEconomics():
         nb_years = len(self.years_range)
         # derivative matrix initialization
         dren_investments = self._null_derivative()
-        if self.invest_co2_tax_in_renawables:
+        if self.invest_co2_tax_in_renawables: # TODO: what follows is wrong
             for i in range(nb_years):
                 # if emissions is zero the right gradient (positive) is not zero but the left gradient is zero
                 # when complex step we add ren_invest with the complex step and it is
@@ -840,7 +835,7 @@ class MacroEconomics():
         co2_taxes = self.co2_taxes['CO2_tax'].values  # $/t
         co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
 
-        ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
+        ren_investments = emissions * co2_taxes * co2_tax_eff / 1e9 # T$
 
         nb_years = len(self.years_range)
         # derivative matrix initialization

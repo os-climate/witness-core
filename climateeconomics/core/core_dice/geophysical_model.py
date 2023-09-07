@@ -41,7 +41,7 @@ class CarbonEmissions():
         self.init_gr_sigma = self.param['init_gr_sigma']
         self.decline_rate_decarbo = self.param['decline_rate_decarbo']
         self.init_indus_emissions = self.param['init_indus_emissions']
-        self.init_gross_output = self.param['init_gross_output']
+        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.init_cum_indus_emissions = self.param['init_cum_indus_emissions']
 
     def create_dataframe(self):

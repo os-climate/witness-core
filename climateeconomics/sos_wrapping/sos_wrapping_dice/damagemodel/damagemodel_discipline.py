@@ -76,7 +76,7 @@ class DamageDiscipline(SoSWrapp):
     }
 
     DESC_OUT = {
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
+        GlossaryCore.DamageDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
     _maturity = 'Research'
 
     def run(self):
@@ -127,7 +127,7 @@ class DamageDiscipline(SoSWrapp):
         if 'Damage' in chart_list:
 
             to_plot = ['damages']
-            damage_df = self.get_sosdisc_outputs('damage_df')
+            damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
             damage_df = resize_df(damage_df)
 
             damage = damage_df['damages']
@@ -149,7 +149,7 @@ class DamageDiscipline(SoSWrapp):
         if 'Abatement cost' in chart_list:
 
             to_plot = ['abatecost']
-            abate_df = self.get_sosdisc_outputs('damage_df')
+            abate_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
 
             abatecost = damage_df['abatecost']
 

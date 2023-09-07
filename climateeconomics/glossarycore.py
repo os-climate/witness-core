@@ -16,7 +16,7 @@ class GlossaryCore:
     EnergyInvestmentsWoTaxValue = "energy_investment_wo_tax"
     EnergyInvestmentsWoRenewableValue = 'energy_investment_wo_renewable'
     NonEnergyInvestmentsValue = "non_energy_investment"
-    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"
+    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
 
     energy_list = 'energy_list'
     techno_list = 'technologies_list'
@@ -74,9 +74,13 @@ class GlossaryCore:
         },
     }
 
+    InitialGrossOutput = {'var_name': 'init_gross_output',
+                          'type': 'float', 'unit': 'T$',
+                          'visibility': 'Shared', 'default': 130.187,
+                          'namespace': 'ns_witness', 'user_level': 2}
 
-    GrossOutput = "gross_output"
-    OutputNetOfDamage = "output_net_of_d"
+    GrossOutput = "gross_output"  # trillion $
+    OutputNetOfDamage = "output_net_of_d" # trillion $
     Consumption = "consumption"
     PerCapitaConsumption = "pc_consumption"
     Economics_df = {
@@ -100,17 +104,17 @@ class GlossaryCore:
         'unit': '-',
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            GrossOutput: ("float", None, False),
-            OutputNetOfDamage: ("float", None, False),
+            GrossOutput: ("float", None, False),  # T$
+            OutputNetOfDamage: ("float", None, False),  # T$
             "productivity": ("float", None, False),
             "productivity_gr": ("float", None, False),
-            Consumption: ("float", None, False),
+            Consumption: ("float", None, False),  # T$
             PerCapitaConsumption: ("float", None, False),
-            InvestmentsValue: ("float", None, False),
-            EnergyInvestmentsValue: ("float", None, False),
-            EnergyInvestmentsWoTaxValue: ("float", None, False),
-            NonEnergyInvestmentsValue: ("float", None, False),
-            EnergyInvestmentsFromTaxValue: ("float", None, False),
+            InvestmentsValue: ("float", None, False),  # T$
+            EnergyInvestmentsValue: ("float", None, False),  # T$
+            EnergyInvestmentsWoTaxValue: ("float", None, False),  # T$
+            NonEnergyInvestmentsValue: ("float", None, False),  # T$
+            EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             "output_growth": ("float", None, False),
         },
     }
@@ -140,10 +144,10 @@ class GlossaryCore:
         "namespace": "ns_witness",
     }
 
-    EnergyInvestmentsWoTax = {
+    EnergyInvestmentsWoTax = {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
         "var_name": EnergyInvestmentsWoTaxValue,
         "type": "dataframe",
-        "unit": 'G$',
+        "unit": 'T$',
         "dataframe_descriptor": {
             Years: ("float", None, False),
             EnergyInvestmentsWoTaxValue: ("float", [0.0, 1e30], True),

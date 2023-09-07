@@ -48,7 +48,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$'
     
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'unit': 'G$',
+        GlossaryCore.DamageDfValue: {'type': 'dataframe', 'unit': 'G$',
                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                'damages': ('float', None, False),
                                                'damage_frac_output': ('float', None, False),
@@ -154,13 +154,13 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         #configure param
         self.industrial_model.configure_parameters(param, self.sector_name)
         #coupling df 
-        damage_df = param['damage_df']
+        damage_df = param[GlossaryCore.DamageDfValue]
         energy_production = param['energy_production']
         investment = param['sectors_investment_df']
         workforce_df = param['workforce_df']
         prod_function_fitting = param['prod_function_fitting']
 
-        industrial_inputs = {'damage_df': damage_df[[GlossaryCore.Years, 'damage_frac_output']],
+        industrial_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, 'damage_frac_output']],
                              'energy_production': energy_production,
                              'sectors_investment_df': investment,
                              'workforce_df': workforce_df}
@@ -229,9 +229,9 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         doutput_ddamage = self.industrial_model.doutput_ddamage(dproductivity_ddamage)
         dnetoutput_ddamage = self.industrial_model.dnetoutput_ddamage(doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output'), ('damage_df', 'damage_frac_output'), doutput_ddamage)
+            ('production_df', 'output'), (GlossaryCore.DamageDfValue, 'damage_frac_output'), doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output_net_of_damage'), ('damage_df', 'damage_frac_output'), dnetoutput_ddamage)
+            ('production_df', 'output_net_of_damage'), (GlossaryCore.DamageDfValue, 'damage_frac_output'), dnetoutput_ddamage)
 
         # gradients wrt invest
         # If production fitting = true we use the investment from another input

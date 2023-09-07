@@ -49,8 +49,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'year_end': {'type': 'int', 'default': 2100, 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
         'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
         'productivity_start': {'type': 'float', 'default': 0.974422, 'user_level': 2},
-        'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'default': 130.187,
-                              'namespace': 'ns_witness', 'user_level': 2},
+        GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 355.9210491, 'user_level': 2},
         GlossaryCore.PopulationDF['var_name']: GlossaryCore.PopulationDF,
         'productivity_gr_start': {'type': 'float', 'default': 0.042925, 'user_level': 2},
@@ -119,8 +118,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         GlossaryCore.EconomicsDetailDfValue: {'type': 'dataframe'},
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'energy_investment': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'G$', 'namespace': 'ns_witness'},
-        'energy_investment_wo_renewable': {'type': 'dataframe', 'unit': 'G$'},
+        GlossaryCore.EnergyInvestmentsValue: {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'G$', 'namespace': 'ns_witness'},
+        GlossaryCore.EnergyInvestmentsWoRenewableValue: {'type': 'dataframe', 'unit': 'G$'},
         'global_investment_constraint': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_witness'},
         'workforce_df': {'type': 'dataframe', 'unit': 'millions of people'},
@@ -142,7 +141,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         share_energy_investment = param.pop('share_energy_investment')
         total_investment_share_of_gdp = param.pop(
             'total_investment_share_of_gdp')
-        co2_emissions_Gt = param.pop('co2_emissions_Gt')
+        co2_emissions_Gt = param.pop(GlossaryCore.CO2EmissionsGtValue)
         co2_taxes = param.pop(GlossaryCore.CO2TaxesValue)
         co2_tax_efficiency = param.pop('CO2_tax_efficiency')
         co2_invest_limit = param.pop('co2_invest_limit')
@@ -156,7 +155,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         # share energy investment is in %
                         'share_energy_investment': share_energy_investment,
                         'total_investment_share_of_gdp': total_investment_share_of_gdp,
-                        'co2_emissions_Gt': co2_emissions_Gt,
+                        GlossaryCore.CO2EmissionsGtValue: co2_emissions_Gt,
                         GlossaryCore.CO2TaxesValue: co2_taxes,
                         'CO2_tax_efficiency': co2_tax_efficiency,
                         'co2_invest_limit': co2_invest_limit,
@@ -176,10 +175,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # Store output data
         dict_values = {GlossaryCore.EconomicsDetailDfValue: economics_df,
                        GlossaryCore.EconomicsDfValue: economics_df[[GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.PerCapitaConsumption, GlossaryCore.OutputNetOfDamage]],
-                       'energy_investment': energy_investment,
+                       GlossaryCore.EnergyInvestmentsValue: energy_investment,
                        'workforce_df': workforce_df,
                        'global_investment_constraint': global_investment_constraint,
-                       'energy_investment_wo_renewable': energy_investment_wo_renewable,
+                       GlossaryCore.EnergyInvestmentsWoRenewableValue: energy_investment_wo_renewable,
                        'pc_consumption_constraint': pc_consumption_constraint}
 
 
@@ -259,7 +258,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.DamageDfValue, 'damage_frac_output'), doutput_net_of_d)
 
         self.set_partial_derivative_for_other_types(
-            ('energy_investment', 'energy_investment'), (GlossaryCore.DamageDfValue, 'damage_frac_output'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), (GlossaryCore.DamageDfValue, 'damage_frac_output'),
             denergy_investment / scaling_factor_energy_investment * 1e3)  # Invest from T$ to G$
 
         dgross_output, dinvestment, denergy_investment, dnet_output = self.macro_model.compute_dgross_output_denergy_supply()
@@ -287,7 +286,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             scaling_factor_energy_production * doutput_net_of_d)
 
         self.set_partial_derivative_for_other_types(
-            ('energy_investment', 'energy_investment'), ('energy_production', 'Total production'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), ('energy_production', 'Total production'),
             scaling_factor_energy_production * denergy_investment / scaling_factor_energy_investment * 1e3)  # Invest from T$ to G$
         # compute gradient for design variable share_energy_investment
         dgross_output, dinvestment, denergy_investment, dnet_output = self.macro_model.compute_dshare_energy_investment()
@@ -299,7 +298,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             dgross_output)
 
         self.set_partial_derivative_for_other_types(
-            ('energy_investment', 'energy_investment'), ('share_energy_investment', 'share_investment'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), ('share_energy_investment', 'share_investment'),
             denergy_investment / scaling_factor_energy_investment * 1e3 / 100.0)  # Invest from T$ to G$
 
         self.set_partial_derivative_for_other_types(
@@ -344,7 +343,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             doutput_net_of_d / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            ('energy_investment', 'energy_investment'), ('total_investment_share_of_gdp', 'share_investment'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), ('total_investment_share_of_gdp', 'share_investment'),
             denergy_investment / scaling_factor_energy_investment * 1e3 / 100.0)  # Invest from T$ to G$
 
         # compute gradient for coupling variable co2_emissions_Gt
@@ -357,21 +356,21 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             dgross_output)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), ('co2_emissions_Gt', 'Total CO2 emissions'), dgross_output / 100.0)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), dgross_output / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), ('co2_emissions_Gt', 'Total CO2 emissions'), dconsumption_pc / 100.0)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), dconsumption_pc / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint',), ('co2_emissions_Gt', 'Total CO2 emissions'), - dconsumption_pc \
+            ('pc_consumption_constraint',), (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), - dconsumption_pc \
                                                                                          / (
                                                                                                      ref_pc_consumption_constraint * 100))
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), ('co2_emissions_Gt', 'Total CO2 emissions'), doutput_net_of_d / 100.0)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), doutput_net_of_d / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            ('energy_investment', 'energy_investment'), ('co2_emissions_Gt', 'Total CO2 emissions'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'),
             denergy_investment / scaling_factor_energy_investment * 1e3 / 100.0)  # Invest from T$ to G$
 
         # compute gradient for design variable CO2_taxes
@@ -397,7 +396,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.CO2TaxesValue, 'CO2_tax'), doutput_net_of_d / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            ('energy_investment', 'energy_investment'), (GlossaryCore.CO2TaxesValue, 'CO2_tax'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), (GlossaryCore.CO2TaxesValue, 'CO2_tax'),
             denergy_investment / scaling_factor_energy_investment * 1e3 / 100.0)  # Invest from T$ to G$
 
         # compute gradient for coupling variable population
@@ -419,7 +418,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), ('working_age_population_df', 'population_1570'),
             dnet_output)
         self.set_partial_derivative_for_other_types(
-            ('energy_investment', 'energy_investment'), ('working_age_population_df', 'population_1570'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), ('working_age_population_df', 'population_1570'),
             denergy_investment / scaling_factor_energy_investment * 1e3)
 
         self.set_partial_derivative_for_other_types(
@@ -437,7 +436,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         chart_filters = []
 
         chart_list = ['output of damage', 'gross output and gross output bis',
-                      'investment', 'energy_investment', 'population', 'productivity', 'consumption',
+                      'investment', GlossaryCore.EnergyInvestmentsValue, 'population', 'productivity', 'consumption',
                       'Output growth rate', 'energy supply', 'energy productivity']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -505,10 +504,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'investment' in chart_list:
 
-            to_plot = ['investment', 'energy_investment']
+            to_plot = ['investment', GlossaryCore.EnergyInvestmentsValue]
 
             legend = {'investment': 'total investment capacities',
-                      'energy_investment': 'investment capacities in the energy sector'}
+                      GlossaryCore.EnergyInvestmentsValue: 'investment capacities in the energy sector'}
 
             years = list(economics_df.index)
 
@@ -543,14 +542,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if 'energy_investment' in chart_list:
+        if GlossaryCore.EnergyInvestmentsValue in chart_list:
 
-            to_plot = ['energy_investment',
-                       'energy_investment_wo_tax', 'energy_investment_from_tax']
+            to_plot = [GlossaryCore.EnergyInvestmentsValue,
+                       GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsFromTaxValue]
 
-            legend = {'energy_investment': 'investment capacities in the energy sector',
-                      'energy_investment_wo_tax': 'base invest from macroeconomic',
-                      'energy_investment_from_tax': 'added invest from CO2 taxes'}
+            legend = {GlossaryCore.EnergyInvestmentsValue: 'investment capacities in the energy sector',
+                      GlossaryCore.EnergyInvestmentsWoTaxValue: 'base invest from macroeconomic',
+                      GlossaryCore.EnergyInvestmentsFromTaxValue: 'added invest from CO2 taxes'}
 
             years = list(economics_df.index)
 
@@ -559,7 +558,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             max_values = {}
             min_values = {}
-            min_values['energy_investment_wo_tax'], max_values['energy_investment_wo_tax'] = self.get_greataxisrange(
+            min_values[GlossaryCore.EnergyInvestmentsWoTaxValue], max_values[GlossaryCore.EnergyInvestmentsWoTaxValue] = self.get_greataxisrange(
                 economics_df[to_plot])
 
             min_value = min(min_values.values())
@@ -588,7 +587,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             # CO2 invest Limit
             visible_line = True
             ordonate_data = list(
-                economics_df['energy_investment_wo_tax'] * co2_invest_limit)
+                economics_df[GlossaryCore.EnergyInvestmentsWoTaxValue] * co2_invest_limit)
             abscisse_data = np.linspace(
                 year_start, year_end, len(years))
             new_series = InstanciatedSeries(

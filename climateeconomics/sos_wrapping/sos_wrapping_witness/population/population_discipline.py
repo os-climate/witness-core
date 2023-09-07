@@ -82,7 +82,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                                   'capital': ('float', None, False),
                                                   'investment': ('float', None, False),
                                                   'interest_rate': ('float', None, False),
-                                                  'energy_investment': ('float', None, False),
+                                                  GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   'output_growth': ('float', None, False), }
                          },
         GlossaryCore.TemperatureDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '°C',

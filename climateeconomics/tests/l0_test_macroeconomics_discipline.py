@@ -69,7 +69,7 @@ class MacroDiscTest(unittest.TestCase):
 
         energy_investment_wo_tax = DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.EnergyInvestmentsWoTaxValue: np.asarray([14.] * nb_per)})
+             GlossaryCore.EnergyInvestmentsWoTaxValue: np.asarray([3.5] * nb_per)})  # in G$
 
         share_non_energy_investment = DataFrame(
             {GlossaryCore.Years: years,
@@ -156,5 +156,5 @@ class MacroDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-        #for graph in graph_list:
-            #graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()

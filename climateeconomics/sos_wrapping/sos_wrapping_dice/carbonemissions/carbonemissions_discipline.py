@@ -50,7 +50,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
         'init_gr_sigma': {'type': 'float', 'default': -0.0152},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001},
         'init_indus_emissions': {'type': 'float', 'unit': 'GtCO2 per year', 'default': 35.745},
-        'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'namespace': 'ns_dice', 'default': 105.1},
+        GlossaryCore.InitialGrossOutput['var_name']: {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'namespace': 'ns_dice', 'default': 105.1},
         'init_cum_indus_emissions': {'type': 'float', 'unit': 'GtCO2', 'default': 400},
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',

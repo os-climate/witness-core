@@ -152,7 +152,7 @@ class DataStudy():
         nrj_invest = arange(1000, nb_per + 1000, 1)
 
         df_energy_investment = DataFrame({GlossaryCore.Years: years,
-                                          'energy_investment': nrj_invest},
+                                          GlossaryCore.EnergyInvestmentsValue: nrj_invest},
                                          index=arange(self.year_start, self.year_end + 1, self.time_step))
         df_energy_investment_before_year_start = DataFrame({'past_years': [2017, 2018, 2019],
                                                             'energy_investment_before_year_start': [1924, 1927, 1935]},

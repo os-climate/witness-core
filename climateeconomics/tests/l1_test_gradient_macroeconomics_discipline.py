@@ -95,7 +95,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.energy_investment_wo_tax = DataFrame(
             {GlossaryCore.Years: self.years,
-             GlossaryCore.EnergyInvestmentsWoTaxValue: [13.] * self.nb_per})
+             GlossaryCore.EnergyInvestmentsWoTaxValue: [3.5] * self.nb_per})
 
         self.share_non_energy_investment = DataFrame(
             {GlossaryCore.Years: self.years,
@@ -352,7 +352,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         energy_investment_wo_tax = DataFrame(
             {GlossaryCore.Years: self.years,
-             GlossaryCore.EnergyInvestmentsWoTaxValue: [10.0] * self.nb_per,})
+             GlossaryCore.EnergyInvestmentsWoTaxValue: [50.] * self.nb_per,})
 
         share_non_energy_investment = DataFrame(
             {GlossaryCore.Years: self.years,

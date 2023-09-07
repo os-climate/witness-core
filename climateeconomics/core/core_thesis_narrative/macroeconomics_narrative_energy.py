@@ -43,7 +43,7 @@ class MacroEconomics():
         self.time_step = self.param['time_step']
 
         self.productivity_start = self.param['productivity_start']
-        self.init_gross_output = self.param['init_gross_output']
+        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = self.param['capital_start']
         self.population_df = self.param[GlossaryCore.PopulationDfValue]
         self.population_df.index = self.population_df[GlossaryCore.Years].values
@@ -85,7 +85,7 @@ class MacroEconomics():
         self.output_epsilon_hassler = self.param['output_epsilon_hassler']
         self.output_energy_share = self.param['output_energy_share']
         self.energy_factor = self.param['energy_factor']
-        self.co2_emissions_Gt = self.param['co2_emissions_Gt']
+        self.co2_emissions_Gt = self.param[GlossaryCore.CO2EmissionsGtValue]
         self.co2_taxes = self.param[GlossaryCore.CO2TaxesValue]
         self.co2_tax_efficiency = self.param['CO2_tax_efficiency']
 
@@ -175,8 +175,8 @@ class MacroEconomics():
         self.scaling_factor_energy_investment = self.inputs['scaling_factor_energy_investment']
         self.energy_production = self.inputs['energy_production'].copy(deep=True)
         self.energy_production['Total production'] *= self.scaling_factor_energy_production
-        self.co2_emissions_Gt = pd.DataFrame({GlossaryCore.Years: self.inputs['co2_emissions_Gt'][GlossaryCore.Years].values,
-                                              'Total CO2 emissions': self.inputs['co2_emissions_Gt'][
+        self.co2_emissions_Gt = pd.DataFrame({GlossaryCore.Years: self.inputs[GlossaryCore.CO2EmissionsGtValue][GlossaryCore.Years].values,
+                                              'Total CO2 emissions': self.inputs[GlossaryCore.CO2EmissionsGtValue][
                                                   'Total CO2 emissions'].values})
         self.co2_emissions_Gt.index = self.co2_emissions_Gt[GlossaryCore.Years].values
         self.co2_taxes = self.inputs[GlossaryCore.CO2TaxesValue]
@@ -368,7 +368,7 @@ class MacroEconomics():
             year, energy_investment_wo_tax)
         energy_investment = energy_investment_wo_tax + ren_investments
         self.economics_df.loc[year,
-                              [GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsWoTaxValue, 'energy_investment_from_tax']] = [
+                              [GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsFromTaxValue]] = [
             energy_investment, energy_investment_wo_tax, ren_investments]
         self.energy_investment.loc[year,
                                    GlossaryCore.EnergyInvestmentsValue] = energy_investment * 1e3 / self.scaling_factor_energy_investment  # Invest from T$ to G$ coupling variable

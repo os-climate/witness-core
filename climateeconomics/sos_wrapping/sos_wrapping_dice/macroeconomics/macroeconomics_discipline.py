@@ -40,12 +40,12 @@ class MacroeconomicsDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.DamageDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
         'year_start': {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
         'year_end': {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
         'time_step': {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
         'productivity_start': {'type': 'float', 'default': 5.115},
-        'init_gross_output': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice', 'unit': 'trillions $'},
+        GlossaryCore.InitialGrossOutput['var_name']: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice', 'unit': 'trillions $'},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 223},
         'pop_start': {'type': 'float', 'unit': 'millions', 'default': 7403},
         'output_elasticity': {'type': 'float', 'default': 0.3},
@@ -73,7 +73,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
         # Get inputs
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
-        damage_df = param.pop('damage_df')
+        damage_df = param.pop(GlossaryCore.DamageDfValue)
 
         damage_inputs = {
             'damage_frac_output': damage_df['damage_frac_output'], 'abatecost': damage_df['abatecost']}

@@ -51,8 +51,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'init_gr_sigma': {'type': 'float', 'default': -0.0152, 'user_level': 2, 'unit': '-'},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001, 'user_level': 2, 'unit': '-'},
         'init_indus_emissions': {'type': 'float', 'default': 34, 'unit': 'GtCO2 per year', 'user_level': 2},
-        'init_gross_output': {'type': 'float', 'default': 130.187, 'unit': 'T$', 'user_level': 2,
-                              'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'init_cum_indus_emissions': {'type': 'float', 'default': 577.31, 'unit': 'GtCO2', 'user_level': 2},
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -67,7 +66,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                                                   'investment': ('float', None, False),
                                                   'interest_rate': ('float', None, False),
                                                   'output_growth': ('float', None, False),
-                                                  'energy_investment': ('float', None, False),
+                                                  GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   'pc_consumption': ('float', None, False),
                                                   'output_net_of_d': ('float', None, False),
                                                   'net_output': ('float', None, False),
@@ -127,7 +126,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         dict_values = {'CO2_emissions_detail_df': CO2_emissions_df,
                        'CO2_emissions_df': CO2_emissions_df[[GlossaryCore.Years, 'total_emissions', 'cum_total_emissions']],
                        'CO2_objective': CO2_objective,
-                       'co2_emissions_Gt': self.emissions_model.co2_emissions[[GlossaryCore.Years, 'Total CO2 emissions']]}
+                       GlossaryCore.CO2EmissionsGtValue: self.emissions_model.co2_emissions[[GlossaryCore.Years, 'Total CO2 emissions']]}
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
@@ -178,7 +177,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('CO2_emissions_df', 'total_emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
-                    ('co2_emissions_Gt', 'Total CO2 emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
+                    (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
 
                 self.set_partial_derivative_for_other_types(
                     ('CO2_emissions_df', 'cum_total_emissions'), ('CO2_emissions_by_use_sources', column_sources), d_cum_indus_emissions_d_total_CO2_emitted)
@@ -186,7 +185,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                 self.set_partial_derivative_for_other_types(
                     ('CO2_objective',), ('CO2_emissions_by_use_sources', column_sources),  d_CO2_obj_d_total_emission * dobjective_exp_min)
                 self.set_partial_derivative_for_other_types(
-                    ('co2_emissions_Gt', 'Total CO2 emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
+                    (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
 
         sinks_dict = {'CO2_emissions_by_use_sinks': f"{ResourceGlossary.CO2['name']} removed by energy mix (Gt)", 'co2_emissions_needed_by_energy_mix':
                       'carbon_capture needed by energy mix (Gt)', 'co2_emissions_ccus_Gt': 'carbon_storage Limited by capture (Gt)'}
@@ -195,7 +194,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('CO2_emissions_df', 'total_emissions'), (df_name, col_name),  - np.identity(len(years)))
             self.set_partial_derivative_for_other_types(
-                ('co2_emissions_Gt', 'Total CO2 emissions'), (df_name, col_name),  - np.identity(len(years)))
+                (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), (df_name, col_name),  - np.identity(len(years)))
 
             self.set_partial_derivative_for_other_types(
                 ('CO2_emissions_df', 'cum_total_emissions'), (df_name, col_name), - d_cum_indus_emissions_d_total_CO2_emitted)

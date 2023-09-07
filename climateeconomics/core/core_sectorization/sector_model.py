@@ -63,7 +63,7 @@ class SectorModel():
         self.nb_years = len(self.years_range)
 
         self.productivity_start = inputs_dict['productivity_start']
-        #self.init_gross_output = inputs_dict['init_gross_output']
+        #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']
         self.productivity_gr_start = inputs_dict['productivity_gr_start']
         self.decline_rate_tfp = inputs_dict['decline_rate_tfp']
@@ -119,7 +119,7 @@ class SectorModel():
         self.energy_production.index = self.energy_production[GlossaryCore.Years].values
         self.workforce_df = inputs['workforce_df']
         self.workforce_df.index = self.workforce_df[GlossaryCore.Years].values
-        self.damage_df = inputs['damage_df']
+        self.damage_df = inputs[GlossaryCore.DamageDfValue]
         self.damage_df.index = self.damage_df[GlossaryCore.Years].values
 
     def compute_productivity_growthrate(self):

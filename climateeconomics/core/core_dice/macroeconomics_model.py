@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class MacroEconomics():
     '''
@@ -36,7 +38,7 @@ class MacroEconomics():
         self.year_end = self.param['year_end']
         self.time_step = self.param['time_step']
         self.productivity_start = self.param['productivity_start']
-        self.init_gross_output = self.param['init_gross_output']
+        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = self.param['capital_start']
         self.pop_start = self.param['pop_start']
         self.output_elasticity = self.param['output_elasticity']

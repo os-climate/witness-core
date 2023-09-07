@@ -16,6 +16,8 @@ limitations under the License.
 from os.path import join, dirname, exists
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as EnergyMDA
@@ -36,7 +38,7 @@ class EnergyMix_co2emissions_nonreg_test():
 
         self.compare_list = [
             'energy_CO2_emissions', 'energy_CO2_emissions_after_use', 'co2_emissions',
-            'co2_emissions_by_energy', 'co2_emissions_Gt', 'CCS_price'
+            'co2_emissions_by_energy', GlossaryCore.CO2EmissionsGtValue, 'CCS_price'
         ]
 
     def convert_types(self, value):

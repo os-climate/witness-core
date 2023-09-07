@@ -65,7 +65,7 @@ class DataStudy():
         witness_input[f"{self.study_name}.{'frac_damage_prod'}"] = 0.30
         witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015
         witness_input[f"{self.study_name}.{'conso_elasticity'}"] = 1.45
-        witness_input[f"{self.study_name}.{'init_gross_output'}"] = 130.187
+        witness_input[f"{self.study_name}.{GlossaryCore.InitialGrossOutput['var_name']}"] = 130.187
         # Relax constraint for 15 first years
         witness_input[f"{self.study_name}.{'Damage.damage_constraint_factor'}"] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))

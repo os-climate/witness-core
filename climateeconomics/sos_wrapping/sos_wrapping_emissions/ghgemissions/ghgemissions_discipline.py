@@ -102,7 +102,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         emissions_df = self.emissions_model.ghg_emissions_df[cols]
 
         dict_values = {'GHG_emissions_detail_df': self.emissions_model.ghg_emissions_df,
-                       'co2_emissions_Gt': self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, 'Total CO2 emissions']],
+                       GlossaryCore.CO2EmissionsGtValue: self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, 'Total CO2 emissions']],
                        'GHG_emissions_df': emissions_df,
                        'GWP_emissions': self.emissions_model.gwp_emissions}
 
@@ -132,7 +132,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 np.identity(len(years)))
 
         self.set_partial_derivative_for_other_types(
-            ('co2_emissions_Gt', 'Total CO2 emissions'), ('GHG_total_energy_emissions', 'Total CO2 emissions'),  np.identity(len(years)))
+            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), ('GHG_total_energy_emissions', 'Total CO2 emissions'),  np.identity(len(years)))
         self.set_partial_derivative_for_other_types(
             ('GHG_emissions_df', 'Total CO2 emissions'), ('CO2_indus_emissions_df', 'indus_emissions'),
             np.identity(len(years)))

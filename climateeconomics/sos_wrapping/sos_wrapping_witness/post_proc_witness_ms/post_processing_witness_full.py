@@ -379,7 +379,7 @@ def post_processings(execution_engine, namespace, filters):
         energy_investment_dict = {}
         for scenario in scenario_list:
             energy_investment_dict[scenario] = energy_investment_df_dict[
-                scenario]['energy_investment'].values.tolist()
+                scenario][GlossaryCore.EnergyInvestmentsValue].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, energy_investment_dict,
                                                   chart_name=chart_name,
