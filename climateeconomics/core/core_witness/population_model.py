@@ -100,7 +100,7 @@ class Population:
         # Add 100+ value of pop init
         pop_by_age.append(self.pop_init_df.iloc[-1, 1])
 
-        self.total_pop = self.pop_init_df['population'].sum()
+        self.total_pop = self.pop_init_df[GlossaryCore.PopulationValue].sum()
         self.population_dict = {2020: np.array(
             pop_by_age + [self.total_pop])}
 

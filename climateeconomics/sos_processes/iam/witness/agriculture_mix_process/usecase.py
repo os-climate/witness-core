@@ -89,7 +89,7 @@ class Study(StudyManager):
 
         population = np.array(np.linspace(7800.0, 9000.0, year_range))
         population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "population": population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         population_df.index = years
         red_meat_percentage = np.linspace(6.82, 1, year_range)
         white_meat_percentage = np.linspace(13.95, 5, year_range)
@@ -144,12 +144,12 @@ class Study(StudyManager):
             mw_invest = [0] * year_range
 
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         self.crop_investment = pd.DataFrame(
-            {GlossaryCore.Years: years, 'investment': crop_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: crop_invest})
         deforest_invest = np.linspace(10, 1, year_range)
         deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": deforest_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,

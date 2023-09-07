@@ -95,7 +95,7 @@ class Study(StudyManager):
         temperature_df.index = years
 
         population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "population": population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         population_df.index = years
 
         red_meat_percentage = np.linspace(600, 700, year_range)
@@ -140,7 +140,7 @@ class Study(StudyManager):
 
         # investment: 1Mha of crop land each year
         crop_investment = pd.DataFrame(
-            {GlossaryCore.Years: years, 'investment': np.ones(len(years)) * 0.381})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.ones(len(years)) * 0.381})
 
         margin = pd.DataFrame(
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})

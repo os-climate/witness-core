@@ -131,7 +131,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # Gradient wrt share investment
         grad_invest_share = self.macro_model.get_derivative_dinvest_dshare()
         self.set_partial_derivative_for_other_types(
-            ('investment_df', 'investment'), ('total_investment_share_of_gdp', 'share_investment'), grad_invest_share)
+            ('investment_df', GlossaryCore.InvestmentsValue), ('total_investment_share_of_gdp', 'share_investment'), grad_invest_share)
 
         # Gradient wrt each sector production df: same for all sectors
         grad_netoutput, grad_invest = self.macro_model.get_derivative_sectors()
@@ -141,7 +141,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                         grad_netoutput)
             self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, 'capital'),
                                                         (f'{sector}.capital_df', 'capital'), grad_netoutput)
-            self.set_partial_derivative_for_other_types(('investment_df', 'investment'),
+            self.set_partial_derivative_for_other_types(('investment_df', GlossaryCore.InvestmentsValue),
                                                         (f'{sector}.production_df', 'output_net_of_damage'),
                                                         grad_invest)
             self.set_partial_derivative_for_other_types( ('sectors_investment_df', f'{sector}'),
@@ -158,7 +158,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['output', 'investment', 'capital', 'share capital', 'share output', 'share investment','output growth']
+        chart_list = ['output', GlossaryCore.InvestmentsValue, 'capital', 'share capital', 'share output', 'share investment','output growth']
 
         chart_filters.append(ChartFilter(
             'Charts filter', chart_list, chart_list, 'charts'))
@@ -217,7 +217,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if 'investment' in chart_list:
+        if GlossaryCore.InvestmentsValue in chart_list:
 
             to_plot = sector_list
             years = list(investment_df.index)
@@ -234,7 +234,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     years, ordonate_data, f'{key} investment', 'lines', visible_line)
                 new_chart.series.append(new_series)
 
-            ordonate_data = list(investment_df['investment'])
+            ordonate_data = list(investment_df[GlossaryCore.InvestmentsValue])
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'total investment', 'lines', visible_line)
             new_chart.series.append(new_series)
@@ -311,7 +311,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'share investment' in chart_list:
-            invest = investment_df['investment'].values
+            invest = investment_df[GlossaryCore.InvestmentsValue].values
             chart_name = 'Sectors investment share of total investment'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'share of total investment [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,

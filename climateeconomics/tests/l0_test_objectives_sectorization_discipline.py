@@ -64,7 +64,7 @@ class ObjectivesTestCase(unittest.TestCase):
         self.cap_service_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_service, 'usable_capital': cap_service*0.8, 'energy_efficiency': energy_eff})
         
         self.economics_df = DataFrame({GlossaryCore.Years:self. years,'capital': capital_serie, 'usable_capital': capital_serie*0.8,
-                                       'output': gdp_serie, 'output_net_of_d': gdp_serie*0.995})
+                                       'output': gdp_serie, GlossaryCore.OutputNetOfDamage: gdp_serie*0.995})
         
         data_dir = join(dirname(__file__), 'data/sectorization_fitting')
         self.hist_gdp = read_csv(join(data_dir, 'hist_gdp_sect.csv'))

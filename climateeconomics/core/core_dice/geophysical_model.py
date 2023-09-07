@@ -135,7 +135,7 @@ class CarbonEmissions():
         emissions control rate (t)
         """
         sigma = self.emissions_df.loc[year, 'sigma']
-        gross_output = self.economics_df.loc[year, 'gross_output']
+        gross_output = self.economics_df.loc[year, GlossaryCore.GrossOutput]
         emissions_control_rate = self.emissions_control_rate[year]
         indus_emissions = sigma * gross_output * (1.0 - emissions_control_rate)
         self.emissions_df.loc[year, 'indus_emissions'] = indus_emissions

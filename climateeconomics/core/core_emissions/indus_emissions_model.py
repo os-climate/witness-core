@@ -117,7 +117,7 @@ class IndusEmissions():
         emissions not coming from land change or energy 
         """
         sigma = self.indus_emissions_df.at[year, 'sigma']
-        gross_output_ter = self.economics_df.at[year, 'gross_output']
+        gross_output_ter = self.economics_df.at[year, GlossaryCore.GrossOutput]
 
         indus_emissions = sigma * gross_output_ter * \
             (1 - self.energy_emis_share - self.land_emis_share)

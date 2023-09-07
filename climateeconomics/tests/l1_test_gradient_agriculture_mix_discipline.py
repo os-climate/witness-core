@@ -78,7 +78,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         self.temperature_df.index = self.years
 
         self.population_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, "population": population})
+            {GlossaryCore.Years: self.years, GlossaryCore.PopulationValue: population})
         self.population_df.index = self.years
 
         red_meat_percentage = np.linspace(6, 1, year_range)
@@ -135,9 +135,9 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         mw_invest = np.linspace(1, 4, year_range)
         uw_invest = np.linspace(0, 1, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, "investment": mw_invest})
+            {GlossaryCore.Years: self.years, GlossaryCore.InvestmentsValue: mw_invest})
         self.uw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, "investment": uw_invest})
+            {GlossaryCore.Years: self.years, GlossaryCore.InvestmentsValue: uw_invest})
 
         techno_consumption = np.linspace(0, 0, year_range)
         self.techno_consumption_forest = pd.DataFrame(

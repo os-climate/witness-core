@@ -70,23 +70,16 @@ class DataStudy():
         witness_input[self.study_name + '.year_end'] = self.year_end
         witness_input[self.study_name + '.time_step'] = self.time_step
 
-        witness_input[self.study_name +
-                      '.Damage.tipping_point'] = True
-        witness_input[self.study_name +
-                      '.Macroeconomics.damage_to_productivity'] = True
-        witness_input[self.study_name +
-                      '.frac_damage_prod'] = 0.30
-        witness_input[self.study_name +
-                      '.init_rate_time_pref'] = .015
-        witness_input[self.study_name +
-                      '.conso_elasticity'] = 1.45
-        witness_input[self.study_name +
-                      '.init_gross_output'] = 130.187
+        witness_input[f"{self.study_name}.{'Damage.tipping_point'}"] = True
+        witness_input[f"{self.study_name}.{'Macroeconomics.damage_to_productivity'}"] = True
+        witness_input[f"{self.study_name}.{'frac_damage_prod'}"] = 0.30
+        witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015
+        witness_input[f"{self.study_name}.{'conso_elasticity'}"] = 1.45
+        witness_input[f"{self.study_name}.{'init_gross_output'}"] = 130.187
         # Relax constraint for 15 first years
         witness_input[self.study_name + '.Damage.damage_constraint_factor'] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
-        #         witness_input[self.study_name +
-        #                       '.Damage.damage_constraint_factor'] = np.asarray([1] * len(years))
+        #         witness_input[f"{self.study_name}.{}                       '.Damage.damage_constraint_factor'}" = np.asarray([1] * len(years))
         witness_input[f'{self.study_name}.InvestmentDistribution.forest_investment'] = self.forest_invest_df
         # get population from csv file
         # get file from the data folder 3 folder up.
@@ -97,20 +90,13 @@ class DataStudy():
         witness_input[self.study_name + f'.{GlossaryCore.PopulationDfValue}'] = population_df
         working_age_population_df = pd.DataFrame(
             {GlossaryCore.Years: years, 'population_1570': 6300}, index=years)
-        witness_input[self.study_name +
-                      '.working_age_population_df'] = working_age_population_df
-
-        energy_investment_wo_tax = DataFrame(
-            {GlossaryCore.Years: years,
-             GlossaryCore.EnergyInvestmentsWoTaxValue: asarray([10.] * nb_per)},
-            index=years)
+        witness_input[f"{self.study_name}.{'working_age_population_df'}"] = working_age_population_df
 
         share_non_energy_investment = DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.ShareNonEnergyInvestmentsValue: asarray([27. - 0.3] * nb_per)},
             index=years)
 
-        witness_input[f'{self.study_name}.{GlossaryCore.EnergyInvestmentsValue}'] = energy_investment_wo_tax
         witness_input[f'{self.study_name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}'] = share_non_energy_investment
 
         # deactive mortality due to undernutrition/overnutrition:
@@ -158,8 +144,7 @@ class DataStudy():
                                                             'energy_investment_before_year_start': [1924, 1927, 1935]},
                                                            index=[2017, 2018, 2019])
 
-        witness_input[self.study_name +
-                      '.agri_capital_techno_list'] = []
+        witness_input[f"{self.study_name}.{'agri_capital_techno_list'}"] = []
 
         CO2_emitted_land = pd.DataFrame()
         # GtCO2
@@ -168,15 +153,12 @@ class DataStudy():
         CO2_emitted_land['Crop'] = np.zeros(len(years))
         CO2_emitted_land['Forest'] = cum_emission
 
-        witness_input[self.study_name +
-                      '.CO2_land_emissions'] = CO2_emitted_land
+        witness_input[f"{self.study_name}.{'CO2_land_emissions'}"] = CO2_emitted_land
 
         self.CO2_tax = np.asarray([50.] * len(years))
 
-        witness_input[self.study_name +
-                      '.energy_investment'] = df_energy_investment
-        witness_input[self.study_name +
-                      '.energy_investment_before_year_start'] = df_energy_investment_before_year_start
+        witness_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsValue}"] = df_energy_investment
+        witness_input[f"{self.study_name}.{'energy_investment_before_year_start'}"] = df_energy_investment_before_year_start
 
         intermediate_point = 30
         # CO2 taxes related inputs

@@ -76,7 +76,7 @@ class DamageDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_damage = self.ee.dm.get_value(f'{self.name}.damage_df')
+        res_damage = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.DamageDfValue}')
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

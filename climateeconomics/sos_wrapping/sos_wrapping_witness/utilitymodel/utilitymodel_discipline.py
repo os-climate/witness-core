@@ -52,25 +52,25 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                  'gross_output': ('float', None, False),
-                                                  'population': ('float', None, False),
+                                                  GlossaryCore.GrossOutput: ('float', None, False),
+                                                  GlossaryCore.PopulationValue: ('float', None, False),
                                                   'productivity': ('float', None, False),
                                                   'productivity_gr': ('float', None, False),
                                                   'energy_productivity_gr': ('float', None, False),
                                                   'energy_productivity': ('float', None, False),
-                                                  'consumption': ('float', None, False),
+                                                  GlossaryCore.Consumption: ('float', None, False),
                                                   'capital': ('float', None, False),
-                                                  'investment': ('float', None, False),
+                                                  GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
                                                   'output_growth': ('float', None, False),
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   GlossaryCore.PerCapitaConsumption: ('float', None, False),
-                                                  'output_net_of_d': ('float', None, False),
+                                                  GlossaryCore.OutputNetOfDamage: ('float', None, False),
                                                   'net_output': ('float', None, False),
                                                   }},
         GlossaryCore.PopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness',
                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                   'population': ('float', None, True)}},
+                                                   GlossaryCore.PopulationValue: ('float', None, True)}},
         'energy_mean_price': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_energy_mix', 'unit': '$/MWh',
                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False), 'energy_price': ('float', None, True)}},
         'initial_raw_energy_price': {'type': 'float', 'unit': '$/MWh', 'default': 110, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
@@ -158,13 +158,13 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             ('utility_df', 'discounted_utility'), ('energy_mean_price', 'energy_price'),  d_discounted_utility_d_energy_price)
 
         self.set_partial_derivative_for_other_types(
-            ('utility_df', 'discounted_utility'), (GlossaryCore.PopulationDfValue, 'population'),  d_discounted_utility_d_population)
+            ('utility_df', 'discounted_utility'), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  d_discounted_utility_d_population)
 
         self.set_partial_derivative_for_other_types(
             ('utility_df', 'welfare'), (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),  d_welfare_d_pc_consumption)
 
         self.set_partial_derivative_for_other_types(
-            ('utility_df', 'welfare'), (GlossaryCore.PopulationDfValue, 'population'),  d_welfare_d_population)
+            ('utility_df', 'welfare'), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  d_welfare_d_population)
 
         self.set_partial_derivative_for_other_types(
             ('utility_df', 'welfare'), ('energy_mean_price', 'energy_price'),  d_welfare_d_energy_price)
@@ -178,7 +178,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         elif obj_option == 'welfare':
 
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), (GlossaryCore.PopulationDfValue, 'population'),  np.dot(d_obj_d_welfare, d_welfare_d_population))
+                ('welfare_objective',), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  np.dot(d_obj_d_welfare, d_welfare_d_population))
             self.set_partial_derivative_for_other_types(
                 ('welfare_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), np.dot(d_obj_d_welfare, d_welfare_d_pc_consumption))
             self.set_partial_derivative_for_other_types(
@@ -188,7 +188,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
         d_neg_obj_d_welfare, x = self.utility_m.compute_gradient_negative_objective()
         self.set_partial_derivative_for_other_types(
-            ('negative_welfare_objective',), (GlossaryCore.PopulationDfValue, 'population'), np.dot(d_neg_obj_d_welfare, d_welfare_d_population))
+            ('negative_welfare_objective',), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), np.dot(d_neg_obj_d_welfare, d_welfare_d_population))
         self.set_partial_derivative_for_other_types(
             ('negative_welfare_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_pc_consumption))
@@ -199,7 +199,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         d_obj_d_discounted_utility, d_obj_d_period_utility_pc = self.utility_m.compute_gradient_min_utility_objective()
 
         self.set_partial_derivative_for_other_types(
-            ('min_utility_objective',), (GlossaryCore.PopulationDfValue, 'population'),  np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_population))
+            ('min_utility_objective',), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_population))
         self.set_partial_derivative_for_other_types(
             ('min_utility_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_pc_consumption))
         self.set_partial_derivative_for_other_types(

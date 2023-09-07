@@ -471,7 +471,7 @@ class MacroEconomics():
         c, Per capita consumption, thousands $USD
         """
         consumption = self.economics_df.at[year, GC.Consumption]
-        population = self.population_df.at[year, 'population']
+        population = self.population_df.at[year, GlossaryCore.PopulationValue]
         consumption_pc = consumption / population * 1000
         # Lower bound for pc conso
         self.economics_df.loc[year, GC.PerCapitaConsumption] = max(
@@ -928,7 +928,7 @@ class MacroEconomics():
         """
         pc_consumption = self.economics_df[GC.PerCapitaConsumption].values
 
-        d_consumption_per_capita_d_consumption = np.diag(1 / self.population_df['population'].values * 1000)
+        d_consumption_per_capita_d_consumption = np.diag(1 / self.population_df[GlossaryCore.PopulationValue].values * 1000)
         d_consumption_per_capita_d_user_input = d_consumption_per_capita_d_consumption @ d_consumption_d_user_input
         # find index where lower bound reached and set it to zero
         theyears = np.where(pc_consumption == self.lo_per_capita_conso)[0]
@@ -945,7 +945,7 @@ class MacroEconomics():
         """
         consumption_pc = self.economics_detail_df[GC.PerCapitaConsumption].values
         consumption = self.economics_detail_df[GC.Consumption].values
-        population = self.population_df['population'].values
+        population = self.population_df[GlossaryCore.PopulationValue].values
 
         d_consumption_pc_d_population = np.diag( - consumption * 1000 / population ** 2)
         # find index where lower bound reached and set them to 0

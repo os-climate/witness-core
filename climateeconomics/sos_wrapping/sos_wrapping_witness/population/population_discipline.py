@@ -65,22 +65,22 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'population_start': {'type': 'dataframe', 'default': pop_init_df, 'unit': 'millions of people',
                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                       'age': ('string', None, False),
-                                                      'population': ('float', None, False),}
+                                                      GlossaryCore.PopulationValue: ('float', None, False),}
                              },
         GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                  'gross_output': ('float', None, False),
+                                                  GlossaryCore.GrossOutput: ('float', None, False),
                                                   GlossaryCore.OutputNetOfDamage: ('float', None, False),
                                                   'net_output': ('float', None, False),
-                                                  'population': ('float', None, False),
+                                                  GlossaryCore.PopulationValue: ('float', None, False),
                                                   'productivity': ('float', None, False),
                                                   'productivity_gr': ('float', None, False),
                                                   'energy_productivity_gr': ('float', None, False),
                                                   'energy_productivity': ('float', None, False),
-                                                  'consumption': ('float', None, False),
-                                                  'pc_consumption': ('float', None, False),
+                                                  GlossaryCore.Consumption: ('float', None, False),
+                                                  GlossaryCore.PerCapitaConsumption: ('float', None, False),
                                                   'capital': ('float', None, False),
-                                                  'investment': ('float', None, False),
+                                                  GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   'output_growth': ('float', None, False), }
@@ -166,10 +166,10 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             in_dict)
 
         population_df = population_detail_df[[GlossaryCore.Years, 'total']]
-        population_df = population_df.rename(columns={"total": "population"})
+        population_df = population_df.rename(columns={"total": GlossaryCore.PopulationValue})
 
         # Convert population in billion of people
-        population_df['population'] = population_df['population'] / \
+        population_df[GlossaryCore.PopulationValue] = population_df[GlossaryCore.PopulationValue] / \
             self.model.million
         population_detail_df['population_1570'] = working_age_population_df['population_1570']
         working_age_population_df['population_1570'] = working_age_population_df['population_1570'] / self.model.million
@@ -193,7 +193,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         d_pop_d_output, d_working_pop_d_output = self.model.compute_d_pop_d_output()
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.PopulationDfValue, 'population'),
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_pop_d_output / self.model.million)
         self.set_partial_derivative_for_other_types(
             ('working_age_population_df', 'population_1570'),
@@ -201,7 +201,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         d_pop_d_temp, d_working_pop_d_temp = self.model.compute_d_pop_d_temp()
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.PopulationDfValue, 'population'),
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             (GlossaryCore.TemperatureDfValue, 'temp_atmo'), d_pop_d_temp / self.model.million)
         self.set_partial_derivative_for_other_types(
             ('working_age_population_df', 'population_1570'),
@@ -209,7 +209,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         
         d_pop_d_kcal_pc, d_working_pop_d_kcal_pc = self.model.compute_d_pop_d_kcal_pc()
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.PopulationDfValue, 'population'), ('calories_pc_df', 'kcal_pc'), d_pop_d_kcal_pc / self.model.million)
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), ('calories_pc_df', 'kcal_pc'), d_pop_d_kcal_pc / self.model.million)
         self.set_partial_derivative_for_other_types(
             ('working_age_population_df', 'population_1570'), ('calories_pc_df', 'kcal_pc'), d_working_pop_d_kcal_pc / self.model.million)
 
@@ -276,7 +276,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'World population over years'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'population',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.PopulationValue,
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -286,7 +286,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             ordonate_data = list(pop_df['total'])
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'population', 'lines', visible_line)
+                years, ordonate_data, GlossaryCore.PopulationValue, 'lines', visible_line)
 
             new_chart.series.append(new_series)
 
@@ -313,7 +313,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             ordonate_data = list(pop_df['population_1570'])
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'population', 'lines', visible_line)
+                years, ordonate_data, GlossaryCore.PopulationValue, 'lines', visible_line)
 
             new_chart.series.append(new_series)
 

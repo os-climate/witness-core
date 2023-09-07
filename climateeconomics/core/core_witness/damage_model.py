@@ -109,7 +109,7 @@ class DamageModel():
         Compute damages (t) (trillions 2005 USD per year) on GDP
         using variables at t
         """
-        gross_output = self.economics_df.at[year, 'gross_output']
+        gross_output = self.economics_df.at[year, GlossaryCore.GrossOutput]
         damage_frac_output = self.expected_damage_df.at[year, 'damage_frac_output']
         damages = gross_output * damage_frac_output
         self.expected_damage_df.loc[year, 'damages'] = damages
@@ -181,7 +181,7 @@ class DamageModel():
                             temp_atmo ** (self.damag_expo - 1)
 
                     ddamages_temp_atmo[line, i] = ddamage_frac_output_temp_atmo[line,
-                                                                                i] * self.economics_df.at[years[line], 'gross_output']
+                                                                                i] * self.economics_df.at[years[line], GlossaryCore.GrossOutput]
                     ddamages_gross_output[line,
                                         i] = self.expected_damage_df.at[years[line], 'damage_frac_output']
 

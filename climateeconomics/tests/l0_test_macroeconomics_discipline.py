@@ -144,7 +144,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': population_df,
                        f'{self.name}.CO2_taxes': default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': default_co2_efficiency,
-                       f'{self.name}.co2_emissions_Gt': co2_emissions_gt,
+                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.working_age_population_df': working_age_pop_df, 
                        f'{self.name}.energy_capital': self.energy_capital_df
                        }

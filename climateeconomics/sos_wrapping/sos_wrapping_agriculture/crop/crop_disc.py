@@ -305,7 +305,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'param_b': {'type': 'float', 'default': -0.04167, 'unit': '-', 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',
                             'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
-                                                     'investment': ('float', None, True)},
+                                                     GlossaryCore.InvestmentsValue: ('float', None, True)},
                             'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop',
                             'default': crop_investment_default},
         'scaling_factor_crop_investment': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
@@ -505,7 +505,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             summ += result
 
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.PopulationDfValue, 'population'), summ)
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), summ)
         d_total_d_temperature = model.d_food_land_surface_d_temperature(
             temperature_df, 'total surface (Gha)')
         self.set_partial_derivative_for_other_types(
@@ -578,7 +578,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # --------------------------------------------------------------
         # Techno production gradients
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'),
-                                                    (GlossaryCore.PopulationDfValue, 'population'),
+                                                    (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                                                     d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
             ('techno_production', 'biomass_dry (TWh)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
@@ -604,12 +604,12 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'),
-                                                    ('crop_investment', 'investment'),
+                                                    ('crop_investment', GlossaryCore.InvestmentsValue),
                                                     dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
         # --------------------------------------------------------------
         # Techno consumption gradients
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'),
-                                                    (GlossaryCore.PopulationDfValue, 'population'),
+                                                    (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                                                     -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption', 'CO2_resource (Mt)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
@@ -636,14 +636,14 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'),
-                                                    ('crop_investment', 'investment'),
+                                                    ('crop_investment', GlossaryCore.InvestmentsValue),
                                                     -CO2_from_production / high_calorific_value *
                                                     dprod_dinvest * scaling_factor_crop_investment
                                                     * calorific_value / scaling_factor_techno_production)
         # --------------------------------------------------------------
         # Techno consumption wo ratio gradients
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'),
-                                                    (GlossaryCore.PopulationDfValue, 'population'),
+                                                    (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                                                     -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption_woratio',
@@ -671,7 +671,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'),
-                                                    ('crop_investment', 'investment'),
+                                                    ('crop_investment', GlossaryCore.InvestmentsValue),
                                                     -CO2_from_production / high_calorific_value *
                                                     dprod_dinvest * scaling_factor_crop_investment
                                                     * calorific_value / scaling_factor_techno_production)
@@ -679,7 +679,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradient for land demand
         self.set_partial_derivative_for_other_types(
             ('land_use_required', 'Crop (Gha)'),
-            ('crop_investment', 'investment'),
+            ('crop_investment', GlossaryCore.InvestmentsValue),
             dprod_dinvest * scaling_factor_crop_investment * (
                         1 - residue_density_percentage) / density_per_ha * calorific_value)
 
@@ -741,7 +741,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
-                (GlossaryCore.PopulationDfValue, 'population'),
+                (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                 dco2_dpop)
 
             self.set_partial_derivative_for_other_types(
@@ -771,7 +771,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
-                ('crop_investment', 'investment'),
+                ('crop_investment', GlossaryCore.InvestmentsValue),
                 dco2_dinvest)
 
     def get_chart_filter_list(self):

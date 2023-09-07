@@ -112,7 +112,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.sectors_investment_df': self.total_invest,
                        f'{self.name}.{self.model_name}.energy_production': self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.damage_df': self.damage_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.workforce_df': self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 273.1805902, #2019 value for test 
                        f'{self.name}.prod_function_fitting': False}
@@ -137,7 +137,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.sectors_investment_df': self.damage_df, #To check if not used
                        f'{self.name}.{self.model_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{self.model_name}.energy_production': self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.damage_df': self.damage_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.workforce_df': self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 273.1805902, #2019 value for test 
                        f'{self.name}.prod_function_fitting': True,

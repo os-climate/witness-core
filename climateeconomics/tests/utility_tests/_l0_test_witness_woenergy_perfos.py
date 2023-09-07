@@ -113,7 +113,7 @@ class TestScatter(unittest.TestCase):
             {GlossaryCore.Years: years, 'energy_price': energy_price})
 
         input_dict_to_load[f'{self.name}.energy_production'] = energy_supply_df
-        input_dict_to_load[f'{self.name}.co2_emissions_Gt'] = co2_emissions_gt
+        input_dict_to_load[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
         input_dict_to_load[f'{self.name}.energy_mean_price'] = energy_mean_price
         input_dict_to_load[f'{self.name}.CCS_price'] = CCS_price
         input_dict_to_load[f'{self.name}.sub_mda_class'] = "MDANewtonRaphson"

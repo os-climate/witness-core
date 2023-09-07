@@ -82,7 +82,7 @@ class ObjectivesModel():
 
         #compute total errors  
         error_pib_total = self.compute_quadratic_error(self.historical_gdp['total'].values, 
-                                                       self.economics_df['output_net_of_d'].values, self.default_weight, self.delta_max_gdp)
+                                                       self.economics_df[GlossaryCore.OutputNetOfDamage].values, self.default_weight, self.delta_max_gdp)
         #Per sector
         sectors_gdp_errors = {}
         sectors_energy_eff_errors = {}

@@ -254,7 +254,7 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['sector output', 'investment', 'output growth', 'energy supply',
+        chart_list = ['sector output', GlossaryCore.InvestmentsValue, 'output growth', 'energy supply',
                       'usable capital', 'capital', 'employment_rate', 'workforce', 'productivity', 'energy efficiency', 'e_max']
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         if prod_func_fit == True: 

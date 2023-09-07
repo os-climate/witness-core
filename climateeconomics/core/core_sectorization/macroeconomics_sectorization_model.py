@@ -96,9 +96,9 @@ class MacroeconomicsModel():
         Create dataframes with years
         '''
         economics_df = pd.DataFrame({GlossaryCore.Years: self.years_range, 'capital': self.sum_capital, 'usable_capital': self.sum_u_capital,
-                                     'output': self.sum_output, 'output_net_of_d': self.sum_net_output, 
+                                     'output': self.sum_output, GlossaryCore.OutputNetOfDamage: self.sum_net_output,
                                      'output_growth': self.output_growth})
-        investment_df = pd.DataFrame({GlossaryCore.Years: self.years_range, 'investment': self.investment})
+        investment_df = pd.DataFrame({GlossaryCore.Years: self.years_range, GlossaryCore.InvestmentsValue: self.investment})
         investment_df.index = self.years_range
         economics_df.index = self.years_range  
         self.economics_df = economics_df 

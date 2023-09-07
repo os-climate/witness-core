@@ -112,7 +112,7 @@ class DICEParallelTest(unittest.TestCase):
         co2_emissions_needed_by_energy_mix.index = years
 
         values_dict[f'{self.name}.energy_production'] = energy_supply_df
-        values_dict[f'{self.name}.co2_emissions_Gt'] = co2_emissions_gt
+        values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
         values_dict[f'{self.name}.energy_mean_price'] = energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
         values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"
@@ -146,7 +146,7 @@ class DICEParallelTest(unittest.TestCase):
             values_dict.update(dict_item)
 
         values_dict[f'{self.name}.energy_production'] = energy_supply_df
-        values_dict[f'{self.name}.co2_emissions_Gt'] = co2_emissions_gt
+        values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
         values_dict[f'{self.name}.energy_mean_price'] = energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
         values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"

@@ -376,7 +376,7 @@ def post_processings(execution_engine, namespace, filters):
         # Get the total energy investment
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.energy_investment']
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.EnergyInvestmentsValue}']
         (energy_investment_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 

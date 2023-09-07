@@ -261,7 +261,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         GlossaryCore.CO2TaxesValue: co2_taxes,
                         'CO2_tax_efficiency': co2_tax_efficiency,
                         'co2_invest_limit': co2_invest_limit,
-                        GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, 'population']],
+                        GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, GlossaryCore.PopulationValue]],
                         'working_age_population_df': working_age_population_df[[GlossaryCore.Years, 'population_1570']],
                         'energy_capital_df': energy_capital_df,
                         'compute_gdp': compute_gdp
@@ -415,7 +415,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ('energy_production', 'Total production'),
             scaling_factor_energy_production * d_gross_output_d_energy)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, 'output_net_of_d'), ('energy_production', 'Total production'),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), ('energy_production', 'Total production'),
             scaling_factor_energy_production * d_net_output_d_energy) # todo : false when damage ?
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), ('energy_production', 'Total production'),
@@ -471,7 +471,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
             (GlossaryCore.DamageDfValue, 'damage_frac_output'), d_gross_output_d_damage_frac_output)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, 'output_net_of_d'),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
             (GlossaryCore.DamageDfValue, 'damage_frac_output'), d_net_output_d_damage_frac_output)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
@@ -520,10 +520,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         d_consumption_pc_d_population = self.macro_model.d_consumption_pc_d_population()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            (GlossaryCore.PopulationDfValue, 'population'), d_consumption_pc_d_population)
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), d_consumption_pc_d_population)
         self.set_partial_derivative_for_other_types(
             ('pc_consumption_constraint',),
-            (GlossaryCore.PopulationDfValue, 'population'),
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             - d_consumption_pc_d_population / ref_pc_consumption_constraint)
 
         # Compute gradients with respect to working age population
@@ -571,7 +571,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             d_workforce_d_working_age_population * d_gross_output_d_working_age_population)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, 'output_net_of_d'), ('working_age_population_df', 'population_1570'),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), ('working_age_population_df', 'population_1570'),
             d_workforce_d_working_age_population * d_net_output_d_work_age_population)
 
         self.set_partial_derivative_for_other_types(
@@ -825,10 +825,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'output of damage' in chart_list:
 
-            to_plot = [GlossaryCore.GrossOutput, 'output_net_of_d']
+            to_plot = [GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]
 
             legend = {GlossaryCore.GrossOutput: 'world gross output',
-                      'output_net_of_d': 'world output net of damage'}
+                      GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
 
             years = list(economics_detail_df.index)
 

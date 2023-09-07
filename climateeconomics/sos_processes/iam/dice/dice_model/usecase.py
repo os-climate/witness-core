@@ -188,16 +188,16 @@ class Study(StudyManager):
         data = zeros(len(emissions_control_rate))
         df_eco = DataFrame({'year': years,
                             'saving_rate': data,
-                            'gross_output': data,
-                            'output_net_of_d': data,
+                            GlossaryCore.GrossOutput: data,
+                            GlossaryCore.OutputNetOfDamage: data,
                             'net_output': data,
-                            'population': data,
+                            GlossaryCore.PopulationValue: data,
                             'productivity': data,
                             'productivity_gr': data,
-                            'consumption': data,
-                            'pc_consumption': data,
+                            GlossaryCore.Consumption: data,
+                            GlossaryCore.PerCapitaConsumption: data,
                             'capital': data,
-                            'investment': data,
+                            GlossaryCore.InvestmentsValue: data,
                             'interest_rate': data},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))
 

@@ -1,7 +1,9 @@
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
 
-    # todo : Continue filling gathering values here ..
+    # TODO, FILLING METHOD : goal is to spread the use of the glossary in the code, but we have to do it #
+    #  methodically. Suggested method : every time you add a string/variable in the glossary, replace this string
+    #  everywhere in the code. Only then, add continue filling the Glossary.
     # dataframes columns/var_names :
     Years = "years"
     InvestmentsValue = "investment"
@@ -118,7 +120,7 @@ class GlossaryCore:
             "output_growth": ("float", None, False),
         },
     }
-
+    PopulationValue = "population"
     PopulationDF = {
         "var_name": PopulationDfValue,
         "type": "dataframe",
@@ -127,7 +129,7 @@ class GlossaryCore:
         "namespace": "ns_witness",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "population": ("float", None, False),
+            PopulationValue: ("float", None, False),
         },
     }
 

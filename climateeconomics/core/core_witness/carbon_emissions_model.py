@@ -205,7 +205,7 @@ class CarbonEmissions():
         emissions not coming from land change or energy 
         """
         sigma = self.CO2_emissions_df.at[year, 'sigma']
-        gross_output_ter = self.economics_df.at[year, 'gross_output']
+        gross_output_ter = self.economics_df.at[year, GlossaryCore.GrossOutput]
         energy_emis_share = self.energy_emis_share
         share_land_emis = self.land_emis_share
         energy_emissions = self.co2_emissions.at[year, 'Total CO2 emissions']

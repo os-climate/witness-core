@@ -180,7 +180,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             summ += result
 
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.PopulationDfValue, 'population'), summ)
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), summ)
         d_total_d_temperature = model.d_food_land_surface_d_temperature(
             temperature_df, 'total surface (Gha)')
         self.set_partial_derivative_for_other_types(

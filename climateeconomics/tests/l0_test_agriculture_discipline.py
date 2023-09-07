@@ -43,7 +43,7 @@ class AgricultureTestCase(unittest.TestCase):
 
         population = np.array(np.linspace(7800, 7800, year_range))
         self.population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "population": population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
         temperature = np.array(np.linspace(0.0, 0.0, year_range))
         self.temperature_df = pd.DataFrame(

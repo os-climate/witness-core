@@ -135,11 +135,11 @@ class Study(StudyManager):
                             'CO2_from_production_unit': 'kg/kg'
                             }
         invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
 
         mw_invest = np.linspace(1, 4, year_range)
         mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
         transport_df = pd.DataFrame(
             {GlossaryCore.Years: years, "transport": transport})
@@ -150,7 +150,7 @@ class Study(StudyManager):
 
         deforest_invest = np.linspace(10, 1, year_range)
         deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": deforest_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
         deforestation_cost_per_ha = 10500
 
         # values of pyworld3

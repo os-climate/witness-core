@@ -29,7 +29,7 @@ from plotly.subplots import make_subplots
 import pandas as pd
 from plotly.express.colors import qualitative
 
-RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
+RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS[GlossaryCore.Consumption]
 
 
 def post_processing_filters(execution_engine, namespace):

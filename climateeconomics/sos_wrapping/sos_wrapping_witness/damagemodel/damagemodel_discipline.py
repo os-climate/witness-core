@@ -130,7 +130,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         damage_df
           - 'damages':
                 - temperature_df, 'temp_atmo'
-                - economics_df, 'gross_output'
+                - economics_df, GlossaryCore.GrossOutput
           -'damage_frac_output'
                 - temperature_df, 'temp_atmo'
         """
@@ -146,7 +146,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.TemperatureDf['var_name'], 'temp_atmo'),  ddamages_temp_atmo)
 
         self.set_partial_derivative_for_other_types(
-            ('expected_damage_df', 'damages'), (GlossaryCore.EconomicsDfValue, 'gross_output'),  ddamages_gross_output)
+            ('expected_damage_df', 'damages'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  ddamages_gross_output)
 
         compute_climate_impact_on_gdp = bool(self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']) * 1.0
         self.set_partial_derivative_for_other_types(
@@ -159,13 +159,13 @@ class DamageDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.TemperatureDf['var_name'], 'temp_atmo'), ddamages_temp_atmo * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.DamageDf['var_name'], 'damages'), (GlossaryCore.EconomicsDfValue, 'gross_output'), ddamages_gross_output * compute_climate_impact_on_gdp)
+            (GlossaryCore.DamageDf['var_name'], 'damages'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), ddamages_gross_output * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
             ('CO2_damage_price', 'CO2_damage_price'),
             (GlossaryCore.TemperatureDf['var_name'], 'temp_atmo'),  dconstraint_temp_atmo)
         self.set_partial_derivative_for_other_types(
-            ('CO2_damage_price', 'CO2_damage_price'), (GlossaryCore.EconomicsDfValue, 'gross_output'),  dconstraint_economics)
+            ('CO2_damage_price', 'CO2_damage_price'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  dconstraint_economics)
 
     def get_chart_filter_list(self):
 

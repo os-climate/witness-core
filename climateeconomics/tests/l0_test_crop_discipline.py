@@ -45,7 +45,7 @@ class CropTestCase(unittest.TestCase):
 
         population = np.array(np.linspace(7800, 9200, year_range))
         self.population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "population": population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
         temperature = np.array(np.linspace(0.0,5.0, year_range))
         self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, "temp_atmo": temperature})
@@ -98,7 +98,7 @@ class CropTestCase(unittest.TestCase):
 
         # investment: 1Mha of crop land each year
         self.crop_investment = pd.DataFrame(
-            {GlossaryCore.Years: years, 'investment': np.ones(len(years)) * 0.381})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.ones(len(years)) * 0.381})
              
         self.margin = pd.DataFrame(
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})

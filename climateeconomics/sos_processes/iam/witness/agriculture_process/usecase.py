@@ -82,7 +82,7 @@ class Study(StudyManager):
         temperature_df.index = years
 
         population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "population": population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         population_df.index = years
         red_meat_percentage = np.linspace(6.82, 1, year_range)
         white_meat_percentage = np.linspace(13.95, 5, year_range)

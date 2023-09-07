@@ -208,9 +208,9 @@ class Forest():
         mw_cost = self.techno_wood_info['managed_wood_price_per_ha']
         # managed wood from past invest. invest in G$ - surface in Gha.
         mw_from_past_invest = self.managed_wood_invest_before_year_start[
-            'investment'] / mw_cost
+            GlossaryCore.InvestmentsValue] / mw_cost
         # managed wood from actual invest
-        mw_from_invest = self.managed_wood_investment['investment'] / mw_cost
+        mw_from_invest = self.managed_wood_investment[GlossaryCore.InvestmentsValue] / mw_cost
         # concat all managed wood form invest
         mw_added = pd.concat([mw_from_past_invest, mw_from_invest]).values
 
@@ -274,7 +274,7 @@ class Forest():
         # forest surface is in Gha, deforestation_surface is in Mha,
         # deforested_surface is in Gha
         self.forest_surface_df['delta_deforestation_surface'] = - \
-            self.deforest_invest['investment'].values / \
+            self.deforest_invest[GlossaryCore.InvestmentsValue].values / \
             self.deforest_cost_per_ha
 
         # forested surface

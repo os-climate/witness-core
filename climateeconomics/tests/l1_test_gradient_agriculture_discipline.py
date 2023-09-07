@@ -66,7 +66,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         population = np.array(np.linspace(8000, 9000, year_range))
         self.population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'population': population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
 
         temperature = np.array(np.linspace(1.05, 5, year_range))

@@ -30,7 +30,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.model_name = 'population'
+        self.model_name = GlossaryCore.PopulationValue
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}'}
 

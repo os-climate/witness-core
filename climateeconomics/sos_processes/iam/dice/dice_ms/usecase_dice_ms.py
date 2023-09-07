@@ -78,16 +78,16 @@ class Study(StudyManager):
         data = np.zeros(nb_per)
         economics_df = pd.DataFrame({'year': years,
                                      'saving_rate': data,
-                                     'gross_output': data,
-                                     'output_net_of_d': data,
+                                     GlossaryCore.GrossOutput: data,
+                                     GlossaryCore.OutputNetOfDamage: data,
                                      'net_output': data,
-                                     'population': data,
+                                     GlossaryCore.PopulationValue: data,
                                      'productivity': data,
                                      'productivity_gr': data,
-                                     'consumption': data,
-                                     'pc_consumption': data,
+                                     GlossaryCore.Consumption: data,
+                                     GlossaryCore.PerCapitaConsumption: data,
                                      'capital': data,
-                                     'investment': data,
+                                     GlossaryCore.InvestmentsValue: data,
                                      'interest_rate': data},
                                     index=np.arange(year_start, year_end + 1, time_step))
 

@@ -183,7 +183,7 @@ class Agriculture():
             if key == GlossaryCore.Years:
                 result[key] = diet_df[key]
             else:
-                result[key] = population_df['population'] * diet_df[key] * 1e6
+                result[key] = population_df[GlossaryCore.PopulationValue] * diet_df[key] * 1e6
         # as population is in million of habitants, *1e6 is needed
         return(result)
 
@@ -219,7 +219,7 @@ class Agriculture():
         # add other contribution. 1e6 is for million of people,
         # /hatom2 for future conversion
         result['other (Gha)'] = self.other_use_agriculture * \
-            population_df['population'].values * 1e6 / self.hatom2
+            population_df[GlossaryCore.PopulationValue].values * 1e6 / self.hatom2
         sum = sum + result['other (Gha)']
 
         # add total data
@@ -417,7 +417,7 @@ class Agriculture():
                 kg_food_to_surface[vegetable_name]
 
         total_surface_grad = sub_total_surface_grad * \
-            population_df['population'].values * 1e6 * self.hatom2 / 1e9
+            population_df[GlossaryCore.PopulationValue].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * \
             (1 - self.productivity_evolution['productivity_evolution'])
 
@@ -451,7 +451,7 @@ class Agriculture():
                 kg_food_to_surface[vegetable_name]
 
         total_surface_grad = sub_total_surface_grad * \
-            population_df['population'].values * 1e6 * self.hatom2 / 1e9
+            population_df[GlossaryCore.PopulationValue].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * \
             (1 - self.productivity_evolution['productivity_evolution'])
 

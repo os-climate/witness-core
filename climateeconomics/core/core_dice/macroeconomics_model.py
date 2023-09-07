@@ -78,20 +78,20 @@ class MacroEconomics():
             columns=[
                 'year',
                 'saving_rate',
-                'gross_output',
-                'output_net_of_d',
+                GlossaryCore.GrossOutput,
+                GlossaryCore.OutputNetOfDamage,
                 'net_output',
-                'population',
+                GlossaryCore.PopulationValue,
                 'productivity',
                 'productivity_gr',
-                'consumption',
-                'pc_consumption',
+                GlossaryCore.Consumption,
+                GlossaryCore.PerCapitaConsumption,
                 'capital',
-                'investment',
+                GlossaryCore.InvestmentsValue,
                 'interest_rate'])
         economics_df.loc[param['year_start'],
-                         'gross_output'] = self.init_gross_output
-        economics_df.loc[param['year_start'], 'population'] = self.pop_start
+                         GlossaryCore.GrossOutput] = self.init_gross_output
+        economics_df.loc[param['year_start'], GlossaryCore.PopulationValue] = self.pop_start
         economics_df.loc[param['year_start'], 'capital'] = self.capital_start
         economics_df.loc[param['year_start'],
                          'productivity'] = self.productivity_start
@@ -112,10 +112,10 @@ class MacroEconomics():
             :returns: L(t-1) * (L_max / L(t-1)) ** L_g
         '''
         p_population = self.economics_df.loc[year -
-                                             self.time_step, 'population']
+                                             self.time_step, GlossaryCore.PopulationValue]
         population = p_population * \
             (self.popasym / p_population) ** self.population_growth
-        self.economics_df.loc[year, 'population'] = population
+        self.economics_df.loc[year, GlossaryCore.PopulationValue] = population
         return population
 
     def compute_productivity_growthrate(self, year):
@@ -161,7 +161,7 @@ class MacroEconomics():
         if year == self.year_end:
             pass
         else:
-            investment = self.economics_df.loc[year, 'investment']
+            investment = self.economics_df.loc[year, GlossaryCore.InvestmentsValue]
             capital = self.economics_df.loc[year, 'capital']
             capital_a = capital * \
                 (1 - self.depreciation_capital) ** self.time_step + \
@@ -179,7 +179,7 @@ class MacroEconomics():
         saving_rate = self.saving_rate[year]
         net_output = self.economics_df.loc[year, 'net_output']
         investment = saving_rate * net_output
-        self.economics_df.loc[year, 'investment'] = investment
+        self.economics_df.loc[year, GlossaryCore.InvestmentsValue] = investment
         return investment
 
     def compute_gross_output(self, year):
@@ -193,11 +193,11 @@ class MacroEconomics():
             :returns: A(t) * K(t) ^ γ * L ^ (1 - γ)
         """
         capital = self.economics_df.loc[year, 'capital']
-        population = self.economics_df.loc[year, 'population']
+        population = self.economics_df.loc[year, GlossaryCore.PopulationValue]
         productivity = self.economics_df.loc[year, 'productivity']
         gross_output = productivity * capital ** self.output_elasticity * \
             (population / 1000) ** (1 - self.output_elasticity)
-        self.economics_df.loc[year, 'gross_output'] = gross_output
+        self.economics_df.loc[year, GlossaryCore.GrossOutput] = gross_output
         return gross_output
 
     def compute_output_net_of_damage(self, year):
@@ -205,7 +205,7 @@ class MacroEconomics():
         """
         damage_to_productivity = self.damage_to_productivity
         damefrac = self.damefrac[year]
-        gross_output = self.economics_df.loc[year, 'gross_output']
+        gross_output = self.economics_df.loc[year, GlossaryCore.GrossOutput]
 #        if damage_to_productivity == True :
 #            D = 1 - damefrac
 #            damage_to_output = D/(1-self.frac_damage_prod*(1-D))
@@ -217,14 +217,14 @@ class MacroEconomics():
             output_net_of_d = (1 - damage) * gross_output
         else:
             output_net_of_d = gross_output * (1 - damefrac)
-        self.economics_df.loc[year, 'output_net_of_d'] = output_net_of_d
+        self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] = output_net_of_d
         return output_net_of_d
 
     def compute_net_output(self, year):
         """Net output, trillions USD
         """
         abatecost = self.abatecost[year]
-        output_net_of_d = self.economics_df.loc[year, 'output_net_of_d']
+        output_net_of_d = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage]
         net_output = output_net_of_d - abatecost
         self.economics_df.loc[year, 'net_output'] = net_output
         return net_output
@@ -237,10 +237,10 @@ class MacroEconomics():
             savings: Savings rate at t
         """
         net_output = self.economics_df.loc[year, 'net_output']
-        investment = self.economics_df.loc[year, 'investment']
+        investment = self.economics_df.loc[year, GlossaryCore.InvestmentsValue]
         consumption = net_output - investment
         # lower bound for conso
-        self.economics_df.loc[year, 'consumption'] = max(
+        self.economics_df.loc[year, GlossaryCore.Consumption] = max(
             consumption, self.lo_conso)
         return consumption
 
@@ -248,11 +248,11 @@ class MacroEconomics():
         """Equation for consumption per capita
         c, Per capita consumption, thousands $USD
         """
-        consumption = self.economics_df.loc[year, 'consumption']
-        population = self.economics_df.loc[year, 'population']
+        consumption = self.economics_df.loc[year, GlossaryCore.Consumption]
+        population = self.economics_df.loc[year, GlossaryCore.PopulationValue]
         consumption_pc = consumption / population * 1000
         # Lower bound for pc conso
-        self. economics_df.loc[year, 'pc_consumption'] = max(
+        self. economics_df.loc[year, GlossaryCore.PerCapitaConsumption] = max(
             consumption_pc, self.lo_conso)
         return consumption_pc
 
@@ -262,9 +262,9 @@ class MacroEconomics():
         if year == self.year_end:
             pass
         else:
-            consumption = self.economics_df.loc[year, 'consumption']
+            consumption = self.economics_df.loc[year, GlossaryCore.Consumption]
             consumption_a = self.economics_df.loc[year +
-                                                  self.time_step, 'consumption']
+                                                  self.time_step, GlossaryCore.Consumption]
             interest_rate = (1 + self.init_rate_time_pref) * (consumption_a /
                                                               consumption)**(self.conso_elasticity / self.time_step) - 1
             self.economics_df.loc[year, 'interest_rate'] = interest_rate

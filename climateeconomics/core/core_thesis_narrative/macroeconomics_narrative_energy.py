@@ -119,7 +119,7 @@ class MacroEconomics():
             economics_df[key] = 0
         economics_df[GlossaryCore.Years] = self.years_range
         economics_df.loc[param['year_start'],
-                         'gross_output'] = self.init_gross_output
+                         GlossaryCore.GrossOutput] = self.init_gross_output
         economics_df.loc[param['year_start'],
                          'energy_productivity'] = self.init_energy_productivity
         economics_df.loc[param['year_start'],
@@ -323,7 +323,7 @@ class MacroEconomics():
         if year == self.year_end:
             pass
         else:
-            investment = self.economics_df.at[year, 'investment']
+            investment = self.economics_df.at[year, GlossaryCore.InvestmentsValue]
             capital = self.economics_df.at[year, 'capital']
             capital_a = capital * \
                         (1 - self.depreciation_capital) ** self.time_step + \
@@ -345,7 +345,7 @@ class MacroEconomics():
                                                  GlossaryCore.EnergyInvestmentsValue]
         non_energy_investment = self.share_n_energy_investment[year] * net_output
         investment = energy_investment + non_energy_investment
-        self.economics_df.loc[year, 'investment'] = investment
+        self.economics_df.loc[year, GlossaryCore.InvestmentsValue] = investment
         return investment
 
     def compute_energy_investment(self, year):
@@ -427,7 +427,7 @@ class MacroEconomics():
             output = productivity * ((1 - alpha) * capital ** beta + alpha * (working_pop) ** beta) ** (1 / beta)
 
 
-        self.economics_df.loc[year, 'gross_output'] = output
+        self.economics_df.loc[year, GlossaryCore.GrossOutput] = output
         return output
 
     def compute_gross_output_hassler(self, year):
@@ -447,7 +447,7 @@ class MacroEconomics():
                       gamma_hassler * (energy_productivity_hassler * energy) ** power) ** (1/power)
 
 
-        self.economics_df.loc[year, 'gross_output'] = output
+        self.economics_df.loc[year, GlossaryCore.GrossOutput] = output
         return output
 
     def compute_output_growth(self, year):
@@ -459,9 +459,9 @@ class MacroEconomics():
             pass
         else:
             gross_output_ter = self.economics_df.at[year,
-                                                    'gross_output']
+                                                    GlossaryCore.GrossOutput]
             gross_output_ter_a = self.economics_df.at[year -
-                                                      self.time_step, 'gross_output']
+                                                      self.time_step, GlossaryCore.GrossOutput]
             gross_output_ter = max(1e-6, gross_output_ter)
             output_growth = ((gross_output_ter -
                               gross_output_ter_a) / gross_output_ter) / self.time_step
@@ -475,7 +475,7 @@ class MacroEconomics():
         damage_to_productivity = self.damage_to_productivity
         damefrac = self.damefrac.at[year, 'damage_frac_output']
         gross_output_ter = self.economics_df.at[year,
-                                                'gross_output']
+                                                GlossaryCore.GrossOutput]
         #        if damage_to_productivity == True :
         #            D = 1 - damefrac
         #            damage_to_output = D/(1-self.frac_damage_prod*(1-D))
@@ -487,7 +487,7 @@ class MacroEconomics():
             output_net_of_d = (1 - damage) * gross_output_ter
         else:
             output_net_of_d = gross_output_ter * (1 - damefrac)
-        self.economics_df.loc[year, 'output_net_of_d'] = output_net_of_d
+        self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] = output_net_of_d
         return output_net_of_d
 
     def compute_net_output(self, year):
@@ -497,10 +497,10 @@ class MacroEconomics():
         We concluded it is better to remove the energy_invest_cost, in this case net_output = output_net_of_d
         """
         #         abatecost = self.abatecost[year]
-        #         output_net_of_d = self.economics_df.at[year, 'output_net_of_d']
+        #         output_net_of_d = self.economics_df.at[year, GlossaryCore.OutputNetOfDamage]
         #         net_output = output_net_of_d - abatecost
         # energy_invest_cost = self.economics_df.at[year, 'energy_invest_cost']
-        output_net_of_d = self.economics_df.at[year, 'output_net_of_d']
+        output_net_of_d = self.economics_df.at[year, GlossaryCore.OutputNetOfDamage]
         net_output = output_net_of_d  # - energy_invest_cost
         self.economics_df.loc[year,
                               'net_output'] = net_output
@@ -514,10 +514,10 @@ class MacroEconomics():
             savings: Savings rate at t
         """
         net_output = self.economics_df.at[year, 'net_output']
-        investment = self.economics_df.at[year, 'investment']
+        investment = self.economics_df.at[year, GlossaryCore.InvestmentsValue]
         consumption = net_output - investment
         # lower bound for conso
-        self.economics_df.loc[year, 'consumption'] = max(
+        self.economics_df.loc[year, GlossaryCore.Consumption] = max(
             consumption, self.lo_conso)
         return consumption
 
@@ -525,11 +525,11 @@ class MacroEconomics():
         """Equation for consumption per capita
         c, Per capita consumption, thousands $USD
         """
-        consumption = self.economics_df.at[year, 'consumption']
-        population = self.population_df.at[year, 'population']
+        consumption = self.economics_df.at[year, GlossaryCore.Consumption]
+        population = self.population_df.at[year, GlossaryCore.PopulationValue]
         consumption_pc = consumption / population * 1000
         # Lower bound for pc conso
-        self.economics_df.loc[year, 'pc_consumption'] = max(
+        self.economics_df.loc[year, GlossaryCore.PerCapitaConsumption] = max(
             consumption_pc, self.lo_per_capita_conso)
         return consumption_pc
 
@@ -537,7 +537,7 @@ class MacroEconomics():
         """Equation for consumption per capita constraint
         c, Per capita consumption constraint
         """
-        pc_consumption = self.economics_df['pc_consumption'].values
+        pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
         self.pc_consumption_constraint = (self.hi_per_capita_conso - pc_consumption) \
                                          / self.ref_pc_consumption_constraint
 
@@ -547,9 +547,9 @@ class MacroEconomics():
         if year == self.year_end:
             pass
         else:
-            consumption = self.economics_df.at[year, 'consumption']
+            consumption = self.economics_df.at[year, GlossaryCore.Consumption]
             consumption_a = self.economics_df.at[year +
-                                                 self.time_step, 'consumption']
+                                                 self.time_step, GlossaryCore.Consumption]
             interest_rate = (1 + self.init_rate_time_pref) * (consumption_a /
                                                               consumption) ** (
                                         self.conso_elasticity / self.time_step) - 1
@@ -659,7 +659,7 @@ class MacroEconomics():
             productivity = self.economics_df.at[years[i], 'productivity']
             energy_productivity = self.economics_df.at[years[i],
                                                        'energy_productivity']
-            output = self.economics_df.at[years[i], 'gross_output']
+            output = self.economics_df.at[years[i], GlossaryCore.GrossOutput]
             damefrac = self.damefrac.at[years[i], 'damage_frac_output']
 
             emissions = self.co2_emissions_Gt.at[years[i],
@@ -1964,9 +1964,9 @@ class MacroEconomics():
 
         # first line stays at zero since derivatives of initial values are zero
         for i in range(1, nb_years):
-            gross_output_ter = self.economics_df.at[years[i], 'gross_output']
+            gross_output_ter = self.economics_df.at[years[i], GlossaryCore.GrossOutput]
             gross_output_ter_a = self.economics_df.at[years[i] -
-                                                      self.time_step, 'gross_output']
+                                                      self.time_step, GlossaryCore.GrossOutput]
             for j in range(0, i + 1):
                 doutput_growth[i, j] = ((dgross_output[i, j] - dgross_output[i - 1, j]) * gross_output_ter - (
                             gross_output_ter -
@@ -1990,7 +1990,7 @@ class MacroEconomics():
         # first line stays at zero since derivatives of initial values are zero
         for i in range(0, nb_years):
             for j in range(0, i + 1):
-                consumption = self.economics_df.at[years[i], 'consumption']
+                consumption = self.economics_df.at[years[i], GlossaryCore.Consumption]
                 if consumption == self.lo_conso:
                     pass
                 else:
@@ -2013,11 +2013,11 @@ class MacroEconomics():
 
         # first line stays at zero since derivatives of initial values are zero
         for i in range(0, nb_years):
-            consumption_pc = self.economics_df.at[years[i], 'pc_consumption']
+            consumption_pc = self.economics_df.at[years[i], GlossaryCore.PerCapitaConsumption]
             if consumption_pc > self.lo_per_capita_conso:
                 for j in range(0, i + 1):
                     dconsumption_pc[i, j] = dconsumption[i, j] / \
-                                            self.population_df.at[years[i], 'population'] * 1000
+                                            self.population_df.at[years[i], GlossaryCore.PopulationValue] * 1000
 
         return dconsumption_pc
 
@@ -2036,9 +2036,9 @@ class MacroEconomics():
 
         # first line stays at zero since derivatives of initial values are zero
         for i in range(0, nb_years):
-            consumption_pc = self.economics_df.at[years[i], 'pc_consumption']
-            consumption = self.economics_df.at[years[i], 'consumption']
-            population = self.population_df.at[years[i], 'population']
+            consumption_pc = self.economics_df.at[years[i], GlossaryCore.PerCapitaConsumption]
+            consumption = self.economics_df.at[years[i], GlossaryCore.Consumption]
+            population = self.population_df.at[years[i], GlossaryCore.PopulationValue]
             if consumption_pc > self.lo_per_capita_conso:
                 for j in range(0, i + 1):
                     if i == j:
@@ -2063,8 +2063,8 @@ class MacroEconomics():
 
         # first line stays at zero since derivatives of initial values are zero
         for i in range(0, nb_years - 1):
-            consumption = self.economics_df.at[years[i], 'consumption']
-            consumption_a = self.economics_df.at[years[i + 1], 'consumption']
+            consumption = self.economics_df.at[years[i], GlossaryCore.Consumption]
+            consumption_a = self.economics_df.at[years[i + 1], GlossaryCore.Consumption]
             for j in range(0, nb_years):
                 dinterest_rate[i, j] = (1 + self.init_rate_time_pref) * (self.conso_elasticity / self.time_step) * \
                                        (consumption_a / consumption) ** (self.conso_elasticity / self.time_step - 1) * \
@@ -2093,7 +2093,7 @@ class MacroEconomics():
 
             for j in range(0, i + 1):
                 damefrac = self.damefrac.at[years[i], 'damage_frac_output']
-                gross_output_ter = self.economics_df.at[years[i], 'gross_output']
+                gross_output_ter = self.economics_df.at[years[i], GlossaryCore.GrossOutput]
 
                 if damage_to_productivity == True:
                     damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
@@ -2135,7 +2135,7 @@ class MacroEconomics():
 
             for j in range(0, i + 1):
                 damefrac = self.damefrac.at[years[i], 'damage_frac_output']
-                gross_output_ter = self.economics_df.at[years[i], 'gross_output']
+                gross_output_ter = self.economics_df.at[years[i], GlossaryCore.GrossOutput]
 
                 if damage_to_productivity == True:
                     damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))

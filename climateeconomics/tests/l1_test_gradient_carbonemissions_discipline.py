@@ -69,7 +69,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'energy_supply_data_onestep.csv'))
         year_start = 2020
         economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= year_start][[
-            GlossaryCore.Years, 'gross_output']]
+            GlossaryCore.Years, GlossaryCore.GrossOutput]]
         energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= year_start][[
             GlossaryCore.Years, 'total_CO2_emitted']]
         energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
@@ -111,7 +111,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': energy_supply_df_y,
                        f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,
@@ -130,7 +130,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CO2_land_emissions',
                                     f'{self.name}.CO2_emissions_by_use_sinks', f'{self.name}.co2_emissions_needed_by_energy_mix', f'{self.name}.co2_emissions_ccus_Gt'],
                             outputs=[f'{self.name}.CO2_emissions_df',
-                                     f'{self.name}.CO2_objective', f'{self.name}.co2_emissions_Gt'])
+                                     f'{self.name}.CO2_objective', f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'])
 
     def test_co2_objective_limit_grad(self):
 
@@ -160,7 +160,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'energy_supply_data_onestep.csv'))
 
         economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020][[
-            GlossaryCore.Years, 'gross_output']]
+            GlossaryCore.Years, GlossaryCore.GrossOutput]]
         energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020][[
             GlossaryCore.Years, 'total_CO2_emitted']]
         energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
@@ -199,7 +199,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': energy_supply_df_y,
                        f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,
@@ -218,4 +218,4 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CO2_land_emissions',
                                     f'{self.name}.CO2_emissions_by_use_sinks', f'{self.name}.co2_emissions_needed_by_energy_mix', f'{self.name}.co2_emissions_ccus_Gt'],
                             outputs=[f'{self.name}.CO2_emissions_df',
-                                     f'{self.name}.CO2_objective', f'{self.name}.co2_emissions_Gt'])
+                                     f'{self.name}.CO2_objective', f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'])

@@ -159,7 +159,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         GlossaryCore.CO2TaxesValue: co2_taxes,
                         'CO2_tax_efficiency': co2_tax_efficiency,
                         'co2_invest_limit': co2_invest_limit,
-                        GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, 'population']],
+                        GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, GlossaryCore.PopulationValue]],
                         'working_age_population_df': working_age_population_df[[GlossaryCore.Years, 'population_1570']]
                         }
         # Check inputs
@@ -201,7 +201,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
           - 'net_output',
               - damage_df, damage_frac_output
               - energy_production, Total production
-          - 'consumption'
+          - GlossaryCore.Consumption
               - damage_df, damage_frac_output
               - energy_production, Total production
           - GlossaryCore.PerCapitaConsumption
@@ -422,11 +422,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             denergy_investment / scaling_factor_energy_investment * 1e3)
 
         self.set_partial_derivative_for_other_types(
-             ('pc_consumption_constraint',), (GlossaryCore.PopulationDfValue, 'population'),
+             ('pc_consumption_constraint',), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
              - dconsumption_pc / ref_pc_consumption_constraint)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), (GlossaryCore.PopulationDfValue, 'population'), dconsumption_pc)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), dconsumption_pc)
 
     def get_chart_filter_list(self):
 
@@ -436,7 +436,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         chart_filters = []
 
         chart_list = ['output of damage', 'gross output and gross output bis',
-                      'investment', GlossaryCore.EnergyInvestmentsValue, 'population', 'productivity', 'consumption',
+                      GlossaryCore.InvestmentsValue, GlossaryCore.EnergyInvestmentsValue, GlossaryCore.PopulationValue, 'productivity', GlossaryCore.Consumption,
                       'Output growth rate', 'energy supply', 'energy productivity']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -502,11 +502,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if 'investment' in chart_list:
+        if GlossaryCore.InvestmentsValue in chart_list:
 
-            to_plot = ['investment', GlossaryCore.EnergyInvestmentsValue]
+            to_plot = [GlossaryCore.InvestmentsValue, GlossaryCore.EnergyInvestmentsValue]
 
-            legend = {'investment': 'total investment capacities',
+            legend = {GlossaryCore.InvestmentsValue: 'total investment capacities',
                       GlossaryCore.EnergyInvestmentsValue: 'investment capacities in the energy sector'}
 
             years = list(economics_df.index)
@@ -597,7 +597,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
-        if 'population' in chart_list:
+        if GlossaryCore.PopulationValue in chart_list:
             population_df = self.get_sosdisc_inputs(GlossaryCore.PopulationDfValue)
 
             years = list(population_df.index)
@@ -606,7 +606,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             year_end = years[len(years) - 1]
 
             min_value, max_value = self.get_greataxisrange(
-                population_df['population'])
+                population_df[GlossaryCore.PopulationValue])
 
             chart_name = 'Population evolution over the years'
 
@@ -616,10 +616,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                  chart_name)
 
             visible_line = True
-            ordonate_data = list(population_df['population'])
+            ordonate_data = list(population_df[GlossaryCore.PopulationValue])
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'population', 'lines', visible_line)
+                years, ordonate_data, GlossaryCore.PopulationValue, 'lines', visible_line)
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
@@ -685,9 +685,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
-        if 'consumption' in chart_list:
+        if GlossaryCore.Consumption in chart_list:
 
-            to_plot = ['consumption']
+            to_plot = [GlossaryCore.Consumption]
 
             years = list(economics_df.index)
 

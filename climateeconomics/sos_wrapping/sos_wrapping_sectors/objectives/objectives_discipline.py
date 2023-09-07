@@ -86,7 +86,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                          'capital': ('float', None, False),
                                                          'usable_capital': ('float', None, False),
                                                          'output': ('float', None, False),
-                                                         'output_net_of_d': ('float', None, False),}},
+                                                         GlossaryCore.OutputNetOfDamage: ('float', None, False),}},
                'weights_df': {'type': 'dataframe', 'unit': '-', 'default' : default_weight_df,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                               'weight': ('float', None, True)},
@@ -216,7 +216,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
         if 'Total output' in chart_list:
             ref = historical_gdp['total']
-            simu = economics_df['output_net_of_d']
+            simu = economics_df[GlossaryCore.OutputNetOfDamage]
 
             years = list(economics_df[GlossaryCore.Years])
             year_start = years[0]

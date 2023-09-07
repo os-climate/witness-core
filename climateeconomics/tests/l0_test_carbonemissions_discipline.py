@@ -98,7 +98,7 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': energy_supply_df_y,
                        f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,
@@ -194,7 +194,7 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': energy_supply_df_y,
                        f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.{self.model_name}.min_co2_objective': min_co2_objective,
                        f'{self.name}.co2_emissions_ccus_Gt': co2_emissions_ccus_Gt,

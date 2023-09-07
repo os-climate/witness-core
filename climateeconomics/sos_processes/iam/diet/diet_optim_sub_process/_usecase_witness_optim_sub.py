@@ -91,7 +91,7 @@ class Study(ClimateEconomicsStudyManager):
                 dspace_df[f'crop_investment_array_mix']['value']
             design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
                                                                   'out_type': 'dataframe',
-                                                                  'key': 'investment',
+                                                                  'key': GlossaryCore.InvestmentsValue,
                                                                   'index': years,
                                                                   'index_name': GlossaryCore.Years,
                                                                   'namespace_in': 'ns_witness',
@@ -102,7 +102,7 @@ class Study(ClimateEconomicsStudyManager):
                 dspace_df[f'managed_wood_investment_array_mix']['value']
             design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
                                                                           'out_type': 'dataframe',
-                                                                          'key': 'investment',
+                                                                          'key': GlossaryCore.InvestmentsValue,
                                                                           'index': years,
                                                                           'index_name': GlossaryCore.Years,
                                                                           'namespace_in': 'ns_witness',
@@ -112,7 +112,7 @@ class Study(ClimateEconomicsStudyManager):
             dspace_df[f'deforestation_investment_ctrl']['value']
         design_var_descriptor['deforestation_investment_ctrl'] = {'out_name': 'deforestation_investment',
                                                                   'out_type': 'dataframe',
-                                                                  'key': 'investment',
+                                                                  'key': GlossaryCore.InvestmentsValue,
                                                                   'index': years,
                                                                   'index_name': GlossaryCore.Years,
                                                                   'namespace_in': 'ns_witness',

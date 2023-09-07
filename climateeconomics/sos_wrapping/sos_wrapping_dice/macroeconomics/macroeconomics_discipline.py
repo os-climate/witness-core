@@ -94,7 +94,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
         chart_filters = []
 
         chart_list = ['economic output',
-                      'population', 'productivity', 'consumption']
+                      GlossaryCore.PopulationValue, 'productivity', GlossaryCore.Consumption]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -119,10 +119,10 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
         if 'economic output' in chart_list:
 
-            to_plot = ['gross_output', 'output_net_of_d']
+            to_plot = [GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]
 
-            legend = {'gross_output': 'world gross output',
-                      'output_net_of_d': 'world output net of damage'}
+            legend = {GlossaryCore.GrossOutput: 'world gross output',
+                      GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
 
             years = list(economics_df.index)
 
@@ -155,9 +155,9 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             instanciated_charts.append(new_chart)
 
-        if 'population' in chart_list:
+        if GlossaryCore.PopulationValue in chart_list:
 
-            to_plot = ['population']
+            to_plot = [GlossaryCore.PopulationValue]
 
             years = list(economics_df.index)
 
@@ -190,7 +190,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             instanciated_charts.append(new_chart)
 
-        if 'population' in chart_list:
+        if GlossaryCore.PopulationValue in chart_list:
 
             to_plot = ['productivity']
 
@@ -225,9 +225,9 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             instanciated_charts.append(new_chart)
 
-        if 'consumption' in chart_list:
+        if GlossaryCore.Consumption in chart_list:
 
-            to_plot = ['consumption']
+            to_plot = [GlossaryCore.Consumption]
 
             years = list(economics_df.index)
 

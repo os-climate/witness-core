@@ -129,7 +129,7 @@ class Study(StudyManager):
         # economisc df to init mda
         # Test With a GDP that grows at 2%
         gdp = [130.187] * len(years)
-        economics_df = pd.DataFrame({GlossaryCore.Years: years, 'output_net_of_d': gdp})
+        economics_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp})
         economics_df.index = years
 
         cons_input = {}

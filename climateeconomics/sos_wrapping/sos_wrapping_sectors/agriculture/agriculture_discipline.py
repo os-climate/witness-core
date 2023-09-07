@@ -98,7 +98,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'productivity_df': {'type': 'dataframe'},
         'production_df': {'type': 'dataframe', 'unit': 'T$',
                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                   'gross_output': ('float', None, False),}
+                                                   GlossaryCore.GrossOutput: ('float', None, False),}
                },
         'capital_df':  {'type': 'dataframe', 'unit': 'T$'},
         'detailed_capital_df': {'type': 'dataframe', 'unit': 'T$'},
@@ -245,7 +245,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['sector output', 'investment', 'output growth',
+        chart_list = ['sector output', GlossaryCore.InvestmentsValue, 'output growth',
                       'usable capital', 'capital', 'employment_rate', 'workforce', 'productivity', 'energy efficiency', 'e_max']
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         if prod_func_fit == True: 

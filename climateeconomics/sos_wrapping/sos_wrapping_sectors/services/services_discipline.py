@@ -258,7 +258,7 @@ class ServicesDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['sector output', 'investment', 'output growth', 'energy supply',
+        chart_list = ['sector output', GlossaryCore.InvestmentsValue, 'output growth', 'energy supply',
                       'usable capital', 'capital', 'employment_rate', 'workforce', 
                       'productivity', 'energy efficiency', 'e_max']
         

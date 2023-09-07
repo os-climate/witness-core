@@ -32,7 +32,7 @@ class ConsumptionDiscTest(unittest.TestCase):
 
     def test_execute(self):
 
-        self.model_name = 'consumption'
+        self.model_name = GlossaryCore.Consumption
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',

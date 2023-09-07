@@ -102,7 +102,7 @@ class ConsumptionModel:
         total_investment_share_of_gdp = self.total_investment_share_of_gdp.at[year, 'share_investment']
         consumption = (1 - total_investment_share_of_gdp / 100) * net_output
         # lower bound for conso
-        self.utility_df.loc[year, 'consumption'] = max(
+        self.utility_df.loc[year, GlossaryCore.Consumption] = max(
             consumption, self.lo_conso)
         return consumption
 
@@ -110,11 +110,11 @@ class ConsumptionModel:
         """Equation for consumption per capita
         c, Per capita consumption, thousands $USD
         """
-        consumption = self.utility_df.at[year, 'consumption']
-        population = self.population_df.at[year, 'population']
+        consumption = self.utility_df.at[year, GlossaryCore.Consumption]
+        population = self.population_df.at[year, GlossaryCore.PopulationValue]
         consumption_pc = consumption / population * 1000
         # Lower bound for pc conso
-        self.utility_df.loc[year, 'pc_consumption'] = max(
+        self.utility_df.loc[year, GlossaryCore.PerCapitaConsumption] = max(
             consumption_pc, self.lo_per_capita_conso)
         return consumption_pc
 
@@ -148,7 +148,7 @@ class ConsumptionModel:
         energy_price_ratio = self.energy_price_ref / energy_price
         residential_energy = self.residential_energy.at[year, 'residential_energy']
         residential_energy_ratio = residential_energy / self.residential_energy_conso_ref
-        pc_consumption = self.utility_df.at[year, 'pc_consumption']
+        pc_consumption = self.utility_df.at[year, GlossaryCore.PerCapitaConsumption]
         period_utility = (
             pc_consumption**(1 - self.conso_elasticity) - 1) / (1 - self.conso_elasticity) - 1
         # need a limit for period utility because negative period utility is
@@ -171,7 +171,7 @@ class ConsumptionModel:
         """
         period_utility = self.utility_df.at[year, 'period_utility_pc']
         u_discount_rate = self.utility_df.at[year, 'u_discount_rate']
-        population = self.population_df.at[year, 'population']
+        population = self.population_df.at[year, GlossaryCore.PopulationValue]
         discounted_utility = period_utility * u_discount_rate * population
         self.utility_df.loc[year, 'discounted_utility'] = discounted_utility
         return discounted_utility
@@ -251,9 +251,9 @@ class ConsumptionModel:
         nb_years = len(years)
         total_investment_share_of_gdp = self.total_investment_share_of_gdp['share_investment'].values
         net_output = self.economics_df[GlossaryCore.OutputNetOfDamage].values
-        population = self.population_df['population'].values
-        consumption = self.utility_df['consumption'].values
-        pc_consumption = self.utility_df['pc_consumption'].values
+        population = self.population_df[GlossaryCore.PopulationValue].values
+        consumption = self.utility_df[GlossaryCore.Consumption].values
+        pc_consumption = self.utility_df[GlossaryCore.PerCapitaConsumption].values
         energy_price = self.energy_mean_price['energy_price'].values
         u_discount_rate = self.utility_df['u_discount_rate'].values
         period_utility_pc = self.utility_df['period_utility_pc'].values
@@ -328,7 +328,7 @@ class ConsumptionModel:
         d_discounted_utility_d_energy_price = np.zeros((nb_years, nb_years))
         d_welfare_d_energy_price = np.zeros((nb_years, nb_years))
 
-        population = self.population_df['population'].values
+        population = self.population_df[GlossaryCore.PopulationValue].values
         u_discount_rate = self.utility_df['u_discount_rate'].values
         energy_price = self.energy_mean_price['energy_price'].values
 
@@ -352,7 +352,7 @@ class ConsumptionModel:
         d_discounted_utility_d_residential_energy = np.zeros((nb_years, nb_years))
         d_welfare_d_residential_energy = np.zeros((nb_years, nb_years))
 
-        population = self.population_df['population'].values
+        population = self.population_df[GlossaryCore.PopulationValue].values
         u_discount_rate = self.utility_df['u_discount_rate'].values
         residential_energy = self.residential_energy['residential_energy'].values
 

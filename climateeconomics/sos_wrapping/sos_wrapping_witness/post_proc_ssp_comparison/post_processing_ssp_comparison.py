@@ -59,7 +59,7 @@ _gdp = {FILE_NAME: 'gdp_ppp_usd2020.csv',
 POPULATION = 'Population'
 _population = {FILE_NAME: 'population.csv',
                VAR_NAME: GlossaryCore.PopulationDfValue,
-               COLUMN: 'population',
+               COLUMN: GlossaryCore.PopulationValue,
                CHART_TITLE: 'Population: WITNESS vs. SSP scenarios (IPCC)',
                UNIT_CONV_FACTOR: 1.0,
                Y_AXIS: 'World Population [million people]'}
@@ -67,7 +67,7 @@ _population = {FILE_NAME: 'population.csv',
 CONSUMPTION = 'Consumption'
 _consumption = {FILE_NAME: 'consumption_global_usd2020.csv',
                 VAR_NAME: 'Macroeconomics.economics_detail_df',
-                COLUMN: 'consumption',
+                COLUMN: GlossaryCore.Consumption,
                 CHART_TITLE: 'Consumption: WITNESS vs. SSP scenarios (IPCC)',
                 UNIT_CONV_FACTOR: 1E-3,
                 Y_AXIS: 'Global Consumption [trillion $]'}

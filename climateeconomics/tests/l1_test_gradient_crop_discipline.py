@@ -47,7 +47,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         population = np.array(np.linspace(7800, 7800, year_range))
         self.population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "population": population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
         temperature = np.array(np.linspace(1.05, 5, year_range))
         self.temperature_df = pd.DataFrame(
@@ -110,7 +110,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         # investment: 1Mha of crop land each year
         self.crop_investment = pd.DataFrame(
-            {GlossaryCore.Years: years, 'investment': np.ones(len(years)) * 0.381})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.ones(len(years)) * 0.381})
 
         self.margin = pd.DataFrame(
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})

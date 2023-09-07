@@ -100,11 +100,11 @@ class ForestTestCase(unittest.TestCase):
                                          'CO2_from_production_unit': 'kg/kg'
                                          }
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
 
         mw_invest = np.linspace(10, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
             {GlossaryCore.Years: years, "transport": transport})
@@ -117,7 +117,7 @@ class ForestTestCase(unittest.TestCase):
         # case over deforestation
         #deforest_invest = np.linspace(1000, 5000, year_range)
         self.deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": deforest_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
 
         self.param = {'year_start': self.year_start,
                       'year_end': self.year_end,
@@ -186,12 +186,12 @@ class ForestTestCase(unittest.TestCase):
 
         mw_invest = np.linspace(10, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         deforest_invest = np.linspace(10, 5, year_range)
         # case over deforestation
         #deforest_invest = np.linspace(1000, 5000, year_range)
         self.deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": deforest_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
                        f'{name}.time_step': 1,
@@ -258,9 +258,9 @@ class ForestTestCase(unittest.TestCase):
 
         mw_invest = np.linspace(300, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'investment': np.array([2000.00, 2000.00, 2000.00, 2000.00,
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([2000.00, 2000.00, 2000.00, 2000.00,
                                                      2000.00, 2000.00, 2000.00, 2000.00,
                                                      2000.00, 2000.00, 2000.00, 2000.00,
                                                      2000.00, 2000.00, 2000.00, 2000.00,
@@ -330,12 +330,12 @@ class ForestTestCase(unittest.TestCase):
         year_range = self.year_end - self.year_start + 1
         construction_delay = 25
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
         self.mw_initial_production = 23000  # TWh
 
         mw_invest = np.linspace(10, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
             {GlossaryCore.Years: years, "transport": transport})
@@ -361,9 +361,9 @@ class ForestTestCase(unittest.TestCase):
 
         mw_invest = np.linspace(300, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'investment': np.array([40.62218956750874, 40.56970502780573, 40.53622422620158, 40.52075010891646,
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([40.62218956750874, 40.56970502780573, 40.53622422620158, 40.52075010891646,
                                                      40.52228562217051, 40.53983371218389, 40.57239732517679, 40.618979407369324,
                                                      40.678582904981674, 40.750210764233984, 40.83286593134644, 40.925551352539166,
                                                      41.02726997403234, 41.13702474204612, 41.253818602800656, 41.37665450251611,
@@ -441,12 +441,12 @@ class ForestTestCase(unittest.TestCase):
         year_range = self.year_end - self.year_start + 1
         construction_delay = 25
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
         self.mw_initial_production = 23000  # TWh
 
         mw_invest = np.linspace(10, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
             {GlossaryCore.Years: years, "transport": transport})
@@ -472,9 +472,9 @@ class ForestTestCase(unittest.TestCase):
 
         mw_invest = np.linspace(300, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'investment': np.array([40.62218956750874, 40.56970502780573, 40.53622422620158, 40.52075010891646,
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([40.62218956750874, 40.56970502780573, 40.53622422620158, 40.52075010891646,
                                                      40.52228562217051, 40.53983371218389, 40.57239732517679, 40.618979407369324,
                                                      40.678582904981674, 40.750210764233984, 40.83286593134644, 40.925551352539166,
                                                      41.02726997403234, 41.13702474204612, 41.253818602800656, 41.37665450251611,
@@ -552,7 +552,7 @@ class ForestTestCase(unittest.TestCase):
         year_range = self.year_end - self.year_start + 1
         construction_delay = 25
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
         self.mw_initial_production = 23000  # TWh
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
@@ -565,16 +565,16 @@ class ForestTestCase(unittest.TestCase):
 
         mw_invest = np.linspace(10, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         deforest_invest = np.linspace(5.7971, 28.98550, year_range)
         # case over deforestation
         #deforest_invest = np.linspace(1000, 5000, year_range)
         self.deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": deforest_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
 
         mw_invest = np.linspace(300, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
 
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,

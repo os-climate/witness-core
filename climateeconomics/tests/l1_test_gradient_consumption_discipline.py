@@ -30,7 +30,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
 
     def setUp(self):
         self.name = 'Test'
-        self.model_name = 'consumption'
+        self.model_name = GlossaryCore.Consumption
         self.year_start = 2020
         self.year_end = 2100
         self.years = np.arange(self.year_start, self.year_end + 1)
