@@ -48,7 +48,15 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$'
       
     DESC_IN = {
-        GlossaryCore.DamageDfValue: GlossaryCore.delete_namespace(GlossaryCore.DamageDf),
+        GlossaryCore.DamageDfValue: {'type': 'dataframe', 'unit': 'G$',
+                                     'dataframe_descriptor':
+                                         {
+                                             GlossaryCore.Years: ('float', None, False),
+                                             'damages': ('float', None, True),
+                                             'damage_frac_output': ('float', None, True),
+                                             'base_carbon_price': ('float', None, True),
+                                         },
+                                     },
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
@@ -76,7 +84,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'sectors_investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                             'namespace': 'ns_witness', 'dataframe_descriptor': {}, 'dynamic_dataframe_columns': True },
 
-        GlossaryCore.EnergyProductionValue: GlossaryCore.delete_namespace(GlossaryCore.EnergyProduction),
+        GlossaryCore.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh',
+                                             'dataframe_descriptor': {
+                                                 GlossaryCore.Years: ('float', None, False),
+                                                 'Total production': ('float', None, True)},
+                                             'dataframe_edition_locked': False},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1, 'unit': '-'},

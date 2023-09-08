@@ -114,7 +114,7 @@ class SectorModel():
             self.investment_df = inputs['sectors_investment_df']
             self.investment_df.index = self.investment_df[GlossaryCore.Years].values
         #scale energy production
-        self.energy_production = inputs[GlossaryCore.EnergyProduction].copy(deep=True)
+        self.energy_production = inputs[GlossaryCore.EnergyProductionValue].copy(deep=True)
         self.energy_production[GlossaryCore.TotalProductionValue] *= self.scaling_factor_energy_production
         self.energy_production.index = self.energy_production[GlossaryCore.Years].values
         self.workforce_df = inputs['workforce_df']
