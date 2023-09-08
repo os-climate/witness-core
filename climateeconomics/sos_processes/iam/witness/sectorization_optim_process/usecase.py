@@ -296,31 +296,5 @@ class ComplexJsonEncoder(_json.JSONEncoder):
 # ---------------- SPECIFIC CODE TO ENABLE COMPLEX AS REAL INTO PLOTLY CHARTS
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-
-    # uc_cls.execution_engine.set_debug_mode()
-    #     generate_n2_plot(uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines)
-    #     uc_cls.execution_engine.dm.export_couplings(in_csv=True, f_name='couplings.csv')
-    uc_cls.run()
-
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines:
-        if disc.sos_name == 'Objectives':
-            filters = ppf.get_post_processing_filters_by_discipline(disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
-
-            for graph in graph_list:
-                # Get chart as plotly dict instead of plotly json to avoid complex type error
-                d = graph.to_plotly_dict()
-                # Convert dict into json using a custom encoder that manage complex type
-                j = _json.dumps(d, cls=ComplexJsonEncoder)
-                # Set up a new plotly object using this generated json
-                p = plotly.io.from_json(j)
-                # display the plotly chart
-                # p.show()
-
-#                 g = graph.to_plotly()
-#                 g.show()
+    uc_cls = Study()
+    uc_cls.test()

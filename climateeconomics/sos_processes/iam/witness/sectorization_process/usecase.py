@@ -132,6 +132,11 @@ class Study(StudyManager):
             {GlossaryCore.Years: years, 'Agriculture': np.ones(self.nb_per), 'Industry': np.ones(self.nb_per),
              'Services': np.ones(self.nb_per)})
 
+        # Sectors invest
+        total_investment_share_of_gdp = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             'share_investment': 27.* np.ones(self.nb_per),})
+
         sect_input = {}
         sect_input[f"{self.study_name}.{'year_start'}"] = self.year_start
         sect_input[f"{self.study_name}.{'year_end'}"] = self.year_end
@@ -139,6 +144,7 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{'workforce_df'}"] = workforce_df
 
         sect_input[f"{self.study_name}.{'sectors_investment_share'}"] = share_sectors_invest
+        sect_input[f"{self.study_name}.{'total_investment_share_of_gdp'}"] = total_investment_share_of_gdp
 
         sect_input[f"{self.study_name}.{self.macro_name}.{'Industry.energy_production'}"] = indus_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{'Agriculture.energy_production'}"] = agri_energy
@@ -166,17 +172,5 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
 
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-        filters = ppf.get_post_processing_filters_by_discipline(
-            disc)
-        graph_list = ppf.get_post_processing_by_discipline(
-            disc, filters, as_json=False)
-
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+    uc_cls.test()

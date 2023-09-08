@@ -57,7 +57,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                                           'share_investment': ('float', None, True)},
                                                  'dataframe_edition_locked': False, 'visibility': 'Shared',
                                                  'namespace': 'ns_witness'},
-               # 'scaling_factor_investment': {'type': 'float', 'default': 1e2, 'unit': '-', 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'}
                }
 
     DESC_OUT = {

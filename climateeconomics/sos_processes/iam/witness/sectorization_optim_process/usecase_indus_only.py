@@ -195,10 +195,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-
-    # uc_cls.execution_engine.set_debug_mode()
-    #     generate_n2_plot(uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines)
-    #     uc_cls.execution_engine.dm.export_couplings(in_csv=True, f_name='couplings.csv')
-    uc_cls.run()
+    uc_cls.test()
