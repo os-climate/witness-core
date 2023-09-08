@@ -48,11 +48,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$'
       
     DESC_IN = {
-        GlossaryCore.DamageDfValue: {'type': 'dataframe', 'unit': 'G$',
-                      'dataframe_descriptor':
-                          {GlossaryCore.Years: ('float', None, False),'damages': ('float', None, True),
-                              'damage_frac_output': ('float', None, True),'base_carbon_price': ('float', None, True),}
-},
+        GlossaryCore.DamageDfValue: GlossaryCore.delete_namespace(GlossaryCore.DamageDf),
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
@@ -80,10 +76,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'sectors_investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                             'namespace': 'ns_witness', 'dataframe_descriptor': {}, 'dynamic_dataframe_columns': True },
 
-        # energy_production stored in PetaWh for coupling variables scaling
-        'energy_production': {'type': 'dataframe','unit': 'PWh',
-                              'dataframe_descriptor':{GlossaryCore.Years: ('float', None, False),
-                                      'Total production': ('float', None, True),}},
+        GlossaryCore.EnergyProductionValue: GlossaryCore.delete_namespace(GlossaryCore.EnergyProduction),
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1, 'unit': '-'},
@@ -148,7 +141,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         workforce_df = param['workforce_df']
         prod_function_fitting = param['prod_function_fitting']
 
-        agriculture_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, 'damage_frac_output']],
+        agriculture_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
                               'energy_production': energy_production,
                               'sectors_investment_df': sectors_investment_df,
                               'workforce_df': workforce_df}
@@ -195,13 +188,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         doutput_denergy = self.agriculture_model.doutput_denergy(dcapitalu_denergy)
         dnetoutput_denergy = self.agriculture_model.dnetoutput(doutput_denergy)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output'), ('energy_production', 'Total production'),scaling_factor_energy_production * doutput_denergy)
+            ('production_df', 'output'), ('energy_production', GlossaryCore.TotalProductionValue),scaling_factor_energy_production * doutput_denergy)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output_net_of_damage'), ('energy_production', 'Total production'), scaling_factor_energy_production * dnetoutput_denergy)
+            ('production_df', 'output_net_of_damage'), ('energy_production', GlossaryCore.TotalProductionValue), scaling_factor_energy_production * dnetoutput_denergy)
         self.set_partial_derivative_for_other_types(
-            ('capital_df', 'usable_capital'), ('energy_production', 'Total production'), scaling_factor_energy_production * dcapitalu_denergy)
+            ('capital_df', 'usable_capital'), ('energy_production', GlossaryCore.TotalProductionValue), scaling_factor_energy_production * dcapitalu_denergy)
         self.set_partial_derivative_for_other_types(
-            ('emax_enet_constraint',), ('energy_production', 'Total production'), - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint))
+            ('emax_enet_constraint',), ('energy_production', GlossaryCore.TotalProductionValue), - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint))
 
         # gradients wrt workforce
         doutput_dworkforce = self.agriculture_model.compute_doutput_dworkforce()
@@ -219,9 +212,9 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         dnetoutput_ddamage = self.agriculture_model.dnetoutput_ddamage(
             doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output'), (GlossaryCore.DamageDfValue, 'damage_frac_output'), doutput_ddamage)
+            ('production_df', 'output'), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output_net_of_damage'), (GlossaryCore.DamageDfValue, 'damage_frac_output'), dnetoutput_ddamage)
+            ('production_df', 'output_net_of_damage'), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), dnetoutput_ddamage)
 
         # gradients wrt invest
         #If production fitting = true we use the investment from another input
@@ -506,7 +499,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 self.get_sosdisc_inputs('energy_production'))
             scaling_factor_energy_production = self.get_sosdisc_inputs(
                 'scaling_factor_energy_production')
-            total_production = energy_production['Total production'] * \
+            total_production = energy_production[GlossaryCore.TotalProductionValue] * \
                 scaling_factor_energy_production
 
             years = list(capital_detail_df.index)

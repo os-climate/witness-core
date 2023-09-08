@@ -55,7 +55,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'capital_start_non_energy': {'type': 'float', 'unit': 'T$', 'default': 360.5487346, 'user_level': 2},
         GlossaryCore.DamageDf['var_name']: GlossaryCore.DamageDf,
-        GlossaryCore.PopulationDF['var_name']: GlossaryCore.PopulationDF,
+        GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
 
         'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
                                       'namespace': 'ns_witness',
@@ -93,12 +93,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
         GlossaryCore.ShareNonEnergyInvestment['var_name']: GlossaryCore.ShareNonEnergyInvestment,
-        # energy_production stored in PetaWh for coupling variables scaling
-        'energy_production': {'type': 'dataframe', 'visibility': 'Shared', 'unit': 'PWh', 'namespace': 'ns_energy_mix',
-                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                       'Total production': ('float', None, False),
-                                                       }
-                              },
+        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProduction,
 
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2,
                                              'visibility': 'Shared', 'namespace': 'ns_witness'},
@@ -130,7 +125,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         GlossaryCore.EconomicsDetail_df['var_name']: GlossaryCore.EconomicsDetail_df,
-        GlossaryCore.Economics_df['var_name']: GlossaryCore.Economics_df,
+        GlossaryCore.EconomicsDf['var_name']: GlossaryCore.EconomicsDf,
         GlossaryCore.EnergyInvestments["var_name"]: GlossaryCore.EnergyInvestments,
         GlossaryCore.EnergyInvestmentsWoRenewable['var_name']: GlossaryCore.EnergyInvestmentsWoRenewable,
         'pc_consumption_constraint': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -252,7 +247,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         working_age_population_df = param.pop('working_age_population_df')
         energy_capital_df = param['energy_capital']
         compute_gdp: bool = param['assumptions_dict']['compute_gdp']
-        macro_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, 'damage_frac_output']],
+        macro_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
                         'energy_production': energy_production,
                         'scaling_factor_energy_production': param['scaling_factor_energy_production'],
                         GlossaryCore.EnergyInvestmentsWoTaxValue: param[GlossaryCore.EnergyInvestmentsWoTaxValue],
@@ -341,29 +336,29 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         ddelta_capital_cons_dc = ddelta_capital_cons_dc_dusable_capital * d_capital_d_co2_emissions
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue),
-            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'),
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
             d_energy_invest_d_co2_emissions * 10.)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), d_consumption_pc_d_co2_emissions)
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions), d_consumption_pc_d_co2_emissions)
         self.set_partial_derivative_for_other_types(
             ('pc_consumption_constraint',),
-            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'),
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
             - d_consumption_pc_d_co2_emissions / ref_pc_consumption_constraint)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',),
-            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), d_emax_constraint_d_co2_emissions)
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions), d_emax_constraint_d_co2_emissions)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective',),
-            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'),
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
             ddelta_capital_objective_dco2_emissions)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',),
-            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'),
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
             alpha * ddelta_capital_objective_dco2_emissions)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_constraint_dc',),
-            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), ddelta_capital_cons_dc)
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions), ddelta_capital_cons_dc)
 
         ddelta_capital_objective_dco2_emissions = (
                                                           capital_ratio * d_capital_d_co2_emissions / usable_capital_ref) * compute_dfunc_with_exp_min(
@@ -373,7 +368,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             delta_capital_objective_wo_exp_min * usable_capital_ref)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_constraint',),
-            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'),
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions),
             -ddelta_capital_cons / usable_capital_ref)
 
         # Compute gradient for coupling variable Total production
@@ -412,38 +407,38 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
-            ('energy_production', 'Total production'),
+            ('energy_production', GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * d_gross_output_d_energy)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), ('energy_production', 'Total production'),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), ('energy_production', GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * d_net_output_d_energy) # todo : false when damage ?
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), ('energy_production', 'Total production'),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), ('energy_production', GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * d_consumption_pc_d_energy) # todo : false when damage ?
         self.set_partial_derivative_for_other_types(
             ('pc_consumption_constraint',), ('energy_production',
-                                             'Total production'), - scaling_factor_energy_production
+                                             GlossaryCore.TotalProductionValue), - scaling_factor_energy_production
                                                                   * d_consumption_pc_d_energy / ref_pc_consumption_constraint)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), ('energy_production', 'Total production'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), ('energy_production', GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * d_energy_investment_d_energy)
         self.set_partial_derivative_for_other_types(
-            ('emax_enet_constraint',), ('energy_production', 'Total production'),
+            ('emax_enet_constraint',), ('energy_production', GlossaryCore.TotalProductionValue),
             - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint - d_emax_constraint_d_energy))
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_objective',), ('energy_production', 'Total production'),
+            ('delta_capital_objective',), ('energy_production', GlossaryCore.TotalProductionValue),
             ddelta_capital_objective_denergy_production)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',
-             ), ('energy_production', 'Total production'),
+             ), ('energy_production', GlossaryCore.TotalProductionValue),
             alpha * ddelta_capital_objective_denergy_production)
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_constraint',), ('energy_production', 'Total production'),
+            ('delta_capital_constraint',), ('energy_production', GlossaryCore.TotalProductionValue),
             - ddelta_capital_cons / usable_capital_ref)
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_constraint_dc',), ('energy_production', 'Total production'), ddelta_capital_cons_dc)
+            ('delta_capital_constraint_dc',), ('energy_production', GlossaryCore.TotalProductionValue), ddelta_capital_cons_dc)
         self.set_partial_derivative_for_other_types(
-            ('delta_capital_lintoquad',), ('energy_production', 'Total production'), ddelta_capital_lintoquad)
+            ('delta_capital_lintoquad',), ('energy_production', GlossaryCore.TotalProductionValue), ddelta_capital_lintoquad)
 
         # Compute gradient for coupling variable damage (column damage frac output)
         d_gross_output_d_damage_frac_output = self.macro_model.d_gross_output_d_damage_frac_output()
@@ -469,34 +464,34 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'), d_gross_output_d_damage_frac_output)
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), d_gross_output_d_damage_frac_output)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'), d_net_output_d_damage_frac_output)
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), d_net_output_d_damage_frac_output)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'), d_consumption_pc_d_damage_frac_output)
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), d_consumption_pc_d_damage_frac_output)
         self.set_partial_derivative_for_other_types(
             ('pc_consumption_constraint',),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'),
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             - d_consumption_pc_d_damage_frac_output / ref_pc_consumption_constraint)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'),
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             denergy_investment_d_damage_frac_output / 1e3)  # Invest from T$ to G$
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'), d_emax_constraint_d_damage_frac_output)
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), d_emax_constraint_d_damage_frac_output)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective',),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'), ddelta_capital_objective_ddamage_df)
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), ddelta_capital_objective_ddamage_df)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'),
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             alpha * ddelta_capital_objective_ddamage_df)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_constraint',),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'),
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             - ddelta_capital_cons / usable_capital_ref)
         ddelta_capital_cons_dc_dusable_capital, _, _ = compute_ddelta_constraint(
             value=usable_capital, goal=capital_ratio * ne_capital,
@@ -505,7 +500,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ddelta_capital_cons_dc_dusable_capital, -d_capital_d_damage_frac_output * capital_ratio)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_constraint_dc',),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'), ddelta_capital_cons_dc)
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), ddelta_capital_cons_dc)
         ddelta_capital_lintoquad_dusable_capital, _, ddelta_capital_lintoquad_dtolerable_delta = compute_ddelta_constraint(
             value=usable_capital, goal=capital_ratio * ne_capital,
             tolerable_delta=0.15 * ne_capital, delta_type='normal', reference_value=ref_usable_capital)
@@ -514,7 +509,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                     np.dot(ddelta_capital_lintoquad_dtolerable_delta, 0.15 * d_capital_d_damage_frac_output))
         self.set_partial_derivative_for_other_types(
             ('delta_capital_lintoquad',),
-            (GlossaryCore.DamageDfValue, 'damage_frac_output'), ddelta_capital_lintoquad)
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), ddelta_capital_lintoquad)
 
         # Compute gradients wrt population_df
         d_consumption_pc_d_population = self.macro_model.d_consumption_pc_d_population()
@@ -1181,7 +1176,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 self.get_sosdisc_inputs('energy_production'))
             scaling_factor_energy_production = self.get_sosdisc_inputs(
                 'scaling_factor_energy_production')
-            total_production = energy_production['Total production'] * \
+            total_production = energy_production[GlossaryCore.TotalProductionValue] * \
                                scaling_factor_energy_production
 
             years = list(capital_df.index)
@@ -1221,10 +1216,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'Energy_supply' in chart_list:
-            to_plot = ['Total production']
+            to_plot = [GlossaryCore.TotalProductionValue]
 
             legend = {
-                'Total production': 'energy supply with oil production from energy pyworld3'}
+                GlossaryCore.TotalProductionValue: 'energy supply with oil production from energy pyworld3'}
 
             # inputs = discipline.get_sosdisc_inputs()
             # energy_production = inputs.pop('energy_production')
@@ -1232,11 +1227,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 self.get_sosdisc_inputs('energy_production'))
             scaling_factor_energy_production = self.get_sosdisc_inputs(
                 'scaling_factor_energy_production')
-            total_production = energy_production['Total production'] * \
+            total_production = energy_production[GlossaryCore.TotalProductionValue] * \
                                scaling_factor_energy_production
 
             data_to_plot_dict = {
-                'Total production': total_production}
+                GlossaryCore.TotalProductionValue: total_production}
 
             years = list(economics_detail_df.index)
 

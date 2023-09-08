@@ -203,7 +203,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Price ($/tCO2)'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.CO2_taxes', ]
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.CO2TaxesValue}', ]
         (co2_taxes_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         co2_tax_dict = {}
@@ -350,7 +350,7 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Total production per scenario'
         x_axis_name = 'Years'
-        y_axis_name = 'Total production'
+        y_axis_name = GlossaryCore.TotalProductionValue
 
         df_paths = [
             f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.EnergyMix.energy_production_detailed']

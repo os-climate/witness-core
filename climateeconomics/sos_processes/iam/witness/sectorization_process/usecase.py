@@ -83,9 +83,9 @@ class Study(StudyManager):
                 dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data/sectorization_fitting')
             # Energy
             hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
-            agri_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], 'Total production': hist_energy['Agriculture']})
-            services_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], 'Total production': hist_energy['Services']})
-            indus_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], 'Total production': hist_energy['Industry']})
+            agri_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy['Agriculture']})
+            services_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy['Services']})
+            indus_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy['Industry']})
             # Workforce
             hist_workforce = pd.read_csv(join(data_dir, 'hist_workforce_sect.csv'))
             workforce_df = hist_workforce
@@ -107,9 +107,9 @@ class Study(StudyManager):
             # Find values for 2020, 2050 and concat dfs
             energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
             energy_supply_values = energy_supply * brut_net
-            indus_energy = pd.DataFrame({GlossaryCore.Years: years, 'Total production': energy_supply_values * 0.2894})
-            agri_energy = pd.DataFrame({GlossaryCore.Years: years, 'Total production': energy_supply_values * 0.02136})
-            services_energy = pd.DataFrame({GlossaryCore.Years: years, 'Total production': energy_supply_values * 0.37})
+            indus_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.2894})
+            agri_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.02136})
+            services_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.37})
 
             total_workforce_df = pd.read_csv(join(data_dir, 'workingage_population_df.csv'))
             # multiply ageworking pop by employment rate
@@ -124,9 +124,9 @@ class Study(StudyManager):
         # Damage
         damage_df = pd.DataFrame(
             {GlossaryCore.Years: years,
-             'damages': np.zeros(self.nb_per),
-             'damage_frac_output': np.zeros(self.nb_per),
-             'base_carbon_price': np.zeros(self.nb_per)})
+             GlossaryCore.Damages: np.zeros(self.nb_per),
+             GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
+             GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
         #Sectors invest
         base_dummy_data = pd.DataFrame(
             {GlossaryCore.Years: years, 'Agriculture': np.ones(self.nb_per), 'Industry': np.ones(self.nb_per),
@@ -140,18 +140,13 @@ class Study(StudyManager):
         sect_input = {}
         sect_input[f"{self.study_name}.{'year_start'}"] = self.year_start
         sect_input[f"{self.study_name}.{'year_end'}"] = self.year_end
-
         sect_input[f"{self.study_name}.{'workforce_df'}"] = workforce_df
-
         sect_input[f"{self.study_name}.{'sectors_investment_share'}"] = share_sectors_invest
         sect_input[f"{self.study_name}.{'total_investment_share_of_gdp'}"] = total_investment_share_of_gdp
-
-        sect_input[f"{self.study_name}.{self.macro_name}.{'Industry.energy_production'}"] = indus_energy
-        sect_input[f"{self.study_name}.{self.macro_name}.{'Agriculture.energy_production'}"] = agri_energy
-        sect_input[f"{self.study_name}.{self.macro_name}.{'Services.energy_production'}"] = services_energy
-
+        sect_input[f"{self.study_name}.{self.macro_name}.{'Industry'}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
+        sect_input[f"{self.study_name}.{self.macro_name}.{'Agriculture'}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
+        sect_input[f"{self.study_name}.{self.macro_name}.{'Services'}.{GlossaryCore.EnergyProductionValue}"] = services_energy
         sect_input[f"{self.study_name}.{'sectors_investment_df'}"] = base_dummy_data
-
         sect_input[f"{self.study_name}.{self.macro_name}.{'Industry'}.{GlossaryCore.DamageDfValue}"] = damage_df
         sect_input[f"{self.study_name}.{self.macro_name}.{'Agriculture'}.{GlossaryCore.DamageDfValue}"] = damage_df
         sect_input[f"{self.study_name}.{self.macro_name}.{'Services'}.{GlossaryCore.DamageDfValue}"] = damage_df

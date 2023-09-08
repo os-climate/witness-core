@@ -73,7 +73,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                                     },
         'GHG_total_energy_emissions':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                 'Total CO2 emissions': ('float', None, False),
+                                                                 GlossaryCore.TotalCO2Emissions: ('float', None, False),
                                                                  'Total N2O emissions': ('float', None, False),
                                                                  'Total CH4 emissions': ('float', None, False), }
                                         },
@@ -102,7 +102,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         emissions_df = self.emissions_model.ghg_emissions_df[cols]
 
         dict_values = {'GHG_emissions_detail_df': self.emissions_model.ghg_emissions_df,
-                       GlossaryCore.CO2EmissionsGtValue: self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, 'Total CO2 emissions']],
+                       GlossaryCore.CO2EmissionsGtValue: self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]],
                        'GHG_emissions_df': emissions_df,
                        'GWP_emissions': self.emissions_model.gwp_emissions}
 
@@ -132,9 +132,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 np.identity(len(years)))
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2EmissionsGtValue, 'Total CO2 emissions'), ('GHG_total_energy_emissions', 'Total CO2 emissions'),  np.identity(len(years)))
+            (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions), ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),  np.identity(len(years)))
         self.set_partial_derivative_for_other_types(
-            ('GHG_emissions_df', 'Total CO2 emissions'), ('CO2_indus_emissions_df', 'indus_emissions'),
+            ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions), ('CO2_indus_emissions_df', 'indus_emissions'),
             np.identity(len(years)))
 
     def get_chart_filter_list(self):

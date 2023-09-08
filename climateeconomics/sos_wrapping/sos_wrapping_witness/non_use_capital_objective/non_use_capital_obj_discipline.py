@@ -46,11 +46,11 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+        GlossaryCore.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
                         'structuring': True, 'unit': '-'},
-        'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': EnergyMix.ccs_list,
+        GlossaryCore.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': EnergyMix.ccs_list,
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
                      'structuring': True, 'unit': '-'},
         'agri_capital_techno_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'default': [],
@@ -116,14 +116,14 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                             'namespace': 'ns_ref',
                                                             'structuring': True,
                                                             }
-        if 'energy_list' in self.get_data_in():
-            energy_list = self.get_sosdisc_inputs('energy_list')
+        if GlossaryCore.energy_list in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs(GlossaryCore.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name:
                         pass
                     else:
-                        dynamic_inputs[f'{energy}.technologies_list'] = {'type': 'list',
+                        dynamic_inputs[f'{energy}.{GlossaryCore.techno_list}'] = {'type': 'list',
                                                                          'subtype_descriptor': {'list': 'string'},
                                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                          'namespace': 'ns_energy',
@@ -131,17 +131,17 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                          'possible_values': EnergyMix.stream_class_dict[
                                                                              energy].default_techno_list}
 
-                        if f'{energy}.technologies_list' in self.get_data_in():
+                        if f'{energy}.{GlossaryCore.techno_list}' in self.get_data_in():
                             techno_list = self.get_sosdisc_inputs(
-                                f'{energy}.technologies_list')
+                                f'{energy}.{GlossaryCore.techno_list}')
                             if techno_list is not None:
                                 energy_techno_dict[energy] = {'namespace': 'ns_energy',
                                                               'value': techno_list}
-        if 'ccs_list' in self.get_data_in():
-            ccs_list = self.get_sosdisc_inputs('ccs_list')
+        if GlossaryCore.ccs_list in self.get_data_in():
+            ccs_list = self.get_sosdisc_inputs(GlossaryCore.ccs_list)
             if ccs_list is not None:
                 for ccs in ccs_list:
-                    dynamic_inputs[f'{ccs}.technologies_list'] = {'type': 'list',
+                    dynamic_inputs[f'{ccs}.{GlossaryCore.techno_list}'] = {'type': 'list',
                                                                   'subtype_descriptor': {'list': 'string'},
                                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                   'namespace': 'ns_ccs',
@@ -149,9 +149,9 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                   'possible_values': EnergyMix.stream_class_dict[
                                                                       ccs].default_techno_list}
 
-                    if f'{ccs}.technologies_list' in self.get_data_in():
+                    if f'{ccs}.{GlossaryCore.techno_list}' in self.get_data_in():
                         techno_list = self.get_sosdisc_inputs(
-                            f'{ccs}.technologies_list')
+                            f'{ccs}.{GlossaryCore.techno_list}')
                         if techno_list is not None:
                             energy_techno_dict[ccs] = {'namespace': 'ns_ccs',
                                                        'value': techno_list}
@@ -186,7 +186,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                                     'float', None, True),
                                                                                     'Refinery': (
                                                                                     'float', None, True),
-                                                                                    'base_carbon_price': (
+                                                                                    GlossaryCore.BaseCarbonPrice: (
                                                                                     'float', None, True),
                                                                                 }
                                                                             }
@@ -206,7 +206,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                                     'float', None, True),
                                                                                     'Refinery': (
                                                                                     'float', None, True),
-                                                                                    'base_carbon_price': (
+                                                                                    GlossaryCore.BaseCarbonPrice: (
                                                                                     'float', None, True),
                                                                                 }
                                                                            }

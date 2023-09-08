@@ -456,9 +456,6 @@ class Forest():
         compute price as in techno_type
         """
 
-        # Maximize with smooth exponential
-#         price_df['invest'] = compute_func_with_exp_min(
-#             investment, self.min_value_invest)
         density_per_ha = self.techno_wood_info['density_per_ha']  # m3/ha
         mean_density = self.techno_wood_info['density']  # kg/m3
 

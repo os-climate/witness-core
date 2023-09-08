@@ -88,7 +88,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        GlossaryCore.TemperatureDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '°C'},
+        GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'temperature_detail_df': {'type': 'dataframe', 'unit': '°C'},
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
         'temperature_constraint': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}}

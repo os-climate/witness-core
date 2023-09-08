@@ -160,9 +160,9 @@ class Study(ClimateEconomicsStudyManager):
             dspace['enable_variable'] = False
 
             invest_mix_file = f'optimization scenarios.{scenario}.invest_mix.csv'
-            invest_mix = pd.read_csv(join(dirname(__file__), 'data', 'invest_mix', invest_mix_file))
+            invest_mix = pd.read_csv(join(dirname(__file__), 'data', GlossaryCore.invest_mix, invest_mix_file))
             forest_invest_file = f'optimization scenarios.{scenario}.forest_investment.csv'
-            forest_invest = pd.read_csv(join(dirname(__file__), 'data', 'invest_mix', forest_invest_file))
+            forest_invest = pd.read_csv(join(dirname(__file__), 'data', GlossaryCore.invest_mix, forest_invest_file))
 
             DAC_name = f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno'
             fossil_energy_name = f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.EnergyMix.fossil'

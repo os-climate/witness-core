@@ -163,11 +163,11 @@ class Study(StudyManager):
         values_dict = {
             f'{self.study_name}.year_start': self.year_start,
             f'{self.study_name}.year_end': self.year_end,
-            f'{self.study_name}.{energy_name}.technologies_list': self.model_list,
+            f'{self.study_name}.{energy_name}.{GlossaryCore.techno_list}': self.model_list,
             f'{self.study_name}.margin': self.margin,
             f'{self.study_name}.transport_cost': self.transport,
             f'{self.study_name}.transport_margin': self.margin,
-            f'{self.study_name}.CO2_taxes': self.co2_taxes,
+            f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
             f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
             f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_calories_per_day,
             f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_calories_per_day,

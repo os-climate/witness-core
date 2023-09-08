@@ -71,7 +71,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
-                       f'{self.name}.technologies_list': ['Crop', 'Forest'],
+                       f'{self.name}.{GlossaryCore.techno_list}': ['Crop', 'Forest'],
                        f'{self.name}.Crop.CO2_land_emission_df': CO2_land_emissions,
                        f'{self.name}.Forest.CO2_land_emission_df': CO2_land_emissions,
                        f'{self.name}.Crop.CH4_land_emission_df': CH4_land_emissions,

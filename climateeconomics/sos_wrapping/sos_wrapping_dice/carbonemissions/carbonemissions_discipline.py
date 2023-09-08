@@ -52,7 +52,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
         'init_indus_emissions': {'type': 'float', 'unit': 'GtCO2 per year', 'default': 35.745},
         GlossaryCore.InitialGrossOutput['var_name']: {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'namespace': 'ns_dice', 'default': 105.1},
         'init_cum_indus_emissions': {'type': 'float', 'unit': 'GtCO2', 'default': 400},
-        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                                    'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
                                    'dataframe_edition_locked': False}

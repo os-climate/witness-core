@@ -74,7 +74,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.Years, 'total_CO2_emitted']]
         energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         energy_supply_df_y = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
 
         co2_emissions_ccus_Gt = pd.DataFrame()
         co2_emissions_ccus_Gt[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
@@ -165,7 +165,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.Years, 'total_CO2_emitted']]
         energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         energy_supply_df_y = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_ccus_Gt = pd.DataFrame()
         co2_emissions_ccus_Gt[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         co2_emissions_ccus_Gt['carbon_storage Limited by capture (Gt)'] = 0.02
@@ -189,7 +189,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101)
         economics_df_y.index = years
         energy_supply_df_y.index = years
-        energy_supply_df_y['Total CO2 emissions'] = np.linspace(
+        energy_supply_df_y[GlossaryCore.TotalCO2Emissions] = np.linspace(
             0, -3000, len(years))
 
         CO2_emitted_forest = pd.DataFrame()

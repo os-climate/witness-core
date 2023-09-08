@@ -257,7 +257,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        GlossaryCore.PopulationDF['var_name']: GlossaryCore.PopulationDF,
+        GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': diet_df_default,
                     'dataframe_descriptor': {  # GlossaryCore.Years: ('float', None, False),
                         'red meat': ('float', [0, 1e9], True),
@@ -299,7 +299,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop',
                            'default': other_use_crop_default},
 
-        GlossaryCore.TemperatureDf['var_name']: GlossaryCore.TemperatureDf,
+        GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
 
         'param_a': {'type': 'float', 'default': -0.00833, 'unit': '-', 'user_level': 3},
         'param_b': {'type': 'float', 'default': -0.04167, 'unit': '-', 'user_level': 3},

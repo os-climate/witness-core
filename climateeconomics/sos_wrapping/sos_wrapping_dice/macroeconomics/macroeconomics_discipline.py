@@ -76,7 +76,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
         damage_df = param.pop(GlossaryCore.DamageDfValue)
 
         damage_inputs = {
-            'damage_frac_output': damage_df['damage_frac_output'], 'abatecost': damage_df['abatecost']}
+            GlossaryCore.DamageFractionOutput: damage_df[GlossaryCore.DamageFractionOutput], 'abatecost': damage_df['abatecost']}
 
         # Model execution
         macro_model = MacroEconomics(param, damage_inputs)

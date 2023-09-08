@@ -16,6 +16,7 @@ limitations under the License.
 import pandas as pd
 import numpy as np
 from climateeconomics.core.core_forest.forest_v2 import Forest
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_disc import EnergyDiscipline
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -38,7 +39,7 @@ class AgricultureMixDiscipline(EnergyDiscipline):
     }
 
 
-    DESC_IN = {'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+    DESC_IN = {GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                      'possible_values': ['Crop', 'Forest'],
                                      'visibility': EnergyDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_agriculture',

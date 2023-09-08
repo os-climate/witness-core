@@ -50,9 +50,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         #Find values for 2020, 2050 and concat dfs
         energy_supply = f2(np.arange(self.year_start, self.year_end+1))
         energy_supply_values = energy_supply * brut_net
-        energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, 'Total production': energy_supply_values})
+        energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: energy_supply_values})
         energy_supply_df.index = self.years
-        energy_supply_df.loc[2021, 'Total production'] = 116.1036348
+        energy_supply_df.loc[2021, GlossaryCore.TotalProductionValue] = 116.1036348
         self.energy_supply_df = energy_supply_df
 
         # -------------------------
@@ -65,11 +65,11 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         # energy production divided by 1e3 (scaling factor production)
         energy_supply_csv['cumulative_total_energy_supply'] = energy_supply_csv['cumulative_total_energy_supply'] / 1e3
         self.co2_emissions_gt = energy_supply_df.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         self.co2_emissions_gt.index = self.years
         for i in np.arange(2021, self.year_end+1):
-            emission_vefore =  self.co2_emissions_gt.loc[i-1, 'Total CO2 emissions']
-            self.co2_emissions_gt.loc[i,'Total CO2 emissions'] = emission_vefore*(1.02)
+            emission_vefore =  self.co2_emissions_gt.loc[i-1, GlossaryCore.TotalCO2Emissions]
+            self.co2_emissions_gt.loc[i,GlossaryCore.TotalCO2Emissions] = emission_vefore*(1.02)
         self.default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: self.years, 'CO2_tax_efficiency': 40.0}, index=self.years)
         # -------------------------
@@ -80,7 +80,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         damage_df_start = damage_csv.loc[damage_csv[GlossaryCore.Years] >= self.year_start]
         damage_df_end = damage_csv.loc[damage_csv[GlossaryCore.Years] <= self.year_end]
         damage_df = pd.merge(damage_df_start, damage_df_end)
-        self.damage_df = damage_df[[GlossaryCore.Years, 'damage_frac_output']]
+        self.damage_df = damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]]
         self.damage_df.index = self.years
         # -------------------------
         # csv data
@@ -161,10 +161,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
@@ -179,17 +179,17 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                     f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'
                                     ],
-                            outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                            outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
@@ -228,10 +228,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
@@ -246,16 +246,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_macroeconomics_discipline_grad_damageproductivity.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data= disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                     f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
-                            outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                            outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
@@ -284,7 +284,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.damage_df['damage_frac_output'] = 0.9
+        self.damage_df[GlossaryCore.DamageFractionOutput] = 0.9
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
@@ -295,10 +295,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
@@ -313,16 +313,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_macroeconomics_discipline_grad_max_damage.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                     f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
-                            outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                            outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
@@ -367,10 +367,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
@@ -385,16 +385,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__),
                             filename=f'jacobian_macroeconomics_discipline_grad_gigantic_invest.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                     f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
-                            outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                            outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
@@ -432,7 +432,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
         energy_supply_df[GlossaryCore.Years] = energy_supply_df[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = self.years
         inputs_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
@@ -443,10 +443,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
@@ -460,16 +460,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_very_high_emissions.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                     f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
-                            outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                            outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
@@ -507,7 +507,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
         energy_supply_df[GlossaryCore.Years] = energy_supply_df[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = self.years
 
         inputs_dict = {f'{self.name}.year_start': self.year_start,
@@ -519,10 +519,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
@@ -536,16 +536,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_negative_emissions.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                     f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
-                            outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                            outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
@@ -585,10 +585,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
@@ -602,16 +602,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_negative_co2_tax.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
-                             inputs=[f'{self.name}.energy_production',
+                             inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                      f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                      f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                     f'{self.name}.CO2_taxes',
-                                     f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                     f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                      f'{self.name}.working_age_population_df',
                                      f'{self.name}.energy_capital'],
-                             outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                             outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                       f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                       f'{self.name}.pc_consumption_constraint',
                                       f'{self.name}.emax_enet_constraint',
@@ -653,10 +653,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df': self.working_age_population_df,
@@ -681,16 +681,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_without_compute_gdp.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                     f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
-                            outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                            outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
@@ -733,10 +733,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df': self.working_age_population_df,
@@ -761,16 +761,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_without_compute_gdp_w_damage_to_productivity.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                     f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
-                            outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                            outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',
@@ -812,10 +812,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': self.share_non_energy_investment,
-                       f'{self.name}.energy_production': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDf["var_name"]}': self.damage_df,
-                       f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}': self.population_df,
-                       f'{self.name}.CO2_taxes': self.default_CO2_tax,
+                       f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}': self.population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': self.default_CO2_tax,
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df': self.working_age_population_df,
@@ -837,16 +837,16 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_without_invest_co2_tax_in_renewables.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.energy_production',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageDf["var_name"]}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
                                     f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}',
                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                    f'{self.name}.CO2_taxes',
-                                    f'{self.name}.{GlossaryCore.PopulationDF["var_name"]}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDf["var_name"]}',
                                     f'{self.name}.working_age_population_df',
                                     f'{self.name}.energy_capital'],
-                            outputs=[f'{self.name}.{GlossaryCore.Economics_df["var_name"]}',
+                            outputs=[f'{self.name}.{GlossaryCore.EconomicsDf["var_name"]}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.pc_consumption_constraint',
                                      f'{self.name}.emax_enet_constraint',

@@ -106,7 +106,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
         'year_start'), EnergyMix.get_sosdisc_inputs('year_end') + 1)
     # Construct a DataFrame to organize the data
     resource_consumed = pd.DataFrame({GlossaryCore.Years: years})
-    energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
+    energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)
     for energy in energy_list:
         if energy == 'biomass_dry':
             namespace_disc = f'{WITNESS_ns}.AgricultureMix'
@@ -115,7 +115,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
 
         energy_disc = execution_engine.dm.get_disciplines_with_name(
             f'{namespace_disc}')[0]
-        techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        techno_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace_disc}.{techno}')[0]
@@ -127,11 +127,11 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
                     'scaling_factor_techno_consumption')
     CCUS = execution_engine.dm.get_disciplines_with_name(
         f'{WITNESS_ns}.CCUS')[0]
-    ccs_list = CCUS.get_sosdisc_inputs('ccs_list')
+    ccs_list = CCUS.get_sosdisc_inputs(GlossaryCore.ccs_list)
     for stream in ccs_list:
         stream_disc = execution_engine.dm.get_disciplines_with_name(
             f'{WITNESS_ns}.CCUS.{stream}')[0]
-        techno_list = stream_disc.get_sosdisc_inputs('technologies_list')
+        techno_list = stream_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{WITNESS_ns}.CCUS.{stream}.{techno}')[0]

@@ -208,18 +208,10 @@ class DataStudy():
         # 
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                                   'Total CO2 emissions': np.linspace(37., 10., len(years)),
+                                                   GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
                                                    'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
                                                    'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
-        # witness_input[f'{self.name}.CO2_emissions_Gt'] = co2_emissions_gt
-        #         self.exec_eng.dm.export_couplings(
-        #             in_csv=True, f_name='couplings.csv')
-
-        #         self.exec_eng.root_process.coupling_structure.graph.export_initial_graph(
-        #             "initial.pdf")
-        # self.exec_eng.root_process.coupling_structure.graph.export_reduced_graph(
-        # "reduced.pdf")
         setup_data_list.append(witness_input)
 
         return setup_data_list

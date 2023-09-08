@@ -54,7 +54,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt',
                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                      'Total CO2 emissions': ('float', None, False),
+                                                      GlossaryCore.TotalCO2Emissions: ('float', None, False),
                                                       'Total N2O emissions': ('float', None, False),
                                                       'Total CH4 emissions': ('float', None, False),
                                                       }},
@@ -127,7 +127,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         d_ghg_ppm_d_emissions = self.ghg_cycle.d_ppm_d_ghg()
 
         self.set_partial_derivative_for_other_types(
-            ('ghg_cycle_df', 'co2_ppm'), ('GHG_emissions_df', 'Total CO2 emissions'), d_ghg_ppm_d_emissions['CO2'])
+            ('ghg_cycle_df', 'co2_ppm'), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions), d_ghg_ppm_d_emissions['CO2'])
         self.set_partial_derivative_for_other_types(
             ('ghg_cycle_df', 'ch4_ppm'), ('GHG_emissions_df', 'Total CH4 emissions'), d_ghg_ppm_d_emissions['CH4'])
         self.set_partial_derivative_for_other_types(
@@ -145,7 +145,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             specie='N2O')
 
         self.set_partial_derivative_for_other_types(
-            ('gwp20_objective',), ('GHG_emissions_df', 'Total CO2 emissions'), d_gwp20_objective_d_total_co2_emissions)
+            ('gwp20_objective',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions), d_gwp20_objective_d_total_co2_emissions)
         self.set_partial_derivative_for_other_types(
             ('gwp20_objective',), ('GHG_emissions_df', 'Total CH4 emissions'), d_gwp20_objective_d_total_ch4_emissions)
         self.set_partial_derivative_for_other_types(
@@ -163,7 +163,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             specie='N2O')
 
         self.set_partial_derivative_for_other_types(
-            ('gwp100_objective',), ('GHG_emissions_df', 'Total CO2 emissions'),
+            ('gwp100_objective',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions),
             d_gwp100_objective_d_total_co2_emissions)
         self.set_partial_derivative_for_other_types(
             ('gwp100_objective',), ('GHG_emissions_df', 'Total CH4 emissions'),
@@ -173,10 +173,10 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             d_gwp100_objective_d_total_n2o_emissions)
 
         self.set_partial_derivative_for_other_types(
-            ('rockstrom_limit_constraint',), ('GHG_emissions_df', 'Total CO2 emissions'),
+            ('rockstrom_limit_constraint',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions),
             -d_ghg_ppm_d_emissions['CO2'] / self.ghg_cycle.rockstrom_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('minimum_ppm_constraint',), ('GHG_emissions_df', 'Total CO2 emissions'),
+            ('minimum_ppm_constraint',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions),
             d_ghg_ppm_d_emissions['CO2'] / self.ghg_cycle.minimum_ppm_constraint_ref)
 
     def get_chart_filter_list(self):

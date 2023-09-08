@@ -55,7 +55,7 @@ class ConsumptionDiscTest(unittest.TestCase):
             join(data_dir, 'economics_data_onestep.csv'))
         economics_df = economics_df[economics_df[GlossaryCore.Years] >= 2020]
 
-        economics_df = economics_df[GlossaryCore.Economics_df['dataframe_descriptor'].keys()]
+        economics_df = economics_df[GlossaryCore.EconomicsDf['dataframe_descriptor'].keys()]
 
         global_data_dir = join(dirname(dirname(__file__)), 'data')
         population_df = read_csv(

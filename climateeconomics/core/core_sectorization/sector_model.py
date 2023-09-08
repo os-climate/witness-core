@@ -114,8 +114,8 @@ class SectorModel():
             self.investment_df = inputs['sectors_investment_df']
             self.investment_df.index = self.investment_df[GlossaryCore.Years].values
         #scale energy production
-        self.energy_production = inputs['energy_production'].copy(deep=True)
-        self.energy_production['Total production'] *= self.scaling_factor_energy_production
+        self.energy_production = inputs[GlossaryCore.EnergyProduction].copy(deep=True)
+        self.energy_production[GlossaryCore.TotalProductionValue] *= self.scaling_factor_energy_production
         self.energy_production.index = self.energy_production[GlossaryCore.Years].values
         self.workforce_df = inputs['workforce_df']
         self.workforce_df.index = self.workforce_df[GlossaryCore.Years].values
@@ -141,7 +141,7 @@ class SectorModel():
         if  not: productivity evolves independently from other variables (except productivity growthrate)
         '''
         damage_to_productivity = self.damage_to_productivity
-        damefrac = self.damage_df.at[year, 'damage_frac_output']
+        damefrac = self.damage_df.at[year, GlossaryCore.DamageFractionOutput]
         #For year_start put initial value 
         if year == self.year_start: 
             productivity =  self.productivity_start  
@@ -208,7 +208,7 @@ class SectorModel():
         Output: usable capital in trill dollars constant 2020
         """
         capital = self.capital_df.loc[year, 'capital']
-        energy = self.energy_production.at[year, 'Total production']
+        energy = self.energy_production.at[year, GlossaryCore.TotalProductionValue]
         e_max = self.capital_df.loc[year, 'e_max']
         # compute usable capital
         usable_capital = capital * (energy / e_max)
@@ -242,7 +242,7 @@ class SectorModel():
         Output net of damages, trillions USD
         """
         damage_to_productivity = self.damage_to_productivity
-        damefrac = self.damage_df.at[year, 'damage_frac_output']
+        damefrac = self.damage_df.at[year, GlossaryCore.DamageFractionOutput]
         gross_output = self.production_df.at[year,'output']
 #        if damage_to_productivity == True :
 #            D = 1 - damefrac
@@ -279,7 +279,7 @@ class SectorModel():
         """ Equation for Emax constraint 
         """
         e_max = self.capital_df['e_max'].values
-        energy = self.energy_production['Total production'].values
+        energy = self.energy_production[GlossaryCore.TotalProductionValue].values
         self.emax_enet_constraint = - \
             (energy - e_max * self.max_capital_utilisation_ratio) / self.ref_emax_enet_constraint
     
@@ -419,11 +419,11 @@ class SectorModel():
             # first line stays at zero since derivatives of initial values are
             # zero
             for i in range(1, nb_years):
-                d_productivity[i, i] = (1 - self.frac_damage_prod * self.damage_df.at[years[i], 'damage_frac_output']) * \
+                d_productivity[i, i] = (1 - self.frac_damage_prod * self.damage_df.at[years[i], GlossaryCore.DamageFractionOutput]) * \
                                     d_productivity[i - 1, i] / (1 - p_productivity_gr[i - 1]) - self.frac_damage_prod * \
                                     p_productivity[i - 1] / (1 - p_productivity_gr[i - 1])
                 for j in range(1, i):
-                    d_productivity[i, j] = (1 - self.frac_damage_prod * self.damage_df.at[years[i], 'damage_frac_output']) * \
+                    d_productivity[i, j] = (1 - self.frac_damage_prod * self.damage_df.at[years[i], GlossaryCore.DamageFractionOutput]) * \
                                             d_productivity[i - 1, j] / (1 - p_productivity_gr[i - 1] )
 
         return d_productivity
@@ -475,7 +475,7 @@ class SectorModel():
         else:
             output_net_of_d = gross_output * (1 - damefrac)
         """
-        damefrac = self.damage_df['damage_frac_output'].values
+        damefrac = self.damage_df[GlossaryCore.DamageFractionOutput].values
         if self.damage_to_productivity == True:
             dnet_output =(1 - damefrac) / (1 - self.frac_damage_prod * damefrac) * doutput
         else:
@@ -496,7 +496,7 @@ class SectorModel():
         dnet_output = np.zeros((nb_years, nb_years))
         for i in range(0, nb_years):
             output = self.production_df.at[years[i], 'output']
-            damefrac = self.damage_df.at[years[i], 'damage_frac_output']
+            damefrac = self.damage_df.at[years[i], GlossaryCore.DamageFractionOutput]
             for j in range(0, i + 1):
                 if i == j:
                     if self.damage_to_productivity == True:

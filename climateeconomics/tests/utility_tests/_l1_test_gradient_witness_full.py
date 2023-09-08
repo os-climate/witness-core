@@ -80,7 +80,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         output_full_names = [f'Test.{obj}' for obj in self.obj_const]
         input_full_names = ['Test.EnergyMix.invest_energy_mix',
-                            'Test.CO2_taxes']
+                            f'Test.{GlossaryCore.CO2TaxesValue}']
 
         self.ee.display_treeview_nodes()
         disc = self.ee.root_process
@@ -126,13 +126,13 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.root_process
 
-        output_full_names = ['Test.{GlossaryCore.TemperatureDfValue}', 'Test.utility_df', f'Test.{GlossaryCore.EconomicsDfValue}',
-                             'Test.carboncycle_df', 'Test.CO2_emissions_df', 'Test.{GlossaryCore.DamageDfValue}',
-                             'Test.EnergyMix.energy_production', f'Test.EnergyMix.{GlossaryCore.EnergyInvestmentsValue}',
-                             'Test.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', 'Test.EnergyMix.energy_mean_price']
+        output_full_names = [f'Test.{GlossaryCore.TemperatureDfValue}', 'Test.utility_df', f'Test.{GlossaryCore.EconomicsDfValue}',
+                             'Test.carboncycle_df', 'Test.CO2_emissions_df', f'Test.{GlossaryCore.DamageDfValue}',
+                             f'Test.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'Test.EnergyMix.{GlossaryCore.EnergyInvestmentsValue}',
+                             f'Test.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', 'Test.EnergyMix.energy_mean_price']
 
         input_full_names = ['Test.EnergyMix.invest_energy_mix',
-                            'Test.CO2_taxes']
+                            f'Test.{GlossaryCore.CO2TaxesValue}']
         input_full_names.extend(
             [f'Test.EnergyMix.{energy}.invest_techno_mix' for energy in usecase.energy_list])
 
@@ -212,7 +212,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         namespace = 'Test.WITNESS_Eval.WITNESS'
         output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.utility_df', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
                              f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.{GlossaryCore.DamageDfValue}',
-                             f'{namespace}.EnergyMix.energy_production', f'{namespace}.EnergyMix.{GlossaryCore.EnergyInvestmentsValue}',
+                             f'{namespace}.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'{namespace}.EnergyMix.{GlossaryCore.EnergyInvestmentsValue}',
                              f'{namespace}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'{namespace}.EnergyMix.energy_mean_price',
                              f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',
                              f'{namespace}.temperature_objective',
@@ -221,12 +221,12 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.display_treeview_nodes(display_variables=True)
         #         input_full_names = ['Test.WITNESS_Eval.CO2_taxes_array']
-        #         for energy in full_values_dict[f'{self.name}.WITNESS_Eval.energy_list']:
+        #         for energy in full_values_dict[f'{self.name}.WITNESS_Eval.{GlossaryCore.energy_list}']:
         #             energy_wo_dot = energy.replace('.', '_')
         #             input_full_names.append(
         #                 f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{energy_wo_dot}_array_mix')
 
-        # for technology in full_values_dict[f'Test.WITNESS_Eval.EnergyMix.{energy}.technologies_list']:
+        # for technology in full_values_dict[f'Test.WITNESS_Eval.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
         #     technology_wo_dot = technology.replace('.', '_')
         #     input_full_names.append(
         #         f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
@@ -269,12 +269,12 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         output_full_names = [
             f'Test.WITNESS_Eval.{obj}' for obj in self.obj_const]
         input_full_names = ['Test.WITNESS_Eval.CO2_taxes_array']
-        for energy in full_values_dict[f'{self.name}.WITNESS_Eval.energy_list']:
+        for energy in full_values_dict[f'{self.name}.WITNESS_Eval.{GlossaryCore.energy_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_full_names.append(
                 f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{energy_wo_dot}_array_mix')
 
-        #             for technology in full_values_dict[f'Test.WITNESS_Eval.EnergyMix.{energy}.technologies_list']:
+        #             for technology in full_values_dict[f'Test.WITNESS_Eval.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
         #                 technology_wo_dot = technology.replace('.', '_')
         #                 input_full_names.append(
         #                     f'{self.name}.WITNESS_Eval.DesignVariables.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
@@ -352,14 +352,14 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         input_full_names = ['Test.WITNESS_Eval.WITNESS.CO2_taxes_array']
         nb_poles = 5
-        for energy in full_values_dict[f'{self.name}.WITNESS_Eval.WITNESS.energy_list']:
+        for energy in full_values_dict[f'{self.name}.WITNESS_Eval.WITNESS.{GlossaryCore.energy_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_name = f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.{energy_wo_dot}_array_mix'
             input_full_names.append(input_name)
             full_values_dict[input_name] = np.linspace(1, 2, nb_poles)
 
             for technology in full_values_dict[
-                f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.technologies_list']:
+                f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_name = f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'
                 input_full_names.append(input_name)
@@ -370,7 +370,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         namespace = 'Test.WITNESS_Eval.WITNESS'
         output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.utility_df', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
                              f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.{GlossaryCore.DamageDfValue}',
-                             f'{namespace}.EnergyMix.energy_production', f'{namespace}.EnergyMix{GlossaryCore.EnergyInvestmentsValue}',
+                             f'{namespace}.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'{namespace}.EnergyMix{GlossaryCore.EnergyInvestmentsValue}',
                              f'{namespace}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'{namespace}.EnergyMix.energy_mean_price',
                              f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',
                              f'{namespace}.utility_objective',

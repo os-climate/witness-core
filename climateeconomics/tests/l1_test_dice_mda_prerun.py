@@ -77,14 +77,14 @@ class DICEMDAPrerunTest(unittest.TestCase):
                           usecase.year_end + 1, usecase.time_step)
         data = np.zeros(len(years))
         df = DataFrame({'year': years,
-                        'damages': data,
-                        'damage_frac_output': data,
+                        GlossaryCore.Damages: data,
+                        GlossaryCore.DamageFractionOutput: data,
                         'backstop_price': data,
                         'adj_backstop_cost': data,
                         'abatecost': data,
                         'marg_abatecost': data,
                         'carbon_price': data,
-                        'base_carbon_price': data},
+                        GlossaryCore.BaseCarbonPrice: data},
                        index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
         dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df
 

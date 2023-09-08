@@ -86,7 +86,7 @@ class Study(ClimateEconomicsStudyManager):
                 dv_arrays_dict[
                     f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = \
                     dspace_df[f'{energy}.{energy_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{energy}.{energy_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
+                design_var_descriptor[f'{energy}.{energy_wo_dot}_array_mix'] = {'out_name': GlossaryCore.invest_mix,
                                                                                 'out_type': 'dataframe',
                                                                                 'key': f'{energy}',
                                                                                 'index': years,
@@ -102,7 +102,7 @@ class Study(ClimateEconomicsStudyManager):
                     dspace_df[
                         f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
-                    'out_name': 'invest_mix',
+                    'out_name': GlossaryCore.invest_mix,
                     'out_type': 'dataframe',
                     'key': f'{energy}.{technology}',
                     'index': years,
@@ -116,7 +116,7 @@ class Study(ClimateEconomicsStudyManager):
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = \
                     dspace_df[f'{ccs}.{ccs_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{ccs}.{ccs_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
+                design_var_descriptor[f'{ccs}.{ccs_wo_dot}_array_mix'] = {'out_name': GlossaryCore.invest_mix,
                                                                           'out_type': 'dataframe',
                                                                           'key': f'{ccs}',
                                                                           'index': years,
@@ -132,7 +132,7 @@ class Study(ClimateEconomicsStudyManager):
                     dspace_df[
                         f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
-                    'out_name': 'invest_mix',
+                    'out_name': GlossaryCore.invest_mix,
                     'out_type': 'dataframe',
                     'key': f'{ccs}.{technology}',
                     'index': years,
@@ -260,7 +260,7 @@ class Study(ClimateEconomicsStudyManager):
             dspace_df = dspace_df.append(dict_var, ignore_index=True)
 
         self.dspace = dspace_df
-        values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.energy_list'] = self.witness_uc.energy_list
+        values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         setup_data_list.append(values_dict)
         setup_data_list.append(dv_arrays_dict)

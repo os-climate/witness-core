@@ -110,8 +110,8 @@ class GHGEmissions():
             self.gwp_emissions[f'{ghg}_100'] = self.ghg_emissions_df[f'Total {ghg} emissions'] * self.gwp_100[ghg]
 
     def compute_co2_emissions_for_carbon_cycle(self):
-        co2_emissions_df = self.ghg_emissions_df[[GlossaryCore.Years, 'Total CO2 emissions']].rename(
-            {'Total CO2 emissions': 'total_emissions'}, axis=1)
+        co2_emissions_df = self.ghg_emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]].rename(
+            {GlossaryCore.TotalCO2Emissions: 'total_emissions'}, axis=1)
         return co2_emissions_df
 
     def compute(self):

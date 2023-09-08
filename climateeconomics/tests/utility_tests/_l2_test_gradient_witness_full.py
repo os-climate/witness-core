@@ -16,6 +16,8 @@ limitations under the License.
 from os.path import join, dirname, exists
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
@@ -94,11 +96,11 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         output_full_names = [f'{self.name}.{obj}' for obj in self.obj_const]
         input_full_names = [f'{self.name}.EnergyMix.invest_energy_mix',
-                            f'{self.name}.CO2_taxes',
+                            f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                             f'{self.name}.livestock_usage_factor_df']
         for energy in usecase.energy_list:
             input_full_names.append(
-                f'{self.name}.EnergyMix.{energy}.invest_level')
+                f'{self.name}.EnergyMix.{energy}.{GlossaryCore.InvestLevelValue}')
 
         disc = self.ee.root_process
 
@@ -176,24 +178,24 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         input_full_names = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CO2_taxes_array',
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.livestock_usage_factor_array']
-        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.energy_list']:
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.energy_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix')
 
             for technology in full_values_dict[
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
-        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_list']:
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.ccs_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{energy_wo_dot}_array_mix')
 
             for technology in full_values_dict[
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
@@ -246,24 +248,24 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         input_full_names = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CO2_taxes_array',
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.livestock_usage_factor_array']
-        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.energy_list']:
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.energy_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix')
 
             for technology in full_values_dict[
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
-        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_list']:
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.ccs_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{energy_wo_dot}_array_mix')
 
             for technology in full_values_dict[
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
@@ -333,24 +335,24 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CO2_taxes_array',
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.livestock_usage_factor_array']
 
-        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.energy_list']:
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.energy_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix')
 
             for technology in full_values_dict[
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
-        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_list']:
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.ccs_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_full_names.append(
                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{energy_wo_dot}_array_mix')
 
             for technology in full_values_dict[
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
@@ -427,22 +429,22 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         #             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CO2_taxes_array',
         #             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.livestock_usage_factor_array']
         #
-        #         for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.energy_list']:
+        #         for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.energy_list}']:
         #             energy_wo_dot = energy.replace('.', '_')
         #             input_full_names.append(
         #                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{energy_wo_dot}_array_mix')
         #
-        #             for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
+        #             for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
         #                 technology_wo_dot = technology.replace('.', '_')
         #                 input_full_names.append(
         #                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
         #
-        #         for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_list']:
+        #         for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.ccs_list}']:
         #             energy_wo_dot = energy.replace('.', '_')
         #             input_full_names.append(
         #                 f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{energy_wo_dot}_array_mix')
         #
-        #             for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
+        #             for technology in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{GlossaryCore.techno_list}']:
         #                 technology_wo_dot = technology.replace('.', '_')
         #                 input_full_names.append(
         #                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
@@ -453,14 +455,14 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         #         values_dict_step[f'{self.name}.{usecase.coupling_name}.max_mda_iter'] = step + 2
         #         self.ee.load_study_from_input_dict(values_dict_step)
         self.ee.execute()
-        ns = self.ee.dm.get_all_namespaces_from_var_name('energy_list')[0]
+        ns = self.ee.dm.get_all_namespaces_from_var_name(GlossaryCore.energy_list)[0]
         energy_list = self.ee.dm.get_value(ns)
 
         inputs_names = [
             f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.energy_prices' for energy in energy_list if
             energy not in ['carbon_capture', 'carbon_storage']]
         inputs_names.extend([
-            f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.energy_production' for energy in
+            f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in
             energy_list if energy not in ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
             [f'{self.name}.{usecase.coupling_name}.WITNESS.EnergyMix.{energy}.energy_consumption' for energy in
@@ -469,7 +471,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.energy_consumption' for energy in
              ['carbon_capture', 'carbon_storage']])
         inputs_names.extend(
-            [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.energy_production' for energy in
+            [f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.{GlossaryCore.EnergyProductionValue}' for energy in
              ['carbon_capture', 'carbon_storage']])
         inputs_names.extend([
             f'{self.name}.{usecase.coupling_name}.WITNESS.CCUS.{energy}.energy_prices' for energy in
@@ -646,18 +648,18 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         input_full_names = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.livestock_usage_factor_array']
 
-        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.energy_list']:
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.energy_list}']:
             energy_wo_dot = energy.replace('.', '_')
             for technology in full_values_dict[
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.technologies_list']:
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
 
-        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_list']:
+        for energy in full_values_dict[f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{GlossaryCore.ccs_list}']:
             energy_wo_dot = energy.replace('.', '_')
             for technology in full_values_dict[
-                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.technologies_list']:
+                f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_full_names.append(
                     f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.CCUS.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix')
@@ -751,7 +753,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                 self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                     step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                     inputs=[
-                                        'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.invest_level'],
+                                        f'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.{GlossaryCore.InvestLevelValue}'],
                                     outputs=[
                                         'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.techno_production'])
 
@@ -759,14 +761,14 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
             print('Then check col by col')
             print('--------------------------------------------------------------------')
             for output_column in disc.get_sosdisc_outputs('techno_production').columns[1:]:
-                for input_column in disc.get_sosdisc_inputs('invest_level').columns[1:]:
+                for input_column in disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue).columns[1:]:
                     self.ee.dm.delete_complex_in_df_and_arrays()
                     print('input_column : ', input_column)
                     print('output_columns : ', output_column)
                     self.check_jacobian(location=dirname(__file__), filename=pkl_name, discipline=disc,
                                         step=1.0e-15, derr_approx='complex_step', threshold=1e-5, local_data={},
                                         inputs=[
-                                            'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.invest_level'],
+                                            f'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.{GlossaryCore.InvestLevelValue}'],
                                         input_column=input_column,
                                         outputs=[
                                             'Test.WITNESS_Eval.WITNESS.EnergyMix.liquid_fuel.Refinery.techno_production'],

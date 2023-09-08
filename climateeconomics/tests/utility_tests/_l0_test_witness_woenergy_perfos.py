@@ -93,7 +93,7 @@ class TestScatter(unittest.TestCase):
             GlossaryCore.Years, 'total_CO2_emitted']]
         energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = years
 
         energy_outlook = pd.DataFrame({
@@ -103,7 +103,7 @@ class TestScatter(unittest.TestCase):
         f2 = interp1d(energy_outlook[GlossaryCore.Years], energy_outlook['energy_demand'])
         energy_supply = f2(years)
         energy_supply_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'Total production': energy_supply})
+            {GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply})
         energy_supply_df.index = years
 
         CCS_price = pd.DataFrame(
@@ -112,7 +112,7 @@ class TestScatter(unittest.TestCase):
         energy_mean_price = pd.DataFrame(
             {GlossaryCore.Years: years, 'energy_price': energy_price})
 
-        input_dict_to_load[f'{self.name}.energy_production'] = energy_supply_df
+        input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
         input_dict_to_load[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
         input_dict_to_load[f'{self.name}.energy_mean_price'] = energy_mean_price
         input_dict_to_load[f'{self.name}.CCS_price'] = CCS_price

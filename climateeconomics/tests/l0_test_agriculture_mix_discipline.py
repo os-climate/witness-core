@@ -192,8 +192,8 @@ class AgricultureMixModelTestCase(unittest.TestCase):
                        f'{test_name}.{disc_name}.Forest.techno_prices': self.techno_prices_forest,
                        f'{test_name}.{disc_name}.Forest.CO2_emissions': self.CO2_emissions_forest,
                        f'{test_name}.{disc_name}.Forest.land_use_required': self.land_use_required_forest,
-                       f'{test_name}.technologies_list': self.technology_list,
-                       f'{test_name}.CO2_taxes': self.co2_taxes,
+                       f'{test_name}.{GlossaryCore.techno_list}': self.technology_list,
+                       f'{test_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
                       }
 
         ee.load_study_from_input_dict(inputs_dict)

@@ -108,7 +108,7 @@ class GHGCycle():
         """
         computes CO2 concentrations in atmosphere in ppm at t following FUND pyworld3
         """
-        emissions = self.GHG_emissions_df.loc[self.GHG_emissions_df[GlossaryCore.Years] == year, 'Total CO2 emissions'].values[0] * 1e3     # in MtCO2
+        emissions = self.GHG_emissions_df.loc[self.GHG_emissions_df[GlossaryCore.Years] == year, GlossaryCore.TotalCO2Emissions].values[0] * 1e3     # in MtCO2
         boxes_tmp = [decay*box_conc + 0.000471*em_ratio*emissions for (decay, box_conc, em_ratio) in zip(self.decays, boxes, self.em_ratios)]
         boxes = boxes_tmp
         for i in [1, 2, 3, 4, 5]:

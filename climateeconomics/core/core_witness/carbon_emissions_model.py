@@ -115,7 +115,7 @@ class CarbonEmissions():
 
         total_CO2_emissions = sum_sources - sum_sinks
 
-        self.co2_emissions['Total CO2 emissions'] = total_CO2_emissions
+        self.co2_emissions[GlossaryCore.TotalCO2Emissions] = total_CO2_emissions
 
     def compute_sigma(self, year):
         '''
@@ -208,7 +208,7 @@ class CarbonEmissions():
         gross_output_ter = self.economics_df.at[year, GlossaryCore.GrossOutput]
         energy_emis_share = self.energy_emis_share
         share_land_emis = self.land_emis_share
-        energy_emissions = self.co2_emissions.at[year, 'Total CO2 emissions']
+        energy_emissions = self.co2_emissions.at[year, GlossaryCore.TotalCO2Emissions]
         #emissions_control_rate = self.emissions_control_rate[year]
         # Version with emission control rate
 #         indus_emissions = sigma * gross_output_ter * \

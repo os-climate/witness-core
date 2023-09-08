@@ -512,7 +512,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in ['technologies_list', GlossaryCore.CO2TaxesValue, 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, 'year_start', 'year_end',
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
@@ -579,7 +579,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in ['technologies_list', GlossaryCore.CO2TaxesValue, 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, 'year_start', 'year_end',
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
@@ -647,12 +647,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             join(dirname(__file__), 'data/mda_coarse_data_energymix_input_dict.pkl'), 'rb')
         mda_data_input_dict = pickle.load(pkl_file)
         pkl_file.close()
-        # mda_data_input_dict['renewable.energy_production']['value']['renewable'] = 1e-16
         namespace = f'{self.name}'
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict.keys():
-            if key in ['technologies_list', 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, 'year_start', 'year_end',
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[key]['value']

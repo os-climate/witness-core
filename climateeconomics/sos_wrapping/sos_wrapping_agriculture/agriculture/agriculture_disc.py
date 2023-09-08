@@ -84,7 +84,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-               GlossaryCore.PopulationDF['var_name']: GlossaryCore.PopulationDF,
+               GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
                'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
                                    'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True), 'white meat': ('float', [0, 1e9], True), 'milk': ('float', [0, 1e9], True),
                                                             'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),
@@ -103,10 +103,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                                  'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
 
                'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'default': default_other_use, 'namespace': 'ns_agriculture'},
-               GlossaryCore.TemperatureDfValue: {'type': 'dataframe', 'unit': 'degree Celsius', 'visibility': 'Shared', 'namespace': 'ns_witness',
-                                  'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                           'temp_atmo': ('float', None, False), }
-                                  },
+               GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
                'param_a': {'type': 'float', 'unit': '-', 'default': - 0.00833, 'user_level': 3},
                'param_b': {'type': 'float', 'unit': '-', 'default': - 0.04167, 'user_level': 3}
                }

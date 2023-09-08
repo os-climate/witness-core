@@ -59,7 +59,7 @@ class TempChangeDiscipline(SoSWrapp):
                            }}
 
     DESC_OUT = {
-        GlossaryCore.TemperatureDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
+        GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario')}
 
     _maturity = 'Research'
 

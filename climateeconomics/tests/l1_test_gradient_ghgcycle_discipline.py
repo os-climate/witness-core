@@ -59,13 +59,13 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
 
         emissions_df = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
-        emissions_df['Total CO2 emissions'] = emissions_df['total_emissions']
+        emissions_df[GlossaryCore.TotalCO2Emissions] = emissions_df['total_emissions']
 
         emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= 2020]
-        emissions_df['Total CH4 emissions'] = emissions_df['Total CO2 emissions'] * 0.01
-        emissions_df['Total N2O emissions'] = emissions_df['Total CO2 emissions'] * 0.001
+        emissions_df['Total CH4 emissions'] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.01
+        emissions_df['Total N2O emissions'] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.001
 
-        values_dict = {f'{self.name}.GHG_emissions_df': emissions_df[[GlossaryCore.Years, 'Total CO2 emissions', 'Total CH4 emissions', 'Total N2O emissions']]}
+        values_dict = {f'{self.name}.GHG_emissions_df': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, 'Total CH4 emissions', 'Total N2O emissions']]}
 
         self.ee.load_study_from_input_dict(values_dict)
 

@@ -61,7 +61,7 @@ class IndusEmissionDiscTest(unittest.TestCase):
         economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
         energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020]
         energy_supply_df_y = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
 
         # put manually the index
         years = np.arange(2020, 2101)

@@ -212,8 +212,8 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.test_name}.{disc_name}.Forest.techno_prices': self.techno_prices_forest,
                        f'{self.test_name}.{disc_name}.Forest.CO2_emissions': self.CO2_emissions_forest,
                        f'{self.test_name}.{disc_name}.Forest.land_use_required': self.land_use_required_forest,
-                       f'{self.test_name}.technologies_list': self.technology_list,
-                       f'{self.test_name}.CO2_taxes': self.co2_taxes
+                       f'{self.test_name}.{GlossaryCore.techno_list}': self.technology_list,
+                       f'{self.test_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes
                       }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -241,6 +241,6 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.test_name}.{disc_name}.energy_prices',
                                     f'{self.test_name}.{disc_name}.energy_consumption',
                                     f'{self.test_name}.{disc_name}.energy_consumption_woratio',
-                                    f'{self.test_name}.{disc_name}.energy_production',
+                                    f'{self.test_name}.{disc_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.test_name}.{disc_name}.land_use_required',
                             ])

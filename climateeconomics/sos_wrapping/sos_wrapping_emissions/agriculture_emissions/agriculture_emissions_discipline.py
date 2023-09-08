@@ -56,7 +56,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'technologies_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+        GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                               'possible_values': ['Crop', 'Forest'],
                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                               'namespace': 'ns_agriculture',
@@ -81,8 +81,8 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
-        if 'technologies_list' in self.get_data_in():
-            techno_list = self.get_sosdisc_inputs('technologies_list')
+        if GlossaryCore.techno_list in self.get_data_in():
+            techno_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
             if techno_list is not None:
                 for techno in techno_list:
                     dynamic_inputs[f'{techno}.CO2_land_emission_df'] = {
@@ -162,7 +162,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         """
         inputs_dict = self.get_sosdisc_inputs()
         np_years = inputs_dict['year_end'] - inputs_dict['year_start'] + 1
-        techno_list = self.get_sosdisc_inputs('technologies_list')
+        techno_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
         co2_eq_20_ref = inputs_dict['co2_eq_20_objective_ref']
         co2_eq_100_ref = inputs_dict['co2_eq_100_objective_ref']
 
@@ -268,7 +268,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         new_chart = TwoAxesInstanciatedChart(
             GlossaryCore.Years, 'GHG emissions (Gt)', chart_name=chart_name, stacked_bar=True)
 
-        technology_list = self.get_sosdisc_inputs('technologies_list')
+        technology_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
 
         CO2_emissions_land_use_df = self.get_sosdisc_outputs(
             'CO2_land_emissions')
@@ -306,7 +306,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         new_chart = TwoAxesInstanciatedChart(
             GlossaryCore.Years, 'CO2 emissions (GtCO2)', chart_name=chart_name, stacked_bar=True)
 
-        technology_list = self.get_sosdisc_inputs('technologies_list')
+        technology_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
 
         CO2_emissions_land_use_df = self.get_sosdisc_outputs(
             'CO2_land_emissions')

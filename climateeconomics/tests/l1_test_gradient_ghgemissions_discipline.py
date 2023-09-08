@@ -63,7 +63,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         year_end = 2100
         years = np.arange(year_start, year_end + 1)
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                                   'Total CO2 emissions': np.linspace(37., 10., len(years)),
+                                                   GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
                                                    'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
                                                    'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
         CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,

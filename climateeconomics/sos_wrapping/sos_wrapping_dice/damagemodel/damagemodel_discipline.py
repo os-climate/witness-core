@@ -60,15 +60,15 @@ class DamageDiscipline(SoSWrapp):
         'tp_a4': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.754},
         'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                  'Total CO2 emissions': ('float', None, False),
+                                                  GlossaryCore.TotalCO2Emissions: ('float', None, False),
                                                   'Total N2O emissions': ('float', None, False),
                                                   'Total CH4 emissions': ('float', None, False),
                                                   }
                          },
-        GlossaryCore.TemperatureDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',},
+        GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                                    'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
                                    'dataframe_edition_locked': False},
@@ -104,7 +104,7 @@ class DamageDiscipline(SoSWrapp):
 
         chart_filters = []
 
-        chart_list = ['Damage', 'Abatement cost']  # , 'Abatement cost']
+        chart_list = [GlossaryCore.Damages, 'Abatement cost']  # , 'Abatement cost']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -124,13 +124,13 @@ class DamageDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        if 'Damage' in chart_list:
+        if GlossaryCore.Damages in chart_list:
 
-            to_plot = ['damages']
+            to_plot = [GlossaryCore.Damages]
             damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
             damage_df = resize_df(damage_df)
 
-            damage = damage_df['damages']
+            damage = damage_df[GlossaryCore.Damages]
 
             years = list(damage_df.index)
 

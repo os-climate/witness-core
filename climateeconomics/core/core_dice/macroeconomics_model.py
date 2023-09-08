@@ -48,7 +48,7 @@ class MacroEconomics():
         self.decline_rate_tfp = self.param['decline_rate_tfp']
         self.depreciation_capital = self.param['depreciation_capital']
         self.abatecost = self.inputs['abatecost']
-        self.damefrac = self.inputs['damage_frac_output']
+        self.damefrac = self.inputs[GlossaryCore.DamageFractionOutput]
         self.init_rate_time_pref = self.param['init_rate_time_pref']
         self.conso_elasticity = self.param['conso_elasticity']
         self.lo_capital = self.param['lo_capital']
@@ -278,7 +278,7 @@ class MacroEconomics():
         self.inputs = inputs
         self.abatecost = self.inputs['abatecost'].reindex(
             self.years_range)
-        self.damefrac = self.inputs['damage_frac_output'].reindex(
+        self.damefrac = self.inputs[GlossaryCore.DamageFractionOutput].reindex(
             self.years_range)
 
         self.create_dataframe()

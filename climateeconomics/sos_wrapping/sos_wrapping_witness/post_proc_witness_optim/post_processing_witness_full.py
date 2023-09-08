@@ -108,7 +108,7 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
     # Prepare data
     multilevel_df, years, updated_ns = get_multilevel_df(
         execution_engine, namespace,
-        columns=['price_per_kWh', 'price_per_kWh_wotaxes', 'CO2_per_kWh', 'production', 'invest'])
+        columns=['price_per_kWh', 'price_per_kWh_wotaxes', 'CO2_per_kWh', 'production', GlossaryCore.InvestValue])
     energy_list = list(set(multilevel_df.index.droplevel(1)))
     namespace = updated_ns
 
@@ -138,7 +138,7 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
             production += [np.sum(multilevel_df.groupby(level=0)
                                   ['production'].sum()[energy]), ]
             invest += [np.sum(multilevel_df.groupby(level=0)
-                              ['invest'].sum()[energy]), ]
+                              [GlossaryCore.InvestValue].sum()[energy]), ]
             total_CO2 += [np.sum((multilevel_df.loc[energy]['CO2_per_kWh']
                                   * multilevel_df.loc[energy]['production']).sum()), ]
             total_price += [np.sum((multilevel_df.loc[energy]['price_per_kWh']
@@ -192,7 +192,7 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
                 production += [multilevel_df.groupby(level=0)
                                ['production'].sum()[energy][i_year], ]
                 invest += [multilevel_df.groupby(level=0)
-                           ['invest'].sum()[energy][i_year], ]
+                           [GlossaryCore.InvestValue].sum()[energy][i_year], ]
                 total_CO2 += [(multilevel_df.loc[energy]['CO2_per_kWh'] *
                                multilevel_df.loc[energy]['production']).sum()[i_year], ]
                 total_price += [(multilevel_df.loc[energy]['price_per_kWh']
@@ -281,8 +281,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     idx = pd.MultiIndex.from_tuples([], names=['energy', 'techno'])
     multilevel_df = pd.DataFrame(
         index=idx,
-        columns=['production', 'invest', 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
-    energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
+        columns=['production', GlossaryCore.InvestValue, 'CO2_per_kWh', 'price_per_kWh', 'price_per_kWh_wotaxes'])
+    energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)
     
     for energy in energy_list:
         if energy == 'biomass_dry':
@@ -290,7 +290,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
         else:
             namespace_disc = f'{namespace}.EnergyMix.{energy}'
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace_disc)[0]
-        techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        techno_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace_disc}.{techno}')[0]
@@ -299,8 +299,8 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                                 techno_disc.get_sosdisc_inputs(
                                     'scaling_factor_techno_production')
             # crop had not invest_level but crop_investment
-            invest_techno = techno_disc.get_sosdisc_inputs('invest_level')[
-                                f'invest'].values * \
+            invest_techno = techno_disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)[
+                                fGlossaryCore.InvestValue].values * \
                             techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
             # Calculate total CO2 emissions
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
@@ -329,7 +329,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             idx = pd.MultiIndex.from_tuples(
                 [(f'{energy}', f'{techno}')], names=['energy', 'techno'])
             columns_techno = ['energy', 'technology',
-                              'production', 'invest',
+                              'production', GlossaryCore.InvestValue,
                               'CO2_per_kWh', 'price_per_kWh',
                               'price_per_kWh_wotaxes']
             techno_df = pd.DataFrame([(energy, techno, production_techno, invest_techno,
@@ -365,7 +365,7 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     label_col1 = ['CO2 from production',
                   'CO2 per use', 'CO2 from other consumption']
     label_col2 = energy_list
-    label_col3 = ['Total CO2 emissions']
+    label_col3 = [GlossaryCore.TotalCO2Emissions]
     label_list = label_col1 + label_col2 + label_col3
 
     # Create Figure
@@ -440,8 +440,8 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
             # col2 to col3
             source += [i_label_dict[energy], ]
             source_name += [energy, ]
-            target += [i_label_dict['Total CO2 emissions'], ]
-            target_name += ['Total CO2 emissions', ]
+            target += [i_label_dict[GlossaryCore.TotalCO2Emissions], ]
+            target_name += [GlossaryCore.TotalCO2Emissions, ]
             flux += [CO2_after_use_tot, ]
             flux_color += [CO2_after_use, ]
             production_list += [production, ]
@@ -532,8 +532,8 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
                 # col2 to col3
                 source += [i_label_dict[energy], ]
                 source_name += [energy, ]
-                target += [i_label_dict['Total CO2 emissions'], ]
-                target_name += ['Total CO2 emissions', ]
+                target += [i_label_dict[GlossaryCore.TotalCO2Emissions], ]
+                target_name += [GlossaryCore.TotalCO2Emissions, ]
                 flux += [CO2_after_use_tot, ]
                 flux_color += [CO2_after_use, ]
                 production_list += [production, ]
@@ -613,7 +613,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 
     EnergyMix = execution_engine.dm.get_disciplines_with_name(
         f'{namespace}.EnergyMix')[0]
-    energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
+    energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)
     years = np.arange(EnergyMix.get_sosdisc_inputs(
         'year_start'), EnergyMix.get_sosdisc_inputs('year_end') + 1, 1)
     # Construct a DataFrame to organize the data on two levels: energy and
@@ -627,7 +627,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     for energy in energy_list:
         energy_disc = execution_engine.dm.get_disciplines_with_name(
             f'{namespace}.EnergyMix.{energy}')[0]
-        techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        techno_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.EnergyMix.{energy}.{techno}')[0]
@@ -699,7 +699,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 #
 # # i_label_dict associates each label with an integer value
 # i_label_dict = dict((key, i) for i, key in enumerate(label_list))
-# x_scatter = 'invest'
+# x_scatter = GlossaryCore.InvestValue
 # y_scatter = 'CO2_per_kWh'
 #
 # # Create Figure
@@ -792,12 +792,12 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 # 'factory', 'energy_cost', GlossaryCore.EnergyInvestmentsValue, 'margin',
 # 'production_stream', 'production_techno',
 # 'weighted_techno_price', 'weighted_stream_price',
-# 'invest', 'CO2_per_kWh', 'stream_category'])
-# energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
+# GlossaryCore.InvestValue, 'CO2_per_kWh', 'stream_category'])
+# energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)
 # for energy in energy_list:
 # energy_disc = execution_engine.dm.get_disciplines_with_name(
 # f'{namespace}.EnergyMix.{energy}')[0]
-# techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+# techno_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
 # for techno in techno_list:
 # techno_disc = execution_engine.dm.get_disciplines_with_name(
 # f'{namespace}.EnergyMix.{energy}.{techno}')[0]
@@ -837,8 +837,8 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 # #---------
 # # Data for Scatter plot
 # #---------
-# invest_techno = techno_disc.get_sosdisc_inputs('invest_level')[
-# f'invest'].values *\
+# invest_techno = techno_disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)[
+# fGlossaryCore.InvestValue].values *\
 # techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
 # CO2_per_kWh_techno = techno_disc.get_sosdisc_outputs('CO2_emissions')[
 # f'{techno}'].values
@@ -848,7 +848,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 # 'factory', 'energy_cost', GlossaryCore.EnergyInvestmentsValue, 'margin',
 # 'production_stream', 'production_techno',
 # 'weighted_techno_price', 'weighted_stream_price',
-# 'invest', 'CO2_per_kWh', 'stream_category']
+# GlossaryCore.InvestValue, 'CO2_per_kWh', 'stream_category']
 # techno_df = pd.DataFrame([(energy, techno, stream_price, transport_techno, factory_techno,
 # energy_cost_techno, CO2_taxes_techno, margin_techno,
 # production_stream, production_techno,
@@ -857,11 +857,11 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 # index=idx, columns=columns)
 # multilevel_df = multilevel_df.append(techno_df)
 #
-# ccs_list = EnergyMix.get_sosdisc_inputs('ccs_list')
+# ccs_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.ccs_list)
 # for stream in ccs_list:
 # stream_disc = execution_engine.dm.get_disciplines_with_name(
 # f'{namespace}.CCUS.{stream}')[0]
-# techno_list = stream_disc.get_sosdisc_inputs('technologies_list')
+# techno_list = stream_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
 # for techno in techno_list:
 # techno_disc = execution_engine.dm.get_disciplines_with_name(
 # f'{namespace}.CCUS.{stream}.{techno}')[0]
@@ -897,8 +897,8 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 # if stream == 'carbon_storage':
 # stream_category = 'CCUS.CarbonStorage'
 # # Data for scatter plot
-# invest_techno = techno_disc.get_sosdisc_inputs('invest_level')[
-# f'invest'].values *\
+# invest_techno = techno_disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)[
+# fGlossaryCore.InvestValue].values *\
 # techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
 # CO2_per_kWh_techno = techno_disc.get_sosdisc_outputs('CO2_emissions')[
 # f'{techno}'].values
@@ -908,7 +908,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 # 'factory', 'energy_cost', GlossaryCore.EnergyInvestmentsValue, 'margin',
 # 'production_stream', 'production_techno',
 # 'weighted_techno_price', 'weighted_stream_price',
-# 'invest', 'CO2_per_kWh', 'stream_category']
+# GlossaryCore.InvestValue, 'CO2_per_kWh', 'stream_category']
 # techno_df = pd.DataFrame([(stream, techno, stream_price, transport_techno, factory_techno,
 # energy_cost_techno, CO2_taxes_techno, margin_techno,
 # production_stream, production_techno,

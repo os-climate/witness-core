@@ -48,9 +48,9 @@ class UtilityModelDiscipline(SoSWrapp):
         'init_rate_time_pref': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'scaleone': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.0302455265681763},
         'scaletwo': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': -10993.704},
-        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        GlossaryCore.TemperatureDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),
     }
     DESC_OUT = {
         'utility_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}

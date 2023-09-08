@@ -85,13 +85,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   'output_growth': ('float', None, False), }
                          },
-        GlossaryCore.TemperatureDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '°C',
-                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                    'exog_forcing': ('float', None, False),
-                                                    'forcing': ('float', None, False),
-                                                    'temp_atmo': ('float', None, False),
-                                                    'temp_ocean': ('float', None, False),}
-                           },
+        GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3, 'unit': '-',
                                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                 'param': ('string', None, False),
@@ -138,7 +132,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         }
 
     DESC_OUT = {
-        GlossaryCore.PopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
                                       'namespace': 'ns_witness'},
         'population_detail_df': {'type': 'dataframe', 'unit': 'people'},

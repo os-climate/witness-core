@@ -65,7 +65,7 @@ class DICEParallelTest(unittest.TestCase):
             GlossaryCore.Years, 'total_CO2_emitted']]
         energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = years
 
         energy_outlook = pd.DataFrame({
@@ -75,7 +75,7 @@ class DICEParallelTest(unittest.TestCase):
         f2 = interp1d(energy_outlook[GlossaryCore.Years], energy_outlook['energy_demand'])
         energy_supply = f2(years)
         energy_supply_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'Total production': energy_supply})
+            {GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply})
         energy_supply_df.index = years
 
         CCS_price = pd.DataFrame(
@@ -111,7 +111,7 @@ class DICEParallelTest(unittest.TestCase):
         CO2_emissions_by_use_sinks.index = years
         co2_emissions_needed_by_energy_mix.index = years
 
-        values_dict[f'{self.name}.energy_production'] = energy_supply_df
+        values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
         values_dict[f'{self.name}.energy_mean_price'] = energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
@@ -121,8 +121,8 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = CO2_emissions_by_use_sources
         values_dict[f'{self.name}.CO2_emissions_by_use_sinks'] = CO2_emissions_by_use_sinks
         values_dict[f'{self.name}.EnergyMix.co2_emissions_needed_by_energy_mix'] = co2_emissions_needed_by_energy_mix
-        values_dict[f'{self.name}.energy_list'] = []
-        values_dict[f'{self.name}.ccs_list'] = []
+        values_dict[f'{self.name}.{GlossaryCore.energy_list}'] = []
+        values_dict[f'{self.name}.{GlossaryCore.ccs_list}'] = []
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.configure()
         self.ee.execute()
@@ -145,7 +145,7 @@ class DICEParallelTest(unittest.TestCase):
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
 
-        values_dict[f'{self.name}.energy_production'] = energy_supply_df
+        values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
         values_dict[f'{self.name}.energy_mean_price'] = energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
@@ -155,8 +155,8 @@ class DICEParallelTest(unittest.TestCase):
         values_dict[f'{self.name}.CO2_emissions_by_use_sources'] = CO2_emissions_by_use_sources
         values_dict[f'{self.name}.CO2_emissions_by_use_sinks'] = CO2_emissions_by_use_sinks
         values_dict[f'{self.name}.EnergyMix.co2_emissions_needed_by_energy_mix'] = co2_emissions_needed_by_energy_mix
-        values_dict[f'{self.name}.energy_list'] = []
-        values_dict[f'{self.name}.ccs_list'] = []
+        values_dict[f'{self.name}.{GlossaryCore.energy_list}'] = []
+        values_dict[f'{self.name}.{GlossaryCore.ccs_list}'] = []
 
         self.ee8.load_study_from_input_dict(values_dict)
 

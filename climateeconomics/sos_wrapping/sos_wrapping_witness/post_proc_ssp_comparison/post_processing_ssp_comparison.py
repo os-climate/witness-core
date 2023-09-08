@@ -115,7 +115,7 @@ _n2o_concentration = {FILE_NAME: 'N2O_concentration_global.csv',
 CO2_EMISSIONS = 'CO2_emissions'
 _co2_emissions = {FILE_NAME: 'CO2_emissions_global.csv',
                   VAR_NAME: 'GHGEmissions.GHG_emissions_detail_df',
-                  COLUMN: 'Total CO2 emissions',
+                  COLUMN: GlossaryCore.TotalCO2Emissions,
                   CHART_TITLE: 'Total CO2 Emissions: WITNESS vs. SSP scenarios (IPCC)',
                   UNIT_CONV_FACTOR: 1e-3,
                   Y_AXIS: 'Total CO2 Emissions [GtCO2]'}
@@ -154,8 +154,8 @@ _agriculture_surface = {FILE_NAME: 'land_cover_pasture+cropland_global.csv',
 
 FINAL_ENERGY = 'energy'
 _final_energy = {FILE_NAME: 'final_energy_global.csv',
-                 VAR_NAME: 'EnergyMix.energy_production',
-                 COLUMN: 'Total production',
+                 VAR_NAME: f'EnergyMix.{GlossaryCore.EnergyProductionValue}',
+                 COLUMN: GlossaryCore.TotalProductionValue,
                  CHART_TITLE: 'World Energy Production: WITNESS vs. SSP scenarios (IPCC)',
                  UNIT_CONV_FACTOR: 0.27777777777,
                  Y_AXIS: 'Final Energy Production [PWh]'}
@@ -217,7 +217,7 @@ WITNESS_PRIMARY_ENERGY_DATA = {
     OIL_GAS: _oil_gas,
     # HYDROGEN: _hydrogen
 } # NON-FOSSIL is deduced from total
-WITNESS_BRUT_ENERGY_TOTAL = ('EnergyMix.energy_production_brut_detailed', 'Total production')
+WITNESS_BRUT_ENERGY_TOTAL = ('EnergyMix.energy_production_brut_detailed', GlossaryCore.TotalProductionValue)
 WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
     ('EnergyMix.electricity.energy_production_detailed', 'electricity CoalGen (TWh)'),
     ('EnergyMix.electricity.energy_production_detailed', 'electricity CombinedCycleGasTurbine (TWh)'),
@@ -248,7 +248,7 @@ def get_ssp_data(data_name, data_dict, region='World'):
 def post_processing_filters(execution_engine, namespace):
 
     # get energy list 
-    energy_list = execution_engine.dm.get_value(f'{namespace}.energy_list')
+    energy_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.energy_list}')
     # if renewable not in energy list, we are not in coarse 
     chart_l = CHART_LIST
 
@@ -379,7 +379,7 @@ def post_processings(execution_engine, namespace, filters):
         return get_comp_chart_from_df(witness_data, CHARTS_DATA[data_name][Y_AXIS], CHARTS_DATA[data_name][CHART_TITLE])
 
     instanciated_charts = []
-    energy_list = execution_engine.dm.get_value(f'{namespace}.energy_list')
+    energy_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.energy_list}')
     # if renewable not in energy list, we are not in coarse 
     chart_l = CHART_LIST
 
