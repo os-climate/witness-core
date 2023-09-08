@@ -66,8 +66,11 @@ class DamageModel():
         self.years_range = years_range
         damage_df = pd.DataFrame(
             index=years_range,
-            columns=GlossaryCore.DamageDf['dataframe_descriptor'].keys())
-
+            columns=['years',
+                     'damages',
+                     'damage_frac_output',
+                     ])
+        
         if 'complex128' in [self.temperature_df['temp_atmo'].dtype]:
             arr_type = 'complex128'
         else:
