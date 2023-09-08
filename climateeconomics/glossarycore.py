@@ -6,6 +6,9 @@ class GlossaryCore:
     #  everywhere in the code. Only then, add continue filling the Glossary.
     # dataframes columns/var_names :
     Years = "years"
+    # todo in the futur: merge these 3 invest values
+    InvestValue = "invest"
+    InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = 'co2_emissions_Gt'
