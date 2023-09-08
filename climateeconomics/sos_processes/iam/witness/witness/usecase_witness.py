@@ -228,3 +228,12 @@ if '__main__' == __name__:
 
     uc_cls.run()
 
+
+    ppf = PostProcessingFactory()
+    filters = ppf.get_post_processing_filters_by_namespace(
+        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
+    graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
+                                                      filters, as_json=False)
+
+#    for graph in graph_list:
+#        graph.to_plotly().show()
