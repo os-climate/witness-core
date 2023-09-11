@@ -255,7 +255,7 @@ class Study(ClimateEconomicsStudyManager):
         'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
 
         for key in keys_to_update:
-            dspace[key]['value'] = dspace[key]['lower_bnd']
+            dspace[key]['value'] = np.array(dspace[key]['lower_bnd'])
 
         self.dspace_size = dspace.pop('dspace_size')
 
