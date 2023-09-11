@@ -300,7 +300,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
                                     'scaling_factor_techno_production')
             # crop had not invest_level but crop_investment
             invest_techno = techno_disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)[
-                                fGlossaryCore.InvestValue].values * \
+                                GlossaryCore.InvestValue].values * \
                             techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
             # Calculate total CO2 emissions
             data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
