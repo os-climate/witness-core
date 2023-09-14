@@ -20,6 +20,7 @@ from os.path import join, dirname
 from pandas import DataFrame, read_csv
 from scipy.interpolate import interp1d
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -41,10 +42,10 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         global_data_dir = join(dirname(dirname(__file__)), 'data')
 
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
-        total_workforce_df = total_workforce_df[total_workforce_df['years'] <= self.year_end]
+        total_workforce_df = total_workforce_df[total_workforce_df[GlossaryCore.Years] <= self.year_end]
         # multiply ageworking pop by employment rate and by % in services
         workforce = total_workforce_df['population_1570'] * 0.659 * 0.509
-        self.workforce_df = pd.DataFrame({'years': self.years, 'Services': workforce})
+        self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years, 'Services': workforce})
 
         # Energy_supply
         brut_net = 1 / 1.45
@@ -58,10 +59,10 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         # Find values for 2020, 2050 and concat dfs
         energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
         energy_supply_values = energy_supply * brut_net * share_indus
-        energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
+        energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: energy_supply_values})
         energy_supply_df.index = self.years
         self.energy_supply_df = energy_supply_df
-        # energy_supply_df.loc[2020, 'Total production'] = 91.936
+        # energy_supply_df.loc[2020, GlossaryCore.TotalProductionValue] = 91.936
 
         # Investment growth at 2%
         init_value = 25
@@ -69,14 +70,14 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         invest_serie.append(init_value)
         for year in np.arange(1, self.nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.002)
-        self.total_invest = pd.DataFrame({'years': self.years, 'Services': invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years, 'Services': invest_serie})
 
         # damage
         self.damage_df = pd.DataFrame(
-            {'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
-             'base_carbon_price': np.zeros(self.nb_per)})
+            {GlossaryCore.Years: self.years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
+             GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
         self.damage_df.index = self.years
-        self.damage_df['damage_frac_output'] = 1e-2
+        self.damage_df[GlossaryCore.DamageFractionOutput] = 1e-2
 
     def analytic_grad_entry(self):
         return [
@@ -108,8 +109,8 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.time_step': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.frac_damage_prod': 0.3,
-                       f'{self.name}.{self.model_name}.energy_production': self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.damage_df': self.damage_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.workforce_df': self.workforce_df,
                        f'{self.name}.sectors_investment_df': self.total_invest,
                        f'{self.name}.alpha': 0.5,
@@ -122,8 +123,8 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_services_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.energy_production',
-                                    f'{self.name}.{self.model_name}.damage_df',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.workforce_df',
                                     f'{self.name}.sectors_investment_df'],
                             outputs=[f'{self.name}.{self.model_name}.production_df',
@@ -155,8 +156,8 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.time_step': self.time_step,
                        f'{self.name}.damage_to_productivity': False,
                        f'{self.name}.frac_damage_prod': 0.3,
-                       f'{self.name}.{self.model_name}.energy_production': self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.damage_df': self.damage_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.workforce_df': self.workforce_df,
                        f'{self.name}.sectors_investment_df': self.total_invest,
                        f'{self.name}.alpha': 0.5,
@@ -169,8 +170,8 @@ class ServicesJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_services_discipline_withoutdamage.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.energy_production',
-                                    f'{self.name}.{self.model_name}.damage_df',
+                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
+                                    f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.workforce_df',
                                     f'{self.name}.sectors_investment_df'],
                             outputs=[f'{self.name}.{self.model_name}.production_df',

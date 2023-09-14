@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from copy import deepcopy
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, compute_func_with_exp_min
 
 from climateeconomics.core.core_resources.resource_model.resource_model import ResourceModel
@@ -69,7 +70,7 @@ class PlatinumResourceModel(ResourceModel):
         '''
         For each resource_type inside resource pyworld3, compute predictable production through Hubbert regression function
         '''
-        centered_resource_production_data = self.resource_production_data.loc[self.resource_production_data['years'] <= self.regression_stop]
+        centered_resource_production_data = self.resource_production_data.loc[self.resource_production_data[GlossaryCore.Years] <= self.regression_stop]
         for resource_type in self.sub_resource_list:
             self.predictable_production[resource_type] = compute_Hubbert_regression(
                 centered_resource_production_data, self.production_years, self.production_start, resource_type)
@@ -83,7 +84,7 @@ class PlatinumResourceModel(ResourceModel):
         # dataframe initialization
         self.resource_price['price'] = np.insert(np.zeros(len(self.years)-1), 0, self.resource_price_data.loc[0, 'price'])
         resource_price_dict = self.resource_price.to_dict()
-        self.resource_demand = self.resources_demand[['years', self.resource_name]]
+        self.resource_demand = self.resources_demand[[GlossaryCore.Years, self.resource_name]]
         self.get_global_demand(self.resource_demand)
 
         demand = deepcopy(self.resource_demand[self.resource_name].values)      

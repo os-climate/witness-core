@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -50,28 +52,28 @@ class ObjectivesTestCase(unittest.TestCase):
         gdp_agri = gdp_serie * 6.775773/100
         gdp_indus = gdp_serie * 28.4336/100
         gdp_service = gdp_serie * 64.79/100
-        self.prod_agri = DataFrame({'years':self. years,'output': gdp_agri, 'output_net_of_damage': gdp_agri*0.995})
-        self.prod_indus = DataFrame({'years':self. years,'output': gdp_indus, 'output_net_of_damage': gdp_indus*0.995})
-        self.prod_service = DataFrame({'years':self. years,'output': gdp_service, 'output_net_of_damage': gdp_service*0.995})
+        self.prod_agri = DataFrame({GlossaryCore.Years:self. years,'output': gdp_agri, 'output_net_of_damage': gdp_agri*0.995})
+        self.prod_indus = DataFrame({GlossaryCore.Years:self. years,'output': gdp_indus, 'output_net_of_damage': gdp_indus*0.995})
+        self.prod_service = DataFrame({GlossaryCore.Years:self. years,'output': gdp_service, 'output_net_of_damage': gdp_service*0.995})
         cap_agri = capital_serie * 0.018385
         cap_indus = capital_serie * 0.234987
         cap_service = capital_serie * 0.74662
         energy_eff = np.linspace(2, 3, self.nb_per)
-        self.cap_agri_df = DataFrame({'years':self. years,'capital': cap_agri, 'usable_capital': cap_agri*0.8, 'energy_efficiency': energy_eff})
-        self.cap_indus_df = DataFrame({'years':self. years,'capital': cap_indus, 'usable_capital': cap_indus*0.8, 'energy_efficiency': energy_eff})
-        self.cap_service_df = DataFrame({'years':self. years,'capital': cap_service, 'usable_capital': cap_service*0.8, 'energy_efficiency': energy_eff})
+        self.cap_agri_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_agri, 'usable_capital': cap_agri*0.8, 'energy_efficiency': energy_eff})
+        self.cap_indus_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_indus, 'usable_capital': cap_indus*0.8, 'energy_efficiency': energy_eff})
+        self.cap_service_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_service, 'usable_capital': cap_service*0.8, 'energy_efficiency': energy_eff})
         
-        self.economics_df = DataFrame({'years':self. years,'capital': capital_serie, 'usable_capital': capital_serie*0.8, 
-                                       'output': gdp_serie, 'output_net_of_d': gdp_serie*0.995})
+        self.economics_df = DataFrame({GlossaryCore.Years:self. years,'capital': capital_serie, 'usable_capital': capital_serie*0.8,
+                                       'output': gdp_serie, GlossaryCore.OutputNetOfDamage: gdp_serie*0.995})
         
         data_dir = join(dirname(__file__), 'data/sectorization_fitting')
         self.hist_gdp = read_csv(join(data_dir, 'hist_gdp_sect.csv'))
         self.hist_capital = read_csv(join(data_dir, 'hist_capital_sect.csv'))
         self.hist_energy = read_csv(join(data_dir, 'hist_energy_sect.csv'))
         long_term_energy_eff =  read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
-        self.lt_enef_agri = DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Agriculture']})
-        self.lt_enef_indus = DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Industry']})
-        self.lt_enef_services = DataFrame({'years': long_term_energy_eff['years'], 'energy_efficiency': long_term_energy_eff['Services']})
+        self.lt_enef_agri = DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Agriculture']})
+        self.lt_enef_indus = DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Industry']})
+        self.lt_enef_services = DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Services']})
         self.extra_data = read_csv(join(data_dir, 'extra_data_for_energy_eff.csv'))
 
     def test_objectives_discipline(self):
@@ -96,7 +98,7 @@ class ObjectivesTestCase(unittest.TestCase):
         ee.display_treeview_nodes()
         self.inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
-                       f'{name}.economics_df': self.economics_df,
+                       f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
                        f'{name}.{model_name}.Services.production_df': self.prod_service,
                        f'{name}.{model_name}.Industry.production_df': self.prod_indus,
@@ -140,7 +142,7 @@ class ObjectivesTestCase(unittest.TestCase):
         
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
-                       f'{name}.economics_df': self.economics_df,
+                       f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
                        f'{name}.{model_name}.Services.production_df': self.prod_service,
                        f'{name}.{model_name}.Industry.production_df': self.prod_indus,
@@ -187,7 +189,7 @@ class ObjectivesTestCase(unittest.TestCase):
         
         inputs_dict = {f'{name}.year_start': self.year_start,
                        f'{name}.year_end': self.year_end,
-                       f'{name}.economics_df': self.economics_df,
+                       f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
                        f'{name}.{model_name}.Services.production_df': self.prod_service,
                        f'{name}.{model_name}.Industry.production_df': self.prod_indus,

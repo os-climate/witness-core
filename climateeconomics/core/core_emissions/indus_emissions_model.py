@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class IndusEmissions():
     '''
@@ -37,7 +39,7 @@ class IndusEmissions():
         self.init_gr_sigma = self.param['init_gr_sigma']
         self.decline_rate_decarbo = self.param['decline_rate_decarbo']
         self.init_indus_emissions = self.param['init_indus_emissions']
-        self.init_gross_output = self.param['init_gross_output']
+        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.init_cum_indus_emissions = self.param['init_cum_indus_emissions']
         self.energy_emis_share = self.param['energy_emis_share']
         self.land_emis_share = self.param['land_emis_share']
@@ -59,13 +61,13 @@ class IndusEmissions():
         years_range = np.arange(
             year_start, year_end + 1, self.time_step)
         self.years_range = years_range
-        indus_emissions_df = pd.DataFrame(index=years_range, columns=['years',
+        indus_emissions_df = pd.DataFrame(index=years_range, columns=[GlossaryCore.Years,
                                                                       'gr_sigma', 'sigma', 'indus_emissions',
                                                                       'cum_indus_emissions'])
 
         for key in indus_emissions_df.keys():
             indus_emissions_df[key] = 0
-        indus_emissions_df['years'] = years_range
+        indus_emissions_df[GlossaryCore.Years] = years_range
         indus_emissions_df.loc[year_start, 'gr_sigma'] = init_gr_sigma
         indus_emissions_df.loc[year_start,
                                'indus_emissions'] = init_indus_emissions
@@ -115,7 +117,7 @@ class IndusEmissions():
         emissions not coming from land change or energy 
         """
         sigma = self.indus_emissions_df.at[year, 'sigma']
-        gross_output_ter = self.economics_df.at[year, 'gross_output']
+        gross_output_ter = self.economics_df.at[year, GlossaryCore.GrossOutput]
 
         indus_emissions = sigma * gross_output_ter * \
             (1 - self.energy_emis_share - self.land_emis_share)
@@ -181,8 +183,8 @@ class IndusEmissions():
         Compute outputs of the pyworld3
         """
         self.inputs_models = inputs_models
-        self.economics_df = self.inputs_models['economics_df']
-        self.economics_df.index = self.economics_df['years'].values
+        self.economics_df = self.inputs_models[GlossaryCore.EconomicsDfValue]
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
 
         # Iterate over years
         for year in self.years_range:

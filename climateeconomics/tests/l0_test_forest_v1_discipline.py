@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -39,7 +41,7 @@ class ForestTestCase(unittest.TestCase):
         year_range = self.year_end - self.year_start + 1
         deforestation_surface = np.array(np.linspace(10, 100, year_range))
         self.deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": deforestation_surface})
+            {GlossaryCore.Years: years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
         # Mha
         self.limit_deforestation_surface = 1000
@@ -47,7 +49,7 @@ class ForestTestCase(unittest.TestCase):
         self.initial_emissions = 3.21
         forest_invest = np.linspace(2, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.reforestation_cost_per_ha = 3800
 
         self.param = {'year_start': self.year_start,

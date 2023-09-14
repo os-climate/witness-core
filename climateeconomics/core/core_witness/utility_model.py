@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class UtilityModel():
     '''
@@ -57,7 +59,7 @@ class UtilityModel():
         self.years_range = years_range
         utility_df = pd.DataFrame(
             index=years_range,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'u_discount_rate',
                      'period_utility_pc',
                      'discounted_utility',
@@ -65,7 +67,7 @@ class UtilityModel():
 
         for key in utility_df.keys():
             utility_df[key] = 0
-        utility_df['years'] = years_range
+        utility_df[GlossaryCore.Years] = years_range
         self.utility_df = utility_df
         return utility_df
 
@@ -97,7 +99,7 @@ class UtilityModel():
         # Compute energy price ratio
         energy_price = self.energy_mean_price.at[year, 'energy_price']
         energy_price_ratio = self.energy_price_ref / energy_price
-        pc_consumption = self.economics_df.at[year, 'pc_consumption']
+        pc_consumption = self.economics_df.at[year, GlossaryCore.PerCapitaConsumption]
         period_utility = (
             pc_consumption**(1 - self.conso_elasticity) - 1) / (1 - self.conso_elasticity) - 1
         # need a limit for period utility because negative period utility is
@@ -121,7 +123,7 @@ class UtilityModel():
         """
         period_utility = self.utility_df.at[year, 'period_utility_pc']
         u_discount_rate = self.utility_df.at[year, 'u_discount_rate']
-        population = self.population_df.at[year, 'population']
+        population = self.population_df.at[year, GlossaryCore.PopulationValue]
         discounted_utility = period_utility * u_discount_rate * population
         self.utility_df.loc[year, 'discounted_utility'] = discounted_utility
         return discounted_utility
@@ -216,8 +218,8 @@ class UtilityModel():
         d_welfare_d_population = np.zeros((nb_years, nb_years))
 
         for i in range(nb_years):
-            pc_consumption = self.economics_df.at[years[i], 'pc_consumption']
-            population = self.population_df.at[years[i], 'population']
+            pc_consumption = self.economics_df.at[years[i], GlossaryCore.PerCapitaConsumption]
+            population = self.population_df.at[years[i], GlossaryCore.PopulationValue]
             u_discount_rate = self.utility_df.at[years[i], 'u_discount_rate']
             period_utility_pc = self.utility_df.at[years[i],
                                                    'period_utility_pc']
@@ -256,8 +258,8 @@ class UtilityModel():
         d_discounted_utility_d_energy_price = np.zeros((nb_years, nb_years))
         d_welfare_d_energy_price = np.zeros((nb_years, nb_years))
 
-        pc_consumption = self.economics_df['pc_consumption'].values
-        population = self.population_df['population'].values
+        pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
+        population = self.population_df[GlossaryCore.PopulationValue].values
         u_discount_rate = self.utility_df['u_discount_rate'].values
         energy_price = self.energy_mean_price['energy_price'].values
 
@@ -382,13 +384,13 @@ class UtilityModel():
         ''' pyworld3 execution
         '''
         self.economics_df = economics_df
-        self.economics_df.index = self.economics_df['years'].values
-        self.energy_mean_price = pd.DataFrame({'years': energy_mean_price['years'].values,
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
+        self.energy_mean_price = pd.DataFrame({GlossaryCore.Years: energy_mean_price[GlossaryCore.Years].values,
                                                'energy_price': energy_mean_price['energy_price'].values})
-        self.energy_mean_price.index = self.energy_mean_price['years'].values
+        self.energy_mean_price.index = self.energy_mean_price[GlossaryCore.Years].values
         self.energy_price_ref = self.initial_raw_energy_price
         self.population_df = population_df
-        self.population_df.index = self.population_df['years'].values
+        self.population_df.index = self.population_df[GlossaryCore.Years].values
         for year in self.years_range:
             self.compute__u_discount_rate(year)
             self.compute_period_utility(year)

@@ -17,6 +17,8 @@ limitations under the License.
 from os.path import join, dirname
 from pandas import read_csv
 from pathlib import Path
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import unittest
@@ -64,12 +66,12 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         population = np.array(np.linspace(8000, 9000, year_range))
         self.population_df = pd.DataFrame(
-            {"years": years, 'population': population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
 
         temperature = np.array(np.linspace(1.05, 5, year_range))
         self.temperature_df = pd.DataFrame(
-            {"years": years, "temp_atmo": temperature})
+            {GlossaryCore.Years: years, "temp_atmo": temperature})
         self.temperature_df.index = years
 
         self.default_kg_to_m2 = {'red meat': 360,
@@ -91,10 +93,10 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         red_meat_percentage = np.linspace(6, 1, year_range)
         white_meat_percentage = np.linspace(14, 5, year_range)
         self.red_meat_percentage = pd.DataFrame({
-                            'years': years,
+                            GlossaryCore.Years: years,
                             'red_meat_percentage': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'white_meat_percentage': white_meat_percentage})
 
         self.other = np.linspace(0.08, 0.08, year_range)
@@ -113,7 +115,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                       'time_step': self.time_step,
                       'diet_df': self.diet_df,
                       'kg_to_kcal_dict': self.default_kg_to_kcal,
-                      'population_df': self.population_df,
+                      GlossaryCore.PopulationDfValue: self.population_df,
                       'kg_to_m2_dict': self.default_kg_to_m2,
                       'red_meat_percentage': self.red_meat_percentage,
                       'white_meat_percentage': self.white_meat_percentage,
@@ -125,8 +127,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.diet_df': self.diet_df,
                        f'{self.name}.{self.model_name}.kg_to_kcal_dict': self.default_kg_to_kcal,
                        f'{self.name}.{self.model_name}.kg_to_m2_dict': self.default_kg_to_m2,
-                       f'{self.name}.population_df': self.population_df,
-                       f'{self.name}.temperature_df': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{self.name}.red_meat_percentage': self.red_meat_percentage,
                        f'{self.name}.white_meat_percentage': self.white_meat_percentage,
                        f'{self.name}.{self.model_name}.other_use_agriculture': self.other,
@@ -140,8 +142,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_discipline.pkl', discipline=disc_techno,
                             step=1e-15, derr_approx='complex_step',local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.population_df', 
-                                    f'{self.name}.temperature_df',
+                            inputs=[f'{self.name}.{GlossaryCore.PopulationDfValue}',
+                                    f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                     f'{self.name}.red_meat_percentage',
                                     f'{self.name}.white_meat_percentage',
                                     ],

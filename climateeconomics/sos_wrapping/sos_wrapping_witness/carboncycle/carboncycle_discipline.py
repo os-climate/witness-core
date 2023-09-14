@@ -16,6 +16,7 @@ limitations under the License.
 # coding: utf-8
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.carbon_cycle_model import CarbonCycle
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
@@ -59,7 +60,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         'lo_ml': {'type': 'float', 'default': 1000, 'user_level': 2, 'unit': 'Gtc'},
         'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt',
                              'dataframe_descriptor': {
-                                 'years': ('float', None, False),
+                                 GlossaryCore.Years: ('float', None, False),
                                  'sigma': ('float', None, False),
                                  'gr_sigma': ('float', None, False),
                                  'land_emissions': ('float', None, False),
@@ -103,7 +104,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             param_in)
         dict_values = {
             'carboncycle_detail_df': carboncycle_df,
-            'carboncycle_df': carboncycle_df[['years', 'atmo_conc']],
+            'carboncycle_df': carboncycle_df[[GlossaryCore.Years, 'atmo_conc']],
             'ppm_objective': ppm_objective,
             'rockstrom_limit_constraint': self.carboncycle.rockstrom_limit_constraint,
             'minimum_ppm_constraint': self.carboncycle.minimum_ppm_constraint}
@@ -193,7 +194,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Atmosphere concentration of carbon'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'carbon concentration (Gtc)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'carbon concentration (Gtc)',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -223,7 +224,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
 
             min_value, max_value = self.get_greataxisrange(ppm)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Atmospheric concentrations parts per million',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Atmospheric concentrations parts per million',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value], chart_name)
 

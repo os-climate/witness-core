@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -57,28 +58,28 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all['years'] >= 2020]
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020]
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020]
         energy_supply_df_y = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
 
         co2_emissions_ccus_Gt = pd.DataFrame()
-        co2_emissions_ccus_Gt['years'] = energy_supply_df_y["years"]
+        co2_emissions_ccus_Gt[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         co2_emissions_ccus_Gt['carbon_storage Limited by capture (Gt)'] = 0.02
 
         CO2_emissions_by_use_sources = pd.DataFrame()
-        CO2_emissions_by_use_sources['years'] = energy_supply_df_y["years"]
+        CO2_emissions_by_use_sources[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         CO2_emissions_by_use_sources['CO2 from energy mix (Gt)'] = 0.0
         CO2_emissions_by_use_sources['carbon_capture from energy mix (Gt)'] = 0.0
         CO2_emissions_by_use_sources['Total CO2 by use (Gt)'] = 20.0
         CO2_emissions_by_use_sources['Total CO2 from Flue Gas (Gt)'] = 3.2
 
         CO2_emissions_by_use_sinks = pd.DataFrame()
-        CO2_emissions_by_use_sinks['years'] = energy_supply_df_y["years"]
+        CO2_emissions_by_use_sinks[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         CO2_emissions_by_use_sinks['CO2 removed by energy mix (Gt)'] = 0.0
 
         co2_emissions_needed_by_energy_mix = pd.DataFrame()
-        co2_emissions_needed_by_energy_mix['years'] = energy_supply_df_y["years"]
+        co2_emissions_needed_by_energy_mix[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         co2_emissions_needed_by_energy_mix[
             'carbon_capture needed by energy mix (Gt)'] = 0.0
         # put manually the index
@@ -93,11 +94,11 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         CO2_emitted_forest = pd.DataFrame()
         emission_forest = np.linspace(0.01, 0.10, len(years))
         cum_emission = np.cumsum(emission_forest) + 3.21
-        CO2_emitted_forest['years'] = years
+        CO2_emitted_forest[GlossaryCore.Years] = years
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
-        values_dict = {f'{self.name}.economics_df': economics_df_y,
-                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
+                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': energy_supply_df_y,
                        f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.co2_emissions_ccus_Gt': co2_emissions_ccus_Gt,
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,
@@ -145,27 +146,27 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all['years'] >= 2020]
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020]
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020]
         energy_supply_df_y = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_ccus_Gt = pd.DataFrame()
-        co2_emissions_ccus_Gt['years'] = energy_supply_df_y["years"]
+        co2_emissions_ccus_Gt[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         co2_emissions_ccus_Gt['carbon_storage Limited by capture (Gt)'] = 0.02
 
         CO2_emissions_by_use_sources = pd.DataFrame()
-        CO2_emissions_by_use_sources['years'] = energy_supply_df_y["years"]
+        CO2_emissions_by_use_sources[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         CO2_emissions_by_use_sources['CO2 from energy mix (Gt)'] = 0.0
         CO2_emissions_by_use_sources['carbon_capture from energy mix (Gt)'] = 0.0
         CO2_emissions_by_use_sources['Total CO2 by use (Gt)'] = 20.0
         CO2_emissions_by_use_sources['Total CO2 from Flue Gas (Gt)'] = 3.2
 
         CO2_emissions_by_use_sinks = pd.DataFrame()
-        CO2_emissions_by_use_sinks['years'] = energy_supply_df_y["years"]
+        CO2_emissions_by_use_sinks[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         CO2_emissions_by_use_sinks['CO2 removed by energy mix (Gt)'] = 0.0
 
         co2_emissions_needed_by_energy_mix = pd.DataFrame()
-        co2_emissions_needed_by_energy_mix['years'] = energy_supply_df_y["years"]
+        co2_emissions_needed_by_energy_mix[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
         co2_emissions_needed_by_energy_mix[
             'carbon_capture needed by energy mix (Gt)'] = 0.0
         # put manually the index
@@ -182,18 +183,18 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         years = np.arange(2020, 2101)
         economics_df_y.index = years
         energy_supply_df_y.index = years
-        energy_supply_df_y['Total CO2 emissions'] = np.linspace(
+        energy_supply_df_y[GlossaryCore.TotalCO2Emissions] = np.linspace(
             0, -100000, len(years))
 
         CO2_emitted_forest = pd.DataFrame()
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest) + 3.21
-        CO2_emitted_forest['years'] = years
+        CO2_emitted_forest[GlossaryCore.Years] = years
         CO2_emitted_forest['emitted_CO2_evol'] = emission_forest
         CO2_emitted_forest['emitted_CO2_evol_cumulative'] = cum_emission
 
-        values_dict = {f'{self.name}.economics_df': economics_df_y,
-                       f'{self.name}.co2_emissions_Gt': energy_supply_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
+                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': energy_supply_df_y,
                        f'{self.name}.CO2_land_emissions': CO2_emitted_forest,
                        f'{self.name}.{self.model_name}.min_co2_objective': min_co2_objective,
                        f'{self.name}.co2_emissions_ccus_Gt': co2_emissions_ccus_Gt,

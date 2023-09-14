@@ -42,7 +42,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
     years = np.arange(2020, 2101)
     CO2_tax = np.asarray([500.] * len(years))
     default_CO2_tax = pd.DataFrame(
-        {'years': years, 'CO2_tax': CO2_tax}, index=years)
+        {GlossaryCore.Years: years, 'CO2_tax': CO2_tax}, index=years)
 
     DESC_IN = {
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -58,8 +58,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'tp_a3': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.081, 'user_level': 3, 'unit': '-'},
         'tp_a4': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.754, 'user_level': 3, 'unit': '-'},
         'frac_damage_prod': {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
-        GlossaryCore.Economics_df['var_name']: GlossaryCore.Economics_df,
-        GlossaryCore.TemperatureDf['var_name']: GlossaryCore.TemperatureDf,
+        GlossaryCore.EconomicsDf['var_name']: GlossaryCore.EconomicsDf,
+        GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                        'namespace': 'ns_ref', 'user_level': 2},
         'damage_constraint_factor': {'type': 'array', 'unit': '-', 'user_level': 2},
@@ -81,7 +81,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
     def setup_sos_disciplines(self):
         """
         Check if flag 'compute_climate_impact_on_gdp' is on or not.
-        If so, then the output 'damage_df' is shared with other disciplines that requires it as input,
+        If so, then the output GlossaryCore.DamageDf['var_name' is shared with other disciplines that requires it as input,
         else it is not, and therefore others discipline will demand to specify t input
         """
 
@@ -108,8 +108,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
-        economics_df = in_dict.pop('economics_df')
-        temperature_df = in_dict.pop('temperature_df')
+        economics_df = in_dict.pop(GlossaryCore.EconomicsDfValue)
+        temperature_df = in_dict.pop\
+            (GlossaryCore.TemperatureDfValue)
 
         # pyworld3 execution
         damage_df, expected_damage_df, co2_damage_price_df = self.model.compute(
@@ -117,7 +118,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         # store output data
         out_dict = {'expected_damage_df': expected_damage_df,
-                    'damage_df': damage_df,
+                    GlossaryCore.DamageDf['var_name']: damage_df,
                     'CO2_damage_price': co2_damage_price_df}
 
         self.store_sos_outputs_values(out_dict)
@@ -127,40 +128,44 @@ class DamageDiscipline(ClimateEcoDiscipline):
         Compute jacobian for each coupling variable 
         gradiant of coupling variable to compute: 
         damage_df
-          - 'damages':
+          - GlossaryCore.Damages:
                 - temperature_df, 'temp_atmo'
-                - economics_df, 'gross_output'
-          -'damage_frac_output'
+                - economics_df, GlossaryCore.GrossOutput
+          -GlossaryCore.DamageFractionOutput
                 - temperature_df, 'temp_atmo'
         """
         ddamage_frac_output_temp_atmo, ddamages_temp_atmo, ddamages_gross_output, dconstraint_CO2_taxes, dconstraint_temp_atmo, dconstraint_economics = self.model.compute_gradient()
 
         # fill jacobians
         self.set_partial_derivative_for_other_types(
-            ('expected_damage_df', 'damage_frac_output'), ('temperature_df', 'temp_atmo'),  ddamage_frac_output_temp_atmo)
+            ('expected_damage_df', GlossaryCore.DamageFractionOutput),
+            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),  ddamage_frac_output_temp_atmo)
 
         self.set_partial_derivative_for_other_types(
-            ('expected_damage_df', 'damages'), ('temperature_df', 'temp_atmo'),  ddamages_temp_atmo)
+            ('expected_damage_df', GlossaryCore.Damages),
+            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),  ddamages_temp_atmo)
 
         self.set_partial_derivative_for_other_types(
-            ('expected_damage_df', 'damages'), ('economics_df', 'gross_output'),  ddamages_gross_output)
+            ('expected_damage_df', GlossaryCore.Damages), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  ddamages_gross_output)
 
         compute_climate_impact_on_gdp = bool(self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']) * 1.0
         self.set_partial_derivative_for_other_types(
-            ('damage_df', 'damage_frac_output'), ('temperature_df', 'temp_atmo'),
+            (GlossaryCore.DamageDf['var_name'], GlossaryCore.DamageFractionOutput),
+            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
             ddamage_frac_output_temp_atmo * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
-            ('damage_df', 'damages'), ('temperature_df', 'temp_atmo'), ddamages_temp_atmo * compute_climate_impact_on_gdp)
+            (GlossaryCore.DamageDf['var_name'], GlossaryCore.Damages),
+            (GlossaryCore.TemperatureDfValue, 'temp_atmo'), ddamages_temp_atmo * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
-            ('damage_df', 'damages'), ('economics_df', 'gross_output'), ddamages_gross_output * compute_climate_impact_on_gdp)
+            (GlossaryCore.DamageDf['var_name'], GlossaryCore.Damages), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), ddamages_gross_output * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_damage_price', 'CO2_damage_price'), ('temperature_df', 'temp_atmo'),  dconstraint_temp_atmo)
-
+            ('CO2_damage_price', 'CO2_damage_price'),
+            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),  dconstraint_temp_atmo)
         self.set_partial_derivative_for_other_types(
-            ('CO2_damage_price', 'CO2_damage_price'), ('economics_df', 'gross_output'),  dconstraint_economics)
+            ('CO2_damage_price', 'CO2_damage_price'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  dconstraint_economics)
 
     def get_chart_filter_list(self):
 
@@ -169,7 +174,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['Damage', 'CO2 damage price']  # , 'Abatement cost']
+        chart_list = [GlossaryCore.Damages, 'CO2 damage price']  # , 'Abatement cost']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -189,12 +194,12 @@ class DamageDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        if 'Damage' in chart_list:
+        if GlossaryCore.Damages in chart_list:
 
-            to_plot = ['damages']
+            to_plot = [GlossaryCore.Damages]
             damage_df = deepcopy(self.get_sosdisc_outputs('expected_damage_df'))
             compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
-            damage = damage_df['damages']
+            damage = damage_df[GlossaryCore.Damages]
 
 
             years = list(damage_df.index)
@@ -208,7 +213,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
             if not compute_climate_impact_on_gdp:
                 chart_name += ' (assumed null in macro-economics)'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Damage (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Damage (trill $)',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -232,7 +237,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             co2_damage_price = co2_damage_price_df['CO2_damage_price']
 
-            years = list(co2_damage_price_df['years'].values.tolist())
+            years = list(co2_damage_price_df[GlossaryCore.Years].values.tolist())
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -242,7 +247,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'CO2 damage price'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Price ($/tCO2)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Price ($/tCO2)',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value_1, max_value_1],
                                                  chart_name)

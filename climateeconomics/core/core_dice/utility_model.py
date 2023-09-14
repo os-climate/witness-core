@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class UtilityModel():
     '''
@@ -77,7 +79,7 @@ class UtilityModel():
              :type consumption_pc: float
         (percapitaconso**(1-elasmu)-1)/(1-elasmu)-1
         """
-        pc_consumption = self.economics_df.loc[year, 'pc_consumption']
+        pc_consumption = self.economics_df.loc[year, GlossaryCore.PerCapitaConsumption]
         period_utility = (
             pc_consumption**(1 - self.conso_elasticity) - 1) / (1 - self.conso_elasticity) - 1
         self.utility_df.loc[year, 'period_utility'] = period_utility
@@ -89,7 +91,7 @@ class UtilityModel():
         PERIODU(t) * L(t) * rr(t)
         """
         period_utility = self.utility_df.loc[year, 'period_utility']
-        population = self.economics_df.loc[year, 'population']
+        population = self.economics_df.loc[year, GlossaryCore.PopulationValue]
         u_discount_rate = self.utility_df.loc[year, 'u_discount_rate']
         discounted_utility = period_utility * population * u_discount_rate
         self.utility_df.loc[year, 'discounted_utility'] = discounted_utility

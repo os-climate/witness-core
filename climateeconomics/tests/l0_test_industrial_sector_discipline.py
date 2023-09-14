@@ -19,6 +19,7 @@ import numpy as np
 from pandas import DataFrame, read_csv
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from scipy.interpolate import interp1d
 
@@ -73,7 +74,7 @@ class IndustrialDiscTest(unittest.TestCase):
         total_workforce_df.index = years
         #multiply ageworking pop by employment rate and by % in industrial
         workforce = total_workforce_df['population_1570']* 0.659 * 0.217
-        self.workforce_df = pd.DataFrame({'years': years, 'Industry': workforce})
+        self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, 'Industry': workforce})
 
         #Energy_supply
         brut_net = 1/1.45
@@ -86,9 +87,9 @@ class IndustrialDiscTest(unittest.TestCase):
         #Find values for 2020, 2050 and concat dfs 
         energy_supply = f2(np.arange(year_start, year_end+1))
         energy_supply_values = energy_supply * brut_net * share_indus
-        self.energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
+        self.energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: energy_supply_values})
         self.energy_supply_df.index = self.years
-        #energy_supply_df.loc[2020, 'Total production'] = 91.936
+        #energy_supply_df.loc[2020, GlossaryCore.TotalProductionValue] = 91.936
 
         #Investment growth at 2% 
         init_value = 5.9
@@ -96,11 +97,11 @@ class IndustrialDiscTest(unittest.TestCase):
         invest_serie.append(init_value)
         for year in np.arange(1, nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.02)
-        self.total_invest = pd.DataFrame({'years': years, 'Industry': invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: years, 'Industry': invest_serie})
         
         #damage
-        self.damage_df = pd.DataFrame({'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
-                                       'base_carbon_price': np.zeros(self.nb_per)})
+        self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
+                                       GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
         self.damage_df.index = self.years
 
     def test_execute(self):
@@ -111,8 +112,8 @@ class IndustrialDiscTest(unittest.TestCase):
                        f'{self.name}.time_step':  self.time_step,
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.sectors_investment_df':  self.total_invest,
-                       f'{self.name}.{self.model_name}.energy_production':  self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.damage_df': self.damage_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}':  self.energy_supply_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.workforce_df':  self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 71, #2019 value
                        f'{self.name}.prod_function_fitting': False
@@ -137,8 +138,8 @@ class IndustrialDiscTest(unittest.TestCase):
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.sectors_investment_df':  self.damage_df, #To test if not used
                        f'{self.name}.{self.model_name}.hist_sector_investment': self.total_invest,
-                       f'{self.name}.{self.model_name}.energy_production':  self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.damage_df': self.damage_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}':  self.energy_supply_df,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.workforce_df':  self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 71, #2019 value
                        f'{self.name}.prod_function_fitting': True

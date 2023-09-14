@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -62,15 +62,15 @@ class Study(StudyManager):
             gdp_serie.append(gdp_serie[year - 1] * 1.02)
 
         economics_df_y = pd.DataFrame(
-            {'years': years, 'output_net_of_d': gdp_serie})
+            {GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
         temperature_df_all = read_csv(
             join(global_data_dir, 'temperature_data_onestep.csv'))
 
         population_input[self.study_name +
-                         '.economics_df'] = economics_df_y
+                         f'.{GlossaryCore.EconomicsDfValue}'] = economics_df_y
         population_input[self.study_name +
-                         '.temperature_df'] = temperature_df_all
+                         f'.{GlossaryCore.TemperatureDfValue}'] = temperature_df_all
 
         setup_data_list.append(population_input)
 

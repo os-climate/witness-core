@@ -16,6 +16,8 @@ limitations under the License.
 import unittest
 from os.path import join, dirname
 from pandas import read_csv
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 class UraniumModelTestCase(unittest.TestCase):
@@ -34,9 +36,9 @@ class UraniumModelTestCase(unittest.TestCase):
             join(data_dir, 'all_demand_from_energy_mix.csv'))
         # part to adapt lenght to the year range
 
-        self.energy_uranium_demand_df = self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df['years']
+        self.energy_uranium_demand_df = self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_uranium_demand_df= self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df['years']
+        self.energy_uranium_demand_df= self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_uranium_demand_df,

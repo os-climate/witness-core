@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -253,9 +253,9 @@ class Study(StudyManager):
         extra_data = pd.read_csv(join(data_dir, 'extra_data_for_energy_eff.csv'))
         weights = pd.read_csv(join(data_dir, 'weights_df.csv'))
         hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        agri_invest = pd.DataFrame({'years': hist_invest['years'], 'Agriculture': hist_invest['Agriculture']})
-        services_invest = pd.DataFrame({'years': hist_invest['years'], 'Services': hist_invest['Services']})
-        indus_invest = pd.DataFrame({'years': hist_invest['years'], 'Industry': hist_invest['Industry']})
+        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Agriculture': hist_invest['Agriculture']})
+        services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Services': hist_invest['Services']})
+        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Industry': hist_invest['Industry']})
 
         sect_input = {}
         sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
@@ -296,31 +296,5 @@ class ComplexJsonEncoder(_json.JSONEncoder):
 # ---------------- SPECIFIC CODE TO ENABLE COMPLEX AS REAL INTO PLOTLY CHARTS
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-
-    # uc_cls.execution_engine.set_debug_mode()
-    #     generate_n2_plot(uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines)
-    #     uc_cls.execution_engine.dm.export_couplings(in_csv=True, f_name='couplings.csv')
-    uc_cls.run()
-
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines:
-        if disc.sos_name == 'Objectives':
-            filters = ppf.get_post_processing_filters_by_discipline(disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
-
-            for graph in graph_list:
-                # Get chart as plotly dict instead of plotly json to avoid complex type error
-                d = graph.to_plotly_dict()
-                # Convert dict into json using a custom encoder that manage complex type
-                j = _json.dumps(d, cls=ComplexJsonEncoder)
-                # Set up a new plotly object using this generated json
-                p = plotly.io.from_json(j)
-                # display the plotly chart
-                # p.show()
-
-#                 g = graph.to_plotly()
-#                 g.show()
+    uc_cls = Study()
+    uc_cls.test()

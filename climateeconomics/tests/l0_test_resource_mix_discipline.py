@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -35,7 +37,7 @@ class AllResourceModelTestCase(unittest.TestCase):
 
         self.oil_production_df = read_csv(
             join(data_dir, 'oil.predictible_production.csv'))
-        self.oil_production_df.set_index('years', inplace=True)
+        self.oil_production_df.set_index(GlossaryCore.Years, inplace=True)
         self.gas_production_df = read_csv(
             join(data_dir, 'gas.predictible_production.csv'))
         self.coal_production_df = read_csv(

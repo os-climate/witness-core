@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
@@ -52,7 +53,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                Forest.DEFORESTATION_SURFACE: {'type': 'dataframe', 'unit': 'Mha',
-                                                      'dataframe_descriptor': {'years': ('float', None, False),
+                                                      'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                                'deforested_surface': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
                Forest.LIMIT_DEFORESTATION_SURFACE: {'type': 'float', 'unit': 'Mha', 'default': deforestation_limit,
@@ -62,7 +63,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000, 'namespace': 'ns_forest'},
                Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 3800, 'namespace': 'ns_forest'},
                Forest.REFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
-                                                         'dataframe_descriptor': {'years': ('float', None, False),
+                                                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                                   'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
                }
@@ -99,8 +100,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
         outputs_dict = {
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
-            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[['years', 'forest_surface_evol', 'global_forest_surface']],
-            Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[['years', 'emitted_CO2_evol_cumulative']],
+            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[[GlossaryCore.Years, 'forest_surface_evol', 'global_forest_surface']],
+            Forest.CO2_EMITTED_FOREST_DF: self.forest_model.CO2_emitted_df[[GlossaryCore.Years, 'emitted_CO2_evol_cumulative']],
         }
 
         #-- store outputs
@@ -197,7 +198,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             forest_surface_df = self.get_sosdisc_outputs(
                 Forest.FOREST_DETAIL_SURFACE_DF)
-            years = forest_surface_df['years'].values.tolist()
+            years = forest_surface_df[GlossaryCore.Years].values.tolist()
             # values are *1000 to convert from Gha to Mha
             surface_evol_by_year = forest_surface_df['forest_surface_evol'].values * 1000
             surface_evol_cum = forest_surface_df['forest_surface_evol_cumulative'].values * 1000
@@ -207,7 +208,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             forested_surface_cum = forest_surface_df['forested_surface_cumulative'].values * 1000
 
             # forest evolution year by year chart
-            new_chart = TwoAxesInstanciatedChart('years', 'Forest surface evolution [Mha / year]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Forest surface evolution [Mha / year]',
                                                  chart_name='Forest surface evolution', stacked_bar=True)
 
             deforested_series = InstanciatedSeries(
@@ -224,7 +225,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             # forest cumulative evolution chart
-            new_chart = TwoAxesInstanciatedChart('years', 'Cumulative forest surface evolution [Mha]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Cumulative forest surface evolution [Mha]',
                                                  chart_name='Cumulative forest surface evolution', stacked_bar=True)
 
             deforested_series = InstanciatedSeries(
@@ -250,7 +251,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             CO2_captured_cum = CO2_emissions_df['captured_CO2_cumulative']
             CO2_total_cum = CO2_emissions_df['emitted_CO2_evol_cumulative']
 
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2 / year]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 emission & capture [GtCO2 / year]',
                                                  chart_name='Yearly forest delta CO2 emissions', stacked_bar=True)
 
             CO2_emitted_series = InstanciatedSeries(
@@ -266,7 +267,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             # in Gt
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 emission & capture [GtCO2]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 emission & capture [GtCO2]',
                                                  chart_name='Forest CO2 emissions', stacked_bar=True)
             CO2_emitted_series = InstanciatedSeries(
                 years, CO2_emitted_cum.tolist(), 'CO2 emissions', InstanciatedSeries.BAR_DISPLAY)

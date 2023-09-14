@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_sectorization.sector_model import SectorModel
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -47,11 +48,15 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$'
       
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'unit': 'G$',
-                      'dataframe_descriptor':
-                          {'years': ('float', None, False),'damages': ('float', None, True),
-                              'damage_frac_output': ('float', None, True),'base_carbon_price': ('float', None, True),}
-},
+        GlossaryCore.DamageDfValue: {'type': 'dataframe', 'unit': 'G$',
+                                     'dataframe_descriptor':
+                                         {
+                                             GlossaryCore.Years: ('float', None, False),
+                                             'damages': ('float', None, True),
+                                             'damage_frac_output': ('float', None, True),
+                                             'base_carbon_price': ('float', None, True),
+                                         },
+                                     },
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
@@ -79,10 +84,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         'sectors_investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                             'namespace': 'ns_witness', 'dataframe_descriptor': {}, 'dynamic_dataframe_columns': True },
 
-        # energy_production stored in PetaWh for coupling variables scaling
-        'energy_production': {'type': 'dataframe','unit': 'PWh',
-                              'dataframe_descriptor':{'years': ('float', None, False),
-                                      'Total production': ('float', None, True),}},
+        GlossaryCore.EnergyProductionValue: {'type': 'dataframe', 'unit': 'PWh',
+                                             'dataframe_descriptor': {
+                                                 GlossaryCore.Years: ('float', None, False),
+                                                 'Total production': ('float', None, True)},
+                                             'dataframe_edition_locked': False},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
                   'user_level': 1, 'unit': '-'},
@@ -96,8 +102,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'productivity_df': {'type': 'dataframe'},
         'production_df': {'type': 'dataframe', 'unit': 'T$',
-                          'dataframe_descriptor': {'years': ('float', None, False),
-                                                   'gross_output': ('float', None, False),}
+                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                                   GlossaryCore.GrossOutput: ('float', None, False),}
                },
         'capital_df':  {'type': 'dataframe', 'unit': 'T$'},
         'detailed_capital_df': {'type': 'dataframe', 'unit': 'T$'},
@@ -141,13 +147,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         #configure param
         self.agriculture_model.configure_parameters(param, self.sector_name)
         #coupling df 
-        damage_df = param['damage_df']
+        damage_df = param[GlossaryCore.DamageDfValue]
         energy_production = param['energy_production']
         sectors_investment_df = param['sectors_investment_df']
         workforce_df = param['workforce_df']
         prod_function_fitting = param['prod_function_fitting']
 
-        agriculture_inputs = {'damage_df': damage_df[['years', 'damage_frac_output']],
+        agriculture_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
                               'energy_production': energy_production,
                               'sectors_investment_df': sectors_investment_df,
                               'workforce_df': workforce_df}
@@ -157,8 +163,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         # Store output data
         dict_values = {'productivity_df': productivity_df,
-                       'production_df': production_df[['years', 'output', 'output_net_of_damage']],
-                       'capital_df': capital_df[['years', 'capital', 'usable_capital']],
+                       'production_df': production_df[[GlossaryCore.Years, 'output', 'output_net_of_damage']],
+                       'capital_df': capital_df[[GlossaryCore.Years, 'capital', 'usable_capital']],
                        'detailed_capital_df': capital_df,
                        'growth_rate_df': growth_rate_df,
                        'emax_enet_constraint': emax_enet_constraint
@@ -194,13 +200,13 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         doutput_denergy = self.agriculture_model.doutput_denergy(dcapitalu_denergy)
         dnetoutput_denergy = self.agriculture_model.dnetoutput(doutput_denergy)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output'), ('energy_production', 'Total production'),scaling_factor_energy_production * doutput_denergy)
+            ('production_df', 'output'), ('energy_production', GlossaryCore.TotalProductionValue),scaling_factor_energy_production * doutput_denergy)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output_net_of_damage'), ('energy_production', 'Total production'), scaling_factor_energy_production * dnetoutput_denergy)
+            ('production_df', 'output_net_of_damage'), ('energy_production', GlossaryCore.TotalProductionValue), scaling_factor_energy_production * dnetoutput_denergy)
         self.set_partial_derivative_for_other_types(
-            ('capital_df', 'usable_capital'), ('energy_production', 'Total production'), scaling_factor_energy_production * dcapitalu_denergy)
+            ('capital_df', 'usable_capital'), ('energy_production', GlossaryCore.TotalProductionValue), scaling_factor_energy_production * dcapitalu_denergy)
         self.set_partial_derivative_for_other_types(
-            ('emax_enet_constraint',), ('energy_production', 'Total production'), - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint))
+            ('emax_enet_constraint',), ('energy_production', GlossaryCore.TotalProductionValue), - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint))
 
         # gradients wrt workforce
         doutput_dworkforce = self.agriculture_model.compute_doutput_dworkforce()
@@ -218,9 +224,9 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         dnetoutput_ddamage = self.agriculture_model.dnetoutput_ddamage(
             doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output'), ('damage_df', 'damage_frac_output'), doutput_ddamage)
+            ('production_df', 'output'), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            ('production_df', 'output_net_of_damage'), ('damage_df', 'damage_frac_output'), dnetoutput_ddamage)
+            ('production_df', 'output_net_of_damage'), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput), dnetoutput_ddamage)
 
         # gradients wrt invest
         #If production fitting = true we use the investment from another input
@@ -244,7 +250,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['sector output', 'investment', 'output growth',
+        chart_list = ['sector output', GlossaryCore.InvestmentsValue, 'output growth',
                       'usable capital', 'capital', 'employment_rate', 'workforce', 'productivity', 'energy efficiency', 'e_max']
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         if prod_func_fit == True: 
@@ -283,7 +289,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         if 'sector output' in chart_list:
 
             to_plot = ['output', 'output_net_of_damage']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             legend = {'output': 'sector gross output',
                       'output_net_of_damage': 'world output net of damage'}
@@ -304,7 +309,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Agriculture sector economics output'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output [trillion dollars]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion dollars]',
                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -342,7 +347,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Productive capital stock and usable capital for production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Capital stock [Trillion dollars]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital stock [Trillion dollars]',
                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -375,7 +380,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Agriculture capital stock per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Capital stock [Trillion dollars]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital stock [Trillion dollars]',
                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name, stacked_bar=True)
@@ -388,7 +393,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         if 'workforce' in chart_list:
 
-            years = list(workforce_df['years'])
+            years = list(workforce_df[GlossaryCore.Years])
             year_start = years[0]
             year_end = years[len(years) - 1]
 
@@ -397,7 +402,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Workforce'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Number of people [million]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Number of people [million]',
                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -414,7 +419,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         if 'productivity' in chart_list:
 
             to_plot = ['productivity']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(productivity_df.index)
 
@@ -426,7 +430,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Total Factor Productivity'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Total Factor Productivity [-]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Total Factor Productivity [-]',
                                                 [year_start, year_end], [
                                                      min_value, max_value], chart_name)
 
@@ -443,7 +447,6 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         if 'energy efficiency' in chart_list:
 
             to_plot = capital_detail_df['energy_efficiency']
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(capital_df.index)
 
@@ -454,7 +457,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Capital energy efficiency over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Capital energy efficiency [-]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital energy efficiency [-]',
                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -475,7 +478,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             to_plot = ['energy_efficiency']
 
-            years = list(lt_energy_eff['years'])
+            years = list(lt_energy_eff[GlossaryCore.Years])
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -484,7 +487,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Capital energy efficiency over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Capital energy efficiency [-]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital energy efficiency [-]',
                                                  [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -508,9 +511,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                 self.get_sosdisc_inputs('energy_production'))
             scaling_factor_energy_production = self.get_sosdisc_inputs(
                 'scaling_factor_energy_production')
-            total_production = energy_production['Total production'] * \
+            total_production = energy_production[GlossaryCore.TotalProductionValue] * \
                 scaling_factor_energy_production
-            #economics_df = discipline.get_sosdisc_outputs('economics_df')
 
             years = list(capital_detail_df.index)
 
@@ -529,7 +531,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'E_max value and Net Energy'
 
-            new_chart = TwoAxesInstanciatedChart('years', '[Twh]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[Twh]',
                                                 [year_start, year_end],
                                                  [min_value, max_value], chart_name)
             visible_line = True
@@ -556,7 +558,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             year_end = years[len(years) - 1]
             min_value, max_value = self.get_greataxisrange(growth_rate_df[to_plot])
             chart_name = 'Net output growth rate over years'
-            new_chart = TwoAxesInstanciatedChart('years', ' growth rate [-]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' growth rate [-]',
                                                 [year_start, year_end],
                                                  [min_value, max_value],
                                                  chart_name)

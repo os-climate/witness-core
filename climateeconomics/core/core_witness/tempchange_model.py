@@ -19,6 +19,8 @@ import numpy as np
 import pandas as pd
 from pandas.core.frame import DataFrame
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class TempChange(object):
     """
@@ -76,7 +78,7 @@ class TempChange(object):
         self.temperature_change_ref = inputs['temperature_change_ref']
         # rescale atmo_conc of carbon_cycle_df
         if inputs['carboncycle_df'] is not None:
-            self.carboncycle_df = pd.DataFrame({'years': inputs['carboncycle_df']['years'].values,
+            self.carboncycle_df = pd.DataFrame({GlossaryCore.Years: inputs['carboncycle_df'][GlossaryCore.Years].values,
                                                 'atmo_conc': inputs['carboncycle_df']['atmo_conc'].values /
                                                 self.scale_factor_carbon_cycle})
 
@@ -94,20 +96,20 @@ class TempChange(object):
         self.years_range = years_range
         temperature_df = DataFrame(
             index=years_range,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'exog_forcing',
                      'forcing',
                      'temp_atmo',
                      'temp_ocean'])
         for key in temperature_df.keys():
             temperature_df[key] = 0
-        temperature_df['years'] = years_range
+        temperature_df[GlossaryCore.Years] = years_range
         temperature_df.loc[self.year_start,
                            'temp_ocean'] = self.init_temp_ocean
         temperature_df.loc[self.year_start, 'temp_atmo'] = self.init_temp_atmo
         self.temperature_df = temperature_df
 
-        self.forcing_df = DataFrame({'years': self.years_range})
+        self.forcing_df = DataFrame({GlossaryCore.Years: self.years_range})
         return temperature_df
 
     def compute_exog_forcing_dice(self):
@@ -602,10 +604,10 @@ class TempChange(object):
         Compute all
         """
         # rescale atmo_conc of carbon_cycle_df
-        self.carboncycle_df = pd.DataFrame({'years': in_dict['carboncycle_df']['years'].values,
+        self.carboncycle_df = pd.DataFrame({GlossaryCore.Years: in_dict['carboncycle_df'][GlossaryCore.Years].values,
                                             'atmo_conc': in_dict['carboncycle_df']['atmo_conc'].values /
                                             self.scale_factor_carbon_cycle})
-        self.carboncycle_df.index = self.carboncycle_df['years'].values
+        self.carboncycle_df.index = self.carboncycle_df[GlossaryCore.Years].values
 
         self.compute_forcing()
 

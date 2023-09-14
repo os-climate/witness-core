@@ -15,6 +15,8 @@ limitations under the License.
 '''
 import unittest
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.dice.dice_model.usecase import Study
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from time import time
@@ -68,23 +70,23 @@ class DICEMDAPrerunTest(unittest.TestCase):
         values_dict = {}
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
-        values_dict.pop(usecase.study_name + '.economics_df')
+        values_dict.pop(usecase.study_name + f'.{GlossaryCore.EconomicsDfValue}')
 
         dice_input = {}
         years = np.arange(usecase.year_start,
                           usecase.year_end + 1, usecase.time_step)
         data = np.zeros(len(years))
         df = DataFrame({'year': years,
-                        'damages': data,
-                        'damage_frac_output': data,
+                        GlossaryCore.Damages: data,
+                        GlossaryCore.DamageFractionOutput: data,
                         'backstop_price': data,
                         'adj_backstop_cost': data,
                         'abatecost': data,
                         'marg_abatecost': data,
                         'carbon_price': data,
-                        'base_carbon_price': data},
+                        GlossaryCore.BaseCarbonPrice: data},
                        index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
-        dice_input[usecase.study_name + '.damage_df'] = df
+        dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df
 
         values_dict.update(dice_input)
 
@@ -141,10 +143,10 @@ class DICEMDAPrerunTest(unittest.TestCase):
             values_dict.update(dict_item)
 
         dice_input = {}
-        dice_input[usecase.study_name + '.CO2_emissions_df'] = CO2_emissions_df
-        dice_input[usecase.study_name + '.carboncycle_df'] = carboncycle_df
-        dice_input[usecase.study_name + '.temperature_df'] = temperature_df
-        dice_input[usecase.study_name + '.damage_df'] = df
+        dice_input[f"{usecase.study_name}.{'CO2_emissions_df'}"] = CO2_emissions_df
+        dice_input[f"{usecase.study_name}.{'carboncycle_df'}"] = carboncycle_df
+        dice_input[f"{usecase.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
+        dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df
         values_dict.update(dice_input)
 
         print('all inputs execution with all inputs')
@@ -169,11 +171,11 @@ class DICEMDAPrerunTest(unittest.TestCase):
             values_dict.update(dict_item)
 
         dice_input = {}
-        dice_input[usecase.study_name + '.carboncycle_df'] = carboncycle_df
+        dice_input[f"{usecase.study_name}.{'carboncycle_df'}"] = carboncycle_df
 
         values_dict.update(dice_input)
 
-        values_dict.pop(usecase.study_name + '.economics_df')
+        values_dict.pop(usecase.study_name + f'.{GlossaryCore.EconomicsDfValue}')
 
         print('only carbon cycle execution will crash')
         ee2.load_study_from_input_dict(values_dict)

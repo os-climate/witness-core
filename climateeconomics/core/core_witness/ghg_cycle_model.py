@@ -17,6 +17,8 @@ from typing import Union
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class GHGCycle():
     """
@@ -94,7 +96,7 @@ class GHGCycle():
             self.year_start, self.year_end + 1, self.time_step)
         self.years_range = years_range
 
-        self.ghg_cycle_df = pd.DataFrame({'years': self.years_range})
+        self.ghg_cycle_df = pd.DataFrame({GlossaryCore.Years: self.years_range})
 
         for i in [1, 2, 3, 4, 5]:
             self.ghg_cycle_df[f'co2_ppm_b{i}'] = self.boxes_conc[i-1]
@@ -106,11 +108,11 @@ class GHGCycle():
         """
         computes CO2 concentrations in atmosphere in ppm at t following FUND pyworld3
         """
-        emissions = self.GHG_emissions_df.loc[self.GHG_emissions_df['years'] == year, 'Total CO2 emissions'].values[0] * 1e3     # in MtCO2
+        emissions = self.GHG_emissions_df.loc[self.GHG_emissions_df[GlossaryCore.Years] == year, GlossaryCore.TotalCO2Emissions].values[0] * 1e3     # in MtCO2
         boxes_tmp = [decay*box_conc + 0.000471*em_ratio*emissions for (decay, box_conc, em_ratio) in zip(self.decays, boxes, self.em_ratios)]
         boxes = boxes_tmp
         for i in [1, 2, 3, 4, 5]:
-            self.ghg_cycle_df.loc[self.ghg_cycle_df['years'] == year, f'co2_ppm_b{i}'] = boxes[i-1]
+            self.ghg_cycle_df.loc[self.ghg_cycle_df[GlossaryCore.Years] == year, f'co2_ppm_b{i}'] = boxes[i-1]
 
         return boxes
 
@@ -119,10 +121,10 @@ class GHGCycle():
         computes CH4 concentrations in atmosphere in ppm at t following FUND pyworld3
         """
 
-        conc_ch4 += self.GHG_emissions_df.loc[self.GHG_emissions_df['years'] == year, 'Total CH4 emissions'].values[0] * 1e3 * self.em_to_conc_ch4 - \
+        conc_ch4 += self.GHG_emissions_df.loc[self.GHG_emissions_df[GlossaryCore.Years] == year, 'Total CH4 emissions'].values[0] * 1e3 * self.em_to_conc_ch4 - \
                     self.decay_ch4 * (conc_ch4 - self.pre_indus_conc_ch4)
 
-        self.ghg_cycle_df.loc[self.ghg_cycle_df['years'] == year, f'ch4_ppm'] = conc_ch4
+        self.ghg_cycle_df.loc[self.ghg_cycle_df[GlossaryCore.Years] == year, f'ch4_ppm'] = conc_ch4
 
         return conc_ch4
 
@@ -131,10 +133,10 @@ class GHGCycle():
         computes N2O concentrations in atmosphere in ppm at t following FUND pyworld3
         """
 
-        conc_n2o += self.GHG_emissions_df.loc[self.GHG_emissions_df['years'] == year, 'Total N2O emissions'].values[0] * 1e3 * self.em_to_conc_n2o - \
+        conc_n2o += self.GHG_emissions_df.loc[self.GHG_emissions_df[GlossaryCore.Years] == year, 'Total N2O emissions'].values[0] * 1e3 * self.em_to_conc_n2o - \
                     self.decay_n2o * (conc_n2o - self.pre_indus_conc_n2o)
 
-        self.ghg_cycle_df.loc[self.ghg_cycle_df['years'] == year, f'n2o_ppm'] = conc_n2o
+        self.ghg_cycle_df.loc[self.ghg_cycle_df[GlossaryCore.Years] == year, f'n2o_ppm'] = conc_n2o
 
         return conc_n2o
 

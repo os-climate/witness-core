@@ -18,6 +18,8 @@ from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_model import CoalResourceModel
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
@@ -65,7 +67,7 @@ class CoalResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_coal_resource',
                                                    'dataframe_descriptor':
                                      {
-                                         'years': ('float', None, False),
+                                         GlossaryCore.Years: ('float', None, False),
                                          'coal_type': ('string', None, False),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -76,7 +78,7 @@ class CoalResourceDiscipline(ResourceDiscipline):
                                  },
                'resource_production_data': {'type': 'dataframe', 'unit': 'million_barrels', 'optional': True,
                                             'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_coal_resource',
-                                            'dataframe_descriptor': {'years': ('float', None, False),
+                                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                      'sub_bituminous_and_lignite': ('float', None, False),
                                                                      'bituminous_and_anthracite': (
                                                                      'float', None, False),}
@@ -87,7 +89,7 @@ class CoalResourceDiscipline(ResourceDiscipline):
                                                                 'unit': ('string', None, False)},
                                        'namespace': 'ns_coal_resource'},
                'resource_consumed_data': {'type': 'dataframe', 'unit': '[million_barrels]', 'default': default_resource_consumed_data,
-                                          'user_level': 2, 'dataframe_descriptor': {'years': ('float', None, False),
+                                          'user_level': 2, 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                                     'sub_bituminous_and_lignite_consumption': ('float', None, False),
                                                                                     'bituminous_and_anthracite_consumption': ('float', None, False)}},
                'production_start': {'type': 'int', 'default': default_production_start, 'unit': '[-]',

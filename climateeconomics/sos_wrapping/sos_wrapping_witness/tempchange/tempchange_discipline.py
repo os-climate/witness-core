@@ -17,6 +17,7 @@ limitations under the License.
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model import TempChange
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from copy import deepcopy
@@ -58,7 +59,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'up_tatmo': {'type': 'float', 'default': 12.0, 'user_level': 3, 'unit': '°C'},
         'up_tocean': {'type': 'float', 'default': 20.0, 'user_level': 3, 'unit': '°C'},
         'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
-                           'dataframe_descriptor':{'years': ('float', None, False),
+                           'dataframe_descriptor':{GlossaryCore.Years: ('float', None, False),
                                                    'atmo_conc': ('float', None, False),
                                                    'lower_ocean_conc': ('float', None, False),
                                                    'shallow_ocean_conc': ('float', None, False),
@@ -85,7 +86,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '°C'},
+        GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'temperature_detail_df': {'type': 'dataframe', 'unit': '°C'},
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
         'temperature_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
@@ -129,7 +130,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         if in_dict['temperature_effect'] :
             # store output data
             out_dict = {"temperature_detail_df": temperature_df,
-                        "temperature_df": temperature_df[['years', 'temp_atmo']],
+                        GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, 'temp_atmo']],
                         'forcing_detail_df': self.model.forcing_df,
                         'temperature_objective': temperature_objective,
                         'temperature_constraint': self.model.temperature_end_constraint}
@@ -141,7 +142,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             temperature_df_2['temp_atmo'] = [0.1 for i in range (len(temperature_df['temp_atmo']))]
 
             out_dict = {"temperature_detail_df": temperature_df,
-                        "temperature_df": temperature_df_2[['years', 'temp_atmo']],
+                        GlossaryCore.TemperatureDfValue: temperature_df_2[[GlossaryCore.Years, 'temp_atmo']],
                         'forcing_detail_df': self.model.forcing_df,
                         'temperature_objective': temperature_objective,
                         'temperature_constraint': self.model.temperature_end_constraint}
@@ -165,7 +166,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         temperature_constraint_ref = self.get_sosdisc_inputs(
             'temperature_end_constraint_ref')
         self.set_partial_derivative_for_other_types(
-            ('temperature_df', 'temp_atmo'),  ('carboncycle_df', 'atmo_conc'), d_tempatmo_d_atmoconc,)
+            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),  ('carboncycle_df', 'atmo_conc'), d_tempatmo_d_atmoconc,)
         self.set_partial_derivative_for_other_types(
             ('temperature_constraint', ),  ('carboncycle_df', 'atmo_conc'), -d_tempatmo_d_atmoconc[-1] / temperature_constraint_ref,)
         for forcing_name, d_forcing_datmo_conc in self.model.d_forcing_datmo_conc_dict.items():
@@ -231,7 +232,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Temperature evolution over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'temperature evolution (degrees Celsius above preindustrial)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'temperature evolution (degrees Celsius above preindustrial)',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value, max_value],
                                                  chart_name)
@@ -252,15 +253,15 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             forcing_df = self.get_sosdisc_outputs('forcing_detail_df')
 
-            years = forcing_df['years'].values.tolist()
+            years = forcing_df[GlossaryCore.Years].values.tolist()
 
             chart_name = 'Gas Radiative forcing evolution over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Radiative forcing (W.m-2)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Radiative forcing (W.m-2)',
                                                  chart_name=chart_name)
 
             for forcing in forcing_df.columns:
-                if forcing != 'years':
+                if forcing != GlossaryCore.Years:
                     new_series = InstanciatedSeries(
                         years, forcing_df[forcing].values.tolist(), forcing, 'lines')
 

@@ -148,28 +148,36 @@ class CropDiscipline(ClimateEcoDiscipline):
     # for food in default_ghg_emissions:
     #     default_co2_emissions[food] = (default_ghg_emissions[food] - default_ch4_emissions[food]*ch4_gwp_100 - default_n2o_emissions[food]*n2o_gwp_100) / co2_gwp_100
     #     # default_co2_emissions[food] = 0.0
+    diet_df_default = pd.DataFrame({"red meat": [11.02],
+                                    "white meat": [31.11],
+                                    "milk": [79.27],
+                                    "eggs": [9.68],
+                                    "rice and maize": [97.76],
+                                    "potatoes": [32.93],
+                                    "fruits and vegetables": [217.62]
+                                    })
 
     year_range = default_year_end - default_year_start + 1
     total_kcal = 414542.4
-    # average daily intake source : https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8926870/#:~:text=fold%20cross%2Dvalidation.-,Findings,(100%20g)%20per%20day.
-    red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * 0.051  # 51 g/day
-    milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * 0.021 + default_kg_to_kcal[
-        'milk'] * 0.088  # 21 g/day eggs and 88g/day milk
+    # Take diet per year in kg / 365 * kg to cal to get consumption per day in kcal
+    red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * diet_df_default['red meat'].values[0]/365
+    milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * diet_df_default['eggs'].values[0]/365 + \
+                                        default_kg_to_kcal['milk'] * diet_df_default['milk'].values[0]/365
     white_meat_average_ca_daily_intake = default_kg_to_kcal[
-                                             'white meat'] * 0.035  # 20 - 50 g/day (Lemming & Pitsi, 2022).
-    vegetables_and_carbs_average_ca_daily_intake = 0.338 * default_kg_to_kcal[
+                                             'white meat'] * diet_df_default['white meat'].values[0]/365
+    vegetables_and_carbs_average_ca_daily_intake =  diet_df_default['fruits and vegetables'].values[0]/365 * default_kg_to_kcal[
         'vegetables'] + 0.56 * 2250  # carbs source: first line of https://www.cambridge.org/core/books/abs/evolving-human-nutrition/feed-the-world-with-carbohydrates/3848C6733E4D2FC315E14B7CA8C007D8
     default_red_meat_ca_per_day = pd.DataFrame({
-        'years': default_years,
+        GlossaryCore.Years: default_years,
         'red_meat_calories_per_day': [red_meat_average_ca_daily_intake] * year_range})
     default_white_meat_ca_per_day = pd.DataFrame({
-        'years': default_years,
+        GlossaryCore.Years: default_years,
         'white_meat_calories_per_day': [white_meat_average_ca_daily_intake] * year_range})
     default_vegetables_and_carbs_calories_per_day = pd.DataFrame({
-        'years': default_years,
+        GlossaryCore.Years: default_years,
         'vegetables_and_carbs_calories_per_day': [vegetables_and_carbs_average_ca_daily_intake] * year_range})
     default_milk_and_eggs_calories_per_day = pd.DataFrame({
-        'years': default_years,
+        GlossaryCore.Years: default_years,
         'milk_and_eggs_calories_per_day': [milk_eggs_average_ca_daily_intake] * year_range})
 
     # mdpi: according to the NASU recommendations,
@@ -213,7 +221,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'elec_demand_unit': 'kWh/kWh',
         'WACC': 0.07,  # ?
         'lifetime': lifetime,
-        'lifetime_unit': 'years',
+        'lifetime_unit': GlossaryCore.Years,
         # capex from
         # gov.mb.ca/agriculture/farm-management/production-economics/pubs/cop-crop-production.pdf
         # 237.95 euro/ha (717 $/acre)
@@ -240,14 +248,6 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                          1.73, 1.81, 1.88, 1.96, 2.04, 2.12, 2.2, 2.28, 2.35, 2.43,
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
-    diet_df_default = pd.DataFrame({"red meat": [11.02],
-                                    "white meat": [31.11],
-                                    "milk": [79.27],
-                                    "eggs": [9.68],
-                                    "rice and maize": [97.76],
-                                    "potatoes": [32.93],
-                                    "fruits and vegetables": [217.62]
-                                    })
 
     other_use_crop_default = np.array([0.102] * len(initial_age_distribution))
 
@@ -257,9 +257,9 @@ class CropDiscipline(ClimateEcoDiscipline):
         'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
         'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        GlossaryCore.PopulationDF['var_name']: GlossaryCore.PopulationDF,
+        GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': diet_df_default,
-                    'dataframe_descriptor': {  # 'years': ('float', None, False),
+                    'dataframe_descriptor': {  # GlossaryCore.Years: ('float', None, False),
                         'red meat': ('float', [0, 1e9], True),
                         'white meat': ('float', [0, 1e9], True),
                         'milk': ('float', [0, 1e9], True),
@@ -274,24 +274,24 @@ class CropDiscipline(ClimateEcoDiscipline):
                           'unit': 'm^2/kg', 'namespace': 'ns_crop'},
         # design variables of changing diet
         'red_meat_calories_per_day': {'type': 'dataframe', 'default': default_red_meat_ca_per_day,
-                                      'dataframe_descriptor': {'years': ('float', None, False),
+                                      'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                'red_meat_calories_per_day': ('float', None, True)},
                                       'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                       'namespace': 'ns_crop'},
         'white_meat_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_ca_per_day,
-                                        'dataframe_descriptor': {'years': ('float', None, False),
+                                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                  'white_meat_calories_per_day': ('float', None, True)},
                                         'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                         'namespace': 'ns_crop'},
         'vegetables_and_carbs_calories_per_day': {'type': 'dataframe',
                                                   'default': default_vegetables_and_carbs_calories_per_day,
-                                                  'dataframe_descriptor': {'years': ('float', None, False),
+                                                  'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                            'vegetables_and_carbs_calories_per_day': (
                                                                                'float', None, True)},
                                                   'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                                   'namespace': 'ns_crop'},
         'milk_and_eggs_calories_per_day': {'type': 'dataframe', 'default': default_milk_and_eggs_calories_per_day,
-                                           'dataframe_descriptor': {'years': ('float', None, False),
+                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                     'milk_and_eggs_calories_per_day': (
                                                                         'float', None, True)},
                                            'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -299,13 +299,13 @@ class CropDiscipline(ClimateEcoDiscipline):
         'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop',
                            'default': other_use_crop_default},
 
-        GlossaryCore.TemperatureDf['var_name']: GlossaryCore.TemperatureDf,
+        GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
 
         'param_a': {'type': 'float', 'default': -0.00833, 'unit': '-', 'user_level': 3},
         'param_b': {'type': 'float', 'default': -0.04167, 'unit': '-', 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',
-                            'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
-                                                     'investment': ('float', None, True)},
+                            'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                                                     GlossaryCore.InvestmentsValue: ('float', None, True)},
                             'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop',
                             'default': crop_investment_default},
         'scaling_factor_crop_investment': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
@@ -317,16 +317,16 @@ class CropDiscipline(ClimateEcoDiscipline):
                                              'namespace': 'ns_public', 'user_level': 2},
         'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%',
                    'namespace': 'ns_witness',
-                   'dataframe_descriptor': {'years': ('float', None, True),
+                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                             'margin': ('float', None, True)}},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                            'namespace': 'ns_witness',
-                           'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                           'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                     'transport': ('float', None, True)},
                            'dataframe_edition_locked': False},
         'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                              'namespace': 'ns_witness',
-                             'dataframe_descriptor': {'years': ('int', [1900, 2100], False),
+                             'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                       'margin': ('float', None, True)},
                              'dataframe_edition_locked': False},
         'data_fuel_dict': {'type': 'dict', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -336,7 +336,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                               'default': techno_infos_dict_default},
         'initial_production': {'type': 'float', 'unit': 'TWh', 'default': initial_production},
         'initial_age_distrib': {'type': 'dataframe', 'unit': '%', 'default': initial_age_distribution,
-                                'dataframe_descriptor': {'years': ('float', None, True),
+                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                          'age': ('float', None, True),
                                                          'distrib': ('float', None, True)}},
         'co2_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg',
@@ -420,11 +420,11 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         # Scale production TWh -> PWh
         techno_production = self.crop_model.mix_detailed_production[[
-            'years', 'Total (TWh)']]
+            GlossaryCore.Years, 'Total (TWh)']]
         techno_production = techno_production.rename(
             columns={'Total (TWh)': "biomass_dry (TWh)"})
         for column in techno_production.columns:
-            if column == 'years':
+            if column == GlossaryCore.Years:
                 continue
             techno_production[column] = techno_production[column].values / \
                                         input_dict['scaling_factor_techno_production']
@@ -433,7 +433,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         techno_consumption_woratio = deepcopy(
             self.crop_model.techno_consumption_woratio)
         for column in techno_consumption.columns:
-            if column == 'years':
+            if column == GlossaryCore.Years:
                 continue
             techno_consumption[column] = techno_consumption[column].values / \
                                          input_dict['scaling_factor_techno_consumption']
@@ -473,8 +473,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         Compute jacobian for each coupling variable
         """
         inputs_dict = deepcopy(self.get_sosdisc_inputs())
-        population_df = inputs_dict['population_df']
-        temperature_df = inputs_dict['temperature_df']
+        population_df = inputs_dict[GlossaryCore.PopulationDfValue]
+        temperature_df = inputs_dict[GlossaryCore.TemperatureDfValue]
         scaling_factor_crop_investment = inputs_dict['scaling_factor_crop_investment']
         scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
         density_per_ha = inputs_dict['techno_infos_dict']['density_per_ha']
@@ -491,8 +491,8 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         # get column of interest
         food_land_surface_df_columns = list(food_land_surface_df)
-        if 'years' in food_land_surface_df_columns:
-            food_land_surface_df_columns.remove('years')
+        if GlossaryCore.Years in food_land_surface_df_columns:
+            food_land_surface_df_columns.remove(GlossaryCore.Years)
         food_land_surface_df_columns.remove('total surface (Gha)')
 
         # sum is needed to have d_total_surface_d_population
@@ -505,11 +505,11 @@ class CropDiscipline(ClimateEcoDiscipline):
             summ += result
 
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('population_df', 'population'), summ)
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), summ)
         d_total_d_temperature = model.d_food_land_surface_d_temperature(
             temperature_df, 'total surface (Gha)')
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'), d_total_d_temperature)
 
         d_surface_d_red_meat_percentage = model.d_surface_d_calories(
             population_df, 'red meat')
@@ -578,10 +578,10 @@ class CropDiscipline(ClimateEcoDiscipline):
         # --------------------------------------------------------------
         # Techno production gradients
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'),
-                                                    ('population_df', 'population'),
+                                                    (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                                                     d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'), ('temperature_df', 'temp_atmo'),
+            ('techno_production', 'biomass_dry (TWh)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
             d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
             ('techno_production', 'biomass_dry (TWh)'), ('red_meat_calories_per_day',
@@ -604,15 +604,15 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'),
-                                                    ('crop_investment', 'investment'),
+                                                    ('crop_investment', GlossaryCore.InvestmentsValue),
                                                     dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
         # --------------------------------------------------------------
         # Techno consumption gradients
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'),
-                                                    ('population_df', 'population'),
+                                                    (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                                                     -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'), ('temperature_df', 'temp_atmo'),
+            ('techno_consumption', 'CO2_resource (Mt)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
             -CO2_from_production / high_calorific_value * d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption', 'CO2_resource (Mt)'), ('red_meat_calories_per_day',
@@ -636,18 +636,18 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'),
-                                                    ('crop_investment', 'investment'),
+                                                    ('crop_investment', GlossaryCore.InvestmentsValue),
                                                     -CO2_from_production / high_calorific_value *
                                                     dprod_dinvest * scaling_factor_crop_investment
                                                     * calorific_value / scaling_factor_techno_production)
         # --------------------------------------------------------------
         # Techno consumption wo ratio gradients
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'),
-                                                    ('population_df', 'population'),
+                                                    (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                                                     -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption_woratio',
-             'CO2_resource (Mt)'), ('temperature_df', 'temp_atmo'),
+             'CO2_resource (Mt)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
             -CO2_from_production / high_calorific_value * d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption_woratio',
@@ -671,7 +671,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'),
-                                                    ('crop_investment', 'investment'),
+                                                    ('crop_investment', GlossaryCore.InvestmentsValue),
                                                     -CO2_from_production / high_calorific_value *
                                                     dprod_dinvest * scaling_factor_crop_investment
                                                     * calorific_value / scaling_factor_techno_production)
@@ -679,7 +679,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # gradient for land demand
         self.set_partial_derivative_for_other_types(
             ('land_use_required', 'Crop (Gha)'),
-            ('crop_investment', 'investment'),
+            ('crop_investment', GlossaryCore.InvestmentsValue),
             dprod_dinvest * scaling_factor_crop_investment * (
                         1 - residue_density_percentage) / density_per_ha * calorific_value)
 
@@ -697,7 +697,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             for food in self.get_sosdisc_inputs('co2_emissions_per_kg'):
                 food = food.replace(' (Gt)', '')
-                if food != 'years':
+                if food != GlossaryCore.Years:
 
                     dland_emissions_dfood_land_surface = model.compute_dland_emissions_dfood_land_surface_df(
                         food)
@@ -741,12 +741,12 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
-                ('population_df', 'population'),
+                (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                 dco2_dpop)
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
-                ('temperature_df', 'temp_atmo'),
+                (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
                 dco2_dtemp)
 
             self.set_partial_derivative_for_other_types(
@@ -771,7 +771,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
-                ('crop_investment', 'investment'),
+                ('crop_investment', GlossaryCore.InvestmentsValue),
                 dco2_dinvest)
 
     def get_chart_filter_list(self):
@@ -804,7 +804,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         if CropDiscipline.CROP_CHARTS in chart_list:
 
             surface_df = self.get_sosdisc_outputs('food_land_surface_df')
-            years = surface_df['years'].values.tolist()
+            years = surface_df[GlossaryCore.Years].values.tolist()
             year_start = self.get_sosdisc_inputs('year_start')
             year_end = self.get_sosdisc_inputs('year_end')
             crop_surfaces = surface_df['total surface (Gha)'].values
@@ -815,7 +815,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             for key in surface_df.keys():
 
-                if key == 'years':
+                if key == GlossaryCore.Years:
                     pass
                 elif key.startswith('total'):
                     pass
@@ -826,7 +826,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'surface [Gha]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
                                                  chart_name='Surface taken to produce food over time', stacked_bar=True)
             new_chart.add_series(crop_surface_series)
 
@@ -842,7 +842,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             series_to_add = []
             for key in surface_percentage_df.keys():
 
-                if key == 'years':
+                if key == GlossaryCore.Years:
                     pass
                 elif key.startswith('total'):
                     pass
@@ -853,7 +853,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'surface [%]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [%]',
                                                  chart_name='Share of the surface used to produce food over time',
                                                  stacked_bar=True)
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
@@ -881,7 +881,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             series_to_add = []
             for key in updated_diet_df.keys():
 
-                if key == 'years':
+                if key == GlossaryCore.Years:
                     pass
                 elif key.startswith('total'):
                     pass
@@ -892,7 +892,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'food calories [kcal / person / day]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'food calories [kcal / person / day]',
                                                  chart_name='Food calories per person', stacked_bar=True)
 
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
@@ -919,7 +919,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             eggs_milk = self.get_sosdisc_inputs(
                 'milk_and_eggs_calories_per_day')
 
-            new_chart = TwoAxesInstanciatedChart('years', 'calories per day [kcal]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'calories per day [kcal]',
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -1030,7 +1030,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         chart_name = "m2 per kcal per category"
 
-        new_chart = TwoAxesInstanciatedChart('years', 'm2 per category per kcal [m2/kcal]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'm2 per category per kcal [m2/kcal]',
                                              chart_name=chart_name)
 
         for key in list_categories:
@@ -1043,7 +1043,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         ################## ghg total ###############
         chart_name = "ghg emissions per kcal per category"
 
-        new_chart = TwoAxesInstanciatedChart('years', 'ghg per category per kcal [co2eq/kcal]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'ghg per category per kcal [co2eq/kcal]',
                                              chart_name=chart_name)
 
         for key in list_categories:
@@ -1056,11 +1056,11 @@ class CropDiscipline(ClimateEcoDiscipline):
         if 'Crop Productivity Evolution' in chart_list:
             prod_df = self.get_sosdisc_outputs(
                 'crop_productivity_evolution')
-            years = list(prod_df['years'])
+            years = list(prod_df[GlossaryCore.Years])
 
             chart_name = 'Crop productivity evolution'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' productivity evolution [%]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' productivity evolution [%]',
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -1085,19 +1085,19 @@ class CropDiscipline(ClimateEcoDiscipline):
             cost_details = deepcopy(self.get_sosdisc_outputs('cost_details'))
             crop_investment = deepcopy(self.get_sosdisc_inputs(
                 'crop_investment') * self.get_sosdisc_inputs('scaling_factor_crop_investment'))
-            years = list(prod_df['years'])
+            years = list(prod_df[GlossaryCore.Years])
 
             # ------------------------------------------
             # INVEST (M$)
             chart_name = 'Input investments over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Investments [M$]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Investments [M$]',
                                                  chart_name=chart_name)
 
             visible_line = True
 
             for investment in crop_investment:
-                if investment != 'years':
+                if investment != GlossaryCore.Years:
                     ordonate_data = list(crop_investment[investment])
                     new_series = InstanciatedSeries(
                         years, ordonate_data, investment, 'bar', visible_line)
@@ -1108,13 +1108,13 @@ class CropDiscipline(ClimateEcoDiscipline):
             # PRODUCTION (Mt)
             chart_name = 'Crop for Energy production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop mass for energy production [Mt]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Crop mass for energy production [Mt]',
                                                  chart_name=chart_name)
 
             visible_line = True
 
             for crop in mix_detailed_production:
-                if crop != 'years':
+                if crop != GlossaryCore.Years:
                     ordonate_data = list(
                         mix_detailed_production[crop] * data_fuel_dict['calorific_value'])
                     new_series = InstanciatedSeries(
@@ -1126,13 +1126,13 @@ class CropDiscipline(ClimateEcoDiscipline):
             # PRODUCTION (TWh)
             chart_name = 'Crop for Energy production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop for Energy production [TWh]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Crop for Energy production [TWh]',
                                                  chart_name=chart_name)
 
             visible_line = True
 
             for crop in mix_detailed_production:
-                if crop != 'years':
+                if crop != GlossaryCore.Years:
                     ordonate_data = list(mix_detailed_production[crop])
                     new_series = InstanciatedSeries(
                         years, ordonate_data, crop.replace("(TWh)", ""), 'lines', visible_line)
@@ -1143,7 +1143,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             # LAND USE (Gha)
             chart_name = 'Land demand for Crop for Energy'
 
-            land_demand_chart = TwoAxesInstanciatedChart('years', 'Land demand [Gha]',
+            land_demand_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Land demand [Gha]',
                                                          chart_name=chart_name)
             ordonate_data = list(land_use_required['Crop (Gha)'])
             land_demand_serie = InstanciatedSeries(
@@ -1155,13 +1155,13 @@ class CropDiscipline(ClimateEcoDiscipline):
             # PRICE ($/MWh)
             chart_name = 'Crop energy prices by type'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices [$/MWh]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Crop prices [$/MWh]',
                                                  chart_name=chart_name)
 
             visible_line = True
 
             for crop in mix_detailed_prices:
-                if crop != 'years':
+                if crop != GlossaryCore.Years:
                     ordonate_data = list(
                         mix_detailed_prices[crop] / data_fuel_dict['calorific_value'])
                     new_series = InstanciatedSeries(
@@ -1172,7 +1172,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             # PRICE DETAILED($/MWh)
             chart_name = 'Detailed prices for crop energy production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices [$/MWh]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Crop prices [$/MWh]',
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -1189,13 +1189,13 @@ class CropDiscipline(ClimateEcoDiscipline):
             # PRICE ($/t)
             chart_name = 'Crop mass prices'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices [$/t]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Crop prices [$/t]',
                                                  chart_name=chart_name)
 
             visible_line = True
 
             for crop in mix_detailed_prices:
-                if crop != 'years':
+                if crop != GlossaryCore.Years:
                     ordonate_data = list(mix_detailed_prices[crop])
                     new_series = InstanciatedSeries(
                         years, ordonate_data, crop.replace("($/t)", ""), 'lines', visible_line)
@@ -1205,7 +1205,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             # PRICE DETAILED($/t)
             chart_name = 'Detailed prices for crop energy production'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Crop prices [$/t]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Crop prices [$/t]',
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -1232,7 +1232,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             n2o_emissions_df = self.get_sosdisc_outputs('N2O_land_emission_df')
             n2o_emissions_detailed_df = self.get_sosdisc_outputs(
                 'N2O_land_emission_detailed')
-            years = co2_emissions_df['years'].values.tolist()
+            years = co2_emissions_df[GlossaryCore.Years].values.tolist()
 
             co2_crop_emissions = co2_emissions_df['emitted_CO2_evol_cumulative'].values
             co2_crop_emissions_series = InstanciatedSeries(
@@ -1250,7 +1250,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             series_to_add = [co2_crop_emissions_series,
                              ch4_crop_emissions_series, n2o_crop_emissions_series]
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Greenhouse Gas Emissions [Gt]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Greenhouse Gas Emissions [Gt]',
                                                  chart_name='Greenhouse Gas Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
@@ -1277,7 +1277,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             series_to_add = [co2_crop_emissions_series,
                              ch4_crop_emissions_series, n2o_crop_emissions_series]
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Greenhouse Gas Emissions [GtCO2eq]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Greenhouse Gas Emissions [GtCO2eq]',
                                                  chart_name='Greenhouse Gas CO2 Eq. Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
@@ -1288,14 +1288,14 @@ class CropDiscipline(ClimateEcoDiscipline):
             series_to_add = []
             for key in co2_emissions_detailed_df.columns:
 
-                if key != 'years':
+                if key != GlossaryCore.Years:
                     new_series = InstanciatedSeries(
                         years, (co2_emissions_detailed_df[key]).values.tolist(), key.replace(' (Gt)', ''),
                         InstanciatedSeries.BAR_DISPLAY)
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 Emissions [Gt]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 Emissions [Gt]',
                                                  chart_name='CO2 Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
@@ -1306,14 +1306,14 @@ class CropDiscipline(ClimateEcoDiscipline):
             series_to_add = []
             for key in ch4_emissions_detailed_df.columns:
 
-                if key != 'years':
+                if key != GlossaryCore.Years:
                     new_series = InstanciatedSeries(
                         years, (ch4_emissions_detailed_df[key]).values.tolist(), key.replace(' (Gt)', ''),
                         InstanciatedSeries.BAR_DISPLAY)
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'CH4 Emissions [Gt]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CH4 Emissions [Gt]',
                                                  chart_name='CH4 Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
@@ -1325,7 +1325,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             series_to_add = []
             for key in n2o_emissions_detailed_df.columns:
 
-                if key != 'years':
+                if key != GlossaryCore.Years:
                     new_series = InstanciatedSeries(
                         years, (n2o_emissions_detailed_df[key]).values.tolist(
                         ), key.replace(' (Gt)', ''),
@@ -1333,7 +1333,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'N2O Emissions [Gt]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'N2O Emissions [Gt]',
                                                  chart_name='N2O Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
@@ -1345,7 +1345,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             years_list = [year_start, year_end]
             food_names = co2_emissions_detailed_df.columns[1:].to_list()
             for year in years_list:
-                values = [co2_emissions_detailed_df.loc[co2_emissions_detailed_df['years']
+                values = [co2_emissions_detailed_df.loc[co2_emissions_detailed_df[GlossaryCore.Years]
                                                         == year][food].values[0] for food in food_names]
 
                 if sum(values) != 0.0:
@@ -1357,7 +1357,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             years_list = [year_start, year_end]
             food_names = ch4_emissions_detailed_df.columns[1:].to_list()
             for year in years_list:
-                values = [ch4_emissions_detailed_df.loc[ch4_emissions_detailed_df['years']
+                values = [ch4_emissions_detailed_df.loc[ch4_emissions_detailed_df[GlossaryCore.Years]
                                                         == year][food].values[0] for food in food_names]
 
                 if sum(values) != 0.0:
@@ -1369,7 +1369,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             years_list = [year_start, year_end]
             food_names = n2o_emissions_detailed_df.columns[1:].to_list()
             for year in years_list:
-                values = [n2o_emissions_detailed_df.loc[n2o_emissions_detailed_df['years']
+                values = [n2o_emissions_detailed_df.loc[n2o_emissions_detailed_df[GlossaryCore.Years]
                                                         == year][food].values[0] for food in food_names]
 
                 if sum(values) != 0.0:

@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -72,20 +74,20 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         temperature = np.array(np.linspace(1.05, 4, year_range))
 
         self.temperature_df = pd.DataFrame(
-            {"years": self.years, "temp_atmo": temperature})
+            {GlossaryCore.Years: self.years, "temp_atmo": temperature})
         self.temperature_df.index = self.years
 
         self.population_df = pd.DataFrame(
-            {"years": self.years, "population": population})
+            {GlossaryCore.Years: self.years, GlossaryCore.PopulationValue: population})
         self.population_df.index = self.years
 
         red_meat_percentage = np.linspace(6, 1, year_range)
         white_meat_percentage = np.linspace(14, 5, year_range)
         self.red_meat_percentage = pd.DataFrame({
-                            'years': self.years,
+                            GlossaryCore.Years: self.years,
                             'red_meat_percentage': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-                                'years': self.years,
+                                GlossaryCore.Years: self.years,
                                 'white_meat_percentage': white_meat_percentage})
 
         self.diet_df = pd.DataFrame({'red meat': [11.02],
@@ -100,92 +102,92 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
 
         techno_consumption = np.linspace(0, 0, year_range)
         self.techno_consumption_crop = pd.DataFrame(
-            {'years': self.years, 'biomass_dry (TWh)': techno_consumption})
+            {GlossaryCore.Years: self.years, 'biomass_dry (TWh)': techno_consumption})
 
         techno_consumption_woratio = np.linspace(0, 0, year_range)
         self.techno_consumption_woratio_crop = pd.DataFrame(
-            {'years': self.years, 'biomass_dry (TWh)': techno_consumption_woratio})
+            {GlossaryCore.Years: self.years, 'biomass_dry (TWh)': techno_consumption_woratio})
 
         techno_production = np.linspace(1.15, 1.45, year_range)
         self.techno_production_crop = pd.DataFrame(
-            {'years': self.years, 'biomass_dry (TWh)': techno_production})
+            {GlossaryCore.Years: self.years, 'biomass_dry (TWh)': techno_production})
 
         techno_prices = np.linspace(17.03, 17.03, year_range)
         techno_prices_wotaxes = np.linspace(17.03, 17.03, year_range)
         self.techno_prices_crop = pd.DataFrame(
-            {'years': self.years, 'Crop': techno_prices, 'Crop_wotaxes': techno_prices_wotaxes})
+            {GlossaryCore.Years: self.years, 'Crop': techno_prices, 'Crop_wotaxes': techno_prices_wotaxes})
 
         CO2_emissions = np.linspace(0, 0, year_range)
         self.CO2_emissions_crop = pd.DataFrame(
-            {'years': self.years, 'Crop': CO2_emissions})
+            {GlossaryCore.Years: self.years, 'Crop': CO2_emissions})
 
         land_use_required_energy = np.linspace(0.06, 0.13, year_range)
         self.land_use_required_crop = pd.DataFrame(
-            {'years': self.years, 'Crop (Gha)': land_use_required_energy})
+            {GlossaryCore.Years: self.years, 'Crop (Gha)': land_use_required_energy})
         # ----------------------------------------------------
         # Forest related inputs
         deforestation_surface = np.linspace(10, 5, year_range)
         self.deforestation_surface_df = pd.DataFrame(
-            {"years": self.years, "deforested_surface": deforestation_surface})
+            {GlossaryCore.Years: self.years, "deforested_surface": deforestation_surface})
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": self.years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: self.years, "forest_investment": forest_invest})
         mw_invest = np.linspace(1, 4, year_range)
         uw_invest = np.linspace(0, 1, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {"years": self.years, "investment": mw_invest})
+            {GlossaryCore.Years: self.years, GlossaryCore.InvestmentsValue: mw_invest})
         self.uw_invest_df = pd.DataFrame(
-            {"years": self.years, "investment": uw_invest})
+            {GlossaryCore.Years: self.years, GlossaryCore.InvestmentsValue: uw_invest})
 
         techno_consumption = np.linspace(0, 0, year_range)
         self.techno_consumption_forest = pd.DataFrame(
-            {'years': self.years, 'biomass_dry (TWh)': techno_consumption})
+            {GlossaryCore.Years: self.years, 'biomass_dry (TWh)': techno_consumption})
 
         techno_consumption_woratio = np.linspace(0, 0, year_range)
         self.techno_consumption_woratio_forest = pd.DataFrame(
-            {'years': self.years, 'biomass_dry (TWh)': techno_consumption_woratio})
+            {GlossaryCore.Years: self.years, 'biomass_dry (TWh)': techno_consumption_woratio})
 
         techno_production = np.linspace(15, 16, year_range)
         self.techno_production_forest = pd.DataFrame(
-            {'years': self.years, 'biomass_dry (TWh)': techno_production})
+            {GlossaryCore.Years: self.years, 'biomass_dry (TWh)': techno_production})
 
         techno_prices = np.linspace(9, 9, year_range)
         techno_prices_wotaxes = np.linspace(9, 9, year_range)
         self.techno_prices_forest = pd.DataFrame(
-            {'years': self.years, 'Forest': techno_prices, 'Forest_wotaxes': techno_prices_wotaxes})
+            {GlossaryCore.Years: self.years, 'Forest': techno_prices, 'Forest_wotaxes': techno_prices_wotaxes})
 
         CO2_emissions = np.linspace(0, 0, year_range)
         self.CO2_emissions_forest = pd.DataFrame(
-            {'years': self.years, 'Forest': CO2_emissions})
+            {GlossaryCore.Years: self.years, 'Forest': CO2_emissions})
 
         CO2_emitted_land = pd.DataFrame()
         emission_forest = np.linspace(0.04, 0.04, len(self.years))
         cum_emission = np.cumsum(emission_forest) + 3.21
-        CO2_emitted_land['years'] = self.years
+        CO2_emitted_land[GlossaryCore.Years] = self.years
         CO2_emitted_land['emitted_CO2_evol_cumulative'] = cum_emission
 
         CH4_emitted_land = pd.DataFrame()
-        CH4_emitted_land['years'] = self.years
+        CH4_emitted_land[GlossaryCore.Years] = self.years
         CH4_emitted_land['emitted_CH4_evol_cumulative'] = cum_emission/100
 
         N2O_emitted_land = pd.DataFrame()
-        N2O_emitted_land['years'] = self.years
+        N2O_emitted_land[GlossaryCore.Years] = self.years
         N2O_emitted_land['emitted_N2O_evol_cumulative'] = cum_emission / 500
 
 
         land_use_required = np.linspace(4, 3.5, year_range)
         self.land_use_required_forest = pd.DataFrame(
-            {'years': self.years, 'Forest (Gha)': land_use_required})
+            {GlossaryCore.Years: self.years, 'Forest (Gha)': land_use_required})
         # -----------------------------------------------------
         # Agriculture mix related inputs
         self.margin = pd.DataFrame(
-            {'years': self.years, 'margin': np.ones(len(self.years)) * 110.0})
+            {GlossaryCore.Years: self.years, 'margin': np.ones(len(self.years)) * 110.0})
         # From future of hydrogen
         self.transport = pd.DataFrame(
-            {'years': self.years, 'transport': np.ones(len(self.years)) * 7.6})
+            {GlossaryCore.Years: self.years, 'transport': np.ones(len(self.years)) * 7.6})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {'years': self.years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {GlossaryCore.Years: self.years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,
                      29.01,  34.05,   39.08,  44.69,   50.29]
@@ -193,7 +195,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {'years': self.years, 'CO2_tax': func(self.years)})
+            {GlossaryCore.Years: self.years, 'CO2_tax': func(self.years)})
 
                                                         
         inputs_dict = {f'{self.test_name}.year_start': self.year_start,
@@ -210,8 +212,8 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.test_name}.{disc_name}.Forest.techno_prices': self.techno_prices_forest,
                        f'{self.test_name}.{disc_name}.Forest.CO2_emissions': self.CO2_emissions_forest,
                        f'{self.test_name}.{disc_name}.Forest.land_use_required': self.land_use_required_forest,
-                       f'{self.test_name}.technologies_list': self.technology_list,
-                       f'{self.test_name}.CO2_taxes': self.co2_taxes
+                       f'{self.test_name}.{GlossaryCore.techno_list}': self.technology_list,
+                       f'{self.test_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes
                       }
         self.ee.load_study_from_input_dict(inputs_dict)
 
@@ -239,6 +241,6 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.test_name}.{disc_name}.energy_prices',
                                     f'{self.test_name}.{disc_name}.energy_consumption',
                                     f'{self.test_name}.{disc_name}.energy_consumption_woratio',
-                                    f'{self.test_name}.{disc_name}.energy_production',
+                                    f'{self.test_name}.{disc_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.test_name}.{disc_name}.land_use_required',
                             ])

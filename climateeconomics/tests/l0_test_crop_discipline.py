@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -43,10 +45,10 @@ class CropTestCase(unittest.TestCase):
 
         population = np.array(np.linspace(7800, 9200, year_range))
         self.population_df = pd.DataFrame(
-            {"years": years, "population": population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
         temperature = np.array(np.linspace(0.0,5.0, year_range))
-        self.temperature_df = pd.DataFrame({"years": years, "temp_atmo": temperature})
+        self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, "temp_atmo": temperature})
         self.temperature_df.index = years
 
         lifetime = 50
@@ -79,10 +81,10 @@ class CropTestCase(unittest.TestCase):
         red_meat_percentage = np.linspace(6, 1, year_range)
         white_meat_percentage = np.linspace(14, 5, year_range)
         self.red_meat_percentage = pd.DataFrame({
-                            'years': years,
+                            GlossaryCore.Years: years,
                             'red_meat_percentage': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'white_meat_percentage': white_meat_percentage})
         self.diet_df = pd.DataFrame({'red meat': [11.02],
                                      'white meat': [31.11],
@@ -96,13 +98,13 @@ class CropTestCase(unittest.TestCase):
 
         # investment: 1Mha of crop land each year
         self.crop_investment = pd.DataFrame(
-            {'years': years, 'investment': np.ones(len(years)) * 0.381})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.ones(len(years)) * 0.381})
              
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         # From future of hydrogen
         self.transport_cost = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 7.6})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.6})
 
         # bioenergyeurope.org : Dedicated energy crops
         # represent 0.1% of the total biomass production in 2018
@@ -188,17 +190,17 @@ class CropTestCase(unittest.TestCase):
         white_meat_percentage = np.linspace(700, 600, year_range)
         vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
         self.red_meat_percentage = pd.DataFrame({
-                            'years': years,
+                            GlossaryCore.Years: years,
                             'red_meat_calories_per_day': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'white_meat_calories_per_day': white_meat_percentage})
         self.veg_calories_per_day = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
 
         self.milk_eggs_calories_per_day = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
 
 
@@ -207,8 +209,8 @@ class CropTestCase(unittest.TestCase):
                       'time_step': self.time_step,
                       'diet_df': self.diet_df,
                       'kg_to_kcal_dict': self.default_kg_to_kcal,
-                      'population_df': self.population_df,
-                      'temperature_df': self.temperature_df,
+                      GlossaryCore.PopulationDfValue: self.population_df,
+                      GlossaryCore.TemperatureDfValue: self.temperature_df,
                       'kg_to_m2_dict': self.default_kg_to_m2,
                       'other_use_crop': self.other,
                       'param_a':  - 0.00833,
@@ -285,7 +287,7 @@ class CropTestCase(unittest.TestCase):
                        f'{name}.{model_name}.vegetables_and_carbs_calories_per_day': self.veg_calories_per_day,
                        f'{name}.{model_name}.milk_and_eggs_calories_per_day': self.milk_eggs_calories_per_day,
                        f'{name}.{model_name}.{Crop.OTHER_USE_CROP}': self.other,
-                       f'{name}.{model_name}.temperature_df': self.temperature_df,
+                       f'{name}.{model_name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{name}.{model_name}.crop_investment': self.crop_investment,
                        f'{name}.{model_name}.margin': self.margin,
                        f'{name}.{model_name}.transport_margin': self.margin,

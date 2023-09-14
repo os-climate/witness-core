@@ -17,6 +17,7 @@ import pandas as pd
 from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_model import PlatinumResourceModel
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
 import numpy as np
@@ -78,7 +79,7 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_platinum_resource',
                                  'dataframe_descriptor':
                                      {
-                                         'years': ('float', None, False),
+                                         GlossaryCore.Years: ('float', None, False),
                                          'platinum_type': ('string', None, True),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -90,7 +91,7 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                'resource_production_data': {'type': 'dataframe', 'unit': 'Mt', 'optional': True,
                                             'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_platinum_resource',
                                             'dataframe_descriptor': {
-                                                'years': ('float', None, False),
+                                                GlossaryCore.Years: ('float', None, False),
                                                 'platinum': ('float', None, True),}
                                             },
                'resource_price_data': {'type': 'dataframe', 'unit': 'USD/t', 'default': default_resource_price_data, 'user_level': 2,
@@ -101,7 +102,7 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'Mt', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_platinum_resource',
                                           'dataframe_descriptor': {
-                                              'years': ('float', None, False),
+                                              GlossaryCore.Years: ('float', None, False),
                                               'platinum_consumption': ('float', None, True),}
                                           },
                'production_start': {'type': 'int', 'default': default_regression_start, 'unit': '-',
@@ -135,7 +136,7 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
 
     def get_stock_charts(self, stock_df, use_stock_df):
 
-        sub_resource_list = [col for col in stock_df.columns if col != 'years']
+        sub_resource_list = [col for col in stock_df.columns if col != GlossaryCore.Years]
         stock_chart = TwoAxesInstanciatedChart('Years', f'maximum stocks [t]',
                                                chart_name=f'{self.resource_name} stocks through the years',
                                                stacked_bar=True)
@@ -150,11 +151,11 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
 
         for sub_resource_type in sub_resource_list:
             stock_serie = InstanciatedSeries(
-                list(stock_df['years']), (stock_df[sub_resource_type]*1000*1000).values.tolist(), sub_resource_type, InstanciatedSeries.LINES_DISPLAY)
+                list(stock_df[GlossaryCore.Years]), (stock_df[sub_resource_type]*1000*1000).values.tolist(), sub_resource_type, InstanciatedSeries.LINES_DISPLAY)
             stock_chart.add_series(stock_serie)
 
             use_stock_serie = InstanciatedSeries(
-                list(use_stock_df['years']), (use_stock_df[sub_resource_type]*1000*1000).values.tolist(), sub_resource_type, InstanciatedSeries.BAR_DISPLAY)
+                list(use_stock_df[GlossaryCore.Years]), (use_stock_df[sub_resource_type]*1000*1000).values.tolist(), sub_resource_type, InstanciatedSeries.BAR_DISPLAY)
             if len(sub_resource_list) > 1:
                 use_stock_chart.add_series(use_stock_serie)
             use_stock_cumulated_chart.add_series(use_stock_serie)
@@ -166,11 +167,11 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
 
     def get_production_charts(self, production_df, past_production_df, year_start, production_start):
         sub_resource_list = [
-            col for col in production_df.columns if col != 'years']
+            col for col in production_df.columns if col != GlossaryCore.Years]
 
-        past_production_cut = past_production_df.loc[past_production_df['years']
+        past_production_cut = past_production_df.loc[past_production_df[GlossaryCore.Years]
                                                      >= production_start]
-        production_cut = production_df.loc[production_df['years']
+        production_cut = production_df.loc[production_df[GlossaryCore.Years]
                                            <= year_start]
         if len(sub_resource_list) > 1:
             production_chart = TwoAxesInstanciatedChart('Years', f'{self.resource_name} production per subtypes [t]',
@@ -191,22 +192,22 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
 
         for sub_resource_type in sub_resource_list:
             production_serie = InstanciatedSeries(
-                list(production_df['years']), (production_df[sub_resource_type] * 1000 * 1000).values.tolist(
+                list(production_df[GlossaryCore.Years]), (production_df[sub_resource_type] * 1000 * 1000).values.tolist(
                 ), sub_resource_type,
                 InstanciatedSeries.BAR_DISPLAY)
             if len(sub_resource_list) > 1:
                 production_chart.add_series(production_serie)
             production_cumulated_chart.add_series(production_serie)
             production_cut_series = InstanciatedSeries(
-                list(production_df['years']), (production_cut[sub_resource_type] * 1000 * 1000).values.tolist(
+                list(production_df[GlossaryCore.Years]), (production_cut[sub_resource_type] * 1000 * 1000).values.tolist(
                 ), sub_resource_type + ' predicted production',
                 InstanciatedSeries.BAR_DISPLAY)
             past_production_series = InstanciatedSeries(
-                list(past_production_df['years']), (past_production_df[sub_resource_type] * 1000 * 1000).values.tolist(
+                list(past_production_df[GlossaryCore.Years]), (past_production_df[sub_resource_type] * 1000 * 1000).values.tolist(
                 ), sub_resource_type,
                 InstanciatedSeries.LINES_DISPLAY)
             past_production_cut_series = InstanciatedSeries(
-                list(production_df['years']), (past_production_cut[sub_resource_type] * 1000 * 1000).values.tolist(
+                list(production_df[GlossaryCore.Years]), (past_production_cut[sub_resource_type] * 1000 * 1000).values.tolist(
                 ), sub_resource_type + ' real production',
                 InstanciatedSeries.LINES_DISPLAY)
             past_production_chart.add_series(past_production_series)
@@ -228,12 +229,12 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
                                                    stacked_bar=False)
 
         sub_resource_list = [
-            col for col in recycling_df.columns if col != 'years']
+            col for col in recycling_df.columns if col != GlossaryCore.Years]
         for sub_resource_type in sub_resource_list:
             recycling_serie = InstanciatedSeries(
-                list(recycling_df['years']), (recycling_df[sub_resource_type] * 1000 * 1000).values.tolist(), f'{self.resource_name} recycled quantity', InstanciatedSeries.LINES_DISPLAY)
+                list(recycling_df[GlossaryCore.Years]), (recycling_df[sub_resource_type] * 1000 * 1000).values.tolist(), f'{self.resource_name} recycled quantity', InstanciatedSeries.LINES_DISPLAY)
             used_stock_serie = InstanciatedSeries(
-                list(use_stock_df['years']), (use_stock_df[sub_resource_type] * 1000 * 1000).values.tolist(), f'{self.resource_name} extracted quantity', InstanciatedSeries.LINES_DISPLAY)
+                list(use_stock_df[GlossaryCore.Years]), (use_stock_df[sub_resource_type] * 1000 * 1000).values.tolist(), f'{self.resource_name} extracted quantity', InstanciatedSeries.LINES_DISPLAY)
 
         recycling_chart.add_series(recycling_serie)
         recycling_chart.add_series(used_stock_serie)

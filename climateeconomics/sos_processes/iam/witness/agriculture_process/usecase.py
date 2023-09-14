@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -57,7 +57,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Land.Agriculture', execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='Land.Agriculture', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.agriculture_name = name
@@ -78,19 +78,19 @@ class Study(StudyManager):
         #         temperature = np.array(np.linspace(1.05, 1.05, year_range))
 
         temperature_df = pd.DataFrame(
-            {"years": years, "temp_atmo": temperature})
+            {GlossaryCore.Years: years, "temp_atmo": temperature})
         temperature_df.index = years
 
         population_df = pd.DataFrame(
-            {"years": years, "population": population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         population_df.index = years
         red_meat_percentage = np.linspace(6.82, 1, year_range)
         white_meat_percentage = np.linspace(13.95, 5, year_range)
         self.red_meat_percentage = pd.DataFrame({
-            'years': years,
+            GlossaryCore.Years: years,
             'red_meat_percentage': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-            'years': years,
+            GlossaryCore.Years: years,
             'white_meat_percentage': white_meat_percentage})
         diet_df = pd.DataFrame({'red meat': [11.02],
                                 'white meat': [31.11],
@@ -104,24 +104,14 @@ class Study(StudyManager):
 
         # private values economics operator pyworld3
         agriculture_input = {}
-        agriculture_input[self.study_name + '.year_start'] = self.year_start
-        agriculture_input[self.study_name + '.year_end'] = self.year_end
-
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.diet_df'] = diet_df
-
-        agriculture_input[self.study_name +
-                          '.red_meat_percentage'] = self.red_meat_percentage
-        agriculture_input[self.study_name +
-                           '.white_meat_percentage'] = self.white_meat_percentage
-        agriculture_input[self.study_name + self.agriculture_name +
-                          '.other_use_agriculture'] = other
-
-        agriculture_input[self.study_name +
-                          '.population_df'] = population_df
-
-        agriculture_input[self.study_name +
-                          '.temperature_df'] = temperature_df
+        agriculture_input[f"{self.study_name}.{'year_start'}"] = self.year_start
+        agriculture_input[f"{self.study_name}.{'year_end'}"] = self.year_end
+        agriculture_input[f"{self.study_name}.{self.agriculture_name}.{'diet_df'}"] = diet_df
+        agriculture_input[f"{self.study_name}.{'red_meat_percentage'}"] = self.red_meat_percentage
+        agriculture_input[f"{self.study_name}.{'white_meat_percentage'}"] = self.white_meat_percentage
+        agriculture_input[f"{self.study_name}.{self.agriculture_name}.{'other_use_agriculture'}"] = other
+        agriculture_input[f"{self.study_name}.{GlossaryCore.PopulationDfValue}"] = population_df
+        agriculture_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
 
         setup_data_list.append(agriculture_input)
 
@@ -156,8 +146,7 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
+    uc_cls.test()
     # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
     # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.test()
 

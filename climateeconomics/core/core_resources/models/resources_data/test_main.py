@@ -5,6 +5,8 @@ import random as rd
 from tkinter import Y
 
 from matplotlib import use
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 import pandas as pd
 import numpy as np
@@ -37,7 +39,7 @@ new_stock = 47
 print(1 / (1 +2)**2)
 print(1/((1 +2)**2))
 
-copper = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_consumed_data.csv')) #pd.read_csv(join(dirname(__file__),'copper_resource_consumed_data.csv')) ou : pd.DataFrame(columns= ['years' , 'copper_consumption' ])
+copper = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_consumed_data.csv')) #pd.read_csv(join(dirname(__file__),'copper_resource_consumed_data.csv')) ou : pd.DataFrame(columns= [GlossaryCore.Years , 'copper_consumption' ])
 copper_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{copper_name}_production_data.csv'))
 
 copper_dict = copper.to_dict()
@@ -52,17 +54,17 @@ coal = pd.read_csv(join(dirname(__file__), f'../resources_data/{coal_name}_consu
 coal_production_data = pd.read_csv(join(dirname(__file__), f'../resources_data/{coal_name}_production_data.csv'))
 
 use_stock = pd.DataFrame(
-            {'years': np.insert(years, 0, np.arange(year_start - lifespan, year_start, 1))})
+            {GlossaryCore.Years: np.insert(years, 0, np.arange(year_start - lifespan, year_start, 1))})
 # print(copper_dict['copper_consumption'])
 # print(copper_['copper_consumption'] * 1000)
 
-copper_sub_resource_list = [col for col in list(copper_production_data.columns) if col != 'years']
+copper_sub_resource_list = [col for col in list(copper_production_data.columns) if col != GlossaryCore.Years]
 copper_dict = {}
 for resource_type in copper_sub_resource_list:
     use_stock[resource_type] = np.insert(np.zeros(len(years)-1), 0, copper[f'{resource_type}_consumption'])
 #print(use_stock['copper'])
 
-coal_sub_resource_list = [col for col in list(coal_production_data.columns) if col != 'years']
+coal_sub_resource_list = [col for col in list(coal_production_data.columns) if col != GlossaryCore.Years]
 coal_dict = {}
 for resource_type in coal_sub_resource_list:
     
@@ -78,7 +80,7 @@ year_end = 2101
 
 years = np.arange(year, year_end)
 
-copper_test = pd.DataFrame({'years': years , 'copper_consumption': np.linspace(0, 0, len(years))})
+copper_test = pd.DataFrame({GlossaryCore.Years: years , 'copper_consumption': np.linspace(0, 0, len(years))})
 
 copper_new = pd.concat([copper, copper_test], ignore_index=True)
 copper_dict = copper_new.to_dict()

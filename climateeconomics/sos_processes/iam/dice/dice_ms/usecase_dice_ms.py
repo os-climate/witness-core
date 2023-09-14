@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.dice.dice_model.usecase import Study as dice_usecase
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
@@ -77,16 +78,16 @@ class Study(StudyManager):
         data = np.zeros(nb_per)
         economics_df = pd.DataFrame({'year': years,
                                      'saving_rate': data,
-                                     'gross_output': data,
-                                     'output_net_of_d': data,
+                                     GlossaryCore.GrossOutput: data,
+                                     GlossaryCore.OutputNetOfDamage: data,
                                      'net_output': data,
-                                     'population': data,
+                                     GlossaryCore.PopulationValue: data,
                                      'productivity': data,
                                      'productivity_gr': data,
-                                     'consumption': data,
-                                     'pc_consumption': data,
+                                     GlossaryCore.Consumption: data,
+                                     GlossaryCore.PerCapitaConsumption: data,
                                      'capital': data,
-                                     'investment': data,
+                                     GlossaryCore.InvestmentsValue: data,
                                      'interest_rate': data},
                                     index=np.arange(year_start, year_end + 1, time_step))
 
@@ -94,7 +95,7 @@ class Study(StudyManager):
         scenario_list = [scenario_A, scenario_C,
                          scenario_D, scenario_B, scenario_E]
         for scenario in scenario_list:
-            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario}.economics_df'] = economics_df
+            values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario}.{GlossaryCore.EconomicsDfValue}'] = economics_df
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_A}.emissions_control_rate'] = control_rate_A

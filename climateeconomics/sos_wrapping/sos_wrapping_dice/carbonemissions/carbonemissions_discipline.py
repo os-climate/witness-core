@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.geophysical_model import CarbonEmissions
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -49,9 +50,9 @@ class CarbonemissionsDiscipline(SoSWrapp):
         'init_gr_sigma': {'type': 'float', 'default': -0.0152},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001},
         'init_indus_emissions': {'type': 'float', 'unit': 'GtCO2 per year', 'default': 35.745},
-        'init_gross_output': {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'namespace': 'ns_dice', 'default': 105.1},
+        GlossaryCore.InitialGrossOutput['var_name']: {'type': 'float', 'unit': 'trillions $', 'visibility': 'Shared', 'namespace': 'ns_dice', 'default': 105.1},
         'init_cum_indus_emissions': {'type': 'float', 'unit': 'GtCO2', 'default': 400},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                                    'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
                                    'dataframe_edition_locked': False}
@@ -118,7 +119,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
 
             chart_name = 'total carbon emissions'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'carbon emissions (Gtc)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'carbon emissions (Gtc)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)
@@ -155,7 +156,7 @@ class CarbonemissionsDiscipline(SoSWrapp):
 
             chart_name = 'emission control rate over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'emission control rate',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'emission control rate',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)

@@ -15,6 +15,8 @@ limitations under the License.
 """
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
@@ -70,8 +72,8 @@ class GHGEmissions():
         self.years_range = np.arange(
             year_start, year_end + 1, self.time_step)
 
-        self.ghg_emissions_df = pd.DataFrame({'years': self.years_range})
-        self.gwp_emissions = pd.DataFrame({'years': self.years_range})
+        self.ghg_emissions_df = pd.DataFrame({GlossaryCore.Years: self.years_range})
+        self.gwp_emissions = pd.DataFrame({GlossaryCore.Years: self.years_range})
 
     def compute_land_emissions(self):
         """
@@ -79,11 +81,11 @@ class GHGEmissions():
         """
 
         self.ghg_emissions_df['CO2 land_emissions'] = self.CO2_land_emissions.drop(
-            'years', axis=1).sum(axis=1).values
+            GlossaryCore.Years, axis=1).sum(axis=1).values
         self.ghg_emissions_df['CH4 land_emissions'] = self.CH4_land_emissions.drop(
-            'years', axis=1).sum(axis=1).values
+            GlossaryCore.Years, axis=1).sum(axis=1).values
         self.ghg_emissions_df['N2O land_emissions'] = self.N2O_land_emissions.drop(
-            'years', axis=1).sum(axis=1).values
+            GlossaryCore.Years, axis=1).sum(axis=1).values
 
     def compute_total_emissions(self):
         """
@@ -108,8 +110,8 @@ class GHGEmissions():
             self.gwp_emissions[f'{ghg}_100'] = self.ghg_emissions_df[f'Total {ghg} emissions'] * self.gwp_100[ghg]
 
     def compute_co2_emissions_for_carbon_cycle(self):
-        co2_emissions_df = self.ghg_emissions_df[['years', 'Total CO2 emissions']].rename(
-            {'Total CO2 emissions': 'total_emissions'}, axis=1)
+        co2_emissions_df = self.ghg_emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]].rename(
+            {GlossaryCore.TotalCO2Emissions: 'total_emissions'}, axis=1)
         return co2_emissions_df
 
     def compute(self):

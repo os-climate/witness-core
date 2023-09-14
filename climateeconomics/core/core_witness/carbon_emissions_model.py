@@ -15,6 +15,8 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.nitrous_oxide import N2O
 
 
@@ -40,7 +42,7 @@ class CarbonEmissions():
         self.init_gr_sigma = self.param['init_gr_sigma']
         self.decline_rate_decarbo = self.param['decline_rate_decarbo']
         self.init_indus_emissions = self.param['init_indus_emissions']
-        self.init_gross_output = self.param['init_gross_output']
+        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.init_cum_indus_emissions = self.param['init_cum_indus_emissions']
         self.energy_emis_share = self.param['energy_emis_share']
         self.land_emis_share = self.param['land_emis_share']
@@ -67,7 +69,7 @@ class CarbonEmissions():
         years_range = np.arange(
             year_start, year_end + 1, self.time_step)
         self.years_range = years_range
-        CO2_emissions_df = pd.DataFrame(index=years_range, columns=['years',
+        CO2_emissions_df = pd.DataFrame(index=years_range, columns=[GlossaryCore.Years,
                                                                     'gr_sigma', 'sigma', 'land_emissions',
                                                                     'cum_land_emissions', 'indus_emissions',
                                                                     'cum_indus_emissions', 'total_emissions',
@@ -75,7 +77,7 @@ class CarbonEmissions():
 
         for key in CO2_emissions_df.keys():
             CO2_emissions_df[key] = 0
-        CO2_emissions_df['years'] = years_range
+        CO2_emissions_df[GlossaryCore.Years] = years_range
         CO2_emissions_df.loc[year_start, 'gr_sigma'] = init_gr_sigma
         CO2_emissions_df.loc[year_start,
                              'indus_emissions'] = init_indus_emissions
@@ -90,30 +92,30 @@ class CarbonEmissions():
         """
 
         self.co2_emissions_Gt = pd.DataFrame(
-            {'years': self.CO2_emissions_by_use_sources['years']})
-        self.co2_emissions_Gt.index = self.co2_emissions_Gt['years'].values
+            {GlossaryCore.Years: self.CO2_emissions_by_use_sources[GlossaryCore.Years]})
+        self.co2_emissions_Gt.index = self.co2_emissions_Gt[GlossaryCore.Years].values
 
         # drop years column in new dataframe
         co2_emissions_by_use_wo_years = self.CO2_emissions_by_use_sources.drop(
-            'years', axis=1)
+            GlossaryCore.Years, axis=1)
 
         # sum all co2 sources using the wo years dataframe
         sum_sources = co2_emissions_by_use_wo_years.sum(axis=1)
 
         # get unique column in serie format
         limited_by_capture_wo_years = self.co2_emissions_ccus_Gt.drop(
-            'years', axis=1).iloc[:, 0]
+            GlossaryCore.Years, axis=1).iloc[:, 0]
         needed_by_energy_mix_wo_years = self.co2_emissions_needed_by_energy_mix.drop(
-            'years', axis=1).iloc[:, 0]
+            GlossaryCore.Years, axis=1).iloc[:, 0]
         sinks_df = self.CO2_emissions_by_use_sinks.drop(
-            'years', axis=1).iloc[:, 0]
+            GlossaryCore.Years, axis=1).iloc[:, 0]
 
         sum_sinks = limited_by_capture_wo_years + \
             needed_by_energy_mix_wo_years + sinks_df
 
         total_CO2_emissions = sum_sources - sum_sinks
 
-        self.co2_emissions['Total CO2 emissions'] = total_CO2_emissions
+        self.co2_emissions[GlossaryCore.TotalCO2Emissions] = total_CO2_emissions
 
     def compute_sigma(self, year):
         '''
@@ -168,7 +170,7 @@ class CarbonEmissions():
         # sum all sectors emissions
         land_emissions = 0
         for column in self.CO2_land_emissions.columns:
-            if column != 'years':
+            if column != GlossaryCore.Years:
                 land_emissions += self.CO2_land_emissions.loc[year, column]
 
         self.CO2_emissions_df.loc[year, 'land_emissions'] = land_emissions
@@ -203,10 +205,10 @@ class CarbonEmissions():
         emissions not coming from land change or energy 
         """
         sigma = self.CO2_emissions_df.at[year, 'sigma']
-        gross_output_ter = self.economics_df.at[year, 'gross_output']
+        gross_output_ter = self.economics_df.at[year, GlossaryCore.GrossOutput]
         energy_emis_share = self.energy_emis_share
         share_land_emis = self.land_emis_share
-        energy_emissions = self.co2_emissions.at[year, 'Total CO2 emissions']
+        energy_emissions = self.co2_emissions.at[year, GlossaryCore.TotalCO2Emissions]
         #emissions_control_rate = self.emissions_control_rate[year]
         # Version with emission control rate
 #         indus_emissions = sigma * gross_output_ter * \
@@ -352,37 +354,37 @@ class CarbonEmissions():
         Compute outputs of the pyworld3
         """
         self.inputs_models = inputs_models
-        self.economics_df = self.inputs_models['economics_df']
-        self.economics_df.index = self.economics_df['years'].values
+        self.economics_df = self.inputs_models[GlossaryCore.EconomicsDfValue]
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
         self.co2_emissions = pd.DataFrame(
-            {'years': self.economics_df['years']})
-        self.co2_emissions.index = self.co2_emissions['years'].values
+            {GlossaryCore.Years: self.economics_df[GlossaryCore.Years]})
+        self.co2_emissions.index = self.co2_emissions[GlossaryCore.Years].values
 
         self.co2_emissions_ccus = self.inputs_models['co2_emissions_ccus_Gt'].copy(
             deep=True)
-        self.co2_emissions_ccus.index = self.co2_emissions_ccus['years'].values
+        self.co2_emissions_ccus.index = self.co2_emissions_ccus[GlossaryCore.Years].values
 
         self.CO2_emissions_by_use_sources = self.inputs_models['CO2_emissions_by_use_sources'].copy(
             deep=True)
         self.CO2_emissions_by_use_sources.index = self.CO2_emissions_by_use_sources[
-            'years'].values
+            GlossaryCore.Years].values
         self.CO2_emissions_by_use_sinks = self.inputs_models['CO2_emissions_by_use_sinks'].copy(
             deep=True)
-        self.CO2_emissions_by_use_sinks.index = self.CO2_emissions_by_use_sinks['years'].values
+        self.CO2_emissions_by_use_sinks.index = self.CO2_emissions_by_use_sinks[GlossaryCore.Years].values
 
         self.co2_emissions_needed_by_energy_mix = self.inputs_models['co2_emissions_needed_by_energy_mix'].copy(
             deep=True)
         self.co2_emissions_needed_by_energy_mix.index = self.CO2_emissions_by_use_sinks[
-            'years'].values
+            GlossaryCore.Years].values
 
         self.co2_emissions_ccus_Gt = self.inputs_models['co2_emissions_ccus_Gt'].copy(
             deep=True)
         self.co2_emissions_ccus_Gt.index = self.co2_emissions_ccus_Gt[
-            'years'].values
+            GlossaryCore.Years].values
 
         self.CO2_land_emissions = self.inputs_models['CO2_land_emissions'].copy(
             deep=True)
-        self.CO2_land_emissions.index = self.co2_emissions_ccus_Gt['years'].values
+        self.CO2_land_emissions.index = self.co2_emissions_ccus_Gt[GlossaryCore.Years].values
         self.compute_total_CO2_emissions()
         # Iterate over years
         for year in self.years_range:

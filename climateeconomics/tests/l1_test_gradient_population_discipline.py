@@ -17,6 +17,7 @@ limitations under the License.
 from os.path import join, dirname
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pandas as pd
@@ -29,7 +30,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.model_name = 'population'
+        self.model_name = GlossaryCore.PopulationValue
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}'}
 
@@ -59,9 +60,9 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             gdp_serie.append(gdp_serie[year - 1] * 1.02)
             temp_serie.append(temp_serie[year - 1] * 1.01)
 
-        self.economics_df_y = pd.DataFrame({'years': years, 'output_net_of_d': gdp_serie})
+        self.economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         self.economics_df_y.index = years
-        self.temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temp_serie})
+        self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
         self.temperature_df.index = years
 
     def analytic_grad_entry(self):
@@ -81,10 +82,10 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         '''
         Test gradient population wrt economics_df
         '''
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.temperature_df': self.temperature_df
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -95,18 +96,18 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_output.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df'], outputs=[
-                f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}'], outputs=[
+                f'{self.name}.{GlossaryCore.PopulationDfValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_working_population_discipline_analytic_grad_output(self):
         '''
         Test gradient population wrt economics_df
         '''
 
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.temperature_df': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -117,17 +118,17 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df'], outputs=[
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}'], outputs=[
                 f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_working_population_discipline_analytic_grad_temp(self):
         '''
         Test gradient population wrt economics_df
         '''
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.temperature_df': self.temperature_df
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -138,7 +139,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.temperature_df'], outputs=[
+                            inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}'], outputs=[
                 f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_temperature(self):
@@ -146,10 +147,10 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population wrt temperature_df
         '''
 
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.temperature_df': self.temperature_df
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -160,8 +161,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.temperature_df'], outputs=[
-                f'{self.name}.population_df'], step=1e-15, derr_approx='complex_step')
+                            inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}'], outputs=[
+                f'{self.name}.{GlossaryCore.PopulationDfValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_temp_negative(self):
         '''
@@ -181,17 +182,17 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.05)
             temp_serie.append(temp_serie[year - 1] - 0.85)
-        economics_df_y = pd.DataFrame({'years': years, 'output_net_of_d': gdp_serie})
+        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
         temperature_df.index = years
 
-        calories_pc = pd.DataFrame({'years': years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
+        calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
-        values_dict = {f'{self.name}.economics_df': economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
-                       f'{self.name}.temperature_df': temperature_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
 
@@ -203,9 +204,9 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_temp_neg.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.population_df', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_big_gdp(self):
@@ -226,17 +227,17 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1000)
             temp_serie.append(temp_serie[year - 1] * 1.02)
-        economics_df_y = pd.DataFrame({'years': years, 'output_net_of_d': gdp_serie})
+        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
         temperature_df.index = years
 
-        calories_pc = pd.DataFrame({'years': years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
+        calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
-        values_dict = {f'{self.name}.economics_df': economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
-                       f'{self.name}.temperature_df': temperature_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
 
@@ -248,9 +249,9 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_big_gdp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.population_df', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_big_temp(self):
@@ -271,17 +272,17 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.05)
             temp_serie.append(temp_serie[year - 1] + 8.05)
-        economics_df_y = pd.DataFrame({'years': years, 'output_net_of_d': gdp_serie})
+        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
         temperature_df.index = years
 
-        calories_pc = pd.DataFrame({'years': years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
+        calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
-        values_dict = {f'{self.name}.economics_df': economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
-                       f'{self.name}.temperature_df': temperature_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
 
@@ -293,9 +294,9 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_augmente_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.population_df', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_small_pop(self):
@@ -316,21 +317,21 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.02)
             temp_serie.append(temp_serie[year - 1] * 1.02)
-        economics_df_y = pd.DataFrame({'years': years, 'output_net_of_d': gdp_serie})
+        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
         temperature_df.index = years
 
         data_dir = join(dirname(__file__), 'data')
         pop_init_df = pd.read_csv(
             join(data_dir, 'population_by_age_2020_small.csv'))
 
-        calories_pc = pd.DataFrame({'years': years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
+        calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
-        values_dict = {f'{self.name}.economics_df': economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
-                       f'{self.name}.temperature_df': temperature_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
 
@@ -343,9 +344,9 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_small_pop.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.population_df', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_big_pop(self):
@@ -367,20 +368,20 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             gdp_serie.append(gdp_serie[year - 1] * 1.05)
             temp_serie.append(temp_serie[year - 1] * 1.02)
-        economics_df_y = pd.DataFrame({'years': years, 'output_net_of_d': gdp_serie})
+        economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({'years': years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
         temperature_df.index = years
 
         pop_init_df = pd.read_csv(
             join(data_dir, 'population_by_age_2020_large.csv'))
 
-        calories_pc = pd.DataFrame({'years': years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
+        calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
-        values_dict = {f'{self.name}.economics_df': economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
-                       f'{self.name}.temperature_df': temperature_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
 
@@ -393,9 +394,9 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_big_pop.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df', f'{self.name}.temperature_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.population_df', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_3000_calories_pc(self):
@@ -407,13 +408,13 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(year_start, year_end + 1)
 
         calories_pc_df = pd.DataFrame(
-            {'years': years, 'kcal_pc': np.linspace(2000, 3000, len(years))})
+            {GlossaryCore.Years: years, 'kcal_pc': np.linspace(2000, 3000, len(years))})
         calories_pc_df.index = years
 
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.year_start': year_start,
                        f'{self.name}.year_end': year_end,
-                       f'{self.name}.temperature_df': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc_df
                        }
 
@@ -429,7 +430,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno,
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.calories_pc_df'],
-                            outputs=[f'{self.name}.population_df',
+                            outputs=[f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                      f'{self.name}.working_age_population_df'],
                             step=1e-15,
                             derr_approx='complex_step')
@@ -441,10 +442,10 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         assumptions_dict = ClimateEcoDiscipline.assumptions_dict_default
         assumptions_dict['activate_climate_effect_population'] = False
-        values_dict = {f'{self.name}.economics_df': self.economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
                        f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.temperature_df': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{self.name}.assumptions_dict': assumptions_dict,
                        }
 
@@ -456,9 +457,9 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_population_discipline_output_wo_climate_effect.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df',
-                                    f'{self.name}.temperature_df'],
-                            outputs=[f'{self.name}.population_df',
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
+                                    f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                      f'{self.name}.working_age_population_df'
                                      ],
                             step=1e-15, derr_approx='complex_step')

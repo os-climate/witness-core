@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
     InstantiatedParetoFrontOptimalChart
@@ -124,7 +124,7 @@ def post_processings(execution_engine, namespace, filters):
 
         summed_co2_emissions_dict, welfare_dict = {}, {}
         for scenario in scenario_list:
-            summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario]['Total CO2 emissions'].sum(
+            summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario][GlossaryCore.TotalCO2Emissions].sum(
             )
             welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
         namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
@@ -149,7 +149,7 @@ def post_processings(execution_engine, namespace, filters):
 
         summed_co2_emissions_dict, min_utility_dict = {}, {}
         for scenario in scenario_list:
-            summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario]['Total CO2 emissions'].sum(
+            summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario][GlossaryCore.TotalCO2Emissions].sum(
             )
             min_utility_dict[scenario] = min(
                 utility_df_dict[scenario]['discounted_utility'])
@@ -200,7 +200,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Price ($/tCO2)'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.CO2_taxes', ]
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.CO2TaxesValue}', ]
         (co2_taxes_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         co2_tax_dict = {}
@@ -299,7 +299,7 @@ def post_processings(execution_engine, namespace, filters):
 
         co2_emissions_dict = {}
         for scenario in scenario_list:
-            co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario]['Total CO2 emissions'].values.tolist(
+            co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario][GlossaryCore.TotalCO2Emissions].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, co2_emissions_dict,
@@ -346,7 +346,7 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Total production per scenario'
         x_axis_name = 'Years'
-        y_axis_name = 'Total production'
+        y_axis_name = GlossaryCore.TotalProductionValue
 
         df_paths = [
             f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.EnergyMix.energy_production_detailed']
@@ -372,14 +372,14 @@ def post_processings(execution_engine, namespace, filters):
         # Get the total energy investment
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.energy_investment']
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.EnergyInvestmentsValue}']
         (energy_investment_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
         energy_investment_dict = {}
         for scenario in scenario_list:
             energy_investment_dict[scenario] = energy_investment_df_dict[
-                scenario]['energy_investment'].values.tolist()
+                scenario][GlossaryCore.EnergyInvestmentsValue].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, energy_investment_dict,
                                                   chart_name=chart_name,

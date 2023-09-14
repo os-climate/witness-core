@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -75,16 +76,16 @@ class Study(ClimateEconomicsStudyManager):
         # ALL_RESOURCE
         resource_input = {}
         modeled_resources = ResourceMixModel.RESOURCE_LIST
-        non_modeled_resource_price = pd.DataFrame({'years': years})
-        resources_CO2_emissions = pd.DataFrame({'years': years})
+        non_modeled_resource_price = pd.DataFrame({GlossaryCore.Years: years})
+        resources_CO2_emissions = pd.DataFrame({GlossaryCore.Years: years})
         for resource in ResourceGlossary.GlossaryDict.values():
             if resource['name'] not in modeled_resources:
                 non_modeled_resource_price[resource['name']
                                            ] = resource['price']
             resources_CO2_emissions[resource['name']
                                     ] = resource['CO2_emissions']
-        non_modeled_resource_price.index = non_modeled_resource_price['years']
-        resources_CO2_emissions.index = resources_CO2_emissions['years']
+        non_modeled_resource_price.index = non_modeled_resource_price[GlossaryCore.Years]
+        resources_CO2_emissions.index = resources_CO2_emissions[GlossaryCore.Years]
         resource_input[self.study_name + self.all_resource_name +
                        '.non_modeled_resource_price'] = non_modeled_resource_price
         resource_input[self.study_name + self.all_resource_name +
@@ -97,9 +98,9 @@ class Study(ClimateEconomicsStudyManager):
         resource_demand = pd.read_csv(
             join(data_dir_resource, 'all_demand_from_energy_mix.csv'))
 
-        resource_demand = resource_demand.loc[resource_demand['years']
+        resource_demand = resource_demand.loc[resource_demand[GlossaryCore.Years]
                                               >= self.year_start]
-        resource_demand = resource_demand.loc[resource_demand['years']
+        resource_demand = resource_demand.loc[resource_demand[GlossaryCore.Years]
                                               <= self.year_end]
         resource_input[self.study_name +
                        self.all_resource_name + '.resources_demand'] = resource_demand

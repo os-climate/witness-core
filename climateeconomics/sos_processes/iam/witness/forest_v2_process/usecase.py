@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.core.core_forest.forest_v2 import Forest
@@ -79,7 +79,7 @@ class Study(StudyManager):
 
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         reforestation_cost_per_ha = 13800
 
         wood_density = 600.0  # kg/m3
@@ -135,22 +135,22 @@ class Study(StudyManager):
                             'CO2_from_production_unit': 'kg/kg'
                             }
         invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
 
         mw_invest = np.linspace(1, 4, year_range)
         mw_invest_df = pd.DataFrame(
-            {"years": years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
         transport_df = pd.DataFrame(
-            {"years": years, "transport": transport})
+            {GlossaryCore.Years: years, "transport": transport})
         margin = np.linspace(1.1, 1.1, year_range)
         margin_df = pd.DataFrame(
-            {"years": years, "margin": margin})
+            {GlossaryCore.Years: years, "margin": margin})
         initial_protected_forest_surface = 4 * 0.21
 
         deforest_invest = np.linspace(10, 1, year_range)
         deforest_invest_df = pd.DataFrame(
-            {"years": years, "investment": deforest_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
         deforestation_cost_per_ha = 10500
 
         # values of pyworld3

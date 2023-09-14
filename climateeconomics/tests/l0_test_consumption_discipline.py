@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -31,7 +32,7 @@ class ConsumptionDiscTest(unittest.TestCase):
 
     def test_execute(self):
 
-        self.model_name = 'consumption'
+        self.model_name = GlossaryCore.Consumption
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
@@ -52,7 +53,9 @@ class ConsumptionDiscTest(unittest.TestCase):
 
         economics_df = read_csv(
             join(data_dir, 'economics_data_onestep.csv'))
-        economics_df = economics_df[economics_df['years'] >= 2020]
+        economics_df = economics_df[economics_df[GlossaryCore.Years] >= 2020]
+
+        economics_df = economics_df[GlossaryCore.EconomicsDf['dataframe_descriptor'].keys()]
 
         global_data_dir = join(dirname(dirname(__file__)), 'data')
         population_df = read_csv(
@@ -64,23 +67,23 @@ class ConsumptionDiscTest(unittest.TestCase):
         population_df.index = years
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
-            {'years': years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, 'energy_price': energy_price})
         residential_energy_conso_ref = 21
         residential_energy = np.linspace(21, 15, len(years))
         residential_energy_df = pd.DataFrame(
-            {'years': years, 'residential_energy': residential_energy})
+            {GlossaryCore.Years: years, 'residential_energy': residential_energy})
         #Share invest
         share_invest = np.asarray([1.65] * len(years))
-        # total_investment_share_of_gdp = pd.DataFrame({'years':years, 'share_investment': share_invest})
-        share_n_energy_investment = pd.DataFrame({'years': years, 'share_investment': share_invest})
+        # total_investment_share_of_gdp = pd.DataFrame({GlossaryCore.Years:years, 'share_investment': share_invest})
+        share_n_energy_investment = pd.DataFrame({GlossaryCore.Years: years, 'share_investment': share_invest})
         np.set_printoptions(threshold=np.inf)
         values_dict = {f'{self.name}.year_start': 2020,
                        f'{self.name}.year_end': 2100,
                        f'{self.name}.time_step': 1,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,
-                       f'{self.name}.economics_df': economics_df,
-                       f'{self.name}.population_df': population_df,
+                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
+                       f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.name}.energy_mean_price': energy_mean_price,
                        f'{self.name}.residential_energy_conso_ref': residential_energy_conso_ref,
                        f'{self.name}.residential_energy': residential_energy_df,

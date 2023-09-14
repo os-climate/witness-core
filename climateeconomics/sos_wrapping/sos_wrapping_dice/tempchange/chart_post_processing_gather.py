@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 
@@ -47,7 +48,7 @@ def get_instanciated_charts(discipline, chart_filters=None):
     if 'Atmospheric temperature evolution' in graphs_list:       
         
         chart_name = 'Atmospheric temperature evolution over years'
-        new_chart = TwoAxesInstanciatedChart('years', 'temperature evolution (degrees Celsius above preindustrial)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'temperature evolution (degrees Celsius above preindustrial)',
                                             chart_name = chart_name)
         
         for scenario, temp_df in temperature_df_dict.items():
@@ -67,7 +68,7 @@ def get_instanciated_charts(discipline, chart_filters=None):
     if 'Ocean temperature evolution' in graphs_list:       
         
         chart_name = 'Ocean temperature evolution over years'
-        new_chart = TwoAxesInstanciatedChart('years', 'temperature evolution (degrees Celsius above preindustrial)',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'temperature evolution (degrees Celsius above preindustrial)',
                                             chart_name = chart_name)
         
         for scenario, temp_df in temperature_df_dict.items():

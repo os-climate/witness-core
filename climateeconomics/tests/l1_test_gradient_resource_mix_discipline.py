@@ -17,6 +17,8 @@ limitations under the License.
 from os.path import join, dirname
 from pandas import read_csv
 from pathlib import Path
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
@@ -38,7 +40,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
         data_dir = join(dirname(__file__), 'data')
         self.oil_production_df = read_csv(
             join(data_dir, 'oil.predictible_production.csv'))
-        self.oil_production_df.set_index('years', inplace=True)
+        self.oil_production_df.set_index(GlossaryCore.Years, inplace=True)
         self.gas_production_df = read_csv(
             join(data_dir, 'gas.predictible_production.csv'))
         self.coal_production_df = read_csv(

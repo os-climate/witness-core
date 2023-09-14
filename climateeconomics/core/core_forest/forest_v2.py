@@ -17,6 +17,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 from copy import deepcopy
+
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from sostrades_core.tools.cst_manager.constraint_manager import compute_func_with_exp_min, compute_dfunc_with_exp_min
@@ -108,21 +110,21 @@ class Forest():
             self.year_end + 1,
             self.time_step)
         self.years = years
-        self.forest_surface_df = pd.DataFrame({'years': self.years})
-        self.CO2_emitted_df = pd.DataFrame({'years': self.years})
-        self.managed_wood_df = pd.DataFrame({'years': self.years})
-        self.mw_from_invests = pd.DataFrame({'years': self.years})
-        self.biomass_dry_df = pd.DataFrame({'years': self.years})
-        self.ratio = pd.DataFrame({'years': self.years})
+        self.forest_surface_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.CO2_emitted_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.managed_wood_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.mw_from_invests = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.biomass_dry_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.ratio = pd.DataFrame({GlossaryCore.Years: self.years})
 
         # output dataframes:
-        self.techno_production = pd.DataFrame({'years': self.years})
-        self.techno_prices = pd.DataFrame({'years': self.years})
-        self.techno_consumption = pd.DataFrame({'years': self.years})
-        self.techno_consumption_woratio = pd.DataFrame({'years': self.years})
-        self.land_use_required = pd.DataFrame({'years': self.years})
-        self.CO2_emissions = pd.DataFrame({'years': self.years})
-        self.forest_lost_capital = pd.DataFrame({'years': self.years})
+        self.techno_production = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.techno_prices = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.techno_consumption = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.techno_consumption_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.land_use_required = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.CO2_emissions = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.forest_lost_capital = pd.DataFrame({GlossaryCore.Years: self.years})
 
     def compute(self, in_dict):
         """
@@ -206,9 +208,9 @@ class Forest():
         mw_cost = self.techno_wood_info['managed_wood_price_per_ha']
         # managed wood from past invest. invest in G$ - surface in Gha.
         mw_from_past_invest = self.managed_wood_invest_before_year_start[
-            'investment'] / mw_cost
+            GlossaryCore.InvestmentsValue] / mw_cost
         # managed wood from actual invest
-        mw_from_invest = self.managed_wood_investment['investment'] / mw_cost
+        mw_from_invest = self.managed_wood_investment[GlossaryCore.InvestmentsValue] / mw_cost
         # concat all managed wood form invest
         mw_added = pd.concat([mw_from_past_invest, mw_from_invest]).values
 
@@ -272,7 +274,7 @@ class Forest():
         # forest surface is in Gha, deforestation_surface is in Mha,
         # deforested_surface is in Gha
         self.forest_surface_df['delta_deforestation_surface'] = - \
-            self.deforest_invest['investment'].values / \
+            self.deforest_invest[GlossaryCore.InvestmentsValue].values / \
             self.deforest_cost_per_ha
 
         # forested surface
@@ -454,9 +456,6 @@ class Forest():
         compute price as in techno_type
         """
 
-        # Maximize with smooth exponential
-#         price_df['invest'] = compute_func_with_exp_min(
-#             investment, self.min_value_invest)
         density_per_ha = self.techno_wood_info['density_per_ha']  # m3/ha
         mean_density = self.techno_wood_info['density']  # kg/m3
 

@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class NonUseCapitalObjective():
     '''
@@ -78,9 +80,9 @@ class NonUseCapitalObjective():
         Aggregate each variable that ends with name in a dataframe and compute the sum of each column
         '''
         name_df_list = [value.drop(
-            ['years'], axis=1) for key, value in inputs_dict.items() if key.endswith(name)]
+            [GlossaryCore.Years], axis=1) for key, value in inputs_dict.items() if key.endswith(name)]
 
-        non_use_capital_df = pd.DataFrame({'years': self.years_range})
+        non_use_capital_df = pd.DataFrame({GlossaryCore.Years: self.years_range})
 
         if len(name_df_list) != 0:
             non_use_capital_df_concat = pd.concat(name_df_list, axis=1)
@@ -164,7 +166,7 @@ class NonUseCapitalObjective():
             sum_techno_capital = self.techno_capital_df['Sum of techno capital'].values / 1e3
         else:
             sum_techno_capital = 0.0
-        energy_capital_df = pd.DataFrame({'years': self.years_range,
+        energy_capital_df = pd.DataFrame({GlossaryCore.Years: self.years_range,
                                           'energy_capital': sum_techno_capital})
 
         return energy_capital_df

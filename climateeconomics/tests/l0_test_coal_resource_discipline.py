@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -36,9 +38,9 @@ class CoalModelTestCase(unittest.TestCase):
             join(data_dir, 'all_demand_from_energy_mix.csv'))
         # part to adapt lenght to the year range
 
-        self.energy_coal_demand_df = self.energy_coal_demand_df.loc[self.energy_coal_demand_df['years']
+        self.energy_coal_demand_df = self.energy_coal_demand_df.loc[self.energy_coal_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_coal_demand_df= self.energy_coal_demand_df.loc[self.energy_coal_demand_df['years']
+        self.energy_coal_demand_df= self.energy_coal_demand_df.loc[self.energy_coal_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_coal_demand_df,

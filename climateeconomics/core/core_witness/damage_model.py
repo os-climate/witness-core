@@ -17,6 +17,8 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class DamageModel():
     '''
@@ -68,16 +70,16 @@ class DamageModel():
                      'damages',
                      'damage_frac_output',
                      ])
-
+        
         if 'complex128' in [self.temperature_df['temp_atmo'].dtype]:
             arr_type = 'complex128'
         else:
             arr_type = 'float64'
 
-        damage_df['years'] = self.years_range
-        damage_df['damages'] = np.zeros(
+        damage_df[GlossaryCore.Years] = self.years_range
+        damage_df[GlossaryCore.Damages] = np.zeros(
             len(self.years_range), dtype=arr_type)
-        damage_df['damage_frac_output'] = np.zeros(
+        damage_df[GlossaryCore.DamageFractionOutput] = np.zeros(
             len(self.years_range), dtype=arr_type)
 
         return damage_df
@@ -99,7 +101,7 @@ class DamageModel():
         else:
             damage_frac_output = self.damag_int * temp_atmo + \
                 self.damag_quad * temp_atmo**self.damag_expo
-        self.expected_damage_df.loc[year, 'damage_frac_output'] = damage_frac_output
+        self.expected_damage_df.loc[year, GlossaryCore.DamageFractionOutput] = damage_frac_output
         return damage_frac_output
 
     def compute_damages_on_gdp(self, year) -> pd.DataFrame:
@@ -107,10 +109,10 @@ class DamageModel():
         Compute damages (t) (trillions 2005 USD per year) on GDP
         using variables at t
         """
-        gross_output = self.economics_df.at[year, 'gross_output']
-        damage_frac_output = self.expected_damage_df.at[year, 'damage_frac_output']
+        gross_output = self.economics_df.at[year, GlossaryCore.GrossOutput]
+        damage_frac_output = self.expected_damage_df.at[year, GlossaryCore.DamageFractionOutput]
         damages = gross_output * damage_frac_output
-        self.expected_damage_df.loc[year, 'damages'] = damages
+        self.expected_damage_df.loc[year, GlossaryCore.Damages] = damages
 
         return damages
 
@@ -120,7 +122,7 @@ class DamageModel():
                  CO2 tax - fact * CO2_damage_price  > 0  
             with CO2_damage_price[year] = 1e3 * 1.01**(year_start-year) * mean(damage_df[year:year+25] (T$)) / total_emissions_ref (Gt)
         """
-        if 'complex128' in [self.expected_damage_df['damages'].values.dtype]:
+        if 'complex128' in [self.expected_damage_df[GlossaryCore.Damages].values.dtype]:
             arr_type = 'complex128'
         else:
             arr_type = 'float64'
@@ -128,7 +130,7 @@ class DamageModel():
         co2_damage_price = np.zeros(
             len(self.expected_damage_df.index), dtype=arr_type)
 
-        damages = self.expected_damage_df['damages'].values.tolist()
+        damages = self.expected_damage_df[GlossaryCore.Damages].values.tolist()
 
         for i, year in enumerate(self.expected_damage_df.index):
 
@@ -141,7 +143,7 @@ class DamageModel():
                     np.mean(damages[i:i + 25 - k]) / self.total_emissions_ref
 
         self.co2_damage_price_df = pd.DataFrame(
-            {'years': self.expected_damage_df.index, 'CO2_damage_price': co2_damage_price})
+            {GlossaryCore.Years: self.expected_damage_df.index, 'CO2_damage_price': co2_damage_price})
 
     def compute_gradient(self):
         """
@@ -179,9 +181,9 @@ class DamageModel():
                             temp_atmo ** (self.damag_expo - 1)
 
                     ddamages_temp_atmo[line, i] = ddamage_frac_output_temp_atmo[line,
-                                                                                i] * self.economics_df.at[years[line], 'gross_output']
+                                                                                i] * self.economics_df.at[years[line], GlossaryCore.GrossOutput]
                     ddamages_gross_output[line,
-                                        i] = self.expected_damage_df.at[years[line], 'damage_frac_output']
+                                        i] = self.expected_damage_df.at[years[line], GlossaryCore.DamageFractionOutput]
 
         dconstraint_temp_atmo, dconstraint_economics = self.compute_dconstraint(
             ddamages_temp_atmo, ddamages_gross_output)
@@ -225,10 +227,10 @@ class DamageModel():
         Compute the outputs of the pyworld3
         """
         self.economics_df = economics_df
-        self.economics_df.index = self.economics_df['years'].values
+        self.economics_df.index = self.economics_df[GlossaryCore.Years].values
 
         self.temperature_df = temperature_df
-        self.temperature_df.index = self.temperature_df['years'].values
+        self.temperature_df.index = self.temperature_df[GlossaryCore.Years].values
 
         self.expected_damage_df = self.create_dataframe()
         for year in self.years_range:
@@ -241,8 +243,8 @@ class DamageModel():
 
         damage_df = pd.DataFrame.copy(self.expected_damage_df)
         if not self.compute_climate_impact_on_gdp:
-            damage_df['damages'] = 0
-            damage_df['damage_frac_output'] = 0
-            damage_df['base_carbon_price'] = 0
+            damage_df[GlossaryCore.Damages] = 0
+            damage_df[GlossaryCore.DamageFractionOutput] = 0
+            damage_df[GlossaryCore.BaseCarbonPrice] = 0
 
         return damage_df, self.expected_damage_df, self.co2_damage_price_df

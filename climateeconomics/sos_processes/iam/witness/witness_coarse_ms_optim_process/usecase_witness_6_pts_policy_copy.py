@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import Study as witness_optim_usecase
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
@@ -93,7 +94,7 @@ class Study(ClimateEconomicsStudyManager):
                                  'learning_rate': 0.1,
                                  'maximum_learning_capex_ratio': 0.33,
                                  'lifetime': lifetime,
-                                 'lifetime_unit': 'years',
+                                 'lifetime_unit': GlossaryCore.Years,
                                  'Capex_init': 0.88,
                                  'Capex_init_unit': '$/kgCO2',
                                  'efficiency': 0.9,
@@ -157,12 +158,11 @@ class Study(ClimateEconomicsStudyManager):
                     values_dict_updt.update({f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.EnergyMix.{variable}':valeur_array,
                                              f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.CCUS.{variable}':valeur_array})
             dspace['enable_variable'] = False
-            dspace.loc[dspace['variable'] == 'share_energy_investment_ctrl', 'enable_variable'] = True
 
             invest_mix_file = f'optimization scenarios.{scenario}.invest_mix.csv'
-            invest_mix = pd.read_csv(join(dirname(__file__), 'data', 'invest_mix', invest_mix_file))
+            invest_mix = pd.read_csv(join(dirname(__file__), 'data', GlossaryCore.invest_mix, invest_mix_file))
             forest_invest_file = f'optimization scenarios.{scenario}.forest_investment.csv'
-            forest_invest = pd.read_csv(join(dirname(__file__), 'data', 'invest_mix', forest_invest_file))
+            forest_invest = pd.read_csv(join(dirname(__file__), 'data', GlossaryCore.invest_mix, forest_invest_file))
 
             DAC_name = f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno'
             fossil_energy_name = f'{self.study_name}.{self.scatter_scenario}.{witness_uc.optim_name}.{witness_uc.coupling_name}.WITNESS.EnergyMix.fossil'

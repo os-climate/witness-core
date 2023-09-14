@@ -1,7 +1,7 @@
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 # Copyright (c) 2021 Airbus SAS.
 # All rights reserved.
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
@@ -86,11 +86,11 @@ class Study(ClimateEconomicsStudyManager):
                 dv_arrays_dict[
                     f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = \
                     dspace_df[f'{energy}.{energy_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{energy}.{energy_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
+                design_var_descriptor[f'{energy}.{energy_wo_dot}_array_mix'] = {'out_name': GlossaryCore.invest_mix,
                                                                                 'out_type': 'dataframe',
                                                                                 'key': f'{energy}',
                                                                                 'index': years,
-                                                                                'index_name': 'years',
+                                                                                'index_name': GlossaryCore.Years,
                                                                                 'namespace_in': 'ns_energy_mix',
                                                                                 'namespace_out': 'ns_invest'
                                                                                 }
@@ -102,11 +102,11 @@ class Study(ClimateEconomicsStudyManager):
                     dspace_df[
                         f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
-                    'out_name': 'invest_mix',
+                    'out_name': GlossaryCore.invest_mix,
                     'out_type': 'dataframe',
                     'key': f'{energy}.{technology}',
                     'index': years,
-                    'index_name': 'years',
+                    'index_name': GlossaryCore.Years,
                     'namespace_in': 'ns_energy_mix',
                     'namespace_out': 'ns_invest'
                 }
@@ -116,11 +116,11 @@ class Study(ClimateEconomicsStudyManager):
             if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = \
                     dspace_df[f'{ccs}.{ccs_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{ccs}.{ccs_wo_dot}_array_mix'] = {'out_name': 'invest_mix',
+                design_var_descriptor[f'{ccs}.{ccs_wo_dot}_array_mix'] = {'out_name': GlossaryCore.invest_mix,
                                                                           'out_type': 'dataframe',
                                                                           'key': f'{ccs}',
                                                                           'index': years,
-                                                                          'index_name': 'years',
+                                                                          'index_name': GlossaryCore.Years,
                                                                           'namespace_in': 'ns_ccs',
                                                                           'namespace_out': 'ns_invest'
                                                                           }
@@ -132,11 +132,11 @@ class Study(ClimateEconomicsStudyManager):
                     dspace_df[
                         f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
                 design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
-                    'out_name': 'invest_mix',
+                    'out_name': GlossaryCore.invest_mix,
                     'out_type': 'dataframe',
                     'key': f'{ccs}.{technology}',
                     'index': years,
-                    'index_name': 'years',
+                    'index_name': GlossaryCore.Years,
                     'namespace_in': 'ns_ccs',
                     'namespace_out': 'ns_invest'
                 }
@@ -150,7 +150,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'out_type': 'dataframe',
                                                                 'key': 'forest_investment',
                                                                 'index': years,
-                                                                'index_name': 'years',
+                                                                'index_name': GlossaryCore.Years,
                                                                 'namespace_in': 'ns_witness',
                                                                 'namespace_out': 'ns_invest'
                                                                 }
@@ -158,9 +158,9 @@ class Study(ClimateEconomicsStudyManager):
             dv_arrays_dict[f'{self.witness_uc.study_name}.crop_investment_array_mix'] = dspace_df[f'crop_investment_array_mix']['value']
             design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
                                                                     'out_type': 'dataframe',
-                                                                    'key': 'investment',
+                                                                    'key': GlossaryCore.InvestmentsValue,
                                                                     'index': years,
-                                                                    'index_name': 'years',
+                                                                    'index_name': GlossaryCore.Years,
                                                                     'namespace_in': 'ns_witness',
                                                                     'namespace_out': 'ns_crop'
                                                                     }
@@ -168,18 +168,18 @@ class Study(ClimateEconomicsStudyManager):
             dv_arrays_dict[f'{self.witness_uc.study_name}.managed_wood_investment_array_mix'] = dspace_df[f'managed_wood_investment_array_mix']['value']
             design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
                                                                             'out_type': 'dataframe',
-                                                                            'key': 'investment',
+                                                                            'key': GlossaryCore.InvestmentsValue,
                                                                             'index': years,
-                                                                            'index_name': 'years',
+                                                                            'index_name': GlossaryCore.Years,
                                                                             'namespace_in': 'ns_witness',
                                                                             'namespace_out': 'ns_forest'
                                                                             }
         dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_ctrl'] = dspace_df[f'deforestation_investment_ctrl']['value']
         design_var_descriptor['deforestation_investment_ctrl'] = {'out_name': 'deforestation_investment',
                                                                         'out_type': 'dataframe',
-                                                                        'key': 'investment',
+                                                                        'key': GlossaryCore.InvestmentsValue,
                                                                         'index': years,
-                                                                        'index_name': 'years',
+                                                                        'index_name': GlossaryCore.Years,
                                                                         'namespace_in': 'ns_witness',
                                                                         'namespace_out': 'ns_forest'
                                                                         }
@@ -189,7 +189,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                     'out_type': 'dataframe',
                                                                     'key': 'red_meat_calories_per_day',
                                                                     'index': years,
-                                                                    'index_name': 'years',
+                                                                    'index_name': GlossaryCore.Years,
                                                                     'namespace_in': 'ns_witness',
                                                                     'namespace_out': 'ns_crop'
                                                                     }
@@ -199,7 +199,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                         'out_type': 'dataframe',
                                                                         'key': 'white_meat_calories_per_day',
                                                                         'index': years,
-                                                                        'index_name': 'years',
+                                                                        'index_name': GlossaryCore.Years,
                                                                         'namespace_in': 'ns_witness',
                                                                         'namespace_out': 'ns_crop'
                                                                         }
@@ -210,7 +210,7 @@ class Study(ClimateEconomicsStudyManager):
             'out_type': 'dataframe',
             'key': 'vegetables_and_carbs_calories_per_day',
             'index': years,
-            'index_name': 'years',
+            'index_name': GlossaryCore.Years,
             'namespace_in': 'ns_witness',
             'namespace_out': 'ns_crop'
             }
@@ -221,38 +221,19 @@ class Study(ClimateEconomicsStudyManager):
             'out_type': 'dataframe',
             'key': 'milk_and_eggs_calories_per_day',
             'index': years,
-            'index_name': 'years',
+            'index_name': GlossaryCore.Years,
             'namespace_in': 'ns_witness',
             'namespace_out': 'ns_crop'
             }
 
-        dv_arrays_dict[f'{self.witness_uc.study_name}.share_energy_investment_ctrl'] = \
-            np.array(dspace_df[f'share_energy_investment_ctrl']['value'])
-        design_var_descriptor['share_energy_investment_ctrl'] = {'out_name': 'share_energy_investment',
-                                                                 'out_type': 'dataframe',
-                                                                 'key': 'energy',
-                                                                 'index': years,
-                                                                 'index_name': 'years',
-                                                                 'namespace_in': 'ns_witness',
-                                                                 'namespace_out': 'ns_witness'
-                                                                 }
-
         func_df = self.witness_uc.func_df
         func_df.loc[func_df['variable'] == 'welfare_objective', 'weight'] = 100.
         func_df.loc[func_df['variable'] == 'land_demand_constraint', 'weight'] = 0.
-        func_df.loc[func_df['variable'] == 'invest_sum_eq_cons', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'non_use_capital_cons', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'calories_per_day_constraint', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'forest_lost_capital_cons', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'total_prod_minus_min_prod_constraint_df', 'weight'] = 0.
 
-        new_row = {'variable':'invest_sum_ineq_cons',
-                   'parent': 'invests_constraint',
-                   'ftype':'ineq_constraint',
-                   'weight': -1.,
-                   'aggr':'sum',
-                   'namespace':'ns_functions'}
-        func_df = func_df.append(new_row, ignore_index=True)
         self.func_df = func_df
         self.design_var_descriptor = design_var_descriptor
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = func_df
@@ -279,7 +260,15 @@ class Study(ClimateEconomicsStudyManager):
             dspace_df = dspace_df.append(dict_var, ignore_index=True)
 
         self.dspace = dspace_df
-        values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.energy_list'] = self.witness_uc.energy_list
+        keys_to_update = ['carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
+                          'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
+                          'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
+
+        for key in keys_to_update:
+            self.dspace.loc[self.dspace['variable'] == key, 'value'] = \
+                np.array(self.dspace.loc[self.dspace['variable'] == key, 'lower_bnd'])
+
+        values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         setup_data_list.append(values_dict)
         setup_data_list.append(dv_arrays_dict)

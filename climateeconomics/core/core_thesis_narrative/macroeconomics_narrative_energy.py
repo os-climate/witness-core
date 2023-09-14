@@ -18,6 +18,8 @@ import pandas as pd
 from copy import deepcopy
 from numpy import fill_diagonal
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class MacroEconomics():
     '''
@@ -41,10 +43,10 @@ class MacroEconomics():
         self.time_step = self.param['time_step']
 
         self.productivity_start = self.param['productivity_start']
-        self.init_gross_output = self.param['init_gross_output']
+        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = self.param['capital_start']
-        self.population_df = self.param['population_df']
-        self.population_df.index = self.population_df['years'].values
+        self.population_df = self.param[GlossaryCore.PopulationDfValue]
+        self.population_df.index = self.population_df[GlossaryCore.Years].values
         self.productivity_gr_start = self.param['productivity_gr_start']
         self.decline_rate_tfp = self.param['decline_rate_tfp']
         self.depreciation_capital = self.param['depreciation_capital']
@@ -83,8 +85,8 @@ class MacroEconomics():
         self.output_epsilon_hassler = self.param['output_epsilon_hassler']
         self.output_energy_share = self.param['output_energy_share']
         self.energy_factor = self.param['energy_factor']
-        self.co2_emissions_Gt = self.param['co2_emissions_Gt']
-        self.co2_taxes = self.param['CO2_taxes']
+        self.co2_emissions_Gt = self.param[GlossaryCore.CO2EmissionsGtValue]
+        self.co2_taxes = self.param[GlossaryCore.CO2TaxesValue]
         self.co2_tax_efficiency = self.param['CO2_tax_efficiency']
 
         # Employment rate param
@@ -94,8 +96,8 @@ class MacroEconomics():
         self.scaling_factor_energy_investment = self.param['scaling_factor_energy_investment']
 
         if self.co2_tax_efficiency is not None:
-            if 'years' in self.co2_tax_efficiency:
-                self.co2_tax_efficiency.index = self.co2_tax_efficiency['years']
+            if GlossaryCore.Years in self.co2_tax_efficiency:
+                self.co2_tax_efficiency.index = self.co2_tax_efficiency[GlossaryCore.Years]
             else:
                 raise Exception(
                     'Miss a column years in CO2 tax efficiency to set index of the dataframe')
@@ -111,29 +113,13 @@ class MacroEconomics():
         param = self.param
         economics_df = pd.DataFrame(
             index=default_index,
-            columns=['years',
-                     'gross_output',
-                     'output_net_of_d',
-                     'net_output',
-                     'productivity',
-                     'productivity_gr',
-                     'energy_productivity_gr',
-                     'energy_productivity',
-                     'consumption',
-                     'pc_consumption',
-                     'capital',
-                     'investment',
-                     'interest_rate',
-                     'energy_investment',
-                     'energy_investment_wo_tax',
-                     'energy_investment_from_tax',
-                     'output_growth'])
+            columns=GlossaryCore.EconomicsDetail_df['dataframe_descriptor'].keys())
 
         for key in economics_df.keys():
             economics_df[key] = 0
-        economics_df['years'] = self.years_range
+        economics_df[GlossaryCore.Years] = self.years_range
         economics_df.loc[param['year_start'],
-                         'gross_output'] = self.init_gross_output
+                         GlossaryCore.GrossOutput] = self.init_gross_output
         economics_df.loc[param['year_start'],
                          'energy_productivity'] = self.init_energy_productivity
         economics_df.loc[param['year_start'],
@@ -152,27 +138,27 @@ class MacroEconomics():
 
         self.energy_investment_wo_renewable = pd.DataFrame(
             index=default_index,
-            columns=['years',
-                     'energy_investment_wo_renewable'])
+            columns=[GlossaryCore.Years,
+                     GlossaryCore.EnergyInvestmentsWoRenewableValue])
 
         energy_investment = pd.DataFrame(
             index=default_index,
-            columns=['years',
-                     'energy_investment'])
+            columns=[GlossaryCore.Years,
+                     GlossaryCore.EnergyInvestmentsValue])
 
         for key in energy_investment.keys():
             energy_investment[key] = 0
-        energy_investment['years'] = self.years_range
+        energy_investment[GlossaryCore.Years] = self.years_range
         self.energy_investment = energy_investment
         self.energy_investment = self.energy_investment.replace(
             [np.inf, -np.inf], np.nan)
 
         workforce_df = pd.DataFrame(index=default_index,
-                                    columns=['years',
+                                    columns=[GlossaryCore.Years,
                                              'employment_rate', 'workforce'])
         for key in workforce_df.keys():
             workforce_df[key] = 0
-        workforce_df['years'] = self.years_range
+        workforce_df[GlossaryCore.Years] = self.years_range
         self.workforce_df = workforce_df
 
         return economics_df.fillna(0.0), energy_investment.fillna(0.0),
@@ -182,20 +168,20 @@ class MacroEconomics():
         """
         Set couplings inputs with right index, scaling...
         """
-        self.damefrac = self.inputs['damage_df']
-        self.damefrac.index = self.damefrac['years'].values
+        self.damefrac = self.inputs[GlossaryCore.DamageDfValue]
+        self.damefrac.index = self.damefrac[GlossaryCore.Years].values
         # Scale energy production
         self.scaling_factor_energy_production = self.inputs['scaling_factor_energy_production']
         self.scaling_factor_energy_investment = self.inputs['scaling_factor_energy_investment']
-        self.energy_production = self.inputs['energy_production'].copy(deep=True)
-        self.energy_production['Total production'] *= self.scaling_factor_energy_production
-        self.co2_emissions_Gt = pd.DataFrame({'years': self.inputs['co2_emissions_Gt']['years'].values,
-                                              'Total CO2 emissions': self.inputs['co2_emissions_Gt'][
-                                                  'Total CO2 emissions'].values})
-        self.co2_emissions_Gt.index = self.co2_emissions_Gt['years'].values
-        self.co2_taxes = self.inputs['CO2_taxes']
-        self.co2_taxes.index = self.co2_taxes['years'].values
-        self.energy_production.index = self.energy_production['years'].values
+        self.energy_production = self.inputs[GlossaryCore.EnergyProductionValue].copy(deep=True)
+        self.energy_production[GlossaryCore.TotalProductionValue] *= self.scaling_factor_energy_production
+        self.co2_emissions_Gt = pd.DataFrame({GlossaryCore.Years: self.inputs[GlossaryCore.CO2EmissionsGtValue][GlossaryCore.Years].values,
+                                              GlossaryCore.TotalCO2Emissions: self.inputs[GlossaryCore.CO2EmissionsGtValue][
+                                                  GlossaryCore.TotalCO2Emissions].values})
+        self.co2_emissions_Gt.index = self.co2_emissions_Gt[GlossaryCore.Years].values
+        self.co2_taxes = self.inputs[GlossaryCore.CO2TaxesValue]
+        self.co2_taxes.index = self.co2_taxes[GlossaryCore.Years].values
+        self.energy_production.index = self.energy_production[GlossaryCore.Years].values
         # Investment in energy
         self.share_energy_investment = pd.Series(
             self.inputs['share_energy_investment']['share_investment'].values / 100.0, index=self.years_range)
@@ -204,10 +190,10 @@ class MacroEconomics():
         self.share_n_energy_investment = self.total_share_investment - \
                                          self.share_energy_investment
         # Population dataframes
-        self.population_df = self.inputs['population_df']
-        self.population_df.index = self.population_df['years'].values
+        self.population_df = self.inputs[GlossaryCore.PopulationDfValue]
+        self.population_df.index = self.population_df[GlossaryCore.Years].values
         self.working_age_population_df = self.inputs['working_age_population_df']
-        self.working_age_population_df.index = self.working_age_population_df['years'].values
+        self.working_age_population_df.index = self.working_age_population_df[GlossaryCore.Years].values
 
 
 
@@ -228,7 +214,7 @@ class MacroEconomics():
         employment_rate_recovery = self.employment_a_param * \
                                    x_recovery ** self.employment_power_param
         employment_rate_recovery_df = pd.DataFrame(
-            {'years': years_recovery, 'employment_rate': employment_rate_recovery})
+            {GlossaryCore.Years: years_recovery, 'employment_rate': employment_rate_recovery})
         employment_rate_recovery_df.index = years_recovery
         # Then replace values in original dataframe by recoveries values
         workforce_df.update(employment_rate_recovery_df)
@@ -274,7 +260,7 @@ class MacroEconomics():
                                               self.time_step, 'productivity']
         p_productivity_gr = self.economics_df.at[year -
                                                  self.time_step, 'productivity_gr']
-        damefrac = self.damefrac.at[year, 'damage_frac_output']
+        damefrac = self.damefrac.at[year, GlossaryCore.DamageFractionOutput]
         if damage_to_productivity == True:
             # damage = 1-damefrac
             productivity = ((1 - self.frac_damage_prod * damefrac) *
@@ -312,7 +298,7 @@ class MacroEconomics():
                                               self.time_step, 'energy_productivity']
         p_productivity_gr = self.economics_df.at[year -
                                                  self.time_step, 'energy_productivity_gr']
-        damefrac = self.damefrac.at[year, 'damage_frac_output']
+        damefrac = self.damefrac.at[year, GlossaryCore.DamageFractionOutput]
 
         if self.damage_to_productivity == True:
             # damage = 1-damefrac
@@ -337,7 +323,7 @@ class MacroEconomics():
         if year == self.year_end:
             pass
         else:
-            investment = self.economics_df.at[year, 'investment']
+            investment = self.economics_df.at[year, GlossaryCore.InvestmentsValue]
             capital = self.economics_df.at[year, 'capital']
             capital_a = capital * \
                         (1 - self.depreciation_capital) ** self.time_step + \
@@ -356,10 +342,10 @@ class MacroEconomics():
         net_output = self.economics_df.at[year, 'net_output']
         #         investment = saving_rate * net_output
         energy_investment = self.economics_df.at[year,
-                                                 'energy_investment']
+                                                 GlossaryCore.EnergyInvestmentsValue]
         non_energy_investment = self.share_n_energy_investment[year] * net_output
         investment = energy_investment + non_energy_investment
-        self.economics_df.loc[year, 'investment'] = investment
+        self.economics_df.loc[year, GlossaryCore.InvestmentsValue] = investment
         return investment
 
     def compute_energy_investment(self, year):
@@ -370,22 +356,22 @@ class MacroEconomics():
         """
         net_output = self.economics_df.at[year, 'net_output']
         energy_investment_wo_tax = self.share_energy_investment[year] * net_output
-        self.co2_emissions_Gt['Total CO2 emissions'].clip(
+        self.co2_emissions_Gt[GlossaryCore.TotalCO2Emissions].clip(
             lower=0.0, inplace=True)
 
         # store invests without renewable energy
         em_wo_ren = self.energy_investment_wo_renewable
         em_wo_ren.loc[year,
-                      'energy_investment_wo_renewable'] = energy_investment_wo_tax * 1e3
+                      GlossaryCore.EnergyInvestmentsWoRenewableValue] = energy_investment_wo_tax * 1e3
 
         ren_investments = self.compute_energy_renewable_investment(
             year, energy_investment_wo_tax)
         energy_investment = energy_investment_wo_tax + ren_investments
         self.economics_df.loc[year,
-                              ['energy_investment', 'energy_investment_wo_tax', 'energy_investment_from_tax']] = [
+                              [GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.EnergyInvestmentsFromTaxValue]] = [
             energy_investment, energy_investment_wo_tax, ren_investments]
         self.energy_investment.loc[year,
-                                   'energy_investment'] = energy_investment * 1e3 / self.scaling_factor_energy_investment  # Invest from T$ to G$ coupling variable
+                                   GlossaryCore.EnergyInvestmentsValue] = energy_investment * 1e3 / self.scaling_factor_energy_investment  # Invest from T$ to G$ coupling variable
 
         return energy_investment
 
@@ -396,7 +382,7 @@ class MacroEconomics():
         """
         co2_invest_limit = self.co2_invest_limit
         emissions = self.co2_emissions_Gt.at[year,
-                                             'Total CO2 emissions'] * 1e9  # t CO2
+                                             GlossaryCore.TotalCO2Emissions] * 1e9  # t CO2
         co2_taxes = self.co2_taxes.at[year, 'CO2_tax']  # $/t
         co2_tax_eff = self.co2_tax_efficiency.at[year,
                                                  'CO2_tax_efficiency'] / 100.  # %
@@ -441,7 +427,7 @@ class MacroEconomics():
             output = productivity * ((1 - alpha) * capital ** beta + alpha * (working_pop) ** beta) ** (1 / beta)
 
 
-        self.economics_df.loc[year, 'gross_output'] = output
+        self.economics_df.loc[year, GlossaryCore.GrossOutput] = output
         return output
 
     def compute_gross_output_hassler(self, year):
@@ -453,7 +439,7 @@ class MacroEconomics():
         capital = self.economics_df.at[year, 'capital']
         working_pop = self.workforce_df.loc[year, 'workforce']
         productivity = self.economics_df.at[year, 'productivity']
-        energy = self.energy_production.at[year, 'Total production']
+        energy = self.energy_production.at[year, GlossaryCore.TotalProductionValue]
         energy_productivity_hassler = self.economics_df.at[year, 'energy_productivity']
 
         power = (epsilon_hassler - 1) / epsilon_hassler
@@ -461,7 +447,7 @@ class MacroEconomics():
                       gamma_hassler * (energy_productivity_hassler * energy) ** power) ** (1/power)
 
 
-        self.economics_df.loc[year, 'gross_output'] = output
+        self.economics_df.loc[year, GlossaryCore.GrossOutput] = output
         return output
 
     def compute_output_growth(self, year):
@@ -473,9 +459,9 @@ class MacroEconomics():
             pass
         else:
             gross_output_ter = self.economics_df.at[year,
-                                                    'gross_output']
+                                                    GlossaryCore.GrossOutput]
             gross_output_ter_a = self.economics_df.at[year -
-                                                      self.time_step, 'gross_output']
+                                                      self.time_step, GlossaryCore.GrossOutput]
             gross_output_ter = max(1e-6, gross_output_ter)
             output_growth = ((gross_output_ter -
                               gross_output_ter_a) / gross_output_ter) / self.time_step
@@ -487,9 +473,9 @@ class MacroEconomics():
         Output net of damages, trillions USD
         """
         damage_to_productivity = self.damage_to_productivity
-        damefrac = self.damefrac.at[year, 'damage_frac_output']
+        damefrac = self.damefrac.at[year, GlossaryCore.DamageFractionOutput]
         gross_output_ter = self.economics_df.at[year,
-                                                'gross_output']
+                                                GlossaryCore.GrossOutput]
         #        if damage_to_productivity == True :
         #            D = 1 - damefrac
         #            damage_to_output = D/(1-self.frac_damage_prod*(1-D))
@@ -501,7 +487,7 @@ class MacroEconomics():
             output_net_of_d = (1 - damage) * gross_output_ter
         else:
             output_net_of_d = gross_output_ter * (1 - damefrac)
-        self.economics_df.loc[year, 'output_net_of_d'] = output_net_of_d
+        self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] = output_net_of_d
         return output_net_of_d
 
     def compute_net_output(self, year):
@@ -511,10 +497,10 @@ class MacroEconomics():
         We concluded it is better to remove the energy_invest_cost, in this case net_output = output_net_of_d
         """
         #         abatecost = self.abatecost[year]
-        #         output_net_of_d = self.economics_df.at[year, 'output_net_of_d']
+        #         output_net_of_d = self.economics_df.at[year, GlossaryCore.OutputNetOfDamage]
         #         net_output = output_net_of_d - abatecost
         # energy_invest_cost = self.economics_df.at[year, 'energy_invest_cost']
-        output_net_of_d = self.economics_df.at[year, 'output_net_of_d']
+        output_net_of_d = self.economics_df.at[year, GlossaryCore.OutputNetOfDamage]
         net_output = output_net_of_d  # - energy_invest_cost
         self.economics_df.loc[year,
                               'net_output'] = net_output
@@ -528,10 +514,10 @@ class MacroEconomics():
             savings: Savings rate at t
         """
         net_output = self.economics_df.at[year, 'net_output']
-        investment = self.economics_df.at[year, 'investment']
+        investment = self.economics_df.at[year, GlossaryCore.InvestmentsValue]
         consumption = net_output - investment
         # lower bound for conso
-        self.economics_df.loc[year, 'consumption'] = max(
+        self.economics_df.loc[year, GlossaryCore.Consumption] = max(
             consumption, self.lo_conso)
         return consumption
 
@@ -539,11 +525,11 @@ class MacroEconomics():
         """Equation for consumption per capita
         c, Per capita consumption, thousands $USD
         """
-        consumption = self.economics_df.at[year, 'consumption']
-        population = self.population_df.at[year, 'population']
+        consumption = self.economics_df.at[year, GlossaryCore.Consumption]
+        population = self.population_df.at[year, GlossaryCore.PopulationValue]
         consumption_pc = consumption / population * 1000
         # Lower bound for pc conso
-        self.economics_df.loc[year, 'pc_consumption'] = max(
+        self.economics_df.loc[year, GlossaryCore.PerCapitaConsumption] = max(
             consumption_pc, self.lo_per_capita_conso)
         return consumption_pc
 
@@ -551,7 +537,7 @@ class MacroEconomics():
         """Equation for consumption per capita constraint
         c, Per capita consumption constraint
         """
-        pc_consumption = self.economics_df['pc_consumption'].values
+        pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
         self.pc_consumption_constraint = (self.hi_per_capita_conso - pc_consumption) \
                                          / self.ref_pc_consumption_constraint
 
@@ -561,9 +547,9 @@ class MacroEconomics():
         if year == self.year_end:
             pass
         else:
-            consumption = self.economics_df.at[year, 'consumption']
+            consumption = self.economics_df.at[year, GlossaryCore.Consumption]
             consumption_a = self.economics_df.at[year +
-                                                 self.time_step, 'consumption']
+                                                 self.time_step, GlossaryCore.Consumption]
             interest_rate = (1 + self.init_rate_time_pref) * (consumption_a /
                                                               consumption) ** (
                                         self.conso_elasticity / self.time_step) - 1
@@ -590,7 +576,7 @@ class MacroEconomics():
             # first line stays at zero since derivatives of initial values are
             # zero
             for i in range(1, nb_years):
-                d_productivity[i, i] = (1 - self.frac_damage_prod * self.damefrac.at[years[i], 'damage_frac_output']) * \
+                d_productivity[i, i] = (1 - self.frac_damage_prod * self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]) * \
                                        d_productivity[i - 1, i] / (1 - (p_productivity_gr[i - 1] /
                                                                         (5 / self.time_step))) - \
                                        self.frac_damage_prod * \
@@ -598,7 +584,7 @@ class MacroEconomics():
                                        (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
                 for j in range(1, i):
                     d_productivity[i, j] = (1 - self.frac_damage_prod * self.damefrac.at[
-                        years[i], 'damage_frac_output']) * \
+                        years[i], GlossaryCore.DamageFractionOutput]) * \
                                            d_productivity[i - 1, j] / \
                                            (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
 
@@ -623,14 +609,14 @@ class MacroEconomics():
             # zero
             for i in range(1, nb_years):
                 denergy_productivity[i, i] = (1 - self.frac_damage_prod * self.damefrac.at[
-                    years[i], 'damage_frac_output']) * denergy_productivity[i - 1, i] / (
+                    years[i], GlossaryCore.DamageFractionOutput]) * denergy_productivity[i - 1, i] / (
                                                          1 - (p_productivity_gr[i - 1])) - \
                                              self.frac_damage_prod * \
                                              p_productivity[i - 1] / \
                                              (1 - (p_productivity_gr[i - 1]))
                 for j in range(1, i):
                     denergy_productivity[i, j] = (1 - self.frac_damage_prod * self.damefrac.at[
-                        years[i], 'damage_frac_output']) * \
+                        years[i], GlossaryCore.DamageFractionOutput]) * \
                                                  denergy_productivity[i - 1, j] / \
                                                  (1 - (p_productivity_gr[i - 1]))
 
@@ -669,20 +655,20 @@ class MacroEconomics():
             working_pop_i = self.workforce_df.at[years[i], 'workforce']
             capital = self.economics_df.at[years[i], 'capital']
             energy = self.energy_production.at[years[i],
-                                               'Total production']
+                                               GlossaryCore.TotalProductionValue]
             productivity = self.economics_df.at[years[i], 'productivity']
             energy_productivity = self.economics_df.at[years[i],
                                                        'energy_productivity']
-            output = self.economics_df.at[years[i], 'gross_output']
-            damefrac = self.damefrac.at[years[i], 'damage_frac_output']
+            output = self.economics_df.at[years[i], GlossaryCore.GrossOutput]
+            damefrac = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
 
             emissions = self.co2_emissions_Gt.at[years[i],
-                                                 'Total CO2 emissions']
+                                                 GlossaryCore.TotalCO2Emissions]
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],
-                                                            'energy_investment_wo_tax']
+                                                            GlossaryCore.EnergyInvestmentsWoTaxValue]
             net_output = self.economics_df.at[years[i], 'net_output']
 
             ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12# T$
@@ -822,20 +808,20 @@ class MacroEconomics():
 
             capital_i = self.economics_df.at[years[i], 'capital']
             energy_i = self.energy_production.at[years[i],
-                                                 'Total production']
+                                                 GlossaryCore.TotalProductionValue]
             productivity_i = self.economics_df.at[years[i],
                                                   'productivity']
             energy_productivity_i = self.economics_df.at[years[i],
                                                          'energy_productivity']
-            damefrac_i = self.damefrac.at[years[i], 'damage_frac_output']
+            damefrac_i = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
 
             emissions = self.co2_emissions_Gt.at[years[i],
-                                                 'Total CO2 emissions']
+                                                 GlossaryCore.TotalCO2Emissions]
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],
-                                                            'energy_investment_wo_tax']
+                                                            GlossaryCore.EnergyInvestmentsWoTaxValue]
             net_output = self.economics_df.at[years[i], 'net_output']
 
             working_pop_i = self.workforce_df.at[years[i], 'workforce']
@@ -948,23 +934,23 @@ class MacroEconomics():
 
 
             energy_i = self.energy_production.at[years[i],
-                                                 'Total production']
+                                                 GlossaryCore.TotalProductionValue]
             productivity_i = self.economics_df.at[years[i],
                                                   'productivity']
             energy_productivity_i = self.economics_df.at[years[i],
                                                          'energy_productivity']
-            damefrac_i = self.damefrac.at[years[i], 'damage_frac_output']
+            damefrac_i = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
 
             emissions = self.co2_emissions_Gt.at[years[i],
-                                                 'Total CO2 emissions']
+                                                 GlossaryCore.TotalCO2Emissions]
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],
-                                                            'energy_investment_wo_tax']
+                                                            GlossaryCore.EnergyInvestmentsWoTaxValue]
             net_output = self.economics_df.at[years[i], 'net_output']
             energy = self.energy_production.at[years[i],
-                                               'Total production']
+                                               GlossaryCore.TotalProductionValue]
 
             ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  # T$
 
@@ -1111,21 +1097,21 @@ class MacroEconomics():
             productivity_i = self.economics_df.at[years[i],
                                                   'productivity']
             workforce_i = self.workforce_df.at[years[i], 'workforce']
-            damefrac_i = self.damefrac.at[years[i], 'damage_frac_output']
+            damefrac_i = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
 
             emissions = self.co2_emissions_Gt.at[years[i],
-                                                 'Total CO2 emissions']
+                                                 GlossaryCore.TotalCO2Emissions]
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],
-                                                            'energy_investment_wo_tax']
+                                                            GlossaryCore.EnergyInvestmentsWoTaxValue]
             net_output = self.economics_df.at[years[i], 'net_output']
 
             energy_productivity_i = self.economics_df.at[years[i],
                                                          'energy_productivity']
             energy = self.energy_production.at[years[i],
-                                               'Total production']
+                                               GlossaryCore.TotalProductionValue]
 
             ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  # T$
 
@@ -1291,15 +1277,15 @@ class MacroEconomics():
                                                   'productivity']
             workforce_i = self.workforce_df.at[years[i],
                                                   'workforce']
-            damefrac_i = self.damefrac.at[years[i], 'damage_frac_output']
+            damefrac_i = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
 
             emissions = self.co2_emissions_Gt.at[years[i],
-                                                 'Total CO2 emissions']
+                                                 GlossaryCore.TotalCO2Emissions]
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],
-                                                            'energy_investment_wo_tax']
+                                                            GlossaryCore.EnergyInvestmentsWoTaxValue]
             net_output = self.economics_df.at[years[i], 'net_output']
 
 
@@ -1312,7 +1298,7 @@ class MacroEconomics():
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             energy = self.energy_production.at[years[i],
-                                               'Total production']
+                                               GlossaryCore.TotalProductionValue]
 
             for j in range(0, i + 1):
 
@@ -1477,7 +1463,7 @@ class MacroEconomics():
 
             capital_i = self.economics_df.at[years[i], 'capital']
             energy_i = self.energy_production.at[years[i],
-                                                 'Total production']
+                                                 GlossaryCore.TotalProductionValue]
 
             workforce_i = self.workforce_df.at[years[i],
                                                  'workforce']
@@ -1486,15 +1472,15 @@ class MacroEconomics():
                                                   'productivity']
             energy_productivity_i = self.economics_df.at[years[i],
                                                          'energy_productivity']
-            damefrac_i = self.damefrac.at[years[i], 'damage_frac_output']
+            damefrac_i = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
 
             emissions = self.co2_emissions_Gt.at[years[i],
-                                                 'Total CO2 emissions']
+                                                 GlossaryCore.TotalCO2Emissions]
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],
-                                                            'energy_investment_wo_tax']
+                                                            GlossaryCore.EnergyInvestmentsWoTaxValue]
             net_output = self.economics_df.at[years[i], 'net_output']
 
             ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  # T$
@@ -1638,9 +1624,9 @@ class MacroEconomics():
 
             capital = self.economics_df.at[years[i], 'capital']
             energy = self.energy_production.at[years[i],
-                                               'Total production']
+                                               GlossaryCore.TotalProductionValue]
             productivity = self.economics_df.at[years[i], 'productivity']
-            damefrac = self.damefrac.at[years[i], 'damage_frac_output']
+            damefrac = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
 
             capital_i = self.economics_df.at[years[i], 'capital']
 
@@ -1653,12 +1639,12 @@ class MacroEconomics():
                                                          'energy_productivity']
 
             emissions = self.co2_emissions_Gt.at[years[i],
-                                                 'Total CO2 emissions']
+                                                 GlossaryCore.TotalCO2Emissions]
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],
-                                                            'energy_investment_wo_tax']
+                                                            GlossaryCore.EnergyInvestmentsWoTaxValue]
             net_output = self.economics_df.at[years[i], 'net_output']
 
             ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  # T$
@@ -1802,21 +1788,21 @@ class MacroEconomics():
             energy_productivity_i = self.economics_df.at[years[i],
                                                        'energy_productivity']
             energy = self.energy_production.at[years[i],
-                                               'Total production']
+                                               GlossaryCore.TotalProductionValue]
 
 
-            energy_i = self.energy_production.at[years[i],'Total production']
-            damefrac_i = self.damefrac.at[years[i], 'damage_frac_output']
+            energy_i = self.energy_production.at[years[i],GlossaryCore.TotalProductionValue]
+            damefrac_i = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
 
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             emissions = self.co2_emissions_Gt.at[years[i],
-                                                 'Total CO2 emissions']
+                                                 GlossaryCore.TotalCO2Emissions]
             co2_taxes = self.co2_taxes.at[years[i], 'CO2_tax']
             co2_tax_eff = self.co2_tax_efficiency.at[years[i],
                                                      'CO2_tax_efficiency']
             energy_investment_wo_tax = self.economics_df.at[years[i],
-                                                            'energy_investment_wo_tax']
+                                                            GlossaryCore.EnergyInvestmentsWoTaxValue]
             net_output = self.economics_df.at[years[i], 'net_output']
 
             ren_investments = emissions * 1e9 * co2_taxes * co2_tax_eff / 100 / 1e12  # T$
@@ -1978,9 +1964,9 @@ class MacroEconomics():
 
         # first line stays at zero since derivatives of initial values are zero
         for i in range(1, nb_years):
-            gross_output_ter = self.economics_df.at[years[i], 'gross_output']
+            gross_output_ter = self.economics_df.at[years[i], GlossaryCore.GrossOutput]
             gross_output_ter_a = self.economics_df.at[years[i] -
-                                                      self.time_step, 'gross_output']
+                                                      self.time_step, GlossaryCore.GrossOutput]
             for j in range(0, i + 1):
                 doutput_growth[i, j] = ((dgross_output[i, j] - dgross_output[i - 1, j]) * gross_output_ter - (
                             gross_output_ter -
@@ -2004,7 +1990,7 @@ class MacroEconomics():
         # first line stays at zero since derivatives of initial values are zero
         for i in range(0, nb_years):
             for j in range(0, i + 1):
-                consumption = self.economics_df.at[years[i], 'consumption']
+                consumption = self.economics_df.at[years[i], GlossaryCore.Consumption]
                 if consumption == self.lo_conso:
                     pass
                 else:
@@ -2027,11 +2013,11 @@ class MacroEconomics():
 
         # first line stays at zero since derivatives of initial values are zero
         for i in range(0, nb_years):
-            consumption_pc = self.economics_df.at[years[i], 'pc_consumption']
+            consumption_pc = self.economics_df.at[years[i], GlossaryCore.PerCapitaConsumption]
             if consumption_pc > self.lo_per_capita_conso:
                 for j in range(0, i + 1):
                     dconsumption_pc[i, j] = dconsumption[i, j] / \
-                                            self.population_df.at[years[i], 'population'] * 1000
+                                            self.population_df.at[years[i], GlossaryCore.PopulationValue] * 1000
 
         return dconsumption_pc
 
@@ -2050,9 +2036,9 @@ class MacroEconomics():
 
         # first line stays at zero since derivatives of initial values are zero
         for i in range(0, nb_years):
-            consumption_pc = self.economics_df.at[years[i], 'pc_consumption']
-            consumption = self.economics_df.at[years[i], 'consumption']
-            population = self.population_df.at[years[i], 'population']
+            consumption_pc = self.economics_df.at[years[i], GlossaryCore.PerCapitaConsumption]
+            consumption = self.economics_df.at[years[i], GlossaryCore.Consumption]
+            population = self.population_df.at[years[i], GlossaryCore.PopulationValue]
             if consumption_pc > self.lo_per_capita_conso:
                 for j in range(0, i + 1):
                     if i == j:
@@ -2077,8 +2063,8 @@ class MacroEconomics():
 
         # first line stays at zero since derivatives of initial values are zero
         for i in range(0, nb_years - 1):
-            consumption = self.economics_df.at[years[i], 'consumption']
-            consumption_a = self.economics_df.at[years[i + 1], 'consumption']
+            consumption = self.economics_df.at[years[i], GlossaryCore.Consumption]
+            consumption_a = self.economics_df.at[years[i + 1], GlossaryCore.Consumption]
             for j in range(0, nb_years):
                 dinterest_rate[i, j] = (1 + self.init_rate_time_pref) * (self.conso_elasticity / self.time_step) * \
                                        (consumption_a / consumption) ** (self.conso_elasticity / self.time_step - 1) * \
@@ -2106,8 +2092,8 @@ class MacroEconomics():
         for i in range(0, nb_years):
 
             for j in range(0, i + 1):
-                damefrac = self.damefrac.at[years[i], 'damage_frac_output']
-                gross_output_ter = self.economics_df.at[years[i], 'gross_output']
+                damefrac = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
+                gross_output_ter = self.economics_df.at[years[i], GlossaryCore.GrossOutput]
 
                 if damage_to_productivity == True:
                     damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
@@ -2148,8 +2134,8 @@ class MacroEconomics():
         for i in range(0, nb_years):
 
             for j in range(0, i + 1):
-                damefrac = self.damefrac.at[years[i], 'damage_frac_output']
-                gross_output_ter = self.economics_df.at[years[i], 'gross_output']
+                damefrac = self.damefrac.at[years[i], GlossaryCore.DamageFractionOutput]
+                gross_output_ter = self.economics_df.at[years[i], GlossaryCore.GrossOutput]
 
                 if damage_to_productivity == True:
                     damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))

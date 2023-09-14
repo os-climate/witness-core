@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -43,24 +45,24 @@ class LandUseV2TestCase(unittest.TestCase):
         self.energy_land_demand_df = read_csv(
             join(data_dir, 'land_demandV2.csv'))
         # part to adapt lenght to the year range
-        self.energy_land_demand_df = self.energy_land_demand_df.loc[self.energy_land_demand_df['years']
+        self.energy_land_demand_df = self.energy_land_demand_df.loc[self.energy_land_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_land_demand_df = self.energy_land_demand_df.loc[self.energy_land_demand_df['years']
+        self.energy_land_demand_df = self.energy_land_demand_df.loc[self.energy_land_demand_df[GlossaryCore.Years]
                                                                     <= self.year_end]
         self.total_food_land_surface = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'total surface (Gha)'])
-        self.total_food_land_surface['years'] = years
+        self.total_food_land_surface[GlossaryCore.Years] = years
         self.total_food_land_surface['total surface (Gha)'] = np.linspace(
             5, 4, year_range)
         self.forest_surface_df = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'forest_constraint_evolution',
                      'global_forest_surface'])
 
-        self.forest_surface_df['years'] = years
+        self.forest_surface_df[GlossaryCore.Years] = years
         # Gha
         self.forest_surface_df['forest_constraint_evolution'] = np.linspace(1, -1, year_range)
         self.forest_surface_df['global_forest_surface'] = np.linspace(4.2, 8.1, year_range)

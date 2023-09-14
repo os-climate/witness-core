@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -81,11 +81,11 @@ class Study(StudyManager):
 
         self.deforestation_surface = np.linspace(10, 5, year_range)
         deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": self.deforestation_surface})
+            {GlossaryCore.Years: years, "deforested_surface": self.deforestation_surface})
 
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         reforestation_cost_per_ha = 3800
 
         # values of pyworld3

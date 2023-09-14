@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -52,7 +53,7 @@ class CarbonCycleDiscTest(unittest.TestCase):
         CO2_emissions_df_all = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
 
-        CO2_emissions_df_y = CO2_emissions_df_all[CO2_emissions_df_all['years'] >= 2020]
+        CO2_emissions_df_y = CO2_emissions_df_all[CO2_emissions_df_all[GlossaryCore.Years] >= 2020]
 
         # put manually the index
         years = np.arange(2020, 2101)

@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -37,13 +39,13 @@ class MacroeconomicsTestCase(unittest.TestCase):
         self.years = np.arange(self.year_start, self.year_end+1)
 
         total_invest = np.asarray([27.0] * nb_per)
-        total_invest = DataFrame({'years':self. years, 'share_investment': total_invest})
+        total_invest = DataFrame({GlossaryCore.Years:self. years, 'share_investment': total_invest})
         self.total_invest = total_invest
 
         indus_invest = np.asarray([6.8998] * nb_per)
         agri_invest = np.asarray([0.4522] * nb_per)
         services_invest = np.asarray([19.1818] * nb_per)
-        share_sector_invest = DataFrame({'years': self.years, 'Industry': indus_invest, 'Agriculture': agri_invest, 'Services': services_invest})
+        share_sector_invest = DataFrame({GlossaryCore.Years: self.years, 'Industry': indus_invest, 'Agriculture': agri_invest, 'Services': services_invest})
         self.share_sector_invest = share_sector_invest
 
         # Test With a GDP and capital that grows at 2%
@@ -60,15 +62,15 @@ class MacroeconomicsTestCase(unittest.TestCase):
         gdp_agri = gdp_serie * 6.775773/100
         gdp_indus = gdp_serie * 28.4336/100
         gdp_service = gdp_serie * 64.79/100
-        self.prod_agri = DataFrame({'years':self. years,'output': gdp_agri, 'output_net_of_damage': gdp_agri*0.995})
-        self.prod_indus = DataFrame({'years':self. years,'output': gdp_indus, 'output_net_of_damage': gdp_indus*0.995})
-        self.prod_service = DataFrame({'years':self. years,'output': gdp_service, 'output_net_of_damage': gdp_service*0.995})
+        self.prod_agri = DataFrame({GlossaryCore.Years:self. years,'output': gdp_agri, 'output_net_of_damage': gdp_agri*0.995})
+        self.prod_indus = DataFrame({GlossaryCore.Years:self. years,'output': gdp_indus, 'output_net_of_damage': gdp_indus*0.995})
+        self.prod_service = DataFrame({GlossaryCore.Years:self. years,'output': gdp_service, 'output_net_of_damage': gdp_service*0.995})
         cap_agri = capital_serie * 0.018385
         cap_indus = capital_serie * 0.234987
         cap_service = capital_serie * 0.74662
-        self.cap_agri_df = DataFrame({'years':self. years,'capital': cap_agri, 'usable_capital': cap_agri*0.8})
-        self.cap_indus_df = DataFrame({'years':self. years,'capital': cap_indus, 'usable_capital': cap_indus*0.8})
-        self.cap_service_df = DataFrame({'years':self. years,'capital': cap_service, 'usable_capital': cap_service*0.8})
+        self.cap_agri_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_agri, 'usable_capital': cap_agri*0.8})
+        self.cap_indus_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_indus, 'usable_capital': cap_indus*0.8})
+        self.cap_service_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_service, 'usable_capital': cap_service*0.8})
         
 #         self.param = {'year_start': self.year_start,
 #                       'year_end': self.year_end,

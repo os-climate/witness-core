@@ -16,6 +16,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class CarbonEmissions():
     '''
@@ -39,7 +41,7 @@ class CarbonEmissions():
         self.init_gr_sigma = self.param['init_gr_sigma']
         self.decline_rate_decarbo = self.param['decline_rate_decarbo']
         self.init_indus_emissions = self.param['init_indus_emissions']
-        self.init_gross_output = self.param['init_gross_output']
+        self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.init_cum_indus_emissions = self.param['init_cum_indus_emissions']
 
     def create_dataframe(self):
@@ -133,7 +135,7 @@ class CarbonEmissions():
         emissions control rate (t)
         """
         sigma = self.emissions_df.loc[year, 'sigma']
-        gross_output = self.economics_df.loc[year, 'gross_output']
+        gross_output = self.economics_df.loc[year, GlossaryCore.GrossOutput]
         emissions_control_rate = self.emissions_control_rate[year]
         indus_emissions = sigma * gross_output * (1.0 - emissions_control_rate)
         self.emissions_df.loc[year, 'indus_emissions'] = indus_emissions
@@ -184,7 +186,7 @@ class CarbonEmissions():
         self.inputs_models = inputs_models
 
         self.create_dataframe()
-        self.economics_df = self.inputs_models['economics_df'].set_index(
+        self.economics_df = self.inputs_models[GlossaryCore.EconomicsDfValue].set_index(
             self.years_range)
         emissions_control_rate = emissions_control_rate.set_index(
             self.years_range)

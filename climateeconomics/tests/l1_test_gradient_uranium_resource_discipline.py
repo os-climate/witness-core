@@ -18,6 +18,8 @@ import unittest
 from os.path import join, dirname
 
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -43,17 +45,17 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         data_dir = join(dirname(__file__), 'data')
 
         self.energy_uranium_demand_df = pd.read_csv(
-            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=['years','uranium_resource'])
+            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=[GlossaryCore.Years,'uranium_resource'])
         self.energy_uranium_variable_demand_df = pd.read_csv(
-            join(data_dir, 'all_demand_variable.csv'), usecols=['years','uranium_resource'])
+            join(data_dir, 'all_demand_variable.csv'), usecols=[GlossaryCore.Years,'uranium_resource'])
         # part to adapt lenght to the year range
-        self.energy_uranium_demand_df = self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df['years']
+        self.energy_uranium_demand_df = self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_uranium_demand_df = self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df['years']
+        self.energy_uranium_demand_df = self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
-        self.energy_uranium_variable_demand_df = self.energy_uranium_variable_demand_df.loc[self.energy_uranium_variable_demand_df['years']
+        self.energy_uranium_variable_demand_df = self.energy_uranium_variable_demand_df.loc[self.energy_uranium_variable_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_uranium_variable_demand_df = self.energy_uranium_variable_demand_df.loc[self.energy_uranium_variable_demand_df['years']
+        self.energy_uranium_variable_demand_df = self.energy_uranium_variable_demand_df.loc[self.energy_uranium_variable_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
     def test_uranium_resource_analytic_grad(self):

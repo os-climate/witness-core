@@ -19,6 +19,7 @@ from pandas import read_csv
 from pathlib import Path
 
 from climateeconomics.core.core_agriculture.crop import Crop
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
@@ -46,11 +47,11 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         population = np.array(np.linspace(7800, 7800, year_range))
         self.population_df = pd.DataFrame(
-            {"years": years, "population": population})
+            {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
         temperature = np.array(np.linspace(1.05, 5, year_range))
         self.temperature_df = pd.DataFrame(
-            {"years": years, "temp_atmo": temperature})
+            {GlossaryCore.Years: years, "temp_atmo": temperature})
         self.temperature_df.index = years
 
         lifetime = 50
@@ -84,17 +85,17 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         white_meat_percentage = np.linspace(700, 600, year_range)
         vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
         self.red_meat_percentage = pd.DataFrame({
-                            'years': years,
+                            GlossaryCore.Years: years,
                             'red_meat_calories_per_day': red_meat_percentage})
         self.white_meat_percentage = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'white_meat_calories_per_day': white_meat_percentage})
         self.veg_calories_per_day = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
 
         self.milk_eggs_calories_per_day = pd.DataFrame({
-                                'years': years,
+                                GlossaryCore.Years: years,
                                 'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
 
         self.diet_df = pd.DataFrame({'red meat': [11.02],
@@ -109,14 +110,14 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         # investment: 1Mha of crop land each year
         self.crop_investment = pd.DataFrame(
-            {'years': years, 'investment': np.ones(len(years)) * 0.381})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.ones(len(years)) * 0.381})
 
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
 
         # From future of hydrogen
         self.transport_cost = pd.DataFrame(
-            {'years': years, 'transport': np.ones(len(years)) * 7.6})
+            {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.6})
 
 
         # bioenergyeurope.org : Dedicated energy crops
@@ -135,8 +136,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                       'time_step': self.time_step,
                       'diet_df': self.diet_df,
                       'kg_to_kcal_dict': self.default_kg_to_kcal,
-                      'population_df': self.population_df,
-                      'temperature_df': self.temperature_df,
+                      GlossaryCore.PopulationDfValue: self.population_df,
+                      GlossaryCore.TemperatureDfValue: self.temperature_df,
                       'kg_to_m2_dict': self.default_kg_to_m2,
                       'red_meat_percentage': self.red_meat_percentage,
                       'white_meat_percentage': self.white_meat_percentage,
@@ -182,14 +183,13 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-
         values_dict = {f'{self.name}.year_start': self.year_start,
                        f'{self.name}.year_end': self.year_end,
                        f'{self.name}.{self.model_name}.diet_df': self.diet_df,
                        f'{self.name}.{self.model_name}.kg_to_kcal_dict': self.default_kg_to_kcal,
                        f'{self.name}.{self.model_name}.kg_to_m2_dict': self.default_kg_to_m2,
-                       f'{self.name}.population_df': self.population_df,
-                       f'{self.name}.temperature_df': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{self.name}.red_meat_calories_per_day': self.red_meat_percentage,
                        f'{self.name}.white_meat_calories_per_day': self.white_meat_percentage,
                        f'{self.name}.vegetables_and_carbs_calories_per_day': self.veg_calories_per_day,
@@ -209,8 +209,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_crop_discipline.pkl', discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15, derr_approx='complex_step',
-                            inputs=[f'{self.name}.population_df',
-                                    f'{self.name}.temperature_df',
+                            inputs=[f'{self.name}.{GlossaryCore.PopulationDfValue}',
+                                    f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                     f'{self.name}.red_meat_calories_per_day',
                                     f'{self.name}.white_meat_calories_per_day',
                                     f'{self.name}.vegetables_and_carbs_calories_per_day',
