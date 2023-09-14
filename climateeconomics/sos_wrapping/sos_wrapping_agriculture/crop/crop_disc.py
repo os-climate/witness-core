@@ -148,16 +148,24 @@ class CropDiscipline(ClimateEcoDiscipline):
     # for food in default_ghg_emissions:
     #     default_co2_emissions[food] = (default_ghg_emissions[food] - default_ch4_emissions[food]*ch4_gwp_100 - default_n2o_emissions[food]*n2o_gwp_100) / co2_gwp_100
     #     # default_co2_emissions[food] = 0.0
+    diet_df_default = pd.DataFrame({"red meat": [11.02],
+                                    "white meat": [31.11],
+                                    "milk": [79.27],
+                                    "eggs": [9.68],
+                                    "rice and maize": [97.76],
+                                    "potatoes": [32.93],
+                                    "fruits and vegetables": [217.62]
+                                    })
 
     year_range = default_year_end - default_year_start + 1
     total_kcal = 414542.4
-    # average daily intake source : https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8926870/#:~:text=fold%20cross%2Dvalidation.-,Findings,(100%20g)%20per%20day.
-    red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * 0.051  # 51 g/day
-    milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * 0.021 + default_kg_to_kcal[
-        'milk'] * 0.088  # 21 g/day eggs and 88g/day milk
+    # Take diet per year in kg / 365 * kg to cal to get consumption per day in kcal
+    red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * diet_df_default['red meat'].values[0]/365
+    milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * diet_df_default['eggs'].values[0]/365 + \
+                                        default_kg_to_kcal['milk'] * diet_df_default['milk'].values[0]/365
     white_meat_average_ca_daily_intake = default_kg_to_kcal[
-                                             'white meat'] * 0.035  # 20 - 50 g/day (Lemming & Pitsi, 2022).
-    vegetables_and_carbs_average_ca_daily_intake = 0.338 * default_kg_to_kcal[
+                                             'white meat'] * diet_df_default['white meat'].values[0]/365
+    vegetables_and_carbs_average_ca_daily_intake =  diet_df_default['fruits and vegetables'].values[0]/365 * default_kg_to_kcal[
         'vegetables'] + 0.56 * 2250  # carbs source: first line of https://www.cambridge.org/core/books/abs/evolving-human-nutrition/feed-the-world-with-carbohydrates/3848C6733E4D2FC315E14B7CA8C007D8
     default_red_meat_ca_per_day = pd.DataFrame({
         GlossaryCore.Years: default_years,
@@ -240,14 +248,6 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                          1.73, 1.81, 1.88, 1.96, 2.04, 2.12, 2.2, 2.28, 2.35, 2.43,
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
-    diet_df_default = pd.DataFrame({"red meat": [11.02],
-                                    "white meat": [31.11],
-                                    "milk": [79.27],
-                                    "eggs": [9.68],
-                                    "rice and maize": [97.76],
-                                    "potatoes": [32.93],
-                                    "fruits and vegetables": [217.62]
-                                    })
 
     other_use_crop_default = np.array([0.102] * len(initial_age_distribution))
 
