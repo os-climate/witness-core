@@ -52,9 +52,9 @@ class ForestTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.reforestation_cost_per_ha = 3800
 
-        self.param = {'year_start': self.year_start,
-                      'year_end': self.year_end,
-                      'time_step': self.time_step,
+        self.param = {GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
+                      GlossaryCore.TimeStep: self.time_step,
                       Forest.DEFORESTATION_SURFACE: self.deforestation_surface_df,
                       Forest.LIMIT_DEFORESTATION_SURFACE: self.limit_deforestation_surface,
                       Forest.CO2_PER_HA: self.CO2_per_ha,
@@ -96,9 +96,9 @@ class ForestTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
-                       f'{name}.time_step': 1,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_SURFACE}': self.deforestation_surface_df,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,

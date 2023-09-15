@@ -243,9 +243,9 @@ class Agriculture:
         '''
         Store input values
         '''
-        self.year_min = inputs['year_start']
-        self.year_max = inputs['year_end']
-        self.dt = inputs['time_step']  # time_step
+        self.year_min = inputs[GlossaryCore.YearStart]
+        self.year_max = inputs[GlossaryCore.YearEnd]
+        self.dt = inputs[GlossaryCore.TimeStep]  # time_step
         self.pyear = inputs['pyear']
 
         if 'iopc' in inputs:

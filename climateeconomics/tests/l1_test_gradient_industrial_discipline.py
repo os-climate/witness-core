@@ -104,9 +104,9 @@ class IndustrialJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
@@ -151,9 +151,9 @@ class IndustrialJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': False,
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,

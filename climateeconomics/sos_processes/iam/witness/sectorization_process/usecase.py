@@ -138,8 +138,8 @@ class Study(StudyManager):
              'share_investment': 27.* np.ones(self.nb_per),})
 
         sect_input = {}
-        sect_input[f"{self.study_name}.{'year_start'}"] = self.year_start
-        sect_input[f"{self.study_name}.{'year_end'}"] = self.year_end
+        sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         sect_input[f"{self.study_name}.{'workforce_df'}"] = workforce_df
         sect_input[f"{self.study_name}.{'sectors_investment_share'}"] = share_sectors_invest
         sect_input[f"{self.study_name}.{'total_investment_share_of_gdp'}"] = total_investment_share_of_gdp

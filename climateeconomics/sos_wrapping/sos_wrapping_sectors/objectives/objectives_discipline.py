@@ -51,9 +51,9 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
     default_weight = np.array([1]*len(default_years))
     default_weight_df = pd.DataFrame({GlossaryCore.Years: default_years, 'weight': default_weight})
 
-    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                'sector_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                'default': MacroeconomicsModel.SECTORS_LIST,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,

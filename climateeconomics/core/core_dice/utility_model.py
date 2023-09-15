@@ -32,9 +32,9 @@ class UtilityModel():
         self.set_data()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']  # time_step
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]  # time_step
         self.conso_elasticity = self.param['conso_elasticity']  # elasmu
         self.init_rate_time_pref = self.param['init_rate_time_pref']  # prstp
         self.scaleone = self.param['scaleone']  # scaleone
@@ -52,10 +52,10 @@ class UtilityModel():
         utility_df = pd.DataFrame(
             index=years_range,
             columns=[
-                'year', 'u_discount_rate',
+                'year', GlossaryCore.UtilityDiscountRate,
                 'period_utility',
-                'discounted_utility',
-                'welfare'])
+                GlossaryCore.DiscountedUtility,
+                GlossaryCore.Welfare])
         utility_df['year'] = self.years_range
         self.utility_df = utility_df
         return utility_df
@@ -68,7 +68,7 @@ class UtilityModel():
         t = ((year - self.year_start) / self.time_step) + 1
         u_discount_rate = 1 / ((1 + self.init_rate_time_pref)
                                ** (self.time_step * (t - 1)))
-        self.utility_df.loc[year, 'u_discount_rate'] = u_discount_rate
+        self.utility_df.loc[year, GlossaryCore.UtilityDiscountRate] = u_discount_rate
         return u_discount_rate
 
     def compute_period_utility(self, year):
@@ -92,9 +92,9 @@ class UtilityModel():
         """
         period_utility = self.utility_df.loc[year, 'period_utility']
         population = self.economics_df.loc[year, GlossaryCore.PopulationValue]
-        u_discount_rate = self.utility_df.loc[year, 'u_discount_rate']
+        u_discount_rate = self.utility_df.loc[year, GlossaryCore.UtilityDiscountRate]
         discounted_utility = period_utility * population * u_discount_rate
-        self.utility_df.loc[year, 'discounted_utility'] = discounted_utility
+        self.utility_df.loc[year, GlossaryCore.DiscountedUtility] = discounted_utility
         return discounted_utility
 
     def compute_welfare(self):  # rescale
@@ -102,13 +102,13 @@ class UtilityModel():
         Compute welfare
         tstep * scale1 * sum(t,  CEMUTOTPER(t)) + scale2
         """
-        sum_u = sum(self.utility_df['discounted_utility'])
+        sum_u = sum(self.utility_df[GlossaryCore.DiscountedUtility])
 #         if rescale == True:
 #             welfare = self.time_step * self.scaleone * sum_u + self.scaletwo
 #         else:
 #             welfare = self.time_step * self.scaleone * sum_u
 #        return welfare
-        self.utility_df.loc[self.year_end, 'welfare'] = sum_u
+        self.utility_df.loc[self.year_end, GlossaryCore.Welfare] = sum_u
         return sum_u
 
     def compute(self, economics_df, emissions_df, temperature_df):

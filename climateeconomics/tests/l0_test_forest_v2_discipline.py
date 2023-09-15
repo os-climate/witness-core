@@ -119,9 +119,9 @@ class ForestTestCase(unittest.TestCase):
         self.deforest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
 
-        self.param = {'year_start': self.year_start,
-                      'year_end': self.year_end,
-                      'time_step': self.time_step,
+        self.param = {GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
+                      GlossaryCore.TimeStep: self.time_step,
                       Forest.DEFORESTATION_INVESTMENT: self.deforest_invest_df,
                       Forest.DEFORESTATION_COST_PER_HA: 8000,
                       Forest.CO2_PER_HA: self.CO2_per_ha,
@@ -192,9 +192,9 @@ class ForestTestCase(unittest.TestCase):
         #deforest_invest = np.linspace(1000, 5000, year_range)
         self.deforest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
-                       f'{name}.time_step': 1,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -268,9 +268,9 @@ class ForestTestCase(unittest.TestCase):
                                                      0.00, 0.00, 0.00, 0.00,
                                                      0.00, 0.00, 0.00, 0.00,
                                                      0.00, 0.00, 0.00])})
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
-                       f'{name}.time_step': 1,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -379,9 +379,9 @@ class ForestTestCase(unittest.TestCase):
                                                      44.2197024335485, 44.04509749346942, 43.80134865507997, 43.47636061863573,
                                                      43.058038084392244, 42.534285752605086, 41.893008323529784, 41.12211049742193,
                                                      40.20949697453705])})
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
-                       f'{name}.time_step': 1,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -490,9 +490,9 @@ class ForestTestCase(unittest.TestCase):
                                                      44.2197024335485, 44.04509749346942, 43.80134865507997, 43.47636061863573,
                                                      43.058038084392244, 42.534285752605086, 41.893008323529784, 41.12211049742193,
                                                      40.20949697453705])})
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
-                       f'{name}.time_step': 1,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -576,9 +576,9 @@ class ForestTestCase(unittest.TestCase):
         self.mw_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
-                       f'{name}.time_step': 1,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,

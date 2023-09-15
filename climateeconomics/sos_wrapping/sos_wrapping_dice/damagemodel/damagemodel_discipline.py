@@ -41,9 +41,9 @@ class DamageDiscipline(SoSWrapp):
         'version': '',
     }
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_damag_int': {'type': 'float', 'default': 0},
         'damag_int': {'type': 'float', 'default':0},
         'damag_quad': {'type': 'float', 'default': 0.00236},

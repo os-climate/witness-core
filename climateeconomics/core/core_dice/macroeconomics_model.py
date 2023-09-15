@@ -34,9 +34,9 @@ class MacroEconomics():
         self.set_data()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]
         self.productivity_start = self.param['productivity_start']
         self.init_gross_output = self.param[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = self.param['capital_start']
@@ -55,9 +55,9 @@ class MacroEconomics():
         self.lo_conso = self.param['lo_conso']
         self.lo_per_capita_conso = self.param['lo_per_capita_conso']
         self.nb_per = round(
-            (self.param['year_end'] -
-             self.param['year_start']) /
-            self.param['time_step'] +
+            (self.param[GlossaryCore.YearEnd] -
+             self.param[GlossaryCore.YearStart]) /
+            self.param[GlossaryCore.TimeStep] +
             1)
         self.years_range = np.arange(
             self.year_start,
@@ -89,13 +89,13 @@ class MacroEconomics():
                 'capital',
                 GlossaryCore.InvestmentsValue,
                 'interest_rate'])
-        economics_df.loc[param['year_start'],
+        economics_df.loc[param[GlossaryCore.YearStart],
                          GlossaryCore.GrossOutput] = self.init_gross_output
-        economics_df.loc[param['year_start'], GlossaryCore.PopulationValue] = self.pop_start
-        economics_df.loc[param['year_start'], 'capital'] = self.capital_start
-        economics_df.loc[param['year_start'],
+        economics_df.loc[param[GlossaryCore.YearStart], GlossaryCore.PopulationValue] = self.pop_start
+        economics_df.loc[param[GlossaryCore.YearStart], 'capital'] = self.capital_start
+        economics_df.loc[param[GlossaryCore.YearStart],
                          'productivity'] = self.productivity_start
-        economics_df.loc[param['year_start'],
+        economics_df.loc[param[GlossaryCore.YearStart],
                          'productivity_gr'] = self.productivity_gr_start
         economics_df['saving_rate'] = self.saving_rate
         economics_df['year'] = self.years_range

@@ -68,8 +68,8 @@ class LandUseV2TestCase(unittest.TestCase):
         self.forest_surface_df['global_forest_surface'] = np.linspace(4.2, 8.1, year_range)
 
         self.param = {'land_demand_df': self.energy_land_demand_df,
-                      'year_start': self.year_start,
-                      'year_end': self.year_end,
+                      GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
                       'total_food_land_surface': self.total_food_land_surface,
                       'forest_surface_df': self.forest_surface_df,
                       'land_demand_constraint_ref': 0.01,
@@ -109,8 +109,8 @@ class LandUseV2TestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.{LandUseV2.TOTAL_FOOD_LAND_SURFACE}': self.total_food_land_surface,
                        f'{name}.{model_name}.{LandUseV2.LAND_DEMAND_DF}': self.energy_land_demand_df,
                        f'{name}.{model_name}.{LandUseV2.FOREST_SURFACE_DF}': self.forest_surface_df,

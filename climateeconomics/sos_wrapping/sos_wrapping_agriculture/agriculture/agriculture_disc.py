@@ -81,9 +81,9 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                     'potatoes': [32.93],
                                     'fruits and vegetables': [217.62],
                                     })
-    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
                'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
                                    'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True), 'white meat': ('float', [0, 1e9], True), 'milk': ('float', [0, 1e9], True),
@@ -181,7 +181,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         d_total_d_temperature = model.d_food_land_surface_d_temperature(
             temperature_df, 'total surface (Gha)')
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'), d_total_d_temperature)
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_total_d_temperature)
 
         d_surface_d_red_meat_percentage = model.d_surface_d_red_meat_percentage(
             population_df)

@@ -36,9 +36,9 @@ class DamageModel():
         self.set_data()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_damag_int = self.param["init_damag_int"]
         self.damag_int = self.param['damag_int']
         self.damag_quad = self.param['damag_quad']
@@ -71,7 +71,7 @@ class DamageModel():
                      'damage_frac_output',
                      ])
         
-        if 'complex128' in [self.temperature_df['temp_atmo'].dtype]:
+        if 'complex128' in [self.temperature_df[GlossaryCore.TempAtmo].dtype]:
             arr_type = 'complex128'
         else:
             arr_type = 'float64'
@@ -90,7 +90,7 @@ class DamageModel():
         using variables at t
         If tipping point = True : Martin Weitzman damage function.
         """
-        temp_atmo = self.temperature_df.at[year, 'temp_atmo']
+        temp_atmo = self.temperature_df.at[year, GlossaryCore.TempAtmo]
         if self.tipping_point == True:
             if temp_atmo < 0:
                 dam = 0.0
@@ -164,7 +164,7 @@ class DamageModel():
             for line in range(nb_years):
                 if i == line:
                     temp_atmo = self.temperature_df.at[years[line],
-                                                    'temp_atmo']
+                                                    GlossaryCore.TempAtmo]
                     if self.tipping_point == True:
                         if temp_atmo < 0:
                             ddamage_frac_output_temp_atmo[line, i] = 0.0

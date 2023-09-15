@@ -55,12 +55,12 @@ class DataStudy():
 
         # private values economics operator pyworld3
         witness_input = {}
-        witness_input[f"{self.study_name}.{'year_start'}"] = self.year_start
-        witness_input[f"{self.study_name}.{'year_end'}"] = self.year_end
-        witness_input[f"{self.study_name}.{'time_step'}"] = self.time_step
+        witness_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        witness_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
+        witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
-        witness_input[f"{self.study_name}.{'Damage.tipping_point'}"] = True
-        witness_input[f"{self.study_name}.{'Macroeconomics.damage_to_productivity'}"] = True
+        witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
+        witness_input[f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}"] = True
         witness_input[f"{self.study_name}.{'Macroeconomics.hassler'}"] = False
         witness_input[f"{self.study_name}.{'frac_damage_prod'}"] = 0.30
         witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015

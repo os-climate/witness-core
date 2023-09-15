@@ -65,22 +65,22 @@ class UtilityDiscTest(unittest.TestCase):
         population_df.index = years
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
-                       f'{self.name}.energy_mean_price': energy_mean_price}
+                       f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
 
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
-        res_damage = self.ee.dm.get_value(f'{self.name}.utility_df')
+        res_damage = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.UtilityDfValue}')
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

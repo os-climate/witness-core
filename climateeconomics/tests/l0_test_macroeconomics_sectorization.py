@@ -72,8 +72,8 @@ class MacroeconomicsTestCase(unittest.TestCase):
         self.cap_indus_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_indus, 'usable_capital': cap_indus*0.8})
         self.cap_service_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_service, 'usable_capital': cap_service*0.8})
         
-#         self.param = {'year_start': self.year_start,
-#                       'year_end': self.year_end,
+#         self.param = {GlossaryCore.YearStart: self.year_start,
+#                       GlossaryCore.YearEnd: self.year_end,
 #                       'agriculture.production_df':,
 #                       'services.production_df': ,
 #                       'industry.production_df': ,
@@ -102,8 +102,8 @@ class MacroeconomicsTestCase(unittest.TestCase):
 
         ee.configure()
         ee.display_treeview_nodes()
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.total_investment_share_of_gdp': self.total_invest,
                        f'{name}.sectors_investment_share': self.share_sector_invest,
                        f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,

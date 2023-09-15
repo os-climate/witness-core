@@ -51,9 +51,9 @@ class Study(StudyManager):
         global_data_dir = join(Path(__file__).parents[4], 'data')
         # private values economics operator pyworld3
         population_input = {}
-        population_input[self.study_name + '.year_start'] = self.year_start
-        population_input[self.study_name + '.year_end'] = self.year_end
-        population_input[self.study_name + '.time_step'] = self.time_step
+        population_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        population_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
+        population_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
         gdp_year_start = 130.187
         gdp_serie = []
@@ -67,10 +67,8 @@ class Study(StudyManager):
         temperature_df_all = read_csv(
             join(global_data_dir, 'temperature_data_onestep.csv'))
 
-        population_input[self.study_name +
-                         f'.{GlossaryCore.EconomicsDfValue}'] = economics_df_y
-        population_input[self.study_name +
-                         f'.{GlossaryCore.TemperatureDfValue}'] = temperature_df_all
+        population_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = economics_df_y
+        population_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df_all
 
         setup_data_list.append(population_input)
 

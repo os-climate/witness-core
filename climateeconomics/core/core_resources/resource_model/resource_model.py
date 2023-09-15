@@ -73,8 +73,8 @@ class ResourceModel():
         Configure with inputs_dict from the discipline
         '''
 
-        self.year_start = inputs_dict['year_start']  # year start
-        self.year_end = inputs_dict['year_end']  # year end
+        self.year_start = inputs_dict[GlossaryCore.YearStart]  # year start
+        self.year_end = inputs_dict[GlossaryCore.YearEnd]  # year end
         self.production_start = inputs_dict['production_start']
         self.production_years = np.arange(
             self.production_start, self.year_end + 1)

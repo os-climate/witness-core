@@ -43,9 +43,9 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     }
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2, 'unit': '°C'},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'unit': '-', 'default': 3.1, 'user_level': 3},
@@ -58,7 +58,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'lo_tocean': {'type': 'float', 'default': -1.0, 'user_level': 3, 'unit': '°C'},
         'up_tatmo': {'type': 'float', 'default': 12.0, 'user_level': 3, 'unit': '°C'},
         'up_tocean': {'type': 'float', 'default': 20.0, 'user_level': 3, 'unit': '°C'},
-        'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
+        GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
                            'dataframe_descriptor':{GlossaryCore.Years: ('float', None, False),
                                                    'atmo_conc': ('float', None, False),
                                                    'lower_ocean_conc': ('float', None, False),
@@ -122,7 +122,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
-#         carboncycle_df = in_dict.pop('carboncycle_df')
+#         carboncycle_df = in_dict.pop(GlossaryCore.CarbonCycleDfValue)
 
         # pyworld3 execution
         temperature_df, temperature_objective = self.model.compute(in_dict)
@@ -130,7 +130,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         if in_dict['temperature_effect'] :
             # store output data
             out_dict = {"temperature_detail_df": temperature_df,
-                        GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, 'temp_atmo']],
+                        GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, GlossaryCore.TempAtmo]],
                         'forcing_detail_df': self.model.forcing_df,
                         'temperature_objective': temperature_objective,
                         'temperature_constraint': self.model.temperature_end_constraint}
@@ -139,10 +139,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             # store output data
 
             temperature_df_2 = temperature_df.copy()
-            temperature_df_2['temp_atmo'] = [0.1 for i in range (len(temperature_df['temp_atmo']))]
+            temperature_df_2[GlossaryCore.TempAtmo] = [0.1 for i in range (len(temperature_df[GlossaryCore.TempAtmo]))]
 
             out_dict = {"temperature_detail_df": temperature_df,
-                        GlossaryCore.TemperatureDfValue: temperature_df_2[[GlossaryCore.Years, 'temp_atmo']],
+                        GlossaryCore.TemperatureDfValue: temperature_df_2[[GlossaryCore.Years, GlossaryCore.TempAtmo]],
                         'forcing_detail_df': self.model.forcing_df,
                         'temperature_objective': temperature_objective,
                         'temperature_constraint': self.model.temperature_end_constraint}
@@ -154,11 +154,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         Compute jacobian for each coupling variable 
         gradient of coupling variable to compute: 
         temperature_df
-          - 'forcing':
+          - GlossaryCore.Forcing:
                 - carboncycle_df, 'atmo_conc'
-          -'temp_atmo'
+          -GlossaryCore.TempAtmo
                 - carboncycle_df, 'atmo_conc'
-          - 'temp_ocean',
+          - GlossaryCore.TempOcean,
                 - carboncycle_df, 'atmo_conc'
         """
         d_tempatmo_d_atmoconc, d_tempocean_d_atmoconc = self.model.compute_d_temp_atmo()
@@ -166,19 +166,19 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         temperature_constraint_ref = self.get_sosdisc_inputs(
             'temperature_end_constraint_ref')
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),  ('carboncycle_df', 'atmo_conc'), d_tempatmo_d_atmoconc,)
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),  (GlossaryCore.CarbonCycleDfValue, 'atmo_conc'), d_tempatmo_d_atmoconc,)
         self.set_partial_derivative_for_other_types(
-            ('temperature_constraint', ),  ('carboncycle_df', 'atmo_conc'), -d_tempatmo_d_atmoconc[-1] / temperature_constraint_ref,)
+            ('temperature_constraint', ),  (GlossaryCore.CarbonCycleDfValue, 'atmo_conc'), -d_tempatmo_d_atmoconc[-1] / temperature_constraint_ref,)
         for forcing_name, d_forcing_datmo_conc in self.model.d_forcing_datmo_conc_dict.items():
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', forcing_name),  ('carboncycle_df', 'atmo_conc'), np.identity(len(d_forcing_datmo_conc)) * d_forcing_datmo_conc,)
+                ('forcing_detail_df', forcing_name),  (GlossaryCore.CarbonCycleDfValue, 'atmo_conc'), np.identity(len(d_forcing_datmo_conc)) * d_forcing_datmo_conc,)
 
         # dtao => derivative temp atmo obj
         # dac => derivative atmo conc
         # dta => derivative temp atmo
         # dtao/dac = dtao/dta * dta/dac
         self.set_partial_derivative_for_other_types(
-            ('temperature_objective', ),  ('carboncycle_df', 'atmo_conc'),  d_tempatmoobj_d_temp_atmo.dot(d_tempatmo_d_atmoconc),)
+            ('temperature_objective', ),  (GlossaryCore.CarbonCycleDfValue, 'atmo_conc'),  d_tempatmoobj_d_temp_atmo.dot(d_tempatmo_d_atmoconc),)
 
     def get_chart_filter_list(self):
 
@@ -209,12 +209,12 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         if 'temperature evolution' in chart_list:
 
-            to_plot = ['temp_atmo', 'temp_ocean']
+            to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
             temperature_df = deepcopy(
                 self.get_sosdisc_outputs('temperature_detail_df'))
 
-            legend = {'temp_atmo': 'atmosphere temperature',
-                      'temp_ocean': 'ocean temperature'}
+            legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
+                      GlossaryCore.TempOcean: 'ocean temperature'}
 
             years = list(temperature_df.index)
 

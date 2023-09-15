@@ -66,8 +66,8 @@ class LandUseV1TestCase(unittest.TestCase):
             -0.01, 0, year_range)
 
         self.param = {'land_demand_df': self.energy_land_demand_df,
-                      'year_start': self.year_start,
-                      'year_end': self.year_end,
+                      GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
                       'total_food_land_surface': self.total_food_land_surface,
                       'forest_surface_df': self.deforested_surface_df,
                       'land_use_constraint_ref': 0.01
@@ -107,8 +107,8 @@ class LandUseV1TestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.{LandUseV1.TOTAL_FOOD_LAND_SURFACE}': self.total_food_land_surface,
                        f'{name}.{model_name}.{LandUseV1.LAND_DEMAND_DF}': self.energy_land_demand_df,
                        f'{name}.{model_name}.{LandUseV1.DEFORESTED_SURFACE_DF}': self.deforested_surface_df,

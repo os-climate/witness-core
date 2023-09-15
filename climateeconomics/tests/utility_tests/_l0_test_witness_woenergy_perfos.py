@@ -110,11 +110,11 @@ class TestScatter(unittest.TestCase):
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
 
         input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
         input_dict_to_load[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
-        input_dict_to_load[f'{self.name}.energy_mean_price'] = energy_mean_price
+        input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = energy_mean_price
         input_dict_to_load[f'{self.name}.CCS_price'] = CCS_price
         input_dict_to_load[f'{self.name}.sub_mda_class'] = "MDANewtonRaphson"
         input_dict_to_load[f'{self.name}.n_processes'] = 1

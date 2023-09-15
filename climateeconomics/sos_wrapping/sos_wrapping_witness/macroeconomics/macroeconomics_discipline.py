@@ -48,9 +48,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     _maturity = 'Research'
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2, 'unit': '-'},
         GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'capital_start_non_energy': {'type': 'float', 'unit': 'T$', 'default': 360.5487346, 'user_level': 2},
@@ -177,9 +177,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         '''
         year_start = 2020
         year_end = 2100
-        if 'year_start' in self.get_data_in():
+        if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
-                ['year_start', 'year_end'])
+                [GlossaryCore.YearStart, GlossaryCore.YearEnd])
         years = np.arange(year_start, year_end + 1)
         global_data_dir = join(Path(__file__).parents[3], 'data')
         gross_output_ssp3_file = join(global_data_dir, 'economics_df_ssp3.csv')
@@ -211,9 +211,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         """
         Update all default dataframes with years
         """
-        if 'year_start' in self.get_data_in():
+        if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
-                ['year_start', 'year_end'])
+                [GlossaryCore.YearStart, GlossaryCore.YearEnd])
             years = np.arange(year_start, year_end + 1)
             intermediate_point = 30
             CO2_tax_efficiency = np.concatenate(
@@ -304,9 +304,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 'scaling_factor_energy_production', 'ref_pc_consumption_constraint',
                 'ref_emax_enet_constraint', 'usable_capital_ref', 'capital_utilisation_ratio', 'alpha']]
 
-        year_start = inputs_dict['year_start']
-        year_end = inputs_dict['year_end']
-        time_step = inputs_dict['time_step']
+        year_start = inputs_dict[GlossaryCore.YearStart]
+        year_end = inputs_dict[GlossaryCore.YearEnd]
+        time_step = inputs_dict[GlossaryCore.TimeStep]
         nb_years = len(np.arange(year_start, year_end + 1, time_step))
         usable_capital_ref = usable_capital_ref_raw * nb_years
         capital_df, delta_capital_objective_wo_exp_min = [outputs_dict[key] for key in [
@@ -662,26 +662,26 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue),
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'),
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax),
             d_energy_investment_d_co2_tax * 10.)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), d_consumption_pc_d_co2_tax)
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), d_consumption_pc_d_co2_tax)
         self.set_partial_derivative_for_other_types(
             ('pc_consumption_constraint',),
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), - d_consumption_pc_d_co2_tax / ref_pc_consumption_constraint)
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), - d_consumption_pc_d_co2_tax / ref_pc_consumption_constraint)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',),
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), d_emax_constraint_d_co2_tax)
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), d_emax_constraint_d_co2_tax)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective',),
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), d_delta_capital_objective_dco2_tax)
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), d_delta_capital_objective_dco2_tax)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_objective_weighted',),
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), alpha * d_delta_capital_objective_dco2_tax)
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), alpha * d_delta_capital_objective_dco2_tax)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_constraint',),
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), - d_delta_capital_cons_d_co2_tax / usable_capital_ref)
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), - d_delta_capital_cons_d_co2_tax / usable_capital_ref)
         ddelta_capital_cons_dc_dusable_capital, _, _ = compute_ddelta_constraint(
             value=usable_capital, goal=capital_ratio * ne_capital,
             tolerable_delta=delta_capital_cons_limit, delta_type='hardmin', reference_value=ref_usable_capital)
@@ -689,7 +689,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             ddelta_capital_cons_dc_dusable_capital, -d_capital_d_co2_tax * capital_ratio)
         self.set_partial_derivative_for_other_types(
             ('delta_capital_constraint_dc',),
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), ddelta_capital_cons_dc)
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), ddelta_capital_cons_dc)
 
         ddelta_capital_lintoquad_dusable_capital, _, ddelta_capital_lintoquad_dtolerable_delta = compute_ddelta_constraint(
             value=usable_capital, goal=capital_ratio * ne_capital,
@@ -699,7 +699,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                     np.dot(ddelta_capital_lintoquad_dtolerable_delta, 0.15 * d_capital_d_co2_tax))
         self.set_partial_derivative_for_other_types(
             ('delta_capital_lintoquad',),
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), ddelta_capital_lintoquad)
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), ddelta_capital_lintoquad)
 
         # Compute gradient WRT share investment non energy
         d_investment_d_share_investment_non_energy, d_non_energy_invest_d_share_investment_non_energy =\

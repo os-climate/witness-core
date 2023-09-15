@@ -54,8 +54,8 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
     name = f'{GHGemissionsDiscipline.name}.Agriculture'
     _maturity = 'Research'
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.techno_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                               'possible_values': ['Crop', 'Forest'],
                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -161,7 +161,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         Compute jacobian for each coupling variable
         """
         inputs_dict = self.get_sosdisc_inputs()
-        np_years = inputs_dict['year_end'] - inputs_dict['year_start'] + 1
+        np_years = inputs_dict[GlossaryCore.YearEnd] - inputs_dict[GlossaryCore.YearStart] + 1
         techno_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
         co2_eq_20_ref = inputs_dict['co2_eq_20_objective_ref']
         co2_eq_100_ref = inputs_dict['co2_eq_100_objective_ref']
@@ -276,8 +276,8 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
             'CH4_land_emissions')
         N2O_emissions_land_use_df = self.get_sosdisc_outputs(
             'N2O_land_emissions')
-        year_start = self.get_sosdisc_inputs('year_start')
-        year_end = self.get_sosdisc_inputs('year_end')
+        year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+        year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
         year_list = np.arange(year_start, year_end + 1).tolist()
 
         CO2_emissions_land_use = CO2_emissions_land_use_df.drop(
@@ -310,8 +310,8 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
 
         CO2_emissions_land_use_df = self.get_sosdisc_outputs(
             'CO2_land_emissions')
-        year_start = self.get_sosdisc_inputs('year_start')
-        year_end = self.get_sosdisc_inputs('year_end')
+        year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+        year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
         year_list = np.arange(year_start, year_end + 1).tolist()
         for column in CO2_emissions_land_use_df.columns:
             if column != GlossaryCore.Years:

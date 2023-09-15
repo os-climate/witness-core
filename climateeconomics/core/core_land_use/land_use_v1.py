@@ -49,8 +49,8 @@ class LandUseV1():
     HECTARE = 'ha'
 
     LAND_DEMAND_DF = 'land_demand_df'
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
 
     TOTAL_FOOD_LAND_SURFACE = 'total_food_land_surface'
     DEFORESTED_SURFACE_DF = 'forest_surface_df'

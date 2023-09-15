@@ -108,14 +108,14 @@ class Study(StudyManager):
 
         # data for consumption
         temperature = np.linspace(1, 3, len(years))
-        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temperature, 'temp_ocean': temperature / 100})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature, GlossaryCore.TempOcean: temperature / 100})
         temperature_df.index = years
         residential_energy = np.linspace(21, 58, len(years))
         residential_energy_df = pd.DataFrame(
             {GlossaryCore.Years: years, 'residential_energy': residential_energy})
         energy_price = np.arange(110, 110 + len(years))
         energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
         # Share invest
         share_invest = np.asarray([27.0] * self.nb_per)
         share_invest = pd.DataFrame({GlossaryCore.Years: years, 'share_investment': share_invest})
@@ -133,8 +133,8 @@ class Study(StudyManager):
         economics_df.index = years
 
         cons_input = {}
-        cons_input[f"{self.study_name}.{'year_start'}"] = self.year_start
-        cons_input[f"{self.study_name}.{'year_end'}"] = self.year_end
+        cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        cons_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         cons_input[f"{self.study_name}.{'sectors_investment_share'}"] = share_sectors_invest
         cons_input[f"{self.study_name}.{self.macro_name}.{'Industry'}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
         cons_input[f"{self.study_name}.{self.macro_name}.{'Agriculture'}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
@@ -145,7 +145,7 @@ class Study(StudyManager):
         cons_input[f"{self.study_name}.{'total_investment_share_of_gdp'}"] = share_invest_df
         cons_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
         cons_input[f"{self.study_name}.{'residential_energy'}"] = residential_energy_df
-        cons_input[f"{self.study_name}.{'energy_mean_price'}"] = energy_mean_price
+        cons_input[f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
         cons_input[f"{self.study_name}.{'sectors_investment_df'}"] = base_dummy_data
         cons_input[f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}"] = workforce_share
         cons_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = economics_df

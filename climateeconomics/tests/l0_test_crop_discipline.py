@@ -48,7 +48,7 @@ class CropTestCase(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
         temperature = np.array(np.linspace(0.0,5.0, year_range))
-        self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, "temp_atmo": temperature})
+        self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
         self.temperature_df.index = years
 
         lifetime = 50
@@ -204,9 +204,9 @@ class CropTestCase(unittest.TestCase):
                                 'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
 
 
-        self.param = {'year_start': self.year_start,
-                      'year_end': self.year_end,
-                      'time_step': self.time_step,
+        self.param = {GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
+                      GlossaryCore.TimeStep: self.time_step,
                       'diet_df': self.diet_df,
                       'kg_to_kcal_dict': self.default_kg_to_kcal,
                       GlossaryCore.PopulationDfValue: self.population_df,
@@ -275,9 +275,9 @@ class CropTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
-                       f'{name}.time_step': 1,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Crop.DIET_DF}': self.diet_df,
                        f'{name}.{model_name}.{Crop.KG_TO_KCAL_DICT}': self.default_kg_to_kcal,
                        f'{name}.{model_name}.{Crop.KG_TO_M2_DICT}': self.default_kg_to_m2,

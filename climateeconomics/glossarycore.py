@@ -9,6 +9,9 @@ class GlossaryCore:
     #  everywhere in the code. Only then, add continue filling the Glossary.
     # dataframes columns/var_names :
     Years = "years"
+    YearStart = "year_start"
+    YearEnd = "year_end"
+    TimeStep = "time_step"
     # todo in the futur: merge these 3 invest values
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
@@ -21,7 +24,7 @@ class GlossaryCore:
     EconomicsDfValue = "economics_df"
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
-    UtilityDf = "utility_df"
+    UtilityDfValue = "utility_df"
     EnergyInvestmentsValue = "energy_investment"
     EnergyInvestmentsWoTaxValue = "energy_investment_wo_tax"
     EnergyInvestmentsWoRenewableValue = "energy_investment_wo_renewable"
@@ -34,6 +37,22 @@ class GlossaryCore:
 
     invest_mix = "invest_mix"
 
+    CarbonCycleDfValue = "carboncycle_df"
+    CarbonCycleDf = {
+        "var_name": CarbonCycleDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            "atmo_conc": ("float", None, False),
+            "lower_ocean_conc": ("float", None, False),
+            "shallow_ocean_conc": ("float", None, False),
+            "ppm": ("float", None, False),
+            "atmo_share_since1850": ("float", None, False),
+            "atmo_share_sinceystart": ("float", None, False),
+        },
+    }
     TotalCO2Emissions = "Total CO2 emissions"
     CO2EmissionsGt = {
         "var_name": CO2EmissionsGtValue,
@@ -48,6 +67,7 @@ class GlossaryCore:
         },
     }
 
+    CO2Tax = "CO2_tax"
     CO2Taxes = {
         "var_name": CO2TaxesValue,
         "type": "dataframe",
@@ -56,7 +76,7 @@ class GlossaryCore:
         "namespace": "ns_witness",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
-            "CO2_tax": ("float", None, True),
+            CO2Tax: ("float", None, True),
         },
         "dataframe_edition_locked": False,
     }
@@ -153,19 +173,33 @@ class GlossaryCore:
         },
     }
 
+    EnergyMeanPriceValue = "energy_mean_price"
+    EnergyPriceValue = "energy_price"
+    EnergyMeanPrice = {
+        "var_name": EnergyMeanPriceValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_energy_mix",
+        "unit": "$/MWh",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            EnergyPriceValue: ("float", None, True),
+        },
+    }
+
     EnergyProductionValue = "energy_production"
     TotalProductionValue = "Total production"
     EnergyProduction = {
-            "var_name": EnergyProductionValue,
-            "type": "dataframe",
-            "visibility": "Shared",
-            "unit": "PWh",
-            "namespace": "ns_energy_mix",
-            "dataframe_descriptor": {
-                Years: ("float", None, False),
-                TotalProductionValue: ("float", None, False),
-            },
-        }
+        "var_name": EnergyProductionValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "unit": "PWh",
+        "namespace": "ns_energy_mix",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            TotalProductionValue: ("float", None, False),
+        },
+    }
 
     EnergyInvestments = {
         "var_name": EnergyInvestmentsValue,
@@ -216,6 +250,11 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": "ns_witness",
     }
+
+    ExoGForcing = "exog_forcing"
+    Forcing = "forcing"
+    TempAtmo = "temp_atmo"
+    TempOcean = "temp_ocean"
     TemperatureDf = {
         "var_name": TemperatureDfValue,
         "type": "dataframe",
@@ -224,11 +263,30 @@ class GlossaryCore:
         "unit": "°C",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "exog_forcing": ("float", None, False),
-            "forcing": ("float", None, False),
-            "temp_atmo": ("float", None, False),
-            "temp_ocean": ("float", None, False),
+            ExoGForcing: ("float", None, False),
+            Forcing: ("float", None, False),
+            TempAtmo: ("float", None, False),
+            TempOcean: ("float", None, False),
         },
+    }
+
+    UtilityDiscountRate = "u_discount_rate"
+    PeriodUtilityPerCapita = "period_utility_pc"
+    DiscountedUtility = "discounted_utility"
+    Welfare = "welfare"
+    UtilityDf = {
+        "var_name": UtilityDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            UtilityDiscountRate: ("float", None, False),
+            PeriodUtilityPerCapita: ("float", None, False),
+            DiscountedUtility: ("float", None, False),
+            Welfare: ("float", None, False),
+        },
+        "unit": "-",
     }
 
     @staticmethod

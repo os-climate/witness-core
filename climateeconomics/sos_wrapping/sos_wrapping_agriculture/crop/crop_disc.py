@@ -254,9 +254,9 @@ class CropDiscipline(ClimateEcoDiscipline):
     crop_investment_default = pd.read_csv(join(dirname(__file__), 'data/crop_investment.csv'), index_col=0)
 
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': diet_df_default,
                     'dataframe_descriptor': {  # GlossaryCore.Years: ('float', None, False),
@@ -509,7 +509,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         d_total_d_temperature = model.d_food_land_surface_d_temperature(
             temperature_df, 'total surface (Gha)')
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'), d_total_d_temperature)
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_total_d_temperature)
 
         d_surface_d_red_meat_percentage = model.d_surface_d_calories(
             population_df, 'red meat')
@@ -581,7 +581,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                     (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                                                     d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
+            ('techno_production', 'biomass_dry (TWh)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
             ('techno_production', 'biomass_dry (TWh)'), ('red_meat_calories_per_day',
@@ -612,7 +612,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                     (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                                                     -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
+            ('techno_consumption', 'CO2_resource (Mt)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             -CO2_from_production / high_calorific_value * d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption', 'CO2_resource (Mt)'), ('red_meat_calories_per_day',
@@ -647,7 +647,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                     -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption_woratio',
-             'CO2_resource (Mt)'), (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
+             'CO2_resource (Mt)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             -CO2_from_production / high_calorific_value * d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
             ('techno_consumption_woratio',
@@ -746,7 +746,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
-                (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
+                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
                 dco2_dtemp)
 
             self.set_partial_derivative_for_other_types(
@@ -805,8 +805,8 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             surface_df = self.get_sosdisc_outputs('food_land_surface_df')
             years = surface_df[GlossaryCore.Years].values.tolist()
-            year_start = self.get_sosdisc_inputs('year_start')
-            year_end = self.get_sosdisc_inputs('year_end')
+            year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+            year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
             crop_surfaces = surface_df['total surface (Gha)'].values
             crop_surface_series = InstanciatedSeries(
                 years, crop_surfaces.tolist(), 'Total crop surface', InstanciatedSeries.LINES_DISPLAY)

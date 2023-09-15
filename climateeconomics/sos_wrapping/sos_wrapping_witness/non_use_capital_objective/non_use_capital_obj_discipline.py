@@ -44,8 +44,8 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
     _maturity = 'Research'
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
@@ -248,8 +248,8 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         non_use_capital_objective
         """
         inputs_dict = self.get_sosdisc_inputs()
-        years = np.arange(inputs_dict['year_start'],
-                          inputs_dict['year_end'] + 1)
+        years = np.arange(inputs_dict[GlossaryCore.YearStart],
+                          inputs_dict[GlossaryCore.YearEnd] + 1)
         non_use_capital_obj_ref = inputs_dict['non_use_capital_obj_ref']
         alpha, gamma = inputs_dict['alpha'], inputs_dict['gamma']
         non_use_capital_cons_ref = inputs_dict['non_use_capital_cons_ref']

@@ -77,8 +77,8 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{model_name}.workforce_share_per_sector': self.workforce_share, 
                        f'{self.name}.working_age_population_df': self.working_age_pop_df
                        }

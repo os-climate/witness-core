@@ -78,8 +78,8 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         CO2_indus_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
                                                'indus_emissions': np.linspace(1., 2., len(years))})
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.CO2_land_emissions': CO2_land_emissions,
                        f'{self.name}.CH4_land_emissions': CH4_land_emissions,
                        f'{self.name}.N2O_land_emissions': N2O_land_emissions,

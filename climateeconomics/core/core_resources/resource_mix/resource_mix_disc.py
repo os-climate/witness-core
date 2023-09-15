@@ -83,8 +83,8 @@ class ResourceMixDiscipline(SoSWrapp):
 
     }
 
-    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                'resource_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                  'unit': '-',
                                  'default': ResourceMixModel.RESOURCE_LIST,
@@ -313,8 +313,8 @@ class ResourceMixDiscipline(SoSWrapp):
         # -- compute
         self.all_resource_model.compute(inputs_dict)
 
-        years = np.arange(inputs_dict['year_start'],
-                          inputs_dict['year_end'] + 1)
+        years = np.arange(inputs_dict[GlossaryCore.YearStart],
+                          inputs_dict[GlossaryCore.YearEnd] + 1)
 
         outputs_dict = {
             ResourceMixModel.ALL_RESOURCE_STOCK: self.all_resource_model.all_resource_stock.reset_index(),

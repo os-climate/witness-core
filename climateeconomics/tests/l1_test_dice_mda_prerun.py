@@ -123,10 +123,10 @@ class DICEMDAPrerunTest(unittest.TestCase):
             index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
 
         temperature_df = DataFrame({'year': years,
-                                    'exog_forcing': data,
-                                    'forcing': data,
-                                    'temp_atmo': data,
-                                    'temp_ocean': data},
+                                    GlossaryCore.ExoGForcing: data,
+                                    GlossaryCore.Forcing: data,
+                                    GlossaryCore.TempAtmo: data,
+                                    GlossaryCore.TempOcean: data},
                                    index=np.arange(usecase.year_start, usecase.year_end + 1, usecase.time_step))
         ee2 = ExecutionEngine(self.name)
         builder = ee2.factory.get_builder_from_process(
@@ -144,7 +144,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
 
         dice_input = {}
         dice_input[f"{usecase.study_name}.{'CO2_emissions_df'}"] = CO2_emissions_df
-        dice_input[f"{usecase.study_name}.{'carboncycle_df'}"] = carboncycle_df
+        dice_input[f"{usecase.study_name}.{GlossaryCore.CarbonCycleDfValue}"] = carboncycle_df
         dice_input[f"{usecase.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
         dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df
         values_dict.update(dice_input)
@@ -171,7 +171,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
             values_dict.update(dict_item)
 
         dice_input = {}
-        dice_input[f"{usecase.study_name}.{'carboncycle_df'}"] = carboncycle_df
+        dice_input[f"{usecase.study_name}.{GlossaryCore.CarbonCycleDfValue}"] = carboncycle_df
 
         values_dict.update(dice_input)
 

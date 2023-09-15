@@ -55,8 +55,8 @@ def get_instanciated_charts(discipline, chart_filters=None):
             years = list(temp_df.index)
 #            year_start = years[0]
 #            year_end = years[len(years) - 1]
-            temp_atmo = temp_df['temp_atmo']
-            #temp_ocean = temp_df['temp_ocean']
+            temp_atmo = temp_df[GlossaryCore.TempAtmo]
+            #temp_ocean = temp_df[GlossaryCore.TempOcean]
             
             new_series = InstanciatedSeries( years, temp_atmo.tolist(), f'{scenario} Atmospheric temperature', 'lines')
             new_chart.series.append(new_series)
@@ -75,7 +75,7 @@ def get_instanciated_charts(discipline, chart_filters=None):
             years = list(temp_df.index)
 #            year_start = years[0]
 #            year_end = years[len(years) - 1]
-            temp_ocean = temp_df['temp_ocean']
+            temp_ocean = temp_df[GlossaryCore.TempOcean]
             
             new_series = InstanciatedSeries( years, temp_ocean.tolist(), f'{scenario} Ocean temperature', 'lines')
             new_chart.series.append(new_series)

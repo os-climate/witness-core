@@ -58,10 +58,10 @@ class TemperatureDiscTest(unittest.TestCase):
         years = np.arange(2020, 2101, 1)
         carboncycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
-                       f'{self.name}.carboncycle_df': carboncycle_df}
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
+                       f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df}
 
         self.ee.load_study_from_input_dict(values_dict)
 

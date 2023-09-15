@@ -80,8 +80,8 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_uranium_demand_df
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -120,8 +120,8 @@ class UraniumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_uranium_variable_demand_df
                        }
         self.ee.load_study_from_input_dict(inputs_dict)

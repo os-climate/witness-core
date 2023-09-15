@@ -80,8 +80,8 @@ class WitnessCoarseDesynchro(unittest.TestCase):
 
             # test synchronisation of coupled variable temperature_df and
             # non-coupled output temperature_detail_df
-            self.assertListEqual(list(df_ncoupled['temp_atmo'].values), list(
-                df_coupled['temp_atmo'].values), msg="desynchro of dataframes detected")
+            self.assertListEqual(list(df_ncoupled[GlossaryCore.TempAtmo].values), list(
+                df_coupled[GlossaryCore.TempAtmo].values), msg="desynchro of dataframes detected")
 
 
 if '__main__' == __name__:

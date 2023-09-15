@@ -44,8 +44,8 @@ class Study(StudyManager):
             join(data_dir_resource, 'all_demand_variable.csv'))
 
         config_data = {f'{self.study_name}.resources_demand': resources_demand,
-                       f'{self.study_name}.year_start': self.year_start,
-                       f'{self.study_name}.year_end': self.year_end}
+                       f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end}
 
         setup_data_list.append(config_data)
 

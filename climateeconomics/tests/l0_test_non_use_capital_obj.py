@@ -84,10 +84,10 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         alpha, gamma = 0.5, 0.5
         non_use_capital_obj_ref = 100.
         delta_years = year_end + 1 - year_start
-        values_dict = {f'{self.name}.year_start': year_start,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.alpha': alpha,
                        f'{self.name}.gamma': gamma,
-                       f'{self.name}.year_end': year_end,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.is_dev': True,
                        f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
                        f'{self.name}.{GlossaryCore.energy_list}': ['fuel.liquid_fuel', 'methane'],

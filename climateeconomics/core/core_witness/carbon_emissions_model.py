@@ -36,9 +36,9 @@ class CarbonEmissions():
         self.create_dataframe()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_gr_sigma = self.param['init_gr_sigma']
         self.decline_rate_decarbo = self.param['decline_rate_decarbo']
         self.init_indus_emissions = self.param['init_indus_emissions']

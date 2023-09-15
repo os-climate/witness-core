@@ -37,8 +37,8 @@ class NonUseCapitalObjective():
         self.forest_lost_capital_cons = np.array([0.0])
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
         self.non_use_capital_obj_ref = self.param['non_use_capital_obj_ref']
         self.alpha = self.param['alpha']
         self.gamma = self.param['gamma']

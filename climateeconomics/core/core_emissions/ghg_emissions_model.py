@@ -36,9 +36,9 @@ class GHGEmissions():
         self.sector_list = ['energy', 'land', 'industry']
 
     def configure_parameters(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]
 
         self.CO2_land_emissions = self.param['CO2_land_emissions']
         self.CH4_land_emissions = self.param['CH4_land_emissions']

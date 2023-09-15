@@ -94,8 +94,8 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.total_investment_share_of_gdp': self.total_invest,
                        f'{self.name}.sectors_investment_share': self.share_sector_invest,
                        f'{self.name}.{model_name}.Agriculture.production_df': self.prod_agri,

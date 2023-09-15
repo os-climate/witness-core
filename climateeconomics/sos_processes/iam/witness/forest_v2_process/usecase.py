@@ -155,39 +155,21 @@ class Study(StudyManager):
 
         # values of pyworld3
         forest_input = {}
-        forest_input[self.study_name + '.year_start'] = self.year_start
-        forest_input[self.study_name + '.year_end'] = self.year_end
-
-        forest_input[self.study_name + self.forest_name +
-                     '.CO2_per_ha'] = CO2_per_ha
-
-        forest_input[self.study_name + self.forest_name +
-                     '.initial_emissions'] = initial_emissions
-        forest_input[self.study_name + self.forest_name +
-                     '.reforestation_cost_per_ha'] = reforestation_cost_per_ha
-
-        forest_input[self.study_name +
-                     '.forest_investment'] = self.forest_invest_df
-
-        forest_input[self.study_name + self.forest_name +
-                     '.wood_techno_dict'] = wood_techno_dict
-        # 1.15 = 1.25 * 0.92
-        forest_input[self.study_name + self.forest_name +
-                     '.managed_wood_initial_surface'] = 1.15
-        forest_input[self.study_name + self.forest_name +
-                     '.managed_wood_invest_before_year_start'] = invest_before_year_start
-        forest_input[self.study_name + self.forest_name +
-                     '.managed_wood_investment'] = mw_invest_df
-        forest_input[self.study_name +
-                     '.transport_cost'] = transport_df
-        forest_input[self.study_name +
-                     '.margin'] = margin_df
-        forest_input[self.study_name + self.forest_name +
-                     '.protected_forest_surface'] = initial_protected_forest_surface
-        forest_input[self.study_name + self.forest_name +
-                     '.deforestation_cost_per_ha'] = deforestation_cost_per_ha
-        forest_input[self.study_name + self.forest_name +
-                     '.deforestation_investment'] = deforest_invest_df
+        forest_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        forest_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
+        forest_input[f"{self.study_name}.{self.forest_name}.{'CO2_per_ha'}"] = CO2_per_ha
+        forest_input[f"{self.study_name}.{self.forest_name}.{'initial_emissions'}"] = initial_emissions
+        forest_input[f"{self.study_name}.{self.forest_name}.{'reforestation_cost_per_ha'}"] = reforestation_cost_per_ha
+        forest_input[f"{self.study_name}.{'forest_investment'}"] = self.forest_invest_df
+        forest_input[f"{self.study_name}.{self.forest_name}.{'wood_techno_dict'}"] = wood_techno_dict
+        forest_input[f"{self.study_name}.{self.forest_name}.{'managed_wood_initial_surface'}"] = 1.15
+        forest_input[f"{self.study_name}.{self.forest_name}.{'managed_wood_invest_before_year_start'}"] = invest_before_year_start
+        forest_input[f"{self.study_name}.{self.forest_name}.{'managed_wood_investment'}"] = mw_invest_df
+        forest_input[f"{self.study_name}.{'transport_cost'}"] = transport_df
+        forest_input[f"{self.study_name}.{'margin'}"] = margin_df
+        forest_input[f"{self.study_name}.{self.forest_name}.{'protected_forest_surface'}"] = initial_protected_forest_surface
+        forest_input[f"{self.study_name}.{self.forest_name}.{'deforestation_cost_per_ha'}"] = deforestation_cost_per_ha
+        forest_input[f"{self.study_name}.{self.forest_name}.{'deforestation_investment'}"] = deforest_invest_df
 
         setup_data_list.append(forest_input)
 

@@ -50,8 +50,8 @@ class Study(StudyManager):
         setup_data_list = []
         # private values economics operator pyworld3
         landuse_input = {}
-        landuse_input[self.study_name + '.year_start'] = self.year_start
-        landuse_input[self.study_name + '.year_end'] = self.year_end
+        landuse_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        landuse_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
 
         data_dir = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')

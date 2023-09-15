@@ -53,8 +53,8 @@ class LandUseV2Discipline(SoSWrapp):
     default_year_end = 2050
     initial_unmanaged_forest_surface = 4 - 1.25
 
-    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                LandUseV2.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_land_use',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -174,7 +174,7 @@ class LandUseV2Discipline(SoSWrapp):
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
-        years = np.arange(inputs_dict['year_start'], inputs_dict['year_end']+1)
+        years = np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd]+1)
         land_demand_df = inputs_dict['land_demand_df']
         agri_techno = []
         forest_techno = []
@@ -233,7 +233,7 @@ class LandUseV2Discipline(SoSWrapp):
                     chart_list = chart_filter.selected_values
         inputs_dict = self.get_sosdisc_inputs()
         outputs_dict = self.get_sosdisc_outputs()
-        years = list(np.arange(inputs_dict['year_start'], inputs_dict['year_end']+1))
+        years = list(np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd]+1))
         total_food_land_surface = inputs_dict['total_food_land_surface']
         total_forest_surface_df = inputs_dict['forest_surface_df']
         land_surface_detailed = outputs_dict[LandUseV2.LAND_SURFACE_DETAIL_DF]
@@ -303,7 +303,7 @@ class LandUseV2Discipline(SoSWrapp):
         if 'Surface Type in 2020 [Gha]' in chart_list:
             # ------------------------------------------------------------
             # GLOBAL LAND USE -> Display surfaces (Ocean, Land, Forest..)
-            years_list = [self.get_sosdisc_inputs('year_start')]
+            years_list = [self.get_sosdisc_inputs(GlossaryCore.YearStart)]
             # ------------------
             # Sunburst figure for global land use. Source
             # https://ourworldindata.org/land-use

@@ -89,8 +89,8 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
         self.deforested_surface_df['forest_surface_evol'] = np.linspace(
             -0.01, 0, year_range)
 
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.land_demand_df': land_demand_df,
                        f'{self.name}.total_food_land_surface': self.total_food_land_surface,
                        f'{self.name}.forest_surface_df': self.deforested_surface_df

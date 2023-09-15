@@ -57,9 +57,9 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
                                              'base_carbon_price': ('float', None, True),
                                          },
                                      },
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.4903228, 'user_level': 2, 'unit': '-'},
         'capital_start': {'type': 'float', 'unit': 'T$', 'default':88.5051, 'user_level': 2},
         'workforce_df': {'type': 'dataframe', 'dataframe_descriptor': {},'dynamic_dataframe_columns': True,
@@ -142,9 +142,9 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in self.get_data_in():
+        if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
-                ['year_start', 'year_end'])
+                [GlossaryCore.YearStart, GlossaryCore.YearEnd])
             years = np.arange(year_start, year_end + 1)
 
     def init_execution(self):
@@ -202,9 +202,9 @@ class IndustrialDiscipline(ClimateEcoDiscipline):
                 - net output
         """
         scaling_factor_energy_production, ref_emax_enet_constraint = self.get_sosdisc_inputs(['scaling_factor_energy_production','ref_emax_enet_constraint'])
-        year_start = self.get_sosdisc_inputs('year_start')
-        year_end = self.get_sosdisc_inputs('year_end')
-        time_step = self.get_sosdisc_inputs('time_step')
+        year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+        year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
+        time_step = self.get_sosdisc_inputs(GlossaryCore.TimeStep)
         nb_years = len(np.arange(year_start, year_end + 1, time_step))
      
         # Gradients wrt energy

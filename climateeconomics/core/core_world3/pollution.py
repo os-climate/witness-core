@@ -138,9 +138,9 @@ class Pollution:
         '''
         Store input values
         '''
-        self.year_min = inputs['year_start']
-        self.year_max = inputs['year_end']
-        self.dt = inputs['time_step']  # time_step
+        self.year_min = inputs[GlossaryCore.YearStart]
+        self.year_max = inputs[GlossaryCore.YearEnd]
+        self.dt = inputs[GlossaryCore.TimeStep]  # time_step
         self.pyear = inputs['pyear']
         self.verbose = False
         self.length = self.year_max - self.year_min

@@ -98,7 +98,7 @@ class MacroDiscTest(unittest.TestCase):
         self.damage_df.index = self.years
 
         default_CO2_tax = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_tax': 50.0}, index=years)
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: 50.0}, index=years)
         
         # energy_capital
         nb_per = len(self.years)
@@ -131,9 +131,9 @@ class MacroDiscTest(unittest.TestCase):
             {GlossaryCore.Years: years, 'CO2_tax_efficiency': 40.0}, index=years)
 
         # out dict definition
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
-                       f'{self.name}.time_step': time_step,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,

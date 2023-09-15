@@ -126,10 +126,10 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.root_process
 
-        output_full_names = [f'Test.{GlossaryCore.TemperatureDfValue}', 'Test.utility_df', f'Test.{GlossaryCore.EconomicsDfValue}',
+        output_full_names = [f'Test.{GlossaryCore.TemperatureDfValue}', f'Test.{GlossaryCore.UtilityDfValue}', f'Test.{GlossaryCore.EconomicsDfValue}',
                              'Test.carboncycle_df', 'Test.CO2_emissions_df', f'Test.{GlossaryCore.DamageDfValue}',
                              f'Test.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'Test.EnergyMix.{GlossaryCore.EnergyInvestmentsValue}',
-                             f'Test.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', 'Test.EnergyMix.energy_mean_price']
+                             f'Test.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'Test.EnergyMix.{GlossaryCore.EnergyMeanPriceValue}']
 
         input_full_names = ['Test.EnergyMix.invest_energy_mix',
                             f'Test.{GlossaryCore.CO2TaxesValue}']
@@ -210,10 +210,10 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.root_process.proxy_disciplines[0]
         namespace = 'Test.WITNESS_Eval.WITNESS'
-        output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.utility_df', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
-                             f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.{GlossaryCore.DamageDfValue}',
+        output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.{GlossaryCore.UtilityDfValue}', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
+                             f'{namespace}.{GlossaryCore.CarbonCycleDfValue}', f'{namespace}.CO2_emissions_df', f'{namespace}.{GlossaryCore.DamageDfValue}',
                              f'{namespace}.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'{namespace}.EnergyMix.{GlossaryCore.EnergyInvestmentsValue}',
-                             f'{namespace}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'{namespace}.EnergyMix.energy_mean_price',
+                             f'{namespace}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'{namespace}.EnergyMix.{GlossaryCore.EnergyMeanPriceValue}',
                              f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',
                              f'{namespace}.temperature_objective',
                              f'{namespace}.CO2_tax_minus_CO2_damage_constraint_df',
@@ -368,10 +368,10 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.root_process.proxy_disciplines[0]
         namespace = 'Test.WITNESS_Eval.WITNESS'
-        output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.utility_df', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
-                             f'{namespace}.carboncycle_df', f'{namespace}.CO2_emissions_df', f'{namespace}.{GlossaryCore.DamageDfValue}',
+        output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.{GlossaryCore.UtilityDfValue}', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
+                             f'{namespace}.{GlossaryCore.CarbonCycleDfValue}', f'{namespace}.CO2_emissions_df', f'{namespace}.{GlossaryCore.DamageDfValue}',
                              f'{namespace}.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'{namespace}.EnergyMix{GlossaryCore.EnergyInvestmentsValue}',
-                             f'{namespace}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'{namespace}.EnergyMix.energy_mean_price',
+                             f'{namespace}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'{namespace}.EnergyMix.{GlossaryCore.EnergyMeanPriceValue}',
                              f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',
                              f'{namespace}.utility_objective',
                              f'{namespace}.temperature_objective',

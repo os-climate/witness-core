@@ -7,9 +7,9 @@ from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 def intialize_pyworld3_resource_inputs():
     obj = Resource()
-    data = {'year_start': 1900,
-            'year_end': 2100,
-            'time_step': 0.5,
+    data = {GlossaryCore.YearStart: 1900,
+            GlossaryCore.YearEnd: 2100,
+            GlossaryCore.TimeStep: 0.5,
             'pyear': 1975}
     obj.set_data(data)
     obj.init_resource_constants()
@@ -64,9 +64,9 @@ class TestSoSResource(unittest.TestCase):
 
         values_dict = create_resource_input(f'{self.name}.{self.model_name}')
 
-        values_dict[f'{self.name}.{self.model_name}' + 'year_start'] = 1900
-        values_dict[f'{self.name}.{self.model_name}' + 'year_end'] = 2100
-        values_dict[f'{self.name}.{self.model_name}' + 'time_step'] = 0.5
+        values_dict[f'{self.name}.{self.model_name}' + GlossaryCore.YearStart] = 1900
+        values_dict[f'{self.name}.{self.model_name}' + GlossaryCore.YearEnd] = 2100
+        values_dict[f'{self.name}.{self.model_name}' + GlossaryCore.TimeStep] = 0.5
         values_dict[f'{self.name}.{self.model_name}' + 'pyear'] = 1975
 
         # print(data_dir)

@@ -47,8 +47,8 @@ class OilModelTestCase(unittest.TestCase):
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_oil_demand_df,
-                      'year_start': self.year_start,
-                      'year_end': self.year_end,
+                      GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
                       'production_start': self.production_start}
 
     def test_oil_discipline(self):
@@ -73,8 +73,8 @@ class OilModelTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.resources_demand': self.energy_oil_demand_df,
                        'production_start': self.production_start
                        }

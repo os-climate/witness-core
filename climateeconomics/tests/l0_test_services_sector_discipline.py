@@ -106,9 +106,9 @@ class ServicesDiscTest(unittest.TestCase):
     def test_execute(self):
         
         # out dict definition
-        values_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.sectors_investment_df': self.total_invest,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
@@ -130,9 +130,9 @@ class ServicesDiscTest(unittest.TestCase):
     def test_execute_forfitting(self):
         
         # out dict definition
-        values_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.sectors_investment_df': self.damage_df, #To check if not used
                        f'{self.name}.{self.model_name}.hist_sector_investment': self.total_invest,

@@ -42,12 +42,12 @@ class DamageDiscipline(ClimateEcoDiscipline):
     years = np.arange(2020, 2101)
     CO2_tax = np.asarray([500.] * len(years))
     default_CO2_tax = pd.DataFrame(
-        {GlossaryCore.Years: years, 'CO2_tax': CO2_tax}, index=years)
+        {GlossaryCore.Years: years, GlossaryCore.CO2Tax: CO2_tax}, index=years)
 
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'damag_quad': {'type': 'float', 'default': 0.0022, 'unit': '-', 'user_level': 3},
@@ -95,9 +95,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         '''
         Update all default dataframes with years 
         '''
-        if 'year_start' in self.get_data_in():
+        if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
-                ['year_start', 'year_end'])
+                [GlossaryCore.YearStart, GlossaryCore.YearEnd])
             years = np.arange(year_start, year_end + 1)
             damage_constraint_factor_default = np.concatenate(
                 (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
@@ -129,21 +129,21 @@ class DamageDiscipline(ClimateEcoDiscipline):
         gradiant of coupling variable to compute: 
         damage_df
           - GlossaryCore.Damages:
-                - temperature_df, 'temp_atmo'
+                - temperature_df, GlossaryCore.TempAtmo
                 - economics_df, GlossaryCore.GrossOutput
           -GlossaryCore.DamageFractionOutput
-                - temperature_df, 'temp_atmo'
+                - temperature_df, GlossaryCore.TempAtmo
         """
         ddamage_frac_output_temp_atmo, ddamages_temp_atmo, ddamages_gross_output, dconstraint_CO2_taxes, dconstraint_temp_atmo, dconstraint_economics = self.model.compute_gradient()
 
         # fill jacobians
         self.set_partial_derivative_for_other_types(
             ('expected_damage_df', GlossaryCore.DamageFractionOutput),
-            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),  ddamage_frac_output_temp_atmo)
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),  ddamage_frac_output_temp_atmo)
 
         self.set_partial_derivative_for_other_types(
             ('expected_damage_df', GlossaryCore.Damages),
-            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),  ddamages_temp_atmo)
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),  ddamages_temp_atmo)
 
         self.set_partial_derivative_for_other_types(
             ('expected_damage_df', GlossaryCore.Damages), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  ddamages_gross_output)
@@ -151,19 +151,19 @@ class DamageDiscipline(ClimateEcoDiscipline):
         compute_climate_impact_on_gdp = bool(self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']) * 1.0
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.DamageDf['var_name'], GlossaryCore.DamageFractionOutput),
-            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             ddamage_frac_output_temp_atmo * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.DamageDf['var_name'], GlossaryCore.Damages),
-            (GlossaryCore.TemperatureDfValue, 'temp_atmo'), ddamages_temp_atmo * compute_climate_impact_on_gdp)
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), ddamages_temp_atmo * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.DamageDf['var_name'], GlossaryCore.Damages), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), ddamages_gross_output * compute_climate_impact_on_gdp)
 
         self.set_partial_derivative_for_other_types(
             ('CO2_damage_price', 'CO2_damage_price'),
-            (GlossaryCore.TemperatureDfValue, 'temp_atmo'),  dconstraint_temp_atmo)
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),  dconstraint_temp_atmo)
         self.set_partial_derivative_for_other_types(
             ('CO2_damage_price', 'CO2_damage_price'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  dconstraint_economics)
 

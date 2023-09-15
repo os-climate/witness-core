@@ -90,24 +90,14 @@ class Study(StudyManager):
 
         # values of pyworld3
         forest_input = {}
-        forest_input[self.study_name + '.year_start'] = self.year_start
-        forest_input[self.study_name + '.year_end'] = self.year_end
-
-        forest_input[self.study_name + self.forest_name +
-                     '.limit_deforestation_surface'] = deforestation_limit
-
-        forest_input[self.study_name + self.forest_name +
-                     '.CO2_per_ha'] = CO2_per_ha
-
-        forest_input[self.study_name + self.forest_name +
-                     '.initial_emissions'] = initial_emissions
-        forest_input[self.study_name + self.forest_name +
-                     '.reforestation_cost_per_ha'] = reforestation_cost_per_ha
-
-        forest_input[self.study_name +
-                     '.deforestation_surface'] = deforestation_surface_df
-        forest_input[self.study_name + self.additional_ns +
-                     '.forest_investment'] = self.forest_invest_df
+        forest_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        forest_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
+        forest_input[f"{self.study_name}.{self.forest_name}.{'limit_deforestation_surface'}"] = deforestation_limit
+        forest_input[f"{self.study_name}.{self.forest_name}.{'CO2_per_ha'}"] = CO2_per_ha
+        forest_input[f"{self.study_name}.{self.forest_name}.{'initial_emissions'}"] = initial_emissions
+        forest_input[f"{self.study_name}.{self.forest_name}.{'reforestation_cost_per_ha'}"] = reforestation_cost_per_ha
+        forest_input[f"{self.study_name}.{'deforestation_surface'}"] = deforestation_surface_df
+        forest_input[f"{self.study_name}.{self.additional_ns}.{'forest_investment'}"] = self.forest_invest_df
 
         setup_data_list.append(forest_input)
 

@@ -47,9 +47,9 @@ class ObjectivesModel():
         Configure with inputs_dict from the discipline
         '''
 
-        self.year_start = inputs_dict['year_start']  # year start
-        self.year_end = inputs_dict['year_end']  # year end
-        self.time_step = inputs_dict['time_step']
+        self.year_start = inputs_dict[GlossaryCore.YearStart]  # year start
+        self.year_end = inputs_dict[GlossaryCore.YearEnd]  # year end
+        self.time_step = inputs_dict[GlossaryCore.TimeStep]
         self.years_range = np.arange(self.year_start,self.year_end + 1,self.time_step)
         self.nb_years = len(self.years_range)
         self.historical_gdp = inputs_dict['historical_gdp']

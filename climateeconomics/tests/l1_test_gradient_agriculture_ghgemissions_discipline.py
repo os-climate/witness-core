@@ -69,8 +69,8 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                            'emitted_CH4_evol_cumulative': np.linspace(0., 0.5, len(years)),
                                            })
 
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.techno_list}': ['Crop', 'Forest'],
                        f'{self.name}.Crop.CO2_land_emission_df': CO2_land_emissions,
                        f'{self.name}.Forest.CO2_land_emission_df': CO2_land_emissions,

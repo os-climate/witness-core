@@ -64,7 +64,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020][[
             GlossaryCore.Years, GlossaryCore.GrossOutput]]
         temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020][[
-            GlossaryCore.Years, 'temp_atmo']]
+            GlossaryCore.Years, GlossaryCore.TempAtmo]]
 
         years = np.arange(2020, 2101, 1)
         economics_df_y.index = years
@@ -73,7 +73,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': pd.DataFrame(
-                           {GlossaryCore.Years: years, 'CO2_tax': np.linspace(50, 500, len(years))}),
+                           {GlossaryCore.Years: years, GlossaryCore.CO2Tax: np.linspace(50, 500, len(years))}),
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
                        f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate(
                            (np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15))))}
@@ -123,7 +123,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020][[
             GlossaryCore.Years, GlossaryCore.GrossOutput]]
         temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020][[
-            GlossaryCore.Years, 'temp_atmo']]
+            GlossaryCore.Years, GlossaryCore.TempAtmo]]
 
         years = np.arange(2020, 2101, 1)
         economics_df_y.index = years
@@ -132,7 +132,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': pd.DataFrame(
-                           {GlossaryCore.Years: years, 'CO2_tax': np.linspace(50, 500, len(years))}),
+                           {GlossaryCore.Years: years, GlossaryCore.CO2Tax: np.linspace(50, 500, len(years))}),
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
                        f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate(
                            (np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15)))),

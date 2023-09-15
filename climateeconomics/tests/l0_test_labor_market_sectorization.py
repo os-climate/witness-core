@@ -69,8 +69,8 @@ class LaborMarketTestCase(unittest.TestCase):
 
         ee.configure()
         ee.display_treeview_nodes()
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.workforce_share_per_sector': self.workforce_share, 
                        f'{name}.working_age_population_df': self.working_age_pop_df
                        }
@@ -112,8 +112,8 @@ class LaborMarketTestCase(unittest.TestCase):
 
         ee.configure()
         ee.display_treeview_nodes()
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.workforce_share_per_sector': workforce_share, 
                        f'{name}.working_age_population_df': self.working_age_pop_df
                        }

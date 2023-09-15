@@ -132,7 +132,7 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
         EnergyMix = execution_engine.dm.get_disciplines_with_name(
             f'{namespace}.EnergyMix')[0]
         CO2_taxes, CO2_taxes_array = EnergyMix.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsValue)[
-            'CO2_tax'].values, []
+            GlossaryCore.CO2Tax].values, []
         for i, energy in enumerate(energy_list):
             # energies level
             production += [np.sum(multilevel_df.groupby(level=0)
@@ -186,7 +186,7 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
             EnergyMix = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.EnergyMix')[0]
             CO2_taxes, CO2_taxes_array = EnergyMix.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsValue)[
-                'CO2_tax'].values, []
+                GlossaryCore.CO2Tax].values, []
             for i, energy in enumerate(energy_list):
                 # energies level
                 production += [multilevel_df.groupby(level=0)
@@ -338,7 +338,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             multilevel_df = multilevel_df.append(techno_df)
 
     years = np.arange(EnergyMix.get_sosdisc_inputs(
-        'year_start'), EnergyMix.get_sosdisc_inputs('year_end') + 1, 1)
+        GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)
 
     # If columns is not None, return a subset of multilevel_df with selected
     # columns
@@ -615,7 +615,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
         f'{namespace}.EnergyMix')[0]
     energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)
     years = np.arange(EnergyMix.get_sosdisc_inputs(
-        'year_start'), EnergyMix.get_sosdisc_inputs('year_end') + 1, 1)
+        GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)
     # Construct a DataFrame to organize the data on two levels: energy and
     # techno
     idx = pd.MultiIndex.from_tuples([], names=['energy', 'techno'])
@@ -918,6 +918,6 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 # multilevel_df = multilevel_df.append(techno_df)
 #
 # years = np.arange(EnergyMix.get_sosdisc_inputs(
-# 'year_start'), EnergyMix.get_sosdisc_inputs('year_end') + 1, 1)
+# GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1, 1)
 #
 # return multilevel_df, years

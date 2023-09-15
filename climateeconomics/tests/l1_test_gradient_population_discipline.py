@@ -62,7 +62,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
 
         self.economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         self.economics_df_y.index = years
-        self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
+        self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         self.temperature_df.index = years
 
     def analytic_grad_entry(self):
@@ -83,8 +83,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population wrt economics_df
         '''
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
-                       f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
                        }
 
@@ -105,8 +105,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         '''
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
-                       f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        }
 
@@ -126,8 +126,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population wrt economics_df
         '''
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
-                       f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
                        }
 
@@ -148,8 +148,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         '''
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
-                       f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
                        }
 
@@ -184,14 +184,14 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             temp_serie.append(temp_serie[year - 1] - 0.85)
         economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
 
         calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
@@ -229,14 +229,14 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             temp_serie.append(temp_serie[year - 1] * 1.02)
         economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
 
         calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
@@ -274,14 +274,14 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             temp_serie.append(temp_serie[year - 1] + 8.05)
         economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
 
         calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
@@ -319,7 +319,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             temp_serie.append(temp_serie[year - 1] * 1.02)
         economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
 
         data_dir = join(dirname(__file__), 'data')
@@ -329,8 +329,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
@@ -370,7 +370,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
             temp_serie.append(temp_serie[year - 1] * 1.02)
         economics_df_y = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
-        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temp_serie})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
 
         pop_init_df = pd.read_csv(
@@ -379,8 +379,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         calories_pc = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400, 2400, len(years))})
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc
                        }
@@ -412,8 +412,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         calories_pc_df.index = years
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
-                       f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc_df
                        }
@@ -443,8 +443,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         assumptions_dict = ClimateEcoDiscipline.assumptions_dict_default
         assumptions_dict['activate_climate_effect_population'] = False
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df_y,
-                       f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+                       f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{self.name}.assumptions_dict': assumptions_dict,
                        }

@@ -44,10 +44,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     years = np.arange(2020, 2101)
     DESC_IN = {
         GlossaryCore.DamageDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'year_start': {'type': 'int', 'default': 2020, 'visibility': 'Shared', 'unit': 'year',
+        GlossaryCore.YearStart: {'type': 'int', 'default': 2020, 'visibility': 'Shared', 'unit': 'year',
                        'namespace': 'ns_witness'},
-        'year_end': {'type': 'int', 'default': 2100, 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
-        'time_step': {'type': 'int', 'default': 1, 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
+        GlossaryCore.YearEnd: {'type': 'int', 'default': 2100, 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
+        GlossaryCore.TimeStep: {'type': 'int', 'default': 1, 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_witness'},
         'productivity_start': {'type': 'float', 'default': 0.974422, 'user_level': 2},
         GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 355.9210491, 'user_level': 2},
@@ -383,20 +383,20 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             dgross_output)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), (GlossaryCore.CO2TaxesValue, 'CO2_tax'), dgross_output / 100.0)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), dgross_output / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), (GlossaryCore.CO2TaxesValue, 'CO2_tax'), dconsumption_pc / 100.0)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), dconsumption_pc / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint',), (GlossaryCore.CO2TaxesValue, 'CO2_tax'), - dconsumption_pc \
+            ('pc_consumption_constraint',), (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), - dconsumption_pc \
                                                                       / (ref_pc_consumption_constraint * 100))
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.CO2TaxesValue, 'CO2_tax'), doutput_net_of_d / 100.0)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), doutput_net_of_d / 100.0)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), (GlossaryCore.CO2TaxesValue, 'CO2_tax'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax),
             denergy_investment / scaling_factor_energy_investment * 1e3 / 100.0)  # Invest from T$ to G$
 
         # compute gradient for coupling variable population

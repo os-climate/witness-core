@@ -96,8 +96,8 @@ class ObjectivesTestCase(unittest.TestCase):
 
         ee.configure()
         ee.display_treeview_nodes()
-        self.inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        self.inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
                        f'{name}.{model_name}.Services.production_df': self.prod_service,
@@ -140,8 +140,8 @@ class ObjectivesTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
         
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
                        f'{name}.{model_name}.Services.production_df': self.prod_service,
@@ -187,8 +187,8 @@ class ObjectivesTestCase(unittest.TestCase):
         extra_data = self.extra_data.copy()
         extra_data['Industry.capital'] = 0 
         
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{name}.{model_name}.Agriculture.production_df': self.prod_agri,
                        f'{name}.{model_name}.Services.production_df': self.prod_service,
