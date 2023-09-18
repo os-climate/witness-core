@@ -73,7 +73,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
         self.values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-                            f'{self.name}.{GlossaryCore.EnergyPriceValue}': energy_mean_price}
+                            f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
 
         self.ee.load_study_from_input_dict(self.values_dict)
 
@@ -91,7 +91,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_welfare.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyPriceValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'],
                             outputs=[f'{self.name}.welfare_objective',
                                      f'{self.name}.min_utility_objective',
@@ -112,7 +112,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_last_utility.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyPriceValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'],
                             outputs=[f'{self.name}.welfare_objective',
                                      f'{self.name}.min_utility_objective',
@@ -138,7 +138,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
         values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-                       f'{self.name}.{GlossaryCore.EnergyPriceValue}': energy_mean_price}
+                       f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
@@ -146,7 +146,7 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_low_economy.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.{GlossaryCore.EnergyPriceValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}'],
                             outputs=[f'{self.name}.welfare_objective',
                                      f'{self.name}.min_utility_objective',

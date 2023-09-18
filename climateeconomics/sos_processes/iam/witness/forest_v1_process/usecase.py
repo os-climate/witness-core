@@ -97,7 +97,7 @@ class Study(StudyManager):
         forest_input[f"{self.study_name}.{self.forest_name}.{'initial_emissions'}"] = initial_emissions
         forest_input[f"{self.study_name}.{self.forest_name}.{'reforestation_cost_per_ha'}"] = reforestation_cost_per_ha
         forest_input[f"{self.study_name}.{'deforestation_surface'}"] = deforestation_surface_df
-        forest_input[f"{self.study_name}.{self.additional_ns}.{'forest_investment'}"] = self.forest_invest_df
+        forest_input[f"{self.study_name}.{'forest_investment'}"] = self.forest_invest_df
 
         setup_data_list.append(forest_input)
 
@@ -134,17 +134,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
-
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-
-    #     for graph in graph_list:
-    #         graph.to_plotly().show()
+    uc_cls.test()
