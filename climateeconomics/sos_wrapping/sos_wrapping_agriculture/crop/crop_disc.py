@@ -51,10 +51,10 @@ class CropDiscipline(ClimateEcoDiscipline):
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
     default_kg_to_m2 = {'red meat': 348,
                         'white meat': 14.5,
-                        'milk': 8.9,
-                        'eggs': 6.3,
-                        'rice and maize': 2.9,
-                        'potatoes': 0.9,
+                        'milk': 8.95,
+                        'eggs': 6.27,
+                        'rice and maize': 2.89,
+                        'potatoes': 0.88,
                         'fruits and vegetables': 0.8,
                         'other': 21.4,
                         }
@@ -65,8 +65,6 @@ class CropDiscipline(ClimateEcoDiscipline):
                           'rice and maize': 1150,
                           'potatoes': 670,
                           'fruits and vegetables': 624,
-                          'vegetables': 200
-                          # https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
                           }
 
     # Our World in Data (emissions per kg of food product)
@@ -165,8 +163,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                                         default_kg_to_kcal['milk'] * diet_df_default['milk'].values[0]/365
     white_meat_average_ca_daily_intake = default_kg_to_kcal[
                                              'white meat'] * diet_df_default['white meat'].values[0]/365
-    vegetables_and_carbs_average_ca_daily_intake =  diet_df_default['fruits and vegetables'].values[0]/365 * default_kg_to_kcal[
-        'vegetables'] + 0.56 * 2250  # carbs source: first line of https://www.cambridge.org/core/books/abs/evolving-human-nutrition/feed-the-world-with-carbohydrates/3848C6733E4D2FC315E14B7CA8C007D8
+    #kcal per kg 'vegetables': 200 https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
+    vegetables_and_carbs_average_ca_daily_intake =  diet_df_default['fruits and vegetables'].values[0]/365 * 200 + 0.56 * 2250  # carbs source: first line of https://www.cambridge.org/core/books/abs/evolving-human-nutrition/feed-the-world-with-carbohydrates/3848C6733E4D2FC315E14B7CA8C007D8
     default_red_meat_ca_per_day = pd.DataFrame({
         GlossaryCore.Years: default_years,
         'red_meat_calories_per_day': [red_meat_average_ca_daily_intake] * year_range})
