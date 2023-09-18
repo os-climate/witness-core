@@ -40,6 +40,7 @@ import numpy as np
 
 from .specials import Dlinf3, clip, switch, Delay3
 from .utils import requires
+from ...glossarycore import GlossaryCore
 
 
 class Pollution:

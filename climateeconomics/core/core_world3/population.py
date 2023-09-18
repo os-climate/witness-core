@@ -40,6 +40,7 @@ import numpy as np
 
 from .specials import Dlinf3, Smooth, clip, ramp
 from .utils import requires
+from ...glossarycore import GlossaryCore
 
 
 class Population:

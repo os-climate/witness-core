@@ -40,6 +40,7 @@ import numpy as np
 
 from .specials import Smooth, clip
 from .utils import requires
+from ...glossarycore import GlossaryCore
 
 
 class Capital:
