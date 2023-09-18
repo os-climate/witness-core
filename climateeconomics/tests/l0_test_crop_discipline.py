@@ -186,8 +186,8 @@ class CropTestCase(unittest.TestCase):
                                  'other': 3.44 * calibration,
                                  }
 
-        red_meat_percentage = np.linspace(600, 700, year_range)
-        white_meat_percentage = np.linspace(700, 600, year_range)
+        red_meat_percentage = np.linspace(77, 70, year_range)
+        white_meat_percentage = np.linspace(50, 40, year_range)
         vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
         self.red_meat_percentage = pd.DataFrame({
                             GlossaryCore.Years: years,

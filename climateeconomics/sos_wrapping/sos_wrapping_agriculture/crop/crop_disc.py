@@ -886,7 +886,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 elif key.startswith('total'):
                     pass
                 else:
-                    l_values = updated_diet_df[key].values / 365
+                    l_values = updated_diet_df[key].values / 365 * kg_to_kcal_dict[key]
                     new_series = InstanciatedSeries(
                         years, l_values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
 
@@ -897,8 +897,8 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
-            fake_serie = InstanciatedSeries(
-                years, surface_percentage_df[key].values.tolist() * 0, '', InstanciatedSeries.BAR_DISPLAY)
+            fake_serie = InstanciatedSeries(years, surface_percentage_df[key].values.tolist() * 0, '',
+                                            InstanciatedSeries.BAR_DISPLAY)
 
             new_chart.add_series(fake_serie)
 
