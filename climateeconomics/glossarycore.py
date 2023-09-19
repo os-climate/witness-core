@@ -140,6 +140,8 @@ class GlossaryCore:
     }
 
     EconomicsDetailDfValue = "economics_detail_df"
+    Productivity = "productivity"
+    ProductivityGrowthRate = "productivity_gr"
     EconomicsDetail_df = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
@@ -148,8 +150,8 @@ class GlossaryCore:
             Years: ("float", None, False),
             GrossOutput: ("float", None, False),  # T$
             OutputNetOfDamage: ("float", None, False),  # T$
-            "productivity": ("float", None, False),
-            "productivity_gr": ("float", None, False),
+            Productivity: ("float", None, False),
+            ProductivityGrowthRate: ("float", None, False),
             Consumption: ("float", None, False),  # T$
             PerCapitaConsumption: ("float", None, False),
             InvestmentsValue: ("float", None, False),  # T$
@@ -287,6 +289,59 @@ class GlossaryCore:
             Welfare: ("float", None, False),
         },
         "unit": "-",
+    }
+
+    SectorizedProductionDfValue = "production_df"
+    SectorizedProductionDf = {
+        "var_name": SectorizedProductionDfValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            GrossOutput: ("float", None, False),
+        },
+    }
+
+    SectorizedCapitalDfValue = "capital_df"
+    Capital = "capital"
+    UsableCapital = "usable_capital"
+    SectorizedCapitalDf = {
+        "var_name": SectorizedCapitalDfValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            Capital: ("float", None, False),
+            UsableCapital: ("float", None, False),
+        },
+    }
+
+    SectorizedDetailedCapitalDfValue = "detailed_capital_df"
+    Emax = "e_max"
+    EnergyEfficiency = "energy_efficiency"
+    SectorizedDetailedCapitalDf = {
+        "var_name": SectorizedDetailedCapitalDfValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            Capital: ("float", None, False),
+            UsableCapital: ("float", None, False),
+            Emax: ("float", None, False),
+            EnergyEfficiency: ("float", None, False),
+        },
+    }
+
+    SectorizedProductivityDfValue = "productivity_df"
+    SectorizedProductivityDf = {
+        "var_name": SectorizedCapitalDfValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            Productivity: ("float", None, False),
+            ProductivityGrowthRate: ("float", None, False),
+        },
     }
 
     @staticmethod
