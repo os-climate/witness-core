@@ -15,6 +15,8 @@ limitations under the License.
 """
 import numpy as np
 import pandas as pd
+from pathlib import Path
+from os.path import isfile, join
 from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.constraint_manager import compute_delta_constraint
@@ -26,6 +28,8 @@ class MacroEconomics():
     Economic pyworld3 that compute the evolution of capital, consumption, output...
     """
     PC_CONSUMPTION_CONSTRAINT = 'pc_consumption_constraint'
+    GDP_PERCENTAGE_PER_SECTOR_FILE = 'gdp_percentage_per_sector.csv'
+    DATA_FOLDER = 'data'
 
     def __init__(self, param):
         """
@@ -98,6 +102,7 @@ class MacroEconomics():
         self.ref_emax_enet_constraint = self.param['ref_emax_enet_constraint']
         self.usable_capital_ref = self.param['usable_capital_ref']
         self.invest_co2_tax_in_renawables = self.param['assumptions_dict']['invest_co2_tax_in_renewables']
+        self.sector_list = self.param[GlossaryCore.SectorsList['var_name']]
       
     def create_dataframe(self):
         """Create the dataframe and fill it with values at year_start"""
@@ -415,6 +420,51 @@ class MacroEconomics():
         self.economics_df = self.economics_df.drop(GC.GrossOutput, axis=1)
         self.economics_df = self.economics_df.merge(self.gross_output_in[[GC.Years, GC.GrossOutput]], on = GC.Years, how='left').set_index(self.economics_df.index)
 
+    def get_gdp_percentage_per_sector(self):
+        '''
+        Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
+        '''
+        global_data_dir = join(Path(__file__).parents[2], self.DATA_FOLDER)
+        gdp_percentage_per_sector_file = join(global_data_dir, self.GDP_PERCENTAGE_PER_SECTOR_FILE)
+        self.gdp_percentage_per_sector_df = None
+        if isfile(gdp_percentage_per_sector_file):
+             df = pd.read_csv(gdp_percentage_per_sector_file)
+             missing_sectors = [k for k in self.sector_list + [GlossaryCore.Years] if k not in df.keys()]
+             if len(missing_sectors) > 0:
+                 raise ValueError(f'Missing column(s) {missing_sectors} in file {gdp_percentage_per_sector_file}')
+             else:
+                self.gdp_percentage_per_sector_df = df[[GlossaryCore.Years] + self.sector_list]
+             # the year range for the study can differ from that stated in the csv file
+             start_year_csv = self.gdp_percentage_per_sector_df.iloc[0][GlossaryCore.Years]
+             if start_year_csv > self.year_start:
+                self.gdp_percentage_per_sector_df = pd.concat([[self.gdp_percentage_per_sector_df.iloc[0:1]] * (start_year_csv - self.year_start),
+                                                               self.gdp_percentage_per_sector_df]).reset_index(drop=True)
+                self.gdp_percentage_per_sector_df.iloc[0:(start_year_csv - self.year_start)][GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
+
+             elif start_year_csv < self.year_start:
+                self.gdp_percentage_per_sector_df = self.gdp_percentage_per_sector_df[self.gdp_percentage_per_sector_df[GlossaryCore.Years] > self.year_start - 1]
+
+             end_year_csv = self.gdp_percentage_per_sector_df.iloc[-1][GlossaryCore.Years]
+             if end_year_csv > self.year_end:
+                self.gdp_percentage_per_sector_df = self.gdp_percentage_per_sector_df[self.gdp_percentage_per_sector_df[GlossaryCore.Years] < self.year_end + 1]
+             elif end_year_csv < self.year_end:
+                self.gdp_percentage_per_sector_df = pd.concat([self.gdp_percentage_per_sector_df,
+                                                               [self.gdp_percentage_per_sector_df.iloc[-1:]] * (start_year_csv - self.year_start)]).reset_index(drop=True)
+                self.gdp_percentage_per_sector_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(end_year_csv, self.year_end)
+
+        else:
+            raise ValueError(f'Missing file {gdp_percentage_per_sector_file} that provides percentage of GDP per sector')
+
+    def compute_sector_gdp(self):
+        """
+        Computes the GDP net of damage per sector
+        """
+        # Source for percentage of GDP per sector: https://e-3d-dc1.capgemini.com/jira/browse/DC0154-21
+        self.get_gdp_percentage_per_sector()
+        self.sector_gdp_df = self.gdp_percentage_per_sector_df.copy()
+        self.sector_gdp_df[self.sector_list] = self.sector_gdp_df[self.sector_list].multiply(self.economics_df.reset_index(drop=True)[GC.OutputNetOfDamage], axis='index')
+
+
     def compute_output_growth(self, year: int):
         """
         Compute the output growth between year t and year t-1 
@@ -609,6 +659,7 @@ class MacroEconomics():
         self.economics_df = self.economics_df.replace(
             [np.inf, -np.inf], np.nan)
 
+        self.compute_sector_gdp()
         self.compute_comsumption_pc_constraint()
         self.compute_emax_enet_constraint()
         self.compute_delta_capital_objective()
@@ -621,7 +672,7 @@ class MacroEconomics():
 
         return self.economics_detail_df, self.economics_df, self.energy_investment, \
             self.energy_investment_wo_renewable, self.pc_consumption_constraint, self.workforce_df, \
-            self.capital_df, self.emax_enet_constraint
+            self.capital_df, self.emax_enet_constraint, self.sector_gdp_df
 
     """-------------------Gradient functions-------------------"""
 

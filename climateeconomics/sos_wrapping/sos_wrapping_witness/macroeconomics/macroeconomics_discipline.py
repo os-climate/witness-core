@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 from pathlib import Path
+import copy
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
 from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min
@@ -80,6 +82,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                 'namespace': 'ns_witness'},
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared',
                              'namespace': 'ns_witness', 'user_level': 2},
+        # sectorisation
+        GlossaryCore.SectorsList['var_name'] : GlossaryCore.SectorsList,
         # Lower and upper bounds
         'lo_capital': {'type': 'float', 'unit': 'T$', 'default': 1.0, 'user_level': 3},
         'lo_conso': {'type': 'float', 'unit': 'T$', 'default': 2.0, 'user_level': 3},
@@ -151,6 +155,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
+        dynamic_outputs = {}
+        sectorlist = None
         if self.get_data_in() is not None:
             if 'assumptions_dict' in self.get_data_in():
                 assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
@@ -167,7 +173,19 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                                'dataframe_edition_locked': False,
                                                                'namespace': 'ns_witness'}})
 
+            if GlossaryCore.SectorsList['var_name'] in self.get_data_in():
+                sectorlist = self.get_sosdisc_inputs(GlossaryCore.SectorsList['var_name'])
+
+        if sectorlist is not None:
+            sector_gdg_desc = copy.deepcopy(GlossaryCore.SectorGdpDf)  # deepcopy not to modify dataframe_descriptor in Glossary
+            for sector in sectorlist:
+                sector_gdg_desc['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
+            # make sure the namespaces references are good in case shared namespaces were reassociated
+            sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
+            dynamic_outputs.update({GlossaryCore.SectorGdpDf['var_name']: sector_gdg_desc})
+
         self.add_inputs(dynamic_inputs)
+        self.add_outputs(dynamic_outputs)
 
         self.update_default_with_years()
 
@@ -247,6 +265,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         working_age_population_df = param.pop('working_age_population_df')
         energy_capital_df = param['energy_capital']
         compute_gdp: bool = param['assumptions_dict']['compute_gdp']
+        sector_list = param[GlossaryCore.SectorsList['var_name']]
         macro_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
                         'energy_production': energy_production,
                         'scaling_factor_energy_production': param['scaling_factor_energy_production'],
@@ -259,7 +278,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, GlossaryCore.PopulationValue]],
                         'working_age_population_df': working_age_population_df[[GlossaryCore.Years, 'population_1570']],
                         'energy_capital_df': energy_capital_df,
-                        'compute_gdp': compute_gdp
+                        'compute_gdp': compute_gdp,
+                        GlossaryCore.SectorsList['var_name']: sector_list
                         }
 
         if not compute_gdp:
@@ -267,7 +287,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         # Model execution
         economics_detail_df, economics_df, energy_investment, energy_investment_wo_renewable, \
-            pc_consumption_constraint, workforce_df, capital_df, emax_enet_constraint = \
+            pc_consumption_constraint, workforce_df, capital_df, emax_enet_constraint, sector_gdp_df = \
             self.macro_model.compute(macro_inputs)
 
         # Store output data
@@ -275,6 +295,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.EconomicsDfValue: economics_df,
                        GlossaryCore.EnergyInvestmentsValue: energy_investment,
                        GlossaryCore.EnergyInvestmentsWoRenewableValue: energy_investment_wo_renewable,
+                       GlossaryCore.SectorGdpDf['var_name']: sector_gdp_df,
                        'pc_consumption_constraint': pc_consumption_constraint,
                        'workforce_df': workforce_df,
                        'delta_capital_objective': self.macro_model.delta_capital_objective,
@@ -292,7 +313,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     def compute_sos_jacobian(self):
         """
         Compute jacobian for each coupling variable
-        gradiant of coupling variable
+        gradient of coupling variable
 
         """
 
