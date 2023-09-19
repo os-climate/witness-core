@@ -141,7 +141,7 @@ class GlossaryCore:
                       'possible_values': SectorsPossibleValues,
                       'visibility': 'Shared',
                       'namespace': "ns_witness",
-                      # 'default': SectorsPossibleValues,
+                      'default': SectorsPossibleValues,
                       }
 
     # The number of columns depends dynamically on SectorsList
