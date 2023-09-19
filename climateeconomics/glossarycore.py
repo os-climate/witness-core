@@ -16,12 +16,14 @@ class GlossaryCore:
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
+    SectorGdpPart = "sector GDP part [M$]"
 
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
     DamageDfValue = "damage_df"
     EconomicsDfValue = "economics_df"
+    SectorGdpDfValue = 'sector_gdp_df'
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
     UtilityDfValue = "utility_df"
@@ -36,6 +38,11 @@ class GlossaryCore:
     ccs_list = "ccs_list"
 
     invest_mix = "invest_mix"
+    SectorService = 'service'
+    SectorAgriculture = 'agriculture'
+    SectorEnergy = 'energy'
+    SectorIndustry = 'industry'
+    SectorsPossibleValues = [SectorService, SectorAgriculture, SectorIndustry] #SectorEnergy,
 
     CarbonCycleDfValue = "carboncycle_df"
     CarbonCycleDf = {
@@ -125,6 +132,29 @@ class GlossaryCore:
     OutputNetOfDamage = "output_net_of_d"  # trillion $
     Consumption = "consumption"
     PerCapitaConsumption = "pc_consumption"
+
+    SectorsList = {'var_name': 'sectors_list',
+                      'type': 'list',
+                      'subtype': 'string',
+                      'unit': '-',
+                      'structuring': True,
+                      'possible_values': SectorsPossibleValues,
+                      'visibility': 'Shared',
+                      'namespace': "ns_witness",
+                      'default': SectorsPossibleValues,
+                      }
+
+    # The number of columns depends dynamically on SectorsList
+    SectorGdpDf = {
+        "var_name": SectorGdpDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+        },
+    }
     EconomicsDf = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",
