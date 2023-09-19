@@ -343,27 +343,31 @@ class Crop():
         vegetables_and_carbs_calories = self.vegetables_and_carbs_calories_per_day * 365
         milk_and_eggs_calories = self.milk_and_eggs_calories_per_day * 365
 
+        #Compute initial diet in kcal/day/person (diet df in kg/year/person)
+        diet_init_kcal = self.diet_df.copy()
+        diet_init_kcal = diet_init_kcal.mul(pd.Series(self.kg_to_kcal_dict) / 365, axis=1)
+        self.diet_init_kcal = diet_init_kcal
+
         list_variables = ['fruits and vegetables', 'potatoes', 'rice and maize', 'eggs', 'milk']
 
         for key in list_variables:
             # compute new vegetable diet in kg_food/person/year: add the removed_kcal/3 for each 3 category of vegetable
             if key == 'fruits and vegetables' or key == 'potatoes' or key == 'rice and maize':
                 # proportion of current key wrt to other
-                proportion = self.diet_df[key].values[0] / \
-                             (self.diet_df['fruits and vegetables'].values[0] + self.diet_df['potatoes'].values[0] +
-                              self.diet_df['rice and maize'].values[0])
+                proportion = diet_init_kcal[key].values[0] / \
+                             (diet_init_kcal['fruits and vegetables'].values[0] + diet_init_kcal['potatoes'].values[0] +
+                              diet_init_kcal['rice and maize'].values[0])
                 changed_diet_df[key] = vegetables_and_carbs_calories * proportion
             # eggs and milk have fixed value for now
             elif key == 'eggs' or key == 'milk':
-                proportion = self.diet_df[key].values[0] / \
-                             (self.diet_df['eggs'].values[0] + self.diet_df['milk'].values[0])
+                proportion = diet_init_kcal[key].values[0] / \
+                             (diet_init_kcal['eggs'].values[0] + diet_init_kcal['milk'].values[0])
+
                 changed_diet_df[key] = milk_and_eggs_calories * proportion
 
         for col in changed_diet_df:
             if col != GlossaryCore.Years:
                 changed_diet_df[col] = changed_diet_df[col]  / self.kg_to_kcal_dict[col]
-
-
 
         return changed_diet_df
 
@@ -806,6 +810,7 @@ class Crop():
         """
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
+        diet_df = self.diet_init_kcal
 
         kg_food_to_surface = self.kg_to_m2_dict
 
@@ -813,9 +818,9 @@ class Crop():
         l_years = len(self.years)
         grad_res = np.zeros((l_years, l_years))
         for veg in vegetables_column_names:
-            proportion = self.diet_df[veg].values[0] / (self.diet_df['fruits and vegetables'].values[0] +
-                                                        self.diet_df['potatoes'].values[0] +
-                                                        self.diet_df['rice and maize'].values[0])
+            proportion = diet_df[veg].values[0] / (diet_df['fruits and vegetables'].values[0] +
+                                                        diet_df['potatoes'].values[0] +
+                                                        diet_df['rice and maize'].values[0])
 
             grad_value = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
@@ -833,6 +838,7 @@ class Crop():
         """
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
+        diet_df = self.diet_init_kcal
 
         kg_food_to_surface = self.kg_to_m2_dict
 
@@ -840,8 +846,8 @@ class Crop():
         l_years = len(self.years)
         grad_res = np.zeros((l_years, l_years))
         for veg in eggs_milk_column_names:
-            proportion = self.diet_df[veg].values[0] / (self.diet_df['eggs'].values[0] +
-                                                        self.diet_df['milk'].values[0])
+            proportion = diet_df[veg].values[0] / (diet_df['eggs'].values[0] +
+                                                        diet_df['milk'].values[0])
 
             grad_value = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
@@ -909,11 +915,12 @@ class Crop():
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
         kg_food_to_surface = self.kg_to_m2_dict
+        diet_df = self.diet_init_kcal
         # red to white meat value influences red meat, white meat, and vegetable surface
 
-        proportion = self.diet_df[veg].values[0] / (self.diet_df['fruits and vegetables'].values[0] +
-                                                    self.diet_df['potatoes'].values[0] +
-                                                    self.diet_df['rice and maize'].values[0])
+        proportion = diet_df[veg].values[0] / (diet_df['fruits and vegetables'].values[0] +
+                                                    diet_df['potatoes'].values[0] +
+                                                    diet_df['rice and maize'].values[0])
 
         white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 
@@ -931,10 +938,11 @@ class Crop():
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
         kg_food_to_surface = self.kg_to_m2_dict
+        diet_df = self.diet_init_kcal
         # red to white meat value influences red meat, white meat, and vegetable surface
 
-        proportion = self.diet_df[veg].values[0] / (self.diet_df['milk'].values[0] +
-                                                    self.diet_df['eggs'].values[0])
+        proportion = diet_df[veg].values[0] / (diet_df['milk'].values[0] +
+                                                    diet_df['eggs'].values[0])
 
         white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
 

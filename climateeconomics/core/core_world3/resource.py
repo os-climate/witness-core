@@ -41,6 +41,7 @@ import numpy as np
 
 from .specials import clip
 from .utils import requires
+from ...glossarycore import GlossaryCore
 
 
 class Resource:

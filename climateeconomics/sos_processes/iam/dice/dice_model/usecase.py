@@ -91,7 +91,7 @@ class Study(StudyManager):
         dice_input[f"{self.study_name}.{'Macroeconomics'}.{'saving_rate'}"] = 0.2
 
         dice_input[f"{self.study_name}.{'Temperature_change'}.{'init_temp_ocean'}"] = .00687
-        dice_input[f"{self.study_name}.{'Temperature_change'}.{'init_GlossaryCore.TempAtmo}"] = 0.85
+        dice_input[f"{self.study_name}.{'Temperature_change'}.{'init_temp_atmo'}"] = 0.85
         dice_input[f"{self.study_name}.{'Temperature_change'}.{'eq_temp_impact'}"] = 3.1
         dice_input[f"{self.study_name}.{'Temperature_change'}.{'init_forcing_nonco'}"] = 0.5
         dice_input[f"{self.study_name}.{'Temperature_change'}.{'hundred_forcing_nonco'}"] = 1.0

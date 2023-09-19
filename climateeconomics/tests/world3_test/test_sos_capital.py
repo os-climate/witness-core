@@ -2,6 +2,7 @@ from climateeconomics.core.core_world3.capital import Capital
 
 import unittest
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 

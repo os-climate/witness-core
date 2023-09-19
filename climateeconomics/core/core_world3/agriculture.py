@@ -41,6 +41,7 @@ import pandas as pd
 
 from .specials import Smooth, clip
 from .utils import requires
+from ...glossarycore import GlossaryCore
 
 
 class Agriculture:

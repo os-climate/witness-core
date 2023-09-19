@@ -45,7 +45,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
-        population = np.array(np.linspace(7800, 7800, year_range))
+        population = np.array(np.linspace(7800, 7900, year_range))
         self.population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years

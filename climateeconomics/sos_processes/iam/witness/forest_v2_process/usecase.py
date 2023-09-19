@@ -58,7 +58,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='.Agriculture.Forest', execution_engine=None):
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, name='Agriculture.Forest', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.forest_name = name
@@ -191,17 +191,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
-
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-
-    #     for graph in graph_list:
-    #         graph.to_plotly().show()
+    uc_cls.test()
