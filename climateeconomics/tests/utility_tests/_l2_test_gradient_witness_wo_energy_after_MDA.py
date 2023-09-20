@@ -133,7 +133,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
             0]
 
         input_full_names = [f'{self.name}.{GlossaryCore.EnergyProductionValue}', f'{self.name}.{GlossaryCore.DamageDfValue}',
-                            f'{self.name}.share_energy_investment', f'{self.name}.total_investment_share_of_gdp']
+                            f'{self.name}.share_energy_investment', f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}']
         output_full_names = [f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                              f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}']
 

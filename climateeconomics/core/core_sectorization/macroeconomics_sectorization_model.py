@@ -62,13 +62,13 @@ class MacroeconomicsModel():
             production_df_sector = self.inputs[f'{sector}.{GlossaryCore.ProductionDfValue}']
             capital_to_sum.append(capital_df_sector[GlossaryCore.Capital].values)
             u_capital_to_sum.append(capital_df_sector[GlossaryCore.UsableCapital].values)
-            output_to_sum.append(production_df_sector[GlossaryCore.Output].values)
+            output_to_sum.append(production_df_sector[GlossaryCore.GrossOutput].values)
             net_output_to_sum.append(production_df_sector[GlossaryCore.OutputNetOfDamage].values)
 
-        self.sum_capital = np.sum(capital_to_sum, axis=1)
-        self.sum_u_capital = np.sum(u_capital_to_sum, axis=1)
-        self.sum_gross_output = np.sum(output_to_sum, axis=1)
-        self.sum_net_output = np.sum(net_output_to_sum, axis=1)
+        self.sum_capital = np.sum(capital_to_sum, axis=0)
+        self.sum_u_capital = np.sum(u_capital_to_sum, axis=0)
+        self.sum_gross_output = np.sum(output_to_sum, axis=0)
+        self.sum_net_output = np.sum(net_output_to_sum, axis=0)
 
         # output growth
         output_growth = np.zeros_like(self.years_range)
@@ -77,7 +77,7 @@ class MacroeconomicsModel():
             output = max(1e-6, self.sum_net_output[year])
             output_growth[year] = ((output_a -output) / output)
 
-        output_growth[-1] = output_growth[-2] #For last year put the previous year value to avoid a 0
+        output_growth[-1] = output_growth[-2]  # For last year put the previous year value to avoid a 0
 
         economics_detail_df = pd.DataFrame({GlossaryCore.Years: self.years_range,
                                             GlossaryCore.Capital: self.sum_capital,
@@ -102,6 +102,7 @@ class MacroeconomicsModel():
     def compute(self, inputs):
         """Compute all models for year range"""
         self.inputs = inputs
+        self.configure_parameters(inputs)
         self.compute_economics()
         self.compute_investment()
 

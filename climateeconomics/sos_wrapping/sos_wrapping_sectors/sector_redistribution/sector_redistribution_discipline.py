@@ -1,5 +1,3 @@
-from copy import copy
-
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_redistribution.sector_redistribution_model import \
     SectorRedistributionModel

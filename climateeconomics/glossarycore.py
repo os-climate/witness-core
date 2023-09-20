@@ -352,6 +352,7 @@ class GlossaryCore:
     ProductionDfValue = "production_df"
     ProductionDf = {
         "var_name": ProductionDfValue,
+        "namespace": "ns_witness",
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -366,6 +367,7 @@ class GlossaryCore:
     UsableCapital = "usable_capital"
     SectorizedCapitalDf = {
         "var_name": CapitalDfValue,
+        "namespace": "ns_witness",
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {

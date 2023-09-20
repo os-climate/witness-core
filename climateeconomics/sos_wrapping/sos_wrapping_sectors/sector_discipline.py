@@ -63,8 +63,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
-        GlossaryCore.ProductionDfValue: GlossaryCore.ProductionDf,
-        GlossaryCore.CapitalDfValue: GlossaryCore.SectorizedCapitalDf,
         GlossaryCore.DetailedCapitalDfValue: GlossaryCore.DetailedCapitalDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint': {'type': 'array'},
@@ -85,8 +83,15 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-',
                                                                   'dataframe_descriptor': {},
                                                                   'dynamic_dataframe_columns': True}
-                self.add_outputs(dynamic_outputs)
+
                 self.add_inputs(dynamic_inputs)
+
+        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(
+            GlossaryCore.ProductionDf)
+        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.CapitalDfValue}"] = GlossaryCore.get_dynamic_variable(
+            GlossaryCore.SectorizedCapitalDf)
+
+        self.add_outputs(dynamic_outputs)
 
     def init_execution(self):
         param = self.get_sosdisc_inputs(in_dict=True)
