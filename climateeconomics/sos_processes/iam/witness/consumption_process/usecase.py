@@ -76,7 +76,7 @@ class Study(StudyManager):
         self.nb_per = round(self.year_end - self.year_start + 1)
         one = np.ones(self.nb_per)
         share_sectors_invest = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: one * 0.4522,
-                                             GlossaryCore.SectorIndustry: one * 6.8998, 'Services': one * 19.1818})
+                                             GlossaryCore.SectorIndustry: one * 6.8998, GlossaryCore.SectorServices: one * 19.1818})
 
         # Energy
         brut_net = 1 / 1.45
@@ -97,7 +97,7 @@ class Study(StudyManager):
         indusshare = 21.7
         serviceshare = 50.9
         workforce_share = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: agrishare,
-                                        GlossaryCore.SectorIndustry: indusshare, 'Services': serviceshare})
+                                        GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: serviceshare})
 
         # Damage
         damage_df = pd.DataFrame(
@@ -124,7 +124,7 @@ class Study(StudyManager):
         # Sectors invest
         base_dummy_data = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: np.ones(self.nb_per), GlossaryCore.SectorIndustry: np.ones(self.nb_per),
-             'Services': np.ones(self.nb_per)})
+             GlossaryCore.SectorServices: np.ones(self.nb_per)})
 
         # economisc df to init mda
         # Test With a GDP that grows at 2%

@@ -84,7 +84,7 @@ class Study(StudyManager):
             # Energy
             hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
             agri_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy[GlossaryCore.SectorAgriculture]})
-            services_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy['Services']})
+            services_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy[GlossaryCore.SectorServices]})
             indus_energy = pd.DataFrame({GlossaryCore.Years: hist_energy[GlossaryCore.Years], GlossaryCore.TotalProductionValue: hist_energy[GlossaryCore.SectorIndustry]})
             # Workforce
             hist_workforce = pd.read_csv(join(data_dir, 'hist_workforce_sect.csv'))
@@ -96,7 +96,7 @@ class Study(StudyManager):
         else:
             one = np.ones(self.nb_per)
             share_sectors_invest =  pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: one * 0.4522,
-                                            GlossaryCore.SectorIndustry: one * 6.8998, 'Services': one * 19.1818})
+                                            GlossaryCore.SectorIndustry: one * 6.8998, GlossaryCore.SectorServices: one * 19.1818})
             # Energy
             brut_net = 1 / 1.45
             energy_outlook = pd.DataFrame({
@@ -119,7 +119,7 @@ class Study(StudyManager):
             workforce[0] = 3389.556200
             workforce[1] = 3450.067707
             workforce_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: workforce * 0.274,
-                                         'Services': workforce * 0.509, GlossaryCore.SectorIndustry: workforce * 0.217})
+                                         GlossaryCore.SectorServices: workforce * 0.509, GlossaryCore.SectorIndustry: workforce * 0.217})
 
         # Damage
         damage_df = pd.DataFrame(
@@ -130,18 +130,17 @@ class Study(StudyManager):
         #Sectors invest
         base_dummy_data = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: np.ones(self.nb_per), GlossaryCore.SectorIndustry: np.ones(self.nb_per),
-             'Services': np.ones(self.nb_per)})
+             GlossaryCore.SectorServices: np.ones(self.nb_per)})
 
         # Sectors invest
         total_investment_share_of_gdp = pd.DataFrame(
             {GlossaryCore.Years: years,
-             'share_investment': 27.* np.ones(self.nb_per),})
+             'share_investment': 27. * np.ones(self.nb_per),})
 
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         sect_input[f"{self.study_name}.{GlossaryCore.WorkforceDfValue}"] = workforce_df
-        sect_input[f"{self.study_name}.{'sectors_investment_share'}"] = share_sectors_invest
         sect_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = total_investment_share_of_gdp
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
@@ -167,5 +166,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-
     uc_cls.test()
