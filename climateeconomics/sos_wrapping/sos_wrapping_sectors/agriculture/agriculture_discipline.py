@@ -20,6 +20,7 @@ from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import
 class AgricultureDiscipline(SectorDiscipline):
     "Agriculture sector discpline"
     sector_name = GlossaryCore.SectorAgriculture
+
     # ontology information
     _ontology_data = {
         'label': 'Agriculture sector WITNESS Model',
@@ -34,8 +35,6 @@ class AgricultureDiscipline(SectorDiscipline):
         'version': '',
     }
     _maturity = 'Research'
-
-    prod_cap_unit = 'T$'
 
     # update default values:
     DESC_IN = SectorDiscipline.DESC_IN

@@ -96,7 +96,7 @@ class Study(ClimateEconomicsStudyManager):
         total_invest = asarray([27.0] * nb_per)
         total_invest = DataFrame(
             {GlossaryCore.Years: years, 'share_investment': total_invest})
-        witness_input[f"{self.study_name}.{'total_investment_share_of_gdp'}"] = total_invest
+        witness_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = total_invest
         share_energy_investment = DataFrame(
             {GlossaryCore.Years: years, 'share_investment': self.share_energy_investment_array}, index=years)
         witness_input[f"{self.study_name}.{'share_energy_investment'}"] = share_energy_investment

@@ -1,4 +1,4 @@
-from copy import deepcopy
+from copy import deepcopy, copy
 
 
 class GlossaryCore:
@@ -50,6 +50,18 @@ class GlossaryCore:
         SectorAgriculture,
         SectorIndustry,
     ]  # SectorEnergy,
+    SectorListValue = "sector_list"
+
+    SectorList = {
+        "var_name": SectorListValue,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+        "default": SectorsPossibleValues,
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "editable": False,
+        "structuring": True,
+    }
 
     CarbonCycleDfValue = "carboncycle_df"
     CarbonCycleDf = {
@@ -58,7 +70,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": "ns_witness",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             "atmo_conc": ("float", None, False),
             "lower_ocean_conc": ("float", None, False),
             "shallow_ocean_conc": ("float", None, False),
@@ -75,7 +87,7 @@ class GlossaryCore:
         "namespace": "ns_energy_mix",
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             TotalCO2Emissions: ("float", None, False),
             "cumulative_total_energy_supply": ("float", None, False),
         },
@@ -120,7 +132,7 @@ class GlossaryCore:
         "namespace": "ns_witness",
         "unit": "G$",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             Damages: ("float", None, False),
             DamageFractionOutput: ("float", None, False),
             BaseCarbonPrice: ("float", None, False),
@@ -137,9 +149,7 @@ class GlossaryCore:
         "user_level": 2,
     }
 
-    Output = (
-        "output"  # todo in the future: delete this key, it corresponds to gross output
-    )
+    Output = "output"  # todo in the future: delete this key, it corresponds to gross output
     GrossOutput = "gross_output"  # trillion $
     NetOutput = "net_output"  # todo in the future: delete this key, it corresponds to gross output net of damage,
     OutputNetOfDamage = "output_net_of_d"  # trillion $
@@ -166,7 +176,7 @@ class GlossaryCore:
         "namespace": "ns_witness",
         "unit": "G$",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
         },
     }
     EconomicsDf = {
@@ -176,22 +186,24 @@ class GlossaryCore:
         "namespace": "ns_witness",
         "unit": "-",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             GrossOutput: ("float", None, False),
             OutputNetOfDamage: ("float", None, False),
             PerCapitaConsumption: ("float", None, False),
         },
     }
 
+
     EconomicsDetailDfValue = "economics_detail_df"
     Productivity = "productivity"
     ProductivityGrowthRate = "productivity_gr"
+    OutputGrowth = "output_growth"
     EconomicsDetail_df = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
         "unit": "-",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             GrossOutput: ("float", None, False),  # T$
             OutputNetOfDamage: ("float", None, False),  # T$
             Productivity: ("float", None, False),
@@ -203,7 +215,7 @@ class GlossaryCore:
             EnergyInvestmentsWoTaxValue: ("float", None, False),  # T$
             NonEnergyInvestmentsValue: ("float", None, False),  # T$
             EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
-            "output_growth": ("float", None, False),
+            OutputGrowth: ("float", None, False),
         },
     }
     PopulationValue = "population"
@@ -214,7 +226,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": "ns_witness",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             PopulationValue: ("float", None, False),
         },
     }
@@ -228,7 +240,7 @@ class GlossaryCore:
         "namespace": "ns_energy_mix",
         "unit": "$/MWh",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             EnergyPriceValue: ("float", None, True),
         },
     }
@@ -242,7 +254,7 @@ class GlossaryCore:
         "unit": "PWh",
         "namespace": "ns_energy_mix",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             TotalProductionValue: ("float", None, False),
         },
     }
@@ -252,7 +264,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "100G$",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             EnergyInvestmentsValue: ("float", [0.0, 1e30], True),
         },
         "dataframe_edition_locked": False,
@@ -266,7 +278,7 @@ class GlossaryCore:
             "type": "dataframe",
             "unit": "T$",
             "dataframe_descriptor": {
-                Years: ("float", None, False),
+                Years: ("int", [1900, 2100], False),
                 EnergyInvestmentsWoTaxValue: ("float", [0.0, 1e30], True),
             },
             "dataframe_edition_locked": False,
@@ -278,7 +290,7 @@ class GlossaryCore:
         "var_name": EnergyInvestmentsWoRenewableValue,
         "type": "dataframe",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             EnergyInvestmentsWoRenewableValue: ("float", [0.0, 1e30], True),
         },
         "unit": "100G$",
@@ -289,7 +301,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "%",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             ShareNonEnergyInvestmentsValue: ("float", [0.0, 100.0], True),
         },
         "dataframe_edition_locked": False,
@@ -308,7 +320,7 @@ class GlossaryCore:
         "namespace": "ns_witness",
         "unit": "°C",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             ExoGForcing: ("float", None, False),
             Forcing: ("float", None, False),
             TempAtmo: ("float", None, False),
@@ -326,7 +338,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": "ns_witness",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             UtilityDiscountRate: ("float", None, False),
             PeriodUtilityPerCapita: ("float", None, False),
             DiscountedUtility: ("float", None, False),
@@ -336,12 +348,12 @@ class GlossaryCore:
     }
 
     ProductionDfValue = "production_df"
-    SectorizedProductionDf = {
+    ProductionDf = {
         "var_name": ProductionDfValue,
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             GrossOutput: ("float", None, False),
             OutputNetOfDamage: ("float", None, False),
         },
@@ -355,7 +367,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             Capital: ("float", None, False),
             UsableCapital: ("float", None, False),
         },
@@ -364,12 +376,12 @@ class GlossaryCore:
     DetailedCapitalDfValue = "detailed_capital_df"
     Emax = "e_max"
     EnergyEfficiency = "energy_efficiency"
-    SectorizedDetailedCapitalDf = {
+    DetailedCapitalDf = {
         "var_name": DetailedCapitalDfValue,
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             Capital: ("float", None, False),
             UsableCapital: ("float", None, False),
             Emax: ("float", None, False),
@@ -377,19 +389,47 @@ class GlossaryCore:
         },
     }
 
-    SectorizedProductivityDfValue = "productivity_df"
-    SectorizedProductivityDf = {
+    SectorizedEconomicsDf = {  #todo: miss per capita consumption !
+        "var_name": EconomicsDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "unit": "T$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
+            Capital: ("float", None, False),
+        },
+    }
+
+    SectorizedEconomicsDetailDf = {  # todo: miss per capita consumption !
+        "var_name": EconomicsDfValue,
+        "type": "dataframe",
+        "unit": "-",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
+            Capital: ("float", None, False),
+            UsableCapital: ("float", None, False),
+            OutputGrowth: ("float", None, False),
+        },
+    }
+
+    ProductivityDfValue = "productivity_df"
+    ProductivityDf = {
         "var_name": CapitalDfValue,
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
-            Years: ("float", None, False),
+            Years: ("int", [1900, 2100], False),
             Productivity: ("float", None, False),
             ProductivityGrowthRate: ("float", None, False),
         },
     }
 
-    SectorInvestmentDfValue = "sectors_investment_df"
+    SectorInvestmentDfValue = "sectors_investment_df"  #todo :useless, delete ?
     SectorInvestmentDf = {
         "type": "dataframe",
         "unit": "T$",
@@ -397,6 +437,52 @@ class GlossaryCore:
         "namespace": "ns_witness",
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
+    }
+
+    RedistributionInvestmentsDfValue = 'redistribution_investments_df'
+    RedistributionInvestmentsDf = {
+        "var_name": RedistributionInvestmentsDfValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "dataframe_descriptor": {},
+        "dynamic_dataframe_columns": True,
+    }
+
+    RedistributionEnergyProductionDfValue = 'redistribution_energy_production_df'
+    RedistributionEnergyProductionDf = {
+        "var_name": RedistributionEnergyProductionDfValue,
+        "type": "dataframe",
+        "unit": "PWh",
+        "dataframe_descriptor": {},
+        "dynamic_dataframe_columns": True,
+    }
+
+    ShareSectorInvestmentDfValue = "share_sector_investment_df"
+    ShareInvestment = "Share of total investments [%]"
+    ShareSectorInvestmentDf = {
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Amount of the total investment to the specific sector",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            ShareInvestment: ("float", [0.0, 100.0], False),
+        },
+    }
+
+    ShareSectorEnergyDfValue = "share_sector_energy_df"
+    ShareSectorEnergy = "Share of total energy production [%]"
+    ShareSectorEnergyDf = {
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Amount of the total energy production attributed to the specific sector",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            ShareSectorEnergy: ("float", [0.0, 100.0], False),
+        },
     }
 
     FractionDamageToProductivityValue = "frac_damage_prod"
@@ -420,6 +506,37 @@ class GlossaryCore:
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
     }
+
+    InvestmentDfValue = "investment_df"
+    InvestmentDf = {
+        "var_name": InvestmentDfValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            InvestmentsValue: ("float", None, False),
+        },
+    }
+    InvestmentShareGDPValue = "total_investment_share_of_gdp"
+    InvestmentShareGDP = {
+        "var_name": InvestmentShareGDPValue,
+        "type": "dataframe",
+        "unit": "%",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            "share_investment": ("float", None, True),
+        },
+        "dataframe_edition_locked": False,
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+    }
+
+    @staticmethod
+    def get_dynamic_variable(variable: dict):
+        """to be used with dynamic inputs/outputs"""
+        return copy(variable)
 
     @staticmethod
     def delete_namespace(variable: dict):

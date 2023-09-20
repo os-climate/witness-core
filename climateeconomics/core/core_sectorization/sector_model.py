@@ -93,8 +93,8 @@ class SectorModel():
         self.years = np.arange(self.year_start, self.year_end + 1)
         default_index = self.years
         self.capital_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectorizedCapitalDf['dataframe_descriptor'].keys())
-        self.production_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectorizedProductionDf['dataframe_descriptor'].keys())
-        self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectorizedProductivityDf['dataframe_descriptor'].keys())
+        self.production_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductionDf['dataframe_descriptor'].keys())
+        self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductivityDf['dataframe_descriptor'].keys())
         self.growth_rate_df = pd.DataFrame(index=default_index, columns=[GlossaryCore.Years,'net_output_growth_rate'])
         self.production_df[GlossaryCore.Years] = self.years
         self.capital_df[GlossaryCore.Years] = self.years

@@ -86,7 +86,7 @@ class ConsumptionModel:
         self.energy_price_ref = self.initial_raw_energy_price
         self.population_df = self.inputs[GlossaryCore.PopulationDfValue]
         self.population_df.index = self.population_df[GlossaryCore.Years].values
-        self.total_investment_share_of_gdp = self.inputs['total_investment_share_of_gdp']
+        self.total_investment_share_of_gdp = self.inputs[GlossaryCore.InvestmentShareGDPValue]
         self.total_investment_share_of_gdp.index = self.total_investment_share_of_gdp[GlossaryCore.Years].values
         self.residential_energy = self.inputs['residential_energy']
         self.residential_energy.index = self.residential_energy[GlossaryCore.Years].values

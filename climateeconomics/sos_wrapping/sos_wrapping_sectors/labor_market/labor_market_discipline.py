@@ -45,10 +45,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-               'sector_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                               'default': LaborMarketModel.SECTORS_LIST,
-                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                               'namespace': 'ns_witness', 'editable': False, 'structuring': True},
+               GlossaryCore.SectorListValue: GlossaryCore.SectorList,
                # Employment rate param
                'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
                'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
@@ -59,7 +56,8 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                                              },
               }
     DESC_OUT = {
-        GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'], 'unit': GlossaryCore.WorkforceDf['unit'], 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+        GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'],
+                                        'unit': GlossaryCore.WorkforceDf['unit'], 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                          'namespace': 'ns_witness'},
         'employment_df': {'type': 'dataframe', 'unit': '-'}
     }
@@ -72,8 +70,8 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
         dynamic_inputs = {}
         if self.get_data_in() is not None:
-            if 'sector_list' in self.get_data_in():
-                sector_list = self.get_sosdisc_inputs('sector_list')
+            if GlossaryCore.SectorListValue in self.get_data_in():
+                sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
                 df_descriptor = {GlossaryCore.Years: ('float', None, False)}
                 df_descriptor.update({col: ('float', None, True)
                                  for col in sector_list})
@@ -107,7 +105,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         gradient of coupling variable to compute:
         net_output and invest wrt sector net_output 
         """
-        sector_list = self.get_sosdisc_inputs('sector_list')
+        sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
         # Gradient wrt working age population
         grad_workforcetotal = self.labor_model.compute_dworkforcetotal_dworkagepop()
         self.set_partial_derivative_for_other_types((GlossaryCore.WorkforceDfValue, 'workforce'),
@@ -143,7 +141,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
         workforce_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.WorkforceDfValue))
         employment_df = deepcopy(self.get_sosdisc_outputs('employment_df'))
-        sector_list = self.get_sosdisc_inputs('sector_list')
+        sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
 
         # Overload default value with chart filter
         if chart_filters is not None:

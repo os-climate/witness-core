@@ -142,7 +142,7 @@ class Study(StudyManager):
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
-        cons_input[f"{self.study_name}.{'total_investment_share_of_gdp'}"] = share_invest_df
+        cons_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = share_invest_df
         cons_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
         cons_input[f"{self.study_name}.{'residential_energy'}"] = residential_energy_df
         cons_input[f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price

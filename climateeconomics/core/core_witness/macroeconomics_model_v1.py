@@ -123,7 +123,7 @@ class MacroEconomics():
         economics_df.loc[param[GlossaryCore.YearStart],
                          GlossaryCore.ProductivityGrowthRate] = self.productivity_gr_start
         economics_df.loc[param[GlossaryCore.YearStart],
-                         'output_growth'] = self.init_output_growth
+                         GlossaryCore.OutputGrowth] = self.init_output_growth
 #         economics_df['saving_rate'] = self.saving_rate
         self.economics_df = economics_df
         self.economics_df = self.economics_df.replace(
@@ -480,7 +480,7 @@ class MacroEconomics():
             gross_output_ter = max(1e-6, gross_output_ter)
             output_growth = ((gross_output_ter -
                               gross_output_ter_a) / gross_output_ter) / self.time_step
-            self.economics_df.loc[year, 'output_growth'] = output_growth
+            self.economics_df.loc[year, GlossaryCore.OutputGrowth] = output_growth
             return output_growth
 
     def compute_output_net_of_damage(self, year: int):

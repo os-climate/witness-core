@@ -19,6 +19,7 @@ from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import
 
 class IndustrialDiscipline(SectorDiscipline):
     "Industrial sector discpline"
+    sector_name = GlossaryCore.SectorIndustry
 
     # ontology information
     _ontology_data = {
@@ -34,9 +35,6 @@ class IndustrialDiscipline(SectorDiscipline):
         'version': '',
     }
     _maturity = 'Research'
-    
-    sector_name = GlossaryCore.SectorIndustry
-    prod_cap_unit = 'T$'
 
     # update default values:
     DESC_IN = SectorDiscipline.DESC_IN

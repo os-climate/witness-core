@@ -70,7 +70,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
                                                   GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
-                                                  'output_growth': ('float', None, False),}
+                                                  GlossaryCore.OutputGrowth: ('float', None, False),}
                          },
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2, 'unit': '-'},
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'}

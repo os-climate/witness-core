@@ -62,7 +62,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
                                                   GlossaryCore.Capital: ('float', None, False),
                                                   GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
-                                                  'output_growth': ('float', None, False),
+                                                  GlossaryCore.OutputGrowth: ('float', None, False),
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   GlossaryCore.PerCapitaConsumption: ('float', None, False),
                                                   GlossaryCore.OutputNetOfDamage: ('float', None, False),

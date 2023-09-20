@@ -65,7 +65,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                                                   GlossaryCore.Capital: ('float', None, False),
                                                   GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
-                                                  'output_growth': ('float', None, False),
+                                                  GlossaryCore.OutputGrowth: ('float', None, False),
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   'pc_consumption': ('float', None, False),
                                                   'output_net_of_d': ('float', None, False),

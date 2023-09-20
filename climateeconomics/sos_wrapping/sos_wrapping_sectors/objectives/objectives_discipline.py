@@ -54,10 +54,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-               'sector_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
-                               'default': MacroeconomicsModel.SECTORS_LIST,
-                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                               'namespace': 'ns_witness', 'editable': False, 'structuring': True},
+               GlossaryCore.SectorListValue: GlossaryCore.SectorList,
                 'historical_gdp': {'type': 'dataframe', 'unit': 'T$',
                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                            GlossaryCore.SectorAgriculture: ('float', None, True),
@@ -118,8 +115,8 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         dynamic_inputs = {}
         dynamic_outputs = {}
 
-        if 'sector_list' in self.get_data_in():
-            sector_list = self.get_sosdisc_inputs('sector_list')
+        if GlossaryCore.SectorListValue in self.get_data_in():
+            sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.{GlossaryCore.DetailedCapitalDfValue}'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
@@ -171,8 +168,8 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         outputs_dict = {'error_pib_total': np.array([error_pib_total]), 
                         'year_min_energy_eff': year_min}
         
-        if 'sector_list' in self.get_sosdisc_inputs().keys():
-            sector_list = self.get_sosdisc_inputs('sector_list')
+        if GlossaryCore.SectorListValue in self.get_sosdisc_inputs().keys():
+            sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
             for sector in sector_list:
                 outputs_dict[f'{sector}.gdp_error'] = np.array([sectors_gdp_errors[sector]])
                 outputs_dict[f'{sector}.energy_eff_error'] = np.array([energy_eff_errors[sector]])
@@ -203,7 +200,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         economics_df = deepcopy(self.get_sosdisc_inputs(GlossaryCore.EconomicsDfValue))
-        sector_list = self.get_sosdisc_inputs('sector_list')
+        sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
         historical_gdp = self.get_sosdisc_inputs('historical_gdp')
         historical_capital = self.get_sosdisc_inputs('historical_capital')
         year_min_energy_eff = self.get_sosdisc_outputs('year_min_energy_eff')

@@ -83,7 +83,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                                   GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
-                                                  'output_growth': ('float', None, False), }
+                                                  GlossaryCore.OutputGrowth: ('float', None, False), }
                          },
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3, 'unit': '-',

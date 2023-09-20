@@ -1283,9 +1283,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'Output growth rate' in chart_list:
 
-            to_plot = ['output_growth']
+            to_plot = [GlossaryCore.OutputGrowth]
 
-            legend = {'output_growth': 'output growth rate from WITNESS'}
+            legend = {GlossaryCore.OutputGrowth: 'output growth rate from WITNESS'}
 
             years = list(economics_detail_df.index)
 
@@ -1293,7 +1293,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             year_end = years[len(years) - 1]
 
             min_value, max_value = self.get_greataxisrange(
-                economics_detail_df['output_growth'])
+                economics_detail_df[GlossaryCore.OutputGrowth])
 
             chart_name = 'Output growth rate over the years'
 

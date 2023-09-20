@@ -12,6 +12,8 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 class SectorDiscipline(ClimateEcoDiscipline):
     """Generic sector discipline"""
     sector_name = 'UndefinedSector'  # to overwrite
+    prod_cap_unit = 'T$' # to overwrite if necessary
+
     DESC_IN = {
         GlossaryCore.DamageDfValue: {'type': 'dataframe',
                                      'unit': GlossaryCore.DamageDf['unit'],
@@ -60,10 +62,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                   'unit': '-', 'namespace': 'ns_macro', 'structuring': True}
     }
     DESC_OUT = {
-        GlossaryCore.SectorizedProductivityDfValue: GlossaryCore.SectorizedProductivityDf,
-        GlossaryCore.ProductionDfValue: GlossaryCore.SectorizedProductionDf,
+        GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
+        GlossaryCore.ProductionDfValue: GlossaryCore.ProductionDf,
         GlossaryCore.CapitalDfValue: GlossaryCore.SectorizedCapitalDf,
-        GlossaryCore.DetailedCapitalDfValue: GlossaryCore.SectorizedDetailedCapitalDf,
+        GlossaryCore.DetailedCapitalDfValue: GlossaryCore.DetailedCapitalDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint': {'type': 'array'},
     }
@@ -103,17 +105,17 @@ class SectorDiscipline(ClimateEcoDiscipline):
         workforce_df = param[GlossaryCore.WorkforceDfValue]
         prod_function_fitting = param['prod_function_fitting']
 
-        services_inputs = {
+        model_inputs = {
             GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
             GlossaryCore.EnergyProductionValue: energy_production,
             GlossaryCore.SectorInvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
         production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.model.compute(
-            services_inputs)
+            model_inputs)
 
         # Store output data
-        dict_values = {GlossaryCore.SectorizedProductivityDfValue: productivity_df,
+        dict_values = {GlossaryCore.ProductivityDfValue: productivity_df,
                        GlossaryCore.ProductionDfValue: production_df[[GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]],
                        GlossaryCore.CapitalDfValue: capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital]],
                        GlossaryCore.DetailedCapitalDfValue: capital_df,
@@ -232,7 +234,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
         production_df = self.get_sosdisc_outputs(GlossaryCore.ProductionDfValue)
         capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
-        productivity_df = self.get_sosdisc_outputs(GlossaryCore.SectorizedProductivityDfValue)
+        productivity_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
         workforce_df = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
         capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')

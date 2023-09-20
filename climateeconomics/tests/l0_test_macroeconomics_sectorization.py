@@ -45,7 +45,10 @@ class MacroeconomicsTestCase(unittest.TestCase):
         indus_invest = np.asarray([6.8998] * nb_per)
         agri_invest = np.asarray([0.4522] * nb_per)
         services_invest = np.asarray([19.1818] * nb_per)
-        share_sector_invest = DataFrame({GlossaryCore.Years: self.years, GlossaryCore.SectorIndustry: indus_invest, GlossaryCore.SectorAgriculture: agri_invest, GlossaryCore.SectorServices: services_invest})
+        share_sector_invest = DataFrame({GlossaryCore.Years: self.years,
+                                         GlossaryCore.SectorIndustry: indus_invest,
+                                         GlossaryCore.SectorAgriculture: agri_invest,
+                                         GlossaryCore.SectorServices: services_invest})
         self.share_sector_invest = share_sector_invest
 
         # Test With a GDP and capital that grows at 2%
@@ -96,11 +99,12 @@ class MacroeconomicsTestCase(unittest.TestCase):
                        f'{name}.total_investment_share_of_gdp': self.total_invest,
                        f'{name}.sectors_investment_share': self.share_sector_invest,
                        f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
-                       f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
+                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}':self.cap_agri_df,
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
                        f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
+                       f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
                        f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
-                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}':self.cap_agri_df,
+
                        }
 
         ee.load_study_from_input_dict(inputs_dict)

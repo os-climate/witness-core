@@ -142,7 +142,7 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         sect_input[f"{self.study_name}.{GlossaryCore.WorkforceDfValue}"] = workforce_df
         sect_input[f"{self.study_name}.{'sectors_investment_share'}"] = share_sectors_invest
-        sect_input[f"{self.study_name}.{'total_investment_share_of_gdp'}"] = total_investment_share_of_gdp
+        sect_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = total_investment_share_of_gdp
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy

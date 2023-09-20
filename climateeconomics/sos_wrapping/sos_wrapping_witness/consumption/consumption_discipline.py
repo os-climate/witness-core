@@ -61,7 +61,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         'discounted_utility_ref': {'type': 'float', 'unit': '-', 'default': 1700, 'visibility': 'Shared', 'namespace': 'ns_ref', 'user_level': 2},
         'lo_conso': {'type': 'float', 'unit': 'T$', 'default': 2.0, 'user_level': 3},
         'lo_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 0.01, 'user_level': 3},
-        'total_investment_share_of_gdp': {'type': 'dataframe', 'unit': '%', 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+        GlossaryCore.InvestmentShareGDPValue: {'type': 'dataframe', 'unit': '%', 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                                                      'share_investment': ('float', None, True)}, 'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'residential_energy_conso_ref' : {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_ref', 'unit': 'MWh', 'default': 21},
         'residential_energy' : {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_energy_mix', 'unit': 'MWh',
@@ -94,7 +94,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
                 {GlossaryCore.Years: years, 'share_investment': np.ones(len(years)) * 27.0}, index=years)
 
             self.set_dynamic_default_values(
-                {'total_investment_share_of_gdp': total_investment_share_of_gdp})
+                {GlossaryCore.InvestmentShareGDPValue: total_investment_share_of_gdp})
 
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
@@ -111,14 +111,14 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         energy_mean_price = inp_dict[GlossaryCore.EnergyMeanPriceValue]
         population_df = inp_dict.pop(GlossaryCore.PopulationDfValue)
         total_investment_share_of_gdp = inp_dict.pop(
-            'total_investment_share_of_gdp')
+            GlossaryCore.InvestmentShareGDPValue)
         residential_energy = inp_dict.pop(
             'residential_energy')
 
         utility_inputs = {GlossaryCore.EconomicsDfValue: economics_df[[GlossaryCore.Years, GlossaryCore.OutputNetOfDamage]],
                           GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, GlossaryCore.PopulationValue]],
                           GlossaryCore.EnergyMeanPriceValue: energy_mean_price,
-                          'total_investment_share_of_gdp': total_investment_share_of_gdp,
+                          GlossaryCore.InvestmentShareGDPValue: total_investment_share_of_gdp,
                           'residential_energy': residential_energy
                         }
         utility_df = self.conso_m.compute(utility_inputs)
@@ -194,14 +194,14 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaConsumption), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),  d_pc_consumption_d_output_net_of_d)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaConsumption), ('total_investment_share_of_gdp', 'share_investment'),  d_pc_consumption_d_share_investment)
+            (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaConsumption), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'),  d_pc_consumption_d_share_investment)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaConsumption), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  d_pc_consumption_d_population)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PeriodUtilityPerCapita), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),  d_period_utility_pc_d_output_net_of_d)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.PeriodUtilityPerCapita), ('total_investment_share_of_gdp', 'share_investment'),  d_period_utility_pc_d_share_investment)
+            (GlossaryCore.UtilityDfValue, GlossaryCore.PeriodUtilityPerCapita), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'),  d_period_utility_pc_d_share_investment)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PeriodUtilityPerCapita), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),  d_period_utility_d_energy_price)
         self.set_partial_derivative_for_other_types(
@@ -212,7 +212,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtility), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),  d_discounted_utility_d_output_net_of_d)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtility), ('total_investment_share_of_gdp', 'share_investment'),  d_discounted_utility_d_share_investment)
+            (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtility), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'),  d_discounted_utility_d_share_investment)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.DiscountedUtility), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),  d_discounted_utility_d_energy_price)
         self.set_partial_derivative_for_other_types(
@@ -223,7 +223,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.Welfare), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),  d_welfare_d_output_net_of_d)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.UtilityDfValue, GlossaryCore.Welfare), ('total_investment_share_of_gdp', 'share_investment'),  d_welfare_d_share_investment)
+            (GlossaryCore.UtilityDfValue, GlossaryCore.Welfare), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'),  d_welfare_d_share_investment)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.Welfare), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  d_welfare_d_population)
         self.set_partial_derivative_for_other_types(
@@ -235,7 +235,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('welfare_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_output_net_of_d))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), ('total_investment_share_of_gdp', 'share_investment'), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_share_investment))
+                ('welfare_objective',), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_share_investment))
             self.set_partial_derivative_for_other_types(
                 ('welfare_objective',), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), d_obj_d_period_utility_pc.dot(d_period_utility_d_energy_price))
             self.set_partial_derivative_for_other_types(
@@ -247,7 +247,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             self.set_partial_derivative_for_other_types(
                 ('welfare_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), np.dot(d_obj_d_welfare, d_welfare_d_output_net_of_d))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), ('total_investment_share_of_gdp', 'share_investment'), np.dot(d_obj_d_welfare, d_welfare_d_share_investment))
+                ('welfare_objective',), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'), np.dot(d_obj_d_welfare, d_welfare_d_share_investment))
             self.set_partial_derivative_for_other_types(
                 ('welfare_objective',), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), np.dot(d_obj_d_welfare, d_welfare_d_energy_price))
             self.set_partial_derivative_for_other_types(
@@ -264,7 +264,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
             ('negative_welfare_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_output_net_of_d))
         self.set_partial_derivative_for_other_types(
-            ('negative_welfare_objective',), ('total_investment_share_of_gdp', 'share_investment'),
+            ('negative_welfare_objective',), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_share_investment))
         self.set_partial_derivative_for_other_types(
             ('negative_welfare_objective',), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
@@ -281,7 +281,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('min_utility_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_output_net_of_d))
         self.set_partial_derivative_for_other_types(
-            ('min_utility_objective',), ('total_investment_share_of_gdp', 'share_investment'), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_share_investment))
+            ('min_utility_objective',), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_share_investment))
         self.set_partial_derivative_for_other_types(
             ('min_utility_objective',), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), np.dot(d_obj_d_discounted_utility, d_discounted_utility_d_energy_price))
         self.set_partial_derivative_for_other_types(

@@ -130,7 +130,7 @@ class MacroEconomics():
         economics_df.loc[param[GlossaryCore.YearStart],
                          GlossaryCore.ProductivityGrowthRate] = self.productivity_gr_start
         economics_df.loc[param[GlossaryCore.YearStart],
-                         'output_growth'] = self.init_output_growth
+                         GlossaryCore.OutputGrowth] = self.init_output_growth
         #         economics_df['saving_rate'] = self.saving_rate
         self.economics_df = economics_df
         self.economics_df = self.economics_df.replace(
@@ -186,7 +186,7 @@ class MacroEconomics():
         self.share_energy_investment = pd.Series(
             self.inputs['share_energy_investment']['share_investment'].values / 100.0, index=self.years_range)
         self.total_share_investment = pd.Series(
-            self.inputs['total_investment_share_of_gdp']['share_investment'].values / 100.0, index=self.years_range)
+            self.inputs[GlossaryCore.InvestmentShareGDPValue]['share_investment'].values / 100.0, index=self.years_range)
         self.share_n_energy_investment = self.total_share_investment - \
                                          self.share_energy_investment
         # Population dataframes
@@ -465,7 +465,7 @@ class MacroEconomics():
             gross_output_ter = max(1e-6, gross_output_ter)
             output_growth = ((gross_output_ter -
                               gross_output_ter_a) / gross_output_ter) / self.time_step
-            self.economics_df.loc[year, 'output_growth'] = output_growth
+            self.economics_df.loc[year, GlossaryCore.OutputGrowth] = output_growth
             return output_growth
 
     def compute_output_net_of_damage(self, year):
@@ -2201,7 +2201,7 @@ class MacroEconomics():
         self.global_investment_constraint['share_investment'] = self.global_investment_constraint[
                                                                     'share_investment'].values / 100.0 + \
                                                                 self.share_n_energy_investment.values - \
-                                                                self.inputs['total_investment_share_of_gdp'][
+                                                                self.inputs[GlossaryCore.InvestmentShareGDPValue][
                                                                     'share_investment'].values / 100.0
 
         return self.economics_df.fillna(0.0), self.workforce_df, self.energy_investment.fillna(0.0), self.global_investment_constraint, \
