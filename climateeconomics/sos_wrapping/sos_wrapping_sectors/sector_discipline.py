@@ -116,16 +116,19 @@ class SectorDiscipline(ClimateEcoDiscipline):
             GlossaryCore.SectorInvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
-        production_df, capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.model.compute(
+        production_df, detailed_capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.model.compute(
             model_inputs)
 
         # Store output data
         dict_values = {GlossaryCore.ProductivityDfValue: productivity_df,
-                       GlossaryCore.ProductionDfValue: production_df[[GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]],
-                       GlossaryCore.CapitalDfValue: capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital]],
-                       GlossaryCore.DetailedCapitalDfValue: capital_df,
+                       GlossaryCore.DetailedCapitalDfValue: detailed_capital_df,
                        'growth_rate_df': growth_rate_df,
-                       'emax_enet_constraint': emax_enet_constraint}
+                       'emax_enet_constraint': emax_enet_constraint,
+                       f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[
+                           [GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]],
+                       f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[
+                           [GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital]],
+                       }
 
         if prod_function_fitting:
             dict_values['longterm_energy_efficiency'] = lt_energy_eff
@@ -237,8 +240,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        production_df = self.get_sosdisc_outputs(GlossaryCore.ProductionDfValue)
-        capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
+        production_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.ProductionDfValue}")
+        detailed_capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
         productivity_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
         workforce_df = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
@@ -272,9 +275,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.UsableCapital in chart_list:
-            first_serie = capital_df[GlossaryCore.Capital]
-            second_serie = capital_df[GlossaryCore.UsableCapital]
-            years = list(capital_df.index)
+            first_serie = detailed_capital_df[GlossaryCore.Capital]
+            second_serie = detailed_capital_df[GlossaryCore.UsableCapital]
+            years = list(detailed_capital_df.index)
 
             chart_name = 'Productive capital stock and usable capital for production'
 
@@ -300,8 +303,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.Capital in chart_list:
-            serie = capital_df[GlossaryCore.Capital]
-            years = list(capital_df.index)
+            serie = detailed_capital_df[GlossaryCore.Capital]
+            years = list(detailed_capital_df.index)
 
             chart_name = f'{self.sector_name} capital stock per year'
 
@@ -350,7 +353,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.EnergyEfficiency in chart_list:
 
             to_plot = [GlossaryCore.EnergyEfficiency]
-            years = list(capital_df.index)
+            years = list(detailed_capital_df.index)
             chart_name = 'Capital energy efficiency over the years'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital energy efficiency [-]',
@@ -358,7 +361,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
             for key in to_plot:
                 visible_line = True
-                ordonate_data = list(capital_df[key])
+                ordonate_data = list(detailed_capital_df[key])
                 new_series = InstanciatedSeries(
                     years, ordonate_data, key, 'lines', visible_line)
                 new_chart.series.append(new_series)
@@ -374,7 +377,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             total_production = energy_production[GlossaryCore.TotalProductionValue] * \
                                scaling_factor_energy_production
 
-            years = list(capital_df.index)
+            years = list(detailed_capital_df.index)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -382,7 +385,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             max_values = {}
             min_values = {}
             min_values[GlossaryCore.Emax], max_values[GlossaryCore.Emax] = self.get_greataxisrange(
-                capital_df[to_plot])
+                detailed_capital_df[to_plot])
             min_values['energy'], max_values['energy'] = self.get_greataxisrange(
                 total_production)
 
@@ -396,7 +399,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                                  [min_value, max_value], chart_name)
             visible_line = True
 
-            ordonate_data = list(capital_df[to_plot])
+            ordonate_data = list(detailed_capital_df[to_plot])
             ordonate_data_enet = list(total_production)
 
             new_series = InstanciatedSeries(
