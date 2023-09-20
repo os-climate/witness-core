@@ -23,7 +23,7 @@ class GlossaryCore:
     CO2TaxesValue = "CO2_taxes"
     DamageDfValue = "damage_df"
     EconomicsDfValue = "economics_df"
-    SectorGdpDfValue = 'sector_gdp_df'
+    SectorGdpDfValue = "sector_gdp_df"
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
     UtilityDfValue = "utility_df"
@@ -38,11 +38,15 @@ class GlossaryCore:
     ccs_list = "ccs_list"
 
     invest_mix = "invest_mix"
-    SectorService = 'service'
-    SectorAgriculture = 'agriculture'
-    SectorEnergy = 'energy'
-    SectorIndustry = 'industry'
-    SectorsPossibleValues = [SectorService, SectorAgriculture, SectorIndustry] #SectorEnergy,
+    SectorService = "service"
+    SectorAgriculture = "agriculture"
+    SectorEnergy = "energy"
+    SectorIndustry = "industry"
+    SectorsPossibleValues = [
+        SectorService,
+        SectorAgriculture,
+        SectorIndustry,
+    ]  # SectorEnergy,
 
     CarbonCycleDfValue = "carboncycle_df"
     CarbonCycleDf = {
@@ -101,6 +105,8 @@ class GlossaryCore:
         },
     }
 
+    Alpha = "alpha"
+
     Damages = "damages"
     DamageFractionOutput = "damage_frac_output"
     BaseCarbonPrice = "base_carbon_price"
@@ -133,16 +139,17 @@ class GlossaryCore:
     Consumption = "consumption"
     PerCapitaConsumption = "pc_consumption"
 
-    SectorsList = {'var_name': 'sectors_list',
-                      'type': 'list',
-                      'subtype': 'string',
-                      'unit': '-',
-                      'structuring': True,
-                      'possible_values': SectorsPossibleValues,
-                      'visibility': 'Shared',
-                      'namespace': "ns_witness",
-                      'default': SectorsPossibleValues,
-                      }
+    SectorsList = {
+        "var_name": "sectors_list",
+        "type": "list",
+        "subtype": "string",
+        "unit": "-",
+        "structuring": True,
+        "possible_values": SectorsPossibleValues,
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "default": SectorsPossibleValues,
+    }
 
     # The number of columns depends dynamically on SectorsList
     SectorGdpDf = {
@@ -329,6 +336,7 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("float", None, False),
             GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
         },
     }
 
@@ -372,6 +380,37 @@ class GlossaryCore:
             Productivity: ("float", None, False),
             ProductivityGrowthRate: ("float", None, False),
         },
+    }
+
+    SectorInvestmentDfValue = "sectors_investment_df"
+    SectorInvestmentDf = {
+        "type": "dataframe",
+        "unit": "T$",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {},
+        "dynamic_dataframe_columns": True,
+    }
+
+    FractionDamageToProductivity = {
+        "var_name": "frac_damage_prod",
+        "type": "float",
+        "default": 0.3,
+        "user_level": 2,
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+    }
+
+    WorkforceDfValue = "workforce_df"
+    WorkforceDf = {
+        "var_name": WorkforceDfValue,
+        "type": "dataframe",
+        "unit": "millions of people",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {},
+        "dynamic_dataframe_columns": True,
     }
 
     @staticmethod

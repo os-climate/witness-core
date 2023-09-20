@@ -126,8 +126,9 @@ class IndustrialDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
+            pass
 
     def test_execute_forfitting(self):
 
