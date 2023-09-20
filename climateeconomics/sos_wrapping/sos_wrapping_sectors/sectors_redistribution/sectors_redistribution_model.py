@@ -13,20 +13,19 @@ class SectorRedistributionModel:
         """distrubute total energy production between sectors"""
         total_energy_production: pd.DataFrame = self.inputs[GlossaryCore.EnergyProductionValue]
         total_energy_production_values = total_energy_production[GlossaryCore.TotalProductionValue].values
-        all_sectors_energy_df = {}
+        all_sectors_energy_df = {GlossaryCore.Years: total_energy_production[GlossaryCore.Years]}
         sectors_energy = {}
         for sector in self.sectors:
             sector_energy_values = self.inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'][
                                            GlossaryCore.ShareSectorEnergy].values /100. * total_energy_production_values
             sector_energy_df = pd.DataFrame(
                 {GlossaryCore.Years: total_energy_production[GlossaryCore.Years].values,
-                 GlossaryCore.InvestmentsValue: sector_energy_values}
+                 GlossaryCore.TotalProductionValue: sector_energy_values}
             )
 
             sectors_energy[sector] = sector_energy_df
             all_sectors_energy_df[sector] = sector_energy_values
 
-        all_sectors_energy_df[GlossaryCore.Years] = total_energy_production[GlossaryCore.Years]
         all_sectors_energy_df = pd.DataFrame(all_sectors_energy_df)
 
         return sectors_energy, all_sectors_energy_df

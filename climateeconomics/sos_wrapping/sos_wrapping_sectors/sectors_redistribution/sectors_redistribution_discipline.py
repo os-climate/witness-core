@@ -1,5 +1,6 @@
+import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_redistribution.sector_redistribution_model import \
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution.sectors_redistribution_model import \
     SectorRedistributionModel
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -7,7 +8,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     InstanciatedSeries
 
 
-class SectorRedistributionDiscipline(SoSWrapp):
+class SectorsRedistributionDiscipline(SoSWrapp):
     """Discipline redistributing energy production and global investment into sectors"""
 
     DESC_IN = {
@@ -60,7 +61,46 @@ class SectorRedistributionDiscipline(SoSWrapp):
         self.store_sos_outputs_values(outputs)
 
     def compute_sos_jacobian(self):
-        pass
+        """compute gradients"""
+        inputs = self.get_sosdisc_inputs()
+
+        sectors_list = inputs[GlossaryCore.SectorListValue]
+        total_energy_production = inputs[GlossaryCore.EnergyProductionValue][GlossaryCore.TotalProductionValue].values
+        total_invests = inputs[GlossaryCore.InvestmentDfValue][GlossaryCore.InvestmentsValue].values
+
+        for sector in sectors_list:
+            sector_share_energy = inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'][GlossaryCore.ShareSectorEnergy].values
+            self.set_partial_derivative_for_other_types(
+                (f'{sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),
+                (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+                np.diag(sector_share_energy/ 100.)
+            )
+
+            sector_share_invests = inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][
+                GlossaryCore.ShareInvestment].values
+            self.set_partial_derivative_for_other_types(
+                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
+                (GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
+                np.diag(sector_share_invests/ 100.)
+            )
+
+            self.set_partial_derivative_for_other_types(
+                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
+                (GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
+                np.diag(sector_share_invests / 100.)
+            )
+
+            self.set_partial_derivative_for_other_types(
+                (f'{sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),
+                (f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
+                np.diag(total_energy_production / 100.)
+            )
+            
+            self.set_partial_derivative_for_other_types(
+                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
+                (f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}', GlossaryCore.ShareInvestment),
+                np.diag(total_invests / 100.)
+            )
 
     def get_chart_filter_list(self):
         chart_filters = []
@@ -161,5 +201,4 @@ class SectorRedistributionDiscipline(SoSWrapp):
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
-
 

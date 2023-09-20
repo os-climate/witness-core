@@ -22,7 +22,7 @@ import numpy as np
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
-class SectorRedistributionDisciplineTest(unittest.TestCase):
+class SectorsRedistributionDisciplineTest(unittest.TestCase):
 
     def setUp(self):
         """Initialize third data needed for testing"""
@@ -68,7 +68,7 @@ class SectorRedistributionDisciplineTest(unittest.TestCase):
     def test(self):
         """Check discipline setup and run"""
         name = 'Test'
-        model_name = 'sector_redistribution.SectorRedistributionDiscipline'
+        model_name = 'sectors_redistribution.SectorsRedistributionDiscipline'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness': f'{name}',
@@ -78,7 +78,7 @@ class SectorRedistributionDisciplineTest(unittest.TestCase):
                    'ns_resource': f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_redistribution.sector_redistribution_discipline.SectorRedistributionDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution.sectors_redistribution_discipline.SectorsRedistributionDiscipline'
         builder = ee.factory.get_builder_from_module(model_name, mod_path)
 
         ee.factory.set_builders_to_coupling_builder(builder)
