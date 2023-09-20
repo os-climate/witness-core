@@ -18,7 +18,9 @@ class GlossaryCore:
     InvestValue = "invest"
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
-    SectorGdpPart = "sector GDP part [M$]"
+
+    SectorGdpPart = "Part of the GDP per sector [G$]"
+    ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
 
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
