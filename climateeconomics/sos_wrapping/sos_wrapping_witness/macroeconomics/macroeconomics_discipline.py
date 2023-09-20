@@ -29,6 +29,7 @@ from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.constraint_manager import compute_ddelta_constraint
 from climateeconomics.glossarycore import GlossaryCore
+from energy_asset_portfolio.models.asset_mix.asset_mix_disc import AssetMixDiscipline
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -809,13 +810,24 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['output of damage', 'gross output and gross output bis',
+        chart_list = ['output of damage',
+                      'gross output and gross output bis',
                       GlossaryCore.EnergyInvestmentsValue,
-                      GlossaryCore.InvestmentsValue, GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.Consumption,
-                      'Output growth rate', 'energy supply',
-                      'usable capital',  # 'energy to sustain capital', # TODO: wip on post-pro
-                      GlossaryCore.Capital, 'employment_rate', 'workforce',
-                      GlossaryCore.Productivity, 'energy efficiency', GlossaryCore.Emax]
+                      GlossaryCore.InvestmentsValue,
+                      GlossaryCore.EnergyInvestmentsWoTaxValue,
+                      GlossaryCore.Consumption,
+                      'Output growth rate',
+                      'energy supply',
+                      'usable capital',
+                      # 'energy to sustain capital', # TODO: wip on post-pro
+                      GlossaryCore.Capital,
+                      'employment_rate',
+                      'workforce',
+                      GlossaryCore.Productivity,
+                      'energy efficiency',
+                      GlossaryCore.Emax,
+                      GlossaryCore.SectorGdpPart,
+                      ]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -838,6 +850,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             self.get_sosdisc_inputs(['co2_invest_limit', 'capital_utilisation_ratio']))
         workforce_df = deepcopy(
             self.get_sosdisc_outputs(GlossaryCore.WorkforceDfValue))
+        sector_gdp_df = deepcopy(
+            self.get_sosdisc_outputs(GlossaryCore.SectorGdpDf['var_name']))
+        economics_df = deepcopy(
+            self.get_sosdisc_outputs(GlossaryCore.EconomicsDf['var_name']))
+        sectors_list = deepcopy(
+            self.get_sosdisc_inputs(GlossaryCore.SectorsList['var_name']))
 
         if 'output of damage' in chart_list:
 
@@ -1311,6 +1329,51 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     years, ordonate_data, legend[key], 'lines', visible_line)
 
                 new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+
+
+        if GlossaryCore.SectorGdpPart in chart_list:
+            to_plot = sectors_list
+            legend = {sector: sector for sector in sectors_list}
+            # Graph with distribution per sector in absolute value
+            legend[GlossaryCore.OutputNetOfDamage] = 'Total GDP net of damage'
+
+            years = list(sector_gdp_df[GlossaryCore.Years])
+
+            chart_name = 'Breakdown of GDP per sector [G$]'
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorGdpPart,
+                                                 chart_name=chart_name, stacked_bar=True)
+
+            for key in to_plot:
+                visible_line = True
+
+                new_series = InstanciatedSeries(
+                    years, list(sector_gdp_df[key]), legend[key], InstanciatedSeries.BAR_DISPLAY, visible_line)
+
+                new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(economics_df[GlossaryCore.OutputNetOfDamage]),
+                legend[GlossaryCore.OutputNetOfDamage],
+                'lines', True)
+
+            new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+
+            # graph in percentage of GDP
+            chart_name = 'Breakdown of GDP per sector [%]'
+            total_gdp = economics_df[GlossaryCore.OutputNetOfDamage].values
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, "Contribution [%]",
+                                                 chart_name=GlossaryCore.ChartSectorGDPPercentage, stacked_bar=True)
+
+            for sector in sectors_list:
+                sector_gdp_part = sector_gdp_df[sector] / total_gdp * 100.
+                sector_gdp_part = np.nan_to_num(sector_gdp_part, nan=0.)
+                serie = AssetMixDiscipline.create_new_series(sector_gdp_df[GlossaryCore.Years], sector_gdp_part, sector, 'bar')
+                new_chart.series.append(serie)
 
             instanciated_charts.append(new_chart)
 

@@ -462,7 +462,7 @@ class MacroEconomics():
         # Source for percentage of GDP per sector: https://e-3d-dc1.capgemini.com/jira/browse/DC0154-21
         self.get_gdp_percentage_per_sector()
         self.sector_gdp_df = self.gdp_percentage_per_sector_df.copy()
-        self.sector_gdp_df[self.sector_list] = self.sector_gdp_df[self.sector_list].multiply(self.economics_df.reset_index(drop=True)[GC.OutputNetOfDamage], axis='index')
+        self.sector_gdp_df[self.sector_list] = self.sector_gdp_df[self.sector_list].multiply(self.economics_df.reset_index(drop=True)[GC.OutputNetOfDamage], axis='index') / 100.
 
 
     def compute_output_growth(self, year: int):

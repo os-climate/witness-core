@@ -119,7 +119,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             energy_capital.append(energy_capital[year - 1] * 1.02)
         self.energy_capital = pd.DataFrame({GlossaryCore.Years: self.years, 'energy_capital': energy_capital})
-        self.sectors_list = [GlossaryCore.SectorService, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
+        self.sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
 
     def analytic_grad_entry(self):
         return [
