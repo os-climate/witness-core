@@ -30,7 +30,7 @@ class ProcessBuilder(BaseProcessBuilder):
     def get_builders(self):
 
         ns_scatter = self.ee.study_name
-        ns_agriculture = 'Agriculture'
+        ns_agriculture = GlossaryCore.SectorAgriculture
         ns_forest = 'Forest'
         ns_dict = {'ns_witness': ns_scatter,
                    'ns_forest': f'{ns_scatter}.{ns_agriculture}.{ns_forest}',

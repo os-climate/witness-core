@@ -72,7 +72,7 @@ class Study(StudyManager):
         dice_input[f"{self.study_name}.{'Damage'}.{'tp_a3'}"] = 6.081
         dice_input[f"{self.study_name}.{'Damage'}.{'tp_a4'}"] = 6.754
         dice_input[f"{self.study_name}.{'damage_to_productivity'}"] = False
-        dice_input[f"{self.study_name}.{'frac_damage_prod'}"] = 0.30
+        dice_input[f"{self.study_name}.{GlossaryCore.FractionDamageToProductivityValue}"] = 0.30
 
         dice_input[f"{self.study_name}.{'Macroeconomics'}.{'productivity_start'}"] = 5.115
         dice_input[f"{self.study_name}.{'Macroeconomics'}.{'capital_start'}"] = 223.0
@@ -126,13 +126,13 @@ class Study(StudyManager):
                             'saving_rate': data,
                             GlossaryCore.GrossOutput: data,
                             GlossaryCore.OutputNetOfDamage: data,
-                            'net_output': data,
+                            GlossaryCore.NetOutput: data,
                             GlossaryCore.PopulationValue: data,
-                            'productivity': data,
-                            'productivity_gr': data,
+                            GlossaryCore.Productivity: data,
+                            GlossaryCore.ProductivityGrowthRate: data,
                             GlossaryCore.Consumption: data,
                             GlossaryCore.PerCapitaConsumption: data,
-                            'capital': data,
+                            GlossaryCore.Capital: data,
                             GlossaryCore.InvestmentsValue: data,
                             'interest_rate': data},
                            index=arange(self.year_start, self.year_end + 1, self.time_step))

@@ -39,7 +39,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         'damage_to_productivity': {'type': 'bool', 'default': True,
                                    'visibility': 'Shared',
                                    'unit': '-', 'namespace': 'ns_witness'},
-        GlossaryCore.FractionDamageToProductivity['var_name']: GlossaryCore.FractionDamageToProductivity,
+        GlossaryCore.FractionDamageToProductivityValue: GlossaryCore.FractionDamageToProductivity,
         GlossaryCore.SectorInvestmentDfValue: {'type': 'dataframe', 'unit': 'T$',
                                   'visibility': 'Shared',
                                   'namespace': 'ns_witness', 'dataframe_descriptor': {},
@@ -61,9 +61,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         GlossaryCore.SectorizedProductivityDfValue: GlossaryCore.SectorizedProductivityDf,
-        GlossaryCore.SectorizedProductionDfValue: GlossaryCore.SectorizedProductionDf,
-        GlossaryCore.SectorizedCapitalDfValue: GlossaryCore.SectorizedCapitalDf,
-        GlossaryCore.SectorizedDetailedCapitalDfValue: GlossaryCore.SectorizedDetailedCapitalDf,
+        GlossaryCore.ProductionDfValue: GlossaryCore.SectorizedProductionDf,
+        GlossaryCore.CapitalDfValue: GlossaryCore.SectorizedCapitalDf,
+        GlossaryCore.DetailedCapitalDfValue: GlossaryCore.SectorizedDetailedCapitalDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint': {'type': 'array'},
     }
@@ -114,9 +114,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
         # Store output data
         dict_values = {GlossaryCore.SectorizedProductivityDfValue: productivity_df,
-                       GlossaryCore.SectorizedProductionDfValue: production_df[[GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]],
-                       GlossaryCore.SectorizedCapitalDfValue: capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital]],
-                       GlossaryCore.SectorizedDetailedCapitalDfValue: capital_df,
+                       GlossaryCore.ProductionDfValue: production_df[[GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]],
+                       GlossaryCore.CapitalDfValue: capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital]],
+                       GlossaryCore.DetailedCapitalDfValue: capital_df,
                        'growth_rate_df': growth_rate_df,
                        'emax_enet_constraint': emax_enet_constraint}
 
@@ -150,14 +150,14 @@ class SectorDiscipline(ClimateEcoDiscipline):
         doutput_denergy = self.model.doutput_denergy(dcapitalu_denergy)
         dnetoutput_denergy = self.model.dnetoutput(doutput_denergy)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.SectorizedProductionDfValue, GlossaryCore.GrossOutput), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.ProductionDfValue, GlossaryCore.GrossOutput), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * doutput_denergy)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.SectorizedProductionDfValue, GlossaryCore.OutputNetOfDamage),
+            (GlossaryCore.ProductionDfValue, GlossaryCore.OutputNetOfDamage),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * dnetoutput_denergy)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.SectorizedCapitalDfValue, GlossaryCore.UsableCapital), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (GlossaryCore.CapitalDfValue, GlossaryCore.UsableCapital), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * dcapitalu_denergy)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
@@ -168,9 +168,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dnetoutput_dworkforce = self.model.dnetoutput(
             doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.SectorizedProductionDfValue, GlossaryCore.GrossOutput), (GlossaryCore.WorkforceDfValue, self.sector_name), doutput_dworkforce)
+            (GlossaryCore.ProductionDfValue, GlossaryCore.GrossOutput), (GlossaryCore.WorkforceDfValue, self.sector_name), doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.SectorizedProductionDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.WorkforceDfValue, self.sector_name), dnetoutput_dworkforce)
+            (GlossaryCore.ProductionDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.WorkforceDfValue, self.sector_name), dnetoutput_dworkforce)
 
         # gradients wrt damage:
         dproductivity_ddamage = self.model.dproductivity_ddamage()
@@ -179,10 +179,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dnetoutput_ddamage = self.model.dnetoutput_ddamage(
             doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.SectorizedProductionDfValue, GlossaryCore.GrossOutput), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
+            (GlossaryCore.ProductionDfValue, GlossaryCore.GrossOutput), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.SectorizedProductionDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
+            (GlossaryCore.ProductionDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             dnetoutput_ddamage)
 
         # gradients wrt invest
@@ -196,7 +196,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         demax_cstrt_dinvest = self.model.demaxconstraint(
             dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.SectorizedCapitalDfValue, GlossaryCore.Capital), (invest_df, self.sector_name), dcapital_dinvest)
+            (GlossaryCore.CapitalDfValue, GlossaryCore.Capital), (invest_df, self.sector_name), dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), (invest_df, self.sector_name), demax_cstrt_dinvest)
 
@@ -206,7 +206,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
         chart_list = ['sector output', GlossaryCore.InvestmentsValue, 'output growth', 'energy supply',
                       GlossaryCore.UsableCapital, GlossaryCore.Capital, 'employment_rate', 'workforce',
-                      GlossaryCore.Productivity, GlossaryCore.EnergyEfficiency, 'e_max']
+                      GlossaryCore.Productivity, GlossaryCore.EnergyEfficiency, GlossaryCore.Emax]
 
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         if prod_func_fit:
@@ -230,8 +230,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        production_df = self.get_sosdisc_outputs(GlossaryCore.SectorizedProductionDfValue)
-        capital_df = self.get_sosdisc_outputs(GlossaryCore.SectorizedDetailedCapitalDfValue)
+        production_df = self.get_sosdisc_outputs(GlossaryCore.ProductionDfValue)
+        capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
         productivity_df = self.get_sosdisc_outputs(GlossaryCore.SectorizedProductivityDfValue)
         workforce_df = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
@@ -358,8 +358,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if 'e_max' in chart_list:
-            to_plot = 'e_max'
+        if GlossaryCore.Emax in chart_list:
+            to_plot = GlossaryCore.Emax
             energy_production = deepcopy(
                 self.get_sosdisc_inputs(GlossaryCore.EnergyProductionValue))
             scaling_factor_energy_production = self.get_sosdisc_inputs(
@@ -374,7 +374,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
             max_values = {}
             min_values = {}
-            min_values['e_max'], max_values['e_max'] = self.get_greataxisrange(
+            min_values[GlossaryCore.Emax], max_values[GlossaryCore.Emax] = self.get_greataxisrange(
                 capital_df[to_plot])
             min_values['energy'], max_values['energy'] = self.get_greataxisrange(
                 total_production)

@@ -223,15 +223,15 @@ class Study(StudyManager):
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Industry': hist_invest['Industry']})
-        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Agriculture': hist_invest['Agriculture']})
+        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorIndustry: hist_invest[GlossaryCore.SectorIndustry]})
+        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorAgriculture: hist_invest[GlossaryCore.SectorAgriculture]})
         services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Services': hist_invest['Services']})
 
 
         long_term_energy_eff =  pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
-        lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Agriculture']})
-        lt_enef_indus = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Industry']})
-        lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Services']})
+        lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorAgriculture]})
+        lt_enef_indus = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorIndustry]})
+        lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff['Services']})
         sect_input = {}
         sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
         sect_input[ns_coupling + self.obj_name + '.historical_capital'] = hist_capital

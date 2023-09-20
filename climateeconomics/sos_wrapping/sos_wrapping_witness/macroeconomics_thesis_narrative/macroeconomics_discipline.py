@@ -64,7 +64,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'ref_pc_consumption_constraint': {'type': 'float', 'unit': 'k$', 'default': 1, 'user_level': 3,
                                           'namespace': 'ns_ref'},
         'damage_to_productivity': {'type': 'bool'},
-        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3,
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3,
                              'user_level': 2},
         'total_investment_share_of_gdp': {'type': 'dataframe', 'unit': '%',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -122,7 +122,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyInvestmentsWoRenewableValue: {'type': 'dataframe', 'unit': 'G$'},
         'global_investment_constraint': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                          'namespace': 'ns_witness'},
-        'workforce_df': {'type': 'dataframe', 'unit': 'millions of people'},
+        GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'], 'unit': GlossaryCore.WorkforceDf['unit']},
         'pc_consumption_constraint': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                       'namespace': 'ns_witness'}
     }
@@ -176,7 +176,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dict_values = {GlossaryCore.EconomicsDetailDfValue: economics_df,
                        GlossaryCore.EconomicsDfValue: economics_df[[GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.PerCapitaConsumption, GlossaryCore.OutputNetOfDamage]],
                        GlossaryCore.EnergyInvestmentsValue: energy_investment,
-                       'workforce_df': workforce_df,
+                       GlossaryCore.WorkforceDfValue: workforce_df,
                        'global_investment_constraint': global_investment_constraint,
                        GlossaryCore.EnergyInvestmentsWoRenewableValue: energy_investment_wo_renewable,
                        'pc_consumption_constraint': pc_consumption_constraint}
@@ -198,7 +198,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
           - GlossaryCore.OutputNetOfDamage,
               - damage_df, damage_frac_output
               - energy_production, Total production
-          - 'net_output',
+          - GlossaryCore.NetOutput,
               - damage_df, damage_frac_output
               - energy_production, Total production
           - GlossaryCore.Consumption
@@ -210,7 +210,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
           - 'interest_rate'
               - damage_df, damage_frac_output
               - energy_production, Total production
-          - 'productivity',
+          - GlossaryCore.Productivity,
               - damage_df, damage_frac_output
           - energy_productivity
               - damage_df, damage_frac_output
@@ -411,7 +411,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # compute gradient for coupling variable working age population
         dworkforce_dworkingagepop = self.macro_model.compute_dworkforce_dworkagepop()
         self.set_partial_derivative_for_other_types(
-            ('workforce_df', 'workforce'), ('working_age_population_df', 'population_1570'), dworkforce_dworkingagepop)
+            (GlossaryCore.WorkforceDfValue, 'workforce'), ('working_age_population_df', 'population_1570'), dworkforce_dworkingagepop)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), ('working_age_population_df', 'population_1570'), dgross_output)
         self.set_partial_derivative_for_other_types(
@@ -436,7 +436,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         chart_filters = []
 
         chart_list = ['output of damage', 'gross output and gross output bis',
-                      GlossaryCore.InvestmentsValue, GlossaryCore.EnergyInvestmentsValue, GlossaryCore.PopulationValue, 'productivity', GlossaryCore.Consumption,
+                      GlossaryCore.InvestmentsValue, GlossaryCore.EnergyInvestmentsValue, GlossaryCore.PopulationValue, GlossaryCore.Productivity, GlossaryCore.Consumption,
                       'Output growth rate', 'energy supply', 'energy productivity']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -464,10 +464,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'output of damage' in chart_list:
 
-            to_plot = [GlossaryCore.GrossOutput, 'net_output']
+            to_plot = [GlossaryCore.GrossOutput, GlossaryCore.NetOutput]
 
             legend = {GlossaryCore.GrossOutput: 'world gross output',
-                      'net_output': 'world output net of damage'}
+                      GlossaryCore.NetOutput: 'world output net of damage'}
 
             years = list(economics_df.index)
 
@@ -624,9 +624,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
-        if 'productivity' in chart_list:
+        if GlossaryCore.Productivity in chart_list:
 
-            to_plot = ['productivity']
+            to_plot = [GlossaryCore.Productivity]
 
             years = list(economics_df.index)
 

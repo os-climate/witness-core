@@ -52,7 +52,7 @@ class DamageModel():
         self.tp_a3 = self.param['tp_a3']
         self.tp_a4 = self.param['tp_a4']
         self.damage_to_productivity = self.param['damage_to_productivity']
-        self.frac_damage_prod = self.param['frac_damage_prod']
+        self.frac_damage_prod = self.param[GlossaryCore.FractionDamageToProductivityValue]
 
     def create_dataframe(self):
         '''

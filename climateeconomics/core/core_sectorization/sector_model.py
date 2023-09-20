@@ -68,7 +68,7 @@ class SectorModel():
         self.productivity_gr_start = inputs_dict['productivity_gr_start']
         self.decline_rate_tfp = inputs_dict['decline_rate_tfp']
         self.depreciation_capital = inputs_dict['depreciation_capital']
-        self.frac_damage_prod = inputs_dict['frac_damage_prod']
+        self.frac_damage_prod = inputs_dict[GlossaryCore.FractionDamageToProductivityValue]
         self.damage_to_productivity = inputs_dict['damage_to_productivity']
         self.init_output_growth = inputs_dict['init_output_growth']
         self.output_alpha = inputs_dict['output_alpha']
@@ -117,7 +117,7 @@ class SectorModel():
         self.energy_production = inputs[GlossaryCore.EnergyProductionValue].copy(deep=True)
         self.energy_production[GlossaryCore.TotalProductionValue] *= self.scaling_factor_energy_production
         self.energy_production.index = self.energy_production[GlossaryCore.Years].values
-        self.workforce_df = inputs['workforce_df']
+        self.workforce_df = inputs[GlossaryCore.WorkforceDfValue]
         self.workforce_df.index = self.workforce_df[GlossaryCore.Years].values
         self.damage_df = inputs[GlossaryCore.DamageDfValue]
         self.damage_df.index = self.damage_df[GlossaryCore.Years].values
@@ -198,7 +198,7 @@ class SectorModel():
         e_max = capital / (capital_utilisation_ratio * energy_efficiency)
 
         self.capital_df.loc[year,GlossaryCore.EnergyEfficiency] = energy_efficiency
-        self.capital_df.loc[year, 'e_max'] = e_max
+        self.capital_df.loc[year, GlossaryCore.Emax] = e_max
 
     def compute_usable_capital(self, year):
         """  Usable capital is the part of the capital stock that can be used in the production process. 
@@ -209,7 +209,7 @@ class SectorModel():
         """
         capital = self.capital_df.loc[year, GlossaryCore.Capital]
         energy = self.energy_production.at[year, GlossaryCore.TotalProductionValue]
-        e_max = self.capital_df.loc[year, 'e_max']
+        e_max = self.capital_df.loc[year, GlossaryCore.Emax]
         # compute usable capital
         usable_capital = capital * (energy / e_max)
         self.capital_df.loc[year, GlossaryCore.UsableCapital] = usable_capital
@@ -274,7 +274,7 @@ class SectorModel():
     def compute_emax_enet_constraint(self):
         """ Equation for Emax constraint 
         """
-        e_max = self.capital_df['e_max'].values
+        e_max = self.capital_df[GlossaryCore.Emax].values
         energy = self.energy_production[GlossaryCore.TotalProductionValue].values
         self.emax_enet_constraint = - \
             (energy - e_max * self.max_capital_utilisation_ratio) / self.ref_emax_enet_constraint
@@ -370,7 +370,7 @@ class SectorModel():
         nb_years = self.nb_years
         # Inputs
         capital = self.capital_df[GlossaryCore.Capital].values
-        e_max = self.capital_df['e_max'].values
+        e_max = self.capital_df[GlossaryCore.Emax].values
         dusablecapital_denergy = np.identity(nb_years)
         dusablecapital_denergy *= capital / e_max
         return dusablecapital_denergy

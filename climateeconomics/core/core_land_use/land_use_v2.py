@@ -97,7 +97,7 @@ class LandUseV2():
         curr_dir = os.path.dirname(__file__)
         data_file = os.path.join(curr_dir, self.surface_file)
         self.surface_df = pd.read_csv(data_file)
-        self.total_agriculture_surfaces = self.__extract_and_convert_superficie('Habitable', 'Agriculture') / \
+        self.total_agriculture_surfaces = self.__extract_and_convert_superficie('Habitable', GlossaryCore.SectorAgriculture) / \
                                           OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
         self.total_forest_surfaces = self.__extract_and_convert_superficie('Habitable', 'Forest') / \
                                      OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]

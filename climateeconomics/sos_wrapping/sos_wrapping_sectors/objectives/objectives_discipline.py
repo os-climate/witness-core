@@ -60,22 +60,22 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                'namespace': 'ns_witness', 'editable': False, 'structuring': True},
                 'historical_gdp': {'type': 'dataframe', 'unit': 'T$',
                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                           'Agriculture': ('float', None, True),
-                                                           'Industry': ('float', None, True),
+                                                           GlossaryCore.SectorAgriculture: ('float', None, True),
+                                                           GlossaryCore.SectorIndustry: ('float', None, True),
                                                            'Services': ('float', None, True),
                                                            'total': ('float', None, True)},
                                   'dataframe_edition_locked': False, },
                'historical_capital': {'type': 'dataframe', 'unit': 'T$',
                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                               'Agriculture': ('float', None, True),
-                                                               'Industry': ('float', None, True),
+                                                               GlossaryCore.SectorAgriculture: ('float', None, True),
+                                                               GlossaryCore.SectorIndustry: ('float', None, True),
                                                                'Services': ('float', None, True),
                                                                'total': ('float', None, True)},
                                       'dataframe_edition_locked': False, },
                'historical_energy': {'type': 'dataframe', 'unit': 'PWh',
                                      'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                              'Agriculture': ('float', None, True),
-                                                              'Industry': ('float', None, True),
+                                                              GlossaryCore.SectorAgriculture: ('float', None, True),
+                                                              GlossaryCore.SectorIndustry: ('float', None, True),
                                                               'Services': ('float', None, True),
                                                               'total': ('float', None, True),
                                                               'Total': ('float', None, True),},
@@ -83,9 +83,9 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'namespace': 'ns_witness',
                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                         'capital': ('float', None, False),
-                                                         'usable_capital': ('float', None, False),
-                                                         'output': ('float', None, False),
+                                                         GlossaryCore.Capital: ('float', None, False),
+                                                         GlossaryCore.UsableCapital: ('float', None, False),
+                                                         GlossaryCore.Output: ('float', None, False),
                                                          GlossaryCore.OutputNetOfDamage: ('float', None, False),}},
                'weights_df': {'type': 'dataframe', 'unit': '-', 'default' : default_weight_df,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -121,26 +121,26 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         if 'sector_list' in self.get_data_in():
             sector_list = self.get_sosdisc_inputs('sector_list')
             for sector in sector_list:
-                dynamic_inputs[f'{sector}.detailed_capital_df'] = {
+                dynamic_inputs[f'{sector}.{GlossaryCore.DetailedCapitalDfValue}'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro',
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                             'capital': ('float', None, False),
-                                             'usable_capital': ('float', None, False),
-                                             'energy_efficiency': ('float', None, False),}
+                                             GlossaryCore.Capital: ('float', None, False),
+                                             GlossaryCore.UsableCapital: ('float', None, False),
+                                             GlossaryCore.EnergyEfficiency: ('float', None, False),}
                 }
-                dynamic_inputs[f'{sector}.production_df'] = {
+                dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro',
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                             'output': ('float', None, False),
-                                             'output_net_of_damage': ('float', None, False),}
+                                             GlossaryCore.Output: ('float', None, False),
+                                             GlossaryCore.OutputNetOfDamage: ('float', None, False),}
                 }
                 dynamic_inputs[f'{sector}.longterm_energy_efficiency'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
                     'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro',
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                             'energy_efficiency': ('float', None, False),}
+                                             GlossaryCore.EnergyEfficiency: ('float', None, False),}
                 }
                 dynamic_outputs[f'{sector}.gdp_error'] = {
                     'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -246,7 +246,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
 
         if 'Total capital' in chart_list:
             ref = historical_capital['total']
-            simu = economics_df['capital']
+            simu = economics_df[GlossaryCore.Capital]
 
             years = list(economics_df[GlossaryCore.Years])
             year_start = years[0]
@@ -277,15 +277,15 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
         if 'sectors' in chart_list:
             years = list(economics_df[GlossaryCore.Years])
             for sector in sector_list:
-                simu_gdp_sector_df = self.get_sosdisc_inputs(f'{sector}.production_df')
-                simu_gdp_sector = simu_gdp_sector_df['output_net_of_damage']
+                simu_gdp_sector_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.ProductionDfValue}')
+                simu_gdp_sector = simu_gdp_sector_df[GlossaryCore.OutputNetOfDamage]
                 hist_gdp_sector = historical_gdp[sector]
-                simu_capital_sector_df = self.get_sosdisc_inputs(f'{sector}.detailed_capital_df')
+                simu_capital_sector_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.DetailedCapitalDfValue}')
                 simu_energy_eff_sector_lt = self.get_sosdisc_inputs(f'{sector}.longterm_energy_efficiency')
-                simu_capital_sector = simu_capital_sector_df['capital']
+                simu_capital_sector = simu_capital_sector_df[GlossaryCore.Capital]
                 hist_capital_sector = historical_capital[sector]
                 hist_energy_eff_sector = self.get_sosdisc_outputs(f'{sector}.historical_energy_efficiency')
-                simu_energy_eff_sector = simu_capital_sector_df['energy_efficiency']
+                simu_energy_eff_sector = simu_capital_sector_df[GlossaryCore.EnergyEfficiency]
 
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'capital stock [T$]',
                                                      chart_name=f'{sector} capital fitting comparison with historical data')
@@ -311,14 +311,14 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                      chart_name=f'{sector} energy efficiency fitting comparison with historical data')
                 #filter data above year min 
                 years_energ_eff = list(hist_energy_eff_sector[GlossaryCore.Years][hist_energy_eff_sector[GlossaryCore.Years]>=year_min_energy_eff[sector]])
-                hist_energy_eff_s = list(hist_energy_eff_sector['energy_efficiency'][hist_energy_eff_sector[GlossaryCore.Years]>=year_min_energy_eff[sector]])
+                hist_energy_eff_s = list(hist_energy_eff_sector[GlossaryCore.EnergyEfficiency][hist_energy_eff_sector[GlossaryCore.Years]>=year_min_energy_eff[sector]])
                 new_series = InstanciatedSeries(
                     years_energ_eff, hist_energy_eff_s, 'historical data', 'scatter', visible_line, marker_symbol='x')
                 new_chart.series.append(new_series)
                 #If extra data plot all the data and use long term energy efficiency
                 if len(years_energ_eff)> len(years): 
                     new_series = InstanciatedSeries(
-                        list(simu_energy_eff_sector_lt[GlossaryCore.Years]), list(simu_energy_eff_sector_lt['energy_efficiency']), 'simulated values', 'lines', visible_line)
+                        list(simu_energy_eff_sector_lt[GlossaryCore.Years]), list(simu_energy_eff_sector_lt[GlossaryCore.EnergyEfficiency]), 'simulated values', 'lines', visible_line)
                 #If not extra data: plot only calculated values in capital_df
                 else: 
                     new_series = InstanciatedSeries(

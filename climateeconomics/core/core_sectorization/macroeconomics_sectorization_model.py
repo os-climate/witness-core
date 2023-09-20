@@ -71,15 +71,15 @@ class MacroeconomicsModel():
         capital_dfs = {}
         production_dfs ={}
         for sector in self.SECTORS_LIST:
-            capital_dfs[sector] = inputs[f'{sector}.capital_df']
-            production_dfs[sector] = inputs[f'{sector}.production_df']
-            if 'complex128' in [inputs[f'{sector}.capital_df']['capital'].dtype]:
+            capital_dfs[sector] = inputs[f'{sector}.{GlossaryCore.CapitalDfValue}']
+            production_dfs[sector] = inputs[f'{sector}.{GlossaryCore.ProductionDfValue}']
+            if 'complex128' in [inputs[f'{sector}.{GlossaryCore.CapitalDfValue}'][GlossaryCore.Capital].dtype]:
                 arr_type_capital = 'complex128'
-            if 'complex128' in [inputs[f'{sector}.capital_df']['usable_capital'].dtype]:
+            if 'complex128' in [inputs[f'{sector}.{GlossaryCore.CapitalDfValue}'][GlossaryCore.UsableCapital].dtype]:
                 arr_type_ucapital = 'complex128'
-            if 'complex128' in [inputs[f'{sector}.production_df']['output'].dtype]:
+            if 'complex128' in [inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'][GlossaryCore.Output].dtype]:
                 arr_type_output = 'complex128'
-            if 'complex128' in [inputs[f'{sector}.production_df']['output_net_of_damage'].dtype]:
+            if 'complex128' in [inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'][GlossaryCore.OutputNetOfDamage].dtype]:
                 arr_type_netoutput = 'complex128'
 
                 
@@ -95,8 +95,8 @@ class MacroeconomicsModel():
         '''
         Create dataframes with years
         '''
-        economics_df = pd.DataFrame({GlossaryCore.Years: self.years_range, 'capital': self.sum_capital, 'usable_capital': self.sum_u_capital,
-                                     'output': self.sum_output, GlossaryCore.OutputNetOfDamage: self.sum_net_output,
+        economics_df = pd.DataFrame({GlossaryCore.Years: self.years_range, GlossaryCore.Capital: self.sum_capital, GlossaryCore.UsableCapital: self.sum_u_capital,
+                                     GlossaryCore.Output: self.sum_output, GlossaryCore.OutputNetOfDamage: self.sum_net_output,
                                      'output_growth': self.output_growth})
         investment_df = pd.DataFrame({GlossaryCore.Years: self.years_range, GlossaryCore.InvestmentsValue: self.investment})
         investment_df.index = self.years_range
@@ -111,10 +111,10 @@ class MacroeconomicsModel():
         for sector in self.SECTORS_LIST:
             capital_df = self.capital_dfs[sector]
             production_df = self.production_dfs[sector]
-            self.sum_capital += capital_df['capital'].values
-            self.sum_u_capital += capital_df['usable_capital'].values
-            self.sum_output += production_df['output'].values
-            self.sum_net_output += production_df['output_net_of_damage'].values
+            self.sum_capital += capital_df[GlossaryCore.Capital].values
+            self.sum_u_capital += capital_df[GlossaryCore.UsableCapital].values
+            self.sum_output += production_df[GlossaryCore.Output].values
+            self.sum_net_output += production_df[GlossaryCore.OutputNetOfDamage].values
             
     def compute_investment(self):
         """ Compute total investement available 

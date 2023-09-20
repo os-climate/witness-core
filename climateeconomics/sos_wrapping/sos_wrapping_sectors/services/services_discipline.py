@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
 
 
@@ -34,5 +35,5 @@ class ServicesDiscipline(SectorDiscipline):
     }
     _maturity = 'Research'
     
-    sector_name = 'Services'
+    sector_name = GlossaryCore.SectorServices
     prod_cap_unit = 'T$'

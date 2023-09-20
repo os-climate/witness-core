@@ -61,7 +61,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
         'lo_conso': {'type': 'float', 'unit': 'trillions $', 'default': 2},
         'lo_per_capita_conso': {'type': 'float', 'unit': 'trillions $', 'default': 0.01},
         'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'saving_rate': {'type': 'float', 'unit': '%', 'default': 0.2},
     }
 
@@ -94,7 +94,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
         chart_filters = []
 
         chart_list = ['economic output',
-                      GlossaryCore.PopulationValue, 'productivity', GlossaryCore.Consumption]
+                      GlossaryCore.PopulationValue, GlossaryCore.Productivity, GlossaryCore.Consumption]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -192,7 +192,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
         if GlossaryCore.PopulationValue in chart_list:
 
-            to_plot = ['productivity']
+            to_plot = [GlossaryCore.Productivity]
 
             years = list(economics_df.index)
 

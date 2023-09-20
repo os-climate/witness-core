@@ -35,7 +35,7 @@ class AgricultureDiscTest(unittest.TestCase):
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.model_name = 'Agriculture'
+        self.model_name = GlossaryCore.SectorAgriculture
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_macro': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
@@ -74,7 +74,7 @@ class AgricultureDiscTest(unittest.TestCase):
         total_workforce_df.index = years
         #multiply ageworking pop by employment rate and by % in agriculture
         workforce = total_workforce_df['population_1570']* 0.659 * 0.274
-        self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, 'Agriculture': workforce})
+        self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: workforce})
 
         #Energy_supply
         brut_net = 1/1.45
@@ -97,7 +97,7 @@ class AgricultureDiscTest(unittest.TestCase):
         invest_serie.append(init_value)
         for year in np.arange(1, nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.02)
-        self.total_invest = pd.DataFrame({GlossaryCore.Years: years, 'Agriculture': invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: invest_serie})
         
         #damage
         self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
@@ -111,10 +111,10 @@ class AgricultureDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.sectors_investment_df': self.total_invest,
+                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.total_invest,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{self.name}.workforce_df': self.workforce_df, 
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 6.718, #2019 value for test 
                        f'{self.name}.prod_function_fitting': False
                        }
@@ -137,11 +137,11 @@ class AgricultureDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.sectors_investment_df': self.damage_df,  # to test that it is not used
+                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.damage_df,  # to test that it is not used
                        f'{self.name}.{self.model_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{self.name}.workforce_df': self.workforce_df, 
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 6.718,  #2019 value for test
                        f'{self.name}.prod_function_fitting': True
                        }

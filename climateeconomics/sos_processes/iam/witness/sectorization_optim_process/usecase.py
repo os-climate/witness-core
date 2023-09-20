@@ -253,9 +253,9 @@ class Study(StudyManager):
         extra_data = pd.read_csv(join(data_dir, 'extra_data_for_energy_eff.csv'))
         weights = pd.read_csv(join(data_dir, 'weights_df.csv'))
         hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Agriculture': hist_invest['Agriculture']})
+        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorAgriculture: hist_invest[GlossaryCore.SectorAgriculture]})
         services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Services': hist_invest['Services']})
-        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Industry': hist_invest['Industry']})
+        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorIndustry: hist_invest[GlossaryCore.SectorIndustry]})
 
         sect_input = {}
         sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp

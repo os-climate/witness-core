@@ -4,10 +4,12 @@ from copy import deepcopy
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
 
-    # TODO, FILLING METHOD : goal is to spread the use of the glossary in the code, but we have to do it #
+    # TODO, FILLING METHOD : goal is to spread the use of the glossary in the code, but we have to do it
     #  methodically. Suggested method : every time you add a string/variable in the glossary, replace this string
-    #  everywhere in the code. Only then, add continue filling the Glossary.
-    # dataframes columns/var_names :
+    #  everywhere in the code. Only then, continue filling the Glossary.
+    #  TIPS for PyCharm : Ctrl + Shift + R for replacing everywhere.
+    #  Make sure to replace only in witness core (witness-energy optionally).
+
     Years = "years"
     YearStart = "year_start"
     YearEnd = "year_end"
@@ -38,12 +40,13 @@ class GlossaryCore:
     ccs_list = "ccs_list"
 
     invest_mix = "invest_mix"
-    SectorService = "service"
-    SectorAgriculture = "agriculture"
+    SectorServices = "Services"
+    SectorAgriculture = "Agriculture"
+    SectorIndustry = "Industry"
     SectorEnergy = "energy"
-    SectorIndustry = "industry"
+
     SectorsPossibleValues = [
-        SectorService,
+        SectorServices,
         SectorAgriculture,
         SectorIndustry,
     ]  # SectorEnergy,
@@ -134,7 +137,11 @@ class GlossaryCore:
         "user_level": 2,
     }
 
+    Output = (
+        "output"  # todo in the future: delete this key, it corresponds to gross output
+    )
     GrossOutput = "gross_output"  # trillion $
+    NetOutput = "net_output"  # todo in the future: delete this key, it corresponds to gross output net of damage,
     OutputNetOfDamage = "output_net_of_d"  # trillion $
     Consumption = "consumption"
     PerCapitaConsumption = "pc_consumption"
@@ -328,9 +335,9 @@ class GlossaryCore:
         "unit": "-",
     }
 
-    SectorizedProductionDfValue = "production_df"
+    ProductionDfValue = "production_df"
     SectorizedProductionDf = {
-        "var_name": SectorizedProductionDfValue,
+        "var_name": ProductionDfValue,
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -340,11 +347,11 @@ class GlossaryCore:
         },
     }
 
-    SectorizedCapitalDfValue = "capital_df"
+    CapitalDfValue = "capital_df"
     Capital = "capital"
     UsableCapital = "usable_capital"
     SectorizedCapitalDf = {
-        "var_name": SectorizedCapitalDfValue,
+        "var_name": CapitalDfValue,
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -354,11 +361,11 @@ class GlossaryCore:
         },
     }
 
-    SectorizedDetailedCapitalDfValue = "detailed_capital_df"
+    DetailedCapitalDfValue = "detailed_capital_df"
     Emax = "e_max"
     EnergyEfficiency = "energy_efficiency"
     SectorizedDetailedCapitalDf = {
-        "var_name": SectorizedDetailedCapitalDfValue,
+        "var_name": DetailedCapitalDfValue,
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -372,7 +379,7 @@ class GlossaryCore:
 
     SectorizedProductivityDfValue = "productivity_df"
     SectorizedProductivityDf = {
-        "var_name": SectorizedCapitalDfValue,
+        "var_name": CapitalDfValue,
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -392,8 +399,9 @@ class GlossaryCore:
         "dynamic_dataframe_columns": True,
     }
 
+    FractionDamageToProductivityValue = "frac_damage_prod"
     FractionDamageToProductivity = {
-        "var_name": "frac_damage_prod",
+        "var_name": FractionDamageToProductivityValue,
         "type": "float",
         "default": 0.3,
         "user_level": 2,
@@ -415,6 +423,7 @@ class GlossaryCore:
 
     @staticmethod
     def delete_namespace(variable: dict):
+        # todo : doesnt work
         """delete the namespace of variable"""
         out = deepcopy(variable)
         try:
@@ -425,6 +434,7 @@ class GlossaryCore:
 
     @staticmethod
     def set_namespace(variable: dict, namespace: str):
+        # todo : doesnt work
         """set the namespace for a variable"""
         out = deepcopy(variable)
         out["namespace"] = namespace

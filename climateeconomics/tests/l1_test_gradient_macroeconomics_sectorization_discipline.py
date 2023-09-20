@@ -55,20 +55,20 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         gdp_agri = gdp_serie * 6.775773/100
         gdp_indus = gdp_serie * 28.4336/100
         gdp_service = gdp_serie * 64.79/100
-        self.prod_agri = DataFrame({GlossaryCore.Years:self. years,'output': gdp_agri, 'output_net_of_damage': gdp_agri*0.995})
-        self.prod_indus = DataFrame({GlossaryCore.Years:self. years,'output': gdp_indus, 'output_net_of_damage': gdp_indus*0.995})
-        self.prod_service = DataFrame({GlossaryCore.Years:self. years,'output': gdp_service, 'output_net_of_damage': gdp_service*0.995})
+        self.prod_agri = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Output: gdp_agri, GlossaryCore.OutputNetOfDamage: gdp_agri*0.995})
+        self.prod_indus = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Output: gdp_indus, GlossaryCore.OutputNetOfDamage: gdp_indus*0.995})
+        self.prod_service = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Output: gdp_service, GlossaryCore.OutputNetOfDamage: gdp_service*0.995})
         cap_agri = capital_serie * 0.018385
         cap_indus = capital_serie * 0.234987
         cap_service = capital_serie * 0.74662
-        self.cap_agri_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_agri, 'usable_capital': cap_agri*0.8})
-        self.cap_indus_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_indus, 'usable_capital': cap_indus*0.8})
-        self.cap_service_df = DataFrame({GlossaryCore.Years:self. years,'capital': cap_service, 'usable_capital': cap_service*0.8})
+        self.cap_agri_df = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Capital: cap_agri, GlossaryCore.UsableCapital: cap_agri*0.8})
+        self.cap_indus_df = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Capital: cap_indus, GlossaryCore.UsableCapital: cap_indus*0.8})
+        self.cap_service_df = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Capital: cap_service, GlossaryCore.UsableCapital: cap_service*0.8})
         indus_invest = np.asarray([6.8998] * nb_per)
         agri_invest = np.asarray([0.4522] * nb_per)
         services_invest = np.asarray([19.1818] * nb_per)
         share_sector_invest = DataFrame(
-            {GlossaryCore.Years: self.years, 'Industry': indus_invest, 'Agriculture': agri_invest, 'Services': services_invest})
+            {GlossaryCore.Years: self.years, GlossaryCore.SectorIndustry: indus_invest, GlossaryCore.SectorAgriculture: agri_invest, GlossaryCore.SectorServices: services_invest})
         self.share_sector_invest = share_sector_invest
         
         
@@ -98,12 +98,12 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.total_investment_share_of_gdp': self.total_invest,
                        f'{self.name}.sectors_investment_share': self.share_sector_invest,
-                       f'{self.name}.{model_name}.Agriculture.production_df': self.prod_agri,
-                       f'{self.name}.{model_name}.Services.production_df': self.prod_service,
-                       f'{self.name}.{model_name}.Industry.production_df': self.prod_indus,
-                       f'{self.name}.{model_name}.Industry.capital_df': self.cap_indus_df,
-                       f'{self.name}.{model_name}.Services.capital_df': self.cap_service_df,
-                       f'{self.name}.{model_name}.Agriculture.capital_df':self.cap_agri_df,
+                       f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
+                       f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
+                       f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
+                       f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
+                       f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
+                       f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}':self.cap_agri_df,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -114,14 +114,14 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data= disc_techno.local_data,
                             inputs=[f'{self.name}.total_investment_share_of_gdp',
                                     f'{self.name}.sectors_investment_share',
-                                    f'{self.name}.{model_name}.Agriculture.production_df',
-                                    f'{self.name}.{model_name}.Services.production_df',
-                                    f'{self.name}.{model_name}.Industry.production_df',
-                                    f'{self.name}.{model_name}.Industry.capital_df',
-                                    f'{self.name}.{model_name}.Services.capital_df',
-                                    f'{self.name}.{model_name}.Agriculture.capital_df'],
+                                    f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}',
+                                    f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}',
+                                    f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
+                                    f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                     f'{self.name}.investment_df', f'{self.name}.sectors_investment_df'],
+                                     f'{self.name}.investment_df', f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}'],
                             )
         
    

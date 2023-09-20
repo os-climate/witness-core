@@ -92,7 +92,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'ref_pc_consumption_constraint': {'type': 'float', 'unit': 'k$', 'default': 1, 'user_level': 3,
                                           'namespace': 'ns_ref'},
         'damage_to_productivity': {'type': 'bool'},
-        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3,
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3,
                              'unit': '-', 'user_level': 2},
 
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
@@ -134,7 +134,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyInvestmentsWoRenewable['var_name']: GlossaryCore.EnergyInvestmentsWoRenewable,
         'pc_consumption_constraint': {'type': 'array', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                       'namespace': 'ns_functions', 'unit': 'k$'},
-        'workforce_df': {'type': 'dataframe', 'unit': 'millions of people'},
+        GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'], 'unit': GlossaryCore.WorkforceDf['unit']},
         'emax_enet_constraint': {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                  'namespace': 'ns_functions'},
         'delta_capital_objective': {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -143,7 +143,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                              'namespace': 'ns_functions'},
         'delta_capital_objective_wo_exp_min': {'type': 'array', 'unit': '-'},
-        'capital_df': {'type': 'dataframe', 'unit': '-'},
+        GlossaryCore.CapitalDfValue: {'type': 'dataframe', 'unit': '-'},
         'delta_capital_constraint': {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_functions'},
         'delta_capital_constraint_dc': {'type': 'array', 'unit': '-',
@@ -297,10 +297,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.EnergyInvestmentsWoRenewableValue: energy_investment_wo_renewable,
                        GlossaryCore.SectorGdpDf['var_name']: sector_gdp_df,
                        'pc_consumption_constraint': pc_consumption_constraint,
-                       'workforce_df': workforce_df,
+                       GlossaryCore.WorkforceDfValue: workforce_df,
                        'delta_capital_objective': self.macro_model.delta_capital_objective,
                        'delta_capital_objective_wo_exp_min': self.macro_model.delta_capital_objective_wo_exp_min,
-                       'capital_df': capital_df,
+                       GlossaryCore.CapitalDfValue: capital_df,
                        'emax_enet_constraint': emax_enet_constraint,
                        'delta_capital_objective_weighted': self.macro_model.delta_capital_objective_with_alpha,
                        'delta_capital_constraint': self.macro_model.delta_capital_cons,
@@ -331,7 +331,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         nb_years = len(np.arange(year_start, year_end + 1, time_step))
         usable_capital_ref = usable_capital_ref_raw * nb_years
         capital_df, delta_capital_objective_wo_exp_min = [outputs_dict[key] for key in [
-            'capital_df', 'delta_capital_objective_wo_exp_min']]
+            GlossaryCore.CapitalDfValue, 'delta_capital_objective_wo_exp_min']]
         npzeros = np.zeros(
             (self.macro_model.nb_years, self.macro_model.nb_years))
 
@@ -348,7 +348,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             delta_capital_objective_wo_exp_min, 1e-15)
 
         ne_capital = self.macro_model.capital_df['non_energy_capital'].values
-        usable_capital = self.macro_model.capital_df['usable_capital'].values
+        usable_capital = self.macro_model.capital_df[GlossaryCore.UsableCapital].values
         ref_usable_capital = self.macro_model.usable_capital_ref * self.macro_model.nb_years
         delta_capital_cons_limit = self.macro_model.delta_capital_cons_limit
         ddelta_capital_cons_dc_dusable_capital, _, _ = compute_ddelta_constraint(
@@ -406,12 +406,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         ddelta_capital_objective_denergy_production = (scaling_factor_energy_production * (
                 capital_ratio * d_capital_d_energy - np.identity(
             nb_years) * capital_ratio * capital_df[
-                    'energy_efficiency'].values / 1000) / usable_capital_ref) * compute_dfunc_with_exp_min(
+                    GlossaryCore.EnergyEfficiency].values / 1000) / usable_capital_ref) * compute_dfunc_with_exp_min(
             delta_capital_objective_wo_exp_min, 1e-15)
 
         ddelta_capital_cons = self.compute_ddelta_capital_cons(scaling_factor_energy_production * (
                 capital_ratio * d_capital_d_energy - np.identity(nb_years) * capital_ratio * capital_df[
-            'energy_efficiency'].values / 1000),
+            GlossaryCore.EnergyEfficiency].values / 1000),
                                                                delta_capital_objective_wo_exp_min * usable_capital_ref)  # if compute_gdp else npzeros
         ddelta_capital_cons_dc_dusable_capital, _, _ = compute_ddelta_constraint(
             value=usable_capital, goal=capital_ratio * ne_capital,
@@ -580,7 +580,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                    np.dot(0.15 * dcapital, d_workforce_d_working_age_population))
 
         self.set_partial_derivative_for_other_types(
-            ('workforce_df', 'workforce'), ('working_age_population_df', 'population_1570'), d_workforce_d_working_age_population)
+            (GlossaryCore.WorkforceDfValue, 'workforce'), ('working_age_population_df', 'population_1570'), d_workforce_d_working_age_population)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), ('working_age_population_df', 'population_1570'),
@@ -814,8 +814,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.InvestmentsValue, GlossaryCore.EnergyInvestmentsWoTaxValue, GlossaryCore.Consumption,
                       'Output growth rate', 'energy supply',
                       'usable capital',  # 'energy to sustain capital', # TODO: wip on post-pro
-                      'capital', 'employment_rate', 'workforce',
-                      'productivity', 'energy efficiency', 'e_max']
+                      GlossaryCore.Capital, 'employment_rate', 'workforce',
+                      GlossaryCore.Productivity, 'energy efficiency', GlossaryCore.Emax]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -837,7 +837,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         co2_invest_limit, capital_utilisation_ratio = deepcopy(
             self.get_sosdisc_inputs(['co2_invest_limit', 'capital_utilisation_ratio']))
         workforce_df = deepcopy(
-            self.get_sosdisc_outputs('workforce_df'))
+            self.get_sosdisc_outputs(GlossaryCore.WorkforceDfValue))
 
         if 'output of damage' in chart_list:
 
@@ -957,9 +957,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'usable capital' in chart_list:
-            capital_df = self.get_sosdisc_outputs('capital_df')
+            capital_df = self.get_sosdisc_outputs(GlossaryCore.CapitalDfValue)
             first_serie = capital_df['non_energy_capital']
-            second_serie = capital_df['usable_capital']
+            second_serie = capital_df[GlossaryCore.UsableCapital]
             years = list(capital_df.index)
 
             year_start = years[0]
@@ -967,9 +967,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             max_values = {}
             min_values = {}
-            min_values['usable_capital'], max_values['usable_capital'] = self.get_greataxisrange(
+            min_values[GlossaryCore.UsableCapital], max_values[GlossaryCore.UsableCapital] = self.get_greataxisrange(
                 first_serie)
-            min_values['capital'], max_values['capital'] = self.get_greataxisrange(
+            min_values[GlossaryCore.Capital], max_values[GlossaryCore.Capital] = self.get_greataxisrange(
                 second_serie)
 
             min_value = min(min_values.values())
@@ -1002,11 +1002,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if 'capital' in chart_list:
+        if GlossaryCore.Capital in chart_list:
             energy_capital_df = self.get_sosdisc_inputs('energy_capital')
             first_serie = capital_df['non_energy_capital']
             second_serie = energy_capital_df['energy_capital']
-            third_serie = capital_df['capital']
+            third_serie = capital_df[GlossaryCore.Capital]
             years = list(capital_df.index)
 
             year_start = years[0]
@@ -1014,9 +1014,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             max_values = {}
             min_values = {}
-            min_values['usable_capital'], max_values['usable_capital'] = self.get_greataxisrange(
+            min_values[GlossaryCore.UsableCapital], max_values[GlossaryCore.UsableCapital] = self.get_greataxisrange(
                 first_serie)
-            min_values['capital'], max_values['capital'] = self.get_greataxisrange(
+            min_values[GlossaryCore.Capital], max_values[GlossaryCore.Capital] = self.get_greataxisrange(
                 second_serie)
             min_values['energy_capital'], max_values['energy_capital'] = self.get_greataxisrange(
                 third_serie)
@@ -1129,9 +1129,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
-        if 'productivity' in chart_list:
+        if GlossaryCore.Productivity in chart_list:
 
-            to_plot = ['productivity']
+            to_plot = [GlossaryCore.Productivity]
 
             years = list(economics_detail_df.index)
 
@@ -1162,7 +1162,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if 'energy efficiency' in chart_list:
 
-            to_plot = ['energy_efficiency']
+            to_plot = [GlossaryCore.EnergyEfficiency]
 
             years = list(capital_df.index)
 
@@ -1191,8 +1191,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if 'e_max' in chart_list:
-            to_plot = 'e_max'
+        if GlossaryCore.Emax in chart_list:
+            to_plot = GlossaryCore.Emax
             energy_production = deepcopy(
                 self.get_sosdisc_inputs('energy_production'))
             scaling_factor_energy_production = self.get_sosdisc_inputs(
@@ -1207,7 +1207,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             max_values = {}
             min_values = {}
-            min_values['e_max'], max_values['e_max'] = self.get_greataxisrange(
+            min_values[GlossaryCore.Emax], max_values[GlossaryCore.Emax] = self.get_greataxisrange(
                 capital_df[to_plot])
             min_values['energy'], max_values['energy'] = self.get_greataxisrange(
                 total_production)

@@ -44,7 +44,7 @@ class TestSoSAgriculture(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.name = 'Test'
-        self.model_name = 'Agriculture'
+        self.model_name = GlossaryCore.SectorAgriculture
         self.ee = ExecutionEngine(self.name)
 
     def test_01_instantiate_sosdiscipline(self):

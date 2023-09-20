@@ -59,7 +59,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                                              },
               }
     DESC_OUT = {
-        'workforce_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+        GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'], 'unit': GlossaryCore.WorkforceDf['unit'], 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                          'namespace': 'ns_witness'},
         'employment_df': {'type': 'dataframe', 'unit': '-'}
     }
@@ -95,7 +95,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         # -- compute
         workforce_df, employment_df  = self.labor_model.compute(inputs_dict)
 
-        outputs_dict = {'workforce_df': workforce_df,
+        outputs_dict = {GlossaryCore.WorkforceDfValue: workforce_df,
                         'employment_df': employment_df}
 
         # -- store outputs
@@ -110,12 +110,12 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         sector_list = self.get_sosdisc_inputs('sector_list')
         # Gradient wrt working age population
         grad_workforcetotal = self.labor_model.compute_dworkforcetotal_dworkagepop()
-        self.set_partial_derivative_for_other_types(('workforce_df', 'workforce'),
+        self.set_partial_derivative_for_other_types((GlossaryCore.WorkforceDfValue, 'workforce'),
                                                         ('working_age_population_df', 'population_1570'),
                                                         grad_workforcetotal)
         for sector in sector_list:
             grad_workforcesector = self.labor_model.compute_dworkforcesector_dworkagepop(sector)
-            self.set_partial_derivative_for_other_types(('workforce_df', sector),
+            self.set_partial_derivative_for_other_types((GlossaryCore.WorkforceDfValue, sector),
                                                         ('working_age_population_df', 'population_1570'),
                                                         grad_workforcesector)
             
@@ -141,7 +141,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        workforce_df = deepcopy(self.get_sosdisc_outputs('workforce_df'))
+        workforce_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.WorkforceDfValue))
         employment_df = deepcopy(self.get_sosdisc_outputs('employment_df'))
         sector_list = self.get_sosdisc_inputs('sector_list')
 

@@ -171,8 +171,8 @@ class Study(StudyManager):
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Industry': hist_invest['Industry']})
-        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Agriculture': hist_invest['Agriculture']})
+        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorIndustry: hist_invest[GlossaryCore.SectorIndustry]})
+        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorAgriculture: hist_invest[GlossaryCore.SectorAgriculture]})
         services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Services': hist_invest['Services']})
 
         sect_input = {}

@@ -35,7 +35,7 @@ class IndustrialDiscTest(unittest.TestCase):
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.model_name = 'Industry'
+        self.model_name = GlossaryCore.SectorIndustry
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_macro': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
@@ -74,7 +74,7 @@ class IndustrialDiscTest(unittest.TestCase):
         total_workforce_df.index = years
         #multiply ageworking pop by employment rate and by % in industrial
         workforce = total_workforce_df['population_1570']* 0.659 * 0.217
-        self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, 'Industry': workforce})
+        self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorIndustry: workforce})
 
         #Energy_supply
         brut_net = 1/1.45
@@ -97,7 +97,7 @@ class IndustrialDiscTest(unittest.TestCase):
         invest_serie.append(init_value)
         for year in np.arange(1, nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.02)
-        self.total_invest = pd.DataFrame({GlossaryCore.Years: years, 'Industry': invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorIndustry: invest_serie})
         
         #damage
         self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
@@ -111,10 +111,10 @@ class IndustrialDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}':  self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}':  self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.sectors_investment_df':  self.total_invest,
+                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}':  self.total_invest,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}':  self.energy_supply_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{self.name}.workforce_df':  self.workforce_df, 
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}':  self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 71, #2019 value
                        f'{self.name}.prod_function_fitting': False
                        }
@@ -127,7 +127,7 @@ class IndustrialDiscTest(unittest.TestCase):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            graph.to_plotly().show()
+            #graph.to_plotly().show()
             pass
 
     def test_execute_forfitting(self):
@@ -137,11 +137,11 @@ class IndustrialDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}':  self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}':  self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.sectors_investment_df':  self.damage_df, #To test if not used
+                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}':  self.damage_df, #To test if not used
                        f'{self.name}.{self.model_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}':  self.energy_supply_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{self.name}.workforce_df':  self.workforce_df, 
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}':  self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 71, #2019 value
                        f'{self.name}.prod_function_fitting': True
                        }

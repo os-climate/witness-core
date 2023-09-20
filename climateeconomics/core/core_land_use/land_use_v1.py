@@ -125,7 +125,7 @@ class LandUseV1():
             deforested_surface_df['forest_surface_evol'])
 
         total_agriculture_surfaces = self.__extract_and_convert_superficie(
-            'Habitable', 'Agriculture') / OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
+            'Habitable', GlossaryCore.SectorAgriculture) / OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
 
         # compute how much of agriculture changes because of techn
         self.land_surface_df['Added Agriculture (Gha)'] = self.__extract_and_compute_constraint_change(

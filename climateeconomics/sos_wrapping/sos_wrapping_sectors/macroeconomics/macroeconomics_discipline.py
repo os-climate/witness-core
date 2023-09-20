@@ -64,7 +64,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                          'namespace': 'ns_witness'},
         'investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                           'namespace': 'ns_witness'},
-        'sectors_investment_df': {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+        GlossaryCore.SectorInvestmentDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                           'namespace': 'ns_witness', 'dataframe_descriptor': {},'dynamic_dataframe_columns': True},
         'economics_detail_df': {'type': 'dataframe'},
     }
@@ -87,17 +87,17 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                           'namespace': 'ns_witness',
                                                           'dataframe_descriptor': df_descriptor}
             for sector in sector_list:
-                dynamic_inputs[f'{sector}.capital_df'] = {
+                dynamic_inputs[f'{sector}.{GlossaryCore.CapitalDfValue}'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                             'capital': ('float', None, True),
-                                             'usable_capital': ('float', None, True),}
+                                             GlossaryCore.Capital: ('float', None, True),
+                                             GlossaryCore.UsableCapital: ('float', None, True),}
                 }
-                dynamic_inputs[f'{sector}.production_df'] = {
+                dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                             'output': ('float', None, True),
-                                             'output_net_of_damage': ('float', None, True),}
+                                             GlossaryCore.Output: ('float', None, True),
+                                             GlossaryCore.OutputNetOfDamage: ('float', None, True),}
                 }
 
             self.add_inputs(dynamic_inputs)
@@ -112,9 +112,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # -- compute
         economics_df, investment_df, sectors_investment_df = self.macro_model.compute(inputs_dict)
 
-        outputs_dict = {GlossaryCore.EconomicsDfValue: economics_df[[GlossaryCore.Years, GlossaryCore.OutputNetOfDamage, 'capital']],
+        outputs_dict = {GlossaryCore.EconomicsDfValue: economics_df[[GlossaryCore.Years, GlossaryCore.OutputNetOfDamage, GlossaryCore.Capital]],
                         'investment_df': investment_df,
-                        'sectors_investment_df': sectors_investment_df,
+                        GlossaryCore.SectorInvestmentDfValue: sectors_investment_df,
                         'economics_detail_df': economics_df}
 
         # -- store outputs
@@ -136,28 +136,28 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         grad_netoutput, grad_invest = self.macro_model.get_derivative_sectors()
         for sector in sector_list:
             self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
-                                                        (f'{sector}.production_df', 'output_net_of_damage'),
+                                                        (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
                                                         grad_netoutput)
-            self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, 'capital'),
-                                                        (f'{sector}.capital_df', 'capital'), grad_netoutput)
+            self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.Capital),
+                                                        (f'{sector}.{GlossaryCore.CapitalDfValue}', GlossaryCore.Capital), grad_netoutput)
             self.set_partial_derivative_for_other_types(('investment_df', GlossaryCore.InvestmentsValue),
-                                                        (f'{sector}.production_df', 'output_net_of_damage'),
+                                                        (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
                                                         grad_invest)
-            self.set_partial_derivative_for_other_types( ('sectors_investment_df', f'{sector}'),
+            self.set_partial_derivative_for_other_types( (GlossaryCore.SectorInvestmentDfValue, f'{sector}'),
                                                          ('sectors_investment_share', f'{sector}'),grad_invest_share)
             #Gradient of sector investment wrt every sectors net output
             for sectorbis in sector_list:
                 grad_sector_invest = self.macro_model.get_derivative_dsectinvest_dsectoutput(sector, grad_netoutput)
-                self.set_partial_derivative_for_other_types(('sectors_investment_df', f'{sector}'),
-                                                        (f'{sectorbis}.production_df', 'output_net_of_damage'),
-                                                        grad_sector_invest)
+                self.set_partial_derivative_for_other_types((GlossaryCore.SectorInvestmentDfValue, f'{sector}'),
+                                                            (f'{sectorbis}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
+                                                            grad_sector_invest)
 
 
     def get_chart_filter_list(self):
 
         chart_filters = []
 
-        chart_list = ['output', GlossaryCore.InvestmentsValue, 'capital', 'share capital', 'share output', 'share investment','output growth']
+        chart_list = [GlossaryCore.Output, GlossaryCore.InvestmentsValue, GlossaryCore.Capital, 'share capital', 'share output', 'share investment','output growth']
 
         chart_filters.append(ChartFilter(
             'Charts filter', chart_list, chart_list, 'charts'))
@@ -176,7 +176,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         economics_df = deepcopy(self.get_sosdisc_outputs('economics_detail_df'))
         investment_df = deepcopy(self.get_sosdisc_outputs('investment_df'))
-        sectors_investment_df = deepcopy(self.get_sosdisc_outputs('sectors_investment_df'))
+        sectors_investment_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.SectorInvestmentDfValue))
         sector_list = self.get_sosdisc_inputs('sector_list')
 
         # Overload default value with chart filter
@@ -185,10 +185,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        if 'output' in chart_list:
+        if GlossaryCore.Output in chart_list:
 
-            to_plot = ['output', GlossaryCore.OutputNetOfDamage]
-            legend = {'output': 'world gross output',
+            to_plot = [GlossaryCore.Output, GlossaryCore.OutputNetOfDamage]
+            legend = {GlossaryCore.Output: 'world gross output',
                       GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
             years = list(economics_df.index)
             year_start = years[0]
@@ -240,11 +240,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if 'capital' in chart_list:
+        if GlossaryCore.Capital in chart_list:
 
-            to_plot = ['capital', 'usable_capital']
-            legend = {'capital': 'capital stock',
-                      'usable_capital': 'usable capital stock'}
+            to_plot = [GlossaryCore.Capital, GlossaryCore.UsableCapital]
+            legend = {GlossaryCore.Capital: 'capital stock',
+                      GlossaryCore.UsableCapital: 'usable capital stock'}
             years = list(economics_df.index)
             year_start = years[0]
             year_end = years[len(years) - 1]
@@ -272,15 +272,15 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'share capital' in chart_list:
-            capital = economics_df['capital'].values
+            capital = economics_df[GlossaryCore.Capital].values
             chart_name = 'Capital distribution between economic sectors'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'share of total capital stock [%]',
                                                  [year_start - 5, year_end + 5], stacked_bar=True,
                                                  chart_name=chart_name)
 
             for sector in sector_list:
-                capital_df = self.get_sosdisc_inputs(f'{sector}.capital_df')
-                sector_capital = capital_df['capital'].values
+                capital_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.CapitalDfValue}')
+                sector_capital = capital_df[GlossaryCore.Capital].values
                 share = (sector_capital / capital) * 100
                 visible_line = True
                 ordonate_data = list(share)
@@ -298,8 +298,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                  chart_name=chart_name)
 
             for sector in sector_list:
-                production_df = self.get_sosdisc_inputs(f'{sector}.production_df')
-                sector_output = production_df['output_net_of_damage'].values
+                production_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.ProductionDfValue}')
+                sector_output = production_df[GlossaryCore.OutputNetOfDamage].values
                 share = (sector_output / output) * 100
                 visible_line = True
                 ordonate_data = list(share)

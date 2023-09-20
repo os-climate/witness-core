@@ -68,8 +68,8 @@ class ObjectivesModel():
         sectors_production_dfs ={}
         sectors_long_term_energy_eff_df = {}
         for sector in self.SECTORS_LIST:
-            sectors_capital_dfs[sector] = inputs[f'{sector}.detailed_capital_df']
-            sectors_production_dfs[sector] = inputs[f'{sector}.production_df']
+            sectors_capital_dfs[sector] = inputs[f'{sector}.{GlossaryCore.DetailedCapitalDfValue}']
+            sectors_production_dfs[sector] = inputs[f'{sector}.{GlossaryCore.ProductionDfValue}']
             sectors_long_term_energy_eff_df[sector] = inputs[f'{sector}.longterm_energy_efficiency']
         self.sectors_capital_dfs = sectors_capital_dfs
         self.sectors_production_dfs = sectors_production_dfs
@@ -94,9 +94,9 @@ class ObjectivesModel():
             capital_df = self.sectors_capital_dfs[sector]
             production_df = self.sectors_production_dfs[sector]
             sectors_gdp_errors[sector] = self.compute_quadratic_error(self.historical_gdp[sector].values, 
-                                                                      production_df['output_net_of_damage'].values, 
+                                                                      production_df[GlossaryCore.OutputNetOfDamage].values, 
                                                                       self.default_weight, self.delta_max_energy_eff) 
-            self.sim_energy_eff = capital_df['energy_efficiency'].values
+            self.sim_energy_eff = capital_df[GlossaryCore.EnergyEfficiency].values
             
             #for energy efficiency: it depends if we add extra years
             if not self.extra_hist_data.empty: 
@@ -105,11 +105,11 @@ class ObjectivesModel():
                 weight = np.append(extra_weight, self.default_weight) 
             else:    
                 hist_energy_eff = self.compute_hist_energy_efficiency(self.historical_energy[sector].values, self.historical_capital[sector].values)
-                hist_energy_eff_dfs[sector] = pd.DataFrame({GlossaryCore.Years: self.years_range, 'energy_efficiency': hist_energy_eff})
+                hist_energy_eff_dfs[sector] = pd.DataFrame({GlossaryCore.Years: self.years_range, GlossaryCore.EnergyEfficiency: hist_energy_eff})
                 weight = self.default_weight
             
             #Energy eff errors
-            sectors_energy_eff_errors[sector] = self.compute_quadratic_error(hist_energy_eff_dfs[sector]['energy_efficiency'].values, 
+            sectors_energy_eff_errors[sector] = self.compute_quadratic_error(hist_energy_eff_dfs[sector][GlossaryCore.EnergyEfficiency].values, 
                                                                              self.sim_energy_eff, weight, self.delta_max_energy_eff)
             
         return error_pib_total, sectors_gdp_errors, sectors_energy_eff_errors, hist_energy_eff_dfs, self.year_min_energy_eff
@@ -163,7 +163,7 @@ class ObjectivesModel():
             hist_energy = np.append([extra_hist_energy],[self.historical_energy[sector].values])
             #prepare data to compute error 
             lt_ene_eff_df = self.sectors_long_term_energy_eff_df[sector]
-            self.sim_energy_eff = lt_ene_eff_df['energy_efficiency'][(lt_ene_eff_df[GlossaryCore.Years]<=self.year_end) & (lt_ene_eff_df[GlossaryCore.Years]>=year_min)].values
+            self.sim_energy_eff = lt_ene_eff_df[GlossaryCore.EnergyEfficiency][(lt_ene_eff_df[GlossaryCore.Years]<=self.year_end) & (lt_ene_eff_df[GlossaryCore.Years]>=year_min)].values
             #get weight for fitting 
             extra_weight = extra_hist_data['weight'][(extra_hist_data[GlossaryCore.Years]>=year_min) & (extra_hist_data[GlossaryCore.Years]< self.year_start)].values
             year_range = np.arange(year_min, self.year_end+1, self.time_step)
@@ -177,7 +177,7 @@ class ObjectivesModel():
         
         #compute energy efficiency
         hist_energy_eff = self.compute_hist_energy_efficiency(hist_energy, hist_capital)
-        hist_energy_eff_df = pd.DataFrame({GlossaryCore.Years: year_range, 'energy_efficiency': hist_energy_eff})
+        hist_energy_eff_df = pd.DataFrame({GlossaryCore.Years: year_range, GlossaryCore.EnergyEfficiency: hist_energy_eff})
 
         return hist_energy_eff_df, extra_weight 
         

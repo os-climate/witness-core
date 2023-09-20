@@ -13,12 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
 
 
 class AgricultureDiscipline(SectorDiscipline):
     "Agriculture sector discpline"
-    sector_name = 'Agriculture'
+    sector_name = GlossaryCore.SectorAgriculture
     # ontology information
     _ontology_data = {
         'label': 'Agriculture sector WITNESS Model',

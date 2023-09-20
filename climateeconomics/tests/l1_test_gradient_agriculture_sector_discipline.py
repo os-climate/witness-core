@@ -45,7 +45,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         total_workforce_df = total_workforce_df[total_workforce_df[GlossaryCore.Years] <= self.year_end]
         # multiply ageworking pop by employment rate and by % in agri
         workforce = total_workforce_df['population_1570'] * 0.659 * 0.274
-        self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years, 'Agriculture': workforce})
+        self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.SectorAgriculture: workforce})
 
         # Energy_supply
         brut_net = 1 / 1.45
@@ -70,7 +70,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         invest_serie.append(init_value)
         for year in np.arange(1, self.nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.002)
-        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years, 'Agriculture': invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.SectorAgriculture: invest_serie})
 
         # damage
         self.damage_df = pd.DataFrame(
@@ -85,7 +85,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         ]
 
     def test_agriculture_sector_analytic_grad(self):
-        self.model_name = 'Agriculture'
+        self.model_name = GlossaryCore.SectorAgriculture
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -110,8 +110,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{self.name}.workforce_df': self.workforce_df,
-                       f'{self.name}.sectors_investment_df': self.total_invest,
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
+                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.total_invest,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.prod_function_fitting': False
                        }
@@ -124,14 +124,14 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
-                                    f'{self.name}.workforce_df',
-                                    f'{self.name}.sectors_investment_df'],
-                            outputs=[f'{self.name}.{self.model_name}.production_df',
-                                     f'{self.name}.{self.model_name}.capital_df',
+                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.ProductionDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                      f'{self.name}.{self.model_name}.emax_enet_constraint'])
 
     def test_agriculture_sector_withoutdamagetoproductivity(self):
-        self.model_name = 'Agriculture'
+        self.model_name = GlossaryCore.SectorAgriculture
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -156,8 +156,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{self.name}.workforce_df': self.workforce_df,
-                       f'{self.name}.sectors_investment_df': self.total_invest,
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
+                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.total_invest,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.prod_function_fitting': False
                        }
@@ -171,10 +171,10 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
-                                    f'{self.name}.workforce_df',
-                                    f'{self.name}.sectors_investment_df'],
-                            outputs=[f'{self.name}.{self.model_name}.production_df',
-                                     f'{self.name}.{self.model_name}.capital_df',
+                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.ProductionDfValue}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                      f'{self.name}.{self.model_name}.emax_enet_constraint'])
 
 

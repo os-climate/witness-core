@@ -160,7 +160,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             agriculture_techno_list = self.get_sosdisc_inputs(
                 'agri_capital_techno_list')
             if agriculture_techno_list is not None:
-                energy_techno_dict['Agriculture'] = {'namespace': 'ns_forest',
+                energy_techno_dict[GlossaryCore.SectorAgriculture] = {'namespace': 'ns_forest',
                                                      'value': agriculture_techno_list}
 
         if len(energy_techno_dict) != 0:
@@ -396,7 +396,7 @@ def compute_full_techno_list(energy_techno_dict):
     '''
     full_techno_list = []
     for energy, techno_dict in energy_techno_dict.items():
-        if energy == 'Agriculture':
+        if energy == GlossaryCore.SectorAgriculture:
             full_techno_list.extend(
                 [(f'', techno_dict['namespace']) for techno in techno_dict['value']])
         else:

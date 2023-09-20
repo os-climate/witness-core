@@ -41,8 +41,8 @@ class LaborMarketTestCase(unittest.TestCase):
         agrishare = 27.4
         indusshare = 21.7
         serviceshare = 50.9
-        workforce_share = DataFrame({GlossaryCore.Years:self. years, 'Agriculture': agrishare,
-                                     'Industry': indusshare, 'Services': serviceshare})
+        workforce_share = DataFrame({GlossaryCore.Years:self. years, GlossaryCore.SectorAgriculture: agrishare,
+                                     GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: serviceshare})
         self.workforce_share = workforce_share
         data_dir = join(dirname(__file__), 'data')
         working_age_pop_df = read_csv(
@@ -95,8 +95,8 @@ class LaborMarketTestCase(unittest.TestCase):
             agri.append(agri[year - 1] * 0.99)
         service = np.array([100.0]*nb_per) - agri - indusshare
         #service = np.substract(total, agri)
-        workforce_share = DataFrame({GlossaryCore.Years:self. years, 'Agriculture': agri,
-                                     'Industry': indusshare, 'Services': service})
+        workforce_share = DataFrame({GlossaryCore.Years:self. years, GlossaryCore.SectorAgriculture: agri,
+                                     GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: service})
         
         name = 'Test'
         model_name = 'Labor Market'
