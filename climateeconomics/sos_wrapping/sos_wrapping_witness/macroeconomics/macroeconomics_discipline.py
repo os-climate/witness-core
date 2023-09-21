@@ -1371,8 +1371,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             for sector in sectors_list:
                 sector_gdp_part = sector_gdp_df[sector] / total_gdp * 100.
                 sector_gdp_part = np.nan_to_num(sector_gdp_part, nan=0.)
-                serie = InstanciatedSeries(list(sector_gdp_df[GlossaryCore.Years]),
-                                           list(sector_gdp_part), sector, 'bar')
+                serie = InstanciatedSeries(list(sector_gdp_df[GlossaryCore.Years]), list(sector_gdp_part), sector, 'bar', True)
                 new_chart.series.append(serie)
 
             instanciated_charts.append(new_chart)
