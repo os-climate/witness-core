@@ -142,12 +142,11 @@ class Study(StudyManager):
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
         func_df['variable'] = ['Industry.gdp_error',
                                'Industry.energy_eff_error',
-                               'Industry.range_energy_eff_constraint'
                                ]
-        func_df['ftype'] = [OBJECTIVE, OBJECTIVE, INEQ_CONSTRAINT]
-        func_df['weight'] = [1, 1, 1]
-        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM]
-        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_macro']
+        func_df['ftype'] = [OBJECTIVE, OBJECTIVE]
+        func_df['weight'] = [1, 1]
+        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM]
+        func_df['namespace'] = ['ns_obj', 'ns_obj']
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{ns_coupling}.{func_mng_name}.'
@@ -179,7 +178,7 @@ class Study(StudyManager):
         sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = hist_invest
         sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = hist_invest
         sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = hist_invest
-        sect_input[f"{ns_coupling}.{self.macro_name}.{'prod_function_fitting'}"] = True
+        sect_input[f"{ns_coupling}.{self.macro_name}.{'prod_function_fitting'}"] = False
         sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
         sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
         sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
