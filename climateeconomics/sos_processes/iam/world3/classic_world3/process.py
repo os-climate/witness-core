@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from climateeconomics.glossarycore import GlossaryCore
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
