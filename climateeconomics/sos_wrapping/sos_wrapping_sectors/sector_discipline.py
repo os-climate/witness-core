@@ -122,7 +122,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
         # Store output data
         dict_values = {GlossaryCore.ProductivityDfValue: productivity_df,
-                       GlossaryCore.DetailedCapitalDfValue: detailed_capital_df,
+                       f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}": detailed_capital_df,
                        'growth_rate_df': growth_rate_df,
                        'emax_enet_constraint': emax_enet_constraint,
                        f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[
@@ -242,7 +242,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         production_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.ProductionDfValue}")
-        detailed_capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
+        detailed_capital_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}")
         productivity_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
         workforce_df = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
