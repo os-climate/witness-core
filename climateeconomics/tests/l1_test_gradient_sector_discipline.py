@@ -21,18 +21,19 @@ from pandas import DataFrame, read_csv
 from scipy.interpolate import interp1d
 
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
-class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JCOBIAN = True
+class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start = 2020
-        self.year_end = 2050
+        self.year_end = 2024
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.nb_per = round((self.year_end - self.year_start) / self.time_step + 1)
@@ -43,13 +44,13 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
         total_workforce_df = total_workforce_df[total_workforce_df[GlossaryCore.Years] <= self.year_end]
-        # multiply ageworking pop by employment rate and by % in agri
-        workforce = total_workforce_df['population_1570'] * 0.659 * 0.274
-        self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.SectorAgriculture: workforce})
+        # multiply ageworking pop by employment rate and by % in services
+        workforce = total_workforce_df['population_1570'] * 0.659 * 0.509
+        self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years, SectorDiscipline.sector_name: workforce})
 
         # Energy_supply
         brut_net = 1 / 1.45
-        share_agri = 0.02136
+        share_indus = 0.37
         # prepare energy df
         energy_outlook = pd.DataFrame({
             'year': [2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
@@ -58,34 +59,35 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
         # Find values for 2020, 2050 and concat dfs
         energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
-        energy_supply_values = energy_supply * brut_net * share_agri
+        energy_supply_values = energy_supply * brut_net * share_indus
         energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: energy_supply_values})
         energy_supply_df.index = self.years
         self.energy_supply_df = energy_supply_df
         # energy_supply_df.loc[2020, GlossaryCore.TotalProductionValue] = 91.936
 
         # Investment growth at 2%
-        init_value = 5.89
+        init_value = 25
         invest_serie = []
         invest_serie.append(init_value)
         for year in np.arange(1, self.nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.002)
-        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.SectorAgriculture: invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years, SectorDiscipline.sector_name: invest_serie})
 
         # damage
         self.damage_df = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
              GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
         self.damage_df.index = self.years
+        self.damage_df[GlossaryCore.DamageFractionOutput] = 1e-2
 
     def analytic_grad_entry(self):
         return [
-            self.test_agriculture_sector_analytic_grad,
-            self.test_agriculture_sector_withoutdamagetoproductivity
+            self.test_services_analytic_grad,
+            self.test_services_withotudamagetoproductivity
         ]
 
-    def test_agriculture_sector_analytic_grad(self):
-        self.model_name = GlossaryCore.SectorAgriculture
+    def test_services_analytic_grad(self):
+        self.model_name = SectorDiscipline.sector_name
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -95,7 +97,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
@@ -120,18 +122,19 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_agriculture_sector_discipline.pkl',
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sector_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.ProductionDfValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
-                                     f'{self.name}.{self.model_name}.emax_enet_constraint'])
+                            outputs=[
+                                f'{self.name}.{self.model_name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
+                                f'{self.name}.{self.model_name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
+                                f'{self.name}.{self.model_name}.emax_enet_constraint'])
 
-    def test_agriculture_sector_withoutdamagetoproductivity(self):
-        self.model_name = GlossaryCore.SectorAgriculture
+    def test_services_withotudamagetoproductivity(self):
+        self.model_name = SectorDiscipline.sector_name
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -141,8 +144,9 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline'
-        builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
@@ -159,22 +163,19 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
                        f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.total_invest,
                        f'{self.name}.alpha': 0.5,
-                       f'{self.name}.prod_function_fitting': False
+                       f'{self.name}.prod_function_fitting': False,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__),
-                            filename=f'jacobian_agriculture_sector_discipline_withoutdamage.pkl',
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sector_discipline_withoutdamage.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{GlossaryCore.ProductionDfValue}',
-                                     f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
+                            outputs=[f'{self.name}.{self.model_name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
+                                     f'{self.name}.{self.model_name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
                                      f'{self.name}.{self.model_name}.emax_enet_constraint'])
-
-

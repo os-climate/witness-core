@@ -160,14 +160,14 @@ class SectorDiscipline(ClimateEcoDiscipline):
         doutput_denergy = self.model.doutput_denergy(dcapitalu_denergy)
         dnetoutput_denergy = self.model.dnetoutput(doutput_denergy)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ProductionDfValue, GlossaryCore.GrossOutput), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * doutput_denergy)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ProductionDfValue, GlossaryCore.OutputNetOfDamage),
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * dnetoutput_denergy)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CapitalDfValue, GlossaryCore.UsableCapital), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * dcapitalu_denergy)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
@@ -178,9 +178,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dnetoutput_dworkforce = self.model.dnetoutput(
             doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ProductionDfValue, GlossaryCore.GrossOutput), (GlossaryCore.WorkforceDfValue, self.sector_name), doutput_dworkforce)
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput), (GlossaryCore.WorkforceDfValue, self.sector_name), doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ProductionDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.WorkforceDfValue, self.sector_name), dnetoutput_dworkforce)
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage), (GlossaryCore.WorkforceDfValue, self.sector_name), dnetoutput_dworkforce)
 
         # gradients wrt damage:
         dproductivity_ddamage = self.model.dproductivity_ddamage()
@@ -189,10 +189,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dnetoutput_ddamage = self.model.dnetoutput_ddamage(
             doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ProductionDfValue, GlossaryCore.GrossOutput), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ProductionDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             dnetoutput_ddamage)
 
         # gradients wrt invest
@@ -206,7 +206,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         demax_cstrt_dinvest = self.model.demaxconstraint(
             dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CapitalDfValue, GlossaryCore.Capital), (invest_df, self.sector_name), dcapital_dinvest)
+            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.Capital), (invest_df, self.sector_name), dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
             ('emax_enet_constraint',), (invest_df, self.sector_name), demax_cstrt_dinvest)
 
