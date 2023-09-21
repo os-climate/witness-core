@@ -353,6 +353,7 @@ class GlossaryCore:
     ProductionDf = {
         "var_name": ProductionDfValue,
         "namespace": "ns_witness",
+        "visibility": "Shared",
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -368,6 +369,7 @@ class GlossaryCore:
     SectorizedCapitalDf = {
         "var_name": CapitalDfValue,
         "namespace": "ns_witness",
+        "visibility": "Shared",
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -382,6 +384,8 @@ class GlossaryCore:
     EnergyEfficiency = "energy_efficiency"
     DetailedCapitalDf = {
         "var_name": DetailedCapitalDfValue,
+        "visibility": "Shared",
+        "namespace": "ns_witness",
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
@@ -433,7 +437,7 @@ class GlossaryCore:
         },
     }
 
-    SectorInvestmentDfValue = "sectors_investment_df"  #todo :useless, delete ?
+    SectorInvestmentDfValue = "sectors_investment_df"
     SectorInvestmentDf = {
         "type": "dataframe",
         "unit": "T$",

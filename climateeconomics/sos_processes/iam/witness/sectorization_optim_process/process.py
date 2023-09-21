@@ -57,18 +57,19 @@ class ProcessBuilder(BaseProcessBuilder):
             f'{objectives_name}', obj_path)
         chain_builders.append(obj_builder)
 
-        #ns_macro = self.ee.study_name + coupling_name + '.Macroeconomics'
         ns_scatter = self.ee.study_name
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            optim_name + '.' + coupling_name, after_name=self.ee.study_name)
+            f"{optim_name}.{coupling_name}", after_name=self.ee.study_name)
 
-        ns_dict = {'ns_optim': ns_scatter + '.' + optim_name,
-                   'ns_services':  ns_scatter + '.' + optim_name + '.' + coupling_name + '.' + macro_name + '.Services',
-                   'ns_indus':  ns_scatter + '.' + optim_name + '.' + coupling_name + '.' + macro_name + '.Industry',
-                   'ns_agri':  ns_scatter + '.' + optim_name + '.' + coupling_name + '.' + macro_name + '.Agriculture',
-                   'ns_obj': ns_scatter + '.' + optim_name + '.' + coupling_name + '.Objectives', }
+        ns_dict = {
+                    'ns_optim': f"{ns_scatter}.{optim_name}",
+                   'ns_services':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{'Services'}",
+                   'ns_indus':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{'Industry'}",
+                   'ns_agri':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{'Agriculture'}",
+                   'ns_obj': f"{ns_scatter}.{optim_name}.{coupling_name}.{'Objectives'}",
+                   }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         # create coupling builder

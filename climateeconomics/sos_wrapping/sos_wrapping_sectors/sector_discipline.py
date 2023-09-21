@@ -63,7 +63,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
-        GlossaryCore.DetailedCapitalDfValue: GlossaryCore.DetailedCapitalDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint': {'type': 'array'},
     }
@@ -90,6 +89,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
             GlossaryCore.ProductionDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.CapitalDfValue}"] = GlossaryCore.get_dynamic_variable(
             GlossaryCore.SectorizedCapitalDf)
+        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}"] = GlossaryCore.get_dynamic_variable(
+            GlossaryCore.DetailedCapitalDf)
 
         self.add_outputs(dynamic_outputs)
 

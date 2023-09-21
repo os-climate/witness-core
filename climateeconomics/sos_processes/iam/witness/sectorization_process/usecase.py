@@ -90,13 +90,8 @@ class Study(StudyManager):
             hist_workforce = pd.read_csv(join(data_dir, 'hist_workforce_sect.csv'))
             workforce_df = hist_workforce
             #Tshare sectors invest
-            hist_share = pd.read_csv(join(data_dir, 'hist_invest_share_sectors.csv'))
-            share_sectors_invest = hist_share
 
         else:
-            one = np.ones(self.nb_per)
-            share_sectors_invest =  pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: one * 0.4522,
-                                            GlossaryCore.SectorIndustry: one * 6.8998, GlossaryCore.SectorServices: one * 19.1818})
             # Energy
             brut_net = 1 / 1.45
             energy_outlook = pd.DataFrame({
@@ -127,7 +122,8 @@ class Study(StudyManager):
              GlossaryCore.Damages: np.zeros(self.nb_per),
              GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
              GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
-        #Sectors invest
+
+        # Sectors invest
         base_dummy_data = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: np.ones(self.nb_per), GlossaryCore.SectorIndustry: np.ones(self.nb_per),
              GlossaryCore.SectorServices: np.ones(self.nb_per)})
@@ -142,6 +138,7 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         sect_input[f"{self.study_name}.{GlossaryCore.WorkforceDfValue}"] = workforce_df
         sect_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = total_investment_share_of_gdp
+        #sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorListValue}"] = GlossaryCore.SectorsPossibleValues
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy

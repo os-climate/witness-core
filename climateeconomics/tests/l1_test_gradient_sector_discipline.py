@@ -13,11 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import os.path
 import unittest
 import numpy as np
 import pandas as pd
 from os.path import join, dirname
-from pandas import DataFrame, read_csv
+from pandas import read_csv
 from scipy.interpolate import interp1d
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -27,13 +28,13 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start = 2020
-        self.year_end = 2024
+        self.year_end = 2023
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.nb_per = round((self.year_end - self.year_start) / self.time_step + 1)
@@ -82,11 +83,11 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
     def analytic_grad_entry(self):
         return [
-            self.test_services_analytic_grad,
-            self.test_services_withotudamagetoproductivity
+            self.test_analytic_grad,
+            self.test_gradient_withotudamagetoproductivity
         ]
 
-    def test_services_analytic_grad(self):
+    def test_analytic_grad(self):
         self.model_name = SectorDiscipline.sector_name
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
@@ -122,18 +123,18 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sector_discipline.pkl',
+        self.check_jacobian(location=os.path.abspath(dirname(__file__)), filename=f'jacobian_sector_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}'],
                             outputs=[
-                                f'{self.name}.{self.model_name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
-                                f'{self.name}.{self.model_name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{self.model_name}.emax_enet_constraint'])
 
-    def test_services_withotudamagetoproductivity(self):
+    def test_gradient_withotudamagetoproductivity(self):
         self.model_name = SectorDiscipline.sector_name
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
@@ -176,6 +177,6 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                                     f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}'],
-                            outputs=[f'{self.name}.{self.model_name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
-                                     f'{self.name}.{self.model_name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
+                            outputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
+                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
                                      f'{self.name}.{self.model_name}.emax_enet_constraint'])

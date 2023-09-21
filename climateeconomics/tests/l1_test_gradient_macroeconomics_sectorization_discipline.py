@@ -110,12 +110,12 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}': self.total_invest,
                        f'{self.name}.sectors_investment_share': self.share_sector_invest,
-                       f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
-                       f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
-                       f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
-                       f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
-                       f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
-                       f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}':self.cap_agri_df,
+                       f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
+                       f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
+                       f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
+                       f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
+                       f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
+                       f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -125,12 +125,12 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macro_sectorization_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data= disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}',
-                                    f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}',
-                                    f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}',
-                                    f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
-                                    f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
-                                    f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
-                                    f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}'],
+                                    f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}']
                             )
         

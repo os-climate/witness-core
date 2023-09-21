@@ -163,10 +163,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                  chart_name=chart_name)
 
             for key in to_plot:
-                visible_line = True
                 ordonate_data = list(economics_df[key])
                 new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'lines', visible_line)
+                    years, ordonate_data, legend[key], 'lines', True)
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -194,7 +193,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                  chart_name= chart_name)
             ordonate_data = list(investment_df[GlossaryCore.InvestmentsValue])
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'total investment', 'lines', visible_line)
+                years, ordonate_data, 'total investment', 'lines', True)
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -211,10 +210,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                  chart_name=chart_name)
 
             for key in to_plot:
-                visible_line = True
                 ordonate_data = list(economics_df[key])
                 new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'lines', visible_line)
+                    years, ordonate_data, legend[key], 'lines', True)
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -229,10 +227,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 capital_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.CapitalDfValue}')
                 sector_capital = capital_df[GlossaryCore.Capital].values
                 share = (sector_capital / capital) * 100
-                visible_line = True
                 ordonate_data = list(share)
                 new_series = InstanciatedSeries(years, ordonate_data,
-                                                sector, 'bar', visible_line)
+                                                sector, 'bar', True)
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -247,10 +244,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 production_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.ProductionDfValue}')
                 sector_output = production_df[GlossaryCore.OutputNetOfDamage].values
                 share = (sector_output / output) * 100
-                visible_line = True
                 ordonate_data = list(share)
                 new_series = InstanciatedSeries(years, ordonate_data,
-                                                sector, 'bar', visible_line)
+                                                sector, 'bar', True)
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -263,10 +259,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' growth rate [-]',
                                                  chart_name=chart_name)
             for key in to_plot:
-                visible_line = True
                 ordonate_data = list(economics_df[key])
                 new_series = InstanciatedSeries(
-                    years, ordonate_data, key, 'lines', visible_line)
+                    years, ordonate_data, key, 'lines', True)
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
