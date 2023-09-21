@@ -29,7 +29,6 @@ from copy import deepcopy
 from sostrades_core.tools.base_functions.exp_min import compute_func_with_exp_min
 from sostrades_core.tools.cst_manager.constraint_manager import compute_ddelta_constraint
 from climateeconomics.glossarycore import GlossaryCore
-from energy_asset_portfolio.models.asset_mix.asset_mix_disc import AssetMixDiscipline
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -1372,7 +1371,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             for sector in sectors_list:
                 sector_gdp_part = sector_gdp_df[sector] / total_gdp * 100.
                 sector_gdp_part = np.nan_to_num(sector_gdp_part, nan=0.)
-                serie = AssetMixDiscipline.create_new_series(sector_gdp_df[GlossaryCore.Years], sector_gdp_part, sector, 'bar')
+                serie = InstanciatedSeries(list(sector_gdp_df[GlossaryCore.Years]), list(sector_gdp_part), sector, 'bar', True)
                 new_chart.series.append(serie)
 
             instanciated_charts.append(new_chart)
