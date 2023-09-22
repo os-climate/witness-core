@@ -135,9 +135,9 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -282,9 +282,9 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -429,9 +429,9 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -576,9 +576,9 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,

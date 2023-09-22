@@ -66,13 +66,13 @@ class DataStudy():
 
         # private values economics operator pyworld3
         witness_input = {}
-        witness_input[f"{self.study_name}.{'year_start'}"] = self.year_start
-        witness_input[f"{self.study_name}.{'year_end'}"] = self.year_end
-        witness_input[f"{self.study_name}.{'time_step'}"] = self.time_step
+        witness_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        witness_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
+        witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
-        witness_input[f"{self.study_name}.{'Damage.tipping_point'}"] = True
-        witness_input[f"{self.study_name}.{'Macroeconomics.damage_to_productivity'}"] = True
-        witness_input[f"{self.study_name}.{'frac_damage_prod'}"] = 0.30
+        witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
+        witness_input[f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}"] = True
+        witness_input[f"{self.study_name}.{GlossaryCore.FractionDamageToProductivityValue}"] = 0.30
         witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015
         witness_input[f"{self.study_name}.{'conso_elasticity'}"] = 1.45
         witness_input[f"{self.study_name}.{GlossaryCore.InitialGrossOutput['var_name']}"] = 130.187
@@ -80,7 +80,7 @@ class DataStudy():
         witness_input[f"{self.study_name}.{'Damage.damage_constraint_factor'}"] = np.concatenate(
             (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
         #         witness_input[f"{self.study_name}.{}#                      '.Damage.damage_constraint_factor'}" = np.asarray([1] * len(years))
-        witness_input[f'{self.study_name}.InvestmentDistribution.forest_investment'] = self.forest_invest_df
+        witness_input[f"{self.study_name}.{'InvestmentDistribution'}.forest_investment"] = self.forest_invest_df
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[3], 'data')

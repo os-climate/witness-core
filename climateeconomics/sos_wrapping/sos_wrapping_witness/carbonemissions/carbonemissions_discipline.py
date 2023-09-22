@@ -45,9 +45,9 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
     _maturity = 'Research'
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_gr_sigma': {'type': 'float', 'default': -0.0152, 'user_level': 2, 'unit': '-'},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001, 'user_level': 2, 'unit': '-'},
         'init_indus_emissions': {'type': 'float', 'default': 34, 'unit': 'GtCO2 per year', 'user_level': 2},
@@ -57,19 +57,19 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                          'dataframe_descriptor': {'years': ('float', None, False),
                                                   'gross_output': ('float', None, False),
                                                   GlossaryCore.PopulationValue: ('float', None, False),
-                                                  'productivity': ('float', None, False),
-                                                  'productivity_gr': ('float', None, False),
+                                                  GlossaryCore.Productivity: ('float', None, False),
+                                                  GlossaryCore.ProductivityGrowthRate: ('float', None, False),
                                                   'energy_productivity_gr': ('float', None, False),
                                                   'energy_productivity': ('float', None, False),
                                                   'consumption': ('float', None, False),
-                                                  'capital': ('float', None, False),
+                                                  GlossaryCore.Capital: ('float', None, False),
                                                   GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
-                                                  'output_growth': ('float', None, False),
+                                                  GlossaryCore.OutputGrowth: ('float', None, False),
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   'pc_consumption': ('float', None, False),
                                                   'output_net_of_d': ('float', None, False),
-                                                  'net_output': ('float', None, False),
+                                                  GlossaryCore.NetOutput: ('float', None, False),
                                                   }},
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2, 'unit': '-'},
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'},
@@ -155,7 +155,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         """
         inputs_dict = self.get_sosdisc_inputs()
         years = np.arange(
-            inputs_dict['year_start'], inputs_dict['year_end'] + 1, inputs_dict['time_step'])
+            inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1, inputs_dict[GlossaryCore.TimeStep])
         nb_years = len(years)
 
         d_indus_emissions_d_gross_output, d_cum_indus_emissions_d_gross_output, d_cum_indus_emissions_d_total_CO2_emitted = self.emissions_model.compute_d_indus_emissions()

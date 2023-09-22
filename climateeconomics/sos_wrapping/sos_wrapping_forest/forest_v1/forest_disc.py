@@ -49,9 +49,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
     deforestation_limit = 1000
     initial_emissions = 3.21
 
-    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                Forest.DEFORESTATION_SURFACE: {'type': 'dataframe', 'unit': 'Mha',
                                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                                'deforested_surface': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,

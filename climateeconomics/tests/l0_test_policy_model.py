@@ -69,7 +69,7 @@ class PolicyDiscTest(unittest.TestCase):
         CO2_tax = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.CO2TaxesValue}')
 
 #         np.testing.assert_almost_equal(
-# max_CCS_CO2, CO2_tax['CO2_tax'].values, err_msg='arrays are not equal')
+# max_CCS_CO2, CO2_tax[GlossaryCore.CO2Tax].values, err_msg='arrays are not equal')
 
         ppf = PostProcessingFactory()
         disc = self.ee.dm.get_disciplines_with_name(f'Test.policy')

@@ -98,7 +98,7 @@ class MacroDiscTest(unittest.TestCase):
         self.damage_df.index = self.years
 
         default_CO2_tax = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_tax': 50.0}, index=years)
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: 50.0}, index=years)
         
         # energy_capital
         nb_per = len(self.years)
@@ -129,11 +129,12 @@ class MacroDiscTest(unittest.TestCase):
         co2_emissions_gt.index = years
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, 'CO2_tax_efficiency': 40.0}, index=years)
+        sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
 
         # out dict definition
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
-                       f'{self.name}.time_step': time_step,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
@@ -146,7 +147,8 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.CO2_tax_efficiency': default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.working_age_population_df': working_age_pop_df, 
-                       f'{self.name}.energy_capital': self.energy_capital_df
+                       f'{self.name}.energy_capital': self.energy_capital_df,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': sectors_list,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -157,4 +159,5 @@ class MacroDiscTest(unittest.TestCase):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            graph.to_plotly().show()
+            #graph.to_plotly().show()
+            pass

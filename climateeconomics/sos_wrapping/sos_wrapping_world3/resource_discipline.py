@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_world3.resource import Resource
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -36,9 +37,9 @@ class ResourceDiscipline(SoSWrapp):
     }
     # Define the inputs of the SoSWrapp: type, visibility and namespace (useful for coupling)
     DESC_IN = {
-        'year_start': {'type': 'int', 'default': 1900, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
-        'year_end': {'type': 'int', 'default': 2100, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
-        'time_step': {'type': 'float', 'default': 0.5, 'unit': 'year per period', 'visibility': 'Shared',
+        GlossaryCore.YearStart: {'type': 'int', 'default': 1900, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
+        GlossaryCore.YearEnd: {'type': 'int', 'default': 2100, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
+        GlossaryCore.TimeStep: {'type': 'float', 'default': 0.5, 'unit': 'year per period', 'visibility': 'Shared',
                       'namespace': 'ns_data'},
         'pyear': {'type': 'int', 'default': 1975, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_data'},
         'iopc': {'type': 'array', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_coupling'},
@@ -143,9 +144,9 @@ class ResourceDiscipline(SoSWrapp):
         if ResourceDiscipline.RESOURCES_CHARTS in chart_list:
 
             agriculture_df = self.get_sosdisc_outputs()
-            years_start = self.get_sosdisc_inputs('year_start')
-            years_end = self.get_sosdisc_inputs('year_end')
-            time_step = self.get_sosdisc_inputs('time_step')
+            years_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+            years_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
+            time_step = self.get_sosdisc_inputs(GlossaryCore.TimeStep)
 
             years = np.arange(years_start, years_end, time_step)
 

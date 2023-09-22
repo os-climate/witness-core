@@ -42,9 +42,9 @@ class Population:
 
     def set_data(self, inputs):
 
-        self.year_start = inputs['year_start']
-        self.year_end = inputs['year_end']
-        self.time_step = inputs['time_step']
+        self.year_start = inputs[GlossaryCore.YearStart]
+        self.year_end = inputs[GlossaryCore.YearEnd]
+        self.time_step = inputs[GlossaryCore.TimeStep]
         self.pop_init_df = inputs['population_start']
         self.br_upper = inputs['birth_rate_upper']
         self.br_lower = inputs['birth_rate_lower']
@@ -241,7 +241,7 @@ class Population:
         '''
         gdp = self.economics_df.at[year, GlossaryCore.OutputNetOfDamage] * self.trillion
         pop = self.total_pop
-        temp = self.temperature_df.loc[year, 'temp_atmo']
+        temp = self.temperature_df.loc[year, GlossaryCore.TempAtmo]
         param = self.dr_param_df
         add_death = self.climate_mortality_param_df
         kcal_pc = self.calories_pc_df.loc[year, 'kcal_pc']
@@ -592,7 +592,7 @@ class Population:
 
         d_climate_deathrate_d_output = {}
         climate_death_rate = self.climate_death_rate_df.iloc[iyear, :]
-        temp = self.temperature_df.loc[year, 'temp_atmo']
+        temp = self.temperature_df.loc[year, GlossaryCore.TempAtmo]
         add_death = self.climate_mortality_param_df
         add_death.index = param['param'].values
         cal_temp_increase = self.cal_temp_increase
@@ -874,7 +874,7 @@ class Population:
         d_climate_deathrate_d_temp = {}
         base_death_rate = self.base_death_rate_df.iloc[iyear, :]
         climate_death_rate = self.climate_death_rate_df.iloc[iyear, :]
-        temp = self.temperature_df.loc[year, 'temp_atmo']
+        temp = self.temperature_df.loc[year, GlossaryCore.TempAtmo]
         cal_temp_increase = self.cal_temp_increase
         theta = self.theta
         add_death = self.climate_mortality_param_df
@@ -985,7 +985,7 @@ class Population:
         d_base_deathrate_d_kcal_pc = {}
         pop = self.population_df.loc[year, 'total']
         gdp = self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] * self.trillion
-        temp = self.temperature_df.loc[year, 'temp_atmo']
+        temp = self.temperature_df.loc[year, GlossaryCore.TempAtmo]
         add_death = self.climate_mortality_param_df
         add_death.index = add_death['param'].values
         cal_temp_increase = self.cal_temp_increase

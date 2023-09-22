@@ -84,7 +84,7 @@ class Study(StudyManager):
 
         temperature = np.array(np.linspace(1.05, 5.0, year_range))
         temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "temp_atmo": temperature})
+            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
         temperature_df.index = years
 
         population = np.array(np.linspace(7800.0, 9000.0, year_range))
@@ -158,11 +158,11 @@ class Study(StudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_tax': func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
 
         values_dict = {
-            f'{self.study_name}.year_start': self.year_start,
-            f'{self.study_name}.year_end': self.year_end,
+            f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
+            f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end,
             f'{self.study_name}.{energy_name}.{GlossaryCore.techno_list}': self.model_list,
             f'{self.study_name}.margin': self.margin,
             f'{self.study_name}.transport_cost': self.transport,

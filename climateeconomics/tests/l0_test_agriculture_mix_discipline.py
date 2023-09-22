@@ -47,7 +47,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         temperature = np.array(np.linspace(1.05, 4, year_range))
 
         self.temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, "temp_atmo": temperature})
+            {GlossaryCore.Years: self.years, GlossaryCore.TempAtmo: temperature})
         self.temperature_df.index = self.years
 
         self.population_df = pd.DataFrame(
@@ -155,7 +155,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'CO2_tax': func(self.years)})
+            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: func(self.years)})
                     
     def test_agriculture_mix_discipline(self):
         '''
@@ -178,8 +178,8 @@ class AgricultureMixModelTestCase(unittest.TestCase):
 
         ee.configure()
         ee.display_treeview_nodes()
-        inputs_dict = {f'{test_name}.year_start': self.year_start,
-                       f'{test_name}.year_end': self.year_end,
+        inputs_dict = {f'{test_name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{test_name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{test_name}.{disc_name}.Crop.techno_consumption': self.techno_consumption_crop,
                        f'{test_name}.{disc_name}.Crop.techno_consumption_woratio': self.techno_consumption_woratio_crop,
                        f'{test_name}.{disc_name}.Crop.techno_production': self.techno_production_crop,

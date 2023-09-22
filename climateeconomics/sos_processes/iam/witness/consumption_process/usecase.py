@@ -75,8 +75,8 @@ class Study(StudyManager):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
         one = np.ones(self.nb_per)
-        share_sectors_invest = pd.DataFrame({GlossaryCore.Years: years, 'Agriculture': one * 0.4522,
-                                             'Industry': one * 6.8998, 'Services': one * 19.1818})
+        share_sectors_invest = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: one * 0.4522,
+                                             GlossaryCore.SectorIndustry: one * 6.8998, GlossaryCore.SectorServices: one * 19.1818})
 
         # Energy
         brut_net = 1 / 1.45
@@ -96,8 +96,8 @@ class Study(StudyManager):
         agrishare = 27.4
         indusshare = 21.7
         serviceshare = 50.9
-        workforce_share = pd.DataFrame({GlossaryCore.Years: years, 'Agriculture': agrishare,
-                                        'Industry': indusshare, 'Services': serviceshare})
+        workforce_share = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: agrishare,
+                                        GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: serviceshare})
 
         # Damage
         damage_df = pd.DataFrame(
@@ -108,14 +108,14 @@ class Study(StudyManager):
 
         # data for consumption
         temperature = np.linspace(1, 3, len(years))
-        temperature_df = pd.DataFrame({GlossaryCore.Years: years, 'temp_atmo': temperature, 'temp_ocean': temperature / 100})
+        temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature, GlossaryCore.TempOcean: temperature / 100})
         temperature_df.index = years
         residential_energy = np.linspace(21, 58, len(years))
         residential_energy_df = pd.DataFrame(
             {GlossaryCore.Years: years, 'residential_energy': residential_energy})
         energy_price = np.arange(110, 110 + len(years))
         energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
         # Share invest
         share_invest = np.asarray([27.0] * self.nb_per)
         share_invest = pd.DataFrame({GlossaryCore.Years: years, 'share_investment': share_invest})
@@ -123,8 +123,8 @@ class Study(StudyManager):
 
         # Sectors invest
         base_dummy_data = pd.DataFrame(
-            {GlossaryCore.Years: years, 'Agriculture': np.ones(self.nb_per), 'Industry': np.ones(self.nb_per),
-             'Services': np.ones(self.nb_per)})
+            {GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: np.ones(self.nb_per), GlossaryCore.SectorIndustry: np.ones(self.nb_per),
+             GlossaryCore.SectorServices: np.ones(self.nb_per)})
 
         # economisc df to init mda
         # Test With a GDP that grows at 2%
@@ -133,20 +133,20 @@ class Study(StudyManager):
         economics_df.index = years
 
         cons_input = {}
-        cons_input[f"{self.study_name}.{'year_start'}"] = self.year_start
-        cons_input[f"{self.study_name}.{'year_end'}"] = self.year_end
+        cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        cons_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         cons_input[f"{self.study_name}.{'sectors_investment_share'}"] = share_sectors_invest
-        cons_input[f"{self.study_name}.{self.macro_name}.{'Industry'}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
-        cons_input[f"{self.study_name}.{self.macro_name}.{'Agriculture'}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
-        cons_input[f"{self.study_name}.{self.macro_name}.{'Services'}.{GlossaryCore.EnergyProductionValue}"] = services_energy
-        cons_input[f"{self.study_name}.{self.macro_name}.{'Industry'}.{GlossaryCore.DamageDfValue}"] = damage_df
-        cons_input[f"{self.study_name}.{self.macro_name}.{'Agriculture'}.{GlossaryCore.DamageDfValue}"] = damage_df
-        cons_input[f"{self.study_name}.{self.macro_name}.{'Services'}.{GlossaryCore.DamageDfValue}"] = damage_df
-        cons_input[f"{self.study_name}.{'total_investment_share_of_gdp'}"] = share_invest_df
+        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
+        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
+        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
+        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}"] = damage_df
+        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
+        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
+        cons_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = share_invest_df
         cons_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
         cons_input[f"{self.study_name}.{'residential_energy'}"] = residential_energy_df
-        cons_input[f"{self.study_name}.{'energy_mean_price'}"] = energy_mean_price
-        cons_input[f"{self.study_name}.{'sectors_investment_df'}"] = base_dummy_data
+        cons_input[f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
+        cons_input[f"{self.study_name}.{GlossaryCore.SectorInvestmentDfValue}"] = base_dummy_data
         cons_input[f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}"] = workforce_share
         cons_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = economics_df
 

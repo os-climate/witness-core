@@ -41,8 +41,8 @@ class LaborMarketTestCase(unittest.TestCase):
         agrishare = 27.4
         indusshare = 21.7
         serviceshare = 50.9
-        workforce_share = DataFrame({GlossaryCore.Years:self. years, 'Agriculture': agrishare,
-                                     'Industry': indusshare, 'Services': serviceshare})
+        workforce_share = DataFrame({GlossaryCore.Years:self. years, GlossaryCore.SectorAgriculture: agrishare,
+                                     GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: serviceshare})
         self.workforce_share = workforce_share
         data_dir = join(dirname(__file__), 'data')
         working_age_pop_df = read_csv(
@@ -69,8 +69,8 @@ class LaborMarketTestCase(unittest.TestCase):
 
         ee.configure()
         ee.display_treeview_nodes()
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.workforce_share_per_sector': self.workforce_share, 
                        f'{name}.working_age_population_df': self.working_age_pop_df
                        }
@@ -95,8 +95,8 @@ class LaborMarketTestCase(unittest.TestCase):
             agri.append(agri[year - 1] * 0.99)
         service = np.array([100.0]*nb_per) - agri - indusshare
         #service = np.substract(total, agri)
-        workforce_share = DataFrame({GlossaryCore.Years:self. years, 'Agriculture': agri,
-                                     'Industry': indusshare, 'Services': service})
+        workforce_share = DataFrame({GlossaryCore.Years:self. years, GlossaryCore.SectorAgriculture: agri,
+                                     GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: service})
         
         name = 'Test'
         model_name = 'Labor Market'
@@ -112,8 +112,8 @@ class LaborMarketTestCase(unittest.TestCase):
 
         ee.configure()
         ee.display_treeview_nodes()
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.workforce_share_per_sector': workforce_share, 
                        f'{name}.working_age_population_df': self.working_age_pop_df
                        }

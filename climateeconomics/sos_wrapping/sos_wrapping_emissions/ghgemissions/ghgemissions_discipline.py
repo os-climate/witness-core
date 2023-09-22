@@ -50,9 +50,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                       'CH4': 85.,
                       'N2O': 265.}
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'GHG_global_warming_potential20':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_20_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
         'GHG_global_warming_potential100':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_100_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
         'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
@@ -117,7 +117,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         """
         inputs_dict = self.get_sosdisc_inputs()
         years = np.arange(
-            inputs_dict['year_start'], inputs_dict['year_end'] + 1, inputs_dict['time_step'])
+            inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1, inputs_dict[GlossaryCore.TimeStep])
 
         # land emissions
         for ghg in self.emissions_model.GHG_TYPE_LIST:

@@ -49,8 +49,8 @@ class LandUseV1():
     HECTARE = 'ha'
 
     LAND_DEMAND_DF = 'land_demand_df'
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
 
     TOTAL_FOOD_LAND_SURFACE = 'total_food_land_surface'
     DEFORESTED_SURFACE_DF = 'forest_surface_df'
@@ -125,7 +125,7 @@ class LandUseV1():
             deforested_surface_df['forest_surface_evol'])
 
         total_agriculture_surfaces = self.__extract_and_convert_superficie(
-            'Habitable', 'Agriculture') / OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
+            'Habitable', GlossaryCore.SectorAgriculture) / OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
 
         # compute how much of agriculture changes because of techn
         self.land_surface_df['Added Agriculture (Gha)'] = self.__extract_and_compute_constraint_change(

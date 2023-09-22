@@ -70,8 +70,8 @@ def post_processings(execution_engine, namespace, filters):
 
         selected_scenarios = scenario_list
 
-    df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.year_start',
-                f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.year_end', ]
+    df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.YearStart}',
+                f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.YearEnd}', ]
     year_start_dict, year_end_dict = get_df_per_scenario_dict(
         execution_engine, df_paths, scenario_list)
     year_start, year_end = year_start_dict[scenario_list[0]
@@ -93,15 +93,15 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Welfare'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df'
+                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}'
                     ]
         (temperature_df_dict, utility_df_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths, scenario_list)
 
         last_temperature_dict, welfare_dict = {}, {}
         for scenario in scenario_list:
-            last_temperature_dict[scenario] = temperature_df_dict[scenario]['temp_atmo'][year_end]
-            welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
+            last_temperature_dict[scenario] = temperature_df_dict[scenario][GlossaryCore.TempAtmo][year_end]
+            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.Welfare][year_end]
         namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
 
         new_pareto_chart = get_chart_pareto_front(last_temperature_dict, welfare_dict, scenario_list,
@@ -117,7 +117,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = f'Welfare in {year_end}'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHG_emissions_df',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
+                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
         (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
@@ -126,7 +126,7 @@ def post_processings(execution_engine, namespace, filters):
         for scenario in scenario_list:
             summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario][GlossaryCore.TotalCO2Emissions].sum(
             )
-            welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
+            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.Welfare][year_end]
         namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
 
         new_pareto_chart = get_chart_pareto_front(summed_co2_emissions_dict, welfare_dict, scenario_list,
@@ -142,7 +142,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'min( Utility )'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHG_emissions_df',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
+                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
         (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
@@ -152,7 +152,7 @@ def post_processings(execution_engine, namespace, filters):
             summed_co2_emissions_dict[scenario] = co2_emissions_df_dict[scenario][GlossaryCore.TotalCO2Emissions].sum(
             )
             min_utility_dict[scenario] = min(
-                utility_df_dict[scenario]['discounted_utility'])
+                utility_df_dict[scenario][GlossaryCore.DiscountedUtility])
         namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
 
         new_pareto_chart = get_chart_pareto_front(summed_co2_emissions_dict, min_utility_dict, scenario_list,
@@ -168,7 +168,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = f'Welfare in {year_end}'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.ghg_cycle_df',
-                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
+                    f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
         (carboncycle_detail_df_dict, utility_df_dict) = get_df_per_scenario_dict(
             execution_engine, df_paths)
@@ -177,7 +177,7 @@ def post_processings(execution_engine, namespace, filters):
         for scenario in scenario_list:
             mean_co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario]['co2_ppm'].mean(
             )
-            welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
+            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.Welfare][year_end]
         namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
 
         new_pareto_chart = get_chart_pareto_front(mean_co2_ppm_dict, welfare_dict, scenario_list,
@@ -205,7 +205,7 @@ def post_processings(execution_engine, namespace, filters):
             execution_engine, df_paths)
         co2_tax_dict = {}
         for scenario in scenario_list:
-            co2_tax_dict[scenario] = co2_taxes_df_dict[scenario]['CO2_tax'].values.tolist(
+            co2_tax_dict[scenario] = co2_taxes_df_dict[scenario][GlossaryCore.CO2Tax].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, co2_tax_dict,
@@ -226,7 +226,7 @@ def post_processings(execution_engine, namespace, filters):
             execution_engine, df_paths)
         temperature_dict = {}
         for scenario in scenario_list:
-            temperature_dict[scenario] = temperature_detail_df_dict[scenario]['temp_atmo'].values.tolist(
+            temperature_dict[scenario] = temperature_detail_df_dict[scenario][GlossaryCore.TempAtmo].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, temperature_dict,
@@ -240,13 +240,13 @@ def post_processings(execution_engine, namespace, filters):
         chart_name = 'Welfare per scenario'
         y_axis_name = f'Welfare in {year_end}'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df',
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
         (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         welfare_dict = {}
         for scenario in scenario_list:
-            welfare_dict[scenario] = utility_df_dict[scenario]['welfare'][year_end]
+            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.Welfare][year_end]
 
         min_y = min(list(welfare_dict.values()))
         max_y = max(list(welfare_dict.values()))
@@ -272,12 +272,12 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = 'Years'
         y_axis_name = 'Discounted Utility (trill $)'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.utility_df', ]
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}', ]
         (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         utility_dict = {}
         for scenario in scenario_list:
-            utility_dict[scenario] = utility_df_dict[scenario]['discounted_utility'].values.tolist(
+            utility_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtility].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, utility_dict,

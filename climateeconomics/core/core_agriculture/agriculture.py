@@ -48,9 +48,9 @@ class Agriculture():
     KM_2_unit = 'km2'
     HECTARE = 'ha'
 
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
-    TIME_STEP = 'time_step'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
+    TIME_STEP = GlossaryCore.TimeStep
     POPULATION_DF = GlossaryCore.PopulationDfValue
     DIET_DF = 'diet_df'
     KG_TO_KCAL_DICT = 'kg_to_kcal_dict'
@@ -309,9 +309,9 @@ class Agriculture():
                 - parameters of productivity function
                 - temperature_df: dataframe, degree celsius wrt preindustrial level, dataframe of temperature increase
         """
-        temperature = temperature_df['temp_atmo']
+        temperature = temperature_df[GlossaryCore.TempAtmo]
         # Compute the difference in temperature wrt 2020 reference
-        temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
+        temp = temperature - temperature_df.at[self.year_start, GlossaryCore.TempAtmo]
         # Compute reduction in productivity due to increase in temperature
         pdctivity_reduction = self.param_a * temp ** 2 + self.param_b * temp
         self.prod_reduction = pdctivity_reduction
@@ -367,13 +367,13 @@ class Agriculture():
         """
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
-        temp_zero = temperature_df.at[self.year_start, 'temp_atmo']
-        temp = temperature_df['temp_atmo'].values
+        temp_zero = temperature_df.at[self.year_start, GlossaryCore.TempAtmo]
+        temp = temperature_df[GlossaryCore.TempAtmo].values
         a = self.param_a
         b = self.param_b
         land_before = self.food_surface_df_without_climate_change[column_name].values
         # Step 1: Productivity reduction
-        # temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
+        # temp = temperature - temperature_df.at[self.year_start, GlossaryCore.TempAtmo]
         # pdctivity_reduction = self.param_a * temp**2 + self.param_b * temp
         # =at**2 + at0**2 - 2att0 + bt - bt0
         # Derivative wrt t each year:  2at-2at0 +b

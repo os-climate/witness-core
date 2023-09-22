@@ -41,9 +41,9 @@ class UtilityModelDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'conso_elasticity': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_rate_time_pref': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'scaleone': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.0302455265681763},
@@ -53,7 +53,7 @@ class UtilityModelDiscipline(SoSWrapp):
         GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),
     }
     DESC_OUT = {
-        'utility_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
+        GlossaryCore.UtilityDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
     }
 
     def run(self):
@@ -70,7 +70,7 @@ class UtilityModelDiscipline(SoSWrapp):
             economics_df, emissions_df, temperature_df)
 
         # store output data
-        dict_values = {'utility_df': utility_df}
+        dict_values = {GlossaryCore.UtilityDfValue: utility_df}
         self.store_sos_outputs_values(dict_values)
 
     def get_chart_filter_list(self):
@@ -101,11 +101,11 @@ class UtilityModelDiscipline(SoSWrapp):
 
         if 'Utility' in chart_list:
 
-            to_plot = ['discounted_utility']
-            utility_df = self.get_sosdisc_outputs('utility_df')
+            to_plot = [GlossaryCore.DiscountedUtility]
+            utility_df = self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue)
             utility_df = resize_df(utility_df)
 
-            discounted_utility = utility_df['discounted_utility']
+            discounted_utility = utility_df[GlossaryCore.DiscountedUtility]
 
             years = list(utility_df.index)
 
@@ -136,7 +136,7 @@ class UtilityModelDiscipline(SoSWrapp):
         if 'Utility of pc consumption' in chart_list:
 
             to_plot = ['period_utility']
-            utility_df = self.get_sosdisc_outputs('utility_df')
+            utility_df = self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue)
             utility_df = resize_df(utility_df)
 
             utility = utility_df['period_utility']

@@ -41,9 +41,9 @@ class DamageDiscipline(SoSWrapp):
         'version': '',
     }
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_damag_int': {'type': 'float', 'default': 0},
         'damag_int': {'type': 'float', 'default':0},
         'damag_quad': {'type': 'float', 'default': 0.00236},
@@ -59,7 +59,7 @@ class DamageDiscipline(SoSWrapp):
         'tp_a3': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.081},
         'tp_a4': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.754},
         'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),

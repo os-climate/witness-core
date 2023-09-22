@@ -103,7 +103,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     EnergyMix = execution_engine.dm.get_disciplines_with_name(
         f'{WITNESS_ns}.EnergyMix')[0]
     years = np.arange(EnergyMix.get_sosdisc_inputs(
-        'year_start'), EnergyMix.get_sosdisc_inputs('year_end') + 1)
+        GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1)
     # Construct a DataFrame to organize the data
     resource_consumed = pd.DataFrame({GlossaryCore.Years: years})
     energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)

@@ -40,9 +40,9 @@ class TempChangeDiscipline(SoSWrapp):
         'version': '',
     }
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_temp_ocean': {'type': 'float', 'default': 0.00687},
         'init_temp_atmo': {'type': 'float', 'default': 0.85},
         'eq_temp_impact': {'type': 'float', 'default': 3.1},
@@ -55,7 +55,7 @@ class TempChangeDiscipline(SoSWrapp):
         'lo_tocean': {'type': 'float', 'default': -1},
         'up_tatmo': {'type': 'float', 'default': 12},
         'up_tocean': {'type': 'float', 'default' : 20},
-        'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
+        GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                            }}
 
     DESC_OUT = {
@@ -67,7 +67,7 @@ class TempChangeDiscipline(SoSWrapp):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
-#         carboncycle_df = in_dict.pop('carboncycle_df')
+#         carboncycle_df = in_dict.pop(GlossaryCore.CarbonCycleDfValue)
 
         # pyworld3 execution
         model = TempChange()
@@ -106,12 +106,12 @@ class TempChangeDiscipline(SoSWrapp):
 
         if 'temperature evolution' in chart_list:
 
-            to_plot = ['temp_atmo', 'temp_ocean']
+            to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
             temperature_df = self.get_sosdisc_outputs(GlossaryCore.TemperatureDfValue)
             temperature_df = resize_df(temperature_df)
 
-            legend = {'temp_atmo': 'atmosphere temperature',
-                      'temp_ocean': 'ocean temperature'}
+            legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
+                      GlossaryCore.TempOcean: 'ocean temperature'}
 
             years = list(temperature_df.index)
 

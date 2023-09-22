@@ -68,8 +68,8 @@ class ResourceDiscipline(SoSWrapp):
                                     'platinum_resource': ('float', None, True),},
 
                                     },
-               'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
 
                }
 
@@ -176,8 +176,8 @@ class ResourceDiscipline(SoSWrapp):
 
         inputs_dict = self.get_sosdisc_inputs()
         outputs_dict = self.get_sosdisc_outputs()
-        year_start = inputs_dict['year_start']
-        year_end = inputs_dict['year_end']
+        year_start = inputs_dict[GlossaryCore.YearStart]
+        year_end = inputs_dict[GlossaryCore.YearEnd]
         production_start = inputs_dict['production_start']
         number_of_subtypes = 0
         if 'Stock' in chart_list:

@@ -61,8 +61,8 @@ def post_processings(execution_engine, namespace, filters):
         welfare = {}
 
         for scenario in scenario_list:
-            temperature[scenario] = temperature_df_dict[scenario]['temp_atmo'][year_end]
-            welfare[scenario] = utility_df_dict[scenario]['welfare'][year_end]
+            temperature[scenario] = temperature_df_dict[scenario][GlossaryCore.TempAtmo][year_end]
+            welfare[scenario] = utility_df_dict[scenario][GlossaryCore.Welfare][year_end]
 
         min_temp = min(list(temperature.values()))
         max_temp = max(list(temperature.values()))
@@ -116,7 +116,7 @@ def post_processings(execution_engine, namespace, filters):
 #         utility = {}
 # 
 #         for scenario in scenario_list:
-#             temperature[scenario] = temperature_df_dict[scenario]['temp_atmo'][year_end]
+#             temperature[scenario] = temperature_df_dict[scenario][GlossaryCore.TempAtmo][year_end]
 #             utility[scenario] = utility_df_dict[scenario]['period_utility'][year_end]
 # 
 #         min_temp = min(list(temperature.values()))
@@ -180,7 +180,7 @@ def get_df(execution_engine, namespace):
 
     for scenario in scenario_list:
         temperature_df_namespace = f'{namespace_w}.{scenario}.{GlossaryCore.TemperatureDfValue}'
-        utility_df_namespace = f'{namespace_w}.{scenario}.utility_df'
+        utility_df_namespace = f'{namespace_w}.{scenario}.{GlossaryCore.UtilityDfValue}'
 
         x_key = execution_engine.dm.get_data_id(temperature_df_namespace)
         y_key = execution_engine.dm.get_data_id(utility_df_namespace)
@@ -188,7 +188,7 @@ def get_df(execution_engine, namespace):
         temperature_df_dict[scenario] = execution_engine.dm.data_dict[x_key][DataManager.VALUE]
         utility_df_dict[scenario] = execution_engine.dm.data_dict[y_key][DataManager.VALUE]
 
-    year_end_namespace = f'{namespace_w}.year_end'
+    year_end_namespace = f'{namespace_w}.{GlossaryCore.YearEnd}'
     year_key = execution_engine.dm.get_data_id(year_end_namespace)
     year_end = execution_engine.dm.data_dict[year_key][DataManager.VALUE]
 

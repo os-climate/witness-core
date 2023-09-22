@@ -55,14 +55,14 @@ class DataStudy():
 
         # private values economics operator pyworld3
         witness_input = {}
-        witness_input[f"{self.study_name}.{'year_start'}"] = self.year_start
-        witness_input[f"{self.study_name}.{'year_end'}"] = self.year_end
-        witness_input[f"{self.study_name}.{'time_step'}"] = self.time_step
+        witness_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        witness_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
+        witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
-        witness_input[f"{self.study_name}.{'Damage.tipping_point'}"] = True
-        witness_input[f"{self.study_name}.{'Macroeconomics.damage_to_productivity'}"] = True
+        witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
+        witness_input[f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}"] = True
         witness_input[f"{self.study_name}.{'Macroeconomics.hassler'}"] = False
-        witness_input[f"{self.study_name}.{'frac_damage_prod'}"] = 0.30
+        witness_input[f"{self.study_name}.{GlossaryCore.FractionDamageToProductivityValue}"] = 0.30
         witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015
         witness_input[f"{self.study_name}.{'conso_elasticity'}"] = 1.45
         witness_input[f"{self.study_name}.{GlossaryCore.InitialGrossOutput['var_name']}"] = 130.187
@@ -84,7 +84,7 @@ class DataStudy():
         total_invest = asarray([25.0] * nb_per)
         total_invest = DataFrame(
             {GlossaryCore.Years: years, 'share_investment': total_invest})
-        witness_input[f"{self.study_name}.{'total_investment_share_of_gdp'}"] = total_invest
+        witness_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = total_invest
         share_energy_investment = DataFrame(
             {GlossaryCore.Years: years, 'share_investment': self.energy_investment_wo_tax_array}, index=years)
         witness_input[f"{self.study_name}.{'share_energy_investment'}"] = share_energy_investment

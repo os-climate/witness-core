@@ -91,7 +91,7 @@ class Study(StudyManager):
         #         temperature = np.array(np.linspace(1.05, 1.05, year_range))
 
         temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "temp_atmo": temperature})
+            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
         temperature_df.index = years
 
         population_df = pd.DataFrame(
@@ -127,8 +127,8 @@ class Study(StudyManager):
 
         # private values economics operator model
         agriculture_input = {}
-        agriculture_input[f"{self.study_name}.{'year_start'}"] = self.year_start
-        agriculture_input[f"{self.study_name}.{'year_end'}"] = self.year_end
+        agriculture_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        agriculture_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         agriculture_input[f"{self.study_name}.{self.agriculture_name}.{'diet_df'}"] = diet_df
         agriculture_input[f"{self.study_name}.{'red_meat_calories_per_day'}"] = self.red_meat_percentage
         agriculture_input[f"{self.study_name}.{'white_meat_calories_per_day'}"] = self.white_meat_percentage

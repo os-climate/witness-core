@@ -44,9 +44,9 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
 
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'conc_lower_strata': {'type': 'int', 'default': 1720, 'unit': 'Gtc', 'user_level': 2},
         'conc_upper_strata': {'type': 'int', 'default': 360, 'unit': 'Gtc', 'user_level': 2},
         'conc_atmo': {'type': 'int', 'default': 588, 'unit': 'Gtc', 'user_level': 2},
@@ -84,7 +84,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'carboncycle_df': {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'carboncycle_detail_df': {'type': 'dataframe', 'unit': 'ppm'},
         'ppm_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
         'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
@@ -104,7 +104,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             param_in)
         dict_values = {
             'carboncycle_detail_df': carboncycle_df,
-            'carboncycle_df': carboncycle_df[[GlossaryCore.Years, 'atmo_conc']],
+            GlossaryCore.CarbonCycleDfValue: carboncycle_df[[GlossaryCore.Years, 'atmo_conc']],
             'ppm_objective': ppm_objective,
             'rockstrom_limit_constraint': self.carboncycle.rockstrom_limit_constraint,
             'minimum_ppm_constraint': self.carboncycle.minimum_ppm_constraint}
@@ -136,7 +136,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             d_atmo1850_dtotalemission, d_atmotoday_dtotalemission = self.carboncycle.compute_d_total_emissions()
 
         self.set_partial_derivative_for_other_types(
-            ('carboncycle_df', 'atmo_conc'), ('CO2_emissions_df', 'total_emissions'),  d_atmoconc_d_totalemissions)
+            (GlossaryCore.CarbonCycleDfValue, 'atmo_conc'), ('CO2_emissions_df', 'total_emissions'),  d_atmoconc_d_totalemissions)
 
         d_ppm_d_totalemissions = self.carboncycle.compute_d_ppm(
             d_atmoconc_d_totalemissions)
@@ -183,7 +183,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             'scale_factor_atmo_conc')
         if 'atmosphere concentration' in chart_list:
 
-            #carboncycle_df = discipline.get_sosdisc_outputs('carboncycle_df')
+            #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             atmo_conc = carboncycle_df['atmo_conc'] / scale_factor_atmo_conc
 
             years = list(atmo_conc.index)
@@ -212,7 +212,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
 
         if 'Atmospheric concentrations parts per million' in chart_list:
 
-            #carboncycle_df = discipline.get_sosdisc_outputs('carboncycle_df')
+            #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             ppm = carboncycle_df['ppm']
 
             years = list(ppm.index)

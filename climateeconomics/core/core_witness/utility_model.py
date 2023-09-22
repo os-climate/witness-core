@@ -33,9 +33,9 @@ class UtilityModel():
         self.create_dataframe()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']  # time_step
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]  # time_step
 
         self.conso_elasticity = self.param['conso_elasticity']  # elasmu
         self.init_rate_time_pref = self.param['init_rate_time_pref']  # prstp
@@ -60,10 +60,10 @@ class UtilityModel():
         utility_df = pd.DataFrame(
             index=years_range,
             columns=[GlossaryCore.Years,
-                     'u_discount_rate',
-                     'period_utility_pc',
-                     'discounted_utility',
-                     'welfare'])
+                     GlossaryCore.UtilityDiscountRate,
+                     GlossaryCore.PeriodUtilityPerCapita,
+                     GlossaryCore.DiscountedUtility,
+                     GlossaryCore.Welfare])
 
         for key in utility_df.keys():
             utility_df[key] = 0
@@ -79,7 +79,7 @@ class UtilityModel():
         t = ((year - self.year_start) / self.time_step) + 1
         u_discount_rate = 1 / ((1 + self.init_rate_time_pref)
                                ** (self.time_step * (t - 1)))
-        self.utility_df.loc[year, 'u_discount_rate'] = u_discount_rate
+        self.utility_df.loc[year, GlossaryCore.UtilityDiscountRate] = u_discount_rate
         return u_discount_rate
 
     def compute_period_utility(self, year):
@@ -97,7 +97,7 @@ class UtilityModel():
         """
 
         # Compute energy price ratio
-        energy_price = self.energy_mean_price.at[year, 'energy_price']
+        energy_price = self.energy_mean_price.at[year, GlossaryCore.EnergyPriceValue]
         energy_price_ratio = self.energy_price_ref / energy_price
         pc_consumption = self.economics_df.at[year, GlossaryCore.PerCapitaConsumption]
         period_utility = (
@@ -113,7 +113,7 @@ class UtilityModel():
 
         adjusted_period_utility = period_utility * energy_price_ratio
         self.utility_df.loc[year,
-                            'period_utility_pc'] = adjusted_period_utility
+                            GlossaryCore.PeriodUtilityPerCapita] = adjusted_period_utility
         return period_utility
 
     def compute_discounted_utility(self, year):
@@ -121,11 +121,11 @@ class UtilityModel():
         period Utility
         PERIODU_pc(t) * rr(t) * L(t)
         """
-        period_utility = self.utility_df.at[year, 'period_utility_pc']
-        u_discount_rate = self.utility_df.at[year, 'u_discount_rate']
+        period_utility = self.utility_df.at[year, GlossaryCore.PeriodUtilityPerCapita]
+        u_discount_rate = self.utility_df.at[year, GlossaryCore.UtilityDiscountRate]
         population = self.population_df.at[year, GlossaryCore.PopulationValue]
         discounted_utility = period_utility * u_discount_rate * population
-        self.utility_df.loc[year, 'discounted_utility'] = discounted_utility
+        self.utility_df.loc[year, GlossaryCore.DiscountedUtility] = discounted_utility
         return discounted_utility
 
     def compute_welfare(self):  # rescalenose
@@ -133,13 +133,13 @@ class UtilityModel():
         Compute welfare
         tstep * scale1 * sum(t,  CEMUTOTPER(t)) + scale2
         """
-        sum_u = sum(self.utility_df['discounted_utility'])
+        sum_u = sum(self.utility_df[GlossaryCore.DiscountedUtility])
 #         if rescale == True:
 #             welfare = self.time_step * self.scaleone * sum_u + self.scaletwo
 #         else:
 #             welfare = self.time_step * self.scaleone * sum_u
 #        return welfare
-        self.utility_df.loc[self.year_end, 'welfare'] = sum_u
+        self.utility_df.loc[self.year_end, GlossaryCore.Welfare] = sum_u
         return sum_u
 
     def compute_welfare_objective(self):
@@ -152,12 +152,12 @@ class UtilityModel():
         if obj_option == 'last_utility':
             init_utility = self.init_period_utility_pc
             last_utility = self.utility_df.at[self.year_end,
-                                              'period_utility_pc']
+                                              GlossaryCore.PeriodUtilityPerCapita]
             welfare_objective = np.asarray(
                 [self.alpha * init_utility / last_utility, ])
-        elif obj_option == 'welfare':
+        elif obj_option == GlossaryCore.Welfare:
             init_discounted_utility = self.init_discounted_utility
-            welfare = self.utility_df['welfare'][self.year_end]
+            welfare = self.utility_df[GlossaryCore.Welfare][self.year_end]
             # To avoid pb during convergence
             if welfare / (init_discounted_utility * n_years) < 0.01:
                 welfare = 0.01 + \
@@ -177,7 +177,7 @@ class UtilityModel():
         n_years = len(self.years_range)
 
         init_discounted_utility = self.init_discounted_utility
-        welfare = self.utility_df['welfare'][self.year_end]
+        welfare = self.utility_df[GlossaryCore.Welfare][self.year_end]
 
         self.welfare = welfare
         welfare_objective = np.asarray(
@@ -192,7 +192,7 @@ class UtilityModel():
         n_years = len(self.years_range)
 
         init_discounted_utility = self.init_discounted_utility
-        min_utility = min(list(self.utility_df['discounted_utility'].values))
+        min_utility = min(list(self.utility_df[GlossaryCore.DiscountedUtility].values))
         # To avoid pb during convergence
         if min_utility / init_discounted_utility < 0.01:
             min_utility = 0.01 + \
@@ -220,10 +220,10 @@ class UtilityModel():
         for i in range(nb_years):
             pc_consumption = self.economics_df.at[years[i], GlossaryCore.PerCapitaConsumption]
             population = self.population_df.at[years[i], GlossaryCore.PopulationValue]
-            u_discount_rate = self.utility_df.at[years[i], 'u_discount_rate']
+            u_discount_rate = self.utility_df.at[years[i], GlossaryCore.UtilityDiscountRate]
             period_utility_pc = self.utility_df.at[years[i],
-                                                   'period_utility_pc']
-            energy_price = self.energy_mean_price.at[years[i], 'energy_price']
+                                                   GlossaryCore.PeriodUtilityPerCapita]
+            energy_price = self.energy_mean_price.at[years[i], GlossaryCore.EnergyPriceValue]
             period_utility_i = (
                 pc_consumption**(1 - self.conso_elasticity) - 1) / (1 - self.conso_elasticity) - 1
 
@@ -260,12 +260,12 @@ class UtilityModel():
 
         pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
         population = self.population_df[GlossaryCore.PopulationValue].values
-        u_discount_rate = self.utility_df['u_discount_rate'].values
-        energy_price = self.energy_mean_price['energy_price'].values
+        u_discount_rate = self.utility_df[GlossaryCore.UtilityDiscountRate].values
+        energy_price = self.energy_mean_price[GlossaryCore.EnergyPriceValue].values
 
         d_period_utility_d_energy_price = - 1.0 * \
             np.identity(nb_years) * \
-            self.utility_df['period_utility_pc'].values / energy_price
+            self.utility_df[GlossaryCore.PeriodUtilityPerCapita].values / energy_price
 
         d_discounted_utility_d_energy_price = d_period_utility_d_energy_price * \
             u_discount_rate * population
@@ -287,7 +287,7 @@ class UtilityModel():
         years = self.years_range
         period_utility_pc_0 = self.init_period_utility_pc
         period_utility_pc_end = self.utility_df.at[self.year_end,
-                                                   'period_utility_pc']
+                                                   GlossaryCore.PeriodUtilityPerCapita]
         init_discounted_utility = self.init_discounted_utility
 
         n_years = len(years)
@@ -299,8 +299,8 @@ class UtilityModel():
             d_obj_d_period_utility_pc[-1] = -1.0 * self.alpha * \
                 period_utility_pc_0 / (period_utility_pc_end)**2
 
-        elif self.obj_option == 'welfare':
-            welfare = self.utility_df['welfare'][self.year_end]
+        elif self.obj_option == GlossaryCore.Welfare:
+            welfare = self.utility_df[GlossaryCore.Welfare][self.year_end]
             if welfare / (init_discounted_utility * n_years) < 0.01:
                 mask = np.append(np.zeros(len(years) - 1), np.array(1))
                 f_prime = (1 / (init_discounted_utility * n_years)) * np.exp(welfare /
@@ -338,7 +338,7 @@ class UtilityModel():
         years = self.years_range
         period_utility_pc_0 = self.init_period_utility_pc
         period_utility_pc_end = self.utility_df.at[self.year_end,
-                                                   'period_utility_pc']
+                                                   GlossaryCore.PeriodUtilityPerCapita]
         init_discounted_utility = self.init_discounted_utility
 
         n_years = len(years)
@@ -363,9 +363,9 @@ class UtilityModel():
         d_obj_d_period_utility_pc = np.zeros(len(years))
         d_obj_d_discounted_utility = np.zeros(len(years))
 
-        min_utility = min(list(self.utility_df['discounted_utility'].values))
+        min_utility = min(list(self.utility_df[GlossaryCore.DiscountedUtility].values))
         d_min_utility_d_discounted_utility = np.asarray([1.0 if (val == min_utility) else 0. for val in list(
-            self.utility_df['discounted_utility'].values)], dtype=float)
+            self.utility_df[GlossaryCore.DiscountedUtility].values)], dtype=float)
         if min_utility / init_discounted_utility < 0.01:
 
             f_prime = d_min_utility_d_discounted_utility * (1 / init_discounted_utility) * np.exp(min_utility /
@@ -386,7 +386,7 @@ class UtilityModel():
         self.economics_df = economics_df
         self.economics_df.index = self.economics_df[GlossaryCore.Years].values
         self.energy_mean_price = pd.DataFrame({GlossaryCore.Years: energy_mean_price[GlossaryCore.Years].values,
-                                               'energy_price': energy_mean_price['energy_price'].values})
+                                               GlossaryCore.EnergyPriceValue: energy_mean_price[GlossaryCore.EnergyPriceValue].values})
         self.energy_mean_price.index = self.energy_mean_price[GlossaryCore.Years].values
         self.energy_price_ref = self.initial_raw_energy_price
         self.population_df = population_df

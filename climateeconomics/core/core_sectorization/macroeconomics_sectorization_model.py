@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2022 Airbus SAS
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 
 import numpy as np
 import pandas as pd
@@ -30,163 +30,96 @@ class MacroeconomicsModel():
     General implementation of sector pyworld3
     """
 
-    #Units conversion
-    conversion_factor=1.0
     SECTORS_DISC_LIST = [AgricultureDiscipline, ServicesDiscipline, IndustrialDiscipline]
-    SECTORS_LIST = [disc.sector_name for disc in SECTORS_DISC_LIST]
+    SECTORS_LIST = GlossaryCore.SectorsPossibleValues
     SECTORS_OUT_UNIT = {disc.sector_name: disc.prod_cap_unit for disc in SECTORS_DISC_LIST}
 
     def __init__(self, inputs_dict):
-        '''
-        Constructor
-        '''
+        """Constructor"""
+        self.inputs = None
         self.economics_df = None
+        self.economics_detail_df = None
         self.investment_df = None
-        self.sectors_investment_df = None
         self.configure_parameters(inputs_dict)
 
     def configure_parameters(self, inputs_dict):
-        '''
-        Configure with inputs_dict from the discipline
-        '''
+        """Configure with inputs_dict from the discipline"""
 
-        self.year_start = inputs_dict['year_start']  # year start
-        self.year_end = inputs_dict['year_end']  # year end
-        self.time_step = inputs_dict['time_step']
-        self.years_range = np.arange(self.year_start,self.year_end + 1,self.time_step)
-        self.nb_years = len(self.years_range)
-        share_invest_df = inputs_dict['total_investment_share_of_gdp']
+        share_invest_df = inputs_dict[GlossaryCore.InvestmentShareGDPValue]
+        self.years_range = share_invest_df[GlossaryCore.Years].values
         self.share_invest = share_invest_df['share_investment'].values
-        self.sectors_invest_share = inputs_dict['sectors_investment_share']
-        #self.scaling_factor_invest = inputs_dict['scaling_factor_investment']      
-        
-    def set_coupling_inputs(self, inputs):
-        share_invest_df = inputs['total_investment_share_of_gdp']
-        self.share_invest = share_invest_df['share_investment'].values
-        arr_type_output = 'float64'
-        arr_type_netoutput = 'float64'
-        arr_type_capital = 'float64'
-        arr_type_ucapital = 'float64'
-        #Put all inputs in dictionary and check if complex
-        capital_dfs = {}
-        production_dfs ={}
-        for sector in self.SECTORS_LIST:
-            capital_dfs[sector] = inputs[f'{sector}.capital_df']
-            production_dfs[sector] = inputs[f'{sector}.production_df']
-            if 'complex128' in [inputs[f'{sector}.capital_df']['capital'].dtype]:
-                arr_type_capital = 'complex128'
-            if 'complex128' in [inputs[f'{sector}.capital_df']['usable_capital'].dtype]:
-                arr_type_ucapital = 'complex128'
-            if 'complex128' in [inputs[f'{sector}.production_df']['output'].dtype]:
-                arr_type_output = 'complex128'
-            if 'complex128' in [inputs[f'{sector}.production_df']['output_net_of_damage'].dtype]:
-                arr_type_netoutput = 'complex128'
 
-                
-        self.sum_output = np.zeros(self.nb_years, dtype= arr_type_output)
-        self.sum_net_output = np.zeros(self.nb_years, dtype= arr_type_netoutput)
-        self.sum_capital = np.zeros(self.nb_years, dtype= arr_type_capital)
-        self.sum_u_capital = np.zeros(self.nb_years, dtype= arr_type_ucapital)
-        self.output_growth = np.zeros(self.nb_years, dtype= arr_type_netoutput)
-        self.capital_dfs = capital_dfs
-        self.production_dfs = production_dfs
+    def compute_economics(self):
+        """Compute economics dataframes"""
 
-    def create_dataframes(self):
-        '''
-        Create dataframes with years
-        '''
-        economics_df = pd.DataFrame({GlossaryCore.Years: self.years_range, 'capital': self.sum_capital, 'usable_capital': self.sum_u_capital,
-                                     'output': self.sum_output, GlossaryCore.OutputNetOfDamage: self.sum_net_output,
-                                     'output_growth': self.output_growth})
-        investment_df = pd.DataFrame({GlossaryCore.Years: self.years_range, GlossaryCore.InvestmentsValue: self.investment})
-        investment_df.index = self.years_range
-        economics_df.index = self.years_range  
-        self.economics_df = economics_df 
-        self.investment_df = investment_df 
-
-    def sum_all(self):
-        """ Sum output, net output, capital, usable capital and invest from all sectors. Unit: 1e12$ 
-        """
+        capital_to_sum = []
+        u_capital_to_sum = []
+        output_to_sum = []
+        net_output_to_sum = []
 
         for sector in self.SECTORS_LIST:
-            capital_df = self.capital_dfs[sector]
-            production_df = self.production_dfs[sector]
-            self.sum_capital += capital_df['capital'].values
-            self.sum_u_capital += capital_df['usable_capital'].values
-            self.sum_output += production_df['output'].values
-            self.sum_net_output += production_df['output_net_of_damage'].values
-            
+            capital_df_sector = self.inputs[f'{sector}.{GlossaryCore.CapitalDfValue}']
+            production_df_sector = self.inputs[f'{sector}.{GlossaryCore.ProductionDfValue}']
+            capital_to_sum.append(capital_df_sector[GlossaryCore.Capital].values)
+            u_capital_to_sum.append(capital_df_sector[GlossaryCore.UsableCapital].values)
+            output_to_sum.append(production_df_sector[GlossaryCore.GrossOutput].values)
+            net_output_to_sum.append(production_df_sector[GlossaryCore.OutputNetOfDamage].values)
+
+        self.sum_capital = np.sum(capital_to_sum, axis=0)
+        self.sum_u_capital = np.sum(u_capital_to_sum, axis=0)
+        self.sum_gross_output = np.sum(output_to_sum, axis=0)
+        self.sum_net_output = np.sum(net_output_to_sum, axis=0)
+
+        # output growth
+        output_growth = np.zeros_like(self.years_range)
+        for year in range(len(self.years_range) - 1):
+            output_a = self.sum_net_output[year+1]
+            output = max(1e-6, self.sum_net_output[year])
+            output_growth[year] = ((output_a -output) / output)
+
+        output_growth[-1] = output_growth[-2]  # For last year put the previous year value to avoid a 0
+
+        economics_detail_df = pd.DataFrame({GlossaryCore.Years: self.years_range,
+                                            GlossaryCore.Capital: self.sum_capital,
+                                            GlossaryCore.UsableCapital: self.sum_u_capital,
+                                            GlossaryCore.GrossOutput: self.sum_gross_output,
+                                            GlossaryCore.OutputNetOfDamage: self.sum_net_output,
+                                            GlossaryCore.OutputGrowth: output_growth})
+        economics_detail_df.index = self.years_range
+        self.economics_detail_df = economics_detail_df
+        self.economics_df = economics_detail_df[GlossaryCore.SectorizedEconomicsDf['dataframe_descriptor'].keys()]
+
     def compute_investment(self):
         """ Compute total investement available 
         Investment = net_output * share_invest 
         """
-        self.investment = self.sum_net_output * self.share_invest/100
+        investment = self.sum_net_output * self.share_invest/100.
+        investment_df = pd.DataFrame({GlossaryCore.Years: self.years_range,
+                                      GlossaryCore.InvestmentsValue: investment})
+        investment_df.index = self.years_range
+        self.investment_df = investment_df
 
-    def compute_investment_per_sectors(self):
-        """ take share of gdp invested by sector in input and gdp
-        and compute the invest in each sector"""
-
-        sectors_invest_share = self.sectors_invest_share.copy(deep=True).drop([GlossaryCore.Years], axis = 1)
-        #invest_sectors = sectors_invest_share * net_output/100
-        invest_sectors = sectors_invest_share.multiply(self.sum_net_output/100, axis = 0)
-        #Add years column
-        invest_sectors.insert(0, GlossaryCore.Years, self.years_range)
-        self.sectors_investment_df = invest_sectors
-        return self.sectors_investment_df
-    
-    def compute_output_growth(self):
-        """
-        Compute the output growth between year t and year t+1
-        """
-        #Loop over every years except last one 
-        for period in np.arange(0, self.nb_years-1):
-            output_a = self.sum_net_output[period+1]
-            output = self.sum_net_output[period]
-            output = max(1e-6, output)
-            self.output_growth[period] = ((output_a -output) / output)
-        #For last year put the previous year value to avoid a 0 
-        self.output_growth[self.nb_years-1] = self.output_growth[self.nb_years-2]
-        return self.output_growth
-    
-    #RUN
     def compute(self, inputs):
-        """
-        Compute all models for year range
-        """
+        """Compute all models for year range"""
         self.inputs = inputs
-        self.set_coupling_inputs(inputs)
-        self.sum_all()
+        self.configure_parameters(inputs)
+        self.compute_economics()
         self.compute_investment()
-        self.compute_investment_per_sectors()
-        self.compute_output_growth()
-        self.create_dataframes()
 
-        return self.economics_df, self.investment_df, self.sectors_investment_df
-    
-    ### GRADIENTS ###
+
+    # GRADIENTS
+
     def get_derivative_sectors(self):
-        """ 
-        Compute gradient for netoutput and invest wrt net output from each sector
-        """
-        grad_netoutput = np.identity(self.nb_years)
+        """Compute gradient for netoutput and invest wrt net output from each sector"""
+        grad_netoutput = np.identity(len(self.years_range))
         #Invest = net_output * share_invest (share invest in%)
         grad_invest = grad_netoutput * self.share_invest/100
 
         return grad_netoutput, grad_invest
 
-    def get_derivative_dsectinvest_dsectoutput(self, sector, grad_netoutput):
-        """
-        Compute gradient for sector invest wrt sectors outputs
-        """
-        # Sector invest = net output * sector_share_invest (share invest in%)
-        grad_sector_invest = grad_netoutput * self.sectors_invest_share[f'{sector}'].values / 100
-        return grad_sector_invest
-    
-    def get_derivative_dinvest_dshare(self):
-        """
-        Compute the derivative of investment wrt invest_share_gdp 
-        """
-        #Invest = net_output * share_invest
-        dinvest = np.identity(self.nb_years)/100 * self.sum_net_output
-        return dinvest
 
+    def dinvest_dshare(self):
+        """Compute the derivative of investment wrt invest_share_gdp """
+        #Invest = net_output * share_invest
+        dinvest = np.identity(len(self.years_range))/100 * self.sum_net_output
+        return dinvest

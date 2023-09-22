@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from climateeconomics.glossarycore import GlossaryCore
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
@@ -20,7 +20,7 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_coupling': f'{study_name}',
                    'ns_obj': f'{study_name}'}
 
-        mods_dict = {'Agriculture': 'climateeconomics.sos_wrapping.sos_wrapping_world3.agriculture_discipline.AgricultureDiscipline',
+        mods_dict = {GlossaryCore.SectorAgriculture: 'climateeconomics.sos_wrapping.sos_wrapping_world3.agriculture_discipline.AgricultureDiscipline',
                      'Capital': 'climateeconomics.sos_wrapping.sos_wrapping_world3.capital_discipline.CapitalDiscipline',
                      'Population': 'climateeconomics.sos_wrapping.sos_wrapping_world3.population_discipline.PopulationDiscipline',
                      'Resource': 'climateeconomics.sos_wrapping.sos_wrapping_world3.resource_discipline.ResourceDiscipline',

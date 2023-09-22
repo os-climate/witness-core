@@ -59,9 +59,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     desc_in_default_diet_mortality_param['default'] = pd.read_csv(join(global_data_dir, 'diet_mortality_param.csv'))
 
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'population_start': {'type': 'dataframe', 'default': pop_init_df, 'unit': 'millions of people',
                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                       'age': ('string', None, False),
@@ -71,19 +71,19 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                   GlossaryCore.GrossOutput: ('float', None, False),
                                                   GlossaryCore.OutputNetOfDamage: ('float', None, False),
-                                                  'net_output': ('float', None, False),
+                                                  GlossaryCore.NetOutput: ('float', None, False),
                                                   GlossaryCore.PopulationValue: ('float', None, False),
-                                                  'productivity': ('float', None, False),
-                                                  'productivity_gr': ('float', None, False),
+                                                  GlossaryCore.Productivity: ('float', None, False),
+                                                  GlossaryCore.ProductivityGrowthRate: ('float', None, False),
                                                   'energy_productivity_gr': ('float', None, False),
                                                   'energy_productivity': ('float', None, False),
                                                   GlossaryCore.Consumption: ('float', None, False),
                                                   GlossaryCore.PerCapitaConsumption: ('float', None, False),
-                                                  'capital': ('float', None, False),
+                                                  GlossaryCore.Capital: ('float', None, False),
                                                   GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
-                                                  'output_growth': ('float', None, False), }
+                                                  GlossaryCore.OutputGrowth: ('float', None, False), }
                          },
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3, 'unit': '-',
@@ -196,10 +196,10 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         d_pop_d_temp, d_working_pop_d_temp = self.model.compute_d_pop_d_temp()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-            (GlossaryCore.TemperatureDfValue, 'temp_atmo'), d_pop_d_temp / self.model.million)
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_pop_d_temp / self.model.million)
         self.set_partial_derivative_for_other_types(
             ('working_age_population_df', 'population_1570'),
-            (GlossaryCore.TemperatureDfValue, 'temp_atmo'), d_working_pop_d_temp / self.model.million)
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_working_pop_d_temp / self.model.million)
         
         d_pop_d_kcal_pc, d_working_pop_d_kcal_pc = self.model.compute_d_pop_d_kcal_pc()
         self.set_partial_derivative_for_other_types(
@@ -223,7 +223,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
         year_start, year_end = self.get_sosdisc_inputs(
-            ['year_start', 'year_end'])
+            [GlossaryCore.YearStart, GlossaryCore.YearEnd])
         years = list(np.arange(year_start, year_end + 1, 5))
         chart_filters.append(ChartFilter(
             'Years for population', years, [year_start, year_end], GlossaryCore.Years))

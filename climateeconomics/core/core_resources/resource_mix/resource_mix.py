@@ -46,8 +46,8 @@ class ResourceMixModel():
     """
     All Resource pyworld3
     """
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
     ALL_RESOURCE_DEMAND = 'all_resource_demand'
     ALL_RESOURCE_STOCK = 'all_resource_stock'
     ALL_RESOURCE_PRICE = 'resources_price'
@@ -102,8 +102,8 @@ class ResourceMixModel():
         Configure with inputs_dict from the discipline
         '''
 
-        self.year_start = inputs_dict['year_start']  # year start
-        self.year_end = inputs_dict['year_end']  # year end
+        self.year_start = inputs_dict[GlossaryCore.YearStart]  # year start
+        self.year_end = inputs_dict[GlossaryCore.YearEnd]  # year end
         self.resource_list = inputs_dict['resource_list']
         self.non_modeled_resource_price = inputs_dict['non_modeled_resource_price']
         self.resources_demand = inputs_dict['resources_demand']

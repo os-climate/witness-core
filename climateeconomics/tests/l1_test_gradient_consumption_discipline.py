@@ -74,7 +74,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
 
         energy_price = np.linspace(200, 10, len(self.years))
         self.energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'energy_price': energy_price})
+            {GlossaryCore.Years: self.years, GlossaryCore.EnergyPriceValue: energy_price})
         self.residential_energy_conso_ref = 100
         residential_energy = np.linspace(200, 10, len(self.years))
         self.residential_energy_df = pd.DataFrame(
@@ -83,13 +83,13 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         share_invest = np.asarray([27.0] * len(self.years))
         self.total_investment_share_of_gdp = pd.DataFrame({GlossaryCore.Years: self.years, 'share_investment': share_invest})
 
-        self.values_dict = {f'{self.name}.year_start': self.year_start,
-                            f'{self.name}.year_end': self.year_end,
+        self.values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                            f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                             f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-                            f'{self.name}.energy_mean_price': self.energy_mean_price,
+                            f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': self.energy_mean_price,
                             f'{self.name}.residential_energy': self.residential_energy_df,
-                            f'{self.name}.total_investment_share_of_gdp': self.total_investment_share_of_gdp}
+                            f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}': self.total_investment_share_of_gdp}
 
         self.ee.load_study_from_input_dict(self.values_dict)
 
@@ -109,11 +109,11 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_consumption_discipline_welfare.pkl',
                             discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.energy_mean_price',
+                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.residential_energy',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.total_investment_share_of_gdp'],
-                            outputs=[f'{self.name}.utility_df',
+                                    f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
                                      f'{self.name}.welfare_objective',
                                      f'{self.name}.min_utility_objective',
                                      f'{self.name}.negative_welfare_objective'],
@@ -133,11 +133,11 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_consumption_discipline_last_utility.pkl',
                             discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.energy_mean_price',
+                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.residential_energy',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.total_investment_share_of_gdp'],
-                            outputs=[f'{self.name}.utility_df',
+                                    f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
                                      f'{self.name}.welfare_objective',
                                      f'{self.name}.min_utility_objective',
                                      f'{self.name}.negative_welfare_objective'],
@@ -149,13 +149,13 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.Years, GlossaryCore.OutputNetOfDamage]]
         economics_df[GlossaryCore.OutputNetOfDamage] = self.economics_df[GlossaryCore.OutputNetOfDamage] / 2
         np.set_printoptions(threshold=np.inf)
-        values_dict = {f'{self.name}.year_start': self.year_start,
-                            f'{self.name}.year_end': self.year_end,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                            f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                             f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-                            f'{self.name}.energy_mean_price': self.energy_mean_price,
+                            f'{self.name}.{GlossaryCore.EnergyPriceValue}': self.energy_mean_price,
                             f'{self.name}.residential_energy': self.residential_energy_df,
-                            f'{self.name}.total_investment_share_of_gdp': self.total_investment_share_of_gdp}
+                            f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}': self.total_investment_share_of_gdp}
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
@@ -164,11 +164,11 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_consumption_low_economy.pkl', discipline=disc_techno,
                             step=1e-15, local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                    f'{self.name}.energy_mean_price',
+                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.residential_energy',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.total_investment_share_of_gdp'],
-                            outputs=[f'{self.name}.utility_df',
+                                    f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
                                      f'{self.name}.welfare_objective',
                                      f'{self.name}.min_utility_objective',
                                      f'{self.name}.negative_welfare_objective'],

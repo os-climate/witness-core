@@ -227,7 +227,8 @@ class Study(ClimateEconomicsStudyManager):
             }
 
         func_df = self.witness_uc.func_df
-        func_df.loc[func_df['variable'] == 'welfare_objective', 'weight'] = 100.
+        func_df.loc[func_df['variable'] == 'negative_welfare_objective', 'weight'] = 100.
+        func_df.loc[func_df['variable'] == 'welfare_objective', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'land_demand_constraint', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'non_use_capital_cons', 'weight'] = 0.
         func_df.loc[func_df['variable'] == 'calories_per_day_constraint', 'weight'] = 0.

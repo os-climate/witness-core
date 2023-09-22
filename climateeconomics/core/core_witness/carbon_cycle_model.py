@@ -35,9 +35,9 @@ class CarbonCycle():
         self.create_dataframe()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]
         self.conc_lower_strata = self.param['conc_lower_strata']
         self.conc_upper_strata = self.param['conc_upper_strata']
         self.conc_atmo = self.param['conc_atmo']

@@ -49,8 +49,8 @@ class LandUseV1Discipline(SoSWrapp):
     default_year_start = 2020
     default_year_end = 2050
 
-    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                LandUseV1.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_land_use',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -323,7 +323,7 @@ class LandUseV1Discipline(SoSWrapp):
         if LandUseV1Discipline.GLOBAL_CHARTS in chart_list:
             # ------------------------------------------------------------
             # GLOBAL LAND USE -> Display surfaces (Ocean, Land, Forest..)
-            years_list = [self.get_sosdisc_inputs('year_start')]
+            years_list = [self.get_sosdisc_inputs(GlossaryCore.YearStart)]
             # ------------------
             # Sunburst figure for global land use. Source
             # https://ourworldindata.org/land-use

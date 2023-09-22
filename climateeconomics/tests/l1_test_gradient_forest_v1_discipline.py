@@ -71,9 +71,9 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.reforestation_cost_per_ha = 3800
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{self.name}.{Forest.DEFORESTATION_SURFACE}': self.deforestation_surface_df,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,

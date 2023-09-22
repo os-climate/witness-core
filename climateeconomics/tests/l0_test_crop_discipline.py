@@ -43,12 +43,12 @@ class CropTestCase(unittest.TestCase):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
 
-        population = np.array(np.linspace(7800, 9200, year_range))
+        population = np.array(np.linspace(7794.799, 7794.799, year_range))
         self.population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         self.population_df.index = years
-        temperature = np.array(np.linspace(0.0,5.0, year_range))
-        self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, "temp_atmo": temperature})
+        temperature = np.array(np.linspace(0.0,0.0, year_range))
+        self.temperature_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
         self.temperature_df.index = years
 
         lifetime = 50
@@ -61,15 +61,15 @@ class CropTestCase(unittest.TestCase):
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
 
-        self.default_kg_to_m2 = {'red meat': 360,
-                                 'white meat': 16,
-                                 'milk': 8.95,
-                                 'eggs': 6.3,
-                                 'rice and maize': 2.9,
-                                 'potatoes': 0.88,
-                                 'fruits and vegetables': 0.8,
-                                 'other': 21.4
-                                 }
+        self.default_kg_to_m2 = {'red meat': 348,
+                        'white meat': 14.5,
+                        'milk': 8.95,
+                        'eggs': 6.27,
+                        'rice and maize': 2.89,
+                        'potatoes': 0.88,
+                        'fruits and vegetables': 0.8,
+                        'other': 21.4,
+                        }
         self.default_kg_to_kcal = {'red meat': 2566,
                                    'white meat': 1860,
                                    'milk': 550,
@@ -186,9 +186,10 @@ class CropTestCase(unittest.TestCase):
                                  'other': 3.44 * calibration,
                                  }
 
-        red_meat_percentage = np.linspace(600, 700, year_range)
-        white_meat_percentage = np.linspace(700, 600, year_range)
-        vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
+        red_meat_percentage = np.linspace(77.47211, 77.47211, year_range)
+        white_meat_percentage = np.linspace(158.5332, 158.5332, year_range)
+        vegetables_and_carbs_calories_per_day = np.linspace(740.4986, 740.4986, year_range)
+        milk_and_eggs = np.linspace(159.2288, 159.2288, year_range)
         self.red_meat_percentage = pd.DataFrame({
                             GlossaryCore.Years: years,
                             'red_meat_calories_per_day': red_meat_percentage})
@@ -201,12 +202,12 @@ class CropTestCase(unittest.TestCase):
 
         self.milk_eggs_calories_per_day = pd.DataFrame({
                                 GlossaryCore.Years: years,
-                                'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
+                                'milk_and_eggs_calories_per_day': milk_and_eggs})
 
 
-        self.param = {'year_start': self.year_start,
-                      'year_end': self.year_end,
-                      'time_step': self.time_step,
+        self.param = {GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
+                      GlossaryCore.TimeStep: self.time_step,
                       'diet_df': self.diet_df,
                       'kg_to_kcal_dict': self.default_kg_to_kcal,
                       GlossaryCore.PopulationDfValue: self.population_df,
@@ -275,9 +276,9 @@ class CropTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
-                       f'{name}.time_step': 1,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{name}.{GlossaryCore.TimeStep}': 1,
                        f'{name}.{model_name}.{Crop.DIET_DF}': self.diet_df,
                        f'{name}.{model_name}.{Crop.KG_TO_KCAL_DICT}': self.default_kg_to_kcal,
                        f'{name}.{model_name}.{Crop.KG_TO_M2_DICT}': self.default_kg_to_m2,

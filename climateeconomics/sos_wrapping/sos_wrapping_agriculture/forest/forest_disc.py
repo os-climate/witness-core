@@ -155,9 +155,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
     # reforestation costs: 10k$/ha of land and 3800$/ha to plant trees
 
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         Forest.DEFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                    GlossaryCore.InvestmentsValue: ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,

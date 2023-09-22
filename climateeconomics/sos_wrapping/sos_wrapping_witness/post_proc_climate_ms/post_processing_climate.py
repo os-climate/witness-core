@@ -76,7 +76,7 @@ def post_processings(execution_engine, namespace, filters):
         for scenario in scenario_list:
             temperature_detail_df = execution_engine.dm.get_value(
                 f'{namespace_w}.{scenario}.Temperature.temperature_detail_df')
-            temperature_dict[scenario] = temperature_detail_df['temp_atmo'].values.tolist(
+            temperature_dict[scenario] = temperature_detail_df[GlossaryCore.TempAtmo].values.tolist(
             )
             years = temperature_detail_df[GlossaryCore.Years].values.tolist(
             )
@@ -95,7 +95,7 @@ def post_processings(execution_engine, namespace, filters):
         for scenario in scenario_list:
             temperature_detail_df = execution_engine.dm.get_value(
                 f'{namespace_w}.{scenario}.Temperature.temperature_detail_df')
-            temperature_dict[scenario] = temperature_detail_df['forcing'].values.tolist(
+            temperature_dict[scenario] = temperature_detail_df[GlossaryCore.Forcing].values.tolist(
             )
             years = temperature_detail_df[GlossaryCore.Years].values.tolist(
             )

@@ -91,8 +91,8 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_platinum_demand_df,
                     #    f'{self.name}.{self.model_name}.lifespan': self.lifespan,
                     #    f'{self.name}.{self.model_name}.resource_consumed_data'
@@ -138,8 +138,8 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_platinum_variable_demand_df,
                     #    f'{self.name}.{self.model_name}.lifespan': self.lifespan,
                     #    f'{self.name}.{self.model_name}.resource_consumed_data' : self.consumed_platinum_df,

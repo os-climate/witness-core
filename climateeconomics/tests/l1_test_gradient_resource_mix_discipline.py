@@ -109,8 +109,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
         self.year_range = self.year_end - self.year_start + 1
 
-        self.values_dict = {f'{self.name}.year_start': self.year_start,
-                            f'{self.name}.year_end': self.year_end,
+        self.values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                            f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                             f'{self.name}.{self.model_name}.resources_demand': self.all_demand,
                             f'{self.name}.{self.model_name}.resources_demand_woratio': self.all_demand,
                             f'{self.name}.{self.model_name}.oil_resource.predictable_production': self.oil_production_df,
@@ -174,8 +174,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes(True)
 
-        values_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.all_demand,
                        f'{self.name}.{self.model_name}.resources_demand_woratio': self.all_demand,
                        f'{self.name}.{self.model_name}.oil_resource.predictable_production': self.oil_production_df,

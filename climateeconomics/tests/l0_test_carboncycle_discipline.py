@@ -65,7 +65,7 @@ class CarbonCycleDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_carbon_cycle = self.ee.dm.get_value(f'{self.name}.carboncycle_df')
+        res_carbon_cycle = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.CarbonCycleDfValue}')
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

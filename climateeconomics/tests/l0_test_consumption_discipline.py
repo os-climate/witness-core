@@ -67,7 +67,7 @@ class ConsumptionDiscTest(unittest.TestCase):
         population_df.index = years
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
         residential_energy_conso_ref = 21
         residential_energy = np.linspace(21, 15, len(years))
         residential_energy_df = pd.DataFrame(
@@ -77,14 +77,14 @@ class ConsumptionDiscTest(unittest.TestCase):
         # total_investment_share_of_gdp = pd.DataFrame({GlossaryCore.Years:years, 'share_investment': share_invest})
         share_n_energy_investment = pd.DataFrame({GlossaryCore.Years: years, 'share_investment': share_invest})
         np.set_printoptions(threshold=np.inf)
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
-                       f'{self.name}.energy_mean_price': energy_mean_price,
+                       f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
                        f'{self.name}.residential_energy_conso_ref': residential_energy_conso_ref,
                        f'{self.name}.residential_energy': residential_energy_df,
                        f'{self.name}.share_n_energy_investment': share_n_energy_investment}

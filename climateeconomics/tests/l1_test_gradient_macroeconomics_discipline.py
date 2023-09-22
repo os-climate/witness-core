@@ -103,9 +103,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         # default CO2 tax
         self.default_CO2_tax = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'CO2_tax': 50.0}, index = self.years)
-        self.default_CO2_tax.loc[2020, 'CO2_tax'] = 5000.0
-        self.default_CO2_tax.loc[2021, 'CO2_tax'] = 120.0
+            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 50.0}, index = self.years)
+        self.default_CO2_tax.loc[2020, GlossaryCore.CO2Tax] = 5000.0
+        self.default_CO2_tax.loc[2021, GlossaryCore.CO2Tax] = 120.0
 
         #Population workforce
         self.working_age_population_df = pd.DataFrame(
@@ -119,6 +119,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         for year in np.arange(1, nb_per):
             energy_capital.append(energy_capital[year - 1] * 1.02)
         self.energy_capital = pd.DataFrame({GlossaryCore.Years: self.years, 'energy_capital': energy_capital})
+        self.sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
 
     def analytic_grad_entry(self):
         return [
@@ -152,9 +153,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': False,
@@ -169,7 +170,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
-                       f'{self.name}.alpha': 0.5
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -219,9 +221,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
@@ -236,7 +238,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
-                       f'{self.name}.alpha': 0.5
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -286,9 +289,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.damage_df[GlossaryCore.DamageFractionOutput] = 0.9
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': False,
@@ -303,7 +306,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
-                       f'{self.name}.alpha': 0.5
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -358,9 +362,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: self.years,
              GlossaryCore.ShareNonEnergyInvestmentsValue: [20.0] * self.nb_per})
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': False,
@@ -375,7 +379,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
-                       f'{self.name}.alpha': 0.5
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -434,9 +439,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         co2_emissions_gt = energy_supply_df.rename(
             columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = self.years
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
@@ -451,7 +456,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
-                       f'{self.name}.alpha': 0.5
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -510,9 +516,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
             columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = self.years
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
@@ -527,7 +533,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
-                       f'{self.name}.alpha': 0.5
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -575,10 +582,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         self.default_CO2_tax = pd.DataFrame(
-            {GlossaryCore.Years: self.years, 'CO2_tax': np.linspace(50, -50, len(self.years))}, index=self.years)
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: np.linspace(50, -50, len(self.years))}, index=self.years)
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
@@ -593,7 +600,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.working_age_population_df' : self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
-                       f'{self.name}.alpha': 0.5
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -644,9 +652,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': False,
@@ -662,6 +670,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.working_age_population_df': self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
                        f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,
@@ -724,9 +733,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
@@ -742,6 +751,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.working_age_population_df': self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
                        f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,
@@ -803,9 +813,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': False,
@@ -821,6 +831,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.working_age_population_df': self.working_age_population_df,
                        f'{self.name}.energy_capital': self.energy_capital,
                        f'{self.name}.alpha': 0.5,
+                       f'{self.name}.{GlossaryCore.SectorsList["var_name"]}': self.sectors_list,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
                             'compute_climate_impact_on_gdp': True,

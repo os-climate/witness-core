@@ -75,7 +75,7 @@ _consumption = {FILE_NAME: 'consumption_global_usd2020.csv',
 MEAN_TEMPERATURE = 'Mean_temperature'
 _mean_temperature = {FILE_NAME: 'mean_temperature_global.csv',
                      VAR_NAME: GlossaryCore.TemperatureDfValue,
-                     COLUMN: 'temp_atmo',
+                     COLUMN: GlossaryCore.TempAtmo,
                      CHART_TITLE: 'Atmospheric temperature: WITNESS vs. SSP scenarios (IPCC)',
                      UNIT_CONV_FACTOR: 1.0,
                      Y_AXIS: 'Mean Temperature [ºC above pre-industrial]'}
@@ -83,7 +83,7 @@ _mean_temperature = {FILE_NAME: 'mean_temperature_global.csv',
 FORCING = 'Forcing'
 _forcing = {FILE_NAME: 'forcing_global.csv',
             VAR_NAME: 'Temperature_change.temperature_detail_df',
-            COLUMN: 'forcing',
+            COLUMN: GlossaryCore.Forcing,
             CHART_TITLE: 'Total radiative forcing: WITNESS vs. SSP scenarios (IPCC)',
             UNIT_CONV_FACTOR: 1.0,
             Y_AXIS: 'Total Forcing [W/m^2]'}

@@ -47,8 +47,8 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
         service = np.array([100.0]*nb_per) - agri - indusshare
 
         #service = np.substract(total, agri)
-        workforce_share = DataFrame({GlossaryCore.Years:self. years, 'Agriculture': agri,
-                                     'Industry': indusshare, 'Services': service})
+        workforce_share = DataFrame({GlossaryCore.Years:self. years, GlossaryCore.SectorAgriculture: agri,
+                                     GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: service})
         self.workforce_share = workforce_share
         data_dir = join(dirname(__file__), 'data')
         working_age_pop_df = read_csv(
@@ -77,8 +77,8 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{model_name}.workforce_share_per_sector': self.workforce_share, 
                        f'{self.name}.working_age_population_df': self.working_age_pop_df
                        }
@@ -91,6 +91,6 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_labormarket_sectorization_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.working_age_population_df'],
-                            outputs=[f'{self.name}.workforce_df'])
+                            outputs=[f'{self.name}.{GlossaryCore.WorkforceDfValue}'])
         
    

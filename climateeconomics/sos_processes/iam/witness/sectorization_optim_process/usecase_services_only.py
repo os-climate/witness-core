@@ -38,13 +38,13 @@ class Study(StudyManager):
     def __init__(self, year_start=2000, year_end=2020, time_step=1, name='', execution_engine=None, run_usecase=False):
         super().__init__(__file__, execution_engine=execution_engine, run_usecase=run_usecase)
         self.study_name = 'usecase_services_only'
-        self.macro_name = '.Macroeconomics'
-        self.obj_name = '.Objectives'
-        self.coupling_name = ".Sectorization_Eval"
-        self.optim_name = ".SectorsOpt"
-        self.ns_industry = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Industry'
-        self.ns_agriculture = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Agriculture'
-        self.ns_services = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Services'
+        self.macro_name = 'Macroeconomics'
+        self.obj_name = 'Objectives'
+        self.coupling_name = "Sectorization_Eval"
+        self.optim_name = "SectorsOpt"
+        self.ns_industry = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Industry'}"
+        self.ns_agriculture = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Agriculture'}"
+        self.ns_services = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Services'}"
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -52,9 +52,8 @@ class Study(StudyManager):
                                                     execution_engine=execution_engine)
 
     def setup_usecase(self):
-        ns = self.study_name
-        ns_coupling = self.study_name + self.optim_name + self.coupling_name
-        ns_optim = self.study_name + self.optim_name
+        ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
+        ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
         INEQ_CONSTRAINT = FunctionManager.INEQ_CONSTRAINT
         OBJECTIVE = FunctionManager.OBJECTIVE
@@ -121,62 +120,22 @@ class Study(StudyManager):
             'prod_start_services_in': {'out_name': services + 'productivity_start', 'out_type': 'float',
                                        'index': arange(1),
                                        'namespace_in': 'ns_optim', 'namespace_out': 'ns_macro'},
-            #                                 'energy_eff_k_services_in': {'out_name': services+'energy_eff_k', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_cst_services_in': {'out_name': services+'energy_eff_cst', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_xzero_services_in': {'out_name': services+'energy_eff_xzero', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_max_services_in': {'out_name': services+'energy_eff_max', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'output_alpha_agri_in': {'out_name': agri+'output_alpha','out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'prod_gr_start_agri_in': {'out_name': agri+'productivity_gr_start','out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'decl_rate_tfp_agri_in': {'out_name': agri+'decline_rate_tfp','out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'prod_start_agri_in': {'out_name': agri+'productivity_start', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_k_agri_in': {'out_name': agri+'energy_eff_k', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_cst_agri_in': {'out_name': agri+'energy_eff_cst', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_xzero_agri_in': {'out_name': agri+'energy_eff_xzero', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_max_agri_in': {'out_name': agri+'energy_eff_max', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'output_alpha_indus_in': {'out_name': industry+'output_alpha','out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'prod_gr_start_indus_in': {'out_name': industry+'productivity_gr_start','out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'decl_rate_tfp_indus_in': {'out_name': industry+'decline_rate_tfp','out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'prod_start_indus_in': {'out_name': industry+'productivity_start', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_k_indus_in': {'out_name': industry+'energy_eff_k', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_cst_indus_in': {'out_name': industry+'energy_eff_cst', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_xzero_indus_in': {'out_name': industry+'energy_eff_xzero', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
-            #                                 'energy_eff_max_indus_in': {'out_name': industry+'energy_eff_max', 'out_type': 'float', 'index': arange(1),
-            #                                                               'namespace_in': 'ns_optim','namespace_out': 'ns_macro'},
         }
 
         disc_dict = {}
         disc_dict[f'{ns_coupling}.DesignVariables.design_var_descriptor'] = design_var_descriptor
 
         # Optim inputs
-        disc_dict[f'{ns_optim}.max_iter'] = 150
-        disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
-        disc_dict[f'{ns_optim}.design_space'] = dspace
-        disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
-        disc_dict[f'{ns_optim}.objective_name'] = 'objective_lagrangian'
-        disc_dict[f'{ns_optim}.differentiation_method'] = 'complex_step'  # complex_step user
-        disc_dict[f'{ns_optim}.fd_step'] = 1.e-6
-        disc_dict[f'{ns_optim}.ineq_constraints'] = []
-        disc_dict[f'{ns_optim}.eq_constraints'] = []
-        disc_dict[f'{ns_optim}.algo_options'] = {
+        disc_dict[f"{ns_optim}.{'max_iter'}"] = 150
+        disc_dict[f"{ns_optim}.{'algo'}"] = "L-BFGS-B"
+        disc_dict[f"{ns_optim}.{'design_space'}"] = dspace
+        disc_dict[f"{ns_optim}.{'formulation'}"] = 'DisciplinaryOpt'
+        disc_dict[f"{ns_optim}.{'objective_name'}"] = 'objective_lagrangian'
+        disc_dict[f"{ns_optim}.{'differentiation_method'}"] = 'complex_step'  # complex_step user
+        disc_dict[f"{ns_optim}.{'fd_step'}"] = 1.e-6
+        disc_dict[f"{ns_optim}.{'ineq_constraints'}"] = []
+        disc_dict[f"{ns_optim}.{'eq_constraints'}"] = []
+        disc_dict[f"{ns_optim}.{'algo_options'}"] = {
             "maxls_step_nb": 48,
             "maxcor": 24,
             "ftol_rel": 1e-15,
@@ -184,20 +143,16 @@ class Study(StudyManager):
         }
 
         # design var inputs
-        disc_dict[f'{ns_optim}.output_alpha_services_in'] = np.array([0.87])
-        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = np.array([0.02])
-        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = np.array([0.02])
-        disc_dict[f'{ns_optim}.prod_start_services_in'] = np.array([0.27])
-        #         disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = 0.031947197
-        #         disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = 2.63340451
-        #         disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = 2072.605142
-        #         disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = 23.70064183
+        disc_dict[f"{ns_optim}.{'output_alpha_services_in'}"] = np.array([0.87])
+        disc_dict[f"{ns_optim}.{'prod_gr_start_services_in'}"] = np.array([0.02])
+        disc_dict[f"{ns_optim}.{'decl_rate_tfp_services_in'}"] = np.array([0.02])
+        disc_dict[f"{ns_optim}.{'prod_start_services_in'}"] = np.array([0.27])
 
         # other inputs
-        disc_dict[f'{self.ns_services}.energy_eff_k'] = 0.039609214
-        disc_dict[f'{self.ns_services}.energy_eff_cst'] = 2.867328682
-        disc_dict[f'{self.ns_services}.energy_eff_xzero'] = 2041.038019
-        disc_dict[f'{self.ns_services}.energy_eff_max'] = 11.4693228
+        disc_dict[f"{self.ns_services}.{'energy_eff_k'}"] = 0.039609214
+        disc_dict[f"{self.ns_services}.{'energy_eff_cst'}"] = 2.867328682
+        disc_dict[f"{self.ns_services}.{'energy_eff_xzero'}"] = 2041.038019
+        disc_dict[f"{self.ns_services}.{'energy_eff_max'}"] = 11.4693228
 
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
@@ -223,25 +178,25 @@ class Study(StudyManager):
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Industry': hist_invest['Industry']})
-        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Agriculture': hist_invest['Agriculture']})
-        services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], 'Services': hist_invest['Services']})
+        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorIndustry: hist_invest[GlossaryCore.SectorIndustry]})
+        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorAgriculture: hist_invest[GlossaryCore.SectorAgriculture]})
+        services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorServices: hist_invest[GlossaryCore.SectorServices]})
 
 
         long_term_energy_eff =  pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
-        lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Agriculture']})
-        lt_enef_indus = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Industry']})
-        lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], 'energy_efficiency': long_term_energy_eff['Services']})
+        lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorAgriculture]})
+        lt_enef_indus = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorIndustry]})
+        lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorServices]})
         sect_input = {}
-        sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
-        sect_input[ns_coupling + self.obj_name + '.historical_capital'] = hist_capital
-        sect_input[ns_coupling + self.obj_name + '.historical_energy'] = hist_energy
-        sect_input[self.ns_industry + '.hist_sector_investment'] = hist_invest
-        sect_input[self.ns_agriculture + '.hist_sector_investment'] = hist_invest
-        sect_input[self.ns_services + '.hist_sector_investment'] = hist_invest
-        sect_input[self.ns_industry + '.longterm_energy_efficiency'] = lt_enef_indus
-        sect_input[self.ns_agriculture + '.longterm_energy_efficiency'] = lt_enef_agri
-        sect_input[self.ns_services + '.longterm_energy_efficiency'] = lt_enef_services
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_capital'}"] = hist_capital
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_energy'}"] = hist_energy
+        sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = hist_invest
+        sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = hist_invest
+        sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = hist_invest
+        sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
+        sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
+        sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
 
         disc_dict.update(sect_input)
 

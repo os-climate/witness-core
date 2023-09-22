@@ -44,8 +44,8 @@ class PolicyDiscipline(SoSWrapp):
 
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                       'dataframe_descriptor':
                           {
@@ -95,10 +95,10 @@ class PolicyDiscipline(SoSWrapp):
         dCO2_tax_dCO2_damage, dCO2_tax_dCCS_price = self.policy_model.compute_CO2_tax_dCCS_dCO2_damage_smooth()
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), ('CO2_damage_price', 'CO2_damage_price'),  np.identity(len(dCO2_tax_dCO2_damage)) * np.array(dCO2_tax_dCO2_damage))
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), ('CO2_damage_price', 'CO2_damage_price'),  np.identity(len(dCO2_tax_dCO2_damage)) * np.array(dCO2_tax_dCO2_damage))
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2TaxesValue, 'CO2_tax'), ('CCS_price', 'ccs_price_per_tCO2'),  np.identity(len(dCO2_tax_dCCS_price)) * np.array(dCO2_tax_dCCS_price))
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), ('CCS_price', 'ccs_price_per_tCO2'),  np.identity(len(dCO2_tax_dCCS_price)) * np.array(dCO2_tax_dCCS_price))
 
     def get_chart_filter_list(self):
 
@@ -145,7 +145,7 @@ class PolicyDiscipline(SoSWrapp):
                 years, list(CO2_damage_price['CO2_damage_price'].values), 'CO2 damage', 'lines')
 
             new_series3 = InstanciatedSeries(
-                years, list(CO2_tax['CO2_tax'].values), 'CO2 tax', 'lines')
+                years, list(CO2_tax[GlossaryCore.CO2Tax].values), 'CO2 tax', 'lines')
 
             new_chart.series.append(new_series)
             new_chart.series.append(new_series2)

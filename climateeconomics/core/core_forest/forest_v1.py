@@ -27,9 +27,9 @@ class Forest():
     basic for now, to evolve 
 
     """
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
-    TIME_STEP = 'time_step'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
+    TIME_STEP = GlossaryCore.TimeStep
     LIMIT_DEFORESTATION_SURFACE = 'limit_deforestation_surface'
     DEFORESTATION_SURFACE = 'deforestation_surface'
     CO2_PER_HA = 'CO2_per_ha'

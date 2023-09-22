@@ -82,7 +82,7 @@ class DICEParallelTest(unittest.TestCase):
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
 
         co2_emissions_ccus_Gt = pd.DataFrame()
         co2_emissions_ccus_Gt[GlossaryCore.Years] = energy_supply_df_y[GlossaryCore.Years]
@@ -113,7 +113,7 @@ class DICEParallelTest(unittest.TestCase):
 
         values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
-        values_dict[f'{self.name}.energy_mean_price'] = energy_mean_price
+        values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
         values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"
         values_dict[f'{self.name}.n_processes'] = n_proc
@@ -147,7 +147,7 @@ class DICEParallelTest(unittest.TestCase):
 
         values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
         values_dict[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
-        values_dict[f'{self.name}.energy_mean_price'] = energy_mean_price
+        values_dict[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = energy_mean_price
         values_dict[f'{self.name}.CCS_price'] = CCS_price
         values_dict[f'{self.name}.sub_mda_class'] = "GSPureNewtonMDA"
         values_dict[f'{self.name}.n_processes'] = n_proc

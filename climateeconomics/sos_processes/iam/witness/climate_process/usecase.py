@@ -111,11 +111,9 @@ class Study(StudyManager):
 
         # private values economics operator model
         climate_input = {}
-        climate_input[self.study_name + '.year_start'] = self.year_start
-        climate_input[self.study_name + '.year_end'] = self.year_end
-
-        climate_input[self.study_name +
-                      '.CO2_emissions_df'] = emissions_df
+        climate_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        climate_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
+        climate_input[f"{self.study_name}.{'CO2_emissions_df'}"] = emissions_df
 
         setup_data_list.append(climate_input)
 

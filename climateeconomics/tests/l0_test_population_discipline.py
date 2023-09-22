@@ -71,8 +71,8 @@ class PopDiscTest(unittest.TestCase):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_all
                        }
@@ -117,11 +117,11 @@ class PopDiscTest(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
         temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'temp_atmo': temp_serie})
+            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df
                        }
@@ -158,15 +158,15 @@ class PopDiscTest(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
         temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'temp_atmo': temp_serie})
+            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
         # Test With a average calorie intake at 2000 kcal per capita
         calories_pc_df = pd.DataFrame(
             {GlossaryCore.Years: years, 'kcal_pc': np.linspace(2000,2000,len(years))})
         calories_pc_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc_df
@@ -203,7 +203,7 @@ class PopDiscTest(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp_serie})
         economics_df_y.index = years
         temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'temp_atmo': temp_serie})
+            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
         # Test With a average calorie intake at 2000 kcal per capita
         calories_pc_df = pd.DataFrame(
@@ -213,8 +213,8 @@ class PopDiscTest(unittest.TestCase):
         assumptions_dict = ClimateEcoDiscipline.assumptions_dict_default
         assumptions_dict['activate_climate_effect_population'] = False
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.calories_pc_df': calories_pc_df,
@@ -233,7 +233,8 @@ class PopDiscTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-           graph.to_plotly().show()
+           #graph.to_plotly().show()
+           pass
 
 
 if '__main__' == __name__:

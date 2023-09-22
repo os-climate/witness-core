@@ -102,7 +102,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -185,7 +185,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -268,7 +268,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -352,7 +352,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -436,7 +436,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
@@ -512,7 +512,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
@@ -579,7 +579,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
@@ -651,7 +651,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict.keys():
-            if key in [GlossaryCore.techno_list, 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[key]['value']

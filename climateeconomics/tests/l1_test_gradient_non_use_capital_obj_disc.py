@@ -91,8 +91,8 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
         forest_lost_capital_cons_limit = 10
 
         non_use_capital_obj_ref = 100.
-        self.values_dict = {f'{self.name}.year_start': year_start,
-                            f'{self.name}.year_end': year_end,
+        self.values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                            f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                             f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
                             f'{self.name}.{GlossaryCore.energy_list}': ['fuel.liquid_fuel', 'methane'],
                             f'{self.name}.{GlossaryCore.ccs_list}': ['carbon_capture'],

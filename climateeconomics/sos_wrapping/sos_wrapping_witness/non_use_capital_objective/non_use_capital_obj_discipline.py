@@ -44,8 +44,8 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
     _maturity = 'Research'
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
@@ -160,7 +160,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             agriculture_techno_list = self.get_sosdisc_inputs(
                 'agri_capital_techno_list')
             if agriculture_techno_list is not None:
-                energy_techno_dict['Agriculture'] = {'namespace': 'ns_forest',
+                energy_techno_dict[GlossaryCore.SectorAgriculture] = {'namespace': 'ns_forest',
                                                      'value': agriculture_techno_list}
 
         if len(energy_techno_dict) != 0:
@@ -248,8 +248,8 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         non_use_capital_objective
         """
         inputs_dict = self.get_sosdisc_inputs()
-        years = np.arange(inputs_dict['year_start'],
-                          inputs_dict['year_end'] + 1)
+        years = np.arange(inputs_dict[GlossaryCore.YearStart],
+                          inputs_dict[GlossaryCore.YearEnd] + 1)
         non_use_capital_obj_ref = inputs_dict['non_use_capital_obj_ref']
         alpha, gamma = inputs_dict['alpha'], inputs_dict['gamma']
         non_use_capital_cons_ref = inputs_dict['non_use_capital_cons_ref']
@@ -396,7 +396,7 @@ def compute_full_techno_list(energy_techno_dict):
     '''
     full_techno_list = []
     for energy, techno_dict in energy_techno_dict.items():
-        if energy == 'Agriculture':
+        if energy == GlossaryCore.SectorAgriculture:
             full_techno_list.extend(
                 [(f'', techno_dict['namespace']) for techno in techno_dict['value']])
         else:

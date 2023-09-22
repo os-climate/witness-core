@@ -49,9 +49,9 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
     co2_init_conc_fund = np.array([296.002949511, 5.52417779186, 6.65150094285, 2.39635475726, 0.17501699667]) * 412.4/296.002949511
 
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt',
                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                       GlossaryCore.TotalCO2Emissions: ('float', None, False),

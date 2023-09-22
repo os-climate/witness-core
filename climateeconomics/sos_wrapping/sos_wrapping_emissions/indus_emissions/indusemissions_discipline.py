@@ -46,9 +46,9 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
     name = f'{GHGemissionsDiscipline.name}.Industry'
     _maturity = 'Research'
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_gr_sigma': {'type': 'float', 'default': -0.0152, 'user_level': 2, 'unit': '-'},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001, 'user_level': 2, 'unit': '-'},
         'init_indus_emissions': {'type': 'float', 'default': 34, 'unit': 'GtCO2 per year', 'user_level': 2},
@@ -58,19 +58,19 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                   GlossaryCore.GrossOutput: ('float', None, False),
                                                   GlossaryCore.OutputNetOfDamage: ('float', None, False),
-                                                  'net_output': ('float', None, False),
+                                                  GlossaryCore.NetOutput: ('float', None, False),
                                                   GlossaryCore.PopulationValue: ('float', None, False),
-                                                  'productivity': ('float', None, False),
-                                                  'productivity_gr': ('float', None, False),
+                                                  GlossaryCore.Productivity: ('float', None, False),
+                                                  GlossaryCore.ProductivityGrowthRate: ('float', None, False),
                                                   'energy_productivity_gr': ('float', None, False),
                                                   'energy_productivity': ('float', None, False),
                                                   GlossaryCore.Consumption: ('float', None, False),
                                                   GlossaryCore.PerCapitaConsumption: ('float', None, False),
-                                                  'capital': ('float', None, False),
+                                                  GlossaryCore.Capital: ('float', None, False),
                                                   GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
-                                                  'output_growth': ('float', None, False),}
+                                                  GlossaryCore.OutputGrowth: ('float', None, False),}
                          },
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2, 'unit': '-'},
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'}

@@ -71,7 +71,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         temperature = np.array(np.linspace(1.05, 5, year_range))
         self.temperature_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "temp_atmo": temperature})
+            {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temperature})
         self.temperature_df.index = years
 
         self.default_kg_to_m2 = {'red meat': 360,
@@ -110,9 +110,9 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      'fruits and vegetables': [217.62],
                                      })
 
-        self.param = {'year_start': self.year_start,
-                      'year_end': self.year_end,
-                      'time_step': self.time_step,
+        self.param = {GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
+                      GlossaryCore.TimeStep: self.time_step,
                       'diet_df': self.diet_df,
                       'kg_to_kcal_dict': self.default_kg_to_kcal,
                       GlossaryCore.PopulationDfValue: self.population_df,
@@ -122,8 +122,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                       'other_use_agriculture': self.other
                       }
 
-        values_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.diet_df': self.diet_df,
                        f'{self.name}.{self.model_name}.kg_to_kcal_dict': self.default_kg_to_kcal,
                        f'{self.name}.{self.model_name}.kg_to_m2_dict': self.default_kg_to_m2,

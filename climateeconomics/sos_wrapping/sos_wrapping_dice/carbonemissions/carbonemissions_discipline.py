@@ -41,9 +41,9 @@ class CarbonemissionsDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
     DESC_IN = {
-        'year_start': {'type': 'int', 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'unit': 'years per period', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'unit': 'years per period', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_land_emissions': {'type': 'float', 'unit': 'GtCO2 per year', 'default': 2.6},
         'decline_rate_land_emissions': {'type': 'float', 'default': .115},
         'init_cum_land_emisisons': {'type': 'float', 'unit': 'GtCO2', 'default': 100},

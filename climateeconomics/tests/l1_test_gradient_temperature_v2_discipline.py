@@ -73,9 +73,9 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.ghg_cycle_df': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
@@ -132,9 +132,9 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.ghg_cycle_df': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'FUND',
@@ -192,9 +192,9 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.ghg_cycle_df': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'FUND',
@@ -252,9 +252,9 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.ghg_cycle_df': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
@@ -311,9 +311,9 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.ghg_cycle_df': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
@@ -364,10 +364,10 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101, 1)
         carboncycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
-                       f'{self.name}.carboncycle_df': carboncycle_df,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
+                       f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.forcing_model': 'Etminan',
                        f'{self.name}.{self.model_name}.pre_indus_co2_concentration_ppm': 41000.}
@@ -382,7 +382,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_v2_discipline_etminan_lower.pkl',
                             local_data = disc_techno.local_data,
-                            discipline=disc_techno, step=1e-10, inputs=[f'{self.name}.carboncycle_df'],
+                            discipline=disc_techno, step=1e-10, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], output_column='CO2 forcing', derr_approx='finite_differences')
 
 

@@ -32,9 +32,9 @@ class CarbonEmissions():
         self.set_data()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_land_emissions = self.param['init_land_emissions']
         self.decline_rate_land_emissions = self.param['decline_rate_land_emissions']
         self.init_cum_land_emisisons = self.param['init_cum_land_emisisons']
@@ -192,8 +192,8 @@ class CarbonEmissions():
             self.years_range)
         self.emissions_control_rate = emissions_control_rate['value']
 #         self.emissions_control_rate = pd.Series(emissions_control_rate, index=(np.arange(
-# self.param['year_start'], self.param['year_end'] + 1,
-# self.param['time_step'])))
+# self.param[GlossaryCore.YearStart], self.param[GlossaryCore.YearEnd] + 1,
+# self.param[GlossaryCore.TimeStep])))
         self.emissions_df['emissions_control_rate'] = self.emissions_control_rate
         # Iterate over years
         for year in self.years_range:
@@ -221,9 +221,9 @@ class CarbonCycle():
         self.set_data()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]
         self.conc_lower_strata = self.param['conc_lower_strata']
         self.conc_upper_strata = self.param['conc_upper_strata']
         self.conc_atmo = self.param['conc_atmo']
@@ -371,9 +371,9 @@ class TempChange():
         self.set_data()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_temp_ocean = self.param['tocean0']
         self.init_temp_atmo = self.param['tatm0']
         self.eq_temp_impact = self.param['t2xco2']
@@ -395,10 +395,10 @@ class TempChange():
             self.year_start, self.year_end + 1, self.time_step)
         self.years_range = years_range
         temperature_df = pd.DataFrame(index=years_range, columns=[
-                                      'year', 'exog_forcing', 'forcing', 'temp_atmo', 'temp_ocean'])
+                                      'year', GlossaryCore.ExoGForcing, GlossaryCore.Forcing, GlossaryCore.TempAtmo, GlossaryCore.TempOcean])
         temperature_df.loc[self.year_start,
-                           'temp_ocean'] = self.init_temp_ocean
-        temperature_df.loc[self.year_start, 'temp_atmo'] = self.init_temp_atmo
+                           GlossaryCore.TempOcean] = self.init_temp_ocean
+        temperature_df.loc[self.year_start, GlossaryCore.TempAtmo] = self.init_temp_atmo
         temperature_df['year'] = years_range
         self.temperature_df = temperature_df
         return temperature_df
@@ -415,7 +415,7 @@ class TempChange():
         elif t >= 18:
             exog_forcing = self.init_forcing_nonco + \
                 (self.hundred_forcing_nonco - self.init_forcing_nonco)
-        self.temperature_df.loc[year, 'exog_forcing'] = exog_forcing
+        self.temperature_df.loc[year, GlossaryCore.ExoGForcing] = exog_forcing
         return exog_forcing
 
     def compute_forcing(self, year):
@@ -424,10 +424,10 @@ class TempChange():
         (watts per m2 from 1900)
         """
         atmo_conc = self.carboncycle_df.loc[year, 'atmo_conc']
-        exog_forcing = self.temperature_df.loc[year, 'exog_forcing']
+        exog_forcing = self.temperature_df.loc[year, GlossaryCore.ExoGForcing]
         forcing = self.forcing_eq_co2 * \
             ((np.log((atmo_conc) / 588)) / np.log(2)) + exog_forcing
-        self.temperature_df.loc[year, 'forcing'] = forcing
+        self.temperature_df.loc[year, GlossaryCore.Forcing] = forcing
         return forcing
 
     def compute_temp_atmo(self, year):
@@ -436,15 +436,15 @@ class TempChange():
 
         """
         p_temp_atmo = self.temperature_df.loc[year -
-                                              self.time_step, 'temp_atmo']
+                                              self.time_step, GlossaryCore.TempAtmo]
         p_temp_ocean = self.temperature_df.loc[year -
-                                               self.time_step, 'temp_ocean']
-        forcing = self.temperature_df.loc[year, 'forcing']
+                                               self.time_step, GlossaryCore.TempOcean]
+        forcing = self.temperature_df.loc[year, GlossaryCore.Forcing]
         temp_atmo = p_temp_atmo + self.climate_upper * \
             ((forcing - (self.forcing_eq_co2 / self.eq_temp_impact) *
               p_temp_atmo) - (self.transfer_upper * (p_temp_atmo - p_temp_ocean)))
         # Lower bound
-        self.temperature_df.loc[year, 'temp_atmo'] = min(
+        self.temperature_df.loc[year, GlossaryCore.TempAtmo] = min(
             temp_atmo, self.up_tatmo)
         return temp_atmo
 
@@ -453,14 +453,14 @@ class TempChange():
         Compute temperature of lower ocean  at t using t-1 values
         """
         p_temp_ocean = self.temperature_df.loc[year -
-                                               self.time_step, 'temp_ocean']
+                                               self.time_step, GlossaryCore.TempOcean]
         p_temp_atmo = self.temperature_df.loc[year -
-                                              self.time_step, 'temp_atmo']
+                                              self.time_step, GlossaryCore.TempAtmo]
         temp_ocean = p_temp_ocean + self.transfer_lower * \
             (p_temp_atmo - p_temp_ocean)
         # Bounds
         temp_ocean = max(temp_ocean, self.lo_tocean)
-        self.temperature_df.loc[year, 'temp_ocean'] = min(
+        self.temperature_df.loc[year, GlossaryCore.TempOcean] = min(
             temp_ocean, self.up_tocean)
         return temp_ocean
 
@@ -469,7 +469,7 @@ class TempChange():
         Compute all
         """
         self.inputs_models = inputs_models
-        self.carboncycle_df = self.inputs_models['carboncycle_df']
+        self.carboncycle_df = self.inputs_models[GlossaryCore.CarbonCycleDfValue]
         self.carboncycle_df = self.carboncycle_df.set_index(self.years_range)
         self.create_dataframe()
         self.compute_exog_forcing(self.year_start)

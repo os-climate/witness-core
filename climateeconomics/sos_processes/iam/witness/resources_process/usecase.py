@@ -90,8 +90,8 @@ class Study(ClimateEconomicsStudyManager):
                        '.non_modeled_resource_price'] = non_modeled_resource_price
         resource_input[self.study_name + self.all_resource_name +
                        '.resources_CO2_emissions'] = resources_CO2_emissions
-        resource_input[f'{self.study_name}.year_start'] = self.year_start
-        resource_input[f'{self.study_name}.year_end'] = self.year_end
+        resource_input[f'{self.study_name}.{GlossaryCore.YearStart}'] = self.year_start
+        resource_input[f'{self.study_name}.{GlossaryCore.YearEnd}'] = self.year_end
         setup_data_list.append(resource_input)
         data_dir_resource = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')

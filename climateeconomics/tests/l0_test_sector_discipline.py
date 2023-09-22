@@ -20,11 +20,12 @@ from pandas import DataFrame, read_csv
 from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from scipy.interpolate import interp1d
 
 
-class AgricultureDiscTest(unittest.TestCase):
+class ServicesDiscTest(unittest.TestCase):
     '''
     Economic Manufacturer static pyworld3 test case
     '''
@@ -35,7 +36,8 @@ class AgricultureDiscTest(unittest.TestCase):
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.model_name = 'Agriculture'
+        
+        self.model_name = SectorDiscipline.sector_name
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_macro': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
@@ -45,13 +47,11 @@ class AgricultureDiscTest(unittest.TestCase):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline.AgricultureDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
-
+        
         self.ee.factory.set_builders_to_coupling_builder(builder)
-
         self.ee.configure()
-        self.ee.display_treeview_nodes()
 
         # put manually the index
         years = np.arange(2020, 2101, 1)
@@ -60,25 +60,25 @@ class AgricultureDiscTest(unittest.TestCase):
         year_start = 2020
         self.year_start = year_start
         year_end = 2100
-        time_step = 1
         self.year_end = year_end
-        self.time_step = time_step 
+        time_step = 1
+        self.time_step = time_step
         nb_per = round((year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
        
-        # retrieve co2_emissions_gt input
+        # input
         data_dir = join(dirname(__file__), 'data')
         global_data_dir = join(dirname(dirname(__file__)), 'data')
 
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
         total_workforce_df.index = years
-        #multiply ageworking pop by employment rate and by % in agriculture
-        workforce = total_workforce_df['population_1570']* 0.659 * 0.274
-        self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, 'Agriculture': workforce})
+        #multiply ageworking pop by employment rate and by % in services
+        workforce = total_workforce_df['population_1570']* 0.659 * 0.509
+        self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, SectorDiscipline.sector_name: workforce})
 
         #Energy_supply
         brut_net = 1/1.45
-        share_agri = 0.02136
+        share_indus = 0.37
         #prepare energy df  
         energy_outlook = pd.DataFrame({
             'year': [2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
@@ -86,18 +86,18 @@ class AgricultureDiscTest(unittest.TestCase):
         f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
         #Find values for 2020, 2050 and concat dfs 
         energy_supply = f2(np.arange(year_start, year_end+1))
-        energy_supply_values = energy_supply * brut_net * share_agri
+        energy_supply_values = energy_supply * brut_net * share_indus
         self.energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: energy_supply_values})
         self.energy_supply_df.index = self.years
         #energy_supply_df.loc[2020, GlossaryCore.TotalProductionValue] = 91.936
 
         #Investment growth at 2% 
-        init_value = 0.589
+        init_value = 25
         invest_serie = []
         invest_serie.append(init_value)
         for year in np.arange(1, nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.02)
-        self.total_invest = pd.DataFrame({GlossaryCore.Years: years, 'Agriculture': invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: years, SectorDiscipline.sector_name: invest_serie})
         
         #damage
         self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
@@ -105,19 +105,18 @@ class AgricultureDiscTest(unittest.TestCase):
         self.damage_df.index = self.years
 
     def test_execute(self):
-
+        
         # out dict definition
-        values_dict = {f'{self.name}.year_start':self. year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.sectors_investment_df': self.total_invest,
+                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.total_invest,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{self.name}.workforce_df': self.workforce_df, 
-                       f'{self.name}.{self.model_name}.capital_start': 6.718, #2019 value for test 
-                       f'{self.name}.prod_function_fitting': False
-                       }
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
+                       f'{self.name}.{self.model_name}.capital_start': 273.1805902, #2019 value for test 
+                       f'{self.name}.prod_function_fitting': False}
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
@@ -130,19 +129,20 @@ class AgricultureDiscTest(unittest.TestCase):
 #             graph.to_plotly().show()
 
     def test_execute_forfitting(self):
-
+        
         # out dict definition
-        values_dict = {f'{self.name}.year_start':self. year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': self.time_step,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.sectors_investment_df': self.damage_df,  # to test that it is not used
+                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.damage_df, #To check if not used
                        f'{self.name}.{self.model_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
-                       f'{self.name}.workforce_df': self.workforce_df, 
-                       f'{self.name}.{self.model_name}.capital_start': 6.718,  #2019 value for test
-                       f'{self.name}.prod_function_fitting': True
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
+                       f'{self.name}.{self.model_name}.capital_start': 273.1805902, #2019 value for test 
+                       f'{self.name}.prod_function_fitting': True,
+                       f'{self.name}.{self.model_name}.energy_eff_max_range_ref' : 15
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -152,7 +152,6 @@ class AgricultureDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-#        for graph in graph_list:
-#            graph.to_plotly().show()
+#         for graph in graph_list:
+#             graph.to_plotly().show()
 
-        
