@@ -38,13 +38,13 @@ class Study(StudyManager):
     def __init__(self, year_start=2000, year_end=2020, time_step=1, name='', execution_engine=None, run_usecase=False):
         super().__init__(__file__, execution_engine=execution_engine, run_usecase=run_usecase)
         self.study_name = 'usecase'
-        self.macro_name = '.Macroeconomics'
-        self.obj_name = '.Objectives'
-        self.coupling_name = ".Sectorization_Eval"
-        self.optim_name = ".SectorsOpt"
-        self.ns_industry = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Industry'
-        self.ns_agriculture = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Agriculture'
-        self.ns_services = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Services'
+        self.macro_name = 'Macroeconomics'
+        self.obj_name = 'Objectives'
+        self.coupling_name = "Sectorization_Eval"
+        self.optim_name = "SectorsOpt"
+        self.ns_industry = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Industry'}"
+        self.ns_agriculture = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Agriculture'}"
+        self.ns_services = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Services'}"
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -52,9 +52,8 @@ class Study(StudyManager):
                                                     execution_engine=execution_engine)
 
     def setup_usecase(self):
-        ns = self.study_name
-        ns_coupling = self.study_name + self.optim_name + self.coupling_name
-        ns_optim = self.study_name + self.optim_name
+        ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
+        ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
         INEQ_CONSTRAINT = FunctionManager.INEQ_CONSTRAINT
         OBJECTIVE = FunctionManager.OBJECTIVE
@@ -177,16 +176,16 @@ class Study(StudyManager):
         disc_dict[f'{ns_coupling}.DesignVariables.design_var_descriptor'] = design_var_descriptor
 
         # Optim inputs
-        disc_dict[f'{ns_optim}.max_iter'] = 300
-        disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
-        disc_dict[f'{ns_optim}.design_space'] = dspace
-        disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
-        disc_dict[f'{ns_optim}.objective_name'] = 'objective_lagrangian'
-        disc_dict[f'{ns_optim}.differentiation_method'] = 'complex_step'  # complex_step user
-        disc_dict[f'{ns_optim}.fd_step'] = 1.e-15
-        disc_dict[f'{ns_optim}.ineq_constraints'] = []
-        disc_dict[f'{ns_optim}.eq_constraints'] = []
-        disc_dict[f'{ns_optim}.algo_options'] = {
+        disc_dict[f"{ns_optim}.{'max_iter'}"] = 300
+        disc_dict[f"{ns_optim}.{'algo'}"] = "L-BFGS-B"
+        disc_dict[f"{ns_optim}.{'design_space'}"] = dspace
+        disc_dict[f"{ns_optim}.{'formulation'}"] = 'DisciplinaryOpt'
+        disc_dict[f"{ns_optim}.{'objective_name'}"] = 'objective_lagrangian'
+        disc_dict[f"{ns_optim}.{'differentiation_method'}"] = 'complex_step'  # complex_step user
+        disc_dict[f"{ns_optim}.{'fd_step'}"] = 1.e-15
+        disc_dict[f"{ns_optim}.{'ineq_constraints'}"] = []
+        disc_dict[f"{ns_optim}.{'eq_constraints'}"] = []
+        disc_dict[f"{ns_optim}.{'algo_options'}"] = {
             "maxls_step_nb": 48,
             "maxcor": 24,
             "ftol_rel": 1e-15,
@@ -194,48 +193,43 @@ class Study(StudyManager):
         }
 
         # design var inputs
-        disc_dict[f'{ns_optim}.output_alpha_services_in'] = np.array([0.77])
-        disc_dict[f'{ns_optim}.prod_gr_start_services_in'] = np.array([0.01])
-        disc_dict[f'{ns_optim}.decl_rate_tfp_services_in'] = np.array([0.03])
-        disc_dict[f'{ns_optim}.prod_start_services_in'] = np.array([0.19])
-        disc_dict[f'{ns_optim}.energy_eff_k_services_in'] = np.array([0.04])
-        disc_dict[f'{ns_optim}.energy_eff_cst_services_in'] = np.array([0.98])
-        disc_dict[f'{ns_optim}.energy_eff_xzero_services_in'] = np.array([2004.0])
-        disc_dict[f'{ns_optim}.energy_eff_max_services_in'] = np.array([8.0])
+        disc_dict[f"{ns_optim}.{'output_alpha_services_in'}"] = np.array([0.77])
+        disc_dict[f"{ns_optim}.{'prod_gr_start_services_in'}"] = np.array([0.01])
+        disc_dict[f"{ns_optim}.{'decl_rate_tfp_services_in'}"] = np.array([0.03])
+        disc_dict[f"{ns_optim}.{'prod_start_services_in'}"] = np.array([0.19])
+        disc_dict[f"{ns_optim}.{'energy_eff_k_services_in'}"] = np.array([0.04])
+        disc_dict[f"{ns_optim}.{'energy_eff_cst_services_in'}"] = np.array([0.98])
+        disc_dict[f"{ns_optim}.{'energy_eff_xzero_services_in'}"] = np.array([2004.0])
+        disc_dict[f"{ns_optim}.{'energy_eff_max_services_in'}"] = np.array([8.0])
 
-        disc_dict[f'{ns_optim}.output_alpha_agri_in'] = np.array([0.99])
-        disc_dict[f'{ns_optim}.prod_gr_start_agri_in'] = np.array([0.04])
-        disc_dict[f'{ns_optim}.decl_rate_tfp_agri_in'] = np.array([0.07])
-        disc_dict[f'{ns_optim}.prod_start_agri_in'] = np.array([1.08])
-        disc_dict[f'{ns_optim}.energy_eff_k_agri_in'] = np.array([0.02])
-        disc_dict[f'{ns_optim}.energy_eff_cst_agri_in'] = np.array([0.08])
-        disc_dict[f'{ns_optim}.energy_eff_xzero_agri_in'] = np.array([2030.0])
-        disc_dict[f'{ns_optim}.energy_eff_max_agri_in'] = np.array([5.9])
+        disc_dict[f"{ns_optim}.{'output_alpha_agri_in'}"] = np.array([0.99])
+        disc_dict[f"{ns_optim}.{'prod_gr_start_agri_in'}"] = np.array([0.04])
+        disc_dict[f"{ns_optim}.{'decl_rate_tfp_agri_in'}"] = np.array([0.07])
+        disc_dict[f"{ns_optim}.{'prod_start_agri_in'}"] = np.array([1.08])
+        disc_dict[f"{ns_optim}.{'energy_eff_k_agri_in'}"] = np.array([0.02])
+        disc_dict[f"{ns_optim}.{'energy_eff_cst_agri_in'}"] = np.array([0.08])
+        disc_dict[f"{ns_optim}.{'energy_eff_xzero_agri_in'}"] = np.array([2030.0])
+        disc_dict[f"{ns_optim}.{'energy_eff_max_agri_in'}"] = np.array([5.9])
 
-        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = np.array([0.71])
-        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = np.array([0.001])
-        disc_dict[f'{ns_optim}.decl_rate_tfp_indus_in'] = np.array([0.02])
-        disc_dict[f'{ns_optim}.prod_start_indus_in'] = np.array([0.20])
-        disc_dict[f'{ns_optim}.energy_eff_k_indus_in'] = np.array([0.05])
-        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = np.array([0.16])
-        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = np.array([2015])
-        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = np.array([4.18])
+        disc_dict[f"{ns_optim}.{'output_alpha_indus_in'}"] = np.array([0.71])
+        disc_dict[f"{ns_optim}.{'prod_gr_start_indus_in'}"] = np.array([0.001])
+        disc_dict[f"{ns_optim}.{'decl_rate_tfp_indus_in'}"] = np.array([0.02])
+        disc_dict[f"{ns_optim}.{'prod_start_indus_in'}"] = np.array([0.20])
+        disc_dict[f"{ns_optim}.{'energy_eff_k_indus_in'}"] = np.array([0.05])
+        disc_dict[f"{ns_optim}.{'energy_eff_cst_indus_in'}"] = np.array([0.16])
+        disc_dict[f"{ns_optim}.{'energy_eff_xzero_indus_in'}"] = np.array([2015])
+        disc_dict[f"{ns_optim}.{'energy_eff_max_indus_in'}"] = np.array([4.18])
 
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
         func_df['variable'] = ['error_pib_total',
                                'Industry.gdp_error', 'Agriculture.gdp_error', 'Services.gdp_error',
-                               'Industry.energy_eff_error', 'Agriculture.energy_eff_error', 'Services.energy_eff_error',
-                               'Industry.range_energy_eff_constraint', 'Agriculture.range_energy_eff_constraint',
-                               'Services.range_energy_eff_constraint']
-        func_df['ftype'] = [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE,
-                            INEQ_CONSTRAINT, INEQ_CONSTRAINT, INEQ_CONSTRAINT]
-        func_df['weight'] = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+                               'Industry.energy_eff_error', 'Agriculture.energy_eff_error', 'Services.energy_eff_error']
+        func_df['ftype'] = [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE]
+        func_df['weight'] = [1, 1, 1, 1, 1, 1, 1]
         func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM,
-                              AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM,
-                              AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM]
-        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj',
-                                'ns_macro', 'ns_macro', 'ns_macro']
+                              AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM,]
+        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj']
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{ns_coupling}.{func_mng_name}.'
@@ -256,17 +250,28 @@ class Study(StudyManager):
         agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorAgriculture: hist_invest[GlossaryCore.SectorAgriculture]})
         services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorServices: hist_invest[GlossaryCore.SectorServices]})
         indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorIndustry: hist_invest[GlossaryCore.SectorIndustry]})
-
+        long_term_energy_eff = pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
+        lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
+                                     GlossaryCore.EnergyEfficiency: long_term_energy_eff[
+                                         GlossaryCore.SectorAgriculture]})
+        lt_enef_indus = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
+                                      GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorIndustry]})
+        lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
+                                         GlossaryCore.EnergyEfficiency: long_term_energy_eff[
+                                             GlossaryCore.SectorServices]})
         sect_input = {}
-        sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
-        sect_input[ns_coupling + self.obj_name + '.historical_capital'] = hist_capital
-        sect_input[ns_coupling + self.obj_name + '.historical_energy'] = hist_energy
-        sect_input[ns_coupling + self.macro_name + '.prod_function_fitting'] = True
-        sect_input[ns_coupling + self.obj_name + '.data_for_earlier_energy_eff'] = extra_data
-        sect_input[ns_coupling + self.obj_name + '.weights_df'] = weights
-        sect_input[self.ns_agriculture + '.hist_sector_investment'] = agri_invest
-        sect_input[self.ns_services + '.hist_sector_investment'] = services_invest
-        sect_input[self.ns_industry + '.hist_sector_investment'] = indus_invest
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_capital'}"] = hist_capital
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_energy'}"] = hist_energy
+        sect_input[f"{ns_coupling}.{self.macro_name}.{'prod_function_fitting'}"] = False
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'data_for_earlier_energy_eff'}"] = extra_data
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'weights_df'}"] = weights
+        sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = agri_invest
+        sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = services_invest
+        sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = indus_invest
+        sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
+        sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
+        sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'
