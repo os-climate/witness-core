@@ -105,7 +105,8 @@ class ServicesDiscTest(unittest.TestCase):
         self.damage_df.index = self.years
 
     def test_execute(self):
-        
+
+
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -116,7 +117,18 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 273.1805902, #2019 value for test 
-                       f'{self.name}.prod_function_fitting': False}
+                       f'{self.name}.prod_function_fitting': False,
+                       f"{self.name}.{self.model_name}.{'productivity_start'}": 1.31162,
+                       f"{self.name}.{self.model_name}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{self.model_name}.{'productivity_gr_start'}": 0.0027844,
+                       f"{self.name}.{self.model_name}.{'decline_rate_tfp'}": 0.098585,
+                       f"{self.name}.{self.model_name}.{'energy_eff_k'}": 0.1,
+                       f"{self.name}.{self.model_name}.{'energy_eff_cst'}": 0.490463,
+                       f"{self.name}.{self.model_name}.{'energy_eff_xzero'}": 1993,
+                       f"{self.name}.{self.model_name}.{'energy_eff_max'}": 2.35832,
+                       f"{self.name}.{self.model_name}.{'output_alpha'}": 0.99,
+                       f"{self.name}.{self.model_name}.{'depreciation_capital'}": 0.058,
+                       }
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
@@ -129,7 +141,7 @@ class ServicesDiscTest(unittest.TestCase):
 #             graph.to_plotly().show()
 
     def test_execute_forfitting(self):
-        
+
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -142,7 +154,17 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{self.model_name}.capital_start': 273.1805902, #2019 value for test 
                        f'{self.name}.prod_function_fitting': True,
-                       f'{self.name}.{self.model_name}.energy_eff_max_range_ref' : 15
+                       f'{self.name}.{self.model_name}.energy_eff_max_range_ref' : 15,
+                       f"{self.name}.{self.model_name}.{'productivity_start'}": 1.31162,
+                       f"{self.name}.{self.model_name}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{self.model_name}.{'productivity_gr_start'}": 0.0027844,
+                       f"{self.name}.{self.model_name}.{'decline_rate_tfp'}": 0.098585,
+                       f"{self.name}.{self.model_name}.{'energy_eff_k'}": 0.1,
+                       f"{self.name}.{self.model_name}.{'energy_eff_cst'}": 0.490463,
+                       f"{self.name}.{self.model_name}.{'energy_eff_xzero'}": 1993,
+                       f"{self.name}.{self.model_name}.{'energy_eff_max'}": 2.35832,
+                       f"{self.name}.{self.model_name}.{'output_alpha'}": 0.99,
+                       f"{self.name}.{self.model_name}.{'depreciation_capital'}": 0.058,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
