@@ -109,7 +109,7 @@ class Population:
         self.column_list = self.age_list.copy()
         # WORKING POULATION
         self.working_age_population_df = DataFrame(index=years_range,
-                                                   columns=[GlossaryCore.Years, 'population_1570'])
+                                                   columns=[GlossaryCore.Years, GlossaryCore.Population1570])
         self.working_age_population_df[GlossaryCore.Years] = years_range
 
         # BIRTH RATE
@@ -400,7 +400,7 @@ class Population:
             [np.inf, -np.inf], np.nan)
 
         # Compute working age population between 15 and 70 years
-        self.working_age_population_df['population_1570'] = self.population_df[[
+        self.working_age_population_df[GlossaryCore.Population1570] = self.population_df[[
             str(i) for i in np.arange(15, 71)]].sum(axis=1)
 
         # reconstruction of the dataframes with the dictionaries

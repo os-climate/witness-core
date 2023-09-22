@@ -73,7 +73,7 @@ class ServicesDiscTest(unittest.TestCase):
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
         total_workforce_df.index = years
         #multiply ageworking pop by employment rate and by % in services
-        workforce = total_workforce_df['population_1570']* 0.659 * 0.509
+        workforce = total_workforce_df[GlossaryCore.Population1570]* 0.659 * 0.509
         self.workforce_df = pd.DataFrame({GlossaryCore.Years: years, SectorDiscipline.sector_name: workforce})
 
         #Energy_supply

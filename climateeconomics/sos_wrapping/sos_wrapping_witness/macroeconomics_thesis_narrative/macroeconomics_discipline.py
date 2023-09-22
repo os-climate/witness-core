@@ -77,7 +77,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                     'dataframe_edition_locked': False, 'visibility': 'Shared',
                                     'namespace': 'ns_witness'},
 
-        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProduction,
+        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': 'Shared',
                                              'namespace': 'ns_witness'},
         'scaling_factor_energy_investment': {'type': 'float', 'default': 1e2, 'user_level': 2, 'visibility': 'Shared',
@@ -91,7 +91,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'output_pop_share': {'type': 'float', 'default': 0.29098974, 'user_level': 3},
         'output_alpha': {'type': 'float', 'default': 0.86537, 'user_level': 2, 'unit': '-'},
         'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '-'},
-        'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
+        GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
                                       'namespace': 'ns_witness'},
 
         'hassler': {'type': 'bool', 'default': False},
@@ -104,7 +104,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'decline_rate_energy_productivity': {'type': 'float', 'default': 0.01345699, 'user_level': 3},
         'init_energy_productivity': {'type': 'float', 'default': 3.045177, 'user_level': 2},
         'init_energy_productivity_gr': {'type': 'float', 'default': 0.0065567, 'user_level': 2},
-        GlossaryCore.CO2EmissionsGt['var_name']: GlossaryCore.CO2EmissionsGt,
+        GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
         'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%'},
         'co2_invest_limit': {'type': 'float', 'default': 2.0},
         GlossaryCore.CO2TaxesValue: {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
@@ -146,7 +146,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         co2_tax_efficiency = param.pop('CO2_tax_efficiency')
         co2_invest_limit = param.pop('co2_invest_limit')
         population_df = param.pop(GlossaryCore.PopulationDfValue)
-        working_age_population_df = param.pop('working_age_population_df')
+        working_age_population_df = param.pop(GlossaryCore.WorkingAgePopulationDfValue)
 
         macro_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
                         'energy_production': energy_production,
@@ -160,7 +160,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         'CO2_tax_efficiency': co2_tax_efficiency,
                         'co2_invest_limit': co2_invest_limit,
                         GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, GlossaryCore.PopulationValue]],
-                        'working_age_population_df': working_age_population_df[[GlossaryCore.Years, 'population_1570']]
+                        GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df[[GlossaryCore.Years, GlossaryCore.Population1570]]
                         }
         # Check inputs
         count = len(
@@ -411,14 +411,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # compute gradient for coupling variable working age population
         dworkforce_dworkingagepop = self.macro_model.compute_dworkforce_dworkagepop()
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.WorkforceDfValue, 'workforce'), ('working_age_population_df', 'population_1570'), dworkforce_dworkingagepop)
+            (GlossaryCore.WorkforceDfValue, 'workforce'), (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570), dworkforce_dworkingagepop)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), ('working_age_population_df', 'population_1570'), dgross_output)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570), dgross_output)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), ('working_age_population_df', 'population_1570'),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             dnet_output)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), ('working_age_population_df', 'population_1570'),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             denergy_investment / scaling_factor_energy_investment * 1e3)
 
         self.set_partial_derivative_for_other_types(

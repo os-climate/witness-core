@@ -89,8 +89,8 @@ class DataStudy():
         population_df.index = years
         witness_input[f"{self.study_name}.{'population_df'}"] = population_df
         working_age_population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'population_1570': 6300}, index=years)
-        witness_input[f"{self.study_name}.{'working_age_population_df'}"] = working_age_population_df
+            {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
+        witness_input[f"{self.study_name}.{GlossaryCore.WorkingAgePopulationDfValue}"] = working_age_population_df
 
         energy_investment_wo_tax = DataFrame(
             {GlossaryCore.Years: years,

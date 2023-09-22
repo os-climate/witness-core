@@ -601,7 +601,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             # CO2 graph
 
             CO2_emissions_df = self.get_sosdisc_outputs(
-                'CO2_emissions_detail_df')
+                GlossaryCore.CO2EmissionsDetailDfValue)
 
             delta_reforestation = CO2_emissions_df['delta_CO2_reforestation'].values
             reforestation = CO2_emissions_df['CO2_reforestation'].values

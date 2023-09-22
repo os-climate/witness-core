@@ -46,7 +46,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
         total_workforce_df = total_workforce_df[total_workforce_df[GlossaryCore.Years] <= self.year_end]
         # multiply ageworking pop by employment rate and by % in services
-        workforce = total_workforce_df['population_1570'] * 0.659 * 0.509
+        workforce = total_workforce_df[GlossaryCore.Population1570] * 0.659 * 0.509
         self.workforce_df = pd.DataFrame({GlossaryCore.Years: self.years, SectorDiscipline.sector_name: workforce})
 
         # Energy_supply

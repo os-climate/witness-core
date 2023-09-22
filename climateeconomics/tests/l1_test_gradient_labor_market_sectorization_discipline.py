@@ -80,7 +80,7 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{model_name}.workforce_share_per_sector': self.workforce_share, 
-                       f'{self.name}.working_age_population_df': self.working_age_pop_df
+                       f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_pop_df
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -90,7 +90,7 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_labormarket_sectorization_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.working_age_population_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.WorkforceDfValue}'])
         
    

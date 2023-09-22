@@ -129,7 +129,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CO2_emissions_by_use_sources',
                                     f'{self.name}.CO2_land_emissions',
                                     f'{self.name}.CO2_emissions_by_use_sinks', f'{self.name}.co2_emissions_needed_by_energy_mix', f'{self.name}.co2_emissions_ccus_Gt'],
-                            outputs=[f'{self.name}.CO2_emissions_df',
+                            outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}',
                                      f'{self.name}.CO2_objective', f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'])
 
     def test_co2_objective_limit_grad(self):
@@ -217,5 +217,5 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CO2_emissions_by_use_sources',
                                     f'{self.name}.CO2_land_emissions',
                                     f'{self.name}.CO2_emissions_by_use_sinks', f'{self.name}.co2_emissions_needed_by_energy_mix', f'{self.name}.co2_emissions_ccus_Gt'],
-                            outputs=[f'{self.name}.CO2_emissions_df',
+                            outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}',
                                      f'{self.name}.CO2_objective', f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'])

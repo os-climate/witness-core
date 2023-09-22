@@ -339,7 +339,7 @@ class CarbonCycle():
         """
         self.create_dataframe()
         self.inputs_models = inputs_models
-        self.CO2_emissions_df = deepcopy(self.inputs_models['CO2_emissions_df'])
+        self.CO2_emissions_df = deepcopy(self.inputs_models[GlossaryCore.CO2EmissionsDfValue])
         self.CO2_emissions_df.index = self.CO2_emissions_df[GlossaryCore.Years].values
         self.compute_ppm(self.year_start)
 

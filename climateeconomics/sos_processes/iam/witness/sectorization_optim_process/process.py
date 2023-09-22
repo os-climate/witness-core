@@ -65,9 +65,9 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {
                     'ns_optim': f"{ns_scatter}.{optim_name}",
-                   'ns_services':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{'Services'}",
-                   'ns_indus':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{'Industry'}",
-                   'ns_agri':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{'Agriculture'}",
+                   'ns_services':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorServices}",
+                   'ns_indus':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorIndustry}",
+                   'ns_agri':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorAgriculture}",
                    'ns_obj': f"{ns_scatter}.{optim_name}.{coupling_name}.{'Objectives'}",
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)

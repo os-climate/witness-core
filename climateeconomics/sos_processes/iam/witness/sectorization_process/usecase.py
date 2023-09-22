@@ -108,7 +108,7 @@ class Study(StudyManager):
 
             total_workforce_df = pd.read_csv(join(data_dir, 'workingage_population_df.csv'))
             # multiply ageworking pop by employment rate
-            workforce = total_workforce_df['population_1570'] * 0.659
+            workforce = total_workforce_df[GlossaryCore.Population1570] * 0.659
             workforce = workforce[:self.nb_per]
             # 2020: 3389556200, 2021: 3450067707
             workforce[0] = 3389.556200

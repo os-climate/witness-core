@@ -119,7 +119,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_output.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}'], outputs=[
-                f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
+                f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_working_population_discipline_analytic_grad_temp(self):
         '''
@@ -140,7 +140,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_working_population_discipline_temp.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}'], outputs=[
-                f'{self.name}.working_age_population_df'], step=1e-15, derr_approx='complex_step')
+                f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_temperature(self):
         '''
@@ -206,7 +206,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_big_gdp(self):
@@ -251,7 +251,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_grad_big_temp(self):
@@ -296,7 +296,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_small_pop(self):
@@ -346,7 +346,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_big_pop(self):
@@ -396,7 +396,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[
-                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.working_age_population_df'], step=1e-15,
+                                f'{self.name}.{GlossaryCore.PopulationDfValue}', f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'], step=1e-15,
                             derr_approx='complex_step')
 
     def test_population_discipline_analytic_3000_calories_pc(self):
@@ -431,7 +431,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.calories_pc_df'],
                             outputs=[f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                     f'{self.name}.working_age_population_df'],
+                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'],
                             step=1e-15,
                             derr_approx='complex_step')
 
@@ -460,6 +460,6 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                     f'{self.name}.{GlossaryCore.TemperatureDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                     f'{self.name}.working_age_population_df'
+                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'
                                      ],
                             step=1e-15, derr_approx='complex_step')

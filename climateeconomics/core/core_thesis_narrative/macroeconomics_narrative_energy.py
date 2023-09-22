@@ -113,7 +113,7 @@ class MacroEconomics():
         param = self.param
         economics_df = pd.DataFrame(
             index=default_index,
-            columns=GlossaryCore.EconomicsDetail_df['dataframe_descriptor'].keys())
+            columns=GlossaryCore.EconomicsDetailDf['dataframe_descriptor'].keys())
 
         for key in economics_df.keys():
             economics_df[key] = 0
@@ -192,7 +192,7 @@ class MacroEconomics():
         # Population dataframes
         self.population_df = self.inputs[GlossaryCore.PopulationDfValue]
         self.population_df.index = self.population_df[GlossaryCore.Years].values
-        self.working_age_population_df = self.inputs['working_age_population_df']
+        self.working_age_population_df = self.inputs[GlossaryCore.WorkingAgePopulationDfValue]
         self.working_age_population_df.index = self.working_age_population_df[GlossaryCore.Years].values
 
 
@@ -229,7 +229,7 @@ class MacroEconomics():
                 - employment rate in %
         Output: number of working people in million of people
         """
-        working_age_pop = self.working_age_population_df['population_1570']
+        working_age_pop = self.working_age_population_df[GlossaryCore.Population1570]
         employment_rate = self.workforce_df['employment_rate']
         workforce = employment_rate * working_age_pop
         self.workforce_df['workforce'] = workforce

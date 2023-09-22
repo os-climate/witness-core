@@ -143,7 +143,7 @@ class DICEMDAPrerunTest(unittest.TestCase):
             values_dict.update(dict_item)
 
         dice_input = {}
-        dice_input[f"{usecase.study_name}.{'CO2_emissions_df'}"] = CO2_emissions_df
+        dice_input[f"{usecase.study_name}.{GlossaryCore.CO2EmissionsDfValue}"] = CO2_emissions_df
         dice_input[f"{usecase.study_name}.{GlossaryCore.CarbonCycleDfValue}"] = carboncycle_df
         dice_input[f"{usecase.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
         dice_input[f"{usecase.study_name}.{GlossaryCore.DamageDfValue}"] = df

@@ -50,9 +50,9 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
                'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
                'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
-               'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness',
+               GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness',
                                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                      'population_1570': ('float', None, False),}
+                                                                      GlossaryCore.Population1570: ('float', None, False),}
                                              },
               }
     DESC_OUT = {
@@ -109,12 +109,12 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         # Gradient wrt working age population
         grad_workforcetotal = self.labor_model.compute_dworkforcetotal_dworkagepop()
         self.set_partial_derivative_for_other_types((GlossaryCore.WorkforceDfValue, 'workforce'),
-                                                        ('working_age_population_df', 'population_1570'),
+                                                        (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
                                                         grad_workforcetotal)
         for sector in sector_list:
             grad_workforcesector = self.labor_model.compute_dworkforcesector_dworkagepop(sector)
             self.set_partial_derivative_for_other_types((GlossaryCore.WorkforceDfValue, sector),
-                                                        ('working_age_population_df', 'population_1570'),
+                                                        (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
                                                         grad_workforcesector)
             
 
@@ -177,14 +177,14 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         if 'total workforce' in chart_list:
 
             working_age_pop_df = self.get_sosdisc_inputs(
-                'working_age_population_df')
+                GlossaryCore.WorkingAgePopulationDfValue)
             years = list(workforce_df[GlossaryCore.Years].values)
 
             year_start = years[0]
             year_end = years[len(years) - 1]
 
             min_value, max_value = self.get_greataxisrange(
-                working_age_pop_df['population_1570'])
+                working_age_pop_df[GlossaryCore.Population1570])
 
             chart_name = 'Workforce'
 
@@ -197,7 +197,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
             ordonate_data = list(workforce_df['workforce'])
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Workforce', 'lines', visible_line)
-            ordonate_data_bis = list(working_age_pop_df['population_1570'])
+            ordonate_data_bis = list(working_age_pop_df[GlossaryCore.Population1570])
             new_chart.series.append(new_series)
             new_series = InstanciatedSeries(
                 years, ordonate_data_bis, 'Working-age population', 'lines', visible_line)

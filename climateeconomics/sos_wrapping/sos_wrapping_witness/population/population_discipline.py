@@ -133,7 +133,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
-        'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
+        GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
                                       'namespace': 'ns_witness'},
         'population_detail_df': {'type': 'dataframe', 'unit': 'people'},
         'birth_rate_df': {'type': 'dataframe', 'unit': '-'},
@@ -165,11 +165,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         # Convert population in billion of people
         population_df[GlossaryCore.PopulationValue] = population_df[GlossaryCore.PopulationValue] / \
             self.model.million
-        population_detail_df['population_1570'] = working_age_population_df['population_1570']
-        working_age_population_df['population_1570'] = working_age_population_df['population_1570'] / self.model.million
+        population_detail_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570]
+        working_age_population_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570] / self.model.million
         # store output data
         out_dict = {GlossaryCore.PopulationDfValue: population_df,
-                    "working_age_population_df": working_age_population_df,
+                    GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df,
                     "population_detail_df": population_detail_df,
                     "birth_rate_df": birth_rate_df,
                     "death_rate_dict": death_rate_dict,
@@ -190,7 +190,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_pop_d_output / self.model.million)
         self.set_partial_derivative_for_other_types(
-            ('working_age_population_df', 'population_1570'),
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_working_pop_d_output / self.model.million)
 
         d_pop_d_temp, d_working_pop_d_temp = self.model.compute_d_pop_d_temp()
@@ -198,14 +198,14 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_pop_d_temp / self.model.million)
         self.set_partial_derivative_for_other_types(
-            ('working_age_population_df', 'population_1570'),
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_working_pop_d_temp / self.model.million)
         
         d_pop_d_kcal_pc, d_working_pop_d_kcal_pc = self.model.compute_d_pop_d_kcal_pc()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), ('calories_pc_df', 'kcal_pc'), d_pop_d_kcal_pc / self.model.million)
         self.set_partial_derivative_for_other_types(
-            ('working_age_population_df', 'population_1570'), ('calories_pc_df', 'kcal_pc'), d_working_pop_d_kcal_pc / self.model.million)
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570), ('calories_pc_df', 'kcal_pc'), d_working_pop_d_kcal_pc / self.model.million)
 
     def get_chart_filter_list(self):
 
@@ -293,7 +293,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             year_end = years[len(years) - 1]
 
             min_value, max_value = self.get_greataxisrange(
-                pop_df['population_1570'])
+                pop_df[GlossaryCore.Population1570])
 
             chart_name = 'working-age population over years'
 
@@ -304,7 +304,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             visible_line = True
 
-            ordonate_data = list(pop_df['population_1570'])
+            ordonate_data = list(pop_df[GlossaryCore.Population1570])
 
             new_series = InstanciatedSeries(
                 years, ordonate_data, GlossaryCore.PopulationValue, 'lines', visible_line)

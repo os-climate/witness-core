@@ -62,7 +62,7 @@ class LaborMarketModel():
         self.workforce_share_per_sector = inputs_dict['workforce_share_per_sector']
         
     def set_coupling_inputs(self, inputs):
-        self.working_age_population_df = inputs['working_age_population_df']
+        self.working_age_population_df = inputs[GlossaryCore.WorkingAgePopulationDfValue]
         self.working_age_population_df.index = self.working_age_population_df[GlossaryCore.Years].values
     
 #     def create_dataframes(self):
@@ -81,7 +81,7 @@ class LaborMarketModel():
 #         - working age population per year in million of people
 #         employed = working_age_pop * participation_rate *(1-unemployment_rate)
 #         """
-#         working_age_pop = self.working_age_population_df['population_1570'].values
+#         working_age_pop = self.working_age_population_df[GlossaryCore.Population1570].values
 #         laborforce_participation_rate = self.labor_participation_rate['participation_rate'].values
 #         unemployment_rate = self.unemployment_rate['unemployment_rate'].values
 #         #compute workforce 
@@ -143,7 +143,7 @@ class LaborMarketModel():
         workforce_df = self.workforce_share_per_sector.copy(deep=True)
         #drop years for computation
         workforce_df = workforce_df.drop(columns = [GlossaryCore.Years])
-        working_age_pop = self.working_age_population_df['population_1570'].values
+        working_age_pop = self.working_age_population_df[GlossaryCore.Population1570].values
         employment_rate = self.employment_df['employment_rate'].values
         #per sector the workforce = share_per_sector * employment_rate *workingagepop
         workforce_df = workforce_df.apply(lambda x: x/100 * employment_rate * working_age_pop)
@@ -164,7 +164,7 @@ class LaborMarketModel():
         """
         workforce_df_dict = {}
         #drop years for computation
-        working_age_pop = self.working_age_population_df['population_1570'].values
+        working_age_pop = self.working_age_population_df[GlossaryCore.Population1570].values
         employment_rate = self.employment_df['employment_rate'].values
         sector_list = self.SECTORS_LIST
         workforce_share = self.workforce_share_per_sector

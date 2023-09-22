@@ -13,7 +13,7 @@ class SectorsRedistributionDiscipline(SoSWrapp):
 
     DESC_IN = {
         GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
-        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProduction,
+        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
     }
 
@@ -34,7 +34,7 @@ class SectorsRedistributionDiscipline(SoSWrapp):
                 dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorEnergyDf)
 
                 dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
-                dynamic_outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProduction)
+                dynamic_outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDf)
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)

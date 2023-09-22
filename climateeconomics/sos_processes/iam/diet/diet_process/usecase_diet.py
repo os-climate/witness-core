@@ -88,8 +88,8 @@ class Study(ClimateEconomicsStudyManager):
         population_df.index = years
         witness_input[f"{self.study_name}.{GlossaryCore.PopulationDfValue}"] = population_df
         working_age_population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'population_1570': 6300}, index=years)
-        witness_input[f"{self.study_name}.{'working_age_population_df'}"] = working_age_population_df
+            {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
+        witness_input[f"{self.study_name}.{GlossaryCore.WorkingAgePopulationDfValue}"] = working_age_population_df
 
         self.share_energy_investment_array = asarray([1.65] * nb_per)
 
