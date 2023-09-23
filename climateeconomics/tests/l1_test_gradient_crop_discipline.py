@@ -30,7 +30,7 @@ import numpy as np
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -69,7 +69,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                  'milk': 8.95,
                                  'eggs': 6.3,
                                  'rice and maize': 2.9,
-                                 'potatoes': 0.88,
+                                 'cereals': 0.88,
                                  'fruits and vegetables': 0.8,
                                  'other': 21.4,
                                  }
@@ -78,7 +78,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                    'milk': 550,
                                    'eggs': 1500,
                                    'rice and maize': 1150,
-                                   'potatoes': 670,
+                                   'cereals': 670,
                                    'fruits and vegetables': 624,
                                    }
         red_meat_percentage = np.linspace(600, 700, year_range)
@@ -103,7 +103,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      'milk': [79.27],
                                      'eggs': [9.68],
                                      'rice and maize': [97.76],
-                                     'potatoes': [32.93],
+                                     'cereals': [32.93],
                                      'fruits and vegetables': [217.62],
                                      })
         self.other = np.array(np.linspace(0.102, 0.102, year_range))

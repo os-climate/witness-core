@@ -47,24 +47,24 @@ class CropDiscipline(ClimateEcoDiscipline):
     }
     techno_name = 'CropEnergy'
     default_year_start = 2020
-    default_year_end = 2050
+    default_year_end = 2100
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
-    default_kg_to_m2 = {'red meat': 348,
+    default_kg_to_m2 = {'red meat': 345,
                         'white meat': 14.5,
                         'milk': 8.95,
                         'eggs': 6.27,
                         'rice and maize': 2.89,
-                        'potatoes': 0.88,
+                        'cereals': 4.5,
                         'fruits and vegetables': 0.8,
-                        'other': 21.4,
+                        'other': 8.1,
                         }
-    default_kg_to_kcal = {'red meat': 2566,
-                          'white meat': 1860,
-                          'milk': 550,
+    default_kg_to_kcal = {'red meat': 1700,
+                          'white meat': 2130,
+                          'milk': 850,
                           'eggs': 1500,
-                          'rice and maize': 1150,
-                          'potatoes': 670,
-                          'fruits and vegetables': 624,
+                          'rice and maize': 2572,
+                          'cereals': 2950,
+                          'fruits and vegetables': 559,
                           }
 
     # Our World in Data (emissions per kg of food product)
@@ -82,7 +82,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                              'milk': 1.16,
                              'eggs': 1.72,
                              'rice and maize': 1.45,
-                             'potatoes': 0.170,
+                             'cereals': 0.170,
                              'fruits and vegetables': 0.372,
                              'other': 3.44,
                              }
@@ -97,7 +97,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                             'milk': 17.0 / 33 * calibration,
                             'eggs': 0.0 * calibration,
                             'rice and maize': 4 / 6.5 * calibration,
-                            'potatoes': 0.0 * calibration,
+                            'cereals': 0.0 * calibration,
                             # negligible methane in this category
                             'fruits and vegetables': 0.0 * calibration,
                             'other': (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0) / (
@@ -122,7 +122,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                              'milk': pastures_emissions * 0.5564085980770741 / 0.9959932034220041,
                              'eggs': pastures_emissions * 0.048096212128271996 / 0.9959932034220041,
                              'rice and maize': crops_emissions * 0.2236252183903196 / 0.29719264680276536,
-                             'potatoes': crops_emissions * 0.023377379498821543 / 0.29719264680276536,
+                             'cereals': crops_emissions * 0.023377379498821543 / 0.29719264680276536,
                              'fruits and vegetables': crops_emissions * 0.13732524416192043 / 0.29719264680276536,
                              'other': crops_emissions * 0.8044427451599999 / 0.29719264680276536,
                              }
@@ -136,7 +136,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                              'milk': 0.0 * calibration,
                              'eggs': 0.0 * calibration,
                              'rice and maize': 1.45 * calibration,
-                             'potatoes': 0.170 * calibration,
+                             'cereals': 0.170 * calibration,
                              'fruits and vegetables': 0.372 * calibration,
                              'other': 3.44 * calibration,
                              }
@@ -146,13 +146,14 @@ class CropDiscipline(ClimateEcoDiscipline):
     # for food in default_ghg_emissions:
     #     default_co2_emissions[food] = (default_ghg_emissions[food] - default_ch4_emissions[food]*ch4_gwp_100 - default_n2o_emissions[food]*n2o_gwp_100) / co2_gwp_100
     #     # default_co2_emissions[food] = 0.0
+    #diet default for veg = 260+32.93 of cereals
     diet_df_default = pd.DataFrame({"red meat": [11.02],
                                     "white meat": [31.11],
                                     "milk": [79.27],
                                     "eggs": [9.68],
-                                    "rice and maize": [97.76],
-                                    "potatoes": [32.93],
-                                    "fruits and vegetables": [217.62]
+                                    "rice and maize": [98.08],
+                                    "cereals": [78],
+                                    "fruits and vegetables": [293]
                                     })
 
     year_range = default_year_end - default_year_start + 1
@@ -164,7 +165,9 @@ class CropDiscipline(ClimateEcoDiscipline):
     white_meat_average_ca_daily_intake = default_kg_to_kcal[
                                              'white meat'] * diet_df_default['white meat'].values[0]/365
     #kcal per kg 'vegetables': 200 https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
-    vegetables_and_carbs_average_ca_daily_intake =  diet_df_default['fruits and vegetables'].values[0]/365 * 200 + 0.56 * 2250  # carbs source: first line of https://www.cambridge.org/core/books/abs/evolving-human-nutrition/feed-the-world-with-carbohydrates/3848C6733E4D2FC315E14B7CA8C007D8
+    vegetables_and_carbs_average_ca_daily_intake =  diet_df_default['fruits and vegetables'].values[0]/365 * default_kg_to_kcal['fruits and vegetables'] + \
+                                                    diet_df_default['cereals'].values[0]/365 * default_kg_to_kcal['cereals'] + \
+                                                    diet_df_default['rice and maize'].values[0] / 365 * default_kg_to_kcal['rice and maize']
     default_red_meat_ca_per_day = pd.DataFrame({
         GlossaryCore.Years: default_years,
         'red_meat_calories_per_day': [red_meat_average_ca_daily_intake] * year_range})
@@ -247,7 +250,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
 
-    other_use_crop_default = np.array([0.102] * len(initial_age_distribution))
+    other_use_crop_default = np.array([0.01719] * len(initial_age_distribution))
 
     crop_investment_default = pd.read_csv(join(dirname(__file__), 'data/crop_investment.csv'), index_col=0)
 
@@ -263,7 +266,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                         'milk': ('float', [0, 1e9], True),
                         'eggs': ('float', [0, 1e9], True),
                         'rice and maize': ('float', [0, 1e9], True),
-                        'potatoes': ('float', [0, 1e9], True),
+                        'cereals': ('float', [0, 1e9], True),
                         'fruits and vegetables': ('float', [0, 1e9], True)},
                     'dataframe_edition_locked': False, 'namespace': 'ns_crop'},
         'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal,
@@ -521,7 +524,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             ('total_food_land_surface', 'total surface (Gha)'),
             ('white_meat_calories_per_day', 'white_meat_calories_per_day'), d_surface_d_white_meat_percentage)
         """
-        vegetables_column_names = ['fruits and vegetables', 'potatoes', 'rice and maize']
+        vegetables_column_names = ['fruits and vegetables', 'cereals', 'rice and maize']
         d_surface_d_other_cal = np.zeros((l_years , l_years))
         for veg in vegetables_column_names:
             grad_res = model.d_surface_d_other_calories_percentage(population_df, veg)
@@ -681,7 +684,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             dprod_dinvest * scaling_factor_crop_investment * (
                         1 - residue_density_percentage) / density_per_ha * calorific_value)
 
-        vegetables_column_names = ['fruits and vegetables', 'potatoes', 'rice and maize']
+        vegetables_column_names = ['fruits and vegetables', 'cereals', 'rice and maize']
 
         # gradient for land emissions
         for ghg in ['CO2', 'CH4', 'N2O']:
@@ -971,10 +974,10 @@ class CropDiscipline(ClimateEcoDiscipline):
         ghg_emissions_per_kcal = {}
 
         for key in starting_diet:
-            if key == 'fruits and vegetables' or key == 'potatoes' or key == 'rice and maize':
+            if key == 'fruits and vegetables' or key == 'cereals' or key == 'rice and maize':
 
                 proportion = starting_diet[key].values[0] / \
-                             (starting_diet['fruits and vegetables'].values[0] + starting_diet['potatoes'].values[0] +
+                             (starting_diet['fruits and vegetables'].values[0] + starting_diet['cereals'].values[0] +
                               starting_diet['rice and maize'].values[0])
 
                 kg_to_kcal_mean_dict['vegetables_and_carbs'] += proportion * kg_to_kcal_dict[key]

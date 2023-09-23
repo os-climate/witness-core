@@ -128,7 +128,7 @@ class Crop():
         self.techno_prices = pd.DataFrame({GlossaryCore.Years: self.years})
         self.column_dict = {'red meat (Gha)': 'red meat', 'white meat (Gha)': 'white meat',
                             'milk (Gha)': 'milk', 'eggs (Gha)': 'eggs', 'rice and maize (Gha)': 'rice and maize',
-                            'potatoes (Gha)': 'potatoes', 'fruits and vegetables (Gha)': 'fruits and vegetables',
+                            'cereals (Gha)': 'cereals', 'fruits and vegetables (Gha)': 'fruits and vegetables',
                             'other (Gha)': 'other', 'total surface (Gha)': 'total surface'}
         self.techno_consumption = pd.DataFrame({GlossaryCore.Years: self.years})
         self.techno_consumption_woratio = pd.DataFrame({GlossaryCore.Years: self.years})
@@ -348,14 +348,14 @@ class Crop():
         diet_init_kcal = diet_init_kcal.mul(pd.Series(self.kg_to_kcal_dict) / 365, axis=1)
         self.diet_init_kcal = diet_init_kcal
 
-        list_variables = ['fruits and vegetables', 'potatoes', 'rice and maize', 'eggs', 'milk']
+        list_variables = ['fruits and vegetables', 'cereals', 'rice and maize', 'eggs', 'milk']
 
         for key in list_variables:
             # compute new vegetable diet in kg_food/person/year: add the removed_kcal/3 for each 3 category of vegetable
-            if key == 'fruits and vegetables' or key == 'potatoes' or key == 'rice and maize':
+            if key == 'fruits and vegetables' or key == 'cereals' or key == 'rice and maize':
                 # proportion of current key wrt to other
                 proportion = diet_init_kcal[key].values[0] / \
-                             (diet_init_kcal['fruits and vegetables'].values[0] + diet_init_kcal['potatoes'].values[0] +
+                             (diet_init_kcal['fruits and vegetables'].values[0] + diet_init_kcal['cereals'].values[0] +
                               diet_init_kcal['rice and maize'].values[0])
                 changed_diet_df[key] = vegetables_and_carbs_calories * proportion
             # eggs and milk have fixed value for now
@@ -814,12 +814,12 @@ class Crop():
 
         kg_food_to_surface = self.kg_to_m2_dict
 
-        vegetables_column_names = ['fruits and vegetables', 'potatoes', 'rice and maize']
+        vegetables_column_names = ['fruits and vegetables', 'cereals', 'rice and maize']
         l_years = len(self.years)
         grad_res = np.zeros((l_years, l_years))
         for veg in vegetables_column_names:
             proportion = diet_df[veg].values[0] / (diet_df['fruits and vegetables'].values[0] +
-                                                        diet_df['potatoes'].values[0] +
+                                                        diet_df['cereals'].values[0] +
                                                         diet_df['rice and maize'].values[0])
 
             grad_value = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
@@ -919,7 +919,7 @@ class Crop():
         # red to white meat value influences red meat, white meat, and vegetable surface
 
         proportion = diet_df[veg].values[0] / (diet_df['fruits and vegetables'].values[0] +
-                                                    diet_df['potatoes'].values[0] +
+                                                    diet_df['cereals'].values[0] +
                                                     diet_df['rice and maize'].values[0])
 
         white_meat_diet_grad = 365 * kg_food_to_surface[veg] * proportion / self.kg_to_kcal_dict[veg]
@@ -1029,14 +1029,14 @@ class Crop():
         #removed_red_kcal = -self.kcal_diet_df['total'] / 100
 
         # red to white meat value influences red meat, white meat, and vegetable surface
-        if food in ['red meat', 'fruits and vegetables', 'potatoes', 'rice and maize']:
+        if food in ['red meat', 'fruits and vegetables', 'cereals', 'rice and maize']:
 
             if food == 'red meat':
                 sub_total_surface_grad = red_meat_diet_grad / self.kg_to_kcal_dict[food]
 
             else:
                 pass
-                """proportion = self.kcal_diet_df[food] / (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
+                """proportion = self.kcal_diet_df[food] / (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['cereals'] + self.kcal_diet_df['rice and maize'])
                 sub_total_surface_grad = removed_red_kcal * proportion / self.kg_to_kcal_dict[food] * kg_food_to_surface[food]
                 """
         total_surface_grad = sub_total_surface_grad * population_df[GlossaryCore.PopulationValue].values * 1e6 * self.hatom2 / 1e9
@@ -1057,13 +1057,13 @@ class Crop():
         #removed_white_kcal = -self.kcal_diet_df['total'] / 100
 
         # red to white meat value influences red meat, white meat, and vegetable surface
-        if food in ['white meat', 'fruits and vegetables', 'potatoes', 'rice and maize']:
+        if food in ['white meat', 'fruits and vegetables', 'cereals', 'rice and maize']:
 
             if food == 'white meat':
                 sub_total_surface_grad = white_meat_diet_grad / self.kg_to_kcal_dict[food]
         """
             else:
-                proportion = self.kcal_diet_df[food] / (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['potatoes'] + self.kcal_diet_df['rice and maize'])
+                proportion = self.kcal_diet_df[food] / (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['cereals'] + self.kcal_diet_df['rice and maize'])
                 sub_total_surface_grad = removed_white_kcal * proportion / self.kg_to_kcal_dict[food] * kg_food_to_surface[food]
         """
         total_surface_grad = sub_total_surface_grad * population_df[GlossaryCore.PopulationValue].values * 1e6 * self.hatom2 / 1e9

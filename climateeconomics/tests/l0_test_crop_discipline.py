@@ -66,7 +66,7 @@ class CropTestCase(unittest.TestCase):
                         'milk': 8.95,
                         'eggs': 6.27,
                         'rice and maize': 2.89,
-                        'potatoes': 0.88,
+                        'cereals': 0.88,
                         'fruits and vegetables': 0.8,
                         'other': 21.4,
                         }
@@ -75,7 +75,7 @@ class CropTestCase(unittest.TestCase):
                                    'milk': 550,
                                    'eggs': 1500,
                                    'rice and maize': 1150,
-                                   'potatoes': 670,
+                                   'cereals': 670,
                                    'fruits and vegetables': 624,
                                    }
         red_meat_percentage = np.linspace(6, 1, year_range)
@@ -91,7 +91,7 @@ class CropTestCase(unittest.TestCase):
                                      'milk': [79.27],
                                      'eggs': [9.68],
                                      'rice and maize': [97.76],
-                                     'potatoes': [32.93],
+                                     'cereals': [32.93],
                                      'fruits and vegetables': [217.62],
                                      })
         self.other = np.array(np.linspace(0.102, 0.102, year_range))
@@ -130,7 +130,7 @@ class CropTestCase(unittest.TestCase):
                                  'milk': 1.16,
                                  'eggs': 1.72,
                                  'rice and maize': 1.45,
-                                 'potatoes': 0.170,
+                                 'cereals': 0.170,
                                  'fruits and vegetables': 0.372,
                                  'other': 3.44,
                                  }
@@ -145,7 +145,7 @@ class CropTestCase(unittest.TestCase):
                                 'milk': 17.0 / 33 * calibration,
                                 'eggs': 0.0 * calibration,
                                 'rice and maize': 4 / 6.5 * calibration,
-                                'potatoes': 0.0 * calibration,
+                                'cereals': 0.0 * calibration,
                                 'fruits and vegetables': 0.0 * calibration,  # negligible methane in this category
                                 'other': (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0) / (
                                             14 + 24 + 33 + 27 + 29 + 34) * calibration,
@@ -168,7 +168,7 @@ class CropTestCase(unittest.TestCase):
                                  'milk': pastures_emissions * 0.5564085980770741 / 0.9959932034220041,
                                  'eggs': pastures_emissions * 0.048096212128271996 / 0.9959932034220041,
                                  'rice and maize': crops_emissions * 0.2236252183903196 / 0.29719264680276536,
-                                 'potatoes': crops_emissions * 0.023377379498821543 / 0.29719264680276536,
+                                 'cereals': crops_emissions * 0.023377379498821543 / 0.29719264680276536,
                                  'fruits and vegetables': crops_emissions * 0.13732524416192043 / 0.29719264680276536,
                                  'other': crops_emissions * 0.8044427451599999 / 0.29719264680276536,
                                  }
@@ -181,7 +181,7 @@ class CropTestCase(unittest.TestCase):
                                  'milk': 0.0 * calibration,
                                  'eggs': 0.0 * calibration,
                                  'rice and maize': 1.45 * calibration,
-                                 'potatoes': 0.170 * calibration,
+                                 'cereals': 0.170 * calibration,
                                  'fruits and vegetables': 0.372 * calibration,
                                  'other': 3.44 * calibration,
                                  }

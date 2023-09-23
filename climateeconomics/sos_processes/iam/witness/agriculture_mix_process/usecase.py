@@ -68,6 +68,7 @@ class Study(StudyManager):
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.techno_list = agri_techno_list
+        self.techno_list = []
         self.model_list = model_list
         self.energy_name = None
         self.nb_poles = 8
@@ -91,30 +92,30 @@ class Study(StudyManager):
         population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         population_df.index = years
-        red_meat_percentage = np.linspace(6.82, 1, year_range)
-        white_meat_percentage = np.linspace(13.95, 5, year_range)
-        self.red_meat_calories_per_day = pd.DataFrame({
-            GlossaryCore.Years: years,
-            'red_meat_calories_per_day': red_meat_percentage})
-        self.white_meat_calories_per_day = pd.DataFrame({
-            GlossaryCore.Years: years,
-            'white_meat_calories_per_day': white_meat_percentage})
-        self.vegetables_and_carbs_calories_per_day = pd.DataFrame({
-            GlossaryCore.Years: years,
-            'vegetables_and_carbs_calories_per_day': white_meat_percentage})
-
-        self.milk_and_eggs_calories_per_day = pd.DataFrame({
-            GlossaryCore.Years: years,
-            'milk_and_eggs_calories_per_day': white_meat_percentage})
-        diet_df = pd.DataFrame({'red meat': [11.02],
-                                'white meat': [31.11],
-                                'milk': [79.27],
-                                'eggs': [9.68],
-                                'rice and maize': [97.76],
-                                'potatoes': [32.93],
-                                'fruits and vegetables': [217.62],
-                                })
-        other = np.array(np.linspace(0.102, 0.102, year_range))
+        # red_meat_percentage = np.linspace(6.82, 1, year_range)
+        # white_meat_percentage = np.linspace(13.95, 5, year_range)
+        # self.red_meat_calories_per_day = pd.DataFrame({
+        #     GlossaryCore.Years: years,
+        #     'red_meat_calories_per_day': red_meat_percentage})
+        # self.white_meat_calories_per_day = pd.DataFrame({
+        #     GlossaryCore.Years: years,
+        #     'white_meat_calories_per_day': white_meat_percentage})
+        # self.vegetables_and_carbs_calories_per_day = pd.DataFrame({
+        #     GlossaryCore.Years: years,
+        #     'vegetables_and_carbs_calories_per_day': white_meat_percentage})
+        #
+        # self.milk_and_eggs_calories_per_day = pd.DataFrame({
+        #     GlossaryCore.Years: years,
+        #     'milk_and_eggs_calories_per_day': white_meat_percentage})
+        # diet_df = pd.DataFrame({'red meat': [11.02],
+        #                         'white meat': [31.11],
+        #                         'milk': [79.27],
+        #                         'eggs': [9.68],
+        #                         'rice and maize': [97.76],
+        #                         'potatoes': [32.93],
+        #                         'fruits and vegetables': [217.62],
+        #                         })
+        other = np.array(np.linspace(0.01719, 0.01719, year_range))
 
         self.margin = pd.DataFrame(
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
@@ -168,11 +169,11 @@ class Study(StudyManager):
             f'{self.study_name}.transport_cost': self.transport,
             f'{self.study_name}.transport_margin': self.margin,
             f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-            f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
-            f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_calories_per_day,
-            f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_calories_per_day,
-            f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
-            f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
+            # f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
+            # f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_calories_per_day,
+            # f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_calories_per_day,
+            # f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
+            # f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
             f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
             f'{self.study_name}.{energy_name}.Crop.crop_investment': self.crop_investment,
             f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
@@ -268,3 +269,4 @@ if '__main__' == __name__:
 
         # for graph in graph_list:
         #     graph.to_plotly().show()
+
