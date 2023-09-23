@@ -120,9 +120,10 @@ class Study(StudyManager):
                                 'milk': [79.27],
                                 'eggs': [9.68],
                                 'rice and maize': [97.76],
-                                'potatoes': [32.93],
                                 'fruits and vegetables': [217.62],
                                 })
+
+
         other = np.array(np.linspace(0.102, 0.102, year_range))
 
         # private values economics operator model

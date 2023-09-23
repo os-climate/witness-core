@@ -76,10 +76,10 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.default_kg_to_m2 = {'red meat': 360,
                                  'white meat': 16,
-                                 'milk': 8.9,
+                                 'milk': 8.95,
                                  'eggs': 6.3,
                                  'rice and maize': 2.9,
-                                 'cereals': 0.9,
+                                 'potatoes': 0.88,
                                  'fruits and vegetables': 0.8,
                                  }
         self.default_kg_to_kcal = {'red meat': 2566,
@@ -87,7 +87,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                    'milk': 550,
                                    'eggs': 1500,
                                    'rice and maize': 1150,
-                                   'cereals': 670,
+                                   'potatoes': 670,
                                    'fruits and vegetables': 624,
                                    }
         red_meat_percentage = np.linspace(6, 1, year_range)
@@ -106,7 +106,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      'milk': [79.27],
                                      'eggs': [9.68],
                                      'rice and maize': [97.76],
-                                     'cereals': [32.93],
+                                     'potatoes': [32.93],
                                      'fruits and vegetables': [217.62],
                                      })
 

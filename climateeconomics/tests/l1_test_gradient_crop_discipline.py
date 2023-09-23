@@ -30,7 +30,7 @@ import numpy as np
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
