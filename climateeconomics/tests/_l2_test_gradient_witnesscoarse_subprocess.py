@@ -48,7 +48,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.factory.set_builders_to_coupling_builder(builder)
         self.ee.configure()
 
-        usecase = witness_sub_proc_usecase(bspline=True,
+        usecase = witness_sub_proc_usecase(bspline=False,
                                            execution_engine=self.ee,
                                            techno_dict=DEFAULT_COARSE_TECHNO_DICT,
                                            process_level='dev',
@@ -69,9 +69,10 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         # loop over all disciplines
 
         coupling_disc = self.ee.root_process.proxy_disciplines[0]
+        coupling_disc_gemseo = coupling_disc.mdo_discipline_wrapp.mdo_discipline.disciplines[0]
 
-        outputs = self.ee.dm.get_all_namespaces_from_var_name(
-            'objective_lagrangian')
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name(
+            'objective_lagrangian')[0], self.ee.dm.get_all_namespaces_from_var_name('negative_welfare_objective')[0]]
         inputs_name = [f'{energy}_{techno}_array_mix' for energy, techno_dict in DEFAULT_COARSE_TECHNO_DICT.items() for
                        techno in techno_dict['value']]
         inputs_name = [name.replace('.', '_') for name in inputs_name]
@@ -82,10 +83,10 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
         pkl_name = f'jacobian_obj_vs_design_var_witness_coarse_subprocess.pkl'
 
-        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                             discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
-                            step=1.0e-15, derr_approx='finite_differences', threshold=1e-5,
+                            step=1.0e-5, derr_approx='finite_differences', threshold=1e-5,
                             local_data=coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,
                             inputs=inputs,
                             outputs=outputs)
