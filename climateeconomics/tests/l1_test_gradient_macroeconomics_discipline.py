@@ -608,6 +608,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+
+        filters = disc_techno.get_fil
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_negative_co2_tax.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
                              inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',

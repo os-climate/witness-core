@@ -396,6 +396,7 @@ class GlossaryCore:
     CapitalDfValue = "capital_df"
     Capital = "capital"
     UsableCapital = "usable_capital"
+    UsableCapitalUnbounded = "Unbounded usable capital [T$]"
     SectorizedCapitalDf = {
         "var_name": CapitalDfValue,
         "namespace": "ns_witness",
@@ -405,7 +406,7 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Capital: ("float", None, False),
-            UsableCapital: ("float", None, False),
+            UsableCapital: ("float", None, False)
         },
     }
 

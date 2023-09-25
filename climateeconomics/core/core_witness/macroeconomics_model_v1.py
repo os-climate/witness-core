@@ -154,7 +154,8 @@ class MacroEconomics():
         #capital df
         capital_df = pd.DataFrame(index=default_index, 
                                   columns=[GlossaryCore.Years, GlossaryCore.Capital, 'non_energy_capital',
-                                           GlossaryCore.EnergyEfficiency, GlossaryCore.Emax, GlossaryCore.UsableCapital])
+                                           GlossaryCore.EnergyEfficiency, GlossaryCore.Emax,
+                                           GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded])
         for key in capital_df.keys():
             capital_df[key] = 0
         capital_df[GlossaryCore.Years] = self.years_range
@@ -299,7 +300,7 @@ class MacroEconomics():
 
     def compute_emax(self, year: int):
         """E_max is the maximum energy capital can use to produce output
-        E_max = K/(capital_utilisation_ratio*energy_efficiency(year)
+        E_max = Kne/(capital_utilisation_ratio*energy_efficiency(year))
         energy_efficiency = 1+ max/(1+exp(-k(x-x0)))
         energy_efficiency is a logistic function because it represent technological progress
         """
@@ -321,17 +322,21 @@ class MacroEconomics():
     def compute_usable_capital(self, year: int):
         """  Usable capital is the part of the capital stock that can be used in the production process. 
         To be usable the capital needs enough energy.
-        K_u = K*(E/E_max) 
+        K_u = min (max capital utilisation ratio * Kne, capital_utilisation_ratio * Energy Production * Productivity)
         E is energy in Twh and K is capital in trill dollars constant 2020
         Output: usable capital in trill dollars constant 2020
         """
         ne_capital = self.capital_df.loc[year, 'non_energy_capital']
-        energy = self.energy_production.at[year, GlossaryCore.TotalProductionValue]
-        e_max = self.capital_df.loc[year, GlossaryCore.Emax]
-        # compute usable capital
-        usable_capital = ne_capital * (energy / e_max)
+        net_energy_production = self.energy_production.at[year, GlossaryCore.TotalProductionValue]
+
+        energy_efficiency = self.energy_eff_cst + self.energy_eff_max / (1 + np.exp(-self.energy_eff_k *
+                                                                                    (year - self.energy_eff_xzero)))
+        usable_capital_unbounded = self.capital_utilisation_ratio * net_energy_production * energy_efficiency
+        self.capital_df.loc[year, GlossaryCore.UsableCapitalUnbounded] = usable_capital_unbounded
+
+        usable_capital = np.minimum(self.max_capital_utilisation_ratio * ne_capital,
+                                    usable_capital_unbounded)
         self.capital_df.loc[year, GlossaryCore.UsableCapital] = usable_capital
-        return usable_capital
 
     def compute_investment(self, year: int):
         """Compute I(t) (total Investment) and Ine(t) (Investment in non-energy sectors) in trillions $USD """
