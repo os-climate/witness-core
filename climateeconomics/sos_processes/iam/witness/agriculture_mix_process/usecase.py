@@ -68,7 +68,6 @@ class Study(StudyManager):
         self.year_end = year_end
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.techno_list = agri_techno_list
-        self.techno_list = []
         self.model_list = model_list
         self.energy_name = None
         self.nb_poles = 8
