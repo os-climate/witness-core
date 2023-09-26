@@ -137,7 +137,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
         damage_df = param.pop(GlossaryCore.DamageDfValue)
-        energy_production = param.pop('energy_production')
+        energy_production = param.pop(GlossaryCore.EnergyProductionValue)
         share_energy_investment = param.pop('share_energy_investment')
         total_investment_share_of_gdp = param.pop(
             GlossaryCore.InvestmentShareGDPValue)
@@ -149,7 +149,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         working_age_population_df = param.pop(GlossaryCore.WorkingAgePopulationDfValue)
 
         macro_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
-                        'energy_production': energy_production,
+                        GlossaryCore.EnergyProductionValue: energy_production,
                         'scaling_factor_energy_production': param['scaling_factor_energy_production'],
                         'scaling_factor_energy_investment': param['scaling_factor_energy_investment'],
                         # share energy investment is in %
@@ -270,23 +270,23 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             dgross_output)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), ('energy_production', GlossaryCore.TotalProductionValue),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * dgross_output)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), ('energy_production', GlossaryCore.TotalProductionValue),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * dconsumption_pc)
         self.set_partial_derivative_for_other_types(
-            ('pc_consumption_constraint',), ('energy_production', GlossaryCore.TotalProductionValue),
+            ('pc_consumption_constraint',), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             - scaling_factor_energy_production \
             * dconsumption_pc / ref_pc_consumption_constraint)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), ('energy_production', GlossaryCore.TotalProductionValue),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * doutput_net_of_d)
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), ('energy_production', GlossaryCore.TotalProductionValue),
+            (GlossaryCore.EnergyInvestmentsValue, GlossaryCore.EnergyInvestmentsValue), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * denergy_investment / scaling_factor_energy_investment * 1e3)  # Invest from T$ to G$
         # compute gradient for design variable share_energy_investment
         dgross_output, dinvestment, denergy_investment, dnet_output = self.macro_model.compute_dshare_energy_investment()
@@ -723,9 +723,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.TotalProductionValue: 'energy supply with oil production from energy pyworld3'}
 
             # inputs = discipline.get_sosdisc_inputs()
-            # energy_production = inputs.pop('energy_production')
+            # energy_production = inputs.pop(GlossaryCore.EnergyProductionValue)
             energy_production = deepcopy(
-                self.get_sosdisc_inputs('energy_production'))
+                self.get_sosdisc_inputs(GlossaryCore.EnergyProductionValue))
             scaling_factor_energy_production = self.get_sosdisc_inputs(
                 'scaling_factor_energy_production')
             total_production = energy_production[GlossaryCore.TotalProductionValue] * \

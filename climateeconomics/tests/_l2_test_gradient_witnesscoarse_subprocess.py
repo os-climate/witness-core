@@ -72,7 +72,8 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         coupling_disc_gemseo = coupling_disc.mdo_discipline_wrapp.mdo_discipline.disciplines[0]
 
         outputs = [self.ee.dm.get_all_namespaces_from_var_name(
-            'objective_lagrangian')[0], self.ee.dm.get_all_namespaces_from_var_name('negative_welfare_objective')[0]]
+            'objective_lagrangian')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('negative_welfare_objective')[0]]
         inputs_name = [f'{energy}_{techno}_array_mix' for energy, techno_dict in DEFAULT_COARSE_TECHNO_DICT.items() for
                        techno in techno_dict['value']]
         inputs_name = [name.replace('.', '_') for name in inputs_name]

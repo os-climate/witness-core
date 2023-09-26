@@ -819,7 +819,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 # 'margin'] / 100).values
 # #- Prod
 # production_stream = energy_disc.get_sosdisc_outputs(
-# 'energy_production')[f'{energy}'].values *\
+# GlossaryCore.EnergyProductionValue)[f'{energy}'].values *\
 # energy_disc.get_sosdisc_inputs(
 # 'scaling_factor_energy_production')
 # production_techno = techno_disc.get_sosdisc_outputs(
@@ -881,7 +881,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
 # 'margin'] / 100).values
 # #- Prod
 # production_stream = stream_disc.get_sosdisc_outputs(
-# 'energy_production')[f'{stream}'].values *\
+# GlossaryCore.EnergyProductionValue)[f'{stream}'].values *\
 # stream_disc.get_sosdisc_inputs(
 # 'scaling_factor_energy_production')
 # production_techno = techno_disc.get_sosdisc_outputs(

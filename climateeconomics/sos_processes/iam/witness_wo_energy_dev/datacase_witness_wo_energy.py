@@ -320,7 +320,7 @@ class DataStudy():
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 
-        list_var.extend(['delta_capital_constraint', 'delta_capital_constraint_dc', 'delta_capital_lintoquad'])
+        list_var.extend([GlossaryCore.ConstraintLowerBoundUsableCapital, 'delta_capital_constraint_dc', 'delta_capital_lintoquad'])
         list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints'])
         list_ns.extend(['ns_functions', 'ns_functions', 'ns_functions'])
         list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, EQ_CONSTRAINT])
