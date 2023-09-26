@@ -70,18 +70,20 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
         coupling_disc = self.ee.root_process.proxy_disciplines[0]
 
-        outputs = self.ee.dm.get_all_namespaces_from_var_name(
-            'objective_lagrangian')
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name(
+            'objective_lagrangian')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('negative_welfare_objective')[0]]
         inputs_name = [f'{energy}_{techno}_array_mix' for energy, techno_dict in DEFAULT_COARSE_TECHNO_DICT.items() for
                        techno in techno_dict['value']]
         inputs_name = [name.replace('.', '_') for name in inputs_name]
         inputs = []
         for name in inputs_name:
             inputs.extend(self.ee.dm.get_all_namespaces_from_var_name(name))
+        inputs = [
+            'Test.WITNESS_Eval.WITNESS.CCUS.carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
+        pkl_name = f'jacobian_obj_vs_design_var_witness_coarse_subprocess.pkl'
 
-        pkl_name = f'jacobian_obj_vs_design_var.pkl'
-
-        AbstractJacobianUnittest.DUMP_JACOBIAN = True
+        #AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                             discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                             step=1.0e-15, derr_approx='finite_differences', threshold=1e-5,
