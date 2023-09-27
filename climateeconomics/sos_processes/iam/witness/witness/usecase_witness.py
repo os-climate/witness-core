@@ -168,7 +168,7 @@ class Study(ClimateEconomicsStudyManager):
             [dc_witness.setup_objectives(), dc_witness.setup_constraints(), self.dc_energy.setup_constraints(),
              self.dc_energy.setup_objectives(), land_use_df_constraint])
 
-        self.func_df['index'] = list(range(len(self.func_df)))
+        # self.func_df['index'] = list(range(len(self.func_df)))
         self.energy_list = self.dc_energy.energy_list
         self.ccs_list = self.dc_energy.ccs_list
         self.dict_technos = self.dc_energy.dict_technos

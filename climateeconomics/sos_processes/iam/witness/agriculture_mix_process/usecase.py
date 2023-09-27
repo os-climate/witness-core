@@ -91,29 +91,47 @@ class Study(StudyManager):
         population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         population_df.index = years
-        # red_meat_percentage = np.linspace(6.82, 1, year_range)
-        # white_meat_percentage = np.linspace(13.95, 5, year_range)
-        # self.red_meat_calories_per_day = pd.DataFrame({
-        #     GlossaryCore.Years: years,
-        #     'red_meat_calories_per_day': red_meat_percentage})
-        # self.white_meat_calories_per_day = pd.DataFrame({
-        #     GlossaryCore.Years: years,
-        #     'white_meat_calories_per_day': white_meat_percentage})
-        # self.vegetables_and_carbs_calories_per_day = pd.DataFrame({
-        #     GlossaryCore.Years: years,
-        #     'vegetables_and_carbs_calories_per_day': white_meat_percentage})
-        #
-        # self.milk_and_eggs_calories_per_day = pd.DataFrame({
-        #     GlossaryCore.Years: years,
-        #     'milk_and_eggs_calories_per_day': white_meat_percentage})
-        # diet_df = pd.DataFrame({'red meat': [11.02],
-        #                         'white meat': [31.11],
-        #                         'milk': [79.27],
-        #                         'eggs': [9.68],
-        #                         'rice and maize': [97.76],
-        #                         'potatoes': [32.93],
-        #                         'fruits and vegetables': [217.62],
-        #                         })
+        diet_df_default = pd.DataFrame({"red meat": [11.02],
+                                        "white meat": [31.11],
+                                        "milk": [79.27],
+                                        "eggs": [9.68],
+                                        "rice and maize": [98.08],
+                                        "cereals": [78],
+                                        "fruits and vegetables": [293]
+                                        })
+        default_kg_to_kcal = {'red meat': 1700,
+                              'white meat': 2130,
+                              'milk': 850,
+                              'eggs': 1500,
+                              'rice and maize': 2572,
+                              'cereals': 2950,
+                              'fruits and vegetables': 559,
+                              }
+        red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * diet_df_default['red meat'].values[0] / 365
+        milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * diet_df_default['eggs'].values[0] / 365 + \
+                                            default_kg_to_kcal['milk'] * diet_df_default['milk'].values[0] / 365
+        white_meat_average_ca_daily_intake = default_kg_to_kcal[
+                                                 'white meat'] * diet_df_default['white meat'].values[0] / 365
+        # kcal per kg 'vegetables': 200 https://www.fatsecret.co.in/calories-nutrition/generic/raw-vegetable?portionid=54903&portionamount=100.000&frc=True#:~:text=Nutritional%20Summary%3A&text=There%20are%2020%20calories%20in,%25%20carbs%2C%2016%25%20prot.
+        vegetables_and_carbs_average_ca_daily_intake = diet_df_default['fruits and vegetables'].values[0] / 365 * \
+                                                       default_kg_to_kcal['fruits and vegetables'] + \
+                                                       diet_df_default['cereals'].values[0] / 365 * default_kg_to_kcal[
+                                                           'cereals'] + \
+                                                       diet_df_default['rice and maize'].values[0] / 365 * \
+                                                       default_kg_to_kcal['rice and maize']
+        self.red_meat_ca_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            'red_meat_calories_per_day': [red_meat_average_ca_daily_intake] * year_range})
+        self.white_meat_ca_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            'white_meat_calories_per_day': [white_meat_average_ca_daily_intake] * year_range})
+        self.vegetables_and_carbs_calories_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            'vegetables_and_carbs_calories_per_day': [vegetables_and_carbs_average_ca_daily_intake] * year_range})
+        self.milk_and_eggs_calories_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            'milk_and_eggs_calories_per_day': [milk_eggs_average_ca_daily_intake] * year_range})
+
         other = np.array(np.linspace(0.01719, 0.01719, year_range))
 
         self.margin = pd.DataFrame(
@@ -168,11 +186,11 @@ class Study(StudyManager):
             f'{self.study_name}.transport_cost': self.transport,
             f'{self.study_name}.transport_margin': self.margin,
             f'{self.study_name}.{GlossaryCore.CO2TaxesValue}': self.co2_taxes,
-            # f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df,
-            # f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_calories_per_day,
-            # f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_calories_per_day,
-            # f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
-            # f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
+            f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df_default,
+            f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_ca_per_day,
+            f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_ca_per_day,
+            f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
+            f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
             f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
             f'{self.study_name}.{energy_name}.Crop.crop_investment': self.crop_investment,
             f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
@@ -266,6 +284,6 @@ if '__main__' == __name__:
         graph_list = ppf.get_post_processing_by_discipline(
             disc, filters, as_json=False)
 
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            graph.to_plotly().show()
 
