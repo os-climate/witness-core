@@ -411,7 +411,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # compute gradient for coupling variable working age population
         dworkforce_dworkingagepop = self.macro_model.compute_dworkforce_dworkagepop()
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.WorkforceDfValue, 'workforce'), (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570), dworkforce_dworkingagepop)
+            (GlossaryCore.WorkforceDfValue, GlossaryCore.Workforce), (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570), dworkforce_dworkingagepop)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput), (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570), dgross_output)
         self.set_partial_derivative_for_other_types(

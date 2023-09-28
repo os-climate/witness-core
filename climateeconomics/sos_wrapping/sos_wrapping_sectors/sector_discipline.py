@@ -88,7 +88,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(
             GlossaryCore.ProductionDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.CapitalDfValue}"] = GlossaryCore.get_dynamic_variable(
-            GlossaryCore.SectorizedCapitalDf)
+            GlossaryCore.CapitalDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}"] = GlossaryCore.get_dynamic_variable(
             GlossaryCore.DetailedCapitalDf)
 
@@ -216,7 +216,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         chart_filters = []
 
         chart_list = ['sector output', GlossaryCore.InvestmentsValue, 'output growth', 'energy supply',
-                      GlossaryCore.UsableCapital, GlossaryCore.Capital, 'employment_rate', 'workforce',
+                      GlossaryCore.UsableCapital, GlossaryCore.Capital, GlossaryCore.EmploymentRate, GlossaryCore.Workforce,
                       GlossaryCore.Productivity, GlossaryCore.EnergyEfficiency, GlossaryCore.Emax]
 
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
@@ -317,7 +317,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
-        if 'workforce' in chart_list:
+        if GlossaryCore.Workforce in chart_list:
             years = list(workforce_df[GlossaryCore.Years])
             chart_name = 'Workforce'
 

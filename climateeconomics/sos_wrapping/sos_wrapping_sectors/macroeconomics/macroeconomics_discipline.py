@@ -66,7 +66,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
 
             for sector in sector_list:
-                dynamic_inputs[f'{sector}.{GlossaryCore.CapitalDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.SectorizedCapitalDf)
+                dynamic_inputs[f'{sector}.{GlossaryCore.CapitalDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.CapitalDf)
                 dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
 
             self.add_inputs(dynamic_inputs)

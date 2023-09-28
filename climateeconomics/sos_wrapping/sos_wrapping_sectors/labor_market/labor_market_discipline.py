@@ -108,7 +108,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
         # Gradient wrt working age population
         grad_workforcetotal = self.labor_model.compute_dworkforcetotal_dworkagepop()
-        self.set_partial_derivative_for_other_types((GlossaryCore.WorkforceDfValue, 'workforce'),
+        self.set_partial_derivative_for_other_types((GlossaryCore.WorkforceDfValue, GlossaryCore.Workforce),
                                                         (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
                                                         grad_workforcetotal)
         for sector in sector_list:
@@ -166,10 +166,10 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                                                  chart_name)
 
             visible_line = True
-            ordonate_data = list(employment_df['employment_rate'])
+            ordonate_data = list(employment_df[GlossaryCore.EmploymentRate])
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'employment_rate', 'lines', visible_line)
+                years, ordonate_data, GlossaryCore.EmploymentRate, 'lines', visible_line)
 
             new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
@@ -194,7 +194,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                                                  chart_name)
 
             visible_line = True
-            ordonate_data = list(workforce_df['workforce'])
+            ordonate_data = list(workforce_df[GlossaryCore.Workforce])
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Workforce', 'lines', visible_line)
             ordonate_data_bis = list(working_age_pop_df[GlossaryCore.Population1570])

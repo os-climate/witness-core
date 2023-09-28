@@ -16,7 +16,7 @@ class GlossaryCore:
     SectorGdpPart = "Part of the GDP per sector [G$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
 
-    ConstraintLowerBoundUsableCapital = 'Lower bound usable capital constraint'
+    ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
@@ -398,8 +398,9 @@ class GlossaryCore:
     Capital = "capital"
     UsableCapital = "usable_capital"
     UsableCapitalUnbounded = "Unbounded usable capital [T$]"
+    WaistedCapital = "Waisted capital [T$]"
     NonEnergyCapital = 'non_energy_capital'
-    SectorizedCapitalDf = {
+    CapitalDf = {
         "var_name": CapitalDfValue,
         "namespace": "ns_witness",
         "visibility": "Shared",
@@ -407,7 +408,7 @@ class GlossaryCore:
         "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
-            #Capital: ("float", None, False), #todo: uncomment
+            Capital: ("float", None, False),
             UsableCapital: ("float", None, False)
         },
     }
@@ -538,6 +539,8 @@ class GlossaryCore:
     }
 
     WorkforceDfValue = "workforce_df"
+    EmploymentRate = "employment_rate"
+    Workforce = "workforce"
     WorkforceDf = {
         "var_name": WorkforceDfValue,
         "type": "dataframe",

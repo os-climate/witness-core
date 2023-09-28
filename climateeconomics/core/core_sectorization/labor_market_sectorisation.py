@@ -69,7 +69,7 @@ class LaborMarketModel():
 #         '''
 #         Create dataframes with years
 #         '''
-#         labor_market_df = pd.DataFrame({GlossaryCore.Years: self.years_range, 'workforce': self.workforce, 'employed': self.employed})
+#         labor_market_df = pd.DataFrame({GlossaryCore.Years: self.years_range, GlossaryCore.Workforce: self.workforce, 'employed': self.employed})
 #         labor_market_df.index = self.years_range
 #         self.labor_market_df = labor_market_df           
     
@@ -115,17 +115,17 @@ class LaborMarketModel():
         year_covid = 2020
         year_end_recovery = 2031
         #create dataframe 
-        employment_df = pd.DataFrame(index=self.years_range, columns=[GlossaryCore.Years,'employment_rate'])
+        employment_df = pd.DataFrame(index=self.years_range, columns=[GlossaryCore.Years,GlossaryCore.EmploymentRate])
         employment_df[GlossaryCore.Years] = self.years_range
         # For all years employment_rate = base value
-        employment_df['employment_rate'] = self.employment_rate_base_value
+        employment_df[GlossaryCore.EmploymentRate] = self.employment_rate_base_value
         # Compute recovery phase
         years_recovery = np.arange(year_covid, year_end_recovery + 1)
         x_recovery = years_recovery + 1 - year_covid
         employment_rate_recovery = self.employment_a_param * \
             x_recovery**self.employment_power_param
         employment_rate_recovery_df = pd.DataFrame(
-            {GlossaryCore.Years: years_recovery, 'employment_rate': employment_rate_recovery})
+            {GlossaryCore.Years: years_recovery, GlossaryCore.EmploymentRate: employment_rate_recovery})
         employment_rate_recovery_df.index = years_recovery
         # Then replace values in original dataframe by recoveries values
         employment_df.update(employment_rate_recovery_df)
@@ -144,11 +144,11 @@ class LaborMarketModel():
         #drop years for computation
         workforce_df = workforce_df.drop(columns = [GlossaryCore.Years])
         working_age_pop = self.working_age_population_df[GlossaryCore.Population1570].values
-        employment_rate = self.employment_df['employment_rate'].values
+        employment_rate = self.employment_df[GlossaryCore.EmploymentRate].values
         #per sector the workforce = share_per_sector * employment_rate *workingagepop
         workforce_df = workforce_df.apply(lambda x: x/100 * employment_rate * working_age_pop)
         #workforce total is the sum of all sectors 
-        workforce_df['workforce'] = workforce_df.sum(axis = 1)
+        workforce_df[GlossaryCore.Workforce] = workforce_df.sum(axis = 1)
         workforce_df.insert(0, GlossaryCore.Years, self.years_range)
         self.workforce_df = workforce_df
         share = self.workforce_share_per_sector[GlossaryCore.SectorAgriculture].values
@@ -165,7 +165,7 @@ class LaborMarketModel():
         workforce_df_dict = {}
         #drop years for computation
         working_age_pop = self.working_age_population_df[GlossaryCore.Population1570].values
-        employment_rate = self.employment_df['employment_rate'].values
+        employment_rate = self.employment_df[GlossaryCore.EmploymentRate].values
         sector_list = self.SECTORS_LIST
         workforce_share = self.workforce_share_per_sector
         for sector in sector_list: 
@@ -174,7 +174,7 @@ class LaborMarketModel():
             workforce_df_dict[sector] = sector_wf
         workforce_df = pd.DataFrame.from_dict(workforce_df_dict)
         #workforce total is the sum of all sectors 
-        workforce_df['workforce'] = workforce_df.sum(axis = 1)
+        workforce_df[GlossaryCore.Workforce] = workforce_df.sum(axis = 1)
         workforce_df.insert(0, GlossaryCore.Years, self.years_range)
         self.workforce_df = workforce_df
         
@@ -197,14 +197,14 @@ class LaborMarketModel():
         """ Gradient for workforce wrt working age population 
         """
         nb_years = self.nb_years
-        employment_rate = self.employment_df['employment_rate'].values
+        employment_rate = self.employment_df[GlossaryCore.EmploymentRate].values
         dworkforce_dworkagepop = np.identity(nb_years) * employment_rate
 
         return dworkforce_dworkagepop
     
     def compute_dworkforcesector_dworkagepop(self, sector):
         sector_share = self.workforce_share_per_sector[sector].values
-        employment_rate = self.employment_df['employment_rate'].values
+        employment_rate = self.employment_df[GlossaryCore.EmploymentRate].values
         #workforce sector = employmentrate * working age pop * share 
         dworkforcesector_dworkagepop = np.identity(self.nb_years) * employment_rate * sector_share/100 
         
