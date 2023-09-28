@@ -6,7 +6,7 @@ from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
-from climateeconomics.sos_processes.iam.witness.witness._usecase_witness import Study as witness_usecase
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 import pandas as pd
