@@ -226,22 +226,19 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective',
-             'delta_capital_objective',
-             'delta_capital_objective_weighted'])
+            ['welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective',])
         list_parent.extend(['utility_objective',
                             'GWP_short_term_obj',
-                            'GWP_long_term_obj', 'non_use_capital_objective', 'delta_capital_objective',
-                            'delta_capital_objective_weighted'])
+                            'GWP_long_term_obj', 'non_use_capital_objective'])
         list_ns.extend(['ns_functions',
                         'ns_functions',
                         'ns_functions',
-                        'ns_witness', 'ns_functions', 'ns_functions'])
+                        'ns_witness'])
         list_ftype.extend(
-            [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+            [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE,])
+        list_weight.extend([1.0, 0.0, 0.0, 0.0,])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM,])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
@@ -273,16 +270,6 @@ class DataStudy():
             [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
 
         # -------------------------------------------------
-        # e_max_constraint
-        list_var.append('emax_enet_constraint')
-        list_parent.append('macroeconomics_constraints')
-        list_ns.extend(['ns_functions'])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
-
-        # -------------------------------------------------
         # calories_per_day_constraint
         list_var.append('calories_per_day_constraint')
         list_parent.append('agriculture_constraints')
@@ -293,22 +280,14 @@ class DataStudy():
             AGGR_TYPE_SMAX)
 
         # -------------------------------------------------
-        # pc_consumption_constraint
-        list_var.append('pc_consumption_constraint')
-        list_parent.append('macroeconomics_constraints')
-        list_ns.extend(['ns_functions'])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(0.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
 
-        list_var.extend([GlossaryCore.ConstraintLowerBoundUsableCapital, 'delta_capital_constraint_dc', 'delta_capital_lintoquad'])
-        list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints'])
-        list_ns.extend(['ns_functions', 'ns_functions', 'ns_functions'])
-        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, EQ_CONSTRAINT])
-        list_weight.extend([-1.0, 0.0, 0.0])
+        list_var.extend([GlossaryCore.ConstraintLowerBoundUsableCapital])
+        list_parent.extend(['invests_constraints'])
+        list_ns.extend(['ns_functions'])
+        list_ftype.extend([INEQ_CONSTRAINT])
+        list_weight.extend([-1.0])
         list_aggr_type.extend([
-            AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_LIN_TO_QUAD])
+            AGGR_TYPE_SMAX])
 
         list_var.append('non_use_capital_cons')
         list_parent.append('invests_constraints')

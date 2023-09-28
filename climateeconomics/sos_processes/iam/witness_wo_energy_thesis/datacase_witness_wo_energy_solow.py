@@ -232,14 +232,7 @@ class DataStudy():
             [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
 
         # -------------------------------------------------
-        # pc_consumption_constraint
-        list_var.append('pc_consumption_constraint')
-        list_parent.append('economic_constraints')
-        list_ns.extend(['ns_functions'])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(0.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
+
         list_var.append('temperature_constraint')
         list_parent.append('')
         list_ns.extend(['ns_functions'])
