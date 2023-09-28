@@ -776,7 +776,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = WitnessFullJacobianDiscTest()
     cls.test_06_gradient_lagrangian_objective_wrt_csv_design_var_on_crashed_x()
     cls.test_07_gradient_all_disciplines_on_crashed_x()

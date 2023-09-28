@@ -14,7 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from os.path import join, dirname, exists
+from os.path import join, dirname
+import pandas as pd
+import numpy as np
+import ast
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -62,18 +65,43 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         for dict_v in values_dict:
             full_values_dict.update(dict_v)
 
+        # Do not use a gradient method to validate gradient is better, Gauss Seidel works
+        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.tolerance'] = 1.0e-12
+        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
+        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
+        full_values_dict[
+            f'{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.assumptions_dict'] = {
+            'compute_gdp': False,
+            'compute_climate_impact_on_gdp': False,
+            'activate_climate_effect_population': False,
+            'invest_co2_tax_in_renewables': False
+        }
+        full_values_dict[
+            f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_price_percentage"] = 0.0
+        full_values_dict[
+            f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.co2_damage_price_percentage"] = 0.0
         self.ee.load_study_from_input_dict(full_values_dict)
 
+        # Add design space to the study by filling design variables :
+        design_space = pd.read_csv(join(dirname(__file__), 'design_space_uc1_500ites.csv'))
+        design_space_values_dict = {}
+        for variable in design_space['variable'].values:
+            # value in design space is considered as string we need to transform it into array
+            str_val = design_space[design_space['variable'] == variable]['value'].values[0]
+            design_space_values_dict[self.ee.dm.get_all_namespaces_from_var_name(variable)[0]] = np.array(
+                ast.literal_eval(str_val))
+
+        self.ee.load_study_from_input_dict(design_space_values_dict)
         self.ee.execute()
 
         # loop over all disciplines
 
         coupling_disc = self.ee.root_process.proxy_disciplines[0]
-        coupling_disc_gemseo = coupling_disc.mdo_discipline_wrapp.mdo_discipline.disciplines[0]
 
-        outputs = [self.ee.dm.get_all_namespaces_from_var_name(
-            'objective_lagrangian')[0],
-                   self.ee.dm.get_all_namespaces_from_var_name('negative_welfare_objective')[0]]
+        outputs = [self.ee.dm.get_all_namespaces_from_var_name('negative_welfare_objective')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('emax_enet_constraint')[0],
+                   self.ee.dm.get_all_namespaces_from_var_name('delta_capital_constraint')[0]]
         inputs_name = [f'{energy}_{techno}_array_mix' for energy, techno_dict in DEFAULT_COARSE_TECHNO_DICT.items() for
                        techno in techno_dict['value']]
         inputs_name = [name.replace('.', '_') for name in inputs_name]
@@ -87,7 +115,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                             discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
-                            step=1.0e-5, derr_approx='finite_differences', threshold=1e-5,
+                            step=1.0e-4, derr_approx='finite_differences', threshold=1e-15,
                             local_data=coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,
                             inputs=inputs,
                             outputs=outputs)
