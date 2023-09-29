@@ -516,7 +516,7 @@ class MacroEconomics:
         """
         ne_capital = self.capital_df[GlossaryCore.NonEnergyCapital].values
         usable_capital = self.capital_df[GlossaryCore.UsableCapital].values
-        self.delta_capital_cons = (self.capital_utilisation_ratio * ne_capital - usable_capital) / self.usable_capital_ref if not self.compute_gdp else np.zeros(self.nb_per)
+        self.delta_capital_cons = (usable_capital - self.capital_utilisation_ratio * ne_capital) / self.usable_capital_ref if not self.compute_gdp else np.zeros(self.nb_per)
 
     def prepare_outputs(self):
         """post processing"""
@@ -663,7 +663,7 @@ class MacroEconomics:
                                      self.share_non_energy_investment.values[i-1] * dQ_dY[i-1] * dY_dE[i - 1, j]
                     d_Ku_d_E[i, j] = index_zeros[i] * self.max_capital_utilisation_ratio * d_Kne_dE[i, j]
 
-        d_lower_bound_constraint_dE = (self.capital_utilisation_ratio * d_Kne_dE - d_Ku_d_E) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
+        d_lower_bound_constraint_dE = (d_Ku_d_E - self.capital_utilisation_ratio * d_Kne_dE) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
 
         return dY_dE, d_Ku_d_E, d_lower_bound_constraint_dE
 
@@ -717,7 +717,7 @@ class MacroEconomics:
                             self.share_non_energy_investment.values[i - 1] * dQ_dY[i - 1] * d_Y_d_wap[i - 1, j]
                     d_Ku_d_wap[i, j] = index_zeros[i] * self.max_capital_utilisation_ratio * d_Kne_d_wap[i, j]
 
-        d_lower_bound_constraint_d_wap = (self.capital_utilisation_ratio * d_Kne_d_wap - d_Ku_d_wap) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
+        d_lower_bound_constraint_d_wap = (d_Ku_d_wap - self.capital_utilisation_ratio * d_Kne_d_wap) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
         return d_Ku_d_wap, d_Y_d_wap, d_lower_bound_constraint_d_wap
 
     def d_net_output_d_user_input(self, d_gross_output_d_user_input):
@@ -937,7 +937,7 @@ class MacroEconomics:
                         capital_u[i] ** (gamma - 1) * (alpha * capital_u[i] ** gamma + (1-alpha) * working_pop[i] ** gamma) ** (1/gamma - 1)
                 ) if self.compute_gdp else 0.
 
-        d_lower_bound_constraint_d_dfo = (self.capital_utilisation_ratio * d_Kne_d_dfo - d_Ku_d_dfo) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
+        d_lower_bound_constraint_d_dfo = (d_Ku_d_dfo - self.capital_utilisation_ratio * d_Kne_d_dfo) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
         return d_Y_d_dfo, d_Ku_d_dfo, d_Kne_d_dfo, d_lower_bound_constraint_d_dfo
 
     def d_net_output_d_damage_frac_output(self, d_gross_output_d_damage_frac_output):
