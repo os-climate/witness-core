@@ -590,6 +590,18 @@ class GlossaryCore:
         "namespace": "ns_witness",
     }
 
+    InvestmentBeforeYearStartValue = "invest_before_ystart"
+    InvestmentBeforeYearStartDf = {
+        "var_name": InvestmentBeforeYearStartValue,
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            "past years": ("int", [-20, -1], True),
+            "invest": ("float", None, True),
+        },
+        "dataframe_edition_locked": False,
+    }
+
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""
