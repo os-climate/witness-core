@@ -111,7 +111,7 @@ class SectorModel():
             self.investment_df = self.hist_sector_invest
             self.investment_df.index = self.investment_df[GlossaryCore.Years].values
         else:
-            self.investment_df = inputs[GlossaryCore.SectorInvestmentDfValue]
+            self.investment_df = inputs[GlossaryCore.InvestmentDfValue]
             self.investment_df.index = self.investment_df[GlossaryCore.Years].values
         #scale energy production
         self.energy_production = inputs[GlossaryCore.EnergyProductionValue].copy(deep=True)
@@ -172,7 +172,7 @@ class SectorModel():
             pass
         else: 
             # Capital
-            investment = self.investment_df.loc[year - self.time_step, self.sector_name]
+            investment = self.investment_df.loc[year - self.time_step, GlossaryCore.InvestmentsValue]
             capital = self.capital_df.at[year - self.time_step, GlossaryCore.Capital]
             capital_a = capital * (1 - self.depreciation_capital) + investment
             self.capital_df.loc[year, GlossaryCore.Capital] = capital_a

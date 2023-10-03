@@ -473,16 +473,6 @@ class GlossaryCore:
         },
     }
 
-    SectorInvestmentDfValue = "sectors_investment_df"
-    SectorInvestmentDf = {
-        "type": "dataframe",
-        "unit": "T$",
-        "visibility": "Shared",
-        "namespace": "ns_witness",
-        "dataframe_descriptor": {},
-        "dynamic_dataframe_columns": True,
-    }
-
     RedistributionInvestmentsDfValue = "redistribution_investments_df"
     RedistributionInvestmentsDf = {
         "var_name": RedistributionInvestmentsDfValue,

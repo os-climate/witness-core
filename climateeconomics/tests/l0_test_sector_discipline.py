@@ -97,10 +97,13 @@ class ServicesDiscTest(unittest.TestCase):
         invest_serie.append(init_value)
         for year in np.arange(1, nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.02)
-        self.total_invest = pd.DataFrame({GlossaryCore.Years: years, SectorDiscipline.sector_name: invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: years,
+                                          GlossaryCore.InvestmentsValue: invest_serie})
         
         #damage
-        self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
+        self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years,
+                                       GlossaryCore.Damages: np.zeros(self.nb_per),
+                                       GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
                                        GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
         self.damage_df.index = self.years
 
@@ -112,29 +115,29 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.total_invest,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
-                       f'{self.name}.{self.model_name}.capital_start': 273.1805902, #2019 value for test 
+                       f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
                        f'{self.name}.prod_function_fitting': False,
-                       f"{self.name}.{self.model_name}.{'productivity_start'}": 1.31162,
-                       f"{self.name}.{self.model_name}.{'capital_start'}": 6.92448579,
-                       f"{self.name}.{self.model_name}.{'productivity_gr_start'}": 0.0027844,
-                       f"{self.name}.{self.model_name}.{'decline_rate_tfp'}": 0.098585,
-                       f"{self.name}.{self.model_name}.{'energy_eff_k'}": 0.1,
-                       f"{self.name}.{self.model_name}.{'energy_eff_cst'}": 0.490463,
-                       f"{self.name}.{self.model_name}.{'energy_eff_xzero'}": 1993,
-                       f"{self.name}.{self.model_name}.{'energy_eff_max'}": 2.35832,
-                       f"{self.name}.{self.model_name}.{'output_alpha'}": 0.99,
-                       f"{self.name}.{self.model_name}.{'depreciation_capital'}": 0.058,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_start'}": 1.31162,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_gr_start'}": 0.0027844,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'decline_rate_tfp'}": 0.098585,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_k'}": 0.1,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_cst'}": 0.490463,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_xzero'}": 1993,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
+            f'{self.name}.{SectorDiscipline.sector_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
 #         for graph in graph_list:
@@ -147,31 +150,31 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
-                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.damage_df, #To check if not used
-                       f'{self.name}.{self.model_name}.hist_sector_investment': self.total_invest,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest, #To check if not used
+                       f'{self.name}.{SectorDiscipline.sector_name}.hist_sector_investment': self.total_invest,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
-                       f'{self.name}.{self.model_name}.capital_start': 273.1805902, #2019 value for test 
+                       f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
                        f'{self.name}.prod_function_fitting': True,
-                       f'{self.name}.{self.model_name}.energy_eff_max_range_ref' : 15,
-                       f"{self.name}.{self.model_name}.{'productivity_start'}": 1.31162,
-                       f"{self.name}.{self.model_name}.{'capital_start'}": 6.92448579,
-                       f"{self.name}.{self.model_name}.{'productivity_gr_start'}": 0.0027844,
-                       f"{self.name}.{self.model_name}.{'decline_rate_tfp'}": 0.098585,
-                       f"{self.name}.{self.model_name}.{'energy_eff_k'}": 0.1,
-                       f"{self.name}.{self.model_name}.{'energy_eff_cst'}": 0.490463,
-                       f"{self.name}.{self.model_name}.{'energy_eff_xzero'}": 1993,
-                       f"{self.name}.{self.model_name}.{'energy_eff_max'}": 2.35832,
-                       f"{self.name}.{self.model_name}.{'output_alpha'}": 0.99,
-                       f"{self.name}.{self.model_name}.{'depreciation_capital'}": 0.058,
+                       f'{self.name}.{SectorDiscipline.sector_name}.energy_eff_max_range_ref' : 15,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_start'}": 1.31162,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_gr_start'}": 0.0027844,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'decline_rate_tfp'}": 0.098585,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_k'}": 0.1,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_cst'}": 0.490463,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_xzero'}": 1993,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
 
         disc = self.ee.dm.get_disciplines_with_name(
-            f'{self.name}.{self.model_name}')[0]
+            f'{self.name}.{SectorDiscipline.sector_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
 #         for graph in graph_list:

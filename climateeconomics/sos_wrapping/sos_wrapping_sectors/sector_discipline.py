@@ -42,10 +42,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                    'visibility': 'Shared',
                                    'unit': '-', 'namespace': 'ns_witness'},
         GlossaryCore.FractionDamageToProductivityValue: GlossaryCore.FractionDamageToProductivity,
-        GlossaryCore.SectorInvestmentDfValue: {'type': 'dataframe', 'unit': 'T$',
-                                  'visibility': 'Shared',
-                                  'namespace': 'ns_witness', 'dataframe_descriptor': {},
-                                  'dynamic_dataframe_columns': True},
         GlossaryCore.EnergyProductionValue: {'type': 'dataframe', 'unit': GlossaryCore.EnergyProductionDf['unit'],
                                              'dataframe_descriptor': GlossaryCore.EnergyProductionDf['dataframe_descriptor'],
                                              'dataframe_edition_locked': False},
@@ -108,14 +104,14 @@ class SectorDiscipline(ClimateEcoDiscipline):
         # coupling df
         damage_df = param[GlossaryCore.DamageDfValue]
         energy_production = param[GlossaryCore.EnergyProductionValue]
-        sector_investment = param[GlossaryCore.SectorInvestmentDfValue]
+        sector_investment = param[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"]
         workforce_df = param[GlossaryCore.WorkforceDfValue]
         prod_function_fitting = param['prod_function_fitting']
 
         model_inputs = {
             GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
             GlossaryCore.EnergyProductionValue: energy_production,
-            GlossaryCore.SectorInvestmentDfValue: sector_investment,
+            GlossaryCore.InvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
         production_df, detailed_capital_df, productivity_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.model.compute(
@@ -162,17 +158,20 @@ class SectorDiscipline(ClimateEcoDiscipline):
         doutput_denergy = self.model.doutput_denergy(dcapitalu_denergy)
         dnetoutput_denergy = self.model.dnetoutput(doutput_denergy)
         self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * doutput_denergy)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * dnetoutput_denergy)
         self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             scaling_factor_energy_production * dcapitalu_denergy)
         self.set_partial_derivative_for_other_types(
-            ('emax_enet_constraint',), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            ('emax_enet_constraint',),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint))
 
         # gradients wrt workforce
@@ -180,9 +179,13 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dnetoutput_dworkforce = self.model.dnetoutput(
             doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput), (GlossaryCore.WorkforceDfValue, self.sector_name), doutput_dworkforce)
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
+            (GlossaryCore.WorkforceDfValue, self.sector_name),
+            doutput_dworkforce)
         self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage), (GlossaryCore.WorkforceDfValue, self.sector_name), dnetoutput_dworkforce)
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
+            (GlossaryCore.WorkforceDfValue, self.sector_name),
+            dnetoutput_dworkforce)
 
         # gradients wrt damage:
         dproductivity_ddamage = self.model.dproductivity_ddamage()
@@ -191,10 +194,12 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dnetoutput_ddamage = self.model.dnetoutput_ddamage(
             doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             doutput_ddamage)
         self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage), (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             dnetoutput_ddamage)
 
         # gradients wrt invest
@@ -203,14 +208,18 @@ class SectorDiscipline(ClimateEcoDiscipline):
         if prod_function_fitting:
             invest_df = 'hist_sector_investment'
         else:
-            invest_df = GlossaryCore.SectorInvestmentDfValue
+            invest_df = f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"
         dcapital_dinvest = self.model.dcapital_dinvest()
         demax_cstrt_dinvest = self.model.demaxconstraint(
             dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.Capital), (invest_df, self.sector_name), dcapital_dinvest)
+            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.Capital),
+            (invest_df, GlossaryCore.InvestmentsValue),
+            dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
-            ('emax_enet_constraint',), (invest_df, self.sector_name), demax_cstrt_dinvest)
+            ('emax_enet_constraint',),
+            (invest_df, GlossaryCore.InvestmentsValue),
+            demax_cstrt_dinvest)
 
     def get_chart_filter_list(self):
 
