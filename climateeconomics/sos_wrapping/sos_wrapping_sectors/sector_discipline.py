@@ -83,8 +83,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                                                   'dataframe_descriptor': {},
                                                                   'dynamic_dataframe_columns': True}
 
-                self.add_inputs(dynamic_inputs)
-
+        dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(
+            GlossaryCore.InvestmentDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(
             GlossaryCore.ProductionDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.CapitalDfValue}"] = GlossaryCore.get_dynamic_variable(
@@ -92,6 +92,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}"] = GlossaryCore.get_dynamic_variable(
             GlossaryCore.DetailedCapitalDf)
 
+        self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
 
     def init_execution(self):

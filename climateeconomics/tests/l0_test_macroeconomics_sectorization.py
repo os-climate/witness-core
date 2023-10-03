@@ -38,9 +38,10 @@ class MacroeconomicsTestCase(unittest.TestCase):
         self.nb_per = nb_per
         self.years = np.arange(self.year_start, self.year_end+1)
 
-        total_invest = np.asarray([27.0] * nb_per)
-        total_invest = DataFrame({GlossaryCore.Years:self. years, 'share_investment': total_invest})
-        self.total_invest = total_invest
+        invests = np.linspace(40, 65, nb_per)
+        self.invests = DataFrame({GlossaryCore.Years: self.years,
+                                  GlossaryCore.InvestmentsValue: invests})
+
 
         # Test With a GDP and capital that grows at 2%
         gdp_year_start = 130.187
@@ -94,7 +95,7 @@ class MacroeconomicsTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
         inputs_dict = {
-            f'{name}.{GlossaryCore.InvestmentShareGDPValue}': self.total_invest,
+            f'{name}.{GlossaryCore.InvestmentDfValue}': self.invests,
             f'{name}.{GlossaryCore.SectorListValue}': self.sectors_list,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
@@ -110,5 +111,5 @@ class MacroeconomicsTestCase(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            graph.to_plotly().show()
             pass

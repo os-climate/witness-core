@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -30,44 +31,24 @@ class SectorRedistributionModel:
 
         return sectors_energy, all_sectors_energy_df
 
-    def compute_investment_redistribution(self) -> tuple[dict, pd.DataFrame]:
+    def compute_total_investments(self) -> pd.DataFrame:
         """compute investment distribution between sectors"""
-        total_investments: pd.DataFrame = self.inputs[GlossaryCore.InvestmentDfValue]
-        total_investments_values = total_investments[GlossaryCore.InvestmentsValue].values
 
-        all_sectors_investments_df = {}
-        sectors_invesmtents = {}
-        for sector in self.sectors:
-            sector_investment_values = self.inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][
-                                           GlossaryCore.ShareInvestment].values /100. * total_investments_values
-            sector_investment_df = pd.DataFrame(
-                {GlossaryCore.Years: total_investments[GlossaryCore.Years].values,
-                 GlossaryCore.InvestmentsValue: sector_investment_values}
-            )
+        sector_investment_values = [self.inputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'][GlossaryCore.InvestmentsValue].values for sector in self.sectors]
+        total_invests = np.sum(sector_investment_values, axis=0)
 
-            sectors_invesmtents[sector] = sector_investment_df
-            all_sectors_investments_df[sector] = sector_investment_values
+        total_invests_df = pd.DataFrame({
+            GlossaryCore.Years: self.inputs[f'{self.sectors[0]}.{GlossaryCore.InvestmentDfValue}'][GlossaryCore.Years].values,
+            GlossaryCore.InvestmentsValue: total_invests
+        })
 
-        all_sectors_investments_df[GlossaryCore.Years] = total_investments[GlossaryCore.Years]
-        all_sectors_investments_df = pd.DataFrame(all_sectors_investments_df)
+        return total_invests_df
 
-        return sectors_invesmtents, all_sectors_investments_df
-
-    def compute(self, inputs: dict) -> tuple[dict, pd.DataFrame, dict, pd.DataFrame]:
+    def compute(self, inputs: dict) -> tuple[dict, pd.DataFrame, pd.DataFrame]:
         self.inputs = inputs
         self.sectors = inputs[GlossaryCore.SectorListValue]
 
         sectors_energy, all_sectors_energy_df = self.compute_energy_redistribution()
-        sectors_invesmtents, all_sectors_investments_df = self.compute_investment_redistribution()
+        total_investments = self.compute_total_investments()
 
-        return sectors_energy, all_sectors_energy_df, sectors_invesmtents, all_sectors_investments_df
-
-    # Derivatives
-
-    def dsector_invest_dsector_output(self, sector, grad_netoutput):
-        """
-        Compute gradient for sector invest wrt sectors outputs
-        """
-        # Sector invest = net output * sector_share_invest (share invest in%)
-        #grad_sector_invest = grad_netoutput * sectors_invest_share[f'{sector}'].values / 100
-        #return grad_sector_invest
+        return sectors_energy, all_sectors_energy_df, total_investments

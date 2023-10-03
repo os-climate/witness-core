@@ -45,12 +45,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_IN = {
-        GlossaryCore.InvestmentShareGDPValue: GlossaryCore.InvestmentShareGDP,
+        GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
     }
 
     DESC_OUT = {
-        GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         GlossaryCore.EconomicsDfValue: GlossaryCore.SectorizedEconomicsDf,
         GlossaryCore.EconomicsDetailDfValue: GlossaryCore.SectorizedEconomicsDetailDf,
     }
@@ -77,7 +76,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.macro_model.compute(inputs_dict)
 
         outputs_dict = {
-            GlossaryCore.InvestmentDfValue: self.macro_model.investment_df,
             GlossaryCore.EconomicsDfValue: self.macro_model.economics_df,
             GlossaryCore.EconomicsDetailDfValue: self.macro_model.economics_detail_df
         }
@@ -91,15 +89,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         net_output and invest wrt sector net_output 
         """
         sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
-        # Gradient wrt share investment
-        grad_invest_share = self.macro_model.dinvest_dshare()
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
-            (GlossaryCore.InvestmentShareGDPValue, 'share_investment'),
-            grad_invest_share)
 
         # Gradient wrt each sector production df: same for all sectors
-        grad_netoutput, grad_invest = self.macro_model.get_derivative_sectors()
+        grad_netoutput = self.macro_model.get_derivative_sectors()
         for sector in sector_list:
             self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
                                                         (f'{sector}.{GlossaryCore.ProductionDfValue}',
@@ -110,21 +102,16 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                         grad_netoutput)
             self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.Capital),
                                                         (f'{sector}.{GlossaryCore.CapitalDfValue}', GlossaryCore.Capital), grad_netoutput)
-            self.set_partial_derivative_for_other_types((GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
-                                                        (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
-                                                        grad_invest)
 
     def get_chart_filter_list(self):
 
         chart_filters = []
 
         chart_list = [GlossaryCore.GrossOutput,
-                      GlossaryCore.InvestmentsValue,
                       GlossaryCore.OutputNetOfDamage,
                       GlossaryCore.Capital,
                       'share capital',
                       'share output',
-                      'share investment',
                       'output growth']
 
         chart_filters.append(ChartFilter(
@@ -143,7 +130,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         economics_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue))
-        investment_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.InvestmentDfValue))
+        investment_df = deepcopy(self.get_sosdisc_inputs(GlossaryCore.InvestmentDfValue))
         sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
 
         # Overload default value with chart filter
@@ -154,19 +141,22 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.GrossOutput in chart_list:
 
-            to_plot = [GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]
-            legend = {GlossaryCore.GrossOutput: 'world gross output',
-                      GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
             years = list(economics_df.index)
-            chart_name = 'Economics output (Power Purchase Parity)'
+            chart_name = 'Breakdown of gross output'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion $2020]',
-                                                 chart_name=chart_name)
+                                                 chart_name=chart_name, stacked_bar=True)
 
-            for key in to_plot:
-                ordonate_data = list(economics_df[key])
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'lines', True)
-                new_chart.series.append(new_series)
+            new_series = InstanciatedSeries(
+                years, list(investment_df[GlossaryCore.InvestmentsValue]),'Investments', 'bar', True)
+            new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(economics_df[GlossaryCore.Consumption]), 'Consumption', 'bar', True)
+            new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(economics_df[GlossaryCore.Damages]), 'Damages', 'bar', True)
+            new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 
@@ -185,18 +175,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if GlossaryCore.InvestmentsValue in chart_list:
-
-            years = list(investment_df.index)
-            chart_name = 'Total investment over years'
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' Investment [T$]',
-                                                 chart_name= chart_name)
-            ordonate_data = list(investment_df[GlossaryCore.InvestmentsValue])
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'total investment', 'lines', True)
-            new_chart.series.append(new_series)
-
-            instanciated_charts.append(new_chart)
 
         if GlossaryCore.Capital in chart_list:
 

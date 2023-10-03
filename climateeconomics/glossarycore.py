@@ -456,6 +456,8 @@ class GlossaryCore:
             Capital: ("float", None, False),
             UsableCapital: ("float", None, False),
             OutputGrowth: ("float", None, False),
+            Damages: ("float", None, False),
+            Consumption: ("float", None, False),
         },
     }
 
