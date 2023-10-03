@@ -525,7 +525,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.EnergyInvestmentsWoTaxValue,
                       GlossaryCore.OutputGrowth,
                       GlossaryCore.UsableCapital,
-                      GlossaryCore.WaistedCapital,
+                      GlossaryCore.UnusedEnergy,
                       GlossaryCore.Capital,
                       GlossaryCore.EmploymentRate,
                       GlossaryCore.Workforce,
@@ -693,7 +693,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.UsableCapital in chart_list:
             capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
-            first_serie = capital_df['non_energy_capital']
+            first_serie = capital_df[GlossaryCore.NonEnergyCapital]
             second_serie = capital_df[GlossaryCore.UsableCapital]
             years = list(capital_df.index)
 
@@ -727,24 +727,25 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if GlossaryCore.WaistedCapital in chart_list:
-            capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
+        if GlossaryCore.UnusedEnergy in chart_list:
+            economics_df = self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue)
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Trillion $2020 PPP',
-                                                 chart_name=GlossaryCore.WaistedCapital,
-                                                  stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'TWh',
+                                                 chart_name=GlossaryCore.UnusedEnergy,
+                                                 stacked_bar=True)
 
             new_series = InstanciatedSeries(
-                list(capital_df[GlossaryCore.Years]),
-                list(capital_df[GlossaryCore.WaistedCapital]),
-                GlossaryCore.WaistedCapital, 'bar', True)
+                list(economics_df[GlossaryCore.Years]),
+                list(economics_df[GlossaryCore.UnusedEnergy]),
+                GlossaryCore.UnusedEnergy, 'bar', True)
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.Capital in chart_list:
             energy_capital_df = self.get_sosdisc_inputs('energy_capital')
-            first_serie = capital_df['non_energy_capital']
+            capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
+            first_serie = capital_df[GlossaryCore.NonEnergyCapital]
             second_serie = energy_capital_df['energy_capital']
             third_serie = capital_df[GlossaryCore.Capital]
             years = list(capital_df.index)

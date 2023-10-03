@@ -230,6 +230,7 @@ class GlossaryCore:
     Productivity = "productivity"
     ProductivityGrowthRate = "productivity_gr"
     OutputGrowth = "output_growth"
+    UnusedEnergy = "Unused Energy [TWh]"
     EconomicsDetailDf = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
@@ -249,6 +250,7 @@ class GlossaryCore:
             NonEnergyInvestmentsValue: ("float", None, False),  # T$
             EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
+            UnusedEnergy: ("float", None, False),
         },
     }
     PopulationValue = "population"
@@ -398,8 +400,7 @@ class GlossaryCore:
     Capital = "capital"
     UsableCapital = "usable_capital"
     UsableCapitalUnbounded = "Unbounded usable capital [T$]"
-    WaistedCapital = "Waisted capital [T$]"
-    NonEnergyCapital = 'non_energy_capital'
+    NonEnergyCapital = "non_energy_capital"
     CapitalDf = {
         "var_name": CapitalDfValue,
         "namespace": "ns_witness",
