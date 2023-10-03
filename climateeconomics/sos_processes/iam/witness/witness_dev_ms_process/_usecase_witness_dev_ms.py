@@ -18,7 +18,7 @@ import pandas as pd
 from os.path import join, dirname
 
 from sostrades_core.study_manager.study_manager import StudyManager
-from climateeconomics.sos_processes.iam.witness._witness_dev.usecase_witness import Study as witness_dev_usecase
+from climateeconomics.sos_processes.iam.witness.witness_dev._usecase_witness import Study as witness_dev_usecase
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 

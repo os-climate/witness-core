@@ -61,7 +61,7 @@ def prepare_data(data):
 
     dict_data = {}
     for disc_id in list(uc_cls.ee.dm.disciplines_dict.keys()):
-        disc = dm.get_discipline(disc_id)
+        disc = uc_cls.ee.dm.get_discipline(disc_id)
         data_in = disc.get_data_in()
         dict_data[disc.sos_name] = {}
         for k,v in data_in.items():
