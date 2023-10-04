@@ -42,6 +42,12 @@ class GlossaryCore:
     SectorIndustry = "Industry"
     SectorEnergy = "energy"
 
+    # Diet
+    Fish = 'fish'
+    OtherFood = 'other'
+    FishDailyCal = 'fish_calories_per_day'
+    OtherDailyCal = 'other_calories_per_day'
+
     SectorsPossibleValues = [
         SectorServices,
         SectorAgriculture,
