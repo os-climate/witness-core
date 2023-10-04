@@ -525,13 +525,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.EnergyInvestmentsWoTaxValue,
                       GlossaryCore.OutputGrowth,
                       GlossaryCore.UsableCapital,
-                      GlossaryCore.UnusedEnergy,
+                      GlossaryCore.EnergyUsage,
                       GlossaryCore.Capital,
                       GlossaryCore.EmploymentRate,
                       GlossaryCore.Workforce,
                       GlossaryCore.Productivity,
                       GlossaryCore.EnergyEfficiency,
-                      GlossaryCore.Emax,
                       GlossaryCore.SectorGdpPart,
                       ]
         # First filter to deal with the view : program or actor
@@ -727,17 +726,25 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if GlossaryCore.UnusedEnergy in chart_list:
+        if GlossaryCore.EnergyUsage in chart_list:
             economics_df = self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'TWh',
-                                                 chart_name=GlossaryCore.UnusedEnergy,
+                                                 chart_name=GlossaryCore.EnergyUsage,
                                                  stacked_bar=True)
+
+            to_plot = [GlossaryCore.UsedEnergy, GlossaryCore.UnusedEnergy]
+            for p in to_plot:
+                new_series = InstanciatedSeries(
+                    list(economics_df[GlossaryCore.Years]),
+                    list(economics_df[p]),
+                    p, 'bar', True)
+                new_chart.series.append(new_series)
 
             new_series = InstanciatedSeries(
                 list(economics_df[GlossaryCore.Years]),
-                list(economics_df[GlossaryCore.UnusedEnergy]),
-                GlossaryCore.UnusedEnergy, 'bar', True)
+                list(economics_df[GlossaryCore.OptimalEnergyProduction]),
+                GlossaryCore.OptimalEnergyProduction, 'lines', True)
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -855,33 +862,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-        if GlossaryCore.Emax in chart_list:
-            to_plot = GlossaryCore.Emax
-            energy_production = deepcopy(
-                self.get_sosdisc_inputs(GlossaryCore.EnergyProductionValue))
-            total_production = energy_production[GlossaryCore.TotalProductionValue] * 1e3
-
-            years = list(capital_df.index)
-
-            chart_name = 'E_max value and Net Energy'
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Twh',
-                                                 chart_name=chart_name)
-            visible_line = True
-
-            ordonate_data = list(capital_df[to_plot])
-            ordonate_data_enet = list(total_production)
-
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'E_max', 'lines', visible_line)
-            note = {
-                'E_max': ' maximum energy that capital stock can absorb for production'}
-            new_chart.annotation_upper_left = note
-            new_chart.series.append(new_series)
-            new_series = InstanciatedSeries(
-                years, ordonate_data_enet, 'Net energy', 'lines', visible_line)
-            new_chart.series.append(new_series)
-            instanciated_charts.append(new_chart)
 
         if GlossaryCore.OutputGrowth in chart_list:
             to_plot = [GlossaryCore.OutputGrowth]

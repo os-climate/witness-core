@@ -230,7 +230,10 @@ class GlossaryCore:
     Productivity = "productivity"
     ProductivityGrowthRate = "productivity_gr"
     OutputGrowth = "output_growth"
+    OptimalEnergyProduction = "Optimal Energy Production [TWh]"
+    UsedEnergy = "Used Energy [TWh]"
     UnusedEnergy = "Unused Energy [TWh]"
+    EnergyUsage = "Energy Usage"
     EconomicsDetailDf = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
@@ -250,7 +253,9 @@ class GlossaryCore:
             NonEnergyInvestmentsValue: ("float", None, False),  # T$
             EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
+            UsedEnergy: ("float", None, False),
             UnusedEnergy: ("float", None, False),
+            OptimalEnergyProduction: ("float", None, False),
         },
     }
     PopulationValue = "population"

@@ -285,25 +285,15 @@ class MacroEconomics:
                                   
             return capital_a
 
-    def compute_emax(self):
-        """E_max is the maximum energy capital can use to produce output
-        E_max = Kne/(capital_utilisation_ratio*energy_efficiency(year))
-        """
-        # Convert capital in billion: to get same order of magnitude (1e6) as energy
-        ne_capital = self.capital_df[GlossaryCore.NonEnergyCapital] * 1e3
-        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency]
-        e_max = ne_capital / (self.capital_utilisation_ratio * energy_efficiency)
-
-        self.capital_df[GlossaryCore.Emax] = e_max
-
-    def compute_wasted_energy(self):
+    def compute_energy_usage(self):
         """Wasted energy is the overshoot of energy production not used by usable capital"""
         non_energy_capital = self.capital_df[GlossaryCore.NonEnergyCapital]
         net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue]
         energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency]
         optimal_energy_production = self.max_capital_utilisation_ratio * non_energy_capital / self.capital_utilisation_ratio / energy_efficiency
-
-        self.economics_df[GlossaryCore.UnusedEnergy] = np.maximum(net_energy_production - optimal_energy_production, 0.)
+        self.economics_df[GlossaryCore.OptimalEnergyProduction] = optimal_energy_production * 1e3
+        self.economics_df[GlossaryCore.UsedEnergy] = np.minimum(net_energy_production, optimal_energy_production) * 1e3
+        self.economics_df[GlossaryCore.UnusedEnergy] = np.maximum(net_energy_production - optimal_energy_production, 0.) * 1e3
 
     def compute_energy_efficiency(self):
         """compute energy_efficiency"""
@@ -366,7 +356,7 @@ class MacroEconomics:
 
         return energy_investment
 
-    def compute_energy_renewable_investment(self, year: int, energy_investment_wo_tax: float) -> float:
+    def compute_energy_renewable_investment(self, year: int, energy_investment_wo_tax: float):
         """
         computes energy investment for renewable part in T$
         for a given year: returns net CO2 emissions * CO2 taxes * a efficiency factor
@@ -472,7 +462,7 @@ class MacroEconomics:
 
         gross_output = self.economics_df[GlossaryCore.GrossOutput]
 
-        self.economics_df[GlossaryCore.OutputGrowth] = (gross_output.diff() / gross_output.shift(1)).fillna(0.)
+        self.economics_df[GlossaryCore.OutputGrowth] = (gross_output.diff() / gross_output.shift(1)).fillna(0.) * 100
 
     def compute_output_net_of_damage(self, year: int):
         """
@@ -589,12 +579,10 @@ class MacroEconomics:
             # capital t+1 :
             self.compute_capital(year+1)
 
-
         self.compute_output_growth()
         self.compute_sector_gdp()
         self.compute_usable_capital_lower_bound_constraint()
-        self.compute_emax()
-        self.compute_wasted_energy()
+        self.compute_energy_usage()
 
         self.prepare_outputs()
 

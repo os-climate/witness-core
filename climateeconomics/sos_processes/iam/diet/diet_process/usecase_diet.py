@@ -296,24 +296,4 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    # df_xvect = pd.read_pickle('df_xvect.pkl')
-    # df_xvect.columns = [
-    # f'{uc_cls.study_name}.{uc_cls.optim_name}.{uc_cls.coupling_name}.DesignVariables' + col for col in df_xvect.columns]
-    # dict_xvect = df_xvect.iloc[-1].to_dict()
-    # dict_xvect[f'{uc_cls.study_name}.{uc_cls.optim_name}.eval_mode'] = True
-    # uc_cls.load_data(from_input_dict=dict_xvect)
-    # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
-    # uc_cls.execution_engine.root_process.sos_disciplines[0].set_opt_scenario()
-    # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
-
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-    #
-    #     for graph in graph_list:
-    #         graph.to_plotly().show()
+    uc_cls.test()
