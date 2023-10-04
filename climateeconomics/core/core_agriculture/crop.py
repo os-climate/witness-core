@@ -56,7 +56,6 @@ class Crop():
     DIET_DF = 'diet_df'
     KG_TO_KCAL_DICT = 'kg_to_kcal_dict'
     KG_TO_M2_DICT = 'kg_to_m2_dict'
-    OTHER_USE_CROP = 'other_use_crop'
     FOOD_LAND_SURFACE_DF = 'food_land_surface_df'
     CROP_INVESTMENT = 'crop_investment'
 
@@ -90,7 +89,6 @@ class Crop():
         self.kcal_diet_df = {}
         self.kg_to_kcal_dict = self.param[Crop.KG_TO_KCAL_DICT]
         self.kg_to_m2_dict = self.param[Crop.KG_TO_M2_DICT]
-        self.other_use_crop = self.param[Crop.OTHER_USE_CROP]
         self.param_a = self.param['param_a']
         self.param_b = self.param['param_b']
         self.crop_investment = self.param['crop_investment']
@@ -332,11 +330,6 @@ class Crop():
                 result[key + ' (Gha)'] = kg_food_to_surface[key] * \
                                          quantity_of_food_df[key]
                 sum = sum + result[key + ' (Gha)']
-        # add other contribution. 1e6 is for million of people,
-        # /hatom2 for future conversion
-        #result[GlossaryCore.OtherFood + ' (Gha)'] = self.other_use_crop * \
-        #                        population_df[GlossaryCore.PopulationValue].values * 1e6 / self.hatom2
-        #sum = sum + result[GlossaryCore.OtherFood + ' (Gha)']
 
         # add total data
         result['total surface (Gha)'] = sum
@@ -790,18 +783,6 @@ class Crop():
 
         return (d_land_surface_d_pop)
 
-    def d_other_surface_d_population(self):
-        """
-        Compute derivate of land_surface[other] column wrt population_df[population]
-        """
-        number_of_values = (self.year_end - self.year_start + 1)
-        result_without_climate = np.identity(
-            number_of_values) * self.other_use_crop / 1e3
-        # Add climate change impact
-        result = result_without_climate * (1 - self.prod_reduction)
-
-        return (result)
-
     def d_food_land_surface_d_temperature(self, temperature_df, column_name):
         """
         Compute the derivative of land surface wrt temperature
@@ -1085,9 +1066,17 @@ class Crop():
         '''
         Compute gradient of co2 land emissions from land surface from food
         '''
-        return {'CO2': self.co2_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12,
-                'CH4': self.ch4_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12,
-                'N2O': self.n2o_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12, }
+        if self.kg_to_m2_dict[food] > 0.:
+            co2 = self.co2_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12
+            ch4 = self.ch4_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12
+            n2O = self.n2o_emissions_per_kg[food] / self.kg_to_m2_dict[food] * self.m2toha * 1e9 * 1e-12
+        else:
+            co2 = self.co2_emissions_per_kg[food] * 0.
+            ch4 = self.ch4_emissions_per_kg[food] * 0.
+            n2O = self.n2o_emissions_per_kg[food] * 0.
+        return {'CO2': co2,
+                'CH4': ch4,
+                'N2O': n2O, }
 
     def compute_d_food_surface_d_red_meat_percentage(self, population_df, food):
         """

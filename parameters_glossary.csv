@@ -230,7 +230,6 @@ negative_welfare_objective,Negative Welfare objective,,Value of the negative wel
 non_modeled_resource_price,Non modeled resource price per year,$/t,Price data concerning modeled.,,
 nu_knowledge,nu knowledge,,Data concerning CO2 nu_knowl.,,
 other_use_agriculture,Other use agriculture,ha/person,"ha/person requested for the production of other products than the other considerated (coffee, tea, chocolate, sugar).",,
-other_use_crop,Other use Crop,ha/person,"ha/person requested for the production of other products than the other considerated (coffee, tea, chocolate, sugar).",,
 output_elasticity,Output elasticity,,Output elasticity of capital in DICE production function. ,,
 output_energy_exponent,Output energy exponent,,Parameter of WITNESS production function: Exponent of energy supply in the production function equation.,,
 output_energy_share,Output energy share,,Parameter of WITNESS production function: Share of  energy supply in the production function. By oppisition to the share of capital-labour factor. ,,

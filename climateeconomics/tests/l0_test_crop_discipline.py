@@ -214,9 +214,6 @@ class CropTestCase(unittest.TestCase):
         self.other_food_calories_per_day = pd.DataFrame({
                                 GlossaryCore.Years: years,
                                 GlossaryCore.OtherDailyCal: other_food_daily_cal})
-        # other to be consistent with default_kg_to_m2
-        other = self.default_kg_to_m2[GlossaryCore.OtherFood] * 177.02 / 10000.
-        self.other = np.array(np.linspace(other, other, year_range))
 
 
         self.param = {GlossaryCore.YearStart: self.year_start,
@@ -227,7 +224,6 @@ class CropTestCase(unittest.TestCase):
                       GlossaryCore.PopulationDfValue: self.population_df,
                       GlossaryCore.TemperatureDfValue: self.temperature_df,
                       'kg_to_m2_dict': self.default_kg_to_m2,
-                      'other_use_crop': self.other,
                       'param_a':  - 0.00833,
                       'param_b': - 0.04167,
                       'crop_investment': self.crop_investment,
@@ -250,7 +246,7 @@ class CropTestCase(unittest.TestCase):
                       'co2_emissions_per_kg': default_co2_emissions,
                       'ch4_emissions_per_kg': default_ch4_emissions,
                       'n2o_emissions_per_kg': default_n2o_emissions,
-                      'constraint_calories_limit': 1700. ,
+                      'constraint_calories_limit': 1700.,
                       'constraint_calories_ref': 3400.
                       }
 
@@ -305,7 +301,6 @@ class CropTestCase(unittest.TestCase):
                        f'{name}.{model_name}.milk_and_eggs_calories_per_day': self.milk_eggs_calories_per_day,
                        f'{name}.{model_name}.{GlossaryCore.FishDailyCal}': self.fish_calories_per_day,
                        f'{name}.{model_name}.{GlossaryCore.OtherDailyCal}': self.other_food_calories_per_day,
-                       f'{name}.{model_name}.{Crop.OTHER_USE_CROP}': self.other,
                        f'{name}.{model_name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{name}.{model_name}.crop_investment': self.crop_investment,
                        f'{name}.{model_name}.margin': self.margin,
