@@ -296,6 +296,15 @@ class MacroEconomics:
 
         self.capital_df[GlossaryCore.Emax] = e_max
 
+    def compute_wasted_energy(self):
+        """Wasted energy is the overshoot of energy production not used by usable capital"""
+        non_energy_capital = self.capital_df[GlossaryCore.NonEnergyCapital]
+        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue]
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency]
+        optimal_energy_production = self.max_capital_utilisation_ratio * non_energy_capital / self.capital_utilisation_ratio / energy_efficiency
+
+        self.economics_df[GlossaryCore.UnusedEnergy] = np.maximum(net_energy_production - optimal_energy_production, 0.)
+
     def compute_energy_efficiency(self):
         """compute energy_efficiency"""
         years = self.capital_df[GlossaryCore.Years].values
@@ -526,7 +535,6 @@ class MacroEconomics:
         self.economics_detail_df = pd.DataFrame.copy(self.economics_df)
 
         self.economics_detail_df[GlossaryCore.Damages] = self.economics_detail_df[GlossaryCore.GrossOutput] - self.economics_df[GlossaryCore.OutputNetOfDamage]
-        self.capital_df[GlossaryCore.WaistedCapital] = self.capital_df[GlossaryCore.UsableCapitalUnbounded] - self.capital_df[GlossaryCore.UsableCapital]
 
         self.economics_df = self.economics_df[GlossaryCore.EconomicsDf['dataframe_descriptor'].keys()]
         self.economics_detail_df = self.economics_detail_df[GlossaryCore.EconomicsDetailDf['dataframe_descriptor'].keys()]
@@ -586,6 +594,7 @@ class MacroEconomics:
         self.compute_sector_gdp()
         self.compute_usable_capital_lower_bound_constraint()
         self.compute_emax()
+        self.compute_wasted_energy()
 
         self.prepare_outputs()
 
@@ -641,7 +650,7 @@ class MacroEconomics:
         energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
         d_Ku_d_E = np.diag(self.capital_utilisation_ratio * energy_efficiency)
 
-        index_zeros = self.capital_df[GlossaryCore.WaistedCapital].values > 0.
+        index_zeros = self.economics_detail_df[GlossaryCore.UnusedEnergy].values > 0.
 
         d_Ku_d_E[index_zeros, index_zeros] = 0.
 
@@ -688,7 +697,7 @@ class MacroEconomics:
         productivity = self.economics_detail_df[GlossaryCore.Productivity].values
         employment_rate = self.workforce_df[GlossaryCore.EmploymentRate].values
 
-        index_zeros = self.capital_df[GlossaryCore.WaistedCapital].values > 0.
+        index_zeros = self.economics_detail_df[GlossaryCore.UnusedEnergy].values > 0.
 
         d_Y_d_wap = np.diag(
             productivity * (1 - alpha) * working_pop ** (gamma - 1) * employment_rate * (
@@ -918,7 +927,7 @@ class MacroEconomics:
         productivity = self.economics_detail_df[GlossaryCore.Productivity].values
 
         ############
-        index_zeros = self.capital_df[GlossaryCore.WaistedCapital].values > 0.
+        index_zeros = self.economics_detail_df[GlossaryCore.UnusedEnergy].values > 0.
 
         damefrac = self.damefrac[GlossaryCore.DamageFractionOutput].values
         Y = self.economics_df[GlossaryCore.GrossOutput].values

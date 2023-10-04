@@ -49,21 +49,19 @@ class SectorsRedistributionDisciplineTest(unittest.TestCase):
         self.share_energy_services = pd.DataFrame({GlossaryCore.Years: self.years,
                                                    GlossaryCore.ShareSectorEnergy: shares_energy_services})
 
-        self.investments_df = pd.DataFrame({GlossaryCore.Years: self.years,
-                                            GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(self.years))})
 
-        self.share_invest_agriculture = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                      GlossaryCore.ShareInvestment: np.linspace(12, 20,
+        self.invest_agriculture = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                GlossaryCore.InvestmentsValue: np.linspace(12, 20,
                                                                                                 len(self.years))})
 
-        self.share_invest_industry = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                   GlossaryCore.ShareInvestment: np.linspace(39, 59,
+        self.invest_industry = pd.DataFrame({GlossaryCore.Years: self.years,
+                                             GlossaryCore.InvestmentsValue: np.linspace(39, 59,
                                                                                              len(self.years))})
 
-        shares_invest_services = 100. - self.share_invest_industry[GlossaryCore.ShareInvestment] - \
-                                 self.share_invest_agriculture[GlossaryCore.ShareInvestment]
-        self.share_invest_services = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                   GlossaryCore.ShareInvestment: shares_invest_services})
+        self.invest_services = pd.DataFrame({GlossaryCore.Years: self.years,
+                                             GlossaryCore.InvestmentsValue: np.linspace(15, 17,
+                                                                                       len(self.years))})
+
 
     def test(self):
         """Check discipline setup and run"""
@@ -86,17 +84,15 @@ class SectorsRedistributionDisciplineTest(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.{GlossaryCore.InvestmentDfValue}': self.investments_df,
-                       f'{name}.{GlossaryCore.EnergyProductionValue}': self.energy_production_df,
+        inputs_dict = {f'{name}.{GlossaryCore.EnergyProductionValue}': self.energy_production_df,
                        f'{name}.{GlossaryCore.SectorListValue}': self.sector_list,
-                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invest_agriculture,
+                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.invest_agriculture,
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_agriculture,
-                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invest_industry,
+                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}': self.invest_industry,
                        f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_industry,
-                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invest_services,
+                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}': self.invest_services,
                        f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_services,
-
-                       }
+        }
         ee.load_study_from_input_dict(inputs_dict)
 
         ee.execute()

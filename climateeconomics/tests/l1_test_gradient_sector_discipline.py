@@ -72,7 +72,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         invest_serie.append(init_value)
         for year in np.arange(1, self.nb_per):
             invest_serie.append(invest_serie[year - 1] * 1.002)
-        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years, SectorDiscipline.sector_name: invest_serie})
+        self.total_invest = pd.DataFrame({GlossaryCore.Years: self.years,
+                                          GlossaryCore.InvestmentsValue: invest_serie})
 
         # damage
         self.damage_df = pd.DataFrame(
@@ -111,22 +112,22 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.frac_damage_prod': 0.3,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
-                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.total_invest,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.prod_function_fitting': False,
-                       f"{self.name}.{self.model_name}.{'productivity_start'}": 1.31162,
-                       f"{self.name}.{self.model_name}.{'capital_start'}": 6.92448579,
-                       f"{self.name}.{self.model_name}.{'productivity_gr_start'}": 0.0027844,
-                       f"{self.name}.{self.model_name}.{'decline_rate_tfp'}": 0.098585,
-                       f"{self.name}.{self.model_name}.{'energy_eff_k'}": 0.1,
-                       f"{self.name}.{self.model_name}.{'energy_eff_cst'}": 0.490463,
-                       f"{self.name}.{self.model_name}.{'energy_eff_xzero'}": 1993,
-                       f"{self.name}.{self.model_name}.{'energy_eff_max'}": 2.35832,
-                       f"{self.name}.{self.model_name}.{'output_alpha'}": 0.99,
-                       f"{self.name}.{self.model_name}.{'depreciation_capital'}": 0.058,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_start'}": 1.31162,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_gr_start'}": 0.0027844,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'decline_rate_tfp'}": 0.098585,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_k'}": 0.1,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_cst'}": 0.490463,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_xzero'}": 1993,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -135,14 +136,14 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=os.path.abspath(dirname(__file__)), filename=f'jacobian_sector_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
+                            inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}'],
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'],
                             outputs=[
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{self.model_name}.emax_enet_constraint'])
+                                f'{self.name}.{SectorDiscipline.sector_name}.emax_enet_constraint'])
 
     def test_gradient_withotudamagetoproductivity(self):
         self.model_name = SectorDiscipline.sector_name
@@ -169,22 +170,22 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
                        f'{self.name}.damage_to_productivity': False,
                        f'{self.name}.frac_damage_prod': 0.3,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
-                       f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}': self.total_invest,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.prod_function_fitting': False,
-                       f"{self.name}.{self.model_name}.{'productivity_start'}": 1.31162,
-                       f"{self.name}.{self.model_name}.{'capital_start'}": 6.92448579,
-                       f"{self.name}.{self.model_name}.{'productivity_gr_start'}": 0.0027844,
-                       f"{self.name}.{self.model_name}.{'decline_rate_tfp'}": 0.098585,
-                       f"{self.name}.{self.model_name}.{'energy_eff_k'}": 0.1,
-                       f"{self.name}.{self.model_name}.{'energy_eff_cst'}": 0.490463,
-                       f"{self.name}.{self.model_name}.{'energy_eff_xzero'}": 1993,
-                       f"{self.name}.{self.model_name}.{'energy_eff_max'}": 2.35832,
-                       f"{self.name}.{self.model_name}.{'output_alpha'}": 0.99,
-                       f"{self.name}.{self.model_name}.{'depreciation_capital'}": 0.058,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_start'}": 1.31162,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_gr_start'}": 0.0027844,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'decline_rate_tfp'}": 0.098585,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_k'}": 0.1,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_cst'}": 0.490463,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_xzero'}": 1993,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -193,10 +194,10 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sector_discipline_withoutdamage.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.{self.model_name}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{self.model_name}.{GlossaryCore.DamageDfValue}',
+                            inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorInvestmentDfValue}'],
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'],
                             outputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
                                      f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
-                                     f'{self.name}.{self.model_name}.emax_enet_constraint'])
+                                     f'{self.name}.{SectorDiscipline.sector_name}.emax_enet_constraint'])

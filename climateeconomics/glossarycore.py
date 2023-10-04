@@ -236,6 +236,7 @@ class GlossaryCore:
     Productivity = "productivity"
     ProductivityGrowthRate = "productivity_gr"
     OutputGrowth = "output_growth"
+    UnusedEnergy = "Unused Energy [TWh]"
     EconomicsDetailDf = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
@@ -255,6 +256,7 @@ class GlossaryCore:
             NonEnergyInvestmentsValue: ("float", None, False),  # T$
             EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
+            UnusedEnergy: ("float", None, False),
         },
     }
     PopulationValue = "population"
@@ -404,8 +406,7 @@ class GlossaryCore:
     Capital = "capital"
     UsableCapital = "usable_capital"
     UsableCapitalUnbounded = "Unbounded usable capital [T$]"
-    WaistedCapital = "Waisted capital [T$]"
-    NonEnergyCapital = 'non_energy_capital'
+    NonEnergyCapital = "non_energy_capital"
     CapitalDf = {
         "var_name": CapitalDfValue,
         "namespace": "ns_witness",
@@ -462,6 +463,8 @@ class GlossaryCore:
             Capital: ("float", None, False),
             UsableCapital: ("float", None, False),
             OutputGrowth: ("float", None, False),
+            Damages: ("float", None, False),
+            Consumption: ("float", None, False),
         },
     }
 
@@ -475,16 +478,6 @@ class GlossaryCore:
             Productivity: ("float", None, False),
             ProductivityGrowthRate: ("float", None, False),
         },
-    }
-
-    SectorInvestmentDfValue = "sectors_investment_df"
-    SectorInvestmentDf = {
-        "type": "dataframe",
-        "unit": "T$",
-        "visibility": "Shared",
-        "namespace": "ns_witness",
-        "dataframe_descriptor": {},
-        "dynamic_dataframe_columns": True,
     }
 
     RedistributionInvestmentsDfValue = "redistribution_investments_df"
@@ -594,6 +587,18 @@ class GlossaryCore:
         "dataframe_edition_locked": False,
         "visibility": "Shared",
         "namespace": "ns_witness",
+    }
+
+    InvestmentBeforeYearStartValue = "invest_before_ystart"
+    InvestmentBeforeYearStartDf = {
+        "var_name": InvestmentBeforeYearStartValue,
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            "past years": ("int", [-20, -1], True),
+            "invest": ("float", None, True),
+        },
+        "dataframe_edition_locked": False,
     }
 
     @staticmethod

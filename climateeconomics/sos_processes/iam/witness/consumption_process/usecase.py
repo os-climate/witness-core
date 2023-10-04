@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -74,9 +75,6 @@ class Study(StudyManager):
 
         years = np.arange(self.year_start, self.year_end + 1, 1)
         self.nb_per = round(self.year_end - self.year_start + 1)
-        one = np.ones(self.nb_per)
-        share_sectors_invest = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: one * 0.4522,
-                                             GlossaryCore.SectorIndustry: one * 6.8998, GlossaryCore.SectorServices: one * 19.1818})
 
         # Energy
         brut_net = 1 / 1.45
@@ -132,21 +130,39 @@ class Study(StudyManager):
         economics_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp})
         economics_df.index = years
 
+        total_invests = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))})
+
+        invest_indus = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 3})
+
+        invest_services = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 6})
+
+        invest_agriculture = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1 / 2})
+
         cons_input = {}
         cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         cons_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
-        cons_input[f"{self.study_name}.{'sectors_investment_share'}"] = share_sectors_invest
+        cons_input[f"{self.study_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
+        cons_input[f"{self.study_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
+        cons_input[f"{self.study_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}"] = invest_agriculture
+        cons_input[f"{self.study_name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}"] = invest_services
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
-        cons_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = share_invest_df
         cons_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
         cons_input[f"{self.study_name}.{'residential_energy'}"] = residential_energy_df
         cons_input[f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
-        cons_input[f"{self.study_name}.{GlossaryCore.SectorInvestmentDfValue}"] = base_dummy_data
+        cons_input[f"{self.study_name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}"] = base_dummy_data
         cons_input[f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}"] = workforce_share
         cons_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = economics_df
 

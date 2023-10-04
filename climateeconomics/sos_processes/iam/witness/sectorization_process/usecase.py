@@ -123,26 +123,33 @@ class Study(StudyManager):
              GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
              GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
 
-        # Sectors invest
-        base_dummy_data = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: np.ones(self.nb_per), GlossaryCore.SectorIndustry: np.ones(self.nb_per),
-             GlossaryCore.SectorServices: np.ones(self.nb_per)})
-
-        # Sectors invest
-        total_investment_share_of_gdp = pd.DataFrame(
+        total_invests = pd.DataFrame(
             {GlossaryCore.Years: years,
-             'share_investment': 27. * np.ones(self.nb_per),})
+             GlossaryCore.InvestmentsValue: np.linspace(40,65, len(years))})
+
+        invest_indus = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40,65, len(years))*1/3})
+
+        invest_services = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1/6})
+
+        invest_agriculture = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))* 1/2})
 
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         sect_input[f"{self.study_name}.{GlossaryCore.WorkforceDfValue}"] = workforce_df
-        sect_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = total_investment_share_of_gdp
-        #sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorListValue}"] = GlossaryCore.SectorsPossibleValues
+        sect_input[f"{self.study_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
+        sect_input[f"{self.study_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}"] = invest_agriculture
+        sect_input[f"{self.study_name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}"] = invest_services
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
-        sect_input[f"{self.study_name}.{GlossaryCore.SectorInvestmentDfValue}"] = base_dummy_data
+        sect_input[f"{self.study_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}"] = damage_df
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
