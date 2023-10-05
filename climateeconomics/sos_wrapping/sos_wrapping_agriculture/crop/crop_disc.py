@@ -86,7 +86,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     source: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
     does not consider farm fish for land use at this stage as it would require to split farm fish from wild fish in the computations
     The land use for category 'other' is adjusted to calibrate the land surface. Here, it is computed from the variable self.other_use_crop = 0.01719
-    that has been removed. From other[kg/personn/year]=177.02  => other[kg_to_m2] = 177.02/10000./0.01719=1.029  
+    that has been removed. From other[kg/personn/year]=177.02  => other[kg_to_m2] = 177.02/10000./0.102=0.173  
     In practice, we could compute the average of all land use per kg of all components of others (12.41 m2/kg) but assuming the same ponderation for each food of others does not provide reliable results
     '''
     default_kg_to_m2 = {'red meat': 348,
@@ -97,7 +97,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                         'cereals': 0.88,
                         'fruits and vegetables': 0.8,
                         GlossaryCore.Fish: 0.,
-                        GlossaryCore.OtherFood: 1.029,
+                        GlossaryCore.OtherFood: 0.173,
                         }
     # unit kcal/kg
     default_kg_to_kcal = {'red meat': 1551.05,
@@ -332,45 +332,68 @@ class CropDiscipline(ClimateEcoDiscipline):
                         GlossaryCore.Fish: ('float', [0, 1e9], True),
                         GlossaryCore.OtherFood: ('float', [0, 1e9], True)
                     },
-                    'dataframe_edition_locked': False, 'namespace': 'ns_crop'},
+                    'dataframe_edition_locked': False, 'namespace': 'ns_crop',
+                    'description': 'average annual consumption in kg/person of food '
+                                   'by category. Category other includes sugar, oil '
+                                   'wheat, alcohol, cocoa etc (see full list in crop_disc) '
+                                   },
         'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal,
-                            'unit': 'kcal/kg', 'namespace': 'ns_crop'},
+                            'unit': 'kcal/kg', 'namespace': 'ns_crop',
+                            'description': 'Used to convert kg to kcal. kcal per kg of for each category of food '
+                            'Category other includes sugar, oil wheat, alcohol, '
+                                           'cocoa etc (see full list in crop_disc)'
+                            },
         'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2,
-                          'unit': 'm^2/kg', 'namespace': 'ns_crop'},
+                          'unit': 'm^2/kg', 'namespace': 'ns_crop',
+                          'description': 'Used to convert kg to m2. m2 per kg of for each category of food '
+                                         'Category other includes sugar, oil wheat, alcohol, '
+                                         'cocoa etc (see full list in crop_disc)'
+                          },
         # design variables of changing diet
         'red_meat_calories_per_day': {'type': 'dataframe', 'default': default_red_meat_ca_per_day,
                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                'red_meat_calories_per_day': ('float', None, True)},
                                       'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                      'namespace': 'ns_crop'},
+                                      'namespace': 'ns_crop',
+                                      'description': 'number of calories coming from red meat consumed per day per person'},
         'white_meat_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_ca_per_day,
                                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                  'white_meat_calories_per_day': ('float', None, True)},
                                         'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                        'namespace': 'ns_crop'},
+                                        'namespace': 'ns_crop',
+                                        'description': 'number of calories coming from white meat consumed per day per person'},
         'vegetables_and_carbs_calories_per_day': {'type': 'dataframe',
                                                   'default': default_vegetables_and_carbs_calories_per_day,
                                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                            'vegetables_and_carbs_calories_per_day': (
                                                                                'float', None, True)},
                                                   'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                                  'namespace': 'ns_crop'},
+                                                  'namespace': 'ns_crop',
+                                                  'description': 'number of calories coming from vegetables and fruits '
+                                                                 'consumed per day per person'},
         'milk_and_eggs_calories_per_day': {'type': 'dataframe', 'default': default_milk_and_eggs_calories_per_day,
                                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                     'milk_and_eggs_calories_per_day': (
                                                                         'float', None, True)},
                                            'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                           'namespace': 'ns_crop'},
+                                           'namespace': 'ns_crop',
+                                           'description': 'number of calories coming from egg and milk consumed per day per person'},
         GlossaryCore.FishDailyCal: {'type': 'dataframe', 'default': default_fish_ca_per_day,
                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                GlossaryCore.FishDailyCal: ('float', None, True)},
                                       'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                      'namespace': 'ns_crop'},
+                                      'namespace': 'ns_crop',
+                                    'description': 'number of calories coming from fish consumed per day per person'},
         GlossaryCore.OtherDailyCal: {'type': 'dataframe', 'default': default_other_ca_per_day,
                                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                              GlossaryCore.OtherDailyCal: ('float', None, True)},
                                     'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                    'namespace': 'ns_crop'},
+                                    'namespace': 'ns_crop',
+                                     'description': 'number of calories coming from food other than '
+                                                    'red and white meat, fish, vegetables, fruits, egg and milk '
+                                                    'consumed per day per person. This category typically includes '
+                                                    'sugar, oil wheat, alcohol, cocoa etc (see full list in crop_disc)'
+                                     },
 
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
 
