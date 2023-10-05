@@ -67,7 +67,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                  'cereals': 0.88,
                                  'fruits and vegetables': 0.8,
                                  GlossaryCore.Fish: 0.,
-                                 GlossaryCore.OtherFood: 1.029,
+                                 GlossaryCore.OtherFood: 0.173,
                                  }
         # land use of other is provided in variable 'other_use_crop'
 
