@@ -91,21 +91,25 @@ class Study(StudyManager):
         population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         population_df.index = years
-        diet_df_default = pd.DataFrame({"red meat": [11.02],
-                                        "white meat": [31.11],
-                                        "milk": [79.27],
-                                        "eggs": [9.68],
-                                        "rice and maize": [98.08],
-                                        "cereals": [78],
-                                        "fruits and vegetables": [293]
+        diet_df_default = pd.DataFrame({"red meat": [13.43],
+                                        "white meat": [31.02],
+                                        "milk": [73.07],
+                                        "eggs": [10.45],
+                                        "rice and maize": [98.06],
+                                        "cereals": [10.3],
+                                        "fruits and vegetables": [266.28],
+                                        GlossaryCore.Fish: [23.38],
+                                        GlossaryCore.OtherFood: [177.02]
                                         })
-        default_kg_to_kcal = {'red meat': 1700,
-                              'white meat': 2130,
-                              'milk': 850,
-                              'eggs': 1500,
-                              'rice and maize': 2572,
-                              'cereals': 2950,
-                              'fruits and vegetables': 559,
+        default_kg_to_kcal = {'red meat': 1551.05,
+                              'white meat': 2131.99,
+                              'milk': 921.76,
+                              'eggs': 1425.07,
+                              'rice and maize': 2572.46,
+                              'cereals': 2937.36,
+                              'fruits and vegetables': 543.67,
+                              GlossaryCore.Fish: 609.17,
+                              GlossaryCore.OtherFood: 2582.92,
                               }
         red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * diet_df_default['red meat'].values[0] / 365
         milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * diet_df_default['eggs'].values[0] / 365 + \
@@ -119,20 +123,28 @@ class Study(StudyManager):
                                                            'cereals'] + \
                                                        diet_df_default['rice and maize'].values[0] / 365 * \
                                                        default_kg_to_kcal['rice and maize']
+        fish_average_ca_daily_intake = default_kg_to_kcal[
+                                                 GlossaryCore.Fish] * diet_df_default[GlossaryCore.Fish].values[0] / 365
+        other_average_ca_daily_intake = default_kg_to_kcal[
+                                                 GlossaryCore.OtherFood] * diet_df_default[GlossaryCore.OtherFood].values[0] / 365
         self.red_meat_ca_per_day = pd.DataFrame({
             GlossaryCore.Years: years,
             'red_meat_calories_per_day': [red_meat_average_ca_daily_intake] * year_range})
         self.white_meat_ca_per_day = pd.DataFrame({
             GlossaryCore.Years: years,
             'white_meat_calories_per_day': [white_meat_average_ca_daily_intake] * year_range})
+        self.fish_ca_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.FishDailyCal: [fish_average_ca_daily_intake] * year_range})
+        self.other_ca_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.OtherDailyCal: [other_average_ca_daily_intake] * year_range})
         self.vegetables_and_carbs_calories_per_day = pd.DataFrame({
             GlossaryCore.Years: years,
             'vegetables_and_carbs_calories_per_day': [vegetables_and_carbs_average_ca_daily_intake] * year_range})
         self.milk_and_eggs_calories_per_day = pd.DataFrame({
             GlossaryCore.Years: years,
             'milk_and_eggs_calories_per_day': [milk_eggs_average_ca_daily_intake] * year_range})
-
-        other = np.array(np.linspace(0.01719, 0.01719, year_range))
 
         self.margin = pd.DataFrame(
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
@@ -189,9 +201,9 @@ class Study(StudyManager):
             f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df_default,
             f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_ca_per_day,
             f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_ca_per_day,
-            f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
+            f'{self.study_name}.{energy_name}.Crop.{GlossaryCore.FishDailyCal}': self.fish_ca_per_day,
+            f'{self.study_name}.{energy_name}.Crop.{GlossaryCore.OtherDailyCal}': self.other_ca_per_day,
             f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
-            f'{self.study_name}.{energy_name}.Crop.other_use_crop': other,
             f'{self.study_name}.{energy_name}.Crop.crop_investment': self.crop_investment,
             f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
             f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
@@ -205,6 +217,8 @@ class Study(StudyManager):
         white_meat_percentage_ctrl = np.linspace(700, 900, self.nb_poles)
         vegetables_and_carbs_calories_per_day_ctrl = np.linspace(900, 900, self.nb_poles)
         milk_and_eggs_calories_per_day_ctrl = np.linspace(900, 900, self.nb_poles)
+        fish_calories_per_day_ctrl = np.linspace(900, 900, self.nb_poles)
+        other_calories_per_day_ctrl = np.linspace(900, 900, self.nb_poles)
 
         deforestation_investment_ctrl = np.linspace(10.0, 5.0, self.nb_poles)
         forest_investment_array_mix = np.linspace(5.0, 8.0, self.nb_poles)
@@ -216,6 +230,8 @@ class Study(StudyManager):
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_calories_per_day_ctrl'] = red_meat_percentage_ctrl
         design_space_ctrl_dict['white_meat_calories_per_day_ctrl'] = white_meat_percentage_ctrl
+        design_space_ctrl_dict[GlossaryCore.FishDailyCal +'_ctrl'] = fish_calories_per_day_ctrl
+        design_space_ctrl_dict[GlossaryCore.OtherDailyCal +'_ctrl'] = other_calories_per_day_ctrl
         design_space_ctrl_dict['vegetables_and_carbs_calories_per_day_ctrl'] = vegetables_and_carbs_calories_per_day_ctrl
         design_space_ctrl_dict['milk_and_eggs_calories_per_day_ctrl'] = milk_and_eggs_calories_per_day_ctrl
         design_space_ctrl_dict['deforestation_investment_ctrl'] = deforestation_investment_ctrl

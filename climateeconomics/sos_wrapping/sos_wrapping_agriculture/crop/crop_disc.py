@@ -30,6 +30,39 @@ from climateeconomics.glossarycore import GlossaryCore
 class CropDiscipline(ClimateEcoDiscipline):
     ''' Crop discipline transforms crops and crops residues
         into biomass_dry resource
+
+        Some Foods are detailed, most of them are grouped within the category Glossary.OtherFood which includes
+        wheat, cereals, sugar and 'other' as defined in https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+        tab "food supply kg" with a 1 in column "other". Only includes non-animal food
+        other =
+        Beverages, Alcoholic
+        Beverages, Fermented
+        Cocoa Beans and products
+        Coconut Oil
+        Coffee and products
+        Cottonseed
+        Cottonseed Oil
+        Groundnut Oil
+        Groundnuts
+        Honey
+        Maize Germ Oil
+        Nuts and products
+        Oilcrops Oil, Other
+        Oilcrops, Other
+        Olive Oil
+        Palm Oil
+        Palmkernel Oil
+        Potatoes
+        Rape and Mustard Oil
+        Ricebran Oil
+        Sesameseed Oil
+        Soyabean Oil
+        Soyabeans
+        Sugar
+        Sunflowerseed Oil
+        Tea (including mate)
+        Wine
+        Wheat
     '''
     energy_name = "biomass_dry"
     # ontology information
@@ -49,22 +82,33 @@ class CropDiscipline(ClimateEcoDiscipline):
     default_year_start = 2020
     default_year_end = 2100
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
-    default_kg_to_m2 = {'red meat': 345,
+    '''
+    source: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+    does not consider farm fish for land use at this stage as it would require to split farm fish from wild fish in the computations
+    The land use for category 'other' is adjusted to calibrate the land surface. Here, it is computed from the variable self.other_use_crop = 0.01719
+    that has been removed. From other[kg/personn/year]=177.02  => other[kg_to_m2] = 177.02/10000./0.102=0.173  
+    In practice, we could compute the average of all land use per kg of all components of others (12.41 m2/kg) but assuming the same ponderation for each food of others does not provide reliable results
+    '''
+    default_kg_to_m2 = {'red meat': 348,
                         'white meat': 14.5,
                         'milk': 8.95,
                         'eggs': 6.27,
                         'rice and maize': 2.89,
-                        'cereals': 4.5,
+                        'cereals': 0.88,
                         'fruits and vegetables': 0.8,
-                        'other': 8.1,
+                        GlossaryCore.Fish: 0.,
+                        GlossaryCore.OtherFood: 0.173,
                         }
-    default_kg_to_kcal = {'red meat': 1700,
-                          'white meat': 2130,
-                          'milk': 850,
-                          'eggs': 1500,
-                          'rice and maize': 2572,
-                          'cereals': 2950,
-                          'fruits and vegetables': 559,
+    # unit kcal/kg
+    default_kg_to_kcal = {'red meat': 1551.05,
+                          'white meat': 2131.99,
+                          'milk': 921.76,
+                          'eggs': 1425.07,
+                          'rice and maize': 2572.46,
+                          'cereals': 2937.36,
+                          'fruits and vegetables': 543.67,
+                          GlossaryCore.Fish: 609.17,
+                          GlossaryCore.OtherFood: 2582.92,
                           }
 
     # Our World in Data (emissions per kg of food product)
@@ -77,6 +121,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     n2o_gwp_100 = 265.0
 
     ghg_emissions_unit = 'kg/kg'  # in kgCo2eq per kg of food
+    # does not consider farm fish for emissions at this stage as it would require to split farm fish from wild fish in the computations
     default_ghg_emissions = {'red meat': 32.7,
                              'white meat': 4.09,
                              'milk': 1.16,
@@ -84,7 +129,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                              'rice and maize': 1.45,
                              'cereals': 0.170,
                              'fruits and vegetables': 0.372,
-                             'other': 3.44,
+                             GlossaryCore.Fish: 0.,
+                             GlossaryCore.OtherFood: 3.44,
                              }
 
     # Our World in Data
@@ -100,7 +146,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                             'cereals': 0.0 * calibration,
                             # negligible methane in this category
                             'fruits and vegetables': 0.0 * calibration,
-                            'other': (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0) / (
+                            GlossaryCore.Fish: 0.0 * calibration,
+                            GlossaryCore.OtherFood: (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0) / (
                                         14 + 24 + 33 + 27 + 29 + 34) * calibration,
                             }
 
@@ -124,7 +171,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                              'rice and maize': crops_emissions * 0.2236252183903196 / 0.29719264680276536,
                              'cereals': crops_emissions * 0.023377379498821543 / 0.29719264680276536,
                              'fruits and vegetables': crops_emissions * 0.13732524416192043 / 0.29719264680276536,
-                             'other': crops_emissions * 0.8044427451599999 / 0.29719264680276536,
+                             GlossaryCore.Fish: 0., #CO2eq included in ghg emissions
+                             GlossaryCore.OtherFood: crops_emissions * 0.8044427451599999 / 0.29719264680276536,
                              }
 
     # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100 -
@@ -138,7 +186,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                              'rice and maize': 1.45 * calibration,
                              'cereals': 0.170 * calibration,
                              'fruits and vegetables': 0.372 * calibration,
-                             'other': 3.44 * calibration,
+                             GlossaryCore.Fish: 0.,
+                             GlossaryCore.OtherFood: 3.44 * calibration,
                              }
 
     # Difference method
@@ -147,17 +196,20 @@ class CropDiscipline(ClimateEcoDiscipline):
     #     default_co2_emissions[food] = (default_ghg_emissions[food] - default_ch4_emissions[food]*ch4_gwp_100 - default_n2o_emissions[food]*n2o_gwp_100) / co2_gwp_100
     #     # default_co2_emissions[food] = 0.0
     #diet default for veg = 260+32.93 of cereals
-    diet_df_default = pd.DataFrame({"red meat": [11.02],
-                                    "white meat": [31.11],
-                                    "milk": [79.27],
-                                    "eggs": [9.68],
-                                    "rice and maize": [98.08],
-                                    "cereals": [78],
-                                    "fruits and vegetables": [293]
+    # unit: kg/person/year
+    diet_df_default = pd.DataFrame({"red meat": [13.43],
+                                    "white meat": [31.02],
+                                    "milk": [73.07],
+                                    "eggs": [10.45],
+                                    "rice and maize": [98.06],
+                                    "cereals": [10.3],
+                                    "fruits and vegetables": [266.28],
+                                    GlossaryCore.Fish: [23.38],
+                                    GlossaryCore.OtherFood: [177.02]
                                     })
 
     year_range = default_year_end - default_year_start + 1
-    total_kcal = 414542.4
+    total_kcal = 1067961. #kcal/person/year
     # Take diet per year in kg / 365 * kg to cal to get consumption per day in kcal
     red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * diet_df_default['red meat'].values[0]/365
     milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * diet_df_default['eggs'].values[0]/365 + \
@@ -168,6 +220,9 @@ class CropDiscipline(ClimateEcoDiscipline):
     vegetables_and_carbs_average_ca_daily_intake =  diet_df_default['fruits and vegetables'].values[0]/365 * default_kg_to_kcal['fruits and vegetables'] + \
                                                     diet_df_default['cereals'].values[0]/365 * default_kg_to_kcal['cereals'] + \
                                                     diet_df_default['rice and maize'].values[0] / 365 * default_kg_to_kcal['rice and maize']
+    fish_average_ca_daily_intake = default_kg_to_kcal[GlossaryCore.Fish] * \
+                                    diet_df_default[GlossaryCore.Fish].values[0] / 365
+    other_average_ca_daily_intake = default_kg_to_kcal[GlossaryCore.OtherFood] * diet_df_default[GlossaryCore.OtherFood].values[0] / 365
     default_red_meat_ca_per_day = pd.DataFrame({
         GlossaryCore.Years: default_years,
         'red_meat_calories_per_day': [red_meat_average_ca_daily_intake] * year_range})
@@ -180,6 +235,12 @@ class CropDiscipline(ClimateEcoDiscipline):
     default_milk_and_eggs_calories_per_day = pd.DataFrame({
         GlossaryCore.Years: default_years,
         'milk_and_eggs_calories_per_day': [milk_eggs_average_ca_daily_intake] * year_range})
+    default_fish_ca_per_day = pd.DataFrame({
+        GlossaryCore.Years: default_years,
+        GlossaryCore.FishDailyCal: [fish_average_ca_daily_intake] * year_range})
+    default_other_ca_per_day = pd.DataFrame({
+        GlossaryCore.Years: default_years,
+        GlossaryCore.OtherDailyCal: [other_average_ca_daily_intake] * year_range})
 
     # mdpi: according to the NASU recommendations,
     # a fixed value of 0.25 is applied to all crops
@@ -250,7 +311,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
 
-    other_use_crop_default = np.array([0.01719] * len(initial_age_distribution))
+
 
     crop_investment_default = pd.read_csv(join(dirname(__file__), 'data/crop_investment.csv'), index_col=0)
 
@@ -267,38 +328,72 @@ class CropDiscipline(ClimateEcoDiscipline):
                         'eggs': ('float', [0, 1e9], True),
                         'rice and maize': ('float', [0, 1e9], True),
                         'cereals': ('float', [0, 1e9], True),
-                        'fruits and vegetables': ('float', [0, 1e9], True)},
-                    'dataframe_edition_locked': False, 'namespace': 'ns_crop'},
+                        'fruits and vegetables': ('float', [0, 1e9], True),
+                        GlossaryCore.Fish: ('float', [0, 1e9], True),
+                        GlossaryCore.OtherFood: ('float', [0, 1e9], True)
+                    },
+                    'dataframe_edition_locked': False, 'namespace': 'ns_crop',
+                    'description': 'average annual consumption in kg/person of food '
+                                   'by category. Category other includes sugar, oil '
+                                   'wheat, alcohol, cocoa etc (see full list in crop_disc) '
+                                   },
         'kg_to_kcal_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_kcal,
-                            'unit': 'kcal/kg', 'namespace': 'ns_crop'},
+                            'unit': 'kcal/kg', 'namespace': 'ns_crop',
+                            'description': 'Used to convert kg to kcal. kcal per kg of for each category of food '
+                            'Category other includes sugar, oil wheat, alcohol, '
+                                           'cocoa etc (see full list in crop_disc)'
+                            },
         'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2,
-                          'unit': 'm^2/kg', 'namespace': 'ns_crop'},
+                          'unit': 'm^2/kg', 'namespace': 'ns_crop',
+                          'description': 'Used to convert kg to m2. m2 per kg of for each category of food '
+                                         'Category other includes sugar, oil wheat, alcohol, '
+                                         'cocoa etc (see full list in crop_disc)'
+                          },
         # design variables of changing diet
         'red_meat_calories_per_day': {'type': 'dataframe', 'default': default_red_meat_ca_per_day,
                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                'red_meat_calories_per_day': ('float', None, True)},
                                       'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                      'namespace': 'ns_crop'},
+                                      'namespace': 'ns_crop',
+                                      'description': 'number of calories coming from red meat consumed per day per person'},
         'white_meat_calories_per_day': {'type': 'dataframe', 'default': default_white_meat_ca_per_day,
                                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                  'white_meat_calories_per_day': ('float', None, True)},
                                         'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                        'namespace': 'ns_crop'},
+                                        'namespace': 'ns_crop',
+                                        'description': 'number of calories coming from white meat consumed per day per person'},
         'vegetables_and_carbs_calories_per_day': {'type': 'dataframe',
                                                   'default': default_vegetables_and_carbs_calories_per_day,
                                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                            'vegetables_and_carbs_calories_per_day': (
                                                                                'float', None, True)},
                                                   'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                                  'namespace': 'ns_crop'},
+                                                  'namespace': 'ns_crop',
+                                                  'description': 'number of calories coming from vegetables and fruits '
+                                                                 'consumed per day per person'},
         'milk_and_eggs_calories_per_day': {'type': 'dataframe', 'default': default_milk_and_eggs_calories_per_day,
                                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                     'milk_and_eggs_calories_per_day': (
                                                                         'float', None, True)},
                                            'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                           'namespace': 'ns_crop'},
-        'other_use_crop': {'type': 'array', 'unit': 'ha/person', 'namespace': 'ns_crop',
-                           'default': other_use_crop_default},
+                                           'namespace': 'ns_crop',
+                                           'description': 'number of calories coming from egg and milk consumed per day per person'},
+        GlossaryCore.FishDailyCal: {'type': 'dataframe', 'default': default_fish_ca_per_day,
+                                      'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                                               GlossaryCore.FishDailyCal: ('float', None, True)},
+                                      'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                      'namespace': 'ns_crop',
+                                    'description': 'number of calories coming from fish consumed per day per person'},
+        GlossaryCore.OtherDailyCal: {'type': 'dataframe', 'default': default_other_ca_per_day,
+                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                                             GlossaryCore.OtherDailyCal: ('float', None, True)},
+                                    'unit': 'kcal', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                    'namespace': 'ns_crop',
+                                     'description': 'number of calories coming from food other than '
+                                                    'red and white meat, fish, vegetables, fruits, egg and milk '
+                                                    'consumed per day per person. This category typically includes '
+                                                    'sugar, oil wheat, alcohol, cocoa etc (see full list in crop_disc)'
+                                     },
 
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
 
@@ -499,10 +594,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         # sum is needed to have d_total_surface_d_population
         summ = np.identity(len(food_land_surface_df.index)) * 0
         for column_name in food_land_surface_df_columns:
-            if column_name == 'other (Gha)':
-                result = model.d_other_surface_d_population()
-            else:
-                result = model.d_land_surface_d_population(column_name)
+            result = model.d_land_surface_d_population(column_name)
             summ += result
 
         self.set_partial_derivative_for_other_types(
@@ -516,6 +608,10 @@ class CropDiscipline(ClimateEcoDiscipline):
             population_df, 'red meat')
         d_surface_d_white_meat_percentage = model.d_surface_d_calories(
             population_df, 'white meat')
+        d_surface_d_fish_percentage = model.d_surface_d_calories(
+            population_df, GlossaryCore.Fish)
+        d_surface_d_other_food_percentage = model.d_surface_d_calories(
+            population_df, GlossaryCore.OtherFood)
 
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'),
@@ -523,6 +619,12 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'),
             ('white_meat_calories_per_day', 'white_meat_calories_per_day'), d_surface_d_white_meat_percentage)
+        self.set_partial_derivative_for_other_types(
+            ('total_food_land_surface', 'total surface (Gha)'),
+            (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal), d_surface_d_fish_percentage)
+        self.set_partial_derivative_for_other_types(
+            ('total_food_land_surface', 'total surface (Gha)'),
+            (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal), d_surface_d_other_food_percentage)
         """
         vegetables_column_names = ['fruits and vegetables', 'cereals', 'rice and maize']
         d_surface_d_other_cal = np.zeros((l_years , l_years))
@@ -552,6 +654,12 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),
                                                     ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
                                                     grad_constraint)
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),
+                                                    (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
+                                                    grad_constraint)
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),
+                                                    (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
+                                                    grad_constraint)
         self.set_partial_derivative_for_other_types(('calories_per_day_constraint',), (
         'milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'), grad_constraint)
 
@@ -562,6 +670,12 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                     np.identity(l_years))
         self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),
                                                     ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
+                                                    np.identity(l_years))
+        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),
+                                                    (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
+                                                    np.identity(l_years))
+        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),
+                                                    (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
                                                     np.identity(l_years))
         self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'), (
         'milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'), np.identity(l_years))
@@ -574,6 +688,10 @@ class CropDiscipline(ClimateEcoDiscipline):
             d_surface_d_red_meat_percentage)
         d_prod_dmeat_to_vegetable = model.compute_d_prod_dland_for_food(
             d_surface_d_white_meat_percentage)
+        d_prod_dfish_cal = model.compute_d_prod_dland_for_food(
+            d_surface_d_fish_percentage)
+        d_prod_dother_cal = model.compute_d_prod_dland_for_food(
+            d_surface_d_other_food_percentage)
         d_prod_dveg_carbs_cal = model.compute_d_prod_dland_for_food(d_surface_d_vegetables_carbs)
         dprod_deggs_milk_cal = model.compute_d_prod_dland_for_food(d_surface_d_eggs_milk)
         # --------------------------------------------------------------
@@ -601,6 +719,14 @@ class CropDiscipline(ClimateEcoDiscipline):
             ('techno_production', 'biomass_dry (TWh)'), ('milk_and_eggs_calories_per_day',
                                                          'milk_and_eggs_calories_per_day'),
             dprod_deggs_milk_cal)
+        self.set_partial_derivative_for_other_types(
+            ('techno_production', 'biomass_dry (TWh)'), (GlossaryCore.FishDailyCal,
+                                                         GlossaryCore.FishDailyCal),
+            d_prod_dfish_cal)
+        self.set_partial_derivative_for_other_types(
+            ('techno_production', 'biomass_dry (TWh)'), (GlossaryCore.OtherDailyCal,
+                                                         GlossaryCore.OtherDailyCal),
+            d_prod_dother_cal)
 
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
@@ -633,6 +759,16 @@ class CropDiscipline(ClimateEcoDiscipline):
             ('techno_consumption', 'CO2_resource (Mt)'), ('milk_and_eggs_calories_per_day',
                                                           'milk_and_eggs_calories_per_day'),
             -CO2_from_production / high_calorific_value * dprod_deggs_milk_cal)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption', 'CO2_resource (Mt)'), (GlossaryCore.FishDailyCal,
+                                                          GlossaryCore.FishDailyCal),
+            -CO2_from_production / high_calorific_value * d_prod_dfish_cal)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption', 'CO2_resource (Mt)'), (GlossaryCore.OtherDailyCal,
+                                                          GlossaryCore.OtherDailyCal),
+            -CO2_from_production / high_calorific_value * d_prod_dother_cal)
 
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
@@ -669,6 +805,16 @@ class CropDiscipline(ClimateEcoDiscipline):
              'CO2_resource (Mt)'), ('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'),
             -CO2_from_production / high_calorific_value * dprod_deggs_milk_cal)
 
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
+            -CO2_from_production / high_calorific_value * d_prod_dfish_cal)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
+            -CO2_from_production / high_calorific_value * d_prod_dother_cal)
+
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
         self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'),
@@ -692,8 +838,10 @@ class CropDiscipline(ClimateEcoDiscipline):
             dco2_dtemp = 0.0
             dco2_dred_meat = 0.0
             dco2_dwhite_meat = 0.0
+            dco2_dfish = 0.0
             dco2_dinvest = 0.0
             dco2_dother_cal = 0.0
+            dco2_dveg_cal = 0.0
             dco2_deggs_milk = 0.0
 
             for food in self.get_sosdisc_inputs('co2_emissions_per_kg'):
@@ -703,10 +851,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     dland_emissions_dfood_land_surface = model.compute_dland_emissions_dfood_land_surface_df(
                         food)
 
-                    if food == 'other':
-                        dland_dpop = model.d_other_surface_d_population()
-                    else:
-                        dland_dpop = model.d_land_surface_d_population(
+                    dland_dpop = model.d_land_surface_d_population(
                             f'{food} (Gha)')
 
                     dland_dtemp = model.d_food_land_surface_d_temperature(
@@ -717,6 +862,12 @@ class CropDiscipline(ClimateEcoDiscipline):
                     d_food_surface_d_white_meat_percentage = \
                         model.compute_d_food_surface_d_white_meat_percentage(
                             population_df, food)
+                    d_food_surface_d_fish_percentage = \
+                        model.compute_d_food_surface_d_fish_percentage(
+                            population_df, food)
+                    d_food_surface_d_other_food_percentage = \
+                        model.compute_d_food_surface_d_other_food_percentage(
+                            population_df, food)
 
                     dco2_dpop += dland_emissions_dfood_land_surface[ghg] * dland_dpop
                     dco2_dtemp += dland_emissions_dfood_land_surface[ghg] * dland_dtemp
@@ -724,6 +875,10 @@ class CropDiscipline(ClimateEcoDiscipline):
                                       d_food_surface_d_red_meat_percentage
                     dco2_dwhite_meat += dland_emissions_dfood_land_surface[ghg] * \
                                         d_food_surface_d_white_meat_percentage
+                    dco2_dfish += dland_emissions_dfood_land_surface[ghg] * \
+                                        d_food_surface_d_fish_percentage
+                    dco2_dother_cal += dland_emissions_dfood_land_surface[ghg] * \
+                                  d_food_surface_d_other_food_percentage
                     if food == 'rice and maize':
                         dco2_dinvest += dland_emissions_dfood_land_surface[ghg] * dprod_dinvest * \
                                         scaling_factor_crop_investment * (1 - residue_density_percentage) / \
@@ -731,7 +886,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             for food in vegetables_column_names:
                 dland_emissions_dfood_land_surface_oth = model.compute_dland_emissions_dfood_land_surface_df(
                     food)[ghg]
-                dco2_dother_cal += dland_emissions_dfood_land_surface_oth * model.d_surface_d_other_calories_percentage(
+                dco2_dveg_cal += dland_emissions_dfood_land_surface_oth * model.d_surface_d_other_calories_percentage(
                     population_df, food)
 
             for food in ['eggs', 'milk']:
@@ -762,8 +917,18 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
-                ('vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'),
+                (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
+                dco2_dfish)
+
+            self.set_partial_derivative_for_other_types(
+                (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
+                (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
                 dco2_dother_cal)
+
+            self.set_partial_derivative_for_other_types(
+                (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
+                ('vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'),
+                dco2_dveg_cal)
 
             self.set_partial_derivative_for_other_types(
                 (f'{ghg}_land_emission_df', f'emitted_{ghg}_evol_cumulative'),
@@ -919,6 +1084,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                 'vegetables_and_carbs_calories_per_day')
             eggs_milk = self.get_sosdisc_inputs(
                 'milk_and_eggs_calories_per_day')
+            fish = self.get_sosdisc_inputs(GlossaryCore.FishDailyCal)
+            other = self.get_sosdisc_inputs(GlossaryCore.OtherDailyCal)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'calories per day [kcal]',
                                                  chart_name=chart_name)
@@ -935,6 +1102,16 @@ class CropDiscipline(ClimateEcoDiscipline):
                 years, ordonate_data, 'Calories of white meat per day per person', 'lines', visible_line)
             new_chart.series.append(new_series)
             ordonate_data = list(
+                fish[GlossaryCore.FishDailyCal].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Calories of fish per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
+                other[GlossaryCore.OtherDailyCal].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Calories of other categories per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
                 veg_carbs['vegetables_and_carbs_calories_per_day'].values)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Calories of vegetables and carbs per day per person', 'lines', visible_line)
@@ -948,7 +1125,10 @@ class CropDiscipline(ClimateEcoDiscipline):
                 eggs_milk['milk_and_eggs_calories_per_day'].values +
                 veg_carbs['vegetables_and_carbs_calories_per_day'].values +
                 red_meat_calories['red_meat_calories_per_day'].values +
-                white_meat_calories['white_meat_calories_per_day'].values)
+                white_meat_calories['white_meat_calories_per_day'].values +
+                fish[GlossaryCore.FishDailyCal].values +
+                other[GlossaryCore.OtherDailyCal].values
+            )
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'Total calories per day per person', 'lines', visible_line)
             new_chart.series.append(new_series)
@@ -956,7 +1136,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         ##################### Kcal per kg per category #################
 
-        list_categories = ['red meat', 'white meat', 'eggs_milk', 'vegetables_and_carbs']
+        list_categories = ['red meat', 'white meat', 'eggs_milk', 'vegetables_and_carbs', GlossaryCore.Fish, GlossaryCore.OtherFood]
 
         co2_gwp_100 = 1.0
         ch4_gwp_100 = 28.0
@@ -1005,22 +1185,15 @@ class CropDiscipline(ClimateEcoDiscipline):
                                                                             n2o_emissions_per_kg[key] / kg_to_kcal_dict[
                                                                                 key]
 
-        kg_to_kcal_mean_dict['red meat'] = kg_to_kcal_dict['red meat']
-        m2_per_kcal_dict['red meat'] = kg_to_m2_dict['red meat'] / kg_to_kcal_dict['red meat']
-        co2_emissions_per_kcal_dict_mean['red meat'] = co2_emissions_per_kg['red meat'] / kg_to_kcal_dict['red meat']
-        ch4_emissions_per_kcal_dict_mean['red meat'] = ch4_gwp_100 * ch4_emissions_per_kg['red meat'] / kg_to_kcal_dict[
-            'red meat']
-        n2o_emissions_per_kcal_dict_mean['red meat'] = n2o_gwp_100 * n2o_emissions_per_kg['red meat'] / kg_to_kcal_dict[
-            'red meat']
+        for food in ['red meat', 'white meat', GlossaryCore.Fish, GlossaryCore.OtherFood]:
+            kg_to_kcal_mean_dict[food] = kg_to_kcal_dict[food]
+            m2_per_kcal_dict[food] = kg_to_m2_dict[food] / kg_to_kcal_dict[food]
+            co2_emissions_per_kcal_dict_mean[food] = co2_emissions_per_kg[food] / kg_to_kcal_dict[food]
+            ch4_emissions_per_kcal_dict_mean[food] = ch4_gwp_100 * ch4_emissions_per_kg[food] / kg_to_kcal_dict[
+                food]
+            n2o_emissions_per_kcal_dict_mean[food] = n2o_gwp_100 * n2o_emissions_per_kg[food] / kg_to_kcal_dict[
+                food]
 
-        kg_to_kcal_mean_dict['white meat'] = kg_to_kcal_dict['white meat']
-        m2_per_kcal_dict['white meat'] = kg_to_m2_dict['white meat'] / kg_to_kcal_dict['white meat']
-        co2_emissions_per_kcal_dict_mean['white meat'] = co2_emissions_per_kg['white meat'] / kg_to_kcal_dict[
-            'white meat']
-        ch4_emissions_per_kcal_dict_mean['white meat'] = ch4_gwp_100 * ch4_emissions_per_kg['white meat'] / \
-                                                         kg_to_kcal_dict['white meat']
-        n2o_emissions_per_kcal_dict_mean['white meat'] = n2o_gwp_100 * n2o_emissions_per_kg['white meat'] / \
-                                                         kg_to_kcal_dict['white meat']
 
         for category in list_categories:
             ghg_emissions_per_kcal[category] = co2_emissions_per_kcal_dict_mean[category] + \

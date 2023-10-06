@@ -62,39 +62,38 @@ class CropTestCase(unittest.TestCase):
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
 
         self.default_kg_to_m2 = {'red meat': 348,
-                        'white meat': 14.5,
-                        'milk': 8.95,
-                        'eggs': 6.27,
-                        'rice and maize': 2.89,
-                        'cereals': 0.88,
-                        'fruits and vegetables': 0.8,
-                        'other': 21.4,
-                        }
-        self.default_kg_to_kcal = {'red meat': 2566,
-                                   'white meat': 1860,
-                                   'milk': 550,
-                                   'eggs': 1500,
-                                   'rice and maize': 1150,
-                                   'cereals': 670,
-                                   'fruits and vegetables': 624,
-                                   }
-        red_meat_percentage = np.linspace(6, 1, year_range)
-        white_meat_percentage = np.linspace(14, 5, year_range)
-        self.red_meat_percentage = pd.DataFrame({
-                            GlossaryCore.Years: years,
-                            'red_meat_percentage': red_meat_percentage})
-        self.white_meat_percentage = pd.DataFrame({
-                                GlossaryCore.Years: years,
-                                'white_meat_percentage': white_meat_percentage})
-        self.diet_df = pd.DataFrame({'red meat': [11.02],
-                                     'white meat': [31.11],
-                                     'milk': [79.27],
-                                     'eggs': [9.68],
-                                     'rice and maize': [97.76],
-                                     'cereals': [32.93],
-                                     'fruits and vegetables': [217.62],
-                                     })
-        self.other = np.array(np.linspace(0.102, 0.102, year_range))
+                            'white meat': 14.5,
+                            'milk': 8.95,
+                            'eggs': 6.27,
+                            'rice and maize': 2.89,
+                            'cereals': 0.88,
+                            'fruits and vegetables': 0.8,
+                            GlossaryCore.Fish: 0.,
+                            GlossaryCore.OtherFood: 0.173,
+                            }
+        # land use of other is provided in variable 'other_use_crop'
+
+        self.default_kg_to_kcal = {'red meat': 1551.05,
+                              'white meat': 2131.99,
+                              'milk': 921.76,
+                              'eggs': 1425.07,
+                              'rice and maize': 2572.46,
+                              'cereals': 2937.36,
+                              'fruits and vegetables': 543.67,
+                              GlossaryCore.Fish: 609.17,
+                              GlossaryCore.OtherFood: 2582.92,
+                              }
+
+        self.diet_df = pd.DataFrame({"red meat": [13.43],
+                      "white meat": [31.02],
+                      "milk": [73.07],
+                      "eggs": [10.45],
+                      "rice and maize": [98.06],
+                      "cereals": [10.3],
+                      "fruits and vegetables": [266.28],
+                      GlossaryCore.Fish: [23.38],
+                      GlossaryCore.OtherFood: [177.02]
+                      })
 
         # investment: 1Mha of crop land each year
         self.crop_investment = pd.DataFrame(
@@ -186,16 +185,20 @@ class CropTestCase(unittest.TestCase):
                                  'other': 3.44 * calibration,
                                  }
 
-        red_meat_percentage = np.linspace(77.47211, 77.47211, year_range)
-        white_meat_percentage = np.linspace(158.5332, 158.5332, year_range)
-        vegetables_and_carbs_calories_per_day = np.linspace(740.4986, 740.4986, year_range)
-        milk_and_eggs = np.linspace(159.2288, 159.2288, year_range)
-        self.red_meat_percentage = pd.DataFrame({
+        # values taken from https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+        # tab computekcalandkg for the design var to reach 2925.92 kcal/person/day
+        red_meat_daily_cal = np.linspace(57.07, 57.07, year_range)
+        white_meat_daily_cal = np.linspace(181.19, 181.19, year_range)
+        vegetables_and_carbs_calories_per_day = np.linspace(1170.63, 1170.63, year_range)
+        milk_and_eggs = np.linspace(225.33, 225.33, year_range)
+        fish_daily_cal = np.linspace(39.02, 39.02, year_range)
+        other_food_daily_cal = np.linspace(1252.68, 1252.68, year_range)
+        self.red_meat_calories_per_day = pd.DataFrame({
                             GlossaryCore.Years: years,
-                            'red_meat_calories_per_day': red_meat_percentage})
-        self.white_meat_percentage = pd.DataFrame({
+                            'red_meat_calories_per_day': red_meat_daily_cal})
+        self.white_meat_calories_per_day = pd.DataFrame({
                                 GlossaryCore.Years: years,
-                                'white_meat_calories_per_day': white_meat_percentage})
+                                'white_meat_calories_per_day': white_meat_daily_cal})
         self.veg_calories_per_day = pd.DataFrame({
                                 GlossaryCore.Years: years,
                                 'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
@@ -203,6 +206,14 @@ class CropTestCase(unittest.TestCase):
         self.milk_eggs_calories_per_day = pd.DataFrame({
                                 GlossaryCore.Years: years,
                                 'milk_and_eggs_calories_per_day': milk_and_eggs})
+
+
+        self.fish_calories_per_day = pd.DataFrame({
+                                GlossaryCore.Years: years,
+                                GlossaryCore.FishDailyCal: fish_daily_cal})
+        self.other_food_calories_per_day = pd.DataFrame({
+                                GlossaryCore.Years: years,
+                                GlossaryCore.OtherDailyCal: other_food_daily_cal})
 
 
         self.param = {GlossaryCore.YearStart: self.year_start,
@@ -213,7 +224,6 @@ class CropTestCase(unittest.TestCase):
                       GlossaryCore.PopulationDfValue: self.population_df,
                       GlossaryCore.TemperatureDfValue: self.temperature_df,
                       'kg_to_m2_dict': self.default_kg_to_m2,
-                      'other_use_crop': self.other,
                       'param_a':  - 0.00833,
                       'param_b': - 0.04167,
                       'crop_investment': self.crop_investment,
@@ -227,14 +237,16 @@ class CropTestCase(unittest.TestCase):
                       'scaling_factor_techno_production': 1e3,
                       'initial_age_distrib': initial_age_distribution,
                       'initial_production': self.initial_production,
-                      'red_meat_calories_per_day': self.red_meat_percentage,
-                      'white_meat_calories_per_day': self.white_meat_percentage,
+                      'red_meat_calories_per_day': self.red_meat_calories_per_day,
+                      'white_meat_calories_per_day': self.white_meat_calories_per_day,
                       'vegetables_and_carbs_calories_per_day': self.veg_calories_per_day,
                       'milk_and_eggs_calories_per_day': self.milk_eggs_calories_per_day,
+                      GlossaryCore.FishDailyCal: self.fish_calories_per_day,
+                      GlossaryCore.OtherDailyCal: self.other_food_calories_per_day,
                       'co2_emissions_per_kg': default_co2_emissions,
                       'ch4_emissions_per_kg': default_ch4_emissions,
                       'n2o_emissions_per_kg': default_n2o_emissions,
-                      'constraint_calories_limit': 1700. ,
+                      'constraint_calories_limit': 1700.,
                       'constraint_calories_ref': 3400.
                       }
 
@@ -283,11 +295,12 @@ class CropTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{Crop.KG_TO_KCAL_DICT}': self.default_kg_to_kcal,
                        f'{name}.{model_name}.{Crop.KG_TO_M2_DICT}': self.default_kg_to_m2,
                        f'{name}.{model_name}.{Crop.POPULATION_DF}': self.population_df,
-                       f'{name}.{model_name}.red_meat_calories_per_day': self.red_meat_percentage,
-                       f'{name}.{model_name}.white_meat_calories_per_day': self.white_meat_percentage,
+                       f'{name}.{model_name}.red_meat_calories_per_day': self.red_meat_calories_per_day,
+                       f'{name}.{model_name}.white_meat_calories_per_day': self.white_meat_calories_per_day,
                        f'{name}.{model_name}.vegetables_and_carbs_calories_per_day': self.veg_calories_per_day,
                        f'{name}.{model_name}.milk_and_eggs_calories_per_day': self.milk_eggs_calories_per_day,
-                       f'{name}.{model_name}.{Crop.OTHER_USE_CROP}': self.other,
+                       f'{name}.{model_name}.{GlossaryCore.FishDailyCal}': self.fish_calories_per_day,
+                       f'{name}.{model_name}.{GlossaryCore.OtherDailyCal}': self.other_food_calories_per_day,
                        f'{name}.{model_name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
                        f'{name}.{model_name}.crop_investment': self.crop_investment,
                        f'{name}.{model_name}.margin': self.margin,
@@ -304,5 +317,5 @@ class CropTestCase(unittest.TestCase):
             f'{name}.{model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        #for graph in graph_list:
+        #    graph.to_plotly().show()
