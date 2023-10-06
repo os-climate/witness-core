@@ -245,8 +245,8 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective','negative_welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective'])
-        list_parent.extend(['utility_objective','utility_objective',
+            [GlossaryCore.EnergyInvestmentsObjective,'negative_welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective'])
+        list_parent.extend(['invest_objective','utility_objective',
                             'GWP_short_term_obj',
                             'GWP_long_term_obj', 'non_use_capital_objective',])
         list_ns.extend(['ns_functions','ns_functions',
@@ -254,7 +254,7 @@ class DataStudy():
                         'ns_functions', 'ns_witness'])
         list_ftype.extend(
             [OBJECTIVE,OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1.0, 0.0, 0.0, 0.0, 0.0])
+        list_weight.extend([1e-3, 0.0, 0.0, 0.0, 0.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM,AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 

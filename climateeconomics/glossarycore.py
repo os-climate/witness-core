@@ -318,6 +318,7 @@ class GlossaryCore:
         "namespace": "ns_witness",
     }
 
+    EnergyInvestmentsObjective = "Energy invest objective"
     EnergyInvestmentsWoTax = (
         {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
             "var_name": EnergyInvestmentsWoTaxValue,
