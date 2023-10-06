@@ -46,7 +46,7 @@ class Study(ClimateEconomicsStudyManager):
     def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
 
-        self.study_name = 'default_name'
+        #self.study_name = 'default_name'
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
