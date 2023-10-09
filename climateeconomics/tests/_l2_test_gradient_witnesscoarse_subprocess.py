@@ -18,6 +18,8 @@ from os.path import join, dirname
 import pandas as pd
 import numpy as np
 import ast
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
