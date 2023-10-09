@@ -80,7 +80,7 @@ class MacroEconomics:
         self.max_capital_utilisation_ratio = self.param['max_capital_utilisation_ratio']
         self.co2_emissions_Gt = self.param[GlossaryCore.CO2EmissionsGtValue]
         self.co2_taxes = self.param[GlossaryCore.CO2TaxesValue]
-        self.co2_tax_efficiency = self.param['CO2_tax_efficiency']
+        self.co2_tax_efficiency = self.param[GlossaryCore.CO2TaxEfficiencyValue]
         self.co2_invest_limit = self.param['co2_invest_limit']
         # Employment rate param
         self.employment_a_param = self.param['employment_a_param']
@@ -366,7 +366,7 @@ class MacroEconomics:
         co2_invest_limit = self.co2_invest_limit
         emissions = self.co2_emissions_Gt.loc[year, GlossaryCore.TotalCO2Emissions] * 1e9  # t CO2
         co2_taxes = self.co2_taxes.loc[year, GlossaryCore.CO2Tax]  # $/t
-        co2_tax_eff = self.co2_tax_efficiency.loc[year, 'CO2_tax_efficiency'] / 100.  # %
+        co2_tax_eff = self.co2_tax_efficiency.loc[year, GlossaryCore.CO2TaxEfficiencyValue] / 100.  # %
         ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
 
         # if emissions is zero the right gradient (positive) is not zero but the left gradient is zero
@@ -766,7 +766,7 @@ class MacroEconomics:
         # t CO2
         emissions = self.co2_emissions_Gt[GlossaryCore.TotalCO2Emissions].values * 1e9
         co2_taxes = self.co2_taxes[GlossaryCore.CO2Tax].values  # $/t
-        co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
+        co2_tax_eff = self.co2_tax_efficiency[GlossaryCore.CO2TaxEfficiencyValue].values / 100.  # %
 
         ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
 
@@ -812,7 +812,7 @@ class MacroEconomics:
         # t CO2
         emissions = self.co2_emissions_Gt[GlossaryCore.TotalCO2Emissions].values * 1e9
         co2_taxes = self.co2_taxes[GlossaryCore.CO2Tax].values  # $/t
-        co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
+        co2_tax_eff = self.co2_tax_efficiency[GlossaryCore.CO2TaxEfficiencyValue].values / 100.  # %
 
         ren_investments = emissions * co2_taxes * co2_tax_eff / 1e12  # T$
         d_ren_investments_dco2_taxes = np.diag(emissions * co2_tax_eff / 1e12)
@@ -969,7 +969,7 @@ class MacroEconomics:
         # t CO2
         emissions = self.co2_emissions_Gt[GlossaryCore.TotalCO2Emissions].values * 1e9
         co2_taxes = self.co2_taxes[GlossaryCore.CO2Tax].values  # $/t
-        co2_tax_eff = self.co2_tax_efficiency['CO2_tax_efficiency'].values / 100.  # %
+        co2_tax_eff = self.co2_tax_efficiency[GlossaryCore.CO2TaxEfficiencyValue].values / 100.  # %
         energy_investment_wo_tax = self.economics_detail_df[GlossaryCore.EnergyInvestmentsWoTaxValue].values
 
         dren_investments = self._null_derivative()
