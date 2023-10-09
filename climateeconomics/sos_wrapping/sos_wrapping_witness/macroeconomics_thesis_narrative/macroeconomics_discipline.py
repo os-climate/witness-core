@@ -105,7 +105,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'init_energy_productivity': {'type': 'float', 'default': 3.045177, 'user_level': 2},
         'init_energy_productivity_gr': {'type': 'float', 'default': 0.0065567, 'user_level': 2},
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
-        'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%'},
+        GlossaryCore.CO2TaxEfficiencyValue: {'type': 'dataframe', 'unit': '%'},
         'co2_invest_limit': {'type': 'float', 'default': 2.0},
         GlossaryCore.CO2TaxesValue: {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         # Employment rate param
@@ -143,7 +143,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.InvestmentShareGDPValue)
         co2_emissions_Gt = param.pop(GlossaryCore.CO2EmissionsGtValue)
         co2_taxes = param.pop(GlossaryCore.CO2TaxesValue)
-        co2_tax_efficiency = param.pop('CO2_tax_efficiency')
+        co2_tax_efficiency = param.pop(GlossaryCore.CO2TaxEfficiencyValue)
         co2_invest_limit = param.pop('co2_invest_limit')
         population_df = param.pop(GlossaryCore.PopulationDfValue)
         working_age_population_df = param.pop(GlossaryCore.WorkingAgePopulationDfValue)
@@ -157,7 +157,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         GlossaryCore.InvestmentShareGDPValue: total_investment_share_of_gdp,
                         GlossaryCore.CO2EmissionsGtValue: co2_emissions_Gt,
                         GlossaryCore.CO2TaxesValue: co2_taxes,
-                        'CO2_tax_efficiency': co2_tax_efficiency,
+                        GlossaryCore.CO2TaxEfficiencyValue: co2_tax_efficiency,
                         'co2_invest_limit': co2_invest_limit,
                         GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, GlossaryCore.PopulationValue]],
                         GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df[[GlossaryCore.Years, GlossaryCore.Population1570]]

@@ -96,12 +96,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'unit': '-', 'user_level': 2},
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
-        'CO2_tax_efficiency': {'type': 'dataframe', 'unit': '%',
-                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                        'CO2_tax_efficiency': ('float', None, False), }
-                               },
+        GlossaryCore.CO2TaxEfficiencyValue: GlossaryCore.CO2TaxEfficiency,
         'co2_invest_limit': {'type': 'float', 'default': 2.0, 'unit': 'factor of energy investment'},
-        GlossaryCore.CO2Taxes['var_name']: GlossaryCore.CO2Taxes,
+        GlossaryCore.CO2TaxesValue: GlossaryCore.CO2Taxes,
         # Employment rate param
         'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
@@ -119,7 +116,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EconomicsDetailDfValue: GlossaryCore.EconomicsDetailDf,
         GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
         GlossaryCore.EnergyInvestmentsValue: GlossaryCore.EnergyInvestments,
-        GlossaryCore.EnergyInvestmentsWoRenewable['var_name']: GlossaryCore.EnergyInvestmentsWoRenewable,
+        GlossaryCore.EnergyInvestmentsWoRenewable['var_name']: GlossaryCore.EnergyInvestmentsWoRenewable, # todo : can be deleted
         GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'], 'unit': GlossaryCore.WorkforceDf['unit']},
         GlossaryCore.CapitalDfValue: {'type': 'dataframe', 'unit': '-',
                                       'dataframe_descriptor':GlossaryCore.CapitalDf['dataframe_descriptor']},
@@ -214,14 +211,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
 
             co2_tax_efficiency_default = pd.DataFrame({GlossaryCore.Years: years,
-                                                       'CO2_tax_efficiency': CO2_tax_efficiency})
+                                                       GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
             share_non_energy_investment = pd.DataFrame(
                 {GlossaryCore.Years: years,
                  GlossaryCore.ShareNonEnergyInvestmentsValue: [27.0 - 2.6] * len(years)})
 
             self.set_dynamic_default_values(
-                {'CO2_tax_efficiency': co2_tax_efficiency_default,
+                {GlossaryCore.CO2TaxEfficiencyValue: co2_tax_efficiency_default,
                  GlossaryCore.ShareNonEnergyInvestmentsValue: share_non_energy_investment ,})
 
     def init_execution(self):
@@ -235,7 +232,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         energy_production = param.pop(GlossaryCore.EnergyProductionValue)
         co2_emissions_Gt = param.pop(GlossaryCore.CO2EmissionsGtValue)
         co2_taxes = param.pop(GlossaryCore.CO2TaxesValue)
-        co2_tax_efficiency = param.pop('CO2_tax_efficiency')
+        co2_tax_efficiency = param.pop(GlossaryCore.CO2TaxEfficiencyValue)
         co2_invest_limit = param.pop('co2_invest_limit')
         population_df = param.pop(GlossaryCore.PopulationDfValue)
         working_age_population_df = param.pop(GlossaryCore.WorkingAgePopulationDfValue)
@@ -248,7 +245,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         GlossaryCore.ShareNonEnergyInvestmentsValue: param[GlossaryCore.ShareNonEnergyInvestmentsValue],
                         GlossaryCore.CO2EmissionsGtValue: co2_emissions_Gt,
                         GlossaryCore.CO2TaxesValue: co2_taxes,
-                        'CO2_tax_efficiency': co2_tax_efficiency,
+                        GlossaryCore.CO2TaxEfficiencyValue: co2_tax_efficiency,
                         'co2_invest_limit': co2_invest_limit,
                         GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, GlossaryCore.PopulationValue]],
                         GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df[[GlossaryCore.Years, GlossaryCore.Population1570]],

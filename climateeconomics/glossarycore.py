@@ -46,10 +46,10 @@ class GlossaryCore:
     SectorEnergy = "energy"
 
     # Diet
-    Fish = 'fish'
-    OtherFood = 'other'
-    FishDailyCal = 'fish_calories_per_day'
-    OtherDailyCal = 'other_calories_per_day'
+    Fish = "fish"
+    OtherFood = "other"
+    FishDailyCal = "fish_calories_per_day"
+    OtherDailyCal = "other_calories_per_day"
 
     SectorsPossibleValues = [
         SectorServices,
@@ -129,7 +129,15 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             TotalCO2Emissions: ("float", None, False),
-            "cumulative_total_energy_supply": ("float", None, False),
+        },
+    }
+    CO2TaxEfficiencyValue = "CO2_tax_efficiency"
+    CO2TaxEfficiency = {
+        "type": "dataframe",
+        "unit": "%",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            CO2TaxEfficiencyValue: ("float", None, False),
         },
     }
 
@@ -337,6 +345,18 @@ class GlossaryCore:
             "namespace": "ns_witness",
         }
     )
+    RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"
+    RenewablesEnergyInvestments = {
+        "var_name": RenewablesEnergyInvestmentsValue,
+        "namespace": "ns_witness",
+        "type": "dataframe",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            InvestmentsValue: ("float", [0.0, 1e30], True),
+        },
+        "unit": "100G$",
+    }
+
     EnergyInvestmentsWoRenewable = {
         "var_name": EnergyInvestmentsWoRenewableValue,
         "type": "dataframe",
@@ -429,7 +449,7 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Capital: ("float", None, False),
-            UsableCapital: ("float", None, False)
+            UsableCapital: ("float", None, False),
         },
     }
 

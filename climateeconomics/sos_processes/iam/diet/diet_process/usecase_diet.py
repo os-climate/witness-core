@@ -141,7 +141,7 @@ class Study(ClimateEconomicsStudyManager):
             (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_tax_efficiency': CO2_tax_efficiency})
+            {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
@@ -181,7 +181,7 @@ class Study(ClimateEconomicsStudyManager):
         share_energy_investment = DataFrame(
             {GlossaryCore.Years: years, 'share_investment': self.share_energy_investment_array}, index=years)
         witness_input[f"{self.study_name}.{'share_energy_investment'}"] = share_energy_investment
-        witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
+        witness_input[f'{self.study_name}.Macroeconomics.{GlossaryCore.CO2TaxEfficiencyValue}'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0
         witness_input[f'{self.study_name}.gamma'] = 0.5

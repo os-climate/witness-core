@@ -130,7 +130,7 @@ class MacroDiscTest(unittest.TestCase):
             columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = years
         default_co2_efficiency = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_tax_efficiency': 40.0}, index=years)
+            {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: 40.0}, index=years)
         sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
 
         # out dict definition
@@ -146,7 +146,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': default_CO2_tax,
-                       f'{self.name}.{self.model_name}.CO2_tax_efficiency': default_co2_efficiency,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': working_age_pop_df, 
                        f'{self.name}.energy_capital': self.energy_capital_df,
