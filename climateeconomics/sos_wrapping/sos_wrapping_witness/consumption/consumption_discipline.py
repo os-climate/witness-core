@@ -72,8 +72,8 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'utility_detail_df': {'type': 'dataframe', 'unit': '-'},
         GlossaryCore.UtilityDfValue: GlossaryCore.UtilityDf,
-        'welfare_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'negative_welfare_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.WelfareObjective: {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.NegativeWelfareObjective: {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'min_utility_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}
     }
 
@@ -135,9 +135,9 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         # store output data
         dict_values = {'utility_detail_df': utility_df,
                        GlossaryCore.UtilityDfValue: utility_df[[GlossaryCore.Years, GlossaryCore.UtilityDiscountRate, GlossaryCore.PeriodUtilityPerCapita, GlossaryCore.DiscountedUtility, GlossaryCore.Welfare, GlossaryCore.PerCapitaConsumption]],
-                       'welfare_objective': welfare_objective,
+                       GlossaryCore.WelfareObjective: welfare_objective,
                        'min_utility_objective': min_utility_objective,
-                       'negative_welfare_objective' : negative_welfare_objective
+                       GlossaryCore.NegativeWelfareObjective : negative_welfare_objective
                        }
         self.store_sos_outputs_values(dict_values)
 
@@ -233,27 +233,27 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
 
         if obj_option == 'last_utility':
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_output_net_of_d))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_output_net_of_d))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_share_investment))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'), d_obj_d_period_utility_pc.dot(d_period_utility_pc_d_share_investment))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), d_obj_d_period_utility_pc.dot(d_period_utility_d_energy_price))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), d_obj_d_period_utility_pc.dot(d_period_utility_d_energy_price))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), ('residential_energy', 'residential_energy'), d_obj_d_period_utility_pc.dot(d_period_utility_d_residential_energy))
+                (GlossaryCore.WelfareObjective,), ('residential_energy', 'residential_energy'), d_obj_d_period_utility_pc.dot(d_period_utility_d_residential_energy))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  d_obj_d_period_utility_pc.dot(d_period_utility_d_population))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  d_obj_d_period_utility_pc.dot(d_period_utility_d_population))
 
         elif obj_option == GlossaryCore.Welfare:
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), np.dot(d_obj_d_welfare, d_welfare_d_output_net_of_d))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), np.dot(d_obj_d_welfare, d_welfare_d_output_net_of_d))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'), np.dot(d_obj_d_welfare, d_welfare_d_share_investment))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'), np.dot(d_obj_d_welfare, d_welfare_d_share_investment))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), np.dot(d_obj_d_welfare, d_welfare_d_energy_price))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue), np.dot(d_obj_d_welfare, d_welfare_d_energy_price))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), ('residential_energy', 'residential_energy'), np.dot(d_obj_d_welfare, d_welfare_d_residential_energy))
+                (GlossaryCore.WelfareObjective,), ('residential_energy', 'residential_energy'), np.dot(d_obj_d_welfare, d_welfare_d_residential_energy))
             self.set_partial_derivative_for_other_types(
-                ('welfare_objective',), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  np.dot(d_obj_d_welfare, d_welfare_d_population))
+                (GlossaryCore.WelfareObjective,), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),  np.dot(d_obj_d_welfare, d_welfare_d_population))
 
         else:
             pass
@@ -261,19 +261,19 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         d_neg_obj_d_welfare, x = self.conso_m.compute_gradient_negative_objective()
 
         self.set_partial_derivative_for_other_types(
-            ('negative_welfare_objective',), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+            (GlossaryCore.NegativeWelfareObjective,), (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_output_net_of_d))
         self.set_partial_derivative_for_other_types(
-            ('negative_welfare_objective',), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'),
+            (GlossaryCore.NegativeWelfareObjective,), (GlossaryCore.InvestmentShareGDPValue, 'share_investment'),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_share_investment))
         self.set_partial_derivative_for_other_types(
-            ('negative_welfare_objective',), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
+            (GlossaryCore.NegativeWelfareObjective,), (GlossaryCore.EnergyMeanPriceValue, GlossaryCore.EnergyPriceValue),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_energy_price))
         self.set_partial_derivative_for_other_types(
-            ('negative_welfare_objective',), ('residential_energy', 'residential_energy'),
+            (GlossaryCore.NegativeWelfareObjective,), ('residential_energy', 'residential_energy'),
             np.dot(d_neg_obj_d_welfare, d_welfare_d_residential_energy))
         self.set_partial_derivative_for_other_types(
-            ('negative_welfare_objective',), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), np.dot(d_neg_obj_d_welfare, d_welfare_d_population))
+            (GlossaryCore.NegativeWelfareObjective,), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), np.dot(d_neg_obj_d_welfare, d_welfare_d_population))
 
 
         d_obj_d_discounted_utility, d_obj_d_period_utility_pc = self.conso_m.compute_gradient_min_utility_objective()

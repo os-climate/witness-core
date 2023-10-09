@@ -31,7 +31,10 @@ class GlossaryCore:
     EnergyInvestmentsWoRenewableValue = "energy_investment_wo_renewable"
     NonEnergyInvestmentsValue = "non_energy_investment"
     EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
-
+    WelfareObjective = "welfare_objective"
+    NormalizedWelfare = "Normalized welfare"
+    NegativeWelfareObjective = "negative_welfare_objective"
+    LastYearDiscountedUtilityObjective = "last_year_discounted_utility_objective"
     energy_list = "energy_list"
     techno_list = "technologies_list"
     ccs_list = "ccs_list"
@@ -278,6 +281,7 @@ class GlossaryCore:
     }
 
     EnergyMeanPriceValue = "energy_mean_price"
+
     EnergyPriceValue = "energy_price"
     EnergyMeanPrice = {
         "var_name": EnergyMeanPriceValue,
@@ -318,7 +322,7 @@ class GlossaryCore:
         "namespace": "ns_witness",
     }
 
-    EnergyInvestmentsObjective = "Energy invest objective"
+    EnergyInvestmentsMinimizationObjective = "Energy invest minimization objective"
     EnergyInvestmentsWoTax = (
         {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
             "var_name": EnergyInvestmentsWoTaxValue,
@@ -379,6 +383,8 @@ class GlossaryCore:
     PeriodUtilityPerCapita = "period_utility_pc"
     DiscountedUtility = "discounted_utility"
     Welfare = "welfare"
+    EnergyPriceRatio = "energy_price_ratio"
+    PerCapitaConsumptionUtility = "Per capita consumption utility"
     UtilityDf = {
         "var_name": UtilityDfValue,
         "type": "dataframe",
@@ -389,7 +395,8 @@ class GlossaryCore:
             UtilityDiscountRate: ("float", None, False),
             PeriodUtilityPerCapita: ("float", None, False),
             DiscountedUtility: ("float", None, False),
-            Welfare: ("float", None, False),
+            EnergyPriceRatio: ("float", None, False),
+            PerCapitaConsumptionUtility: ("float", None, False),
         },
         "unit": "-",
     }

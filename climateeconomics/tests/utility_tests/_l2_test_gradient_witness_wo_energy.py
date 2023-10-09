@@ -106,7 +106,7 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         input_full_names = [
             f'{self.name}.share_energy_investment', f'{self.name}.{GlossaryCore.CO2TaxesValue}']
         # objectif
-        output_full_names = [f'{self.name}.welfare_objective',
+        output_full_names = [f'{self.name}.{GlossaryCore.WelfareObjective}',
                              f'{self.name}.temperature_objective',
                              f'{self.name}.CO2_objective',
                              f'{self.name}.ppm_objective',
@@ -135,7 +135,7 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         # design
         input_full_names = [f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}']
         # objectif
-        output_full_names = [f'{self.name}.welfare_objective',
+        output_full_names = [f'{self.name}.{GlossaryCore.WelfareObjective}',
                              f'{self.name}.temperature_objective',
                              f'{self.name}.CO2_objective',
                              f'{self.name}.ppm_objective',

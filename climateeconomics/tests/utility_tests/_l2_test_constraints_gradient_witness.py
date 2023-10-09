@@ -27,7 +27,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',
+    obj_const = [GlossaryCore.WelfareObjective, 'temperature_objective', 'CO2_objective', 'ppm_objective',
                  'co2_emissions_objective', 'EnergyMix.methane.demand_violation',
                  'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation', 'EnergyMix.biogas.demand_violation',
                  'EnergyMix.syngas.demand_violation', 'EnergyMix.liquid_fuel.demand_violation',

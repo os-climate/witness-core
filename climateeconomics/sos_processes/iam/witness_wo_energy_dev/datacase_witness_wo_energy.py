@@ -236,34 +236,30 @@ class DataStudy():
         return setup_data_list
 
     def setup_objectives(self):
-        func_df = DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-        list_var.extend(
-            [GlossaryCore.EnergyInvestmentsObjective,'negative_welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective'])
-        list_parent.extend(['invest_objective','utility_objective',
-                            'GWP_short_term_obj',
-                            'GWP_long_term_obj', 'non_use_capital_objective',])
-        list_ns.extend(['ns_functions','ns_functions',
-                        'ns_functions',
-                        'ns_functions', 'ns_witness'])
-        list_ftype.extend(
-            [OBJECTIVE,OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1e-3, 0.0, 0.0, 0.0, 0.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM,AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
+        data = {
+            'variable': [
+                GlossaryCore.EnergyInvestmentsMinimizationObjective,
+                GlossaryCore.NegativeWelfareObjective,
+                GlossaryCore.LastYearDiscountedUtilityObjective,
+                'gwp20_objective',
+                'gwp100_objective',
+
+            ],
+            'parent': [
+                'invest_objective',
+                'utility_objective',
+                'utility_objective',
+                'GWP_short_term_obj',
+                'GWP_long_term_obj',
+            ],
+            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
+            'weight': [5e-4, 1.0, 1.0, 0.0, 0.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
+            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', 'ns_functions', 'ns_functions']
+        }
+
+        func_df = DataFrame(data)
 
         return func_df
 
