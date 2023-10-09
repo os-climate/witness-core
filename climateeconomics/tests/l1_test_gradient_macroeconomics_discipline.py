@@ -65,6 +65,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         # energy production divided by 1e3 (scaling factor production)
         self.co2_emissions_gt = energy_supply_df.rename(
             columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
+        self.co2_emissions_gt = self.co2_emissions_gt[GlossaryCore.CO2EmissionsGt['dataframe_descriptor'].keys()]
         self.co2_emissions_gt.index = self.years
         for i in np.arange(2021, self.year_end+1):
             emission_vefore =  self.co2_emissions_gt.loc[i-1, GlossaryCore.TotalCO2Emissions]
@@ -422,6 +423,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         co2_emissions_gt = energy_supply_df.rename(
             columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = self.years
+        co2_emissions_gt = self.co2_emissions_gt[GlossaryCore.CO2EmissionsGt['dataframe_descriptor'].keys()]
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
@@ -493,6 +495,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         co2_emissions_gt = energy_supply_df.rename(
             columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = self.years
+
+        co2_emissions_gt = self.co2_emissions_gt[GlossaryCore.CO2EmissionsGt['dataframe_descriptor'].keys()]
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
