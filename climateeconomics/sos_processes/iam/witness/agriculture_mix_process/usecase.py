@@ -201,6 +201,7 @@ class Study(StudyManager):
             f'{self.study_name}.{energy_name}.Crop.diet_df': diet_df_default,
             f'{self.study_name}.{energy_name}.Crop.red_meat_calories_per_day': self.red_meat_ca_per_day,
             f'{self.study_name}.{energy_name}.Crop.white_meat_calories_per_day': self.white_meat_ca_per_day,
+            f'{self.study_name}.{energy_name}.Crop.vegetables_and_carbs_calories_per_day': self.vegetables_and_carbs_calories_per_day,
             f'{self.study_name}.{energy_name}.Crop.{GlossaryCore.FishDailyCal}': self.fish_ca_per_day,
             f'{self.study_name}.{energy_name}.Crop.{GlossaryCore.OtherDailyCal}': self.other_ca_per_day,
             f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
