@@ -25,7 +25,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 class WitnessFullGradient(AbstractJacobianUnittest):
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',
+    obj_const = [GlossaryCore.WelfareObjective, 'temperature_objective', 'CO2_objective', 'ppm_objective',
                  'co2_emissions_objective',
                  'CO2_tax_minus_CO2_damage_constraint_df', 'primary_energies_production',
                  'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']

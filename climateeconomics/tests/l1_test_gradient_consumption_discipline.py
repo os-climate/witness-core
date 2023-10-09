@@ -114,9 +114,9 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.welfare_objective',
+                                     f'{self.name}.{GlossaryCore.WelfareObjective}',
                                      f'{self.name}.min_utility_objective',
-                                     f'{self.name}.negative_welfare_objective'],
+                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}'],
                             derr_approx='complex_step')
 
     def test_02_consumption_analytic_grad_last_utility(self):
@@ -138,9 +138,9 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.welfare_objective',
+                                     f'{self.name}.{GlossaryCore.WelfareObjective}',
                                      f'{self.name}.min_utility_objective',
-                                     f'{self.name}.negative_welfare_objective'],
+                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}'],
                             derr_approx='complex_step')
 
     def test_03_consumption_with_low_economy(self):
@@ -169,7 +169,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                                     f'{self.name}.welfare_objective',
+                                     f'{self.name}.{GlossaryCore.WelfareObjective}',
                                      f'{self.name}.min_utility_objective',
-                                     f'{self.name}.negative_welfare_objective'],
+                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}'],
                             derr_approx='complex_step')

@@ -291,7 +291,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
 
         input_full_names = [f'{self.name}.{GlossaryCore.EconomicsDfValue}']
         output_full_names = [f'{self.name}.{GlossaryCore.UtilityDfValue}',
-                             f'{self.name}.welfare_objective']
+                             f'{self.name}.{GlossaryCore.WelfareObjective}']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,
                             outputs=output_full_names, local_data = {},derr_approx='complex_step', step=1.0e-15, threshold=1.0e-12, parallel=True)

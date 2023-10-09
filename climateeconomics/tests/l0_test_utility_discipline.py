@@ -72,6 +72,8 @@ class UtilityDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,
+                       f'{self.name}.initial_raw_energy_price': energy_price[0],
+
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
@@ -80,11 +82,10 @@ class UtilityDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_damage = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.UtilityDfValue}')
-
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass

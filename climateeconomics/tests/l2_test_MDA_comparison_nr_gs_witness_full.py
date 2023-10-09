@@ -29,7 +29,7 @@ class TestComparisonNR_GS(unittest.TestCase):
     SoSDiscipline test class
     """
     #AbstractJacobianUnittest.DUMP_JACOBIAN = True
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective',
+    obj_const = [GlossaryCore.WelfareObjective, 'temperature_objective', 'CO2_objective',
                  'ppm_objective', 'EnergyMix.primary_energies_production']
 
     def setUp(self):

@@ -191,7 +191,7 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective',  'temperature_objective', 'CO2_objective', 'ppm_objective',  'negative_welfare_objective'])
+            [GlossaryCore.WelfareObjective,  'temperature_objective', 'CO2_objective', 'ppm_objective',  GlossaryCore.NegativeWelfareObjective])
         list_parent.extend(['utility_objective',
                             'CO2_obj', 'CO2_obj', 'CO2_obj', 'utility_objective'])
         list_ns.extend(['ns_functions',

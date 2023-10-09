@@ -217,99 +217,84 @@ class DataStudy():
         return setup_data_list
 
     def setup_objectives(self):
-        func_df = DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-        list_var.extend(
-            ['welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective',])
-        list_parent.extend(['utility_objective',
-                            'GWP_short_term_obj',
-                            'GWP_long_term_obj', 'non_use_capital_objective'])
-        list_ns.extend(['ns_functions',
-                        'ns_functions',
-                        'ns_functions',
-                        'ns_witness'])
-        list_ftype.extend(
-            [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE,])
-        list_weight.extend([1.0, 0.0, 0.0, 0.0,])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM,])
+        data = {
+            'variable': [
+                GlossaryCore.NegativeWelfareObjective,
+                GlossaryCore.LastYearDiscountedUtilityObjective,
+                'gwp100_objective',
+                'non_use_capital_objective'
+            ],
+            'parent': [
+                'utility_objective',
+                'utility_objective',
+                'GWP_long_term_obj',
+                'non_use_capital_objective'
+            ],
+            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
+            'weight': [1.0, 1.0, 0.0, 0.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
+            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', 'ns_witness']
+        }
 
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
+        func_df = DataFrame(data)
 
         return func_df
 
     def setup_constraints(self):
-        func_df = pd.DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-        # -------------------------------------------------
-        # CO2 ppm constraints
-        list_var.extend(
-            ['rockstrom_limit_constraint', 'minimum_ppm_constraint'])
-        list_parent.extend(['CO2 ppm', 'CO2 ppm'])
-        list_ns.extend(['ns_functions', 'ns_functions'])
-        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        list_weight.extend([0.0, -1.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
+        func_df = DataFrame(columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
 
-        # -------------------------------------------------
-        # calories_per_day_constraint
-        list_var.append('calories_per_day_constraint')
-        list_parent.append('agriculture_constraints')
-        list_ns.extend(['ns_functions'])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
+        data = [
+            {
+                'variable': 'rockstrom_limit_constraint',
+                'parent': 'CO2 ppm',
+                'ftype': INEQ_CONSTRAINT,
+                'weight': 0.0,
+                AGGR_TYPE: AGGR_TYPE_SMAX,
+                'namespace': 'ns_functions',
+            },
+            {
+                'variable': 'minimum_ppm_constraint',
+                'parent': 'CO2 ppm',
+                'ftype': INEQ_CONSTRAINT,
+                'weight': -1.0,
+                AGGR_TYPE: AGGR_TYPE_SMAX,
+                'namespace': 'ns_functions',
+            },
+            {
+                'variable': 'calories_per_day_constraint',
+                'parent': 'agriculture_constraints',
+                'ftype': INEQ_CONSTRAINT,
+                'weight': -1.0,
+                AGGR_TYPE: AGGR_TYPE_SMAX,
+                'namespace': 'ns_functions',
+            },
+            {
+                'variable': GlossaryCore.ConstraintLowerBoundUsableCapital,
+                'parent': 'invests_constraints',
+                'ftype': INEQ_CONSTRAINT,
+                'weight': -1.0,
+                AGGR_TYPE: AGGR_TYPE_SMAX,
+                'namespace': 'ns_functions',
+            },
+            {
+                'variable': 'non_use_capital_cons',
+                'parent': 'invests_constraints',
+                'ftype': INEQ_CONSTRAINT,
+                'weight': -1.0,
+                AGGR_TYPE: AGGR_TYPE_SMAX,
+                'namespace': 'ns_functions',
+            },
+            {
+                'variable': 'forest_lost_capital_cons',
+                'parent': 'agriculture_constraint',
+                'ftype': INEQ_CONSTRAINT,
+                'weight': -1.0,
+                AGGR_TYPE: AGGR_TYPE_SMAX,
+                'namespace': 'ns_functions',
+            },
+        ]
 
-        # -------------------------------------------------
-
-        list_var.extend([GlossaryCore.ConstraintLowerBoundUsableCapital])
-        list_parent.extend(['invests_constraints'])
-        list_ns.extend(['ns_functions'])
-        list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-1.0])
-        list_aggr_type.extend([
-            AGGR_TYPE_SMAX])
-
-        list_var.append('non_use_capital_cons')
-        list_parent.append('invests_constraints')
-        list_ns.extend(['ns_functions'])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
-
-        list_var.append('forest_lost_capital_cons')
-        list_parent.append('agriculture_constraint')
-        list_ns.extend(['ns_functions'])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
-
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
+        # Append the data to the DataFrame
+        func_df = func_df.append(data, ignore_index=True)
 
         return func_df
