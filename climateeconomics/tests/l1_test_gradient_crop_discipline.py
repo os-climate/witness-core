@@ -14,17 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from os.path import join, dirname
-from pandas import read_csv
-from pathlib import Path
+from os.path import dirname
 
-from climateeconomics.core.core_agriculture.crop import Crop
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import CropDiscipline
-import unittest
 import pandas as pd
 import numpy as np
 
@@ -64,49 +59,39 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                                              2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                              3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
 
-        self.default_kg_to_m2 = {'red meat': 360,
-                                 'white meat': 16,
+        self.default_kg_to_m2 = {'red meat': 348,
+                                 'white meat': 14.5,
                                  'milk': 8.95,
-                                 'eggs': 6.3,
-                                 'rice and maize': 2.9,
-                                 'potatoes': 0.88,
+                                 'eggs': 6.27,
+                                 'rice and maize': 2.89,
+                                 'cereals': 0.88,
                                  'fruits and vegetables': 0.8,
-                                 'other': 21.4,
+                                 GlossaryCore.Fish: 0.,
+                                 GlossaryCore.OtherFood: 0.173,
                                  }
-        self.default_kg_to_kcal = {'red meat': 2566,
-                                   'white meat': 1860,
-                                   'milk': 550,
-                                   'eggs': 1500,
-                                   'rice and maize': 1150,
-                                   'potatoes': 670,
-                                   'fruits and vegetables': 624,
+        # land use of other is provided in variable 'other_use_crop'
+
+        self.default_kg_to_kcal = {'red meat': 1551.05,
+                                   'white meat': 2131.99,
+                                   'milk': 921.76,
+                                   'eggs': 1425.07,
+                                   'rice and maize': 2572.46,
+                                   'cereals': 2937.36,
+                                   'fruits and vegetables': 543.67,
+                                   GlossaryCore.Fish: 609.17,
+                                   GlossaryCore.OtherFood: 2582.92,
                                    }
-        red_meat_percentage = np.linspace(600, 700, year_range)
-        white_meat_percentage = np.linspace(700, 600, year_range)
-        vegetables_and_carbs_calories_per_day = np.linspace(800, 1200, year_range)
-        self.red_meat_percentage = pd.DataFrame({
-                            GlossaryCore.Years: years,
-                            'red_meat_calories_per_day': red_meat_percentage})
-        self.white_meat_percentage = pd.DataFrame({
-                                GlossaryCore.Years: years,
-                                'white_meat_calories_per_day': white_meat_percentage})
-        self.veg_calories_per_day = pd.DataFrame({
-                                GlossaryCore.Years: years,
-                                'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
 
-        self.milk_eggs_calories_per_day = pd.DataFrame({
-                                GlossaryCore.Years: years,
-                                'milk_and_eggs_calories_per_day': vegetables_and_carbs_calories_per_day})
-
-        self.diet_df = pd.DataFrame({'red meat': [11.02],
-                                     'white meat': [31.11],
-                                     'milk': [79.27],
-                                     'eggs': [9.68],
-                                     'rice and maize': [97.76],
-                                     'potatoes': [32.93],
-                                     'fruits and vegetables': [217.62],
+        self.diet_df = pd.DataFrame({"red meat": [13.43],
+                                     "white meat": [31.02],
+                                     "milk": [73.07],
+                                     "eggs": [10.45],
+                                     "rice and maize": [98.06],
+                                     "cereals": [10.3],
+                                     "fruits and vegetables": [266.28],
+                                     GlossaryCore.Fish: [23.38],
+                                     GlossaryCore.OtherFood: [177.02]
                                      })
-        self.other = np.array(np.linspace(0.102, 0.102, year_range))
 
         # investment: 1Mha of crop land each year
         self.crop_investment = pd.DataFrame(
@@ -114,11 +99,36 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.margin = pd.DataFrame(
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
-
         # From future of hydrogen
         self.transport_cost = pd.DataFrame(
             {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.6})
 
+        red_meat_daily_cal = np.linspace(57.07, 57.07, year_range)
+        white_meat_daily_cal = np.linspace(181.19, 181.19, year_range)
+        vegetables_and_carbs_calories_per_day = np.linspace(1170.63, 1170.63, year_range)
+        milk_and_eggs = np.linspace(225.33, 225.33, year_range)
+        fish_daily_cal = np.linspace(39.02, 39.02, year_range)
+        other_food_daily_cal = np.linspace(1252.68, 1252.68, year_range)
+        self.red_meat_calories_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            'red_meat_calories_per_day': red_meat_daily_cal})
+        self.white_meat_calories_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            'white_meat_calories_per_day': white_meat_daily_cal})
+        self.veg_calories_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            'vegetables_and_carbs_calories_per_day': vegetables_and_carbs_calories_per_day})
+
+        self.milk_eggs_calories_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            'milk_and_eggs_calories_per_day': milk_and_eggs})
+
+        self.fish_calories_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.FishDailyCal: fish_daily_cal})
+        self.other_food_calories_per_day = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.OtherDailyCal: other_food_daily_cal})
 
         # bioenergyeurope.org : Dedicated energy crops
         # represent 0.1% of the total biomass production in 2018
@@ -130,30 +140,6 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         # available ha of crop: 4.9Gha, initial prod = crop energy + residue for
         # energy of all surfaces
         self.initial_production = 4.8 * density_per_ha * 3.6 * energy_crop_percentage  # in TWh
-
-        self.param = {GlossaryCore.YearStart: self.year_start,
-                      GlossaryCore.YearEnd: self.year_end,
-                      GlossaryCore.TimeStep: self.time_step,
-                      'diet_df': self.diet_df,
-                      'kg_to_kcal_dict': self.default_kg_to_kcal,
-                      GlossaryCore.PopulationDfValue: self.population_df,
-                      GlossaryCore.TemperatureDfValue: self.temperature_df,
-                      'kg_to_m2_dict': self.default_kg_to_m2,
-                      'red_meat_percentage': self.red_meat_percentage,
-                      'white_meat_percentage': self.white_meat_percentage,
-                      'other_use_crop': self.other,
-                      'param_a': - 0.00833,
-                      'param_b': - 0.04167,
-                      'crop_investment': self.crop_investment,
-                      'margin': self.margin,
-                      'transport_margin': self.margin,
-                      'transport_cost': self.transport_cost,
-                      'data_fuel_dict': BiomassDry.data_energy_dict,
-                      'techno_infos_dict': CropDiscipline.techno_infos_dict_default,
-                      'scaling_factor_crop_investment': 1e3,
-                      'initial_age_distrib': initial_age_distribution,
-                      'initial_production': self.initial_production
-                      }
 
     def analytic_grad_entry(self):
         return [
@@ -190,11 +176,12 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.kg_to_m2_dict': self.default_kg_to_m2,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
-                       f'{self.name}.red_meat_calories_per_day': self.red_meat_percentage,
-                       f'{self.name}.white_meat_calories_per_day': self.white_meat_percentage,
+                       f'{self.name}.red_meat_calories_per_day': self.red_meat_calories_per_day,
+                       f'{self.name}.white_meat_calories_per_day': self.white_meat_calories_per_day,
                        f'{self.name}.vegetables_and_carbs_calories_per_day': self.veg_calories_per_day,
                        f'{self.name}.milk_and_eggs_calories_per_day': self.milk_eggs_calories_per_day,
-                       f'{self.name}.{self.model_name}.{Crop.OTHER_USE_CROP}': self.other,
+                       f'{self.name}.{GlossaryCore.FishDailyCal}': self.fish_calories_per_day,
+                       f'{self.name}.{GlossaryCore.OtherDailyCal}': self.other_food_calories_per_day,
                        f'{self.name}.crop_investment': self.crop_investment,
                        f'{self.name}.margin': self.margin,
                        f'{self.name}.transport_margin': self.margin,
@@ -214,6 +201,8 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.red_meat_calories_per_day',
                                     f'{self.name}.white_meat_calories_per_day',
                                     f'{self.name}.vegetables_and_carbs_calories_per_day',
+                                    f'{self.name}.{GlossaryCore.FishDailyCal}',
+                                    f'{self.name}.{GlossaryCore.OtherDailyCal}',
                                     f'{self.name}.milk_and_eggs_calories_per_day',
                                     f'{self.name}.crop_investment',
                                     ],

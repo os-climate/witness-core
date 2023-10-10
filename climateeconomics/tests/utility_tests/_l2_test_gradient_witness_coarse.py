@@ -32,7 +32,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    obj_const = ['welfare_objective', 'min_utility_objective', 'temperature_objective', 'CO2_objective',
+    obj_const = [GlossaryCore.WelfareObjective, 'min_utility_objective', 'temperature_objective', 'CO2_objective',
                  'ppm_objective',
                  'total_prod_minus_min_prod_constraint_df', 'co2_emissions_objective', 'energy_production_objective',
                  'syngas_prod_objective', 'land_demand_constraint_df']

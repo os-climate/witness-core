@@ -54,21 +54,17 @@ class SectorsRedistributionDisciplineJacobianDiscTest(AbstractJacobianUnittest):
         self.share_energy_services = pd.DataFrame({GlossaryCore.Years: self.years,
                                                    GlossaryCore.ShareSectorEnergy: shares_energy_services})
 
-        self.investments_df = pd.DataFrame({GlossaryCore.Years: self.years,
-                                            GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(self.years))})
+        self.invest_agriculture = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                GlossaryCore.InvestmentsValue: np.linspace(12, 20,
+                                                                                           len(self.years))})
 
-        self.share_invest_agriculture = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                      GlossaryCore.ShareInvestment: np.linspace(12, 20,
-                                                                                                len(self.years))})
+        self.invest_industry = pd.DataFrame({GlossaryCore.Years: self.years,
+                                             GlossaryCore.InvestmentsValue: np.linspace(39, 59,
+                                                                                        len(self.years))})
 
-        self.share_invest_industry = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                   GlossaryCore.ShareInvestment: np.linspace(39, 59,
-                                                                                             len(self.years))})
-
-        shares_invest_services = 100. - self.share_invest_industry[GlossaryCore.ShareInvestment] - \
-                                 self.share_invest_agriculture[GlossaryCore.ShareInvestment]
-        self.share_invest_services = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                   GlossaryCore.ShareInvestment: shares_invest_services})
+        self.invest_services = pd.DataFrame({GlossaryCore.Years: self.years,
+                                             GlossaryCore.InvestmentsValue: np.linspace(15, 17,
+                                                                                        len(self.years))})
 
     def analytic_grad_entry(self):
         return [
@@ -95,25 +91,22 @@ class SectorsRedistributionDisciplineJacobianDiscTest(AbstractJacobianUnittest):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.{GlossaryCore.InvestmentDfValue}': self.investments_df,
-                       f'{name}.{GlossaryCore.EnergyProductionValue}': self.energy_production_df,
+        inputs_dict = {f'{name}.{GlossaryCore.EnergyProductionValue}': self.energy_production_df,
                        f'{name}.{GlossaryCore.SectorListValue}': self.sector_list,
-                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invest_agriculture,
+                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.invest_agriculture,
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_agriculture,
-                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invest_industry,
+                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}': self.invest_industry,
                        f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_industry,
-                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorInvestmentDfValue}': self.share_invest_services,
+                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}': self.invest_services,
                        f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_services,
-
                        }
         ee.load_study_from_input_dict(inputs_dict)
         ee.execute()
-        inputs_checked = [f'{name}.{GlossaryCore.InvestmentDfValue}', f'{name}.{GlossaryCore.EnergyProductionValue}']
+        inputs_checked = []
         inputs_checked += [f'{name}.{sector}.{GlossaryCore.ShareSectorEnergyDfValue}' for sector in self.sector_list]
-        inputs_checked += [f'{name}.{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}' for sector in self.sector_list]
+        inputs_checked += [f'{name}.{sector}.{GlossaryCore.InvestmentDfValue}' for sector in self.sector_list]
         
-        output_checked = []
-        output_checked += [f'{name}.{sector}.{GlossaryCore.InvestmentDfValue}' for sector in self.sector_list]
+        output_checked = [f'{name}.{GlossaryCore.InvestmentDfValue}']
         output_checked += [f'{name}.{sector}.{GlossaryCore.EnergyProductionValue}' for sector in self.sector_list]
         
         disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
@@ -122,5 +115,3 @@ class SectorsRedistributionDisciplineJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=inputs_checked,
                             outputs=output_checked
                             )
-        
-   

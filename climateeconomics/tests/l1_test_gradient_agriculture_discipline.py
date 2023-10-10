@@ -76,10 +76,10 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.default_kg_to_m2 = {'red meat': 360,
                                  'white meat': 16,
-                                 'milk': 8.9,
+                                 'milk': 8.95,
                                  'eggs': 6.3,
                                  'rice and maize': 2.9,
-                                 'potatoes': 0.9,
+                                 'potatoes': 0.88,
                                  'fruits and vegetables': 0.8,
                                  }
         self.default_kg_to_kcal = {'red meat': 2566,

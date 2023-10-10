@@ -20,6 +20,7 @@ import pandas as pd
 from pathlib import Path
 
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from os.path import join, dirname
@@ -45,7 +46,7 @@ class Study(ClimateEconomicsStudyManager):
     def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
 
-        self.study_name = 'default_name'
+        #self.study_name = 'default_name'
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -88,8 +89,8 @@ class Study(ClimateEconomicsStudyManager):
         population_df.index = years
         witness_input[f"{self.study_name}.{GlossaryCore.PopulationDfValue}"] = population_df
         working_age_population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'population_1570': 6300}, index=years)
-        witness_input[f"{self.study_name}.{'working_age_population_df'}"] = working_age_population_df
+            {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
+        witness_input[f"{self.study_name}.{GlossaryCore.WorkingAgePopulationDfValue}"] = working_age_population_df
 
         self.share_energy_investment_array = asarray([1.65] * nb_per)
 
@@ -140,7 +141,7 @@ class Study(ClimateEconomicsStudyManager):
             (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_tax_efficiency': CO2_tax_efficiency})
+            {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
@@ -180,7 +181,7 @@ class Study(ClimateEconomicsStudyManager):
         share_energy_investment = DataFrame(
             {GlossaryCore.Years: years, 'share_investment': self.share_energy_investment_array}, index=years)
         witness_input[f"{self.study_name}.{'share_energy_investment'}"] = share_energy_investment
-        witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
+        witness_input[f'{self.study_name}.Macroeconomics.{GlossaryCore.CO2TaxEfficiencyValue}'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0
         witness_input[f'{self.study_name}.gamma'] = 0.5
@@ -295,14 +296,4 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    # df_xvect = pd.read_pickle('df_xvect.pkl')
-    # df_xvect.columns = [
-    # f'{uc_cls.study_name}.{uc_cls.optim_name}.{uc_cls.coupling_name}.DesignVariables' + col for col in df_xvect.columns]
-    # dict_xvect = df_xvect.iloc[-1].to_dict()
-    # dict_xvect[f'{uc_cls.study_name}.{uc_cls.optim_name}.eval_mode'] = True
-    # uc_cls.load_data(from_input_dict=dict_xvect)
-    # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
-    # uc_cls.execution_engine.root_process.sos_disciplines[0].set_opt_scenario()
-    # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
+    uc_cls.test()

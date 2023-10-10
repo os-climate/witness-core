@@ -127,7 +127,7 @@ class DataStudy():
             (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_tax_efficiency': CO2_tax_efficiency})
+            {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
         #-- load data from resource
 
@@ -165,7 +165,7 @@ class DataStudy():
         StudyManager.merge_design_spaces(
             self, [dc_forest.dspace, dc_agriculture.dspace])
 
-        witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
+        witness_input[f'{self.study_name}.Macroeconomics.{GlossaryCore.CO2TaxEfficiencyValue}'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0
         witness_input[f'{self.study_name}.gamma'] = 0.5
@@ -191,7 +191,7 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            ['welfare_objective',  'temperature_objective', 'CO2_objective', 'ppm_objective',  'negative_welfare_objective'])
+            [GlossaryCore.WelfareObjective,  'temperature_objective', 'CO2_objective', 'ppm_objective',  GlossaryCore.NegativeWelfareObjective])
         list_parent.extend(['utility_objective',
                             'CO2_obj', 'CO2_obj', 'CO2_obj', 'utility_objective'])
         list_ns.extend(['ns_functions',
@@ -232,14 +232,7 @@ class DataStudy():
             [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
 
         # -------------------------------------------------
-        # pc_consumption_constraint
-        list_var.append('pc_consumption_constraint')
-        list_parent.append('economic_constraints')
-        list_ns.extend(['ns_functions'])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(0.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
+
         list_var.append('temperature_constraint')
         list_parent.append('')
         list_ns.extend(['ns_functions'])

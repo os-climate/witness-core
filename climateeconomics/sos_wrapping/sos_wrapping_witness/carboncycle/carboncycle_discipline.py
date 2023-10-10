@@ -58,19 +58,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         'lo_mat': {'type': 'float', 'default': 10, 'user_level': 2, 'unit': 'Gtc'},
         'lo_mu': {'type': 'float', 'default': 100, 'user_level': 2, 'unit': 'Gtc'},
         'lo_ml': {'type': 'float', 'default': 1000, 'user_level': 2, 'unit': 'Gtc'},
-        'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt',
-                             'dataframe_descriptor': {
-                                 GlossaryCore.Years: ('float', None, False),
-                                 'sigma': ('float', None, False),
-                                 'gr_sigma': ('float', None, False),
-                                 'land_emissions': ('float', None, False),
-                                 'cum_land_emissions': ('float', None, False),
-                                 'indus_emissions': ('float', None, False),
-                                 'cum_indus_emissions': ('float', None, False),
-                                 'total_emissions': ('float', None, False),
-                                 'cum_total_emissions': ('float', None, False),
-                                 },
-              },
+        GlossaryCore.CO2EmissionsDfValue: GlossaryCore.CO2EmissionsDf,
         'ppm_ref': {'type': 'float', 'unit': 'ppm', 'default': 280, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'rockstrom_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
@@ -136,19 +124,23 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             d_atmo1850_dtotalemission, d_atmotoday_dtotalemission = self.carboncycle.compute_d_total_emissions()
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CarbonCycleDfValue, 'atmo_conc'), ('CO2_emissions_df', 'total_emissions'),  d_atmoconc_d_totalemissions)
+            (GlossaryCore.CarbonCycleDfValue, 'atmo_conc'), (GlossaryCore.CO2EmissionsDfValue, 'total_emissions'),  d_atmoconc_d_totalemissions)
 
         d_ppm_d_totalemissions = self.carboncycle.compute_d_ppm(
             d_atmoconc_d_totalemissions)
         d_ppm_objective_d_totalemissions = self.carboncycle.compute_d_objective(
             d_ppm_d_totalemissions)
         self.set_partial_derivative_for_other_types(
-            ('ppm_objective', ), ('CO2_emissions_df', 'total_emissions'),  d_ppm_objective_d_totalemissions)
+            ('ppm_objective', ),
+            (GlossaryCore.CO2EmissionsDfValue, 'total_emissions'),
+            d_ppm_objective_d_totalemissions)
 
         self.set_partial_derivative_for_other_types(
-            ('rockstrom_limit_constraint', ), ('CO2_emissions_df', 'total_emissions'),  -d_ppm_d_totalemissions / self.carboncycle.rockstrom_constraint_ref)
+            ('rockstrom_limit_constraint', ), (GlossaryCore.CO2EmissionsDfValue, 'total_emissions'),
+            -d_ppm_d_totalemissions / self.carboncycle.rockstrom_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('minimum_ppm_constraint', ), ('CO2_emissions_df', 'total_emissions'),  d_ppm_d_totalemissions / self.carboncycle.minimum_ppm_constraint_ref)
+            ('minimum_ppm_constraint', ), (GlossaryCore.CO2EmissionsDfValue, 'total_emissions'),
+            d_ppm_d_totalemissions / self.carboncycle.minimum_ppm_constraint_ref)
 
     def get_chart_filter_list(self):
 
@@ -183,21 +175,14 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             'scale_factor_atmo_conc')
         if 'atmosphere concentration' in chart_list:
 
-            #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             atmo_conc = carboncycle_df['atmo_conc'] / scale_factor_atmo_conc
 
             years = list(atmo_conc.index)
 
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-            min_value, max_value = self.get_greataxisrange(atmo_conc)
-
             chart_name = 'Atmosphere concentration of carbon'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'carbon concentration (Gtc)',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value],
-                                                 chart_name)
+                                                 chart_name=chart_name)
 
             visible_line = True
 
@@ -222,11 +207,8 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
 
-            min_value, max_value = self.get_greataxisrange(ppm)
-
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Atmospheric concentrations parts per million',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value], chart_name)
+                                                 chart_name=chart_name)
 
             visible_line = True
 

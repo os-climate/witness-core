@@ -42,9 +42,9 @@ class Study(StudyManager):
         self.obj_name = 'Objectives'
         self.coupling_name = "Sectorization_Eval"
         self.optim_name = "SectorsOpt"
-        self.ns_industry = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Industry'}"
-        self.ns_agriculture = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Agriculture'}"
-        self.ns_services = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Services'}"
+        self.ns_industry = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{GlossaryCore.SectorIndustry}"
+        self.ns_agriculture = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{GlossaryCore.SectorAgriculture}"
+        self.ns_services = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{GlossaryCore.SectorServices}"
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -178,10 +178,6 @@ class Study(StudyManager):
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorIndustry: hist_invest[GlossaryCore.SectorIndustry]})
-        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorAgriculture: hist_invest[GlossaryCore.SectorAgriculture]})
-        services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorServices: hist_invest[GlossaryCore.SectorServices]})
-
 
         long_term_energy_eff =  pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
         lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorAgriculture]})

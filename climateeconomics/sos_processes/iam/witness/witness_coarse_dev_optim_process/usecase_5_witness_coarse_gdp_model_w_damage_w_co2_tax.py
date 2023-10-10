@@ -45,23 +45,20 @@ class Study(ClimateEconomicsStudyManager):
         updated_data = {f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.assumptions_dict': {'compute_gdp': True,
                                                                 'compute_climate_impact_on_gdp': True,
                                                                 'activate_climate_effect_population': True,
-                                                                'invest_co2_tax_in_renewables': True
+                                                                'invest_co2_tax_in_renewables': False
                                                                },
                         f'{self.study_name}.{witness_uc.optim_name}.design_space' : dspace,
                         f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor}
         data_witness.append(updated_data)
 
-        # TODO: change these percentages with biblio research
         data_witness.append({
-            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.ccs_price_percentage": 25.0,
-            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.co2_damage_price_percentage": 25.0,
+            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.ccs_price_percentage": 100.0,
+            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.co2_damage_price_percentage": 100.0,
         })
 
         return data_witness
 
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-    print('-----')
+    uc_cls = Study()
+    uc_cls.test()

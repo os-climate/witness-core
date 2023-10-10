@@ -88,8 +88,8 @@ class DataStudy():
         population_df.index = years
         witness_input[self.study_name + f'.{GlossaryCore.PopulationDfValue}'] = population_df
         working_age_population_df = pd.DataFrame(
-            {GlossaryCore.Years: years, 'population_1570': 6300}, index=years)
-        witness_input[f"{self.study_name}.{'working_age_population_df'}"] = working_age_population_df
+            {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
+        witness_input[f"{self.study_name}.{GlossaryCore.WorkingAgePopulationDfValue}"] = working_age_population_df
 
         share_non_energy_investment = DataFrame(
             {GlossaryCore.Years: years,
@@ -165,7 +165,7 @@ class DataStudy():
             (np.linspace(30, intermediate_point, 15), np.asarray([intermediate_point] * (len(years) - 15))))
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_tax_efficiency': CO2_tax_efficiency})
+            {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
 
         forest_invest = np.linspace(5.0, 8.0, len(years))
         self.forest_invest_df = pd.DataFrame(
@@ -212,7 +212,7 @@ class DataStudy():
 
         witness_input[f'{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'] = energy_investment_wo_tax
         witness_input[f'{self.study_name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}'] = share_non_energy_investment
-        witness_input[f'{self.study_name}.Macroeconomics.CO2_tax_efficiency'] = default_co2_efficiency
+        witness_input[f'{self.study_name}.Macroeconomics.{GlossaryCore.CO2TaxEfficiencyValue}'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0
         witness_input[f'{self.study_name}.gamma'] = 0.5
@@ -236,37 +236,30 @@ class DataStudy():
         return setup_data_list
 
     def setup_objectives(self):
-        func_df = DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-        list_var.extend(
-            ['welfare_objective','negative_welfare_objective', 'gwp20_objective', 'gwp100_objective', 'non_use_capital_objective',
-             'delta_capital_objective',
-             'delta_capital_objective_weighted'])
-        list_parent.extend(['utility_objective','utility_objective',
-                            'GWP_short_term_obj',
-                            'GWP_long_term_obj', 'non_use_capital_objective', 'delta_capital_objective',
-                            'delta_capital_objective_weighted'])
-        list_ns.extend(['ns_functions','ns_functions',
-                        'ns_functions',
-                        'ns_functions', 'ns_witness', 'ns_functions', 'ns_functions'])
-        list_ftype.extend(
-            [OBJECTIVE,OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM,AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
+        data = {
+            'variable': [
+                GlossaryCore.EnergyInvestmentsMinimizationObjective,
+                GlossaryCore.NegativeWelfareObjective,
+                GlossaryCore.LastYearDiscountedUtilityObjective,
+                'gwp20_objective',
+                'gwp100_objective',
+
+            ],
+            'parent': [
+                'invest_objective',
+                'utility_objective',
+                'utility_objective',
+                'GWP_short_term_obj',
+                'GWP_long_term_obj',
+            ],
+            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
+            'weight': [5e-4, 1.0, 1.0, 0.0, 0.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
+            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', 'ns_functions', 'ns_functions']
+        }
+
+        func_df = DataFrame(data)
 
         return func_df
 
@@ -291,16 +284,6 @@ class DataStudy():
             [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
 
         # -------------------------------------------------
-        # e_max_constraint
-        list_var.append('emax_enet_constraint')
-        list_parent.append('macroeconomics_constraints')
-        list_ns.extend(['ns_functions'])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
-
-        # -------------------------------------------------
         # calories_per_day_constraint
         list_var.append('calories_per_day_constraint')
         list_parent.append('agriculture_constraints')
@@ -310,23 +293,15 @@ class DataStudy():
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 
-        # -------------------------------------------------
-        # pc_consumption_constraint
-        list_var.append('pc_consumption_constraint')
-        list_parent.append('macroeconomics_constraints')
-        list_ns.extend(['ns_functions'])
-        list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(0.0)
-        list_aggr_type.append(
-            AGGR_TYPE_SMAX)
 
-        list_var.extend(['delta_capital_constraint', 'delta_capital_constraint_dc', 'delta_capital_lintoquad'])
-        list_parent.extend(['invests_constraints', 'invests_constraints', 'invests_constraints'])
-        list_ns.extend(['ns_functions', 'ns_functions', 'ns_functions'])
-        list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT, EQ_CONSTRAINT])
-        list_weight.extend([-1.0, 0.0, 0.0])
+        # -------------------------------------------------
+        list_var.extend([GlossaryCore.ConstraintLowerBoundUsableCapital])
+        list_parent.extend(['invests_constraints'])
+        list_ns.extend(['ns_functions'])
+        list_ftype.extend([INEQ_CONSTRAINT])
+        list_weight.extend([-1.0])
         list_aggr_type.extend([
-            AGGR_TYPE_SMAX, AGGR_TYPE_SMAX, AGGR_TYPE_LIN_TO_QUAD])
+            AGGR_TYPE_SMAX])
 
         list_var.append('non_use_capital_cons')
         list_parent.append('invests_constraints')

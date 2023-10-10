@@ -104,10 +104,10 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                                    'emitted_CO2_evol_cumulative': ('float', None, False),}},
     }
     DESC_OUT = {
-        'CO2_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
-        'CO2_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
+        GlossaryCore.CO2EmissionsDetailDfValue: GlossaryCore.CO2EmissionsDetailDf,
+        GlossaryCore.CO2EmissionsDfValue: GlossaryCore.CO2EmissionsDf,
         'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''},
-        GlossaryCore.CO2EmissionsGt['var_name']: GlossaryCore.CO2EmissionsGt,
+        GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
     }
 
     def init_execution(self):
@@ -122,8 +122,8 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         CO2_emissions_df, CO2_objective = self.emissions_model.compute(in_dict)
         self.emissions_model.compute_total_CO2_emissions()
         # Store output data
-        dict_values = {'CO2_emissions_detail_df': CO2_emissions_df,
-                       'CO2_emissions_df': CO2_emissions_df[[GlossaryCore.Years, 'total_emissions', 'cum_total_emissions']],
+        dict_values = {GlossaryCore.CO2EmissionsDetailDfValue: CO2_emissions_df,
+                       GlossaryCore.CO2EmissionsDfValue: CO2_emissions_df[GlossaryCore.CO2EmissionsDf['dataframe_descriptor'].keys()],
                        'CO2_objective': CO2_objective,
                        GlossaryCore.CO2EmissionsGtValue: self.emissions_model.co2_emissions[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]]}
         self.store_sos_outputs_values(dict_values)
@@ -166,20 +166,20 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
             'CO2_emissions_by_use_sources').columns
         # fill jacobians
         self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'total_emissions'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  d_indus_emissions_d_gross_output)
+            (GlossaryCore.CO2EmissionsDfValue, 'total_emissions'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  d_indus_emissions_d_gross_output)
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_emissions_df', 'cum_total_emissions'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  d_cum_indus_emissions_d_gross_output)
+            (GlossaryCore.CO2EmissionsDfValue, 'cum_total_emissions'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  d_cum_indus_emissions_d_gross_output)
 
         for column_sources in columns_sources:
             if column_sources != GlossaryCore.Years:
                 self.set_partial_derivative_for_other_types(
-                    ('CO2_emissions_df', 'total_emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
+                    (GlossaryCore.CO2EmissionsDfValue, 'total_emissions'), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
                 self.set_partial_derivative_for_other_types(
                     (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions), ('CO2_emissions_by_use_sources', column_sources),  np.identity(len(years)))
 
                 self.set_partial_derivative_for_other_types(
-                    ('CO2_emissions_df', 'cum_total_emissions'), ('CO2_emissions_by_use_sources', column_sources), d_cum_indus_emissions_d_total_CO2_emitted)
+                    (GlossaryCore.CO2EmissionsDfValue, 'cum_total_emissions'), ('CO2_emissions_by_use_sources', column_sources), d_cum_indus_emissions_d_total_CO2_emitted)
 
                 self.set_partial_derivative_for_other_types(
                     ('CO2_objective',), ('CO2_emissions_by_use_sources', column_sources),  d_CO2_obj_d_total_emission * dobjective_exp_min)
@@ -191,12 +191,12 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         for df_name, col_name in sinks_dict.items():
             self.set_partial_derivative_for_other_types(
-                ('CO2_emissions_df', 'total_emissions'), (df_name, col_name),  - np.identity(len(years)))
+                (GlossaryCore.CO2EmissionsDfValue, 'total_emissions'), (df_name, col_name),  - np.identity(len(years)))
             self.set_partial_derivative_for_other_types(
                 (GlossaryCore.CO2EmissionsGtValue, GlossaryCore.TotalCO2Emissions), (df_name, col_name),  - np.identity(len(years)))
 
             self.set_partial_derivative_for_other_types(
-                ('CO2_emissions_df', 'cum_total_emissions'), (df_name, col_name), - d_cum_indus_emissions_d_total_CO2_emitted)
+                (GlossaryCore.CO2EmissionsDfValue, 'cum_total_emissions'), (df_name, col_name), - d_cum_indus_emissions_d_total_CO2_emitted)
 
             self.set_partial_derivative_for_other_types(
                 ('CO2_objective',), (df_name, col_name),  - d_CO2_obj_d_total_emission * dobjective_exp_min)
@@ -210,10 +210,10 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         for column in CO2_land_emissions.columns:
             if column != GlossaryCore.Years:
                 self.set_partial_derivative_for_other_types(
-                    ('CO2_emissions_df', 'total_emissions'), ('CO2_land_emissions', column),  np.identity(len(years)))
+                    (GlossaryCore.CO2EmissionsDfValue, 'total_emissions'), ('CO2_land_emissions', column),  np.identity(len(years)))
 
                 self.set_partial_derivative_for_other_types(
-                    ('CO2_emissions_df', 'cum_total_emissions'), ('CO2_land_emissions', column),  d_total_emissions_C02_emitted_land)
+                    (GlossaryCore.CO2EmissionsDfValue, 'cum_total_emissions'), ('CO2_land_emissions', column),  d_total_emissions_C02_emitted_land)
 
                 self.set_partial_derivative_for_other_types(
                     ('CO2_objective',), ('CO2_land_emissions', column), dobjective_exp_min * d_CO2_obj_d_total_emission)
@@ -273,7 +273,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         to_plot = ['total_emissions', 'land_emissions', 'indus_emissions']
 
         CO2_emissions_df = deepcopy(
-            self.get_sosdisc_outputs('CO2_emissions_detail_df'))
+            self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsDetailDfValue))
 
         total_emission = CO2_emissions_df['total_emissions']
         land_emissions = CO2_emissions_df['land_emissions']
@@ -312,7 +312,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     def get_chart_cumulated_co2_emissions(self):
 
         CO2_emissions_df = deepcopy(
-            self.get_sosdisc_outputs('CO2_emissions_detail_df'))
+            self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsDetailDfValue))
 
         total_emission_cum = CO2_emissions_df['total_emissions'].cumsum()
 
@@ -333,7 +333,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     def get_chart_sources_and_sinks(self, detailed=False):
 
         CO2_emissions_df = deepcopy(
-            self.get_sosdisc_outputs('CO2_emissions_detail_df'))
+            self.get_sosdisc_outputs(GlossaryCore.CO2EmissionsDetailDfValue))
         years = list(CO2_emissions_df.index)
 
         CO2_emissions_breakdown = pd.DataFrame({GlossaryCore.Years: years})

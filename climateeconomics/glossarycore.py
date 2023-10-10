@@ -4,12 +4,6 @@ from copy import deepcopy, copy
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
 
-    # TODO, FILLING METHOD : goal is to spread the use of the glossary in the code, but we have to do it
-    #  methodically. Suggested method : every time you add a string/variable in the glossary, replace this string
-    #  everywhere in the code. Only then, continue filling the Glossary.
-    #  TIPS for PyCharm : Ctrl + Shift + R for replacing everywhere.
-    #  Make sure to replace only in witness core (witness-energy optionally).
-
     Years = "years"
     YearStart = "year_start"
     YearEnd = "year_end"
@@ -22,6 +16,7 @@ class GlossaryCore:
     SectorGdpPart = "Part of the GDP per sector [G$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
 
+    ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
@@ -36,7 +31,10 @@ class GlossaryCore:
     EnergyInvestmentsWoRenewableValue = "energy_investment_wo_renewable"
     NonEnergyInvestmentsValue = "non_energy_investment"
     EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
-
+    WelfareObjective = "welfare_objective"
+    NormalizedWelfare = "Normalized welfare"
+    NegativeWelfareObjective = "negative_welfare_objective"
+    LastYearDiscountedUtilityObjective = "last_year_discounted_utility_objective"
     energy_list = "energy_list"
     techno_list = "technologies_list"
     ccs_list = "ccs_list"
@@ -46,6 +44,12 @@ class GlossaryCore:
     SectorAgriculture = "Agriculture"
     SectorIndustry = "Industry"
     SectorEnergy = "energy"
+
+    # Diet
+    Fish = "fish"
+    OtherFood = "other"
+    FishDailyCal = "fish_calories_per_day"
+    OtherDailyCal = "other_calories_per_day"
 
     SectorsPossibleValues = [
         SectorServices,
@@ -81,6 +85,40 @@ class GlossaryCore:
             "atmo_share_sinceystart": ("float", None, False),
         },
     }
+    CO2EmissionsDetailDfValue = "CO2_emissions_detail_df"
+    CO2EmissionsDfValue = "CO2_emissions_df"
+    CO2EmissionsDetailDf = {
+        "var_name": CO2EmissionsDetailDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "unit": "Gt",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            "sigma": ("float", None, False),
+            "gr_sigma": ("float", None, False),
+            "land_emissions": ("float", None, False),
+            "cum_land_emissions": ("float", None, False),
+            "indus_emissions": ("float", None, False),
+            "cum_indus_emissions": ("float", None, False),
+            "total_emissions": ("float", None, False),
+            "cum_total_emissions": ("float", None, False),
+        },
+    }
+
+    CO2EmissionsDf = {
+        "var_name": CO2EmissionsDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "unit": "Gt",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            "total_emissions": ("float", None, False),
+            "cum_total_emissions": ("float", None, False),
+        },
+    }
+
     TotalCO2Emissions = "Total CO2 emissions"
     CO2EmissionsGt = {
         "var_name": CO2EmissionsGtValue,
@@ -91,7 +129,15 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             TotalCO2Emissions: ("float", None, False),
-            "cumulative_total_energy_supply": ("float", None, False),
+        },
+    }
+    CO2TaxEfficiencyValue = "CO2_tax_efficiency"
+    CO2TaxEfficiency = {
+        "type": "dataframe",
+        "unit": "%",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            CO2TaxEfficiencyValue: ("float", None, False),
         },
     }
 
@@ -151,7 +197,9 @@ class GlossaryCore:
         "user_level": 2,
     }
 
-    Output = "output"  # todo in the future: delete this key, it corresponds to gross output
+    Output = (
+        "output"  # todo in the future: delete this key, it corresponds to gross output
+    )
     GrossOutput = "gross_output"  # trillion $
     NetOutput = "net_output"  # todo in the future: delete this key, it corresponds to gross output net of damage,
     OutputNetOfDamage = "output_net_of_d"  # trillion $
@@ -195,12 +243,15 @@ class GlossaryCore:
         },
     }
 
-
     EconomicsDetailDfValue = "economics_detail_df"
     Productivity = "productivity"
     ProductivityGrowthRate = "productivity_gr"
     OutputGrowth = "output_growth"
-    EconomicsDetail_df = {
+    OptimalEnergyProduction = "Optimal Energy Production [TWh]"
+    UsedEnergy = "Used Energy [TWh]"
+    UnusedEnergy = "Unused Energy [TWh]"
+    EnergyUsage = "Energy Usage"
+    EconomicsDetailDf = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
         "unit": "-",
@@ -208,6 +259,7 @@ class GlossaryCore:
             Years: ("int", [1900, 2100], False),
             GrossOutput: ("float", None, False),  # T$
             OutputNetOfDamage: ("float", None, False),  # T$
+            Damages: ("float", None, False),  # T$
             Productivity: ("float", None, False),
             ProductivityGrowthRate: ("float", None, False),
             Consumption: ("float", None, False),  # T$
@@ -218,6 +270,9 @@ class GlossaryCore:
             NonEnergyInvestmentsValue: ("float", None, False),  # T$
             EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
+            UsedEnergy: ("float", None, False),
+            UnusedEnergy: ("float", None, False),
+            OptimalEnergyProduction: ("float", None, False),
         },
     }
     PopulationValue = "population"
@@ -234,6 +289,7 @@ class GlossaryCore:
     }
 
     EnergyMeanPriceValue = "energy_mean_price"
+
     EnergyPriceValue = "energy_price"
     EnergyMeanPrice = {
         "var_name": EnergyMeanPriceValue,
@@ -249,7 +305,7 @@ class GlossaryCore:
 
     EnergyProductionValue = "energy_production"
     TotalProductionValue = "Total production"
-    EnergyProduction = {
+    EnergyProductionDf = {
         "var_name": EnergyProductionValue,
         "type": "dataframe",
         "visibility": "Shared",
@@ -274,6 +330,7 @@ class GlossaryCore:
         "namespace": "ns_witness",
     }
 
+    EnergyInvestmentsMinimizationObjective = "Energy invest minimization objective"
     EnergyInvestmentsWoTax = (
         {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
             "var_name": EnergyInvestmentsWoTaxValue,
@@ -288,6 +345,18 @@ class GlossaryCore:
             "namespace": "ns_witness",
         }
     )
+    RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"
+    RenewablesEnergyInvestments = {
+        "var_name": RenewablesEnergyInvestmentsValue,
+        "namespace": "ns_witness",
+        "type": "dataframe",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            InvestmentsValue: ("float", [0.0, 1e30], True),
+        },
+        "unit": "100G$",
+    }
+
     EnergyInvestmentsWoRenewable = {
         "var_name": EnergyInvestmentsWoRenewableValue,
         "type": "dataframe",
@@ -334,6 +403,8 @@ class GlossaryCore:
     PeriodUtilityPerCapita = "period_utility_pc"
     DiscountedUtility = "discounted_utility"
     Welfare = "welfare"
+    EnergyPriceRatio = "energy_price_ratio"
+    PerCapitaConsumptionUtility = "Per capita consumption utility"
     UtilityDf = {
         "var_name": UtilityDfValue,
         "type": "dataframe",
@@ -344,7 +415,8 @@ class GlossaryCore:
             UtilityDiscountRate: ("float", None, False),
             PeriodUtilityPerCapita: ("float", None, False),
             DiscountedUtility: ("float", None, False),
-            Welfare: ("float", None, False),
+            EnergyPriceRatio: ("float", None, False),
+            PerCapitaConsumptionUtility: ("float", None, False),
         },
         "unit": "-",
     }
@@ -366,7 +438,9 @@ class GlossaryCore:
     CapitalDfValue = "capital_df"
     Capital = "capital"
     UsableCapital = "usable_capital"
-    SectorizedCapitalDf = {
+    UsableCapitalUnbounded = "Unbounded usable capital [T$]"
+    NonEnergyCapital = "non_energy_capital"
+    CapitalDf = {
         "var_name": CapitalDfValue,
         "namespace": "ns_witness",
         "visibility": "Shared",
@@ -397,7 +471,7 @@ class GlossaryCore:
         },
     }
 
-    SectorizedEconomicsDf = {  #todo: miss per capita consumption !
+    SectorizedEconomicsDf = {  # todo: miss per capita consumption !
         "var_name": EconomicsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
@@ -422,6 +496,8 @@ class GlossaryCore:
             Capital: ("float", None, False),
             UsableCapital: ("float", None, False),
             OutputGrowth: ("float", None, False),
+            Damages: ("float", None, False),
+            Consumption: ("float", None, False),
         },
     }
 
@@ -437,17 +513,7 @@ class GlossaryCore:
         },
     }
 
-    SectorInvestmentDfValue = "sectors_investment_df"
-    SectorInvestmentDf = {
-        "type": "dataframe",
-        "unit": "T$",
-        "visibility": "Shared",
-        "namespace": "ns_witness",
-        "dataframe_descriptor": {},
-        "dynamic_dataframe_columns": True,
-    }
-
-    RedistributionInvestmentsDfValue = 'redistribution_investments_df'
+    RedistributionInvestmentsDfValue = "redistribution_investments_df"
     RedistributionInvestmentsDf = {
         "var_name": RedistributionInvestmentsDfValue,
         "type": "dataframe",
@@ -456,7 +522,7 @@ class GlossaryCore:
         "dynamic_dataframe_columns": True,
     }
 
-    RedistributionEnergyProductionDfValue = 'redistribution_energy_production_df'
+    RedistributionEnergyProductionDfValue = "redistribution_energy_production_df"
     RedistributionEnergyProductionDf = {
         "var_name": RedistributionEnergyProductionDfValue,
         "type": "dataframe",
@@ -505,6 +571,8 @@ class GlossaryCore:
     }
 
     WorkforceDfValue = "workforce_df"
+    EmploymentRate = "employment_rate"
+    Workforce = "workforce"
     WorkforceDf = {
         "var_name": WorkforceDfValue,
         "type": "dataframe",
@@ -513,6 +581,19 @@ class GlossaryCore:
         "namespace": "ns_witness",
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
+    }
+    WorkingAgePopulationDfValue = "working_age_population_df"
+    Population1570 = "population_1570"
+    WorkingAgePopulationDf = {
+        "var_name": WorkingAgePopulationDfValue,
+        "type": "dataframe",
+        "unit": "millions of people",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            Population1570: ("float", None, False),
+        },
     }
 
     InvestmentDfValue = "investment_df"
@@ -539,6 +620,18 @@ class GlossaryCore:
         "dataframe_edition_locked": False,
         "visibility": "Shared",
         "namespace": "ns_witness",
+    }
+
+    InvestmentBeforeYearStartValue = "invest_before_ystart"
+    InvestmentBeforeYearStartDf = {
+        "var_name": InvestmentBeforeYearStartValue,
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            "past years": ("int", [-20, -1], True),
+            "invest": ("float", None, True),
+        },
+        "dataframe_edition_locked": False,
     }
 
     @staticmethod

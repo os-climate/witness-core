@@ -39,15 +39,15 @@ class MacroeconomicsModel():
         self.inputs = None
         self.economics_df = None
         self.economics_detail_df = None
-        self.investment_df = None
+        self.investments_df = None
+        self.years_range = None
         self.configure_parameters(inputs_dict)
 
     def configure_parameters(self, inputs_dict):
         """Configure with inputs_dict from the discipline"""
 
-        share_invest_df = inputs_dict[GlossaryCore.InvestmentShareGDPValue]
-        self.years_range = share_invest_df[GlossaryCore.Years].values
-        self.share_invest = share_invest_df['share_investment'].values
+        self.investments_df = inputs_dict[GlossaryCore.InvestmentDfValue]
+        self.years_range = self.investments_df[GlossaryCore.Years].values
 
     def compute_economics(self):
         """Compute economics dataframes"""
@@ -70,56 +70,36 @@ class MacroeconomicsModel():
         self.sum_gross_output = np.sum(output_to_sum, axis=0)
         self.sum_net_output = np.sum(net_output_to_sum, axis=0)
 
-        # output growth
-        output_growth = np.zeros_like(self.years_range)
-        for year in range(len(self.years_range) - 1):
-            output_a = self.sum_net_output[year+1]
-            output = max(1e-6, self.sum_net_output[year])
-            output_growth[year] = ((output_a -output) / output)
+        gross_output = pd.Series(self.sum_gross_output)
+        output_growth = (gross_output.diff() / gross_output.shift(1)).fillna(0.)
 
-        output_growth[-1] = output_growth[-2]  # For last year put the previous year value to avoid a 0
-
+        damages = self.sum_gross_output - self.sum_net_output
         economics_detail_df = pd.DataFrame({GlossaryCore.Years: self.years_range,
                                             GlossaryCore.Capital: self.sum_capital,
                                             GlossaryCore.UsableCapital: self.sum_u_capital,
                                             GlossaryCore.GrossOutput: self.sum_gross_output,
                                             GlossaryCore.OutputNetOfDamage: self.sum_net_output,
-                                            GlossaryCore.OutputGrowth: output_growth})
+                                            GlossaryCore.OutputGrowth: output_growth,
+                                            GlossaryCore.Damages: damages})
         economics_detail_df.index = self.years_range
         self.economics_detail_df = economics_detail_df
         self.economics_df = economics_detail_df[GlossaryCore.SectorizedEconomicsDf['dataframe_descriptor'].keys()]
 
-    def compute_investment(self):
-        """ Compute total investement available 
-        Investment = net_output * share_invest 
-        """
-        investment = self.sum_net_output * self.share_invest/100.
-        investment_df = pd.DataFrame({GlossaryCore.Years: self.years_range,
-                                      GlossaryCore.InvestmentsValue: investment})
-        investment_df.index = self.years_range
-        self.investment_df = investment_df
-
+    def compute_consumption(self):
+        """Consumption = Net output - Invests"""
+        self.economics_detail_df[GlossaryCore.Consumption] = self.economics_detail_df[GlossaryCore.OutputNetOfDamage].values -\
+                                                             self.investments_df[GlossaryCore.InvestmentsValue].values
     def compute(self, inputs):
         """Compute all models for year range"""
         self.inputs = inputs
         self.configure_parameters(inputs)
         self.compute_economics()
-        self.compute_investment()
+        self.compute_consumption()
 
 
     # GRADIENTS
-
     def get_derivative_sectors(self):
         """Compute gradient for netoutput and invest wrt net output from each sector"""
         grad_netoutput = np.identity(len(self.years_range))
-        #Invest = net_output * share_invest (share invest in%)
-        grad_invest = grad_netoutput * self.share_invest/100
 
-        return grad_netoutput, grad_invest
-
-
-    def dinvest_dshare(self):
-        """Compute the derivative of investment wrt invest_share_gdp """
-        #Invest = net_output * share_invest
-        dinvest = np.identity(len(self.years_range))/100 * self.sum_net_output
-        return dinvest
+        return grad_netoutput

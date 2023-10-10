@@ -79,7 +79,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                                         },
     }
     DESC_OUT = {
-        GlossaryCore.CO2EmissionsGt['var_name']: GlossaryCore.CO2EmissionsGt,
+        GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
         'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
         'GHG_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'}

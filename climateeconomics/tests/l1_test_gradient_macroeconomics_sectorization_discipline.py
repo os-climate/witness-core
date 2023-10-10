@@ -37,9 +37,9 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.nb_per = nb_per
         self.years = np.arange(self.year_start, self.year_end+1)
 
-        total_invest = np.asarray([27.0] * nb_per)
-        total_invest = DataFrame({GlossaryCore.Years:self. years, 'share_investment': total_invest})
-        self.total_invest = total_invest
+        invests = np.linspace(40, 65, nb_per)
+        self.invests = DataFrame({GlossaryCore.Years: self.years,
+                                  GlossaryCore.InvestmentsValue: invests})
 
         # Test With a GDP and capital that grows at 2%
         gdp_year_start = 130.187
@@ -106,9 +106,9 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
         
-        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+        inputs_dict = {f'{self.name}.{GlossaryCore.InvestmentDfValue}': self.invests,
+                       f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
-                       f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}': self.total_invest,
                        f'{self.name}.sectors_investment_share': self.share_sector_invest,
                        f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
                        f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
@@ -124,7 +124,7 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macro_sectorization_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data= disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}',
+                            inputs=[f'{self.name}.{GlossaryCore.InvestmentDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',

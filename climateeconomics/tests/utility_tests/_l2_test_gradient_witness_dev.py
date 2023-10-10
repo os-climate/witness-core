@@ -332,7 +332,7 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = WitnessDevJacobianDiscTest()
     cls.test_01_gradient_dev_specific_disciplines()
     # self.test_02_gradient_dev_root_process()

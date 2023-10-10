@@ -69,7 +69,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                }
 
     DESC_OUT = {
-        'CO2_emissions_detail_df': {
+        GlossaryCore.CO2EmissionsDetailDfValue: {
             'type': 'dataframe', 'unit': 'GtCO2', 'namespace': 'ns_forest'},
         Forest.FOREST_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
@@ -243,7 +243,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             # CO2 graph
 
             CO2_emissions_df = self.get_sosdisc_outputs(
-                'CO2_emissions_detail_df')
+                GlossaryCore.CO2EmissionsDetailDfValue)
             CO2_emitted_year_by_year = CO2_emissions_df['emitted_CO2']
             CO2_captured_year_by_year = CO2_emissions_df['captured_CO2']
             CO2_total_year_by_year = CO2_emissions_df['emitted_CO2_evol']

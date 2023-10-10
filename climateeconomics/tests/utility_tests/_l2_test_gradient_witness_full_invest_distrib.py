@@ -16,6 +16,8 @@ limitations under the License.
 from os.path import join, dirname, exists
 import pandas as pd
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
@@ -28,7 +30,7 @@ from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    obj_const = ['welfare_objective', 'min_utility_objective', 'temperature_objective', 'CO2_objective',
+    obj_const = [GlossaryCore.WelfareObjective, 'min_utility_objective', 'temperature_objective', 'CO2_objective',
                  'ppm_objective', 'co2_emissions_objective', 'CO2_tax_minus_CO2_damage_constraint_df',
                  'EnergyMix.methane.demand_violation', 'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation',
                  'EnergyMix.biogas.demand_violation', 'EnergyMix.syngas.demand_violation',
@@ -151,7 +153,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
 
 if '__main__' == __name__:
-    AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
     cls = WitnessFullJacobianDiscTest()
     cls.test_05_gradient_lagrangian_objective_wrt_csv_design_var_on_witness_full_subprocess_each_step()
     # self.test_06_gradient_each_discipline_on_dm_pkl()

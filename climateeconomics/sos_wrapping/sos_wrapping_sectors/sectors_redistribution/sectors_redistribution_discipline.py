@@ -12,14 +12,13 @@ class SectorsRedistributionDiscipline(SoSWrapp):
     """Discipline redistributing energy production and global investment into sectors"""
 
     DESC_IN = {
-        GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
-        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProduction,
+        GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
     }
 
     DESC_OUT = {
         GlossaryCore.RedistributionEnergyProductionDfValue: GlossaryCore.RedistributionEnergyProductionDf,
-        GlossaryCore.RedistributionInvestmentsDfValue: GlossaryCore.RedistributionInvestmentsDf,
+        GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
     }
 
     def setup_sos_disciplines(self):
@@ -30,11 +29,10 @@ class SectorsRedistributionDiscipline(SoSWrapp):
         if GlossaryCore.SectorListValue in self.get_data_in():
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
             for sector in sector_list:
-                dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorInvestmentDf)
+                dynamic_inputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
                 dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorEnergyDf)
 
-                dynamic_outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
-                dynamic_outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProduction)
+                dynamic_outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDf)
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -45,28 +43,29 @@ class SectorsRedistributionDiscipline(SoSWrapp):
 
         model = SectorRedistributionModel()
 
-        sectors_energy, all_sectors_energy_df, sectors_invesmtents, all_sectors_investments_df = model.compute(inputs)
+        sectors_energy, all_sectors_energy_df, total_invests_df = model.compute(inputs)
 
         sector_list = inputs[GlossaryCore.SectorListValue]
 
         outputs = {
             GlossaryCore.RedistributionEnergyProductionDfValue: all_sectors_energy_df,
-            GlossaryCore.RedistributionInvestmentsDfValue: all_sectors_investments_df,
+            GlossaryCore.InvestmentDfValue: total_invests_df,
         }
 
         for sector in sector_list:
             outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = sectors_energy[sector]
-            outputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = sectors_invesmtents[sector]
 
         self.store_sos_outputs_values(outputs)
 
     def compute_sos_jacobian(self):
         """compute gradients"""
         inputs = self.get_sosdisc_inputs()
+        outputs = self.get_sosdisc_outputs()
 
         sectors_list = inputs[GlossaryCore.SectorListValue]
         total_energy_production = inputs[GlossaryCore.EnergyProductionValue][GlossaryCore.TotalProductionValue].values
-        total_invests = inputs[GlossaryCore.InvestmentDfValue][GlossaryCore.InvestmentsValue].values
+        total_invests = outputs[GlossaryCore.InvestmentDfValue][GlossaryCore.InvestmentsValue].values
+        identity = np.eye(len(total_invests))
 
         for sector in sectors_list:
             sector_share_energy = inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'][GlossaryCore.ShareSectorEnergy].values
@@ -76,20 +75,6 @@ class SectorsRedistributionDiscipline(SoSWrapp):
                 np.diag(sector_share_energy/ 100.)
             )
 
-            sector_share_invests = inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][
-                GlossaryCore.ShareInvestment].values
-            self.set_partial_derivative_for_other_types(
-                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
-                (GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
-                np.diag(sector_share_invests/ 100.)
-            )
-
-            self.set_partial_derivative_for_other_types(
-                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
-                (GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
-                np.diag(sector_share_invests / 100.)
-            )
-
             self.set_partial_derivative_for_other_types(
                 (f'{sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),
                 (f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
@@ -97,18 +82,16 @@ class SectorsRedistributionDiscipline(SoSWrapp):
             )
             
             self.set_partial_derivative_for_other_types(
+                (GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
                 (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
-                (f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}', GlossaryCore.ShareInvestment),
-                np.diag(total_invests / 100.)
+                identity
             )
 
     def get_chart_filter_list(self):
         chart_filters = []
 
         chart_list = [GlossaryCore.RedistributionEnergyProductionDfValue,
-                      GlossaryCore.RedistributionInvestmentsDfValue,
-                      GlossaryCore.ShareSectorEnergyDfValue,
-                      GlossaryCore.ShareInvestment,]
+                      GlossaryCore.ShareSectorEnergyDfValue,]
 
         chart_filters.append(ChartFilter(
             'Charts filter', chart_list, chart_list, 'charts'))
@@ -160,23 +143,24 @@ class SectorsRedistributionDiscipline(SoSWrapp):
 
             instanciated_charts.append(new_chart)
 
-        if all_filters or GlossaryCore.RedistributionInvestmentsDfValue:
+        if all_filters or GlossaryCore.InvestmentsValue:
             # first graph
-            redistribution_investments_df = self.get_sosdisc_outputs(
-                GlossaryCore.RedistributionInvestmentsDfValue)
+            total_investments_df = self.get_sosdisc_outputs(
+                GlossaryCore.InvestmentDfValue)
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
 
-            chart_name = f"Investments breakdown by sectors [{GlossaryCore.RedistributionInvestmentsDf['unit']}]"
+            chart_name = f"Investments breakdown by sectors [{GlossaryCore.InvestmentDf['unit']}]"
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
-                                                 GlossaryCore.RedistributionInvestmentsDf['unit'],
+                                                 GlossaryCore.InvestmentDf['unit'],
                                                  stacked_bar=True,
                                                  chart_name=chart_name)
 
-            years = list(redistribution_investments_df[GlossaryCore.Years])
+            years = list(total_investments_df[GlossaryCore.Years])
             for sector in sector_list:
+                sector_invest = self.get_sosdisc_inputs(f"{sector}.{GlossaryCore.InvestmentDfValue}")[GlossaryCore.InvestmentsValue].values
                 new_series = InstanciatedSeries(years,
-                                                list(redistribution_investments_df[sector]),
+                                                list(sector_invest),
                                                 sector, 'bar', True)
                 new_chart.series.append(new_series)
 
@@ -191,8 +175,9 @@ class SectorsRedistributionDiscipline(SoSWrapp):
                                                  chart_name=chart_name)
 
             for sector in sector_list:
-                share_sector = self.get_sosdisc_inputs(f"{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}")[
-                    GlossaryCore.ShareInvestment]
+                sector_invest = self.get_sosdisc_inputs(f"{sector}.{GlossaryCore.InvestmentDfValue}")[
+                    GlossaryCore.InvestmentsValue].values
+                share_sector = sector_invest / total_investments_df[GlossaryCore.InvestmentsValue].values
                 new_series = InstanciatedSeries(years,
                                                 list(share_sector),
                                                 sector, 'bar', True)

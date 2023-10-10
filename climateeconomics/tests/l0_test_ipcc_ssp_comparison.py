@@ -14,13 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import numpy as np
-import pandas as pd
-from os.path import join, dirname
-from pandas import DataFrame, read_csv
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness_wo_damage_gdp_input import Study as uc
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as uc
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 

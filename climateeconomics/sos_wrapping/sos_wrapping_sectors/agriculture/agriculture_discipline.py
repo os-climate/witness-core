@@ -47,4 +47,5 @@ class AgricultureDiscipline(SectorDiscipline):
     DESC_IN['energy_eff_xzero']['default'] = 1993
     DESC_IN['energy_eff_max']['default'] = 2.35832
     DESC_IN['output_alpha']['default'] = 0.99
+    DESC_IN['depreciation_capital']['default'] = 0.058
 

@@ -42,9 +42,9 @@ class Study(StudyManager):
         self.obj_name = 'Objectives'
         self.coupling_name = "Sectorization_Eval"
         self.optim_name = "SectorsOpt"
-        self.ns_industry = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Industry'}"
-        self.ns_agriculture = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Agriculture'}"
-        self.ns_services = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{'Services'}"
+        self.ns_industry = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{GlossaryCore.SectorIndustry}"
+        self.ns_agriculture = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{GlossaryCore.SectorAgriculture}"
+        self.ns_services = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{GlossaryCore.SectorServices}"
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step

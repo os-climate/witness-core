@@ -15,6 +15,8 @@ limitations under the License.
 '''
 from os.path import join, dirname
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
@@ -25,7 +27,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 class WitnessFullGradient(AbstractJacobianUnittest):
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',
+    obj_const = [GlossaryCore.WelfareObjective, 'temperature_objective', 'CO2_objective', 'ppm_objective',
                  'co2_emissions_objective',
                  'CO2_tax_minus_CO2_damage_constraint_df', 'primary_energies_production',
                  'CO2_tax_minus_CCS_constraint_df', 'land_demand_constraint_df']
