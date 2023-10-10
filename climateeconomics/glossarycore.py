@@ -55,7 +55,7 @@ class GlossaryCore:
         SectorServices,
         SectorAgriculture,
         SectorIndustry,
-    ]  # SectorEnergy,
+    ]
     SectorListValue = "sector_list"
 
     SectorList = {
@@ -65,6 +65,15 @@ class GlossaryCore:
         "default": SectorsPossibleValues,
         "visibility": "Shared",
         "namespace": "ns_witness",
+        "editable": False,
+        "structuring": True,
+    }
+
+    MissingSectorNameValue = "sector_name_deduced_share"
+    MissingSectorName = {
+        "var_name": MissingSectorNameValue,
+        "type": "string",
+        "default": SectorsPossibleValues[-1],
         "editable": False,
         "structuring": True,
     }
@@ -542,6 +551,20 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             ShareInvestment: ("float", [0.0, 100.0], False),
+        },
+    }
+
+    ShareSectorEnergyDfValue = "share_sector_energy_df"
+    ShareSectorEnergy = "Share of total energy production [%]"
+    ShareSectorEnergyDf = {
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Amount of the total energy production attributed to the specific sector",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
 
