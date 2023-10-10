@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -45,18 +47,18 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
         data_dir = join(dirname(__file__), 'data')
 
         self.energy_natural_gas_demand_df = read_csv(
-            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=['years','natural_gas_resource'])
+            join(data_dir, 'all_demand_from_energy_mix.csv'), usecols=[GlossaryCore.Years,'natural_gas_resource'])
         self.energy_natural_gas_variable_demand_df = read_csv(
-            join(data_dir, 'all_demand_variable.csv'), usecols=['years','natural_gas_resource'])
+            join(data_dir, 'all_demand_variable.csv'), usecols=[GlossaryCore.Years,'natural_gas_resource'])
         # part to adapt lenght to the year range
 
-        self.energy_natural_gas_demand_df = self.energy_natural_gas_demand_df.loc[self.energy_natural_gas_demand_df['years']
+        self.energy_natural_gas_demand_df = self.energy_natural_gas_demand_df.loc[self.energy_natural_gas_demand_df[GlossaryCore.Years]
                                                                   >= self.year_start]
-        self.energy_natural_gas_demand_df = self.energy_natural_gas_demand_df.loc[self.energy_natural_gas_demand_df['years']
+        self.energy_natural_gas_demand_df = self.energy_natural_gas_demand_df.loc[self.energy_natural_gas_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
-        self.energy_natural_gas_variable_demand_df = self.energy_natural_gas_variable_demand_df.loc[self.energy_natural_gas_variable_demand_df['years']
+        self.energy_natural_gas_variable_demand_df = self.energy_natural_gas_variable_demand_df.loc[self.energy_natural_gas_variable_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_natural_gas_variable_demand_df = self.energy_natural_gas_variable_demand_df.loc[self.energy_natural_gas_variable_demand_df['years']
+        self.energy_natural_gas_variable_demand_df = self.energy_natural_gas_variable_demand_df.loc[self.energy_natural_gas_variable_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
     def test_natural_gas_resource_analytic_grad(self):
 
@@ -81,8 +83,8 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_natural_gas_demand_df
                        }
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -122,8 +124,8 @@ class NaturalGasResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.energy_natural_gas_variable_demand_df
                        }
         self.ee.load_study_from_input_dict(inputs_dict)

@@ -19,6 +19,7 @@ import numpy as np
 from pandas import DataFrame, read_csv
 from os.path import join, dirname
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from scipy.interpolate import interp1d
 
@@ -41,7 +42,8 @@ class MacroDiscTest(unittest.TestCase):
                    'ns_energy_mix': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   'ns_ref': f'{self.name}',
+                   'ns_energy_study': f'{self.name}',}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -64,14 +66,14 @@ class MacroDiscTest(unittest.TestCase):
         nb_per = round(
             (year_end - year_start) / time_step + 1)
         self.nb_per = nb_per
-        # Energy invest divided by 1e2 (scaling factor invest)
-        energy_invest = np.asarray([2.6] * nb_per)
 
-        total_invest = np.asarray([27.0] * nb_per)
-        total_invest = DataFrame(
-            {'years': years, 'share_investment': total_invest})
-        share_energy_investment = DataFrame(
-            {'years': years, 'share_investment': energy_invest})
+        energy_investment_wo_tax = DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.EnergyInvestmentsWoTaxValue: np.asarray([3.5] * nb_per)})  # in G$
+
+        share_non_energy_investment = DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.ShareNonEnergyInvestmentsValue: np.asarray([27. - 2.6] * nb_per)})
 
         # Our world in data Direct primary energy conso data until 2019, then for 2020 drop in 6% according to IEA
         # then IEA data*0.91 (WEO 2020 stated) until 2040 then invented. 0.91 =
@@ -87,16 +89,18 @@ class MacroDiscTest(unittest.TestCase):
         #Find values for 2020, 2050 and concat dfs 
         energy_supply = f2(np.arange(year_start, year_end+1))
         energy_supply_values = energy_supply * brut_net 
-        energy_supply_df = pd.DataFrame({'years': self.years, 'Total production': energy_supply_values})
+        energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: energy_supply_values})
         energy_supply_df.index = self.years
-        energy_supply_df.loc[2021, 'Total production'] = 116.1036348
+        energy_supply_df.loc[2021, GlossaryCore.TotalProductionValue] = 116.1036348
 
-        self.damage_df = pd.DataFrame({'years': self.years, 'damages': np.zeros(self.nb_per), 'damage_frac_output': np.zeros(self.nb_per),
-                                       'base_carbon_price': np.zeros(self.nb_per)})
+        self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years,
+                                       GlossaryCore.Damages: np.zeros(self.nb_per),
+                                       GlossaryCore.DamageFractionOutput: np.linspace(0.01, 0.05, nb_per),
+                                       GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
         self.damage_df.index = self.years
 
         default_CO2_tax = pd.DataFrame(
-            {'years': years, 'CO2_tax': 50.0}, index=years)
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: 50.0}, index=years)
         
         # energy_capital
         nb_per = len(self.years)
@@ -105,7 +109,7 @@ class MacroDiscTest(unittest.TestCase):
         energy_capital.append(energy_capital_year_start)
         for year in np.arange(1, nb_per):
             energy_capital.append(energy_capital[year - 1] * 1.02)
-        self.energy_capital_df = pd.DataFrame({'years': self.years, 'energy_capital': energy_capital})
+        self.energy_capital_df = pd.DataFrame({GlossaryCore.Years: self.years, 'energy_capital': energy_capital})
 
         # retrieve co2_emissions_gt input
         data_dir = join(dirname(__file__), 'data')
@@ -119,37 +123,34 @@ class MacroDiscTest(unittest.TestCase):
         working_age_pop_df.index = years
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020][[
-            'years', 'total_CO2_emitted']]
-        energy_supply_df_y["years"] = energy_supply_df_all['years']
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020][[
+            GlossaryCore.Years, 'total_CO2_emitted']]
+        energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = years
         default_co2_efficiency = pd.DataFrame(
-            {'years': years, 'CO2_tax_efficiency': 40.0}, index=years)
-    
+            {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: 40.0}, index=years)
+        sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
 
         # out dict definition
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
-                       f'{self.name}.time_step': time_step,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.{self.model_name}.damage_to_productivity': True,
-                       # f'{self.name}.{self.model_name}.total_energy_capacity':
-                       # 0.0,
-                       f'{self.name}.share_energy_investment': share_energy_investment,
-                       # f'{self.name}.share_non_energy_investment':
-                       # share_non_energy_investment,
-                       f'{self.name}.total_investment_share_of_gdp': total_invest,
-                       f'{self.name}.energy_production': energy_supply_df,
-                       f'{self.name}.damage_df': self.damage_df,
-                       f'{self.name}.population_df': population_df,
-                       f'{self.name}.CO2_taxes': default_CO2_tax,
-                       f'{self.name}.{self.model_name}.CO2_tax_efficiency': default_co2_efficiency,
-                       f'{self.name}.co2_emissions_Gt': co2_emissions_gt,
-                       f'{self.name}.working_age_population_df': working_age_pop_df, 
-                       f'{self.name}.energy_capital': self.energy_capital_df
+                       f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': energy_investment_wo_tax,
+                       f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': share_non_energy_investment,
+                       f'{self.name}.{GlossaryCore.EnergyProductionValue}': energy_supply_df,
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': default_CO2_tax,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': default_co2_efficiency,
+                       f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
+                       f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': working_age_pop_df, 
+                       f'{self.name}.energy_capital': self.energy_capital_df,
+                       f'{self.name}.{GlossaryCore.SectorListValue}': sectors_list,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -159,5 +160,6 @@ class MacroDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass

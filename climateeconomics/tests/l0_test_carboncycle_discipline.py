@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -52,19 +53,19 @@ class CarbonCycleDiscTest(unittest.TestCase):
         CO2_emissions_df_all = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
 
-        CO2_emissions_df_y = CO2_emissions_df_all[CO2_emissions_df_all['years'] >= 2020]
+        CO2_emissions_df_y = CO2_emissions_df_all[CO2_emissions_df_all[GlossaryCore.Years] >= 2020]
 
         # put manually the index
         years = np.arange(2020, 2101)
         CO2_emissions_df_y.index = years
-
-        values_dict = {f'{self.name}.CO2_emissions_df': CO2_emissions_df_y}
+        CO2_emissions_df_y = CO2_emissions_df_y[GlossaryCore.CO2EmissionsDf['dataframe_descriptor'].keys()]
+        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': CO2_emissions_df_y}
 
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
-        res_carbon_cycle = self.ee.dm.get_value(f'{self.name}.carboncycle_df')
+        res_carbon_cycle = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.CarbonCycleDfValue}')
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

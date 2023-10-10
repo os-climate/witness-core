@@ -16,6 +16,8 @@ limitations under the License.
 import unittest
 from os.path import join, dirname
 from pandas import read_csv
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 class UraniumModelTestCase(unittest.TestCase):
@@ -34,14 +36,14 @@ class UraniumModelTestCase(unittest.TestCase):
             join(data_dir, 'all_demand_from_energy_mix.csv'))
         # part to adapt lenght to the year range
 
-        self.energy_uranium_demand_df = self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df['years']
+        self.energy_uranium_demand_df = self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_uranium_demand_df= self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df['years']
+        self.energy_uranium_demand_df= self.energy_uranium_demand_df.loc[self.energy_uranium_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_uranium_demand_df,
-                      'year_start': self.year_start,
-                      'year_end': self.year_end,
+                      GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
                       'production_start': self.production_start}
 
     def test_uranium_discipline(self):
@@ -66,8 +68,8 @@ class UraniumModelTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.resources_demand': self.energy_uranium_demand_df,
                        'production_start': self.production_start}
         ee.load_study_from_input_dict(inputs_dict)

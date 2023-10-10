@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -37,7 +37,7 @@ class ProcessBuilder(BaseProcessBuilder):
         macro_name = "Macroeconomics"
 
         chain_builders = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'sectorization_process')
+            'climateeconomics.sos_processes.iam.witness', 'economics_sector_process')
 
         # design variables builder
         design_var_path = 'sostrades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
@@ -57,18 +57,19 @@ class ProcessBuilder(BaseProcessBuilder):
             f'{objectives_name}', obj_path)
         chain_builders.append(obj_builder)
 
-        #ns_macro = self.ee.study_name + coupling_name + '.Macroeconomics'
         ns_scatter = self.ee.study_name
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            optim_name + '.' + coupling_name, after_name=self.ee.study_name)
+            f"{optim_name}.{coupling_name}", after_name=self.ee.study_name)
 
-        ns_dict = {'ns_optim': ns_scatter + '.' + optim_name,
-                   'ns_services':  ns_scatter + '.' + optim_name + '.' + coupling_name + '.' + macro_name + '.Services',
-                   'ns_indus':  ns_scatter + '.' + optim_name + '.' + coupling_name + '.' + macro_name + '.Industry',
-                   'ns_agri':  ns_scatter + '.' + optim_name + '.' + coupling_name + '.' + macro_name + '.Agriculture',
-                   'ns_obj': ns_scatter + '.' + optim_name + '.' + coupling_name + '.Objectives', }
+        ns_dict = {
+                    'ns_optim': f"{ns_scatter}.{optim_name}",
+                   'ns_services':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorServices}",
+                   'ns_indus':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorIndustry}",
+                   'ns_agri':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorAgriculture}",
+                   'ns_obj': f"{ns_scatter}.{optim_name}.{coupling_name}.{'Objectives'}",
+                   }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         # create coupling builder

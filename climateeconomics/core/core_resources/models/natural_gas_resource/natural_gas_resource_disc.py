@@ -18,6 +18,8 @@ from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_model import NaturalGasResourceModel
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
@@ -63,7 +65,7 @@ class NaturalGasResourceDiscipline(ResourceDiscipline):
 
     DESC_IN = {'resource_data': {'type': 'dataframe', 'unit': '-', 'default': default_resource_data,
                                  'user_level': 2, 'namespace': 'ns_natural_gas_resource',
-                                 'dataframe_descriptor': {'years': ('float', None, False),
+                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Region': ('string', None, False),
                                                           'gas_type': ('string', None, False),
                                                           'Price': ('float', None, False),
@@ -74,7 +76,7 @@ class NaturalGasResourceDiscipline(ResourceDiscipline):
                                  },
                'resource_production_data': {'type': 'dataframe', 'unit': 'bcm', 'optional': True,
                                             'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_natural_gas_resource',
-                                            'dataframe_descriptor': {'years': ('float', None, False),
+                                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                      'Conventional': ('float', None, False),
                                                                      'tight': ('float', None, False),
                                                                      'shale': ('float', None, False),
@@ -88,7 +90,7 @@ class NaturalGasResourceDiscipline(ResourceDiscipline):
                                        'namespace': 'ns_natural_gas_resource'},
                'resource_consumed_data': {'type': 'dataframe', 'unit': 'bcm', 'default': default_resource_consumed_data,
                                           'user_level': 2, 'namespace': 'ns_natural_gas_resource',
-                                          'dataframe_descriptor': {'years': ('float', None, False),
+                                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                    'Conventional_consumption': ('float', None, False),
                                                                    'tight_consumption': ('float', None, False),
                                                                    'shale_consumption': ('float', None, False),

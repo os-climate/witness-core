@@ -132,6 +132,7 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
+    uc_cls.run()
 
     #  self.exec_eng.dm.export_couplings(
     #     in_csv=True, f_name='couplings.csv')
@@ -147,8 +148,8 @@ if '__main__' == __name__:
     #     pd.set_option('display.max_columns', None)
     #     pd.set_option('display.width', None)
 
-    uc_cls.run()
-
+    uc_cls.test()
+    """
     ppf = PostProcessingFactory()
     for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         if disc.sos_name == 'EnergyMix':
@@ -159,3 +160,4 @@ if '__main__' == __name__:
 
 #             for graph in graph_list:
 #                 graph.to_plotly().show()
+"""

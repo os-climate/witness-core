@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -29,7 +29,7 @@ from plotly.subplots import make_subplots
 import pandas as pd
 from plotly.express.colors import qualitative
 
-RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS['consumption']
+RESOURCE_CONSUMPTION_UNIT = ResourceGlossary.UNITS[GlossaryCore.Consumption]
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -103,10 +103,10 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     EnergyMix = execution_engine.dm.get_disciplines_with_name(
         f'{WITNESS_ns}.EnergyMix')[0]
     years = np.arange(EnergyMix.get_sosdisc_inputs(
-        'year_start'), EnergyMix.get_sosdisc_inputs('year_end') + 1)
+        GlossaryCore.YearStart), EnergyMix.get_sosdisc_inputs(GlossaryCore.YearEnd) + 1)
     # Construct a DataFrame to organize the data
-    resource_consumed = pd.DataFrame({'years': years})
-    energy_list = EnergyMix.get_sosdisc_inputs('energy_list')
+    resource_consumed = pd.DataFrame({GlossaryCore.Years: years})
+    energy_list = EnergyMix.get_sosdisc_inputs(GlossaryCore.energy_list)
     for energy in energy_list:
         if energy == 'biomass_dry':
             namespace_disc = f'{WITNESS_ns}.AgricultureMix'
@@ -115,7 +115,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
 
         energy_disc = execution_engine.dm.get_disciplines_with_name(
             f'{namespace_disc}')[0]
-        techno_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        techno_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace_disc}.{techno}')[0]
@@ -127,11 +127,11 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
                     'scaling_factor_techno_consumption')
     CCUS = execution_engine.dm.get_disciplines_with_name(
         f'{WITNESS_ns}.CCUS')[0]
-    ccs_list = CCUS.get_sosdisc_inputs('ccs_list')
+    ccs_list = CCUS.get_sosdisc_inputs(GlossaryCore.ccs_list)
     for stream in ccs_list:
         stream_disc = execution_engine.dm.get_disciplines_with_name(
             f'{WITNESS_ns}.CCUS.{stream}')[0]
-        techno_list = stream_disc.get_sosdisc_inputs('technologies_list')
+        techno_list = stream_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{WITNESS_ns}.CCUS.{stream}.{techno}')[0]
@@ -144,13 +144,13 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
 
     # Create Figure
     chart_name = f'{resource_name} consumption by technologies'
-    new_chart = TwoAxesInstanciatedChart('years', f'{resource_name} consumed by techno (Mt)',
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'{resource_name} consumed by techno (Mt)',
                                          chart_name=chart_name, stacked_bar=True)
     for col in resource_consumed.columns:
-        if 'category' not in col and col != 'years':
+        if 'category' not in col and col != GlossaryCore.Years:
             legend_title = f'{col}'
             serie = InstanciatedSeries(
-                resource_consumed['years'].values.tolist(),
+                resource_consumed[GlossaryCore.Years].values.tolist(),
                 resource_consumed[col].values.tolist(), legend_title, 'bar')
             new_chart.series.append(serie)
 

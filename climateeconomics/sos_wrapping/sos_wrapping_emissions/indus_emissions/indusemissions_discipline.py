@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
@@ -45,32 +46,31 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
     name = f'{GHGemissionsDiscipline.name}.Industry'
     _maturity = 'Research'
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_gr_sigma': {'type': 'float', 'default': -0.0152, 'user_level': 2, 'unit': '-'},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001, 'user_level': 2, 'unit': '-'},
         'init_indus_emissions': {'type': 'float', 'default': 34, 'unit': 'GtCO2 per year', 'user_level': 2},
-        'init_gross_output': {'type': 'float', 'default': 130.187, 'unit': 'T$', 'user_level': 2,
-                              'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'init_cum_indus_emissions': {'type': 'float', 'default': 577.31, 'unit': 'GtCO2', 'user_level': 2},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
-                         'dataframe_descriptor': {'years': ('float', None, False),
-                                                  'gross_output': ('float', None, False),
-                                                  'output_net_of_d': ('float', None, False),
-                                                  'net_output': ('float', None, False),
-                                                  'population': ('float', None, False),
-                                                  'productivity': ('float', None, False),
-                                                  'productivity_gr': ('float', None, False),
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
+                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                                  GlossaryCore.GrossOutput: ('float', None, False),
+                                                  GlossaryCore.OutputNetOfDamage: ('float', None, False),
+                                                  GlossaryCore.NetOutput: ('float', None, False),
+                                                  GlossaryCore.PopulationValue: ('float', None, False),
+                                                  GlossaryCore.Productivity: ('float', None, False),
+                                                  GlossaryCore.ProductivityGrowthRate: ('float', None, False),
                                                   'energy_productivity_gr': ('float', None, False),
                                                   'energy_productivity': ('float', None, False),
-                                                  'consumption': ('float', None, False),
-                                                  'pc_consumption': ('float', None, False),
-                                                  'capital': ('float', None, False),
-                                                  'investment': ('float', None, False),
+                                                  GlossaryCore.Consumption: ('float', None, False),
+                                                  GlossaryCore.PerCapitaConsumption: ('float', None, False),
+                                                  GlossaryCore.Capital: ('float', None, False),
+                                                  GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
-                                                  'energy_investment': ('float', None, False),
-                                                  'output_growth': ('float', None, False),}
+                                                  GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
+                                                  GlossaryCore.OutputGrowth: ('float', None, False),}
                          },
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2, 'unit': '-'},
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'}
@@ -92,7 +92,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         CO2_indus_emissions_df = self.emissions_model.compute(in_dict)
         # Store output data
         dict_values = {
-            'CO2_indus_emissions_df': CO2_indus_emissions_df[['years', 'indus_emissions']],
+            'CO2_indus_emissions_df': CO2_indus_emissions_df[[GlossaryCore.Years, 'indus_emissions']],
             'CO2_indus_emissions_df_detailed': CO2_indus_emissions_df}
         self.store_sos_outputs_values(dict_values)
 
@@ -102,16 +102,16 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         gradient of coupling variable to compute: 
         CO2_emissions_df
           - 'indus_emissions':
-                - economics_df, 'gross_output'
+                - economics_df, GlossaryCore.GrossOutput
           - 'cum_indus_emissions'
-                - economics_df, 'gross_output'
+                - economics_df, GlossaryCore.GrossOutput
         """
 
         d_indus_emissions_d_gross_output, d_cum_indus_emissions_d_gross_output, d_cum_indus_emissions_d_total_CO2_emitted = self.emissions_model.compute_d_indus_emissions()
 
         # fill jacobians
         self.set_partial_derivative_for_other_types(
-            ('CO2_indus_emissions_df', 'indus_emissions'), ('economics_df', 'gross_output'),  d_indus_emissions_d_gross_output)
+            ('CO2_indus_emissions_df', 'indus_emissions'), (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),  d_indus_emissions_d_gross_output)
 
     def get_chart_filter_list(self):
 
@@ -165,12 +165,12 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
 
         total_emission = CO2_indus_emissions_df_detailed['indus_emissions']
 
-        years = list(CO2_indus_emissions_df_detailed['years'].values)
+        years = list(CO2_indus_emissions_df_detailed[GlossaryCore.Years].values)
 
         chart_name = 'Total Industrial emissions'
 
         new_chart = TwoAxesInstanciatedChart(
-            'years', 'CO2 emissions [Gt]', chart_name=chart_name)
+            GlossaryCore.Years, 'CO2 emissions [Gt]', chart_name=chart_name)
 
         c_emission = list(total_emission.values)
 
@@ -188,11 +188,11 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
 
         cum_total_emissions = CO2_indus_emissions_df_detailed['cum_indus_emissions']
 
-        years = list(CO2_indus_emissions_df_detailed['years'].values)
+        years = list(CO2_indus_emissions_df_detailed[GlossaryCore.Years].values)
 
         chart_name = f'Cumulated industrial CO2 emissions since {years[0]}'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Cumulative CO2 emissions [Gt]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Cumulative CO2 emissions [Gt]',
                                              chart_name=chart_name)
 
         new_series = InstanciatedSeries(
@@ -209,11 +209,11 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
 
         sigma = CO2_indus_emissions_df_detailed['sigma']
 
-        years = list(CO2_indus_emissions_df_detailed['years'].values)
+        years = list(CO2_indus_emissions_df_detailed[GlossaryCore.Years].values)
 
         chart_name = f'Sigma to compute industrial CO2 emissions'
 
-        new_chart = TwoAxesInstanciatedChart('years', 'Sigma [-]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Sigma [-]',
                                              chart_name=chart_name)
 
         new_series = InstanciatedSeries(

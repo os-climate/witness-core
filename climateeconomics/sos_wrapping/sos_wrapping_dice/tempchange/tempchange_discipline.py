@@ -13,8 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.tempchange_model import TempChange
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -41,9 +40,9 @@ class TempChangeDiscipline(SoSWrapp):
         'version': '',
     }
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_temp_ocean': {'type': 'float', 'default': 0.00687},
         'init_temp_atmo': {'type': 'float', 'default': 0.85},
         'eq_temp_impact': {'type': 'float', 'default': 3.1},
@@ -56,11 +55,11 @@ class TempChangeDiscipline(SoSWrapp):
         'lo_tocean': {'type': 'float', 'default': -1},
         'up_tatmo': {'type': 'float', 'default': 12},
         'up_tocean': {'type': 'float', 'default' : 20},
-        'carboncycle_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
+        GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                            }}
 
     DESC_OUT = {
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
+        GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario')}
 
     _maturity = 'Research'
 
@@ -68,14 +67,14 @@ class TempChangeDiscipline(SoSWrapp):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
-#         carboncycle_df = in_dict.pop('carboncycle_df')
+#         carboncycle_df = in_dict.pop(GlossaryCore.CarbonCycleDfValue)
 
         # pyworld3 execution
         model = TempChange()
         temperature_df = model.compute(in_dict)
 
         # store output data
-        out_dict = {"temperature_df": temperature_df}
+        out_dict = {GlossaryCore.TemperatureDfValue: temperature_df}
         self.store_sos_outputs_values(out_dict)
 
     def get_chart_filter_list(self):
@@ -107,12 +106,12 @@ class TempChangeDiscipline(SoSWrapp):
 
         if 'temperature evolution' in chart_list:
 
-            to_plot = ['temp_atmo', 'temp_ocean']
-            temperature_df = self.get_sosdisc_outputs('temperature_df')
+            to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
+            temperature_df = self.get_sosdisc_outputs(GlossaryCore.TemperatureDfValue)
             temperature_df = resize_df(temperature_df)
 
-            legend = {'temp_atmo': 'atmosphere temperature',
-                      'temp_ocean': 'ocean temperature'}
+            legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
+                      GlossaryCore.TempOcean: 'ocean temperature'}
 
             years = list(temperature_df.index)
 
@@ -128,7 +127,7 @@ class TempChangeDiscipline(SoSWrapp):
 
             chart_name = 'temperature evolution over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'temperature evolution (degrees Celsius above preindustrial)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'temperature evolution (degrees Celsius above preindustrial)',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)

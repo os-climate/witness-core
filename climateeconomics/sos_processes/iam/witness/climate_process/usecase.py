@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -89,7 +89,7 @@ class Study(StudyManager):
         #        f2 = interp1d(emissions_image_df['year'], emissions_image_df['emissions'])
         # Find values for 2020, 2050 and concat dfs
         #         emissions = f2(years)
-        #         emissions_df = pd.DataFrame({'years': years, 'total_emissions':emissions, 'cum_total_emissions': np.zeros(year_range)})
+        #         emissions_df = pd.DataFrame({GlossaryCore.Years: years, 'total_emissions':emissions, 'cum_total_emissions': np.zeros(year_range)})
         #         emissions_df.index = years
         #         # carbon emissions df
 
@@ -101,7 +101,7 @@ class Study(StudyManager):
 
         emissions = list(np.linspace(38.3, 0, 10)) + \
                     list(np.zeros(year_range - 10))
-        emissions_df = pd.DataFrame({"years": years, 'total_emissions': emissions,
+        emissions_df = pd.DataFrame({GlossaryCore.Years: years, 'total_emissions': emissions,
                                      'cum_total_emissions': np.zeros(year_range)})
         emissions_df.index = years
         # missing here the initial level of cumulated emissions
@@ -111,11 +111,9 @@ class Study(StudyManager):
 
         # private values economics operator model
         climate_input = {}
-        climate_input[self.study_name + '.year_start'] = self.year_start
-        climate_input[self.study_name + '.year_end'] = self.year_end
-
-        climate_input[self.study_name +
-                      '.CO2_emissions_df'] = emissions_df
+        climate_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        climate_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
+        climate_input[f"{self.study_name}.{GlossaryCore.CO2EmissionsDfValue}"] = emissions_df
 
         setup_data_list.append(climate_input)
 

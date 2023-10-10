@@ -26,14 +26,8 @@ prod_hydropower_constraint,Energy_constraints,ineq_constraint,-1.0,smax,ns_funct
 total_prod_solid_fuel_elec,Energy_constraints,ineq_constraint,0.0,smax,ns_functions
 total_prod_h2_liquid,Energy_constraints,ineq_constraint,0.0,smax,ns_functions
 syngas_prod_constraint,Energy_constraints,ineq_constraint,-1.0,smax,ns_functions
-invest_constraint,invests_constraints,ineq_constraint,0.0,smax,ns_functions
-invest_sum_cons,invests_constraints,ineq_constraint,0.0,smax,ns_functions
-invest_sum_cons_dc,invests_constraints,ineq_constraint,0.0,smax,ns_functions
-invest_sum_eq_cons,invests_constraints,eq_constraint,-1.0,delta,ns_functions
 electricity_demand_constraint,demand_constraint,ineq_constraint,-1.0,sum,ns_functions
 transport_demand_constraint,demand_constraint,ineq_constraint,-1.0,sum,ns_functions
 energy_production_objective,objectives,objective,0.0,sum,ns_functions
 syngas_prod_objective,objectives,objective,0.0,sum,ns_functions
-invest_objective,objectives,objective,0.0,sum,ns_functions
-invest_objective_sum,objectives,objective,0.0,sum,ns_functions
 land_demand_constraint,agriculture_constraint,ineq_constraint,-1.0,sum,ns_functions

@@ -22,6 +22,14 @@ $$\Omega_t = \frac{D_t}{1 + D_t}$$.
 Then as before we have the total economics damage in trillions dollars:  
 $$Damages_t = \Omega _t. Y_t$$
 
+## Graphs
+
+![](tipping_point_damage_model.png)
+
+
+
+![](dice_damage_model.png)
+
 ### Damage to productivity 
 See the documentation of macroeconomics model. 
 

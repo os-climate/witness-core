@@ -1,7 +1,7 @@
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 # Copyright (c) 2021 Airbus SAS.
 # All rights reserved.
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
@@ -82,7 +82,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'out_type': 'dataframe',
                                                                 'key': 'forest_investment',
                                                                 'index': years,
-                                                                'index_name': 'years',
+                                                                'index_name': GlossaryCore.Years,
                                                                 'namespace_in': 'ns_witness',
                                                                 'namespace_out': 'ns_invest'
                                                                 }
@@ -91,9 +91,9 @@ class Study(ClimateEconomicsStudyManager):
                 dspace_df[f'crop_investment_array_mix']['value']
             design_var_descriptor['crop_investment_array_mix'] = {'out_name': 'crop_investment',
                                                                   'out_type': 'dataframe',
-                                                                  'key': 'investment',
+                                                                  'key': GlossaryCore.InvestmentsValue,
                                                                   'index': years,
-                                                                  'index_name': 'years',
+                                                                  'index_name': GlossaryCore.Years,
                                                                   'namespace_in': 'ns_witness',
                                                                   'namespace_out': 'ns_crop'
                                                                   }
@@ -102,9 +102,9 @@ class Study(ClimateEconomicsStudyManager):
                 dspace_df[f'managed_wood_investment_array_mix']['value']
             design_var_descriptor['managed_wood_investment_array_mix'] = {'out_name': 'managed_wood_investment',
                                                                           'out_type': 'dataframe',
-                                                                          'key': 'investment',
+                                                                          'key': GlossaryCore.InvestmentsValue,
                                                                           'index': years,
-                                                                          'index_name': 'years',
+                                                                          'index_name': GlossaryCore.Years,
                                                                           'namespace_in': 'ns_witness',
                                                                           'namespace_out': 'ns_forest'
                                                                           }
@@ -112,9 +112,9 @@ class Study(ClimateEconomicsStudyManager):
             dspace_df[f'deforestation_investment_ctrl']['value']
         design_var_descriptor['deforestation_investment_ctrl'] = {'out_name': 'deforestation_investment',
                                                                   'out_type': 'dataframe',
-                                                                  'key': 'investment',
+                                                                  'key': GlossaryCore.InvestmentsValue,
                                                                   'index': years,
-                                                                  'index_name': 'years',
+                                                                  'index_name': GlossaryCore.Years,
                                                                   'namespace_in': 'ns_witness',
                                                                   'namespace_out': 'ns_forest'
                                                                   }
@@ -124,7 +124,7 @@ class Study(ClimateEconomicsStudyManager):
                                                              'out_type': 'dataframe',
                                                              'key': 'red_meat_percentage',
                                                              'index': years,
-                                                             'index_name': 'years',
+                                                             'index_name': GlossaryCore.Years,
                                                              'namespace_in': 'ns_witness',
                                                              'namespace_out': 'ns_crop'
                                                              }
@@ -134,21 +134,11 @@ class Study(ClimateEconomicsStudyManager):
                                                                'out_type': 'dataframe',
                                                                'key': 'white_meat_percentage',
                                                                'index': years,
-                                                               'index_name': 'years',
+                                                               'index_name': GlossaryCore.Years,
                                                                'namespace_in': 'ns_witness',
                                                                'namespace_out': 'ns_crop'
                                                                }
 
-        dv_arrays_dict[f'{self.witness_uc.study_name}.share_energy_investment_ctrl'] = \
-            dspace_df[f'share_energy_investment_ctrl']['value']
-        design_var_descriptor['share_energy_investment_ctrl'] = {'out_name': 'share_energy_investment',
-                                                                 'out_type': 'dataframe',
-                                                                 'key': 'share_investment',
-                                                                 'index': years,
-                                                                 'index_name': 'years',
-                                                                 'namespace_in': 'ns_witness',
-                                                                 'namespace_out': 'ns_witness'
-                                                                 }
 
         self.func_df = self.witness_uc.func_df
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = self.func_df

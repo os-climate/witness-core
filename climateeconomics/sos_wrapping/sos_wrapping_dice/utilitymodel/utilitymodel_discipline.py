@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.utility_model import UtilityModel
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -41,19 +41,19 @@ class UtilityModelDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'conso_elasticity': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_rate_time_pref': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'scaleone': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 0.0302455265681763},
         'scaletwo': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': -10993.704},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),
     }
     DESC_OUT = {
-        'utility_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
+        GlossaryCore.UtilityDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
     }
 
     def run(self):
@@ -62,15 +62,15 @@ class UtilityModelDiscipline(SoSWrapp):
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
 
         # compute utility
-        economics_df = inp_dict.pop('economics_df')
+        economics_df = inp_dict.pop(GlossaryCore.EconomicsDfValue)
         emissions_df = inp_dict.pop('emissions_df')
-        temperature_df = inp_dict.pop('temperature_df')
+        temperature_df = inp_dict.pop(GlossaryCore.TemperatureDfValue)
         utility_m = UtilityModel(inp_dict)
         utility_df = utility_m.compute(
             economics_df, emissions_df, temperature_df)
 
         # store output data
-        dict_values = {'utility_df': utility_df}
+        dict_values = {GlossaryCore.UtilityDfValue: utility_df}
         self.store_sos_outputs_values(dict_values)
 
     def get_chart_filter_list(self):
@@ -101,11 +101,11 @@ class UtilityModelDiscipline(SoSWrapp):
 
         if 'Utility' in chart_list:
 
-            to_plot = ['discounted_utility']
-            utility_df = self.get_sosdisc_outputs('utility_df')
+            to_plot = [GlossaryCore.DiscountedUtility]
+            utility_df = self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue)
             utility_df = resize_df(utility_df)
 
-            discounted_utility = utility_df['discounted_utility']
+            discounted_utility = utility_df[GlossaryCore.DiscountedUtility]
 
             years = list(utility_df.index)
 
@@ -116,7 +116,7 @@ class UtilityModelDiscipline(SoSWrapp):
 
             chart_name = 'Utility'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Discounted Utility (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Discounted Utility (trill $)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)
@@ -136,7 +136,7 @@ class UtilityModelDiscipline(SoSWrapp):
         if 'Utility of pc consumption' in chart_list:
 
             to_plot = ['period_utility']
-            utility_df = self.get_sosdisc_outputs('utility_df')
+            utility_df = self.get_sosdisc_outputs(GlossaryCore.UtilityDfValue)
             utility_df = resize_df(utility_df)
 
             utility = utility_df['period_utility']
@@ -150,7 +150,7 @@ class UtilityModelDiscipline(SoSWrapp):
 
             chart_name = 'Utility of per capita consumption'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Utility of pc consumption',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Utility of pc consumption',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)

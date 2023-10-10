@@ -19,6 +19,8 @@ import pandas as pd
 import os
 from copy import deepcopy
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class OrderOfMagnitude():
 
@@ -46,10 +48,10 @@ class Agriculture():
     KM_2_unit = 'km2'
     HECTARE = 'ha'
 
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
-    TIME_STEP = 'time_step'
-    POPULATION_DF = 'population_df'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
+    TIME_STEP = GlossaryCore.TimeStep
+    POPULATION_DF = GlossaryCore.PopulationDfValue
     DIET_DF = 'diet_df'
     KG_TO_KCAL_DICT = 'kg_to_kcal_dict'
     KG_TO_M2_DICT = 'kg_to_m2_dict'
@@ -128,7 +130,7 @@ class Agriculture():
         '''
 
         # Set index of coupling dataframe in inputs
-        temperature_df.index = temperature_df['years'].values
+        temperature_df.index = temperature_df[GlossaryCore.Years].values
 
         # construct the diet over time
         self.updated_diet_df = deepcopy(self.update_diet())
@@ -146,11 +148,11 @@ class Agriculture():
         surface_df = self.add_climate_impact(
             food_surface_df_before, temperature_df)
         # add years data
-        surface_df.insert(loc=0, column='years', value=self.years)
+        surface_df.insert(loc=0, column=GlossaryCore.Years, value=self.years)
 
         self.food_land_surface_df = surface_df
 
-        self.total_food_land_surface['years'] = surface_df['years']
+        self.total_food_land_surface[GlossaryCore.Years] = surface_df[GlossaryCore.Years]
         self.total_food_land_surface['total surface (Gha)'] = surface_df['total surface (Gha)']
 
         self.food_land_surface_percentage_df = self.convert_surface_to_percentage(
@@ -178,10 +180,10 @@ class Agriculture():
         result = pd.DataFrame()
         population_df.index = diet_df.index
         for key in diet_df.keys():
-            if key == "years":
+            if key == GlossaryCore.Years:
                 result[key] = diet_df[key]
             else:
-                result[key] = population_df['population'] * diet_df[key] * 1e6
+                result[key] = population_df[GlossaryCore.PopulationValue] * diet_df[key] * 1e6
         # as population is in million of habitants, *1e6 is needed
         return(result)
 
@@ -208,7 +210,7 @@ class Agriculture():
         result = pd.DataFrame()
         sum = np.array(len(quantity_of_food_df.index) * [0])
         for key in quantity_of_food_df.keys():
-            if key == "years":
+            if key == GlossaryCore.Years:
                 pass
             else:
                 result[key + ' (Gha)'] = kg_food_to_surface[key] * \
@@ -217,7 +219,7 @@ class Agriculture():
         # add other contribution. 1e6 is for million of people,
         # /hatom2 for future conversion
         result['other (Gha)'] = self.other_use_agriculture * \
-            population_df['population'].values * 1e6 / self.hatom2
+            population_df[GlossaryCore.PopulationValue].values * 1e6 / self.hatom2
         sum = sum + result['other (Gha)']
 
         # add total data
@@ -236,7 +238,7 @@ class Agriculture():
                 - compute new diet_df
         '''
         starting_diet = self.diet_df
-        changed_diet_df = pd.DataFrame({'years': self.years})
+        changed_diet_df = pd.DataFrame({GlossaryCore.Years: self.years})
         self.kcal_diet_df = {}
         total_kcal = 0
         # compute total kcal
@@ -291,7 +293,7 @@ class Agriculture():
         """
         land_surface_percentage_df = deepcopy(surface_df)
         for key in land_surface_percentage_df.keys():
-            if key == 'years':
+            if key == GlossaryCore.Years:
                 pass
             else:
                 land_surface_percentage_df[key] = land_surface_percentage_df[key] / \
@@ -307,14 +309,14 @@ class Agriculture():
                 - parameters of productivity function
                 - temperature_df: dataframe, degree celsius wrt preindustrial level, dataframe of temperature increase
         """
-        temperature = temperature_df['temp_atmo']
+        temperature = temperature_df[GlossaryCore.TempAtmo]
         # Compute the difference in temperature wrt 2020 reference
-        temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
+        temp = temperature - temperature_df.at[self.year_start, GlossaryCore.TempAtmo]
         # Compute reduction in productivity due to increase in temperature
         pdctivity_reduction = self.param_a * temp ** 2 + self.param_b * temp
         self.prod_reduction = pdctivity_reduction
         self.productivity_evolution = pd.DataFrame(
-            {"years": self.years, 'productivity_evolution': pdctivity_reduction})
+            {GlossaryCore.Years: self.years, 'productivity_evolution': pdctivity_reduction})
         self.productivity_evolution.index = self.years
         # Apply this reduction to increase land surface needed
         surface_df = surface_df_before.multiply(
@@ -365,13 +367,13 @@ class Agriculture():
         """
         number_of_values = (self.year_end - self.year_start + 1)
         idty = np.identity(number_of_values)
-        temp_zero = temperature_df.at[self.year_start, 'temp_atmo']
-        temp = temperature_df['temp_atmo'].values
+        temp_zero = temperature_df.at[self.year_start, GlossaryCore.TempAtmo]
+        temp = temperature_df[GlossaryCore.TempAtmo].values
         a = self.param_a
         b = self.param_b
         land_before = self.food_surface_df_without_climate_change[column_name].values
         # Step 1: Productivity reduction
-        # temp = temperature - temperature_df.at[self.year_start, 'temp_atmo']
+        # temp = temperature - temperature_df.at[self.year_start, GlossaryCore.TempAtmo]
         # pdctivity_reduction = self.param_a * temp**2 + self.param_b * temp
         # =at**2 + at0**2 - 2att0 + bt - bt0
         # Derivative wrt t each year:  2at-2at0 +b
@@ -415,7 +417,7 @@ class Agriculture():
                 kg_food_to_surface[vegetable_name]
 
         total_surface_grad = sub_total_surface_grad * \
-            population_df['population'].values * 1e6 * self.hatom2 / 1e9
+            population_df[GlossaryCore.PopulationValue].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * \
             (1 - self.productivity_evolution['productivity_evolution'])
 
@@ -449,7 +451,7 @@ class Agriculture():
                 kg_food_to_surface[vegetable_name]
 
         total_surface_grad = sub_total_surface_grad * \
-            population_df['population'].values * 1e6 * self.hatom2 / 1e9
+            population_df[GlossaryCore.PopulationValue].values * 1e6 * self.hatom2 / 1e9
         total_surface_climate_grad = total_surface_grad * \
             (1 - self.productivity_evolution['productivity_evolution'])
 

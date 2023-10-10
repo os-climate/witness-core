@@ -16,6 +16,7 @@ limitations under the License.
 # coding: utf-8
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.ghg_cycle_model import GHGCycle
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
@@ -48,17 +49,17 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
     co2_init_conc_fund = np.array([296.002949511, 5.52417779186, 6.65150094285, 2.39635475726, 0.17501699667]) * 412.4/296.002949511
 
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt',
-                             'dataframe_descriptor': {'years': ('float', None, False),
-                                                      'Total CO2 emissions': ('float', None, False),
+                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                                      GlossaryCore.TotalCO2Emissions: ('float', None, False),
                                                       'Total N2O emissions': ('float', None, False),
                                                       'Total CH4 emissions': ('float', None, False),
                                                       }},
         'co2_emissions_fractions': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': '-', 'default': [0.13, 0.20, 0.32, 0.25, 0.10], 'user_level': 2},
-        'co2_boxes_decays': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': 'years',
+        'co2_boxes_decays': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': GlossaryCore.Years,
                              'default': [1.0, 0.9972489701005488, 0.9865773841008381, 0.942873143854875, 0.6065306597126334],
                              'user_level': 2},
         'co2_boxes_init_conc': {'type': 'array', 'unit': 'ppm', 'default': co2_init_conc_fund, 'user_level': 2},
@@ -108,7 +109,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         self.ghg_cycle.compute(param_in)
 
         dict_values = {
-            'ghg_cycle_df': self.ghg_cycle.ghg_cycle_df[['years', 'co2_ppm', 'ch4_ppm', 'n2o_ppm']],
+            'ghg_cycle_df': self.ghg_cycle.ghg_cycle_df[[GlossaryCore.Years, 'co2_ppm', 'ch4_ppm', 'n2o_ppm']],
             'ghg_cycle_df_detailed': self.ghg_cycle.ghg_cycle_df,
             'gwp20_objective': self.ghg_cycle.gwp20_obj,
             'gwp100_objective': self.ghg_cycle.gwp100_obj,
@@ -126,7 +127,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         d_ghg_ppm_d_emissions = self.ghg_cycle.d_ppm_d_ghg()
 
         self.set_partial_derivative_for_other_types(
-            ('ghg_cycle_df', 'co2_ppm'), ('GHG_emissions_df', 'Total CO2 emissions'), d_ghg_ppm_d_emissions['CO2'])
+            ('ghg_cycle_df', 'co2_ppm'), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions), d_ghg_ppm_d_emissions['CO2'])
         self.set_partial_derivative_for_other_types(
             ('ghg_cycle_df', 'ch4_ppm'), ('GHG_emissions_df', 'Total CH4 emissions'), d_ghg_ppm_d_emissions['CH4'])
         self.set_partial_derivative_for_other_types(
@@ -144,7 +145,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             specie='N2O')
 
         self.set_partial_derivative_for_other_types(
-            ('gwp20_objective',), ('GHG_emissions_df', 'Total CO2 emissions'), d_gwp20_objective_d_total_co2_emissions)
+            ('gwp20_objective',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions), d_gwp20_objective_d_total_co2_emissions)
         self.set_partial_derivative_for_other_types(
             ('gwp20_objective',), ('GHG_emissions_df', 'Total CH4 emissions'), d_gwp20_objective_d_total_ch4_emissions)
         self.set_partial_derivative_for_other_types(
@@ -162,7 +163,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             specie='N2O')
 
         self.set_partial_derivative_for_other_types(
-            ('gwp100_objective',), ('GHG_emissions_df', 'Total CO2 emissions'),
+            ('gwp100_objective',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions),
             d_gwp100_objective_d_total_co2_emissions)
         self.set_partial_derivative_for_other_types(
             ('gwp100_objective',), ('GHG_emissions_df', 'Total CH4 emissions'),
@@ -172,10 +173,10 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             d_gwp100_objective_d_total_n2o_emissions)
 
         self.set_partial_derivative_for_other_types(
-            ('rockstrom_limit_constraint',), ('GHG_emissions_df', 'Total CO2 emissions'),
+            ('rockstrom_limit_constraint',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions),
             -d_ghg_ppm_d_emissions['CO2'] / self.ghg_cycle.rockstrom_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('minimum_ppm_constraint',), ('GHG_emissions_df', 'Total CO2 emissions'),
+            ('minimum_ppm_constraint',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions),
             d_ghg_ppm_d_emissions['CO2'] / self.ghg_cycle.minimum_ppm_constraint_ref)
 
     def get_chart_filter_list(self):
@@ -214,7 +215,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
             min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 Atmospheric concentrations parts per million',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 Atmospheric concentrations parts per million',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value], chart_name)
 
@@ -251,7 +252,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
             min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart('years', 'CH4 Atmospheric concentrations parts per million',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CH4 Atmospheric concentrations parts per million',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value], chart_name)
 
@@ -269,7 +270,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             year_start = years[0]
             year_end = years[len(years) - 1]
             min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart('years', 'N2O Atmospheric concentrations parts per million',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'N2O Atmospheric concentrations parts per million',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value], chart_name)
 

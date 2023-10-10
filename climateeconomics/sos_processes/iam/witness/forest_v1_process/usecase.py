@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -81,33 +81,23 @@ class Study(StudyManager):
 
         self.deforestation_surface = np.linspace(10, 5, year_range)
         deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": self.deforestation_surface})
+            {GlossaryCore.Years: years, "deforested_surface": self.deforestation_surface})
 
         forest_invest = np.linspace(5, 8, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         reforestation_cost_per_ha = 3800
 
         # values of pyworld3
         forest_input = {}
-        forest_input[self.study_name + '.year_start'] = self.year_start
-        forest_input[self.study_name + '.year_end'] = self.year_end
-
-        forest_input[self.study_name + self.forest_name +
-                     '.limit_deforestation_surface'] = deforestation_limit
-
-        forest_input[self.study_name + self.forest_name +
-                     '.CO2_per_ha'] = CO2_per_ha
-
-        forest_input[self.study_name + self.forest_name +
-                     '.initial_emissions'] = initial_emissions
-        forest_input[self.study_name + self.forest_name +
-                     '.reforestation_cost_per_ha'] = reforestation_cost_per_ha
-
-        forest_input[self.study_name +
-                     '.deforestation_surface'] = deforestation_surface_df
-        forest_input[self.study_name + self.additional_ns +
-                     '.forest_investment'] = self.forest_invest_df
+        forest_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        forest_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
+        forest_input[f"{self.study_name}.{self.forest_name}.{'limit_deforestation_surface'}"] = deforestation_limit
+        forest_input[f"{self.study_name}.{self.forest_name}.{'CO2_per_ha'}"] = CO2_per_ha
+        forest_input[f"{self.study_name}.{self.forest_name}.{'initial_emissions'}"] = initial_emissions
+        forest_input[f"{self.study_name}.{self.forest_name}.{'reforestation_cost_per_ha'}"] = reforestation_cost_per_ha
+        forest_input[f"{self.study_name}.{'deforestation_surface'}"] = deforestation_surface_df
+        forest_input[f"{self.study_name}.{'forest_investment'}"] = self.forest_invest_df
 
         setup_data_list.append(forest_input)
 
@@ -144,17 +134,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    # uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-    # uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
-
-    # ppf = PostProcessingFactory()
-    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-    #     filters = ppf.get_post_processing_filters_by_discipline(
-    #         disc)
-    #     graph_list = ppf.get_post_processing_by_discipline(
-    #         disc, filters, as_json=False)
-
-    #     for graph in graph_list:
-    #         graph.to_plotly().show()
+    uc_cls.test()

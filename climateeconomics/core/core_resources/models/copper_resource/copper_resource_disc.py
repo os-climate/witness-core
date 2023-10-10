@@ -19,6 +19,8 @@ from os.path import join, dirname
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import CopperResourceModel
 import numpy as np
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
     TwoAxesInstanciatedChart
@@ -68,7 +70,7 @@ class CopperResourceDiscipline(ResourceDiscipline):
                                  'user_level': 2, 'namespace': 'ns_copper_resource',
                                  'dataframe_descriptor':
                                      {
-                                         'years': ('float', None, False),
+                                         GlossaryCore.Years: ('float', None, False),
                                          'copper_type': ('string', None, False),
                                          'Price': ('float', None, True),
                                          'Price_unit': ('string', None, True),
@@ -81,7 +83,7 @@ class CopperResourceDiscipline(ResourceDiscipline):
                                             'default': default_resource_production_data, 'user_level': 2, 'namespace': 'ns_copper_resource',
                                             'dataframe_descriptor':
                                                 {
-                                                    'years': ('float', None, False),
+                                                    GlossaryCore.Years: ('float', None, False),
                                                     'copper': ('float', None, False),
                                                 }
                },
@@ -94,7 +96,7 @@ class CopperResourceDiscipline(ResourceDiscipline):
                                             'default': default_resource_consumed_data, 'user_level': 2, 'namespace': 'ns_copper_resource',
                                           'dataframe_descriptor':
                                               {
-                                                  'years': ('float', None, False),
+                                                  GlossaryCore.Years: ('float', None, False),
                                                   'copper_consumption': ('float', None, True),
                                               }
                },

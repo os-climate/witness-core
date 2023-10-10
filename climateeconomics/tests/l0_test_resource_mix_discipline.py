@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -35,7 +37,7 @@ class AllResourceModelTestCase(unittest.TestCase):
 
         self.oil_production_df = read_csv(
             join(data_dir, 'oil.predictible_production.csv'))
-        self.oil_production_df.set_index('years', inplace=True)
+        self.oil_production_df.set_index(GlossaryCore.Years, inplace=True)
         self.gas_production_df = read_csv(
             join(data_dir, 'gas.predictible_production.csv'))
         self.coal_production_df = read_csv(
@@ -103,8 +105,8 @@ class AllResourceModelTestCase(unittest.TestCase):
                             'oil_resource', 'copper_resource', 'platinum_resource']
 
         self.param = {'All_Demand':self.all_demand,
-                      'year_start': self.year_start,
-                      'year_end': self.year_end,
+                      GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
                       'resource_list':self.resource_list,
                       'oil_resource.predictible_production':self.oil_production_df,
                       'natural_gas_resource.predictible_production':self.gas_production_df,
@@ -162,8 +164,8 @@ class AllResourceModelTestCase(unittest.TestCase):
 
         ee.configure()
         ee.display_treeview_nodes()
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.resources_demand': self.all_demand,
                        f'{name}.{model_name}.resources_demand_woratio': self.all_demand,
                        f'{name}.{model_name}.oil_resource.predictable_production':self.oil_production_df,

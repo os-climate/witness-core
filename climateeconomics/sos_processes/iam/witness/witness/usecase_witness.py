@@ -54,22 +54,6 @@ def generate_json_by_discipline(data, json_name):
     preprocess_data_and_save_json(json_data_updt, output_path)
 
 
-def prepare_data(data):
-    """
-    Prepare data by getting only values
-    """
-
-    dict_data = {}
-    for disc_id in list(uc_cls.ee.dm.disciplines_dict.keys()):
-        disc = dm.get_discipline(disc_id)
-        data_in = disc.get_data_in()
-        dict_data[disc.sos_name] = {}
-        for k,v in data_in.items():
-            if not v['numerical']:
-                dict_data[disc.sos_name][k] = v['value']
-    return dict_data
-
-
 def create_fake_regions(data, regions_list): 
     """
     Add regions 
@@ -206,25 +190,6 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-
-
-    data = uc_cls.ee.dm.get_discipline(list(uc_cls.ee.dm.disciplines_dict.keys())[3]).get_data_in()
-    dm = uc_cls.ee.dm
-
-    #dict_data = prepare_data(dm)
-    #for k,v in dict_data.items():
-    #    generate_json_by_discipline(v, k)
-    connection_string = ''
-    database_name = 'regionalization'
-    container_name = 'regionalizationv0'
-    json_path = join(dirname(__file__), 'data', 'AgricultureMix.Crop.json')
-    import os
-    """    for f in os.listdir(join(dirname(__file__), 'data')):
-        insert_json_to_mongodb_bis(join(dirname(__file__), 'data' ,f), container_name, database_name, connection_string)
-    """
-
-
-    uc_cls.run()
-
+    # TODO : careful, this usecase is quite long to test ! 800 sec
+    uc_cls = Study()
+    uc_cls.test()

@@ -20,6 +20,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -61,14 +62,14 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         emission_df_all = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
 
-        emission_df_y = emission_df_all[emission_df_all['years'] >= 2020][['years',
+        emission_df_y = emission_df_all[emission_df_all[GlossaryCore.Years] >= 2020][[GlossaryCore.Years,
                                                                            'total_emissions', 'cum_total_emissions']]
 
         # put manually the index
         years = np.arange(2020, 2101)
         emission_df_y.index = years
 
-        values_dict = {f'{self.name}.CO2_emissions_df': emission_df_y}
+        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': emission_df_y}
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -78,8 +79,8 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline1.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.CO2_emissions_df'],
-                            outputs=[f'{self.name}.carboncycle_df',
+                            inputs=[f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}',
                                      f'{self.name}.ppm_objective',
                                      f'{self.name}.rockstrom_limit_constraint',
                                      f'{self.name}.minimum_ppm_constraint'])
@@ -108,14 +109,14 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         emission_df_all = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
 
-        emission_df_y = emission_df_all[emission_df_all['years'] >= 2020][['years',
+        emission_df_y = emission_df_all[emission_df_all[GlossaryCore.Years] >= 2020][[GlossaryCore.Years,
                                                                            'total_emissions', 'cum_total_emissions']]
 
         # put manually the index
         years = np.arange(2020, 2101)
         emission_df_y.index = years
 
-        values_dict = {f'{self.name}.CO2_emissions_df': emission_df_y}
+        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': emission_df_y}
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -125,8 +126,8 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.CO2_emissions_df'],
-                            outputs=[f'{self.name}.carboncycle_df',
+                            inputs=[f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}',
                                      f'{self.name}.ppm_objective',
                                      f'{self.name}.rockstrom_limit_constraint',
                                      f'{self.name}.minimum_ppm_constraint'])

@@ -14,13 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import numpy as np
-import pandas as pd
-from os.path import join, dirname
-from pandas import DataFrame, read_csv
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness_wo_damage_gdp_input import Study as uc
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as uc
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
@@ -46,6 +42,7 @@ class TestIPCCSSPComparison(unittest.TestCase):
         self.usecase = uc()
         self.usecase.study_name = self.study_name
         values_dict = self.usecase.setup_usecase()
+
         for values_dict_i in values_dict:
             self.ee.load_study_from_input_dict(values_dict_i)
         self.ee.load_study_from_input_dict({f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
@@ -72,4 +69,4 @@ if '__main__' == __name__:
 
     cls = TestIPCCSSPComparison()
     cls.setUp()
-    cls.test_ssps_scenario_plot()
+    cls.test_ssps_scenario_plots()

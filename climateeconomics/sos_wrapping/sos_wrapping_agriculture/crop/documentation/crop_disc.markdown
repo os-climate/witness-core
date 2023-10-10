@@ -65,28 +65,32 @@ The model inputs are:
 * **population_df**, this gives the population number, for each year of the study. The unit is the million of people.
 * **temperature_df**, gives the temperature in degree Celsius above pre-industrial level for each year of the study. 
 * **starting diet**, this gives the food diet for the first year of the study. For each food, the quantity in kg/person/year need to be filled. The different food taken into account are:
-red meat, white meat, milk, eggs, rice and maize, potatoes, fruits and vegetables. By default, data are:
+red meat, white meat, milk, eggs, rice and maize, cereals, fruits and vegetables, fish and other including all the remaining food sucha as sugar, oil, wheat, cocoa, alcohol (etc.). By default, data are:
 
-|Red meat|White meat|Milk|Eggs|Rice and Maize|Potatoes|Fruit and vegetables|Unit|
-| ------ |:--------:|----|----|:------------:|:------:|:------------------:|----|
-|11.02|31.11|79.27|9.68|97.76|32.93|217.62|kg/person/year|
+|Red meat| White meat |Milk|Eggs|Rice and Maize| cereals |Fruit and vegetables|Fish|          Other | Unit            |
+| - |:----------:|-|-|:------------:|:-------:|:------------------:|---:|---------------:|-----------------|
+|13.43|   31.02|73.07|10.45|       98.06       |  10.3 |266.28 |23.38|         177.02 |  kg/person/year |
 
-These data are the average world diet [^7].
+These data are the average world diet [^7]. This leads to a daily diet of 2925 kcal/person.
 
-* **m2 per kg**, gives the average area needed to produce 1kg of the considered food. The unit is m^2/kg. By default, data comes from [^8].
+* **m2 per kg**, gives the average area needed to produce 1kg of the considered food. The unit is m^2/kg. By default, data comes from [^8]. 
+For the specific case of the category other, the average ha per person for the use of agriculture in other way that the 7 food types is 
+0.102ha/person to represent around of 800 millions of ha for a population of 7.8billions of people. [^10]. It is converted to 
+kg/m2 considering an average consumption of 177.02 kg/person/year of food in this category "other"
 * **kcal per kg**, gives the number of kilocalories for 1kg of the considered food. The unit is kcal/kg.
 By default, the values are:
 
-|Red meat|White meat|Milk|Eggs|Rice and Maize|Potatoes|Fruit and vegetables|Unit|
-| ------ |:--------:|----|----|:------------:|:------:|:------------------:|----|
-|2566|1860|550|1500|1150|670|624|kcal/kg|
+|Red meat|White meat|Milk|Eggs|Rice and Maize| cereals |Fruit and vegetables|    Fish |  Other | Unit|
+| --- |:--------:|----|----|:------------:|:-------:|:------------------:|--------:|-------:|---------|
+|1551|2131|921|1425|2572|   2937   |543|     609 |   2582 | kcal/kg |
 
 These data are extracted from [^9].
 * **red meat calories per day**, gives the calories(kcal) of red meat in a person's diet per day.
 * **white meat calory percentage**, gives the calories(kcal) of white meat in a person's diet per day.
-* **other_use_agriculture**, gives the average ha per person for the use of agriculture in other way that the 7 food types. It mainly takes into account :
-cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) - tobacco - yams - natural rubber - millet - textile fiber (cotton and other)... 
-By default, it is set to 0.102ha/person to represent around of 800 millions of ha for a population of 7.8billions of people. [^10]
+* **fish caloris per day**, gives the calories(kcal) of fish in a person's diet per day.
+* **vegetable and carbs calories per day**, gives the calories(kcal) of vegetables and fruits in a person's diet per day.
+* **egg and milk calories per day**, gives the calories(kcal) of egg and milk in a person's diet per day.
+* **other calories per day**, gives the calories(kcal) in a person's diet per day of the food that does not belong to the categories above.
 
 - **CO2_from_production**: Represent the CO2 emitted while the biomass dry production. CO2 is absorbed by the plants in order to be zero emissions in the end. Emissions from tractors are taken into account in the raw to net energy factor,
 - **CO2_from_production_unit**: Unit of the CO2_from_production value. In kgCO2/kgBiomassDry by default,

@@ -20,6 +20,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -68,16 +69,16 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_all = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
 
-        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
-        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all[GlossaryCore.Years] >= 2020]
+        carboncycle_df = carboncycle_df_y[[GlossaryCore.Years, 'atmo_conc']]
         # put manually the index
         years = np.arange(2020, 2101, 1)
         carboncycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
-                       f'{self.name}.carboncycle_df': carboncycle_df,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
+                       f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.temperature_obj_option': temperature_obj_option,
                        f'{self.name}.{self.model_name}.forcing_model': 'DICE'}
@@ -92,8 +93,8 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_{temperature_obj_option}.pkl',
                             discipline=disc_techno, step=1e-15, local_data= disc_techno.local_data,
-                            inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
+                            inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
 
     def test_03_temperature_discipline_analytic_grad_myhre(self):
 
@@ -117,16 +118,16 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_all = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
 
-        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
-        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all[GlossaryCore.Years] >= 2020]
+        carboncycle_df = carboncycle_df_y[[GlossaryCore.Years, 'atmo_conc']]
         # put manually the index
         years = np.arange(2020, 2101, 1)
         carboncycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
-                       f'{self.name}.carboncycle_df': carboncycle_df,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
+                       f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.forcing_model': 'Myhre', }
 
@@ -139,8 +140,8 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_Myhre.pkl',
                             local_data=disc_techno.local_data,
-                            discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective',  f'{self.name}.temperature_constraint'], derr_approx='complex_step')
+                            discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective',  f'{self.name}.temperature_constraint'], derr_approx='complex_step')
 
     def _test_04_temperature_discipline_analytic_grad_etminan(self):
 
@@ -164,16 +165,16 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_all = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
 
-        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
-        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all[GlossaryCore.Years] >= 2020]
+        carboncycle_df = carboncycle_df_y[[GlossaryCore.Years, 'atmo_conc']]
         # put manually the index
         years = np.arange(2020, 2101, 1)
         carboncycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
-                       f'{self.name}.carboncycle_df': carboncycle_df,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
+                       f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.forcing_model': 'Etminan', }
 
@@ -185,8 +186,8 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_etminan.pkl',
-                            local_data= disc_techno.local_data,discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
+                            local_data= disc_techno.local_data,discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
 
     def test_05_temperature_discipline_analytic_grad_meinshausen(self):
 
@@ -210,16 +211,16 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_all = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
 
-        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
-        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all[GlossaryCore.Years] >= 2020]
+        carboncycle_df = carboncycle_df_y[[GlossaryCore.Years, 'atmo_conc']]
         # put manually the index
         years = np.arange(2020, 2101, 1)
         carboncycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
-                       f'{self.name}.carboncycle_df': carboncycle_df,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
+                       f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.forcing_model': 'Meinshausen', }
 
@@ -231,8 +232,8 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_Meinshausen.pkl',local_data= disc_techno.local_data,
-                            discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
+                            discipline=disc_techno, step=1e-15, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], derr_approx='complex_step')
 
     def _test_06_temperature_discipline_analytic_grad_etminan_lower_atmo_conc(self):
 
@@ -256,16 +257,16 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_all = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
 
-        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all['years'] >= 2020]
-        carboncycle_df = carboncycle_df_y[['years', 'atmo_conc']]
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all[GlossaryCore.Years] >= 2020]
+        carboncycle_df = carboncycle_df_y[[GlossaryCore.Years, 'atmo_conc']]
         # put manually the index
         years = np.arange(2020, 2101, 1)
         carboncycle_df.index = years
 
-        values_dict = {f'{self.name}.year_start': 2020,
-                       f'{self.name}.year_end': 2100,
-                       f'{self.name}.time_step': 1,
-                       f'{self.name}.carboncycle_df': carboncycle_df,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
+                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
+                       f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.forcing_model': 'Etminan',
                        f'{self.name}.{self.model_name}.pre_indus_co2_concentration_ppm': 41000.}
@@ -278,8 +279,8 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_temperature_discipline_etminan_lower.pkl',local_data= disc_techno.local_data,
-                            discipline=disc_techno, step=1e-10, inputs=[f'{self.name}.carboncycle_df'],
-                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.temperature_df', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], output_column='CO2 forcing', derr_approx='finite_differences')
+                            discipline=disc_techno, step=1e-10, inputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}'],
+                            outputs=[f'{self.name}.{self.model_name}.forcing_detail_df', f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.temperature_objective', f'{self.name}.temperature_constraint'], output_column='CO2 forcing', derr_approx='finite_differences')
 
 
 if '__main__' == __name__:

@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 # coding: utf-8
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.geophysical_model import CarbonCycle
@@ -40,9 +41,9 @@ class CarbonCycleDiscipline(SoSWrapp):
 
     DESC_IN = {
 
-        'year_start': {'type': 'int', 'default': 2015, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'default': 2100, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'default': 5, 'unit': 'year per period', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'default': 2015, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'default': 2100, 'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'default': 5, 'unit': 'year per period', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'conc_lower_strata': {'type': 'int', 'default': 1720, 'unit': 'Gtc'},
         'conc_upper_strata': {'type': 'int', 'default': 360, 'unit': 'Gtc'},
         'conc_atmo': {'type': 'int', 'default': 588, 'unit': 'Gtc'},
@@ -56,7 +57,7 @@ class CarbonCycleDiscipline(SoSWrapp):
         'lo_ml': {'type': 'float', 'default': 1000},
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
 
-    DESC_OUT = {'carboncycle_df': {'type': 'dataframe',
+    DESC_OUT = {GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe',
                                    'visibility': 'Shared', 'namespace': 'ns_scenario'}}
 
     def run(self):
@@ -66,7 +67,7 @@ class CarbonCycleDiscipline(SoSWrapp):
         # compute output
         carboncycle = CarbonCycle(param_in)
         carboncycle_df = carboncycle.compute(param_in)
-        dict_values = {'carboncycle_df': carboncycle_df}
+        dict_values = {GlossaryCore.CarbonCycleDfValue: carboncycle_df}
 
         # store data
         self.store_sos_outputs_values(dict_values)
@@ -97,12 +98,12 @@ class CarbonCycleDiscipline(SoSWrapp):
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-        carboncycle_df = self.get_sosdisc_outputs('carboncycle_df')
+        carboncycle_df = self.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
         carboncycle_df = resize_df(carboncycle_df)
 
         if 'atmosphere concentration' in chart_list:
 
-            #carboncycle_df = discipline.get_sosdisc_outputs('carboncycle_df')
+            #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             atmo_conc = carboncycle_df['atmo_conc']
 
             years = list(atmo_conc.index)
@@ -114,7 +115,7 @@ class CarbonCycleDiscipline(SoSWrapp):
 
             chart_name = 'atmosphere concentration of carbon'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'carbon concentration (Gtc)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'carbon concentration (Gtc)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)
@@ -132,7 +133,7 @@ class CarbonCycleDiscipline(SoSWrapp):
 
         if 'Atmospheric concentrations parts per million' in chart_list:
 
-            #carboncycle_df = discipline.get_sosdisc_outputs('carboncycle_df')
+            #carboncycle_df = discipline.get_sosdisc_outputs(GlossaryCore.CarbonCycleDfValue)
             ppm = carboncycle_df['ppm']
 
             years = list(ppm.index)
@@ -144,7 +145,7 @@ class CarbonCycleDiscipline(SoSWrapp):
 
             chart_name = 'Atmospheric concentrations parts per million'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Atmospheric concentrations parts per million',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Atmospheric concentrations parts per million',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)

@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 from climateeconomics.core.core_forest.forest_v1 import Forest
+from climateeconomics.glossarycore import GlossaryCore
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -60,19 +61,19 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         year_range = self.year_end - self.year_start + 1
         deforestation_surface = np.array(np.linspace(10, 100, year_range))
         self.deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": deforestation_surface})
+            {GlossaryCore.Years: years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
         self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
         forest_invest = np.linspace(2, 4, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.reforestation_cost_per_ha = 3800
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.LIMIT_DEFORESTATION_SURFACE}': self.limit_deforestation_surface,
                        f'{self.name}.{Forest.DEFORESTATION_SURFACE}': self.deforestation_surface_df,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,

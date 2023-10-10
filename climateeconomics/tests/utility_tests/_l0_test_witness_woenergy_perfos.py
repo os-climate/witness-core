@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from scipy.interpolate.interpolate import interp1d
+
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
 '''
@@ -86,32 +89,32 @@ class TestScatter(unittest.TestCase):
         data_dir = join(dirname(dirname(__file__)), 'data')
         energy_supply_df_all = pd.read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all['years'] >= 2020][[
-            'years', 'total_CO2_emitted']]
-        energy_supply_df_y["years"] = energy_supply_df_all['years']
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020][[
+            GlossaryCore.Years, 'total_CO2_emitted']]
+        energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': 'Total CO2 emissions'})
+            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_gt.index = years
 
         energy_outlook = pd.DataFrame({
-            'years': [2010, 2017, 2018, 2019, 2020, 2025, 2030, 2040, 2050, 2060, 2100],
+            GlossaryCore.Years: [2010, 2017, 2018, 2019, 2020, 2025, 2030, 2040, 2050, 2060, 2100],
             'energy_demand': [141057, 153513, 157366, 158839, 158839 * 0.94, 174058 * 0.91, 183234.136 * 0.91,
                               198699.708 * 0.91, 220000 * 0.91, 250000 * 0.91, 300000 * 0.91]})
-        f2 = interp1d(energy_outlook['years'], energy_outlook['energy_demand'])
+        f2 = interp1d(energy_outlook[GlossaryCore.Years], energy_outlook['energy_demand'])
         energy_supply = f2(years)
         energy_supply_df = pd.DataFrame(
-            {'years': years, 'Total production': energy_supply})
+            {GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply})
         energy_supply_df.index = years
 
         CCS_price = pd.DataFrame(
-            {'years': years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
+            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
-            {'years': years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
 
-        input_dict_to_load[f'{self.name}.energy_production'] = energy_supply_df
-        input_dict_to_load[f'{self.name}.co2_emissions_Gt'] = co2_emissions_gt
-        input_dict_to_load[f'{self.name}.energy_mean_price'] = energy_mean_price
+        input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
+        input_dict_to_load[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
+        input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = energy_mean_price
         input_dict_to_load[f'{self.name}.CCS_price'] = CCS_price
         input_dict_to_load[f'{self.name}.sub_mda_class'] = "MDANewtonRaphson"
         input_dict_to_load[f'{self.name}.n_processes'] = 1

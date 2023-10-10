@@ -16,6 +16,7 @@ limitations under the License.
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model_v2 import TempChange
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -42,9 +43,9 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     }
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2, 'unit': '°C'},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'unit': '-', 'default': 3.1, 'user_level': 3},
@@ -61,7 +62,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'ghg_cycle_df': {'type': 'dataframe',
                          'dataframe_descriptor':
                                      {
-                                         'years': ('float', None, False),
+                                         GlossaryCore.Years: ('float', None, False),
                                          'co2_ppm': ('float', None, True),
                                          'ch4_ppm': ('float', None, True),
                                          'n2o_ppm': ('float', None, True),
@@ -87,10 +88,9 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '°C'},
+        GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'temperature_detail_df': {'type': 'dataframe', 'unit': '°C'},
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
-        'temperature_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'temperature_constraint': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}}
 
     _maturity = 'Research'
@@ -158,7 +158,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         # store output data
         out_dict = {"temperature_detail_df": temperature_df,
-                    "temperature_df": temperature_df[['years', 'temp_atmo']],
+                    GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, GlossaryCore.TempAtmo]],
                     'forcing_detail_df': self.model.forcing_df,
                     'temperature_constraint': self.model.temperature_end_constraint}
         self.store_sos_outputs_values(out_dict)
@@ -169,8 +169,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         """
         temperature_model = self.get_sosdisc_inputs('temperature_model')
         forcing_model = self.get_sosdisc_inputs('forcing_model')
-        year_start = self.get_sosdisc_inputs('year_start')
-        year_end = self.get_sosdisc_inputs('year_end')
+        year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
+        year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
         temperature_constraint_ref = self.get_sosdisc_inputs('temperature_end_constraint_ref')
         identity = np.identity(year_end - year_start + 1)
 
@@ -222,7 +222,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             # temperature_df
             self.set_partial_derivative_for_other_types(
-                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'co2_ppm'), d_tempatmo_d_atmoconc, )
+                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), ('ghg_cycle_df', 'co2_ppm'), d_tempatmo_d_atmoconc, )
 
             # temperature_constraint
             d_tempatmo_d_atmoconc, _ = self.model.compute_d_temp_atmo()
@@ -251,11 +251,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                             d_forcing_datmo_conc['N2O forcing N2O ppm']))
 
             self.set_partial_derivative_for_other_types(
-                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'co2_ppm'), d_temp_d_co2_ppm, )
+                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), ('ghg_cycle_df', 'co2_ppm'), d_temp_d_co2_ppm, )
             self.set_partial_derivative_for_other_types(
-                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'ch4_ppm'), d_temp_d_ch4_ppm, )
+                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), ('ghg_cycle_df', 'ch4_ppm'), d_temp_d_ch4_ppm, )
             self.set_partial_derivative_for_other_types(
-                ('temperature_df', 'temp_atmo'), ('ghg_cycle_df', 'n2o_ppm'), d_temp_d_n2o_ppm, )
+                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), ('ghg_cycle_df', 'n2o_ppm'), d_temp_d_n2o_ppm, )
 
             # temperature_constraint
             self.set_partial_derivative_for_other_types(
@@ -312,13 +312,13 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                 self.get_sosdisc_outputs('temperature_detail_df'))
 
             if model == 'DICE':
-                to_plot = ['temp_atmo', 'temp_ocean']
-                legend = {'temp_atmo': 'atmosphere temperature',
-                          'temp_ocean': 'ocean temperature'}
+                to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
+                legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
+                          GlossaryCore.TempOcean: 'ocean temperature'}
 
             elif model == 'FUND':
-                to_plot = ['temp_atmo']
-                legend = {'temp_atmo': 'atmosphere temperature'}
+                to_plot = [GlossaryCore.TempAtmo]
+                legend = {GlossaryCore.TempAtmo: 'atmosphere temperature'}
 
             elif model == 'FAIR':
                 raise NotImplementedError('Model not implemented yet')
@@ -339,7 +339,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Temperature evolution over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'temperature evolution (degrees Celsius above preindustrial)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'temperature evolution (degrees Celsius above preindustrial)',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value, max_value],
                                                  chart_name)
@@ -360,7 +360,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             if model == 'FUND':
                 chart_name = 'Sea level evolution over the years'
                 min_value, max_value = self.get_greataxisrange(temperature_df['sea_level'])
-                new_chart = TwoAxesInstanciatedChart('years',
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
                                                      'Seal level evolution',
                                                      [year_start - 5, year_end + 5], [min_value, max_value],
                                                      chart_name)
@@ -376,15 +376,15 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             forcing_df = self.get_sosdisc_outputs('forcing_detail_df')
 
-            years = forcing_df['years'].values.tolist()
+            years = forcing_df[GlossaryCore.Years].values.tolist()
 
             chart_name = 'Gas Radiative forcing evolution over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Radiative forcing (W.m-2)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Radiative forcing (W.m-2)',
                                                  chart_name=chart_name)
 
             for forcing in forcing_df.columns:
-                if forcing != 'years':
+                if forcing != GlossaryCore.Years:
                     new_series = InstanciatedSeries(
                         years, forcing_df[forcing].values.tolist(), forcing, 'lines')
 

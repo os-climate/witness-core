@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
     InstantiatedParetoFrontOptimalChart
@@ -36,7 +36,7 @@ MODEL = 'Model'
 CSV_SEP = ';'
 CSV_DEC = ','
 CSV_YRS = [str(_yr) for _yr in range(2020, 2101, 10)]
-YEARS = 'years'
+YEARS = GlossaryCore.Years
 
 # POSTPROCESSING DICTS KEYS (INTERNAL USAGE)
 FILE_NAME = 'file_name'
@@ -50,16 +50,16 @@ Y_AXIS = 'y_axis'
 # POSTPROCESSING DICTS WITH INFOS TO PRODUCE COMPARISON GRAPHS
 GDP = 'GDP'
 _gdp = {FILE_NAME: 'gdp_ppp_usd2020.csv',
-        VAR_NAME: 'economics_df',
-        COLUMN: 'gross_output',
+        VAR_NAME: GlossaryCore.EconomicsDfValue,
+        COLUMN: GlossaryCore.GrossOutput,
         CHART_TITLE: 'GDP: WITNESS vs. SSP scenarios (IPCC)',
         UNIT_CONV_FACTOR: 1E-3,
         Y_AXIS: 'World Output [trillion $]'}
 
 POPULATION = 'Population'
 _population = {FILE_NAME: 'population.csv',
-               VAR_NAME: 'population_df',
-               COLUMN: 'population',
+               VAR_NAME: GlossaryCore.PopulationDfValue,
+               COLUMN: GlossaryCore.PopulationValue,
                CHART_TITLE: 'Population: WITNESS vs. SSP scenarios (IPCC)',
                UNIT_CONV_FACTOR: 1.0,
                Y_AXIS: 'World Population [million people]'}
@@ -67,15 +67,15 @@ _population = {FILE_NAME: 'population.csv',
 CONSUMPTION = 'Consumption'
 _consumption = {FILE_NAME: 'consumption_global_usd2020.csv',
                 VAR_NAME: 'Macroeconomics.economics_detail_df',
-                COLUMN: 'consumption',
+                COLUMN: GlossaryCore.Consumption,
                 CHART_TITLE: 'Consumption: WITNESS vs. SSP scenarios (IPCC)',
                 UNIT_CONV_FACTOR: 1E-3,
                 Y_AXIS: 'Global Consumption [trillion $]'}
 
 MEAN_TEMPERATURE = 'Mean_temperature'
 _mean_temperature = {FILE_NAME: 'mean_temperature_global.csv',
-                     VAR_NAME: 'temperature_df',
-                     COLUMN: 'temp_atmo',
+                     VAR_NAME: GlossaryCore.TemperatureDfValue,
+                     COLUMN: GlossaryCore.TempAtmo,
                      CHART_TITLE: 'Atmospheric temperature: WITNESS vs. SSP scenarios (IPCC)',
                      UNIT_CONV_FACTOR: 1.0,
                      Y_AXIS: 'Mean Temperature [ºC above pre-industrial]'}
@@ -83,7 +83,7 @@ _mean_temperature = {FILE_NAME: 'mean_temperature_global.csv',
 FORCING = 'Forcing'
 _forcing = {FILE_NAME: 'forcing_global.csv',
             VAR_NAME: 'Temperature_change.temperature_detail_df',
-            COLUMN: 'forcing',
+            COLUMN: GlossaryCore.Forcing,
             CHART_TITLE: 'Total radiative forcing: WITNESS vs. SSP scenarios (IPCC)',
             UNIT_CONV_FACTOR: 1.0,
             Y_AXIS: 'Total Forcing [W/m^2]'}
@@ -115,7 +115,7 @@ _n2o_concentration = {FILE_NAME: 'N2O_concentration_global.csv',
 CO2_EMISSIONS = 'CO2_emissions'
 _co2_emissions = {FILE_NAME: 'CO2_emissions_global.csv',
                   VAR_NAME: 'GHGEmissions.GHG_emissions_detail_df',
-                  COLUMN: 'Total CO2 emissions',
+                  COLUMN: GlossaryCore.TotalCO2Emissions,
                   CHART_TITLE: 'Total CO2 Emissions: WITNESS vs. SSP scenarios (IPCC)',
                   UNIT_CONV_FACTOR: 1e-3,
                   Y_AXIS: 'Total CO2 Emissions [GtCO2]'}
@@ -154,8 +154,8 @@ _agriculture_surface = {FILE_NAME: 'land_cover_pasture+cropland_global.csv',
 
 FINAL_ENERGY = 'energy'
 _final_energy = {FILE_NAME: 'final_energy_global.csv',
-                 VAR_NAME: 'EnergyMix.energy_production',
-                 COLUMN: 'Total production',
+                 VAR_NAME: f'EnergyMix.{GlossaryCore.EnergyProductionValue}',
+                 COLUMN: GlossaryCore.TotalProductionValue,
                  CHART_TITLE: 'World Energy Production: WITNESS vs. SSP scenarios (IPCC)',
                  UNIT_CONV_FACTOR: 0.27777777777,
                  Y_AXIS: 'Final Energy Production [PWh]'}
@@ -217,7 +217,7 @@ WITNESS_PRIMARY_ENERGY_DATA = {
     OIL_GAS: _oil_gas,
     # HYDROGEN: _hydrogen
 } # NON-FOSSIL is deduced from total
-WITNESS_BRUT_ENERGY_TOTAL = ('EnergyMix.energy_production_brut_detailed', 'Total production')
+WITNESS_BRUT_ENERGY_TOTAL = ('EnergyMix.energy_production_brut_detailed', GlossaryCore.TotalProductionValue)
 WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
     ('EnergyMix.electricity.energy_production_detailed', 'electricity CoalGen (TWh)'),
     ('EnergyMix.electricity.energy_production_detailed', 'electricity CombinedCycleGasTurbine (TWh)'),
@@ -228,7 +228,7 @@ WITNESS_BRUT_ENERGY_TOTAL_MINUS = [
     ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.gaseous_hydrogen (TWh)'),
     ('EnergyMix.energy_production_brut_detailed', 'production hydrogen.liquid_hydrogen (TWh)'),
 ]
-CHART_LIST = list(CHARTS_DATA.keys()) + [PRIMARY_ENERGY]
+CHART_LIST = list(CHARTS_DATA.keys()) 
 
 def get_ssp_data(data_name, data_dict, region='World'):
     """
@@ -246,7 +246,17 @@ def get_ssp_data(data_name, data_dict, region='World'):
     return var_df
 
 def post_processing_filters(execution_engine, namespace):
-    return [ChartFilter('Charts', CHART_LIST, CHART_LIST, 'Charts')]
+
+    # get energy list 
+    energy_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.energy_list}')
+    # if renewable not in energy list, we are not in coarse 
+    chart_l = CHART_LIST
+
+    if 'renewable' not in energy_list:
+        # if not in coarse, add primary energy chart
+        chart_l = chart_l + [PRIMARY_ENERGY]
+
+    return [ChartFilter('Charts', chart_l, chart_l, 'Charts')]
 
 def get_comp_chart_from_df(comp_df, y_axis_name, chart_name):
     """
@@ -369,8 +379,15 @@ def post_processings(execution_engine, namespace, filters):
         return get_comp_chart_from_df(witness_data, CHARTS_DATA[data_name][Y_AXIS], CHARTS_DATA[data_name][CHART_TITLE])
 
     instanciated_charts = []
+    energy_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.energy_list}')
+    # if renewable not in energy list, we are not in coarse 
+    chart_l = CHART_LIST
 
-    graphs_list = CHART_LIST
+    if 'renewable' not in energy_list:
+        # if not in coarse, add primary energy chart
+        chart_l = chart_l + [PRIMARY_ENERGY]
+
+    graphs_list = chart_l
     # Overload default value with chart filter
     if filters is not None:
         for chart_filter in filters:

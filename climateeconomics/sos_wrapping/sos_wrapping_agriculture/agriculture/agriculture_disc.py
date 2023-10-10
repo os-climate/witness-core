@@ -22,11 +22,11 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 import numpy as np
 import pandas as pd
 from copy import deepcopy
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class AgricultureDiscipline(ClimateEcoDiscipline):
-    ''' Disscipline intended to host agricluture pyworld3
-    '''
+    '''Disscipline intended to host agricluture pyworld3'''
 
     # ontology information
     _ontology_data = {
@@ -66,10 +66,10 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     red_meat_percentage = default_kg_to_kcal['red meat'] / total_kcal * 100
     white_meat_percentage = default_kg_to_kcal['white meat'] / total_kcal * 100
     default_red_meat_percentage = pd.DataFrame({
-        'years': default_years,
+        GlossaryCore.Years: default_years,
         'red_meat_percentage': np.linspace(red_meat_percentage, 0.3 * red_meat_percentage, year_range)})
     default_white_meat_percentage = pd.DataFrame({
-        'years': default_years,
+        GlossaryCore.Years: default_years,
         'white_meat_percentage': np.linspace(white_meat_percentage, 0.3 * white_meat_percentage, year_range)})
 
     default_other_use = np.linspace(0.102, 0.102, year_range)
@@ -81,15 +81,14 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                     'potatoes': [32.93],
                                     'fruits and vegetables': [217.62],
                                     })
-    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-               'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-               'population_df': {'type': 'dataframe', 'unit': 'millions of people',
-                                         'dataframe_descriptor': {'years': ('float', None, False),
-                                                                  'population': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+               GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
                'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
-                                   'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True), 'white meat': ('float', [0, 1e9], True), 'milk': ('float', [0, 1e9], True),
+                                   'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True),
+                                                            'cereals': ('float', [0, 1e9], True),
+                                                            'white meat': ('float', [0, 1e9], True), 'milk': ('float', [0, 1e9], True),
                                                             'eggs': ('float', [0, 1e9], True), 'rice and maize': ('float', [0, 1e9], True), 'potatoes': ('float', [0, 1e9], True),
                                                             'fruits and vegetables': ('float', [0, 1e9], True)},
                                    'dataframe_edition_locked': False, 'namespace': 'ns_agriculture'},
@@ -97,19 +96,16 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                'kg_to_m2_dict': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'default': default_kg_to_m2, 'unit': 'm^2/kg',  'namespace': 'ns_agriculture'},
                # design variables of changing diet
                'red_meat_percentage': {'type': 'dataframe', 'default': default_red_meat_percentage,
-                                               'dataframe_descriptor': {'years': ('float', None, False),
+                                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                         'red_meat_percentage': ('float', [0, 100], True)},
                                                'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
                'white_meat_percentage': {'type': 'dataframe', 'default': default_white_meat_percentage,
-                                                 'dataframe_descriptor': {'years': ('float', None, False),
+                                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                           'white_meat_percentage': ('float', [0, 100], True)},
                                                  'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_agriculture'},
 
                'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'default': default_other_use, 'namespace': 'ns_agriculture'},
-               'temperature_df': {'type': 'dataframe', 'unit': 'degree Celsius', 'visibility': 'Shared', 'namespace': 'ns_witness',
-                                  'dataframe_descriptor': {'years': ('float', None, False),
-                                                           'temp_atmo': ('float', None, False), }
-                                  },
+               GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
                'param_a': {'type': 'float', 'unit': '-', 'default': - 0.00833, 'user_level': 3},
                'param_b': {'type': 'float', 'unit': '-', 'default': - 0.04167, 'user_level': 3}
                }
@@ -140,8 +136,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         self.agriculture_model.apply_percentage(inp_dict)
         #-- compute
-        population_df = deepcopy(inp_dict['population_df'])
-        temperature_df = deepcopy(inp_dict['temperature_df'])
+        population_df = deepcopy(inp_dict[GlossaryCore.PopulationDfValue])
+        temperature_df = deepcopy(inp_dict[GlossaryCore.TemperatureDfValue])
         self.agriculture_model.compute(population_df, temperature_df)
 
         outputs_dict = {
@@ -160,8 +156,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         Compute jacobian for each coupling variable
         """
         inputs_dict = self.get_sosdisc_inputs()
-        population_df = inputs_dict.pop('population_df')
-        temperature_df = inputs_dict['temperature_df']
+        population_df = inputs_dict.pop(GlossaryCore.PopulationDfValue)
+        temperature_df = inputs_dict[GlossaryCore.TemperatureDfValue]
         model = self.agriculture_model
         model.compute(population_df, temperature_df)
 
@@ -170,7 +166,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
         # get column of interest
         food_land_surface_df_columns = list(food_land_surface_df)
-        food_land_surface_df_columns.remove('years')
+        food_land_surface_df_columns.remove(GlossaryCore.Years)
         food_land_surface_df_columns.remove('total surface (Gha)')
 
         # sum is needed to have d_total_surface_d_population
@@ -183,11 +179,11 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             summ += result
 
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('population_df', 'population'), summ)
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), summ)
         d_total_d_temperature = model.d_food_land_surface_d_temperature(
             temperature_df, 'total surface (Gha)')
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'), ('temperature_df', 'temp_atmo'), d_total_d_temperature)
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_total_d_temperature)
 
         d_surface_d_red_meat_percentage = model.d_surface_d_red_meat_percentage(
             population_df)
@@ -231,7 +227,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         if AgricultureDiscipline.AGRICULTURE_CHARTS in chart_list:
 
             surface_df = self.get_sosdisc_outputs('food_land_surface_df')
-            years = surface_df['years'].values.tolist()
+            years = surface_df[GlossaryCore.Years].values.tolist()
 
             agriculture_surfaces = surface_df['total surface (Gha)'].values
             agriculture_surface_series = InstanciatedSeries(
@@ -241,7 +237,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             for key in surface_df.keys():
 
-                if key == 'years':
+                if key == GlossaryCore.Years:
                     pass
                 elif key.startswith('total'):
                     pass
@@ -252,7 +248,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'surface (Gha)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface (Gha)',
                                                  chart_name='Surface taken to produce food over time', stacked_bar=True)
             new_chart.add_series(agriculture_surface_series)
 
@@ -268,7 +264,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             series_to_add = []
             for key in surface_percentage_df.keys():
 
-                if key == 'years':
+                if key == GlossaryCore.Years:
                     pass
                 elif key.startswith('total'):
                     pass
@@ -279,7 +275,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'surface (%)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface (%)',
                                                  chart_name='Share of the surface used to produce food over time', stacked_bar=True)
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
@@ -305,7 +301,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             series_to_add = []
             for key in updated_diet_df.keys():
 
-                if key == 'years':
+                if key == GlossaryCore.Years:
                     pass
                 elif key.startswith('total'):
                     pass
@@ -316,7 +312,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'food calories [kcal / person / year]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'food calories [kcal / person / year]',
                                                  chart_name='Evolution of the diet over time', stacked_bar=True)
 
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
@@ -334,7 +330,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             series_to_add = []
             for key in updated_diet_df.keys():
 
-                if key == 'years':
+                if key == GlossaryCore.Years:
                     pass
                 elif key.startswith('total'):
                     pass
@@ -345,7 +341,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
                     series_to_add.append(new_series)
 
-            new_chart = TwoAxesInstanciatedChart('years', 'food calories proportion [% / person / year]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'food calories proportion [% / person / year]',
                                                  chart_name='Evolution of the diet proportion over time', stacked_bar=True)
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
@@ -367,7 +363,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             white_meat_evolution = self.get_sosdisc_inputs(
                 'white_meat_percentage')
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Diet evolution [%]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Diet evolution [%]',
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -392,7 +388,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Agriculture productivity evolution'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' productivity evolution (%)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' productivity evolution (%)',
                                                  chart_name=chart_name)
 
             visible_line = True

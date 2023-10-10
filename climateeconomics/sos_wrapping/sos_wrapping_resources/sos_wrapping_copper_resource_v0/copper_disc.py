@@ -1,4 +1,5 @@
 # from sostrades_core.api import SoSDiscipline, InstanciatedSeries, TwoAxesInstanciatedChart, ChartFilter
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -26,13 +27,13 @@ class CopperDisc(SoSWrapp):
     _maturity = 'Fake'
 
     DESC_IN = {'copper_demand': {'type': 'dataframe', 'unit': 'Mt',
-                                 'dataframe_descriptor': {'years': ('float', None, False),
+                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Year': ('float', None, False),
                                                           'Demand': ('float', None, False),
                                                           'unit': ('string', None, False),}
                                  },
-               'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
 
                'annual_extraction': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': 'Mt',
                                      'default': [26] * 81},
@@ -53,7 +54,7 @@ class CopperDisc(SoSWrapp):
     def run(self):
 
         copper_demand, year_start, year_end = self.get_sosdisc_inputs(
-            ['copper_demand', 'year_start', 'year_end'])
+            ['copper_demand', GlossaryCore.YearStart, GlossaryCore.YearEnd])
         period_of_exploitation = np.arange(year_start, year_end + 1, 1)
 
         # call models
@@ -91,7 +92,7 @@ class CopperDisc(SoSWrapp):
 
         if 'all' in charts_list:
             period_of_exploitation = np.arange(
-                self.DESC_IN['year_start']['default'], self.DESC_IN['year_end']['default'] + 1, 1).tolist()
+                self.DESC_IN[GlossaryCore.YearStart]['default'], self.DESC_IN[GlossaryCore.YearEnd]['default'] + 1, 1).tolist()
 
             production = self.get_sosdisc_outputs(CopperModel.PRODUCTION)
             stock = self.get_sosdisc_outputs(CopperModel.COPPER_STOCK)

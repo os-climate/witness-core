@@ -15,6 +15,8 @@ limitations under the License.
 '''
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -39,14 +41,14 @@ class OilModelTestCase(unittest.TestCase):
             join(data_dir, 'all_demand_from_energy_mix.csv'))
         # part to adapt lenght to the year range
 
-        self.energy_oil_demand_df = self.energy_oil_demand_df.loc[self.energy_oil_demand_df['years']
+        self.energy_oil_demand_df = self.energy_oil_demand_df.loc[self.energy_oil_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_oil_demand_df= self.energy_oil_demand_df.loc[self.energy_oil_demand_df['years']
+        self.energy_oil_demand_df= self.energy_oil_demand_df.loc[self.energy_oil_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_oil_demand_df,
-                      'year_start': self.year_start,
-                      'year_end': self.year_end,
+                      GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
                       'production_start': self.production_start}
 
     def test_oil_discipline(self):
@@ -71,8 +73,8 @@ class OilModelTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.resources_demand': self.energy_oil_demand_df,
                        'production_start': self.production_start
                        }

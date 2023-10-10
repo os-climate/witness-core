@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -55,16 +56,18 @@ class DamageDiscTest(unittest.TestCase):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all['years'] >= 2020]
-        temperature_df_y = temperature_df_all[temperature_df_all['years'] >= 2020]
+        economics_df_all = economics_df_all[GlossaryCore.EconomicsDf['dataframe_descriptor'].keys()]
+
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020]
 
         years = np.arange(2020, 2101, 1)
         economics_df_y.index = years
         temperature_df_y.index = years
 
         values_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
-                       f'{self.name}.economics_df': economics_df_y,
-                       f'{self.name}.temperature_df': temperature_df_y,
+                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
                        f'{self.name}.total_emissions_ref': 37.,
                        f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15))))
                        }
@@ -73,7 +76,7 @@ class DamageDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_damage = self.ee.dm.get_value(f'{self.name}.damage_df')
+        res_damage = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.DamageDfValue}')
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]

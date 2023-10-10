@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class Forest():
     """
@@ -25,9 +27,9 @@ class Forest():
     basic for now, to evolve 
 
     """
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
-    TIME_STEP = 'time_step'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
+    TIME_STEP = GlossaryCore.TimeStep
     LIMIT_DEFORESTATION_SURFACE = 'limit_deforestation_surface'
     DEFORESTATION_SURFACE = 'deforestation_surface'
     CO2_PER_HA = 'CO2_per_ha'
@@ -38,7 +40,7 @@ class Forest():
     FOREST_SURFACE_DF = 'forest_surface_df'
     FOREST_DETAIL_SURFACE_DF = 'forest_surface_detail_df'
     CO2_EMITTED_FOREST_DF = 'CO2_land_emissions'
-    CO2_EMITTED_DETAIL_DF = 'CO2_emissions_detail_df'
+    CO2_EMITTED_DETAIL_DF = GlossaryCore.CO2EmissionsDetailDfValue
 
     def __init__(self, param):
         """
@@ -90,7 +92,7 @@ class Forest():
         years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.limit_deforestation_surface = self.param[self.LIMIT_DEFORESTATION_SURFACE]
 
-        self.forest_surface_df['years'] = years
+        self.forest_surface_df[GlossaryCore.Years] = years
         # forest surface is in Gha, deforestation_surface is in Mha,
         # deforested_surface is in Gha
         self.forest_surface_df['deforested_surface'] = - \
@@ -124,7 +126,7 @@ class Forest():
                 self.forest_surface_df.loc[element,
                                            'deforested_surface_cumulative'] = -self.forest_surface_df.loc[element, 'forested_surface_cumulative'] - self.limit_deforestation_surface / 1000
 
-        self.CO2_emitted_df['years'] = self.years
+        self.CO2_emitted_df[GlossaryCore.Years] = self.years
         # in Gt of CO2
         self.CO2_emitted_df['emitted_CO2_evol'] = -self.forest_surface_df['forest_surface_evol'] * \
             self.CO2_per_ha / 1000

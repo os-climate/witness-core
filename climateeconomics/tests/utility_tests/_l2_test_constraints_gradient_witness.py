@@ -16,6 +16,8 @@ limitations under the License.
 from os.path import join, dirname
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
@@ -25,7 +27,7 @@ from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecas
 class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
     # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    obj_const = ['welfare_objective', 'temperature_objective', 'CO2_objective', 'ppm_objective',
+    obj_const = [GlossaryCore.WelfareObjective, 'temperature_objective', 'CO2_objective', 'ppm_objective',
                  'co2_emissions_objective', 'EnergyMix.methane.demand_violation',
                  'EnergyMix.hydrogen.gaseous_hydrogen.demand_violation', 'EnergyMix.biogas.demand_violation',
                  'EnergyMix.syngas.demand_violation', 'EnergyMix.liquid_fuel.demand_violation',
@@ -111,14 +113,14 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         input_full_names = []
         nb_poles = 8
-        for energy in full_values_dict[f'{self.name}.WITNESS_Eval.WITNESS.energy_list']:
+        for energy in full_values_dict[f'{self.name}.WITNESS_Eval.WITNESS.{GlossaryCore.energy_list}']:
             energy_wo_dot = energy.replace('.', '_')
             input_name = f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.{energy_wo_dot}_array_mix'
             input_full_names.append(input_name)
             full_values_dict[input_name] = np.linspace(1, 2, nb_poles)
 
             for technology in full_values_dict[
-                f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.technologies_list']:
+                f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.{GlossaryCore.techno_list}']:
                 technology_wo_dot = technology.replace('.', '_')
                 input_name = f'{self.name}.WITNESS_Eval.WITNESS.EnergyMix.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'
                 input_full_names.append(input_name)

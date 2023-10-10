@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 import os
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class OrderOfMagnitude():
 
@@ -47,8 +49,8 @@ class LandUseV1():
     HECTARE = 'ha'
 
     LAND_DEMAND_DF = 'land_demand_df'
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
 
     TOTAL_FOOD_LAND_SURFACE = 'total_food_land_surface'
     DEFORESTED_SURFACE_DF = 'forest_surface_df'
@@ -115,7 +117,7 @@ class LandUseV1():
 
         # Initialize demand objective  dataframe
         self.land_demand_constraint = pd.DataFrame(
-            {'years': self.land_demand_df['years']})
+            {GlossaryCore.Years: self.land_demand_df[GlossaryCore.Years]})
 
         # # ------------------------------------------------
         # # deforestation effect coming from forest pyworld3 in Gha
@@ -123,7 +125,7 @@ class LandUseV1():
             deforested_surface_df['forest_surface_evol'])
 
         total_agriculture_surfaces = self.__extract_and_convert_superficie(
-            'Habitable', 'Agriculture') / OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
+            'Habitable', GlossaryCore.SectorAgriculture) / OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
 
         # compute how much of agriculture changes because of techn
         self.land_surface_df['Added Agriculture (Gha)'] = self.__extract_and_compute_constraint_change(
@@ -134,7 +136,7 @@ class LandUseV1():
         self.land_surface_df['Agriculture total (Gha)'] = self.land_surface_df['Agriculture total (Gha)'].values + self.land_surface_df['Added Agriculture (Gha)'].values \
             - self.land_surface_df['Deforestation (Gha)'].values
 
-        self.land_surface_df.index = self.land_demand_df['years'].values
+        self.land_surface_df.index = self.land_demand_df[GlossaryCore.Years].values
 
         # remove land use by food from available land
         self.land_surface_df['Agriculture (Gha)'] = self.land_surface_df['Agriculture total (Gha)'].values - \
@@ -144,7 +146,7 @@ class LandUseV1():
         # --------------------------------------
         # Land surface for food is coupled with crops energy input
         # To be removed and plug output from agriculture pyworld3 directly!!
-        self.land_surface_for_food_df = pd.DataFrame({'years': self.land_demand_df['years'].values,
+        self.land_surface_for_food_df = pd.DataFrame({GlossaryCore.Years: self.land_demand_df[GlossaryCore.Years].values,
                                                       'Agriculture total (Gha)': total_food_land_surface['total surface (Gha)'].values})
 
         forest_surfaces = self.__extract_and_convert_superficie(
@@ -180,7 +182,7 @@ class LandUseV1():
         @return:gradient of each constraint by demand
         """
 
-        number_of_values = len(self.land_demand_df['years'].values)
+        number_of_values = len(self.land_demand_df[GlossaryCore.Years].values)
         result = None
 
         if demand_column not in self.AGRICULTURE_TECHNO and demand_column not in self.FOREST_TECHNO:
@@ -214,7 +216,7 @@ class LandUseV1():
         :param:demand_column, name of the land_demand_df column
         :type:string
         '''
-        number_of_values = len(self.land_demand_df['years'].values)
+        number_of_values = len(self.land_demand_df[GlossaryCore.Years].values)
         result = np.identity(number_of_values) * 0.0
 
         # get the right dictionary
@@ -237,7 +239,7 @@ class LandUseV1():
         @type objective_column: str
         @return: gradient of land demand constraint by food land surface
         """
-        number_of_values = len(self.land_demand_df['years'].values)
+        number_of_values = len(self.land_demand_df[GlossaryCore.Years].values)
         d_land_demand_constraint_d_food_land_surface = None
 
         if objective_column == self.LAND_DEMAND_CONSTRAINT_AGRICULTURE:
@@ -256,7 +258,7 @@ class LandUseV1():
         @type objective_column: str
         @return:gradient of surface by food land surface
         """
-        number_of_values = len(self.land_demand_df['years'].values)
+        number_of_values = len(self.land_demand_df[GlossaryCore.Years].values)
         d_agriculture_surface_d_food_land_surface = None
 
         if objective_column == 'Agriculture (Gha)':
@@ -273,7 +275,7 @@ class LandUseV1():
         Compute derivate of land demand objectif for crop, regarding food land surface input
         @retrun: gradient of surface by food land surface
         """
-        number_of_values = len(self.land_demand_df['years'].values)
+        number_of_values = len(self.land_demand_df[GlossaryCore.Years].values)
         d_surface_d_food_land_surface = np.identity(number_of_values) * 1.0
 
         return d_surface_d_food_land_surface
@@ -285,7 +287,7 @@ class LandUseV1():
         @type objective_column: str
         @return: gradient of land demand constraint by deforestation surface
         """
-        number_of_values = len(self.land_demand_df['years'].values)
+        number_of_values = len(self.land_demand_df[GlossaryCore.Years].values)
         d_land_demand_constraint_d_deforestation_surface = None
 
         if objective_column == self.LAND_DEMAND_CONSTRAINT_AGRICULTURE:
@@ -309,7 +311,7 @@ class LandUseV1():
         @type objective_column: str
         @return:gradient of surface by deforestation surface
         """
-        number_of_values = len(self.land_demand_df['years'].values)
+        number_of_values = len(self.land_demand_df[GlossaryCore.Years].values)
         d_land_surface_d_deforestation_surface = None
 
         if objective_column == 'Agriculture (Gha)':

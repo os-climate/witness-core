@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -44,8 +45,8 @@ class Study(StudyManager):
             join(data_dir_resource, 'all_demand_variable.csv'))
 
         config_data = {f'{self.study_name}.resources_demand': resources_demand,
-                       f'{self.study_name}.year_start': self.year_start,
-                       f'{self.study_name}.year_end': self.year_end}
+                       f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.study_name}.{GlossaryCore.YearEnd}': self.year_end}
 
         setup_data_list.append(config_data)
 

@@ -16,6 +16,8 @@ limitations under the License.
 
 from os.path import join, dirname
 from pandas import read_csv
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 import pandas as pd
@@ -65,33 +67,33 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(year_start, year_end + 1, 1)
         year_range = year_end - year_start + 1
 
-        land_demand_df = land_demand_df.loc[land_demand_df['years']
+        land_demand_df = land_demand_df.loc[land_demand_df[GlossaryCore.Years]
                                             >= year_start]
-        land_demand_df = land_demand_df.loc[land_demand_df['years']
+        land_demand_df = land_demand_df.loc[land_demand_df[GlossaryCore.Years]
                                             <= year_end]
 
         self.total_food_land_surface = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'total surface (Gha)'])
-        self.total_food_land_surface['years'] = years
+        self.total_food_land_surface[GlossaryCore.Years] = years
         self.total_food_land_surface['total surface (Gha)'] = np.linspace(
             5, 4, year_range)
 
         initial_unmanaged_forest_surface = (4 - 1.25)
         self.forest_surface_df = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'forest_constraint_evolution',
                      'global_forest_surface'])
 
-        self.forest_surface_df['years'] = years
+        self.forest_surface_df[GlossaryCore.Years] = years
         # Gha
         self.forest_surface_df['forest_constraint_evolution'] = np.linspace(1, -1, year_range)
         self.forest_surface_df['global_forest_surface'] = np.linspace(3.9, 8.1, year_range)
 
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.land_demand_df': land_demand_df,
                        f'{self.name}.total_food_land_surface': self.total_food_land_surface,
                        f'{self.name}.forest_surface_df': self.forest_surface_df,

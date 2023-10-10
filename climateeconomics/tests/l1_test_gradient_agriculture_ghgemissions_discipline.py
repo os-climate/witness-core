@@ -20,6 +20,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -59,18 +60,18 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         year_end = 2100
         years = np.arange(year_start, year_end + 1)
 
-        CO2_land_emissions = pd.DataFrame({'years': years,
+        CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'emitted_CO2_evol_cumulative': np.linspace(0., 0.7, len(years))})
-        N2O_land_emissions = pd.DataFrame({'years': years,
+        N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'emitted_N2O_evol_cumulative': np.linspace(0., 0.4, len(years)),
                                            })
-        CH4_land_emissions = pd.DataFrame({'years': years,
+        CH4_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'emitted_CH4_evol_cumulative': np.linspace(0., 0.5, len(years)),
                                            })
 
-        values_dict = {f'{self.name}.year_start': year_start,
-                       f'{self.name}.year_end': year_end,
-                       f'{self.name}.technologies_list': ['Crop', 'Forest'],
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': year_end,
+                       f'{self.name}.{GlossaryCore.techno_list}': ['Crop', 'Forest'],
                        f'{self.name}.Crop.CO2_land_emission_df': CO2_land_emissions,
                        f'{self.name}.Forest.CO2_land_emission_df': CO2_land_emissions,
                        f'{self.name}.Crop.CH4_land_emission_df': CH4_land_emissions,

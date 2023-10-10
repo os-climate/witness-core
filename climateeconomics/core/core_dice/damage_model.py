@@ -17,6 +17,8 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class DamageModel():
     '''
@@ -31,9 +33,9 @@ class DamageModel():
         self.set_data()
 
     def set_data(self):
-        self.year_start = self.param['year_start']
-        self.year_end = self.param['year_end']
-        self.time_step = self.param['time_step']
+        self.year_start = self.param[GlossaryCore.YearStart]
+        self.year_end = self.param[GlossaryCore.YearEnd]
+        self.time_step = self.param[GlossaryCore.TimeStep]
         self.init_damag_int = self.param["init_damag_int"]
         self.damag_int = self.param['damag_int']
         self.damag_quad = self.param['damag_quad']
@@ -50,7 +52,7 @@ class DamageModel():
         self.tp_a3 = self.param['tp_a3']
         self.tp_a4 = self.param['tp_a4']
         self.damage_to_productivity = self.param['damage_to_productivity']
-        self.frac_damage_prod = self.param['frac_damage_prod']
+        self.frac_damage_prod = self.param[GlossaryCore.FractionDamageToProductivityValue]
 
     def create_dataframe(self):
         '''
@@ -64,14 +66,14 @@ class DamageModel():
         damage_df = pd.DataFrame(
             index=years_range,
             columns=['year',
-                     'damages',
-                     'damage_frac_output',
+                     GlossaryCore.Damages,
+                     GlossaryCore.DamageFractionOutput,
                      'backstop_price',
                      'adj_backstop_cost',
                      'abatecost',
                      'marg_abatecost',
                      'carbon_price',
-                     'base_carbon_price'])
+                     GlossaryCore.BaseCarbonPrice])
         damage_df['year'] = years_range
         self.damage_df = damage_df
         return damage_df
@@ -83,7 +85,7 @@ class DamageModel():
         t = ((year - self.year_start) / self.time_step) + 1
         base_carbon_price = self.init_base_carbonprice * \
             (1 + self.gr_base_carbonprice)**(self.time_step * (t - 1))
-        self.damage_df.loc[year, 'base_carbon_price'] = base_carbon_price
+        self.damage_df.loc[year, GlossaryCore.BaseCarbonPrice] = base_carbon_price
         return base_carbon_price
 
     def compute_backstop_price(self, year):
@@ -113,7 +115,7 @@ class DamageModel():
         using variables at t
         If tipping point = True : Martin Weitzman damage function.
         """
-        temp_atmo = self.temperature_df.loc[year, 'temp_atmo']
+        temp_atmo = self.temperature_df.loc[year, GlossaryCore.TempAtmo]
         if self.tipping_point == True:
             dam = (temp_atmo / self.tp_a1)**self.tp_a2 + \
                 (temp_atmo / self.tp_a3)**self.tp_a4
@@ -121,7 +123,7 @@ class DamageModel():
         else:
             damage_frac_output = self.damag_int * temp_atmo + \
                 self.damag_quad * temp_atmo**self.damag_expo
-        self.damage_df.loc[year, 'damage_frac_output'] = damage_frac_output
+        self.damage_df.loc[year, GlossaryCore.DamageFractionOutput] = damage_frac_output
         return damage_frac_output
 
     def compute_damages(self, year):
@@ -129,10 +131,10 @@ class DamageModel():
         Compute damages (t) (trillions 2005 USD per year)
         using variables at t
         """
-        gross_output = self.economics_df.loc[year, 'gross_output']
-        damage_frac_output = self.damage_df.loc[year, 'damage_frac_output']
+        gross_output = self.economics_df.loc[year, GlossaryCore.GrossOutput]
+        damage_frac_output = self.damage_df.loc[year, GlossaryCore.DamageFractionOutput]
         damages = gross_output * damage_frac_output
-        self.damage_df.loc[year, 'damages'] = damages
+        self.damage_df.loc[year, GlossaryCore.Damages] = damages
         return damages
 
     def compute_abatecost(self, year):
@@ -140,7 +142,7 @@ class DamageModel():
         Compute abatement cost (t)  (trillions 2005 USD per year)
         using variables at t
         """
-        gross_output = self.economics_df.loc[year, 'gross_output']
+        gross_output = self.economics_df.loc[year, GlossaryCore.GrossOutput]
         adj_backstop_cost = self.damage_df.loc[year, 'adj_backstop_cost']
         emission_control_rate = self.emissions_control_rate[year]
         abatecost = gross_output * adj_backstop_cost * \

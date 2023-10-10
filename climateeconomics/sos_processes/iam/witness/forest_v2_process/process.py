@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -30,7 +30,7 @@ class ProcessBuilder(BaseProcessBuilder):
     def get_builders(self):
 
         ns_scatter = self.ee.study_name
-        ns_agriculture = 'Agriculture'
+        ns_agriculture = GlossaryCore.SectorAgriculture
         ns_forest = 'Forest'
         ns_dict = {'ns_witness': ns_scatter,
                    'ns_forest': f'{ns_scatter}.{ns_agriculture}.{ns_forest}',

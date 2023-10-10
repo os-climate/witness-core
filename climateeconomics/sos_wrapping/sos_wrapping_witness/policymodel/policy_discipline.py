@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 # coding: utf-8
 
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -43,19 +44,19 @@ class PolicyDiscipline(SoSWrapp):
 
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                       'dataframe_descriptor':
                           {
-                              'years': ('float', None, False),
+                              GlossaryCore.Years: ('float', None, False),
                               'ccs_price_per_tCO2': ('float', None, True),
                           }
                       },
         'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
                              'dataframe_descriptor':
                                  {
-                                     'years': ('float', None, False),
+                                     GlossaryCore.Years: ('float', None, False),
                                      'CO2_damage_price': ('float', None, True),
                                  }
                              },
@@ -68,7 +69,7 @@ class PolicyDiscipline(SoSWrapp):
     }
 
     DESC_OUT = {
-        'CO2_taxes': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '$/tCO2'}
+        GlossaryCore.CO2TaxesValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '$/tCO2'}
 
     }
 
@@ -81,7 +82,7 @@ class PolicyDiscipline(SoSWrapp):
 
         self.policy_model.compute_smax(param_in)
         dict_values = {
-            'CO2_taxes': self.policy_model.CO2_tax}
+            GlossaryCore.CO2TaxesValue: self.policy_model.CO2_tax}
 
         # store data
         self.store_sos_outputs_values(dict_values)
@@ -94,10 +95,10 @@ class PolicyDiscipline(SoSWrapp):
         dCO2_tax_dCO2_damage, dCO2_tax_dCCS_price = self.policy_model.compute_CO2_tax_dCCS_dCO2_damage_smooth()
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_taxes', 'CO2_tax'), ('CO2_damage_price', 'CO2_damage_price'),  np.identity(len(dCO2_tax_dCO2_damage)) * np.array(dCO2_tax_dCO2_damage))
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), ('CO2_damage_price', 'CO2_damage_price'),  np.identity(len(dCO2_tax_dCO2_damage)) * np.array(dCO2_tax_dCO2_damage))
 
         self.set_partial_derivative_for_other_types(
-            ('CO2_taxes', 'CO2_tax'), ('CCS_price', 'ccs_price_per_tCO2'),  np.identity(len(dCO2_tax_dCCS_price)) * np.array(dCO2_tax_dCCS_price))
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), ('CCS_price', 'ccs_price_per_tCO2'),  np.identity(len(dCO2_tax_dCCS_price)) * np.array(dCO2_tax_dCCS_price))
 
     def get_chart_filter_list(self):
 
@@ -128,12 +129,12 @@ class PolicyDiscipline(SoSWrapp):
         if 'CO2 tax' in chart_list:
             CCS_price = self.get_sosdisc_inputs('CCS_price')
             CO2_damage_price = self.get_sosdisc_inputs('CO2_damage_price')
-            CO2_tax = self.get_sosdisc_outputs('CO2_taxes')
-            years = list(CCS_price['years'].values)
+            CO2_tax = self.get_sosdisc_outputs(GlossaryCore.CO2TaxesValue)
+            years = list(CCS_price[GlossaryCore.Years].values)
 
             chart_name = 'CO2 tax chart'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'CO2 tax ($/tCO2)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 tax ($/tCO2)',
 
                                                  chart_name=chart_name)
 
@@ -144,7 +145,7 @@ class PolicyDiscipline(SoSWrapp):
                 years, list(CO2_damage_price['CO2_damage_price'].values), 'CO2 damage', 'lines')
 
             new_series3 = InstanciatedSeries(
-                years, list(CO2_tax['CO2_tax'].values), 'CO2 tax', 'lines')
+                years, list(CO2_tax[GlossaryCore.CO2Tax].values), 'CO2 tax', 'lines')
 
             new_chart.series.append(new_series)
             new_chart.series.append(new_series2)

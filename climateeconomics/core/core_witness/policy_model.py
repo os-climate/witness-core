@@ -15,6 +15,8 @@ limitations under the License.
 '''
 import numpy as np
 import pandas as pd
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.cst_manager.func_manager_common import smooth_maximum_vect,\
     get_dsmooth_dvariable_vect
 
@@ -42,10 +44,10 @@ class PolicyModel():
         self.CCS_price = param['CCS_price']
         self.ccs_price_percentage = param['ccs_price_percentage'] / 100.
         self.co2_damage_price_percentage = param['co2_damage_price_percentage'] / 100.
-        self.CO2_tax['years'] = self.CO2_damage_price['years'].values
+        self.CO2_tax[GlossaryCore.Years] = self.CO2_damage_price[GlossaryCore.Years].values
         CO2_damage_price_array = self.co2_damage_price_percentage * self.CO2_damage_price['CO2_damage_price'].values
         CCS_price_array = self.ccs_price_percentage * self.CCS_price['ccs_price_per_tCO2'].values
-        self.CO2_tax['CO2_tax'] = smooth_maximum_vect(
+        self.CO2_tax[GlossaryCore.CO2Tax] = smooth_maximum_vect(
             np.array([CO2_damage_price_array, CCS_price_array, 0.0 * CCS_price_array]).T)
 
 

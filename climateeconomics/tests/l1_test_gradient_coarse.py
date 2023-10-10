@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 """
 mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
 """
@@ -100,8 +102,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
+                       'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
@@ -183,8 +185,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
+                       'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
@@ -266,8 +268,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
+                       'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
@@ -350,8 +352,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
+                       'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
@@ -434,8 +436,8 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                        'linear_solver_MDO', 'linear_solver_MDO_preconditioner', 'linear_solver_MDA',
                        'linear_solver_MDA_preconditioner', 'linear_solver_MDA_options',
                        'linear_solver_MDO_options', 'group_mda_disciplines',
-                       'transport_cost', 'transport_margin', 'year_start', 'year_end',
-                       'energy_prices', 'energy_CO2_emissions', 'CO2_taxes', 'resources_price',
+                       'transport_cost', 'transport_margin', GlossaryCore.YearStart, GlossaryCore.YearEnd,
+                       'energy_prices', 'energy_CO2_emissions', GlossaryCore.CO2TaxesValue, 'resources_price',
                        'resources_CO2_emissions', 'scaling_factor_techno_consumption',
                        'scaling_factor_techno_production', 'is_apply_ratio',
                        'is_stream_demand', 'is_apply_resource_ratio',
@@ -510,7 +512,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in ['technologies_list', 'CO2_taxes', 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
@@ -577,7 +579,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict[self.energy_name].keys():
-            if key in ['technologies_list', 'CO2_taxes', 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, GlossaryCore.CO2TaxesValue, GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[self.energy_name][key]['value']
@@ -645,12 +647,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             join(dirname(__file__), 'data/mda_coarse_data_energymix_input_dict.pkl'), 'rb')
         mda_data_input_dict = pickle.load(pkl_file)
         pkl_file.close()
-        # mda_data_input_dict['renewable.energy_production']['value']['renewable'] = 1e-16
         namespace = f'{self.name}'
         inputs_dict = {}
         coupled_inputs = []
         for key in mda_data_input_dict.keys():
-            if key in ['technologies_list', 'year_start', 'year_end',
+            if key in [GlossaryCore.techno_list, GlossaryCore.YearStart, GlossaryCore.YearEnd,
                        'scaling_factor_energy_production', 'scaling_factor_energy_consumption',
                        'scaling_factor_techno_consumption', 'scaling_factor_techno_production', ]:
                 inputs_dict[f'{namespace}.{key}'] = mda_data_input_dict[key]['value']

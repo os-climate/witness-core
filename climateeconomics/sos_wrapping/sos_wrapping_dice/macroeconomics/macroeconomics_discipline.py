@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.macroeconomics_model import MacroEconomics
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -39,12 +40,12 @@ class MacroeconomicsDiscipline(SoSWrapp):
     }
     _maturity = 'Research'
     DESC_IN = {
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
+        GlossaryCore.DamageDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'unit': 'year', 'namespace': 'ns_dice'},
         'productivity_start': {'type': 'float', 'default': 5.115},
-        'init_gross_output': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice', 'unit': 'trillions $'},
+        GlossaryCore.InitialGrossOutput['var_name']: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice', 'unit': 'trillions $'},
         'capital_start': {'type': 'float', 'unit': 'trillions $', 'default': 223},
         'pop_start': {'type': 'float', 'unit': 'millions', 'default': 7403},
         'output_elasticity': {'type': 'float', 'default': 0.3},
@@ -60,29 +61,29 @@ class MacroeconomicsDiscipline(SoSWrapp):
         'lo_conso': {'type': 'float', 'unit': 'trillions $', 'default': 2},
         'lo_per_capita_conso': {'type': 'float', 'unit': 'trillions $', 'default': 0.01},
         'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'saving_rate': {'type': 'float', 'unit': '%', 'default': 0.2},
     }
 
     DESC_OUT = {
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}
     }
 
     def run(self):
         # Get inputs
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
-        damage_df = param.pop('damage_df')
+        damage_df = param.pop(GlossaryCore.DamageDfValue)
 
         damage_inputs = {
-            'damage_frac_output': damage_df['damage_frac_output'], 'abatecost': damage_df['abatecost']}
+            GlossaryCore.DamageFractionOutput: damage_df[GlossaryCore.DamageFractionOutput], 'abatecost': damage_df['abatecost']}
 
         # Model execution
         macro_model = MacroEconomics(param, damage_inputs)
         economics_df = macro_model.compute(damage_inputs)
 
         # Store output data
-        dict_values = {'economics_df': economics_df}
+        dict_values = {GlossaryCore.EconomicsDfValue: economics_df}
         self.store_sos_outputs_values(dict_values)
 
     def get_chart_filter_list(self):
@@ -93,7 +94,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
         chart_filters = []
 
         chart_list = ['economic output',
-                      'population', 'productivity', 'consumption']
+                      GlossaryCore.PopulationValue, GlossaryCore.Productivity, GlossaryCore.Consumption]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -113,15 +114,15 @@ class MacroeconomicsDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        economics_df = self.get_sosdisc_outputs('economics_df')
+        economics_df = self.get_sosdisc_outputs(GlossaryCore.EconomicsDfValue)
         economics_df = resize_df(economics_df)
 
         if 'economic output' in chart_list:
 
-            to_plot = ['gross_output', 'output_net_of_d']
+            to_plot = [GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]
 
-            legend = {'gross_output': 'world gross output',
-                      'output_net_of_d': 'world output net of damage'}
+            legend = {GlossaryCore.GrossOutput: 'world gross output',
+                      GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
 
             years = list(economics_df.index)
 
@@ -135,9 +136,9 @@ class MacroeconomicsDiscipline(SoSWrapp):
                 max_value = max(economics_df[key].values.max(), max_value)
                 min_value = min(economics_df[key].values.min(), min_value)
 
-            chart_name = 'Economic output'
+            chart_name = 'Economic output (Power Purchase Parity)'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'world output (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion $2020]',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)
@@ -154,9 +155,9 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             instanciated_charts.append(new_chart)
 
-        if 'population' in chart_list:
+        if GlossaryCore.PopulationValue in chart_list:
 
-            to_plot = ['population']
+            to_plot = [GlossaryCore.PopulationValue]
 
             years = list(economics_df.index)
 
@@ -172,7 +173,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             chart_name = 'population evolution over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' population (million)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' population (million)',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)
@@ -189,9 +190,9 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             instanciated_charts.append(new_chart)
 
-        if 'population' in chart_list:
+        if GlossaryCore.PopulationValue in chart_list:
 
-            to_plot = ['productivity']
+            to_plot = [GlossaryCore.Productivity]
 
             years = list(economics_df.index)
 
@@ -207,7 +208,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             chart_name = 'Total Factor Productivity'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'global productivity',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'global productivity',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)
@@ -224,9 +225,9 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             instanciated_charts.append(new_chart)
 
-        if 'consumption' in chart_list:
+        if GlossaryCore.Consumption in chart_list:
 
-            to_plot = ['consumption']
+            to_plot = [GlossaryCore.Consumption]
 
             years = list(economics_df.index)
 
@@ -242,7 +243,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
 
             chart_name = 'global consumption over the years'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' global consumption (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' global consumption (trill $)',
                                                  [year_start - 5, year_end + 5], [
                                                      min_value * 0.9, max_value * 1.1],
                                                  chart_name)

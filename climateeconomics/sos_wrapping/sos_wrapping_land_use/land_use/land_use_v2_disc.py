@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -52,11 +53,11 @@ class LandUseV2Discipline(SoSWrapp):
     default_year_end = 2050
     initial_unmanaged_forest_surface = 4 - 1.25
 
-    DESC_IN = {'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
+    DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                LandUseV2.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_land_use',
-                                          'dataframe_descriptor': {'years': ('float', None, False),
+                                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                    'UpgradingBioGas (ha)': ('float', None, False),
                                                                    'Methanation (ha)': ('float', None, False),
                                                                    'FossilGas (ha)': ('float', None, False),
@@ -110,13 +111,13 @@ class LandUseV2Discipline(SoSWrapp):
                                                                    'Direct_air_capture.Calcium_Potassium_scrubbing (ha)': ('float', None, False),}
                                           },
                LandUseV2.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                                                   'dataframe_descriptor': {'years': ('float', None, False),
+                                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                             'total surface (Gha)': ('float', None, False),
                                                                             }
                                                    },
                LandUseV2.FOREST_SURFACE_DF: {
                    'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                   'dataframe_descriptor': {'years': ('float', None, False),
+                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                             'forest_constraint_evolution': ('float', None, False),
                                             'global_forest_surface': ('float', None, False), }
                },
@@ -146,7 +147,7 @@ class LandUseV2Discipline(SoSWrapp):
         land_demand_df = inputs_dict['land_demand_df']
         total_food_land_surface = inputs_dict.pop('total_food_land_surface')
         total_forest_surface_df = deepcopy(inputs_dict['forest_surface_df'])
-        total_forest_surface_df.index = land_demand_df['years']
+        total_forest_surface_df.index = land_demand_df[GlossaryCore.Years]
         self.land_use_model.compute(
             land_demand_df, total_food_land_surface, total_forest_surface_df)
 
@@ -173,7 +174,7 @@ class LandUseV2Discipline(SoSWrapp):
         #-- get inputs
         inputs = list(self.DESC_IN.keys())
         inputs_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
-        years = np.arange(inputs_dict['year_start'], inputs_dict['year_end']+1)
+        years = np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd]+1)
         land_demand_df = inputs_dict['land_demand_df']
         agri_techno = []
         forest_techno = []
@@ -232,7 +233,7 @@ class LandUseV2Discipline(SoSWrapp):
                     chart_list = chart_filter.selected_values
         inputs_dict = self.get_sosdisc_inputs()
         outputs_dict = self.get_sosdisc_outputs()
-        years = list(np.arange(inputs_dict['year_start'], inputs_dict['year_end']+1))
+        years = list(np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd]+1))
         total_food_land_surface = inputs_dict['total_food_land_surface']
         total_forest_surface_df = inputs_dict['forest_surface_df']
         land_surface_detailed = outputs_dict[LandUseV2.LAND_SURFACE_DETAIL_DF]
@@ -292,7 +293,7 @@ class LandUseV2Discipline(SoSWrapp):
                             years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
                         series_to_add.append(new_series)
 
-                new_chart = TwoAxesInstanciatedChart('years',   'Detailed Land Usage [Gha]',
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,   'Detailed Land Usage [Gha]',
                                                      chart_name='Detailed Land Usage [Gha]', stacked_bar=True)
                 for serie in series_to_add:
                     new_chart.add_series(serie)
@@ -302,7 +303,7 @@ class LandUseV2Discipline(SoSWrapp):
         if 'Surface Type in 2020 [Gha]' in chart_list:
             # ------------------------------------------------------------
             # GLOBAL LAND USE -> Display surfaces (Ocean, Land, Forest..)
-            years_list = [self.get_sosdisc_inputs('year_start')]
+            years_list = [self.get_sosdisc_inputs(GlossaryCore.YearStart)]
             # ------------------
             # Sunburst figure for global land use. Source
             # https://ourworldindata.org/land-use

@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -43,29 +45,29 @@ class LandUseV1TestCase(unittest.TestCase):
         self.energy_land_demand_df = read_csv(
             join(data_dir, 'land_demand.csv'))
         # part to adapt lenght to the year range
-        self.energy_land_demand_df = self.energy_land_demand_df.loc[self.energy_land_demand_df['years']
+        self.energy_land_demand_df = self.energy_land_demand_df.loc[self.energy_land_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_land_demand_df = self.energy_land_demand_df.loc[self.energy_land_demand_df['years']
+        self.energy_land_demand_df = self.energy_land_demand_df.loc[self.energy_land_demand_df[GlossaryCore.Years]
                                                                     <= self.year_end]
         self.total_food_land_surface = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'total surface (Gha)'])
-        self.total_food_land_surface['years'] = years
+        self.total_food_land_surface[GlossaryCore.Years] = years
         self.total_food_land_surface['total surface (Gha)'] = np.linspace(
             5, 4, year_range)
         self.deforested_surface_df = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'forest_surface_evol'])
-        self.deforested_surface_df['years'] = years
+        self.deforested_surface_df[GlossaryCore.Years] = years
         # Gha
         self.deforested_surface_df['forest_surface_evol'] = np.linspace(
             -0.01, 0, year_range)
 
         self.param = {'land_demand_df': self.energy_land_demand_df,
-                      'year_start': self.year_start,
-                      'year_end': self.year_end,
+                      GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
                       'total_food_land_surface': self.total_food_land_surface,
                       'forest_surface_df': self.deforested_surface_df,
                       'land_use_constraint_ref': 0.01
@@ -105,8 +107,8 @@ class LandUseV1TestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.{LandUseV1.TOTAL_FOOD_LAND_SURFACE}': self.total_food_land_surface,
                        f'{name}.{model_name}.{LandUseV1.LAND_DEMAND_DF}': self.energy_land_demand_df,
                        f'{name}.{model_name}.{LandUseV1.DEFORESTED_SURFACE_DF}': self.deforested_surface_df,

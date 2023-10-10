@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 from os.path import join, dirname
 from climateeconomics.core.core_forest.forest_v2 import Forest
+from climateeconomics.glossarycore import GlossaryCore
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
@@ -67,10 +68,10 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.initial_emissions = 3.21
         forest_invest = np.linspace(2, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         deforest_invest = np.linspace(10, 1, year_range)
         self.deforest_invest_df = pd.DataFrame(
-            {"years": years, "investment": deforest_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
         self.reforestation_cost_per_ha = 13800
 
         wood_density = 600.0  # kg/m3
@@ -120,23 +121,23 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': [1.135081, 1.135081, 1.135081]})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: [1.135081, 1.135081, 1.135081]})
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {"years": years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
-            {"years": years, "transport": transport})
+            {GlossaryCore.Years: years, "transport": transport})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
         self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -206,16 +207,16 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         year_range = self.year_end - self.year_start + 1
         deforestation_surface = np.array(np.linspace(4, 4, year_range))
         self.deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": deforestation_surface})
+            {GlossaryCore.Years: years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
         self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
         forest_invest = np.linspace(2, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {'years': years, 'investment': np.array([5000.00, 5000.00, 5000.00, 2000.00,
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([5000.00, 5000.00, 5000.00, 2000.00,
                                                      1.00, 1.00, 1.00, 0000.00,
                                                      0000.00, 0000.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
@@ -267,23 +268,23 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {"years": years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
-            {"years": years, "transport": transport})
+            {GlossaryCore.Years: years, "transport": transport})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
         self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -352,16 +353,16 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         year_range = self.year_end - self.year_start + 1
         deforestation_surface = np.array(np.linspace(4, 4, year_range))
         self.deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": deforestation_surface})
+            {GlossaryCore.Years: years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
         self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
         forest_invest = np.linspace(2, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {'years': years, 'investment': np.array([5000.00, 5000.00, 5000.00, 2000.00,
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([5000.00, 5000.00, 5000.00, 2000.00,
                                                      2000.00, 2000.00, 0000.00, 0000.00,
                                                      3000.00, 3000.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
@@ -414,23 +415,23 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {"years": years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
-            {"years": years, "transport": transport})
+            {GlossaryCore.Years: years, "transport": transport})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
         self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,
@@ -499,16 +500,16 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         year_range = self.year_end - self.year_start + 1
         deforestation_surface = np.array(np.linspace(4, 4, year_range))
         self.deforestation_surface_df = pd.DataFrame(
-            {"years": years, "deforested_surface": deforestation_surface})
+            {GlossaryCore.Years: years, "deforested_surface": deforestation_surface})
         self.CO2_per_ha = 4000
         self.limit_deforestation_surface = 1000
         # GtCO2
         self.initial_emissions = 3.21
         forest_invest = np.linspace(2, 10, year_range)
         self.forest_invest_df = pd.DataFrame(
-            {"years": years, "forest_investment": forest_invest})
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
-            {'years': years, 'investment': np.array([0.00, 0.00, 0.00, 0.00,
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([0.00, 0.00, 0.00, 0.00,
                                                      0.00, 0.00, 30000.00, 10.00,
                                                      0.00, 0.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
@@ -561,23 +562,23 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), 'investment': np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
-            {"years": years, "investment": mw_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         transport = np.linspace(7.6, 7.6, year_range)
         self.transport_df = pd.DataFrame(
-            {"years": years, "transport": transport})
+            {GlossaryCore.Years: years, "transport": transport})
         self.margin = pd.DataFrame(
-            {'years': years, 'margin': np.ones(len(years)) * 110.0})
+            {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
         self.initial_unmanaged_forest_surface = 4 - \
             1.25 - self.initial_protected_forest_surface
 
-        inputs_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
-                       f'{self.name}.time_step': 1,
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}': self.deforest_invest_df,
                        f'{self.name}.{model_name}.{Forest.DEFORESTATION_COST_PER_HA}': 8000,
                        f'{self.name}.{model_name}.{Forest.CO2_PER_HA}': self.CO2_per_ha,

@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 import os
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class OrderOfMagnitude():
 
@@ -47,8 +49,8 @@ class LandUseV2():
     HECTARE = 'ha'
 
     LAND_DEMAND_DF = 'land_demand_df'
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
     INIT_UNMANAGED_FOREST_SURFACE = 'initial_unmanaged_forest_surface'
 
     TOTAL_FOOD_LAND_SURFACE = 'total_food_land_surface'
@@ -95,7 +97,7 @@ class LandUseV2():
         curr_dir = os.path.dirname(__file__)
         data_file = os.path.join(curr_dir, self.surface_file)
         self.surface_df = pd.read_csv(data_file)
-        self.total_agriculture_surfaces = self.__extract_and_convert_superficie('Habitable', 'Agriculture') / \
+        self.total_agriculture_surfaces = self.__extract_and_convert_superficie('Habitable', GlossaryCore.SectorAgriculture) / \
                                           OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]
         self.total_forest_surfaces = self.__extract_and_convert_superficie('Habitable', 'Forest') / \
                                      OrderOfMagnitude.magnitude_factor[OrderOfMagnitude.GIGA]

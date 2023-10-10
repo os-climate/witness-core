@@ -5,8 +5,7 @@
 - Population df ($population\_df$): Dataframe with total population per year in millions of people
 - Energy Production Quantity ($energy\_production$): Dataframe with Total Final Consumption of energy per year in Pwh
 - Energy capital ($energy\_capital$): Dataframe with the total capital stock dedicated to energy production per year. Unit: trillion dollars. 
-- Share of investment in energy ($share\_energy\_investment$): Share of total investment that goes to energy
-- Total investment share of GDP ($total\_investment\_share\_of\_gdp$): Total share of GDP that is invested
+- Shares of investment in  ($energy$ and $non\ energy$): Share of total investment that goes to energy sector and non-energy sectors
 - Damage to productivity ($damage\_to\_productivity$): If True: apply damage to productivity. if False: Apply damage only to production. 
 - CO2 Emissions: Dataframe with C02 emissions per year in Gt 
 - C02 taxes($CO2\_taxes$): C02 taxes per year in\$/tC02 
@@ -16,7 +15,6 @@
 - Economics detail df ($economics\_detail\_df$): Dataframe with most of model outputs
 - Economics Data ($economics\_df$): Dataframe with coupling model outputs from previous dataframe. It contains gross output and net output in trillion dollars and consumption per capita in k\$.
 - Energy investment by year ($energy\_investment$): the investment in energy by year in G\$. 
-- Global investment constraint ($global\_investment\_constraint$): Value of the investment constraint for optimization
 - Per capita consumption constraint ($pc\_consumption\_constraint$): Value of the per capita consumption constraint for the optimization
 - Energy invests wo renewable: Energy investment without additional investment coming from carbon tax. Unit: G\$
 - Workforce df ($workforce\_df$): Dataframe with workforce per year in million of people. 
@@ -80,22 +78,24 @@ The capital is divided into two types: energy capital and non energy capital. En
 The equation above is applied to both energy and non energy capital, the total capital stock being the sum. We apply to non energy capital the depreciation rate in input ($depreciation\_rate$) of this model. For energy capital the depreciation rate depends on the technology, the energy capital is therefore computed in each energy technology model and is an input of the macroeconomics model.  
 
 ### Investment
-Investment is defined using the inputs $share\_energy\_investment$ and $share\_non\_energy\_investment$.
+Investment $I_t$ is defined using the inputs $I^E_{raw}$ and $share\ non\ energy\ investements$, which respectively are 
+direct investments in the energy sector (not resulting from CO2 tax, also called "without tax") and the share percentage of the net GDP output allowed to other sectors.
 
-The investment in energy $I^E$ is: $$I_{t}^E = share\_energy\_investment_t * Q_t + ren\_investments$$
+The investment in energy $I^E$ is:
+$$I^E = I^E_{raw} + I^E_{from CO2 tax}$$
 With:
-$$ren\_investments = emissions \cdot co2\_taxes \cdot co2\_tax\_eff$$
-However, investments coming from CO2 taxes are capped at the value of energy investment without tax multiplied by the model input factor co2_input_limit. It is 2 by default and smoothed with the following formula:
+$$I^E_{from CO2 tax} = emissions \cdot co2\_taxes \cdot co2\_tax\_eff$$
+However, investments in energy coming from CO2 taxes are capped at the value of energy investment without tax multiplied by the model input factor co2_input_limit. It is 2 by default and smoothed with the following formula:
 $$ren\_investments = co2\_invest\_limit \cdot \frac{energy\_investment\_wo\_tax}{10} \cdot(9.0 + e^{- \frac{co2\_invest\_limit \cdot energy\_investment\_wo\_tax}{ren\_investments}})$$
 
 The investment in non-energy $I^{NE}$ is :  
 $$I_{t}^{NE} = share\_non\_energy\_investment_t \cdot Q_t$$ 
-and the total investment $I_t =  I_t^E + I_t^{NE}$ is limited to a certain share of the net output set by $max\_invest$ input. 
+and the total investment $$I_t =  I_t^E + I_t^{NE}$$ is limited to a certain share of the net output set by $max\_invest$ input. 
 
 ### Consumption
 Consumption is such that: 
-$$C_t = Y_t - I_t$$
-The part of the output not invested is used for consumption. 
+$$C_t = Q_t - I_t$$
+The part of the net output not invested is used for consumption. 
 
 ### Notes on the fitting of the production function
 To obtain the value of the production function parameters we fitted our calculated production to historical data from IMF[^5] of GDP PPP (Purchasing Power Parity) in current US dollars that we calibrated to be in constant 2020 US dollars using the GDP deflator. We also used data from the IMF[^6] for the capital stock value, for population we took data from the World Bank databank[^7] and lastly for energy we used Total Final Consumption from International Energy Agency[^10].

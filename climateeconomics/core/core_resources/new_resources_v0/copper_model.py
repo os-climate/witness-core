@@ -5,12 +5,14 @@ from posixpath import dirname
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
+
 
 class CopperModel :
 
     DEMAND = 'copper_demand'
-    YEAR_START = 'year_start'
-    YEAR_END = 'year_end'
+    YEAR_START = GlossaryCore.YearStart
+    YEAR_END = GlossaryCore.YearEnd
     ANNUAL_EXTRACTION = 'annual_extraction'    
     INITIAL_RESERVE = 'initial_copper_reserve'
     INITIAL_STOCK = 'initial_copper_stock'

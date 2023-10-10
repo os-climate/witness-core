@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -38,13 +38,13 @@ class Study(StudyManager):
     def __init__(self, year_start=2000, year_end=2020, time_step=1, name='', execution_engine=None, run_usecase=False):
         super().__init__(__file__, execution_engine=execution_engine, run_usecase=run_usecase)
         self.study_name = 'usecase_indus_only'
-        self.macro_name = '.Macroeconomics'
-        self.obj_name = '.Objectives'
-        self.coupling_name = ".Sectorization_Eval"
-        self.optim_name = ".SectorsOpt"
-        self.ns_industry = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Industry'
-        self.ns_agriculture = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Agriculture'
-        self.ns_services = self.study_name + self.optim_name + self.coupling_name + self.macro_name + '.Services'
+        self.macro_name = 'Macroeconomics'
+        self.obj_name = 'Objectives'
+        self.coupling_name = "Sectorization_Eval"
+        self.optim_name = "SectorsOpt"
+        self.ns_industry = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{GlossaryCore.SectorIndustry}"
+        self.ns_agriculture = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{GlossaryCore.SectorAgriculture}"
+        self.ns_services = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{GlossaryCore.SectorServices}"
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -53,8 +53,8 @@ class Study(StudyManager):
 
     def setup_usecase(self):
         ns = self.study_name
-        ns_coupling = self.study_name + self.optim_name + self.coupling_name
-        ns_optim = self.study_name + self.optim_name
+        ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
+        ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
         INEQ_CONSTRAINT = FunctionManager.INEQ_CONSTRAINT
         OBJECTIVE = FunctionManager.OBJECTIVE
@@ -82,8 +82,6 @@ class Study(StudyManager):
 
         dspace = pd.DataFrame(dspace_dict)
 
-        services = 'Services.'
-        agri = 'Agriculture.'
         industry = 'Industry.'
         design_var_descriptor = {
             'output_alpha_indus_in': {'out_name': industry + 'output_alpha', 'out_type': 'float', 'index': arange(1),
@@ -114,16 +112,16 @@ class Study(StudyManager):
         disc_dict[f'{ns_coupling}.DesignVariables.design_var_descriptor'] = design_var_descriptor
 
         # Optim inputs
-        disc_dict[f'{ns_optim}.max_iter'] = 400
-        disc_dict[f'{ns_optim}.algo'] = "L-BFGS-B"
-        disc_dict[f'{ns_optim}.design_space'] = dspace
-        disc_dict[f'{ns_optim}.formulation'] = 'DisciplinaryOpt'
-        disc_dict[f'{ns_optim}.objective_name'] = 'objective_lagrangian'
-        disc_dict[f'{ns_optim}.differentiation_method'] = 'complex_step'  # complex_step user
-        disc_dict[f'{ns_optim}.fd_step'] = 1.e-15
-        disc_dict[f'{ns_optim}.ineq_constraints'] = []
-        disc_dict[f'{ns_optim}.eq_constraints'] = []
-        disc_dict[f'{ns_optim}.algo_options'] = {
+        disc_dict[f"{ns_optim}.{'max_iter'}"] = 400
+        disc_dict[f"{ns_optim}.{'algo'}"] = "L-BFGS-B"
+        disc_dict[f"{ns_optim}.{'design_space'}"] = dspace
+        disc_dict[f"{ns_optim}.{'formulation'}"] = 'DisciplinaryOpt'
+        disc_dict[f"{ns_optim}.{'objective_name'}"] = 'objective_lagrangian'
+        disc_dict[f"{ns_optim}.{'differentiation_method'}"] = 'complex_step'  # complex_step user
+        disc_dict[f"{ns_optim}.{'fd_step'}"] = 1.e-15
+        disc_dict[f"{ns_optim}.{'ineq_constraints'}"] = []
+        disc_dict[f"{ns_optim}.{'eq_constraints'}"] = []
+        disc_dict[f"{ns_optim}.{'algo_options'}"] = {
             "maxls_step_nb": 48,
             "maxcor": 24,
             "ftol_rel": 1e-15,
@@ -131,31 +129,24 @@ class Study(StudyManager):
         }
 
         # design var inputs
-        disc_dict[f'{ns_optim}.output_alpha_indus_in'] = np.array([0.715])
-        disc_dict[f'{ns_optim}.prod_gr_start_indus_in'] = np.array([0.001])
-        disc_dict[f'{ns_optim}.decl_rate_tfp_indus_in'] = np.array([0.071])
-        disc_dict[f'{ns_optim}.prod_start_indus_in'] = np.array([0.203])
-        disc_dict[f'{ns_optim}.energy_eff_k_indus_in'] = np.array([0.051])
-        disc_dict[f'{ns_optim}.energy_eff_cst_indus_in'] = np.array([0.16])
-        disc_dict[f'{ns_optim}.energy_eff_xzero_indus_in'] = np.array([2015.0])
-        disc_dict[f'{ns_optim}.energy_eff_max_indus_in'] = np.array([4.19])
-
-        # other inputs
-        #         disc_dict[f'{self.ns_services}.energy_eff_k'] = 0.039609214
-        #         disc_dict[f'{self.ns_services}.energy_eff_cst'] = 2.867328682
-        #         disc_dict[f'{self.ns_services}.energy_eff_xzero'] = 2041.038019
-        #         disc_dict[f'{self.ns_services}.energy_eff_max'] = 11.4693228
+        disc_dict[f"{ns_optim}.{'output_alpha_indus_in'}"] = np.array([0.715])
+        disc_dict[f"{ns_optim}.{'prod_gr_start_indus_in'}"] = np.array([0.001])
+        disc_dict[f"{ns_optim}.{'decl_rate_tfp_indus_in'}"] = np.array([0.071])
+        disc_dict[f"{ns_optim}.{'prod_start_indus_in'}"] = np.array([0.203])
+        disc_dict[f"{ns_optim}.{'energy_eff_k_indus_in'}"] = np.array([0.051])
+        disc_dict[f"{ns_optim}.{'energy_eff_cst_indus_in'}"] = np.array([0.16])
+        disc_dict[f"{ns_optim}.{'energy_eff_xzero_indus_in'}"] = np.array([2015.0])
+        disc_dict[f"{ns_optim}.{'energy_eff_max_indus_in'}"] = np.array([4.19])
 
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
         func_df['variable'] = ['Industry.gdp_error',
                                'Industry.energy_eff_error',
-                               'Industry.range_energy_eff_constraint'
                                ]
-        func_df['ftype'] = [OBJECTIVE, OBJECTIVE, INEQ_CONSTRAINT]
-        func_df['weight'] = [1, 1, 1]
-        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM]
-        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_macro']
+        func_df['ftype'] = [OBJECTIVE, OBJECTIVE]
+        func_df['weight'] = [1, 1]
+        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM]
+        func_df['namespace'] = ['ns_obj', 'ns_obj']
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{ns_coupling}.{func_mng_name}.'
@@ -171,18 +162,26 @@ class Study(StudyManager):
         hist_capital = pd.read_csv(join(data_dir, 'hist_capital_sect.csv'))
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        indus_invest = pd.DataFrame({'years': hist_invest['years'], 'Industry': hist_invest['Industry']})
-        agri_invest = pd.DataFrame({'years': hist_invest['years'], 'Agriculture': hist_invest['Agriculture']})
-        services_invest = pd.DataFrame({'years': hist_invest['years'], 'Services': hist_invest['Services']})
-
+        long_term_energy_eff = pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
+        lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
+                                     GlossaryCore.EnergyEfficiency: long_term_energy_eff[
+                                         GlossaryCore.SectorAgriculture]})
+        lt_enef_indus = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
+                                      GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorIndustry]})
+        lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
+                                         GlossaryCore.EnergyEfficiency: long_term_energy_eff[
+                                             GlossaryCore.SectorServices]})
         sect_input = {}
-        sect_input[ns_coupling + self.obj_name + '.historical_gdp'] = hist_gdp
-        sect_input[ns_coupling + self.obj_name + '.historical_capital'] = hist_capital
-        sect_input[ns_coupling + self.obj_name + '.historical_energy'] = hist_energy
-        sect_input[self.ns_industry + '.hist_sector_investment'] = hist_invest
-        sect_input[self.ns_agriculture + '.hist_sector_investment'] = hist_invest
-        sect_input[self.ns_services + '.hist_sector_investment'] = hist_invest
-        sect_input[ns_coupling + self.macro_name + '.prod_function_fitting'] = True
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_capital'}"] = hist_capital
+        sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_energy'}"] = hist_energy
+        sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = hist_invest
+        sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = hist_invest
+        sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = hist_invest
+        sect_input[f"{ns_coupling}.{self.macro_name}.{'prod_function_fitting'}"] = False
+        sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
+        sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
+        sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'
@@ -195,10 +194,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.execution_engine.display_treeview_nodes(display_variables=True)
-
-    # uc_cls.execution_engine.set_debug_mode()
-    #     generate_n2_plot(uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines)
-    #     uc_cls.execution_engine.dm.export_couplings(in_csv=True, f_name='couplings.csv')
-    uc_cls.run()
+    uc_cls.test()

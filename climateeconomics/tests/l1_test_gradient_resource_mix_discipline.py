@@ -17,6 +17,8 @@ limitations under the License.
 from os.path import join, dirname
 from pandas import read_csv
 from pathlib import Path
+
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
@@ -38,7 +40,7 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
         data_dir = join(dirname(__file__), 'data')
         self.oil_production_df = read_csv(
             join(data_dir, 'oil.predictible_production.csv'))
-        self.oil_production_df.set_index('years', inplace=True)
+        self.oil_production_df.set_index(GlossaryCore.Years, inplace=True)
         self.gas_production_df = read_csv(
             join(data_dir, 'gas.predictible_production.csv'))
         self.coal_production_df = read_csv(
@@ -107,8 +109,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1, 1)
         self.year_range = self.year_end - self.year_start + 1
 
-        self.values_dict = {f'{self.name}.year_start': self.year_start,
-                            f'{self.name}.year_end': self.year_end,
+        self.values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                            f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                             f'{self.name}.{self.model_name}.resources_demand': self.all_demand,
                             f'{self.name}.{self.model_name}.resources_demand_woratio': self.all_demand,
                             f'{self.name}.{self.model_name}.oil_resource.predictable_production': self.oil_production_df,
@@ -172,8 +174,8 @@ class ResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes(True)
 
-        values_dict = {f'{self.name}.year_start': self.year_start,
-                       f'{self.name}.year_end': self.year_end,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{self.model_name}.resources_demand': self.all_demand,
                        f'{self.name}.{self.model_name}.resources_demand_woratio': self.all_demand,
                        f'{self.name}.{self.model_name}.oil_resource.predictable_production': self.oil_production_df,

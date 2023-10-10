@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from copy import deepcopy
 from climateeconomics.core.tools.Hubbert_Curve import compute_Hubbert_regression
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class OrderOfMagnitude():
@@ -72,8 +73,8 @@ class ResourceModel():
         Configure with inputs_dict from the discipline
         '''
 
-        self.year_start = inputs_dict['year_start']  # year start
-        self.year_end = inputs_dict['year_end']  # year end
+        self.year_start = inputs_dict[GlossaryCore.YearStart]  # year start
+        self.year_end = inputs_dict[GlossaryCore.YearEnd]  # year end
         self.production_start = inputs_dict['production_start']
         self.production_years = np.arange(
             self.production_start, self.year_end + 1)
@@ -87,7 +88,7 @@ class ResourceModel():
         self.resource_price_data = inputs_dict['resource_price_data']
         self.init_dataframes()
         self.sub_resource_list = [col for col in list(
-            self.resource_production_data.columns) if col != 'years']
+            self.resource_production_data.columns) if col != GlossaryCore.Years]
 
         # self.resource_consumed_dict ={}
         # for resource_type in self.sub_resource_list :
@@ -99,29 +100,29 @@ class ResourceModel():
         '''
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.predictable_production = pd.DataFrame(
-            {'years': np.arange(self.production_start, self.year_end + 1, 1)})
+            {GlossaryCore.Years: np.arange(self.production_start, self.year_end + 1, 1)})
         self.recycled_production = pd.DataFrame(
-            {'years': self.years})
+            {GlossaryCore.Years: self.years})
         self.total_consumption = pd.DataFrame(
-            {'years': self.years})
+            {GlossaryCore.Years: self.years})
         self.resource_stock = pd.DataFrame(
-            {'years': self.years})
+            {GlossaryCore.Years: self.years})
         self.resource_price = pd.DataFrame(
-            {'years': self.years})
+            {GlossaryCore.Years: self.years})
 
-        # 'years' : self.years if lifespan is null
+        # GlossaryCore.Years : self.years if lifespan is null
         self.use_stock = pd.DataFrame(
-            {'years': np.insert(self.years, 0, np.arange(self.year_start - self.lifespan, self.year_start, 1))})
+            {GlossaryCore.Years: np.insert(self.years, 0, np.arange(self.year_start - self.lifespan, self.year_start, 1))})
 
         '''
         Set the index as the years
         '''
-        self.predictable_production.index = self.predictable_production['years'] 
-        self.recycled_production.index = self.recycled_production['years'] 
-        self.total_consumption.index = self.total_consumption['years'] 
-        self.resource_stock.index = self.resource_stock['years'] 
-        self.resource_price.index = self.resource_price['years']
-        self.use_stock.index = self.use_stock['years'] 
+        self.predictable_production.index = self.predictable_production[GlossaryCore.Years]
+        self.recycled_production.index = self.recycled_production[GlossaryCore.Years]
+        self.total_consumption.index = self.total_consumption[GlossaryCore.Years]
+        self.resource_stock.index = self.resource_stock[GlossaryCore.Years]
+        self.resource_price.index = self.resource_price[GlossaryCore.Years]
+        self.use_stock.index = self.use_stock[GlossaryCore.Years]
 
 
     def configure_parameters_update(self, inputs_dict):
@@ -130,15 +131,15 @@ class ResourceModel():
         '''
 
         self.resources_demand = deepcopy(inputs_dict['resources_demand'])
-        self.resources_demand.index = self.resources_demand['years']
+        self.resources_demand.index = self.resources_demand[GlossaryCore.Years]
         # re adapt the dataframe to the length of the simulation
-        self.resources_demand = self.resources_demand.loc[self.resources_demand['years']
+        self.resources_demand = self.resources_demand.loc[self.resources_demand[GlossaryCore.Years]
                                                           >= self.year_start]
-        self.resources_demand = self.resources_demand.loc[self.resources_demand['years']
+        self.resources_demand = self.resources_demand.loc[self.resources_demand[GlossaryCore.Years]
                                                           <= self.year_end]
         self.init_dataframes()
         self.sub_resource_list = [col for col in list(
-            self.resource_production_data.columns) if col != 'years']
+            self.resource_production_data.columns) if col != GlossaryCore.Years]
 
     def compute(self):
 
@@ -172,7 +173,7 @@ class ResourceModel():
         # needed
 
         self.resource_demand = self.resources_demand[[
-            'years', self.resource_name]]
+            GlossaryCore.Years, self.resource_name]]
 
         self.convert_demand(self.resource_demand)
 
@@ -245,8 +246,8 @@ class ResourceModel():
             predictable_production_dict)
         self.resource_stock = pd.DataFrame.from_dict(resource_stock_dict)
         self.use_stock = pd.DataFrame.from_dict(use_stock_dict) 
-        self.use_stock = self.use_stock.loc[self.use_stock['years']>= self.year_start]
-        self.use_stock= self.use_stock.loc[self.use_stock['years']<= self.year_end]               
+        self.use_stock = self.use_stock.loc[self.use_stock[GlossaryCore.Years]>= self.year_start]
+        self.use_stock= self.use_stock.loc[self.use_stock[GlossaryCore.Years]<= self.year_end]
         
         self.recycled_production = pd.DataFrame.from_dict(
             recycled_production_dict)
@@ -254,7 +255,7 @@ class ResourceModel():
     def compute_price(self):
 
         # dataframe initialization
-        # self.resource_price = pd.DataFrame({'years': self.years})
+        # self.resource_price = pd.DataFrame({GlossaryCore.Years: self.years})
 
         # for each year we calculate the price with the proportion of each
         # resource. The resource price is stored in the price data dataframe
@@ -282,7 +283,7 @@ class ResourceModel():
                 [val for val in total_consumption_dict['production'].values()]) != 0
             resource_type_price_idx = list(resource_price_data_dict['resource_type'].keys())[
                 list(resource_price_data_dict['resource_type'].values()).index(resource_type)]
-            for year in np.array([val for val in resource_price_dict['years'].values()])[(mask_1 * mask_2)]:
+            for year in np.array([val for val in resource_price_dict[GlossaryCore.Years].values()])[(mask_1 * mask_2)]:
                 resource_price_dict['price'][year] = \
                     resource_price_dict['price'][year] + \
                     use_stock_dict[resource_type][year] / \
@@ -337,8 +338,8 @@ class ResourceModel():
         resource_stock_dict = self.resource_stock.to_dict()
         # # # resource_price_data_dict = self.resource_price_data.to_dict()
         # # # total_consumption_dict = self.total_consumption.to_dict()
-        self.use_stock = self.use_stock.loc[self.use_stock['years']>= self.year_start]
-        self.use_stock= self.use_stock.loc[self.use_stock['years']<= self.year_end]
+        self.use_stock = self.use_stock.loc[self.use_stock[GlossaryCore.Years]>= self.year_start]
+        self.use_stock= self.use_stock.loc[self.use_stock[GlossaryCore.Years]<= self.year_end]
         use_stock_dict = self.use_stock.to_dict()
         recycled_production_dict = self.recycled_production.to_dict()
 

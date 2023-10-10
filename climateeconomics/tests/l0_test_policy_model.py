@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
@@ -50,9 +51,9 @@ class PolicyDiscTest(unittest.TestCase):
 
         years = np.arange(2020, 2101)
         CCS_price = pd.DataFrame(
-            {'years': years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
+            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
         CO2_damage = pd.DataFrame(
-            {'years': years, 'CO2_damage_price': np.linspace(345.5, 433.2,  len(years))})
+            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(345.5, 433.2,  len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
                        f'{self.name}.CO2_damage_price': CO2_damage,
@@ -65,10 +66,10 @@ class PolicyDiscTest(unittest.TestCase):
 
         max_CCS_CO2 = np.maximum(
             CCS_price['ccs_price_per_tCO2'], CO2_damage['CO2_damage_price'])
-        CO2_tax = self.ee.dm.get_value(f'{self.name}.CO2_taxes')
+        CO2_tax = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.CO2TaxesValue}')
 
 #         np.testing.assert_almost_equal(
-# max_CCS_CO2, CO2_tax['CO2_tax'].values, err_msg='arrays are not equal')
+# max_CCS_CO2, CO2_tax[GlossaryCore.CO2Tax].values, err_msg='arrays are not equal')
 
         ppf = PostProcessingFactory()
         disc = self.ee.dm.get_disciplines_with_name(f'Test.policy')

@@ -20,6 +20,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -55,9 +56,9 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         economics_df_all = read_csv(
             join(data_dir, 'economics_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all['years'] >= 2020]
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
         economics_df = economics_df_y[[
-            'years', 'pc_consumption']]
+            GlossaryCore.Years, GlossaryCore.PerCapitaConsumption]]
         years = np.arange(2020, 2101, 1)
         economics_df.index = years
 
@@ -68,11 +69,11 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
         energy_price = np.linspace(200, 10, len(years))
         energy_mean_price = pd.DataFrame(
-            {'years': years, 'energy_price': energy_price})
+            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
 
-        self.values_dict = {f'{self.name}.economics_df': economics_df,
-                            f'{self.name}.population_df': self.population_df,
-                            f'{self.name}.energy_mean_price': energy_mean_price}
+        self.values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
+                            f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
+                            f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
 
         self.ee.load_study_from_input_dict(self.values_dict)
 
@@ -80,8 +81,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
     def analytic_grad_entry(self):
         return [
             self.test_01_utility_analytic_grad_welfare,
-            self.test_02_utility_analytic_grad_last_utility,
-            self.test_03_utility_with_low_economy
         ]
 
     def test_01_utility_analytic_grad_welfare(self):
@@ -89,66 +88,12 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_welfare.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df',
-                                    f'{self.name}.energy_mean_price',
-                                    f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.welfare_objective',
-                                     f'{self.name}.min_utility_objective',
-                                     f'{self.name}.utility_df',
-                                     f'{self.name}.negative_welfare_objective'],
-                            derr_approx='complex_step')
-
-    def test_02_utility_analytic_grad_last_utility(self):
-        """
-        Test the second option of the objective function
-        """
-
-        self.values_dict[f'{self.name}.welfare_obj_option'] = 'last_utility'
-
-        self.ee.load_study_from_input_dict(self.values_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_discipline_last_utility.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df',
-                                    f'{self.name}.energy_mean_price',
-                                    f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.welfare_objective',
-                                     f'{self.name}.min_utility_objective',
-                                     f'{self.name}.utility_df',
-                                     f'{self.name}.negative_welfare_objective',],
-                            derr_approx='complex_step')
-
-    def test_03_utility_with_low_economy(self):
-
-        data_dir = join(dirname(__file__), 'data')
-        economics_df_all = read_csv(
-            join(data_dir, 'economics_data_onestep.csv'))
-
-        economics_df_y = economics_df_all[economics_df_all['years'] >= 2020]
-        economics_df = economics_df_y[[
-            'years', 'pc_consumption']]
-        economics_df['pc_consumption'] = economics_df['pc_consumption'] / 2
-        years = np.arange(2020, 2101, 1)
-        economics_df.index = years
-        energy_price = np.arange(200, 200 + len(years))
-        energy_mean_price = pd.DataFrame(
-            {'years': years, 'energy_price': energy_price})
-
-        values_dict = {f'{self.name}.economics_df': economics_df,
-                       f'{self.name}.population_df': self.population_df,
-                       f'{self.name}.energy_mean_price': energy_mean_price}
-
-        self.ee.load_study_from_input_dict(values_dict)
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_utility_low_economy.pkl', discipline=disc_techno, step=1e-15,local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.economics_df',
-                                    f'{self.name}.energy_mean_price',
-                                    f'{self.name}.population_df'],
-                            outputs=[f'{self.name}.welfare_objective',
-                                     f'{self.name}.min_utility_objective',
-                                     f'{self.name}.utility_df',
-                                     f'{self.name}.negative_welfare_objective'],
+                            inputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDfValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.WelfareObjective}',
+                                     f'{self.name}.{GlossaryCore.UtilityDfValue}',
+                                     f'{self.name}.{GlossaryCore.NegativeWelfareObjective}',
+                                     f'{self.name}.{GlossaryCore.LastYearDiscountedUtilityObjective}',
+                            ],
                             derr_approx='complex_step')

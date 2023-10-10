@@ -3,7 +3,7 @@
 Created on Monday Nov 29 17:21:18 2021
 
 """
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study as MDA_Coarse
 import pickle
@@ -42,7 +42,7 @@ def launch_data_pickle_generation(directory=''):
     Energy_Mix_disc = ee.dm.get_disciplines_with_name(
         f'{name}.{model_name}')[0]
     energy_list = Energy_Mix_disc.get_sosdisc_inputs(
-        'energy_list')
+        GlossaryCore.energy_list)
 
 # Inputs
     mda_coarse_data_energymix_input_dict = {}
@@ -129,7 +129,7 @@ def launch_data_pickle_generation(directory=''):
         ################
         # Technologies #
         ################
-        technologies_list = energy_disc.get_sosdisc_inputs('technologies_list')
+        technologies_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in technologies_list:
             # Loop on technologies
             techno_disc = ee.dm.get_disciplines_with_name(
@@ -170,7 +170,7 @@ def launch_data_pickle_generation(directory=''):
                     'value': techno_disc.get_sosdisc_outputs(key), 'is_coupling': is_coupling}
 
     ccs_list = Energy_Mix_disc.get_sosdisc_inputs(
-        'ccs_list')
+        GlossaryCore.ccs_list)
     ###############
     # CCS Streams #
     ###############
@@ -212,7 +212,7 @@ def launch_data_pickle_generation(directory=''):
         ################
         # Technologies #
         ################
-        technologies_list = stream_disc.get_sosdisc_inputs('technologies_list')
+        technologies_list = stream_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in technologies_list:
             # Loop on technologies
             techno_disc = ee.dm.get_disciplines_with_name(

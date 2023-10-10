@@ -19,6 +19,7 @@ import pandas as pd
 from os.path import join, dirname
 from pandas import DataFrame, read_csv
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
@@ -56,9 +57,9 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         years = np.arange(2020, 2101)
         CCS_price = pd.DataFrame(
-            {'years': years, 'ccs_price_per_tCO2': np.linspace(100, 900, len(years))})
+            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(100, 900, len(years))})
         CO2_damage = pd.DataFrame(
-            {'years': years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
+            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
                        f'{self.name}.CO2_damage_price': CO2_damage,
@@ -73,7 +74,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline.pkl',
                             local_data = disc.local_data,discipline=disc, inputs=[f'{self.name}.CCS_price', f'{self.name}.CO2_damage_price'],
-                            outputs=[f'{self.name}.CO2_taxes'], step=1e-15, derr_approx='complex_step')
+                            outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_policy_analytic_grad_2(self):
 
@@ -95,9 +96,9 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         years = np.arange(2020, 2101)
         CCS_price = pd.DataFrame(
-            {'years': years, 'ccs_price_per_tCO2': np.linspace(900, 900, len(years))})
+            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(900, 900, len(years))})
         CO2_damage = pd.DataFrame(
-            {'years': years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
+            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
                        f'{self.name}.CO2_damage_price': CO2_damage,
@@ -110,7 +111,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.CO2_damage_price'],
-                            outputs=[f'{self.name}.CO2_taxes'], step=1e-15, derr_approx='complex_step')
+                            outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_policy_analytic_grad_3(self):
 
@@ -132,9 +133,9 @@ class PolicyDiscTest(AbstractJacobianUnittest):
 
         years = np.arange(2020, 2101)
         CCS_price = pd.DataFrame(
-            {'years': years, 'ccs_price_per_tCO2': np.linspace(-100, -900, len(years))})
+            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(-100, -900, len(years))})
         CO2_damage = pd.DataFrame(
-            {'years': years, 'CO2_damage_price': np.linspace(-300, -700, len(years))})
+            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(-300, -700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
                        f'{self.name}.CO2_damage_price': CO2_damage,
@@ -147,4 +148,4 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.CO2_damage_price'],
-                            outputs=[f'{self.name}.CO2_taxes'], step=1e-15, derr_approx='complex_step')
+                            outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')

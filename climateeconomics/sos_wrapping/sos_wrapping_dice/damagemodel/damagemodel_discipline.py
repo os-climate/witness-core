@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_dice.damage_model import DamageModel
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
@@ -40,9 +41,9 @@ class DamageDiscipline(SoSWrapp):
         'version': '',
     }
     DESC_IN = {
-        'year_start': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'year_end': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'time_step': {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearStart: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_damag_int': {'type': 'float', 'default': 0},
         'damag_int': {'type': 'float', 'default':0},
         'damag_quad': {'type': 'float', 'default': 0.00236},
@@ -58,16 +59,16 @@ class DamageDiscipline(SoSWrapp):
         'tp_a3': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.081},
         'tp_a4': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.754},
         'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'frac_damage_prod': {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'},
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
-                         'dataframe_descriptor': {'years': ('float', None, False),
-                                                  'Total CO2 emissions': ('float', None, False),
+                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                                  GlossaryCore.TotalCO2Emissions: ('float', None, False),
                                                   'Total N2O emissions': ('float', None, False),
                                                   'Total CH4 emissions': ('float', None, False),
                                                   }
                          },
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',},
+        GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                                    'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
                                    'dataframe_edition_locked': False},
@@ -75,16 +76,16 @@ class DamageDiscipline(SoSWrapp):
     }
 
     DESC_OUT = {
-        'damage_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
+        GlossaryCore.DamageDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario'}}
     _maturity = 'Research'
 
     def run(self):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
-        economics_df = in_dict.pop('economics_df')
+        economics_df = in_dict.pop(GlossaryCore.EconomicsDfValue)
         emissions_df = in_dict.pop('emissions_df')
-        temperature_df = in_dict.pop('temperature_df')
+        temperature_df = in_dict.pop(GlossaryCore.TemperatureDfValue)
         emissions_control_rate = in_dict.pop('emissions_control_rate')
 
         # pyworld3 execution
@@ -103,7 +104,7 @@ class DamageDiscipline(SoSWrapp):
 
         chart_filters = []
 
-        chart_list = ['Damage', 'Abatement cost']  # , 'Abatement cost']
+        chart_list = [GlossaryCore.Damages, 'Abatement cost']  # , 'Abatement cost']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -123,13 +124,13 @@ class DamageDiscipline(SoSWrapp):
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
 
-        if 'Damage' in chart_list:
+        if GlossaryCore.Damages in chart_list:
 
-            to_plot = ['damages']
-            damage_df = self.get_sosdisc_outputs('damage_df')
+            to_plot = [GlossaryCore.Damages]
+            damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
             damage_df = resize_df(damage_df)
 
-            damage = damage_df['damages']
+            damage = damage_df[GlossaryCore.Damages]
 
             years = list(damage_df.index)
 
@@ -140,7 +141,7 @@ class DamageDiscipline(SoSWrapp):
 
             chart_name = 'environmental damage'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Damage (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Damage (trill $)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)
@@ -148,7 +149,7 @@ class DamageDiscipline(SoSWrapp):
         if 'Abatement cost' in chart_list:
 
             to_plot = ['abatecost']
-            abate_df = self.get_sosdisc_outputs('damage_df')
+            abate_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
 
             abatecost = damage_df['abatecost']
 
@@ -161,7 +162,7 @@ class DamageDiscipline(SoSWrapp):
 
             chart_name = 'Abatement cost'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Abatement cost (Trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Abatement cost (Trill $)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)

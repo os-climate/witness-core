@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -50,31 +50,31 @@ class Study(StudyManager):
         setup_data_list = []
         # private values economics operator pyworld3
         landuse_input = {}
-        landuse_input[self.study_name + '.year_start'] = self.year_start
-        landuse_input[self.study_name + '.year_end'] = self.year_end
+        landuse_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
+        landuse_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
 
         data_dir = join(
             dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
         land_demand_df = pd.read_csv(
             join(data_dir, 'land_demand.csv'))
         # cut land_demand_df to respect years of study case
-        land_demand_df = land_demand_df.loc[land_demand_df['years']
+        land_demand_df = land_demand_df.loc[land_demand_df[GlossaryCore.Years]
                                             >= self.year_start]
-        land_demand_df = land_demand_df.loc[land_demand_df['years']
+        land_demand_df = land_demand_df.loc[land_demand_df[GlossaryCore.Years]
                                             <= self.year_end]
         self.total_food_land_surface = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'total surface (Gha)'])
-        self.total_food_land_surface['years'] = years
+        self.total_food_land_surface[GlossaryCore.Years] = years
         self.total_food_land_surface['total surface (Gha)'] = np.linspace(
             5, 4, year_range)
 
         self.deforested_surface_df = pd.DataFrame(
             index=years,
-            columns=['years',
+            columns=[GlossaryCore.Years,
                      'forest_surface_evol'])
-        self.deforested_surface_df['years'] = years
+        self.deforested_surface_df[GlossaryCore.Years] = years
         self.deforested_surface_df['forest_surface_evol'] = np.linspace(
             -0.001, 0, year_range)
 

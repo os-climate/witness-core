@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
+
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
@@ -37,14 +39,14 @@ class NaturalGasModelTestCase(unittest.TestCase):
             join(data_dir, 'all_demand_from_energy_mix.csv'))
         # part to adapt lenght to the year range
 
-        self.energy_gas_demand_df = self.energy_gas_demand_df.loc[self.energy_gas_demand_df['years']
+        self.energy_gas_demand_df = self.energy_gas_demand_df.loc[self.energy_gas_demand_df[GlossaryCore.Years]
                                                                     >= self.year_start]
-        self.energy_gas_demand_df= self.energy_gas_demand_df.loc[self.energy_gas_demand_df['years']
+        self.energy_gas_demand_df= self.energy_gas_demand_df.loc[self.energy_gas_demand_df[GlossaryCore.Years]
                                                                   <= self.year_end]
 
         self.param = {'resources_demand': self.energy_gas_demand_df,
-                      'year_start': self.year_start,
-                      'year_end': self.year_end,
+                      GlossaryCore.YearStart: self.year_start,
+                      GlossaryCore.YearEnd: self.year_end,
                       'production_start': self.production_start
                       }
 
@@ -71,8 +73,8 @@ class NaturalGasModelTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
 
-        inputs_dict = {f'{name}.year_start': self.year_start,
-                       f'{name}.year_end': self.year_end,
+        inputs_dict = {f'{name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{name}.{model_name}.resources_demand': self.energy_gas_demand_df,
                        'production_start': self.production_start
                        }

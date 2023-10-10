@@ -23,7 +23,7 @@ from pathlib import Path
 from copy import deepcopy
 import pandas as pd
 import numpy as np
-
+from climateeconomics.glossarycore import GlossaryCore
 
 class PopulationDiscipline(ClimateEcoDiscipline):
     "     Temperature evolution"
@@ -52,53 +52,49 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     # World Health Organization.
     default_climate_mortality_param_df = pd.read_csv(
         join(global_data_dir, 'climate_additional_deaths_V2.csv'))
-    cal_pc_init = pd.DataFrame({'years': years, 'kcal_pc': np.linspace(2400,2400,len(years))})
-    default_diet_mortality_param_df = pd.read_csv(
-        join(global_data_dir, 'diet_mortality_param.csv'))
+    cal_pc_init = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400,2400,len(years))})
     # ADD DICTIONARY OF VALUES FOR DEATH RATE
+
+    desc_in_default_diet_mortality_param = GlossaryCore.DietMortalityParamDf
+    desc_in_default_diet_mortality_param['default'] = pd.read_csv(join(global_data_dir, 'diet_mortality_param.csv'))
+
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'time_step': ClimateEcoDiscipline.TIMESTEP_DESC_IN,
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'population_start': {'type': 'dataframe', 'default': pop_init_df, 'unit': 'millions of people',
-                             'dataframe_descriptor': {'years': ('float', None, False),
+                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                       'age': ('string', None, False),
-                                                      'population': ('float', None, False),}
+                                                      GlossaryCore.PopulationValue: ('float', None, False),}
                              },
-        'economics_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
-                         'dataframe_descriptor': {'years': ('float', None, False),
-                                                  'gross_output': ('float', None, False),
-                                                  'output_net_of_d': ('float', None, False),
-                                                  'net_output': ('float', None, False),
-                                                  'population': ('float', None, False),
-                                                  'productivity': ('float', None, False),
-                                                  'productivity_gr': ('float', None, False),
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
+                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                                  GlossaryCore.GrossOutput: ('float', None, False),
+                                                  GlossaryCore.OutputNetOfDamage: ('float', None, False),
+                                                  GlossaryCore.NetOutput: ('float', None, False),
+                                                  GlossaryCore.PopulationValue: ('float', None, False),
+                                                  GlossaryCore.Productivity: ('float', None, False),
+                                                  GlossaryCore.ProductivityGrowthRate: ('float', None, False),
                                                   'energy_productivity_gr': ('float', None, False),
                                                   'energy_productivity': ('float', None, False),
-                                                  'consumption': ('float', None, False),
-                                                  'pc_consumption': ('float', None, False),
-                                                  'capital': ('float', None, False),
-                                                  'investment': ('float', None, False),
+                                                  GlossaryCore.Consumption: ('float', None, False),
+                                                  GlossaryCore.PerCapitaConsumption: ('float', None, False),
+                                                  GlossaryCore.Capital: ('float', None, False),
+                                                  GlossaryCore.InvestmentsValue: ('float', None, False),
                                                   'interest_rate': ('float', None, False),
-                                                  'energy_investment': ('float', None, False),
-                                                  'output_growth': ('float', None, False), }
+                                                  GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
+                                                  GlossaryCore.OutputGrowth: ('float', None, False), }
                          },
-        'temperature_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '°C',
-                           'dataframe_descriptor': {'years': ('float', None, False),
-                                                    'exog_forcing': ('float', None, False),
-                                                    'forcing': ('float', None, False),
-                                                    'temp_atmo': ('float', None, False),
-                                                    'temp_ocean': ('float', None, False),}
-                           },
+        GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'climate_mortality_param_df': {'type': 'dataframe', 'default': default_climate_mortality_param_df, 'user_level': 3, 'unit': '-',
-                                       'dataframe_descriptor': {'years': ('float', None, False),
+                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                 'param': ('string', None, False),
                                                                 'beta': ('float', None, False),}
                                        },
         'calibration_temperature_increase': {'type': 'float', 'default': 2.5, 'user_level': 3 , 'unit': '°C'},
         'theta': {'type': 'float', 'default': 2, 'user_level': 3, 'unit': '-'},
         'death_rate_param': {'type': 'dataframe', 'default': default_death_rate_params_df, 'user_level': 3, 'unit': '-',
-                             'dataframe_descriptor': {'years': ('float', None, False),
+                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                       'param': ('string', None, False),
                                                       'death_rate_upper': ('float', None, False),
                                                       'death_rate_lower': ('float', None, False),
@@ -124,25 +120,20 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'alpha_birthrate_know': {'type': 'float', 'default': 1.02007061e-01, 'user_level': 3, 'unit': '-'},
         'beta_birthrate_know': {'type': 'float', 'default': 8.01923418e-01, 'user_level': 3, 'unit': '-'},
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
-        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN, 
+        ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN['var_name']: ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'kcal',
-                           'dataframe_descriptor': {'years': ('float', None, False),
-                                                    'kcal_pc': ('float', None, False),
+                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
+                                                    'kcal_pc': ('float', None, True),
                                                     }
                            },
-        'diet_mortality_param_df': {'type': 'dataframe', 'default': default_diet_mortality_param_df, 'user_level': 3, 'unit': '-',
-                                    'dataframe_descriptor': {'param': ('string', None, False),
-                                                             'undernutrition': ('float', None, False),
-                                                             'overnutrition': ('float', None, False),
-                                                             }
-                                    },
+        GlossaryCore.DietMortalityParamDf['var_name']: desc_in_default_diet_mortality_param,
         'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
         'kcal_pc_ref': {'type': 'float', 'default': 2000.0, 'user_level': 3, 'unit': 'kcal'},
         }
 
     DESC_OUT = {
-        'population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'working_age_population_df': {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
+        GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
+        GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
                                       'namespace': 'ns_witness'},
         'population_detail_df': {'type': 'dataframe', 'unit': 'people'},
         'birth_rate_df': {'type': 'dataframe', 'unit': '-'},
@@ -168,17 +159,17 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         population_detail_df, birth_rate_df, death_rate_dict, birth_df, death_dict, life_expectancy_df, working_age_population_df = self.model.compute(
             in_dict)
 
-        population_df = population_detail_df[['years', 'total']]
-        population_df = population_df.rename(columns={"total": "population"})
+        population_df = population_detail_df[[GlossaryCore.Years, 'total']]
+        population_df = population_df.rename(columns={"total": GlossaryCore.PopulationValue})
 
         # Convert population in billion of people
-        population_df['population'] = population_df['population'] / \
+        population_df[GlossaryCore.PopulationValue] = population_df[GlossaryCore.PopulationValue] / \
             self.model.million
-        population_detail_df['population_1570'] = working_age_population_df['population_1570']
-        working_age_population_df['population_1570'] = working_age_population_df['population_1570'] / self.model.million
+        population_detail_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570]
+        working_age_population_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570] / self.model.million
         # store output data
-        out_dict = {"population_df": population_df,
-                    "working_age_population_df": working_age_population_df,
+        out_dict = {GlossaryCore.PopulationDfValue: population_df,
+                    GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df,
                     "population_detail_df": population_detail_df,
                     "birth_rate_df": birth_rate_df,
                     "death_rate_dict": death_rate_dict,
@@ -196,21 +187,25 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
         d_pop_d_output, d_working_pop_d_output = self.model.compute_d_pop_d_output()
         self.set_partial_derivative_for_other_types(
-            ('population_df', 'population'), ('economics_df', 'output_net_of_d'), d_pop_d_output / self.model.million)
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_pop_d_output / self.model.million)
         self.set_partial_derivative_for_other_types(
-            ('working_age_population_df', 'population_1570'), ('economics_df', 'output_net_of_d'), d_working_pop_d_output / self.model.million)
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_working_pop_d_output / self.model.million)
 
         d_pop_d_temp, d_working_pop_d_temp = self.model.compute_d_pop_d_temp()
         self.set_partial_derivative_for_other_types(
-            ('population_df', 'population'), ('temperature_df', 'temp_atmo'), d_pop_d_temp / self.model.million)
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_pop_d_temp / self.model.million)
         self.set_partial_derivative_for_other_types(
-            ('working_age_population_df', 'population_1570'), ('temperature_df', 'temp_atmo'), d_working_pop_d_temp / self.model.million)
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_working_pop_d_temp / self.model.million)
         
         d_pop_d_kcal_pc, d_working_pop_d_kcal_pc = self.model.compute_d_pop_d_kcal_pc()
         self.set_partial_derivative_for_other_types(
-            ('population_df', 'population'), ('calories_pc_df', 'kcal_pc'), d_pop_d_kcal_pc / self.model.million)
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), ('calories_pc_df', 'kcal_pc'), d_pop_d_kcal_pc / self.model.million)
         self.set_partial_derivative_for_other_types(
-            ('working_age_population_df', 'population_1570'), ('calories_pc_df', 'kcal_pc'), d_working_pop_d_kcal_pc / self.model.million)
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570), ('calories_pc_df', 'kcal_pc'), d_working_pop_d_kcal_pc / self.model.million)
 
     def get_chart_filter_list(self):
 
@@ -228,10 +223,10 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
         year_start, year_end = self.get_sosdisc_inputs(
-            ['year_start', 'year_end'])
+            [GlossaryCore.YearStart, GlossaryCore.YearEnd])
         years = list(np.arange(year_start, year_end + 1, 5))
         chart_filters.append(ChartFilter(
-            'Years for population', years, [year_start, year_end], 'years'))
+            'Years for population', years, [year_start, year_end], GlossaryCore.Years))
 
         return chart_filters
 
@@ -247,7 +242,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-                if chart_filter.filter_key == 'years':
+                if chart_filter.filter_key == GlossaryCore.Years:
                     years_list = chart_filter.selected_values
 
         pop_df = deepcopy(
@@ -275,7 +270,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'World population over years'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'population',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.PopulationValue,
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -285,7 +280,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             ordonate_data = list(pop_df['total'])
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'population', 'lines', visible_line)
+                years, ordonate_data, GlossaryCore.PopulationValue, 'lines', visible_line)
 
             new_chart.series.append(new_series)
 
@@ -298,21 +293,21 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             year_end = years[len(years) - 1]
 
             min_value, max_value = self.get_greataxisrange(
-                pop_df['population_1570'])
+                pop_df[GlossaryCore.Population1570])
 
             chart_name = 'working-age population over years'
 
-            new_chart = TwoAxesInstanciatedChart('years', '15-70 age range population',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '15-70 age range population',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
 
             visible_line = True
 
-            ordonate_data = list(pop_df['population_1570'])
+            ordonate_data = list(pop_df[GlossaryCore.Population1570])
 
             new_series = InstanciatedSeries(
-                years, ordonate_data, 'population', 'lines', visible_line)
+                years, ordonate_data, GlossaryCore.PopulationValue, 'lines', visible_line)
 
             new_chart.series.append(new_series)
 
@@ -330,7 +325,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = '15-49 age range birth rate'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' birth rate',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' birth rate',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -356,7 +351,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Knowledge yearly evolution'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'knowledge',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'knowledge',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -390,7 +385,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Death rate per age range'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' death rate',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' death rate',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -425,7 +420,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'malnutrition death rate per age range'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' death rate',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' death rate',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -460,7 +455,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Number of birth and death per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' Number of birth and death',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' Number of birth and death',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -492,7 +487,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Human cost of global warming per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' Number of death',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' Number of death',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -510,7 +505,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'Cumulative climate deaths' in chart_list:
-
             years = list(death_dict['climate']['cum_total'].index)
             headers = list(death_dict['climate'].columns.values)
             to_plot = headers[:]
@@ -529,7 +523,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Cumulative climate deaths'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' cumulative climatic deaths',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' cumulative climatic deaths',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -556,7 +550,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Human cost of malnutrition per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' Number of death',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' Number of death',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -593,7 +587,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Cumulative malnutrition deaths'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' cumulative malnutrition deaths',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' cumulative malnutrition deaths',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)
@@ -620,7 +614,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Life expectancy at birth per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', ' Life expectancy at birth',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' Life expectancy at birth',
                                                  [year_start - 5, year_end + 5],
                                                  [min_value, max_value],
                                                  chart_name)

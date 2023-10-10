@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -44,13 +44,13 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
     _maturity = 'Research'
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'year_start': ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        'year_end': ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'energy_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
+        GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
+        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
                         'structuring': True, 'unit': '-'},
-        'ccs_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': EnergyMix.ccs_list,
+        GlossaryCore.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': EnergyMix.ccs_list,
                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
                      'structuring': True, 'unit': '-'},
         'agri_capital_techno_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'default': [],
@@ -94,7 +94,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                  'structuring': True,
                                                  'dataframe_descriptor':
                                                      {
-                                                         'years': ('float', None, False),
+                                                         GlossaryCore.Years: ('float', None, False),
                                                          'reforestation': ('float', None, True),
                                                          'managed_wood': ('float', None, True),
                                                          'deforestation': ('float', None, True),
@@ -116,14 +116,14 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                             'namespace': 'ns_ref',
                                                             'structuring': True,
                                                             }
-        if 'energy_list' in self.get_data_in():
-            energy_list = self.get_sosdisc_inputs('energy_list')
+        if GlossaryCore.energy_list in self.get_data_in():
+            energy_list = self.get_sosdisc_inputs(GlossaryCore.energy_list)
             if energy_list is not None:
                 for energy in energy_list:
                     if energy == BiomassDry.name:
                         pass
                     else:
-                        dynamic_inputs[f'{energy}.technologies_list'] = {'type': 'list',
+                        dynamic_inputs[f'{energy}.{GlossaryCore.techno_list}'] = {'type': 'list',
                                                                          'subtype_descriptor': {'list': 'string'},
                                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                          'namespace': 'ns_energy',
@@ -131,17 +131,17 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                          'possible_values': EnergyMix.stream_class_dict[
                                                                              energy].default_techno_list}
 
-                        if f'{energy}.technologies_list' in self.get_data_in():
+                        if f'{energy}.{GlossaryCore.techno_list}' in self.get_data_in():
                             techno_list = self.get_sosdisc_inputs(
-                                f'{energy}.technologies_list')
+                                f'{energy}.{GlossaryCore.techno_list}')
                             if techno_list is not None:
                                 energy_techno_dict[energy] = {'namespace': 'ns_energy',
                                                               'value': techno_list}
-        if 'ccs_list' in self.get_data_in():
-            ccs_list = self.get_sosdisc_inputs('ccs_list')
+        if GlossaryCore.ccs_list in self.get_data_in():
+            ccs_list = self.get_sosdisc_inputs(GlossaryCore.ccs_list)
             if ccs_list is not None:
                 for ccs in ccs_list:
-                    dynamic_inputs[f'{ccs}.technologies_list'] = {'type': 'list',
+                    dynamic_inputs[f'{ccs}.{GlossaryCore.techno_list}'] = {'type': 'list',
                                                                   'subtype_descriptor': {'list': 'string'},
                                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                   'namespace': 'ns_ccs',
@@ -149,9 +149,9 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                   'possible_values': EnergyMix.stream_class_dict[
                                                                       ccs].default_techno_list}
 
-                    if f'{ccs}.technologies_list' in self.get_data_in():
+                    if f'{ccs}.{GlossaryCore.techno_list}' in self.get_data_in():
                         techno_list = self.get_sosdisc_inputs(
-                            f'{ccs}.technologies_list')
+                            f'{ccs}.{GlossaryCore.techno_list}')
                         if techno_list is not None:
                             energy_techno_dict[ccs] = {'namespace': 'ns_ccs',
                                                        'value': techno_list}
@@ -160,7 +160,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             agriculture_techno_list = self.get_sosdisc_inputs(
                 'agri_capital_techno_list')
             if agriculture_techno_list is not None:
-                energy_techno_dict['Agriculture'] = {'namespace': 'ns_forest',
+                energy_techno_dict[GlossaryCore.SectorAgriculture] = {'namespace': 'ns_forest',
                                                      'value': agriculture_techno_list}
 
         if len(energy_techno_dict) != 0:
@@ -177,7 +177,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                             'unit': 'G$',
                                                                             'dataframe_descriptor':
                                                                                 {
-                                                                                    'years': ('float', None, False),
+                                                                                    GlossaryCore.Years: ('float', None, False),
                                                                                     'Forest': ('float', None, True),
                                                                                     'FischerTropsch': ('float', None, True),
                                                                                     'FossilGas': ('float', None, True),
@@ -186,7 +186,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                                     'float', None, True),
                                                                                     'Refinery': (
                                                                                     'float', None, True),
-                                                                                    'base_carbon_price': (
+                                                                                    GlossaryCore.BaseCarbonPrice: (
                                                                                     'float', None, True),
                                                                                 }
                                                                             }
@@ -196,7 +196,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                            'unit': 'G$',
                                                                            'dataframe_descriptor':
                                                                                 {
-                                                                                    'years': ('float', None, False),
+                                                                                    GlossaryCore.Years: ('float', None, False),
                                                                                     'Forest': ('float', None, True),
                                                                                     'FischerTropsch': (
                                                                                     'float', None, True),
@@ -206,7 +206,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                                     'float', None, True),
                                                                                     'Refinery': (
                                                                                     'float', None, True),
-                                                                                    'base_carbon_price': (
+                                                                                    GlossaryCore.BaseCarbonPrice: (
                                                                                     'float', None, True),
                                                                                 }
                                                                            }
@@ -248,8 +248,8 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         non_use_capital_objective
         """
         inputs_dict = self.get_sosdisc_inputs()
-        years = np.arange(inputs_dict['year_start'],
-                          inputs_dict['year_end'] + 1)
+        years = np.arange(inputs_dict[GlossaryCore.YearStart],
+                          inputs_dict[GlossaryCore.YearEnd] + 1)
         non_use_capital_obj_ref = inputs_dict['non_use_capital_obj_ref']
         alpha, gamma = inputs_dict['alpha'], inputs_dict['gamma']
         non_use_capital_cons_ref = inputs_dict['non_use_capital_cons_ref']
@@ -257,10 +257,10 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         non_use_capital_df = outputs_dict['non_use_capital_df']
         input_nonusecapital_list = [
             key for key in inputs_dict.keys() if key.endswith('non_use_capital')]
-        delta_years = len(non_use_capital_df['years'].values)
+        delta_years = len(non_use_capital_df[GlossaryCore.Years].values)
         for non_use_capital in input_nonusecapital_list:
             column_name = [
-                col for col in inputs_dict[non_use_capital].columns if col != 'years'][0]
+                col for col in inputs_dict[non_use_capital].columns if col != GlossaryCore.Years][0]
             self.set_partial_derivative_for_other_types(
                 ('non_use_capital_objective',), (non_use_capital, column_name),
                 np.ones(len(years)) * alpha * (1 - gamma) / non_use_capital_obj_ref / delta_years)
@@ -272,7 +272,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
         for capital in input_capital_list:
             column_name = [
-                col for col in inputs_dict[capital].columns if col != 'years'][0]
+                col for col in inputs_dict[capital].columns if col != GlossaryCore.Years][0]
             self.set_partial_derivative_for_other_types(
                 ('energy_capital', 'energy_capital'), (capital, column_name), np.identity(len(years)) / 1.e3)
 
@@ -319,14 +319,14 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
             non_use_capital_df = self.get_sosdisc_outputs('non_use_capital_df')
 
-            years = list(non_use_capital_df['years'].values)
+            years = list(non_use_capital_df[GlossaryCore.Years].values)
 
             chart_name = 'Non-use Capital per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'non_use Capital [G$]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'non_use Capital [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
             for industry in non_use_capital_df.columns:
-                if industry not in ['years', 'Sum of non use capital'] and not (
+                if industry not in [GlossaryCore.Years, 'Sum of non use capital'] and not (
                         non_use_capital_df[industry] == 0.0).all():
                     new_series = InstanciatedSeries(
                         years, non_use_capital_df[industry].values.tolist(), industry, 'bar')
@@ -344,11 +344,11 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
             non_use_capital_df = self.get_sosdisc_outputs('non_use_capital_df')
 
-            years = list(techno_capital_df['years'].values)
+            years = list(techno_capital_df[GlossaryCore.Years].values)
 
             chart_name = 'Energy Mix total capital vs non-use capital per year'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Total Capital [G$]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Total Capital [G$]',
                                                  chart_name=chart_name)
 
             new_series = InstanciatedSeries(
@@ -366,11 +366,11 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
             forest_lost_capital = self.get_sosdisc_inputs(
                 'forest_lost_capital')
 
-            years = list(forest_lost_capital['years'].values)
+            years = list(forest_lost_capital[GlossaryCore.Years].values)
 
             chart_name = 'Forest Management Lost Capital'
 
-            new_chart = TwoAxesInstanciatedChart('years', 'Total Capital [G$]',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Total Capital [G$]',
                                                  chart_name=chart_name, stacked_bar=True)
 
             new_serie_reforest = InstanciatedSeries(
@@ -396,7 +396,7 @@ def compute_full_techno_list(energy_techno_dict):
     '''
     full_techno_list = []
     for energy, techno_dict in energy_techno_dict.items():
-        if energy == 'Agriculture':
+        if energy == GlossaryCore.SectorAgriculture:
             full_techno_list.extend(
                 [(f'', techno_dict['namespace']) for techno in techno_dict['value']])
         else:
