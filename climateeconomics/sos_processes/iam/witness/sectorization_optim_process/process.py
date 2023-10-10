@@ -37,7 +37,7 @@ class ProcessBuilder(BaseProcessBuilder):
         macro_name = "Macroeconomics"
 
         chain_builders = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'sectorization_process')
+            'climateeconomics.sos_processes.iam.witness', 'economics_sector_process')
 
         # design variables builder
         design_var_path = 'sostrades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
