@@ -127,7 +127,7 @@ class UtilityModel():
         """
         Compute negative welfare objective as - welfare / init_discounted_utility * n_years
         """
-        self.negative_welfare_objective = - self.normalized_welfare
+        self.negative_welfare_objective = -1.*  self.normalized_welfare
 
     def compute_inverse_welfare_objective(self):
         self.inverse_welfare_objective = 1. / self.normalized_welfare
@@ -141,7 +141,7 @@ class UtilityModel():
 
     def d_energy_price_ratio_d_energy_price(self):
         energy_price = self.energy_mean_price[GlossaryCore.EnergyPriceValue].values
-        return np.diag(- self.energy_price_ref / energy_price ** 2)
+        return np.diag(-1.* self.energy_price_ref / energy_price ** 2)
 
     def d_utility_d_energy_price(self):
         """utility = per capita consumption utility * energy price ratio"""
