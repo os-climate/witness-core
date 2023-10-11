@@ -56,7 +56,10 @@ class DamageDiscTest(unittest.TestCase):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        economics_df_all = economics_df_all[GlossaryCore.EconomicsDf['dataframe_descriptor'].keys()]
+        # remove energy wasted as not used for the test and breaks other l0 tests (CO2 emissions) if adds it to
+        # the csv file
+        economics_df_all = economics_df_all[[key for key in GlossaryCore.EconomicsDf['dataframe_descriptor'].keys() if key != GlossaryCore.EnergyWasted]]
+        #economics_df_all = economics_df_all[GlossaryCore.EconomicsDf['dataframe_descriptor'].keys()]
 
         economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
         temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020]

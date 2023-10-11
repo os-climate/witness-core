@@ -80,7 +80,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared',
                              'namespace': 'ns_witness', 'user_level': 2},
         # sectorisation
-        GlossaryCore.SectorListValue : GlossaryCore.SectorsList,
+        GlossaryCore.SectorListValue: GlossaryCore.SectorsList,
         # Lower and upper bounds
         'lo_capital': {'type': 'float', 'unit': 'T$', 'default': 1.0, 'user_level': 3},
         'lo_conso': {'type': 'float', 'unit': 'T$', 'default': 2.0, 'user_level': 3},
@@ -312,7 +312,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             npzeros)
 
         # Compute gradient for coupling variable Total production
-        d_gross_output_d_energy, d_usable_capital_d_energy, d_lower_bound_constraint_dE = self.macro_model.d_Y_Ku_Constraint_d_energy()
+        d_gross_output_d_energy, d_usable_capital_d_energy, d_lower_bound_constraint_dE, d_energy_wasted_d_energy = self.macro_model.d_Y_Ku_Ew_Constraint_d_energy()
 
         d_net_output_d_energy = self.macro_model.d_net_output_d_user_input(d_gross_output_d_energy)
         d_energy_investment_d_energy, d_investment_d_energy, d_non_energy_investment_d_energy = self.macro_model.d_investment_d_user_input(d_net_output_d_energy)
@@ -348,8 +348,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_lower_bound_constraint_dE)
 
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            d_energy_wasted_d_energy)
+
         # Compute gradient for coupling variable damage (column damage frac output)
-        d_gross_output_d_damage_frac_output, d_Ku_d_dfo, d_Kne_d_dfo, d_lower_bound_constraint_d_dfo = \
+        d_gross_output_d_damage_frac_output, d_Ku_d_dfo, d_Ew_d_dfo, d_lower_bound_constraint_d_dfo = \
             self.macro_model.d_gross_output_d_damage_frac_output()
         d_net_output_d_damage_frac_output = self.macro_model.d_net_output_d_damage_frac_output(d_gross_output_d_damage_frac_output)
         (denergy_investment_d_damage_frac_output,
@@ -386,6 +391,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.ConstraintLowerBoundUsableCapital,),
             (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
             d_lower_bound_constraint_d_dfo)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
+            (GlossaryCore.DamageDfValue, GlossaryCore.DamageFractionOutput),
+            d_Ew_d_dfo)
 
         # Compute gradients wrt population_df
         d_consumption_pc_d_population = self.macro_model.d_consumption_pc_d_population()
@@ -396,7 +405,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         # Compute gradients with respect to working age population
         d_workforce_d_working_age_population = self.macro_model.d_workforce_d_workagepop()
-        d_Ku_d_wap, d_gross_output_d_working_age_population, d_lower_bound_constraint_d_wap = self.macro_model.d_gross_output_d_working_pop()
+        d_Ku_d_wap, d_Ew_d_wap, d_gross_output_d_working_age_population, d_lower_bound_constraint_d_wap = self.macro_model.d_gross_output_d_working_pop()
         d_net_output_d_work_age_population = self.macro_model.d_net_output_d_user_input(d_gross_output_d_working_age_population)
         d_energy_investment_d_working_age_population, \
         d_investment_d_working_age_population, \
@@ -441,6 +450,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.ConstraintLowerBoundUsableCapital,),
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             d_lower_bound_constraint_d_wap)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
+            d_Ew_d_wap)
 
 
         # Compute gradients with respect to energy_investment

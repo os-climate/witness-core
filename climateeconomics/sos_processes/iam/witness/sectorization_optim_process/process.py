@@ -64,7 +64,7 @@ class ProcessBuilder(BaseProcessBuilder):
             f"{optim_name}.{coupling_name}", after_name=self.ee.study_name)
 
         ns_dict = {
-                    'ns_optim': f"{ns_scatter}.{optim_name}",
+                   'ns_optim': f"{ns_scatter}.{optim_name}",
                    'ns_services':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorServices}",
                    'ns_indus':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorIndustry}",
                    'ns_agri':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorAgriculture}",
