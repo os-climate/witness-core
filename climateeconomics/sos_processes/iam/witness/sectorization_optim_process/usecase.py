@@ -259,7 +259,16 @@ class Study(StudyManager):
         lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
                                          GlossaryCore.EnergyEfficiency: long_term_energy_eff[
                                              GlossaryCore.SectorServices]})
+
+        workforce_df = pd.DataFrame({
+            GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
+            GlossaryCore.SectorIndustry: long_term_energy_eff[GlossaryCore.Years],
+            GlossaryCore.SectorServices: long_term_energy_eff[GlossaryCore.Years],
+            GlossaryCore.SectorAgriculture: long_term_energy_eff[GlossaryCore.Years],
+        })
+
         sect_input = {}
+        sect_input[f"{ns_coupling}.{'workforce_df'}"] = workforce_df
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_capital'}"] = hist_capital
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_energy'}"] = hist_energy

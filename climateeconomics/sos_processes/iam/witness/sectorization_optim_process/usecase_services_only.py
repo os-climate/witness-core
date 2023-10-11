@@ -183,6 +183,14 @@ class Study(StudyManager):
         lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorAgriculture]})
         lt_enef_indus = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorIndustry]})
         lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years], GlossaryCore.EnergyEfficiency: long_term_energy_eff[GlossaryCore.SectorServices]})
+
+        n_years = len(long_term_energy_eff)
+        workforce_df = pd.DataFrame({
+            GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
+            GlossaryCore.SectorIndustry: np.ones(n_years) * 1000,
+            GlossaryCore.SectorServices: np.ones(n_years) * 1000,
+            GlossaryCore.SectorAgriculture: np.ones(n_years) * 1000,
+        })
         sect_input = {}
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_capital'}"] = hist_capital
@@ -193,7 +201,7 @@ class Study(StudyManager):
         sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
         sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
         sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
-
+        sect_input[f"{ns_coupling}.{'workforce_df'}"] = workforce_df
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'
