@@ -81,11 +81,19 @@ class CropDiscipline(ClimateEcoDiscipline):
     default_year_end = 2100
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
     '''
-    source: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+    Sources:
+    [1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+    [2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
+
     does not consider farm fish for land use at this stage as it would require to split farm fish from wild fish in the computations
-    The land use for category 'other' is adjusted to calibrate the land surface. Here, it is computed from the variable self.other_use_crop = 0.01719
-    that has been removed. From other[kg/personn/year]=177.02  => other[kg_to_m2] = 177.02/10000./0.102=0.173  
-    In practice, we could compute the average of all land use per kg of all components of others (12.41 m2/kg) but assuming the same ponderation for each food of others does not provide reliable results
+    The land use for category 'other' is adjusted to calibrate the land surface
+    Method 1:  
+    It used to be computed from the variable self.other_use_crop = 0.01719 [ha/person] that has been removed. 
+    relationship between self.other_use_crop and other: [m2/kg] = [m2/ha*ha/person*person*year/kg/year]
+    other[m2/kg] = 10000.other_use_crop/other[kg/person/year]/year = 10000*0.01719/77.24/year = 2.25 m2/kg/year WARNING on units
+    Method 2:
+    It could be computed from the average of all land use per kg of all components of others (12.41 m2/kg) 
+    but assuming the same ponderation for each food of others does not provide reliable results
     '''
     default_kg_to_m2 = {'red meat': 345,
                         'white meat': 14.5,
@@ -199,10 +207,6 @@ class CropDiscipline(ClimateEcoDiscipline):
     Default diet baseline comes from [1] modified manually following [2] in order to:
     - have rougly 2900kcal
     - have a correct landuse
-    
-    Sources:
-    [1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
-    [2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
     '''
     diet_df_default = pd.DataFrame({"red meat": [11.02],
                                     "white meat": [31.11],
