@@ -17,6 +17,7 @@ class GlossaryCore:
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
 
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
+    EnergyWasted = "energy wasted [TWh]"
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
@@ -240,6 +241,7 @@ class GlossaryCore:
             GrossOutput: ("float", None, False),
             OutputNetOfDamage: ("float", None, False),
             PerCapitaConsumption: ("float", None, False),
+            EnergyWasted: ("float", None, False),
         },
     }
 
@@ -273,6 +275,7 @@ class GlossaryCore:
             UsedEnergy: ("float", None, False),
             UnusedEnergy: ("float", None, False),
             OptimalEnergyProduction: ("float", None, False),
+            EnergyWasted: ("float", None, False),
         },
     }
     PopulationValue = "population"
