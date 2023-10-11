@@ -52,7 +52,6 @@ class CropDiscipline(ClimateEcoDiscipline):
         Olive Oil
         Palm Oil
         Palmkernel Oil
-        Potatoes
         Rape and Mustard Oil
         Ricebran Oil
         Sesameseed Oil
@@ -62,7 +61,6 @@ class CropDiscipline(ClimateEcoDiscipline):
         Sunflowerseed Oil
         Tea (including mate)
         Wine
-        Wheat
     '''
     energy_name = "biomass_dry"
     # ontology information
@@ -105,10 +103,10 @@ class CropDiscipline(ClimateEcoDiscipline):
                           'milk': 921.76,
                           'eggs': 1425.07,
                           'rice and maize': 2572.46,
-                          'cereals': 2937.36,
-                          'fruits and vegetables': 543.67,
+                          'cereals': 2964.99,
+                          'fruits and vegetables': 559.65,
                           GlossaryCore.Fish: 609.17,
-                          GlossaryCore.OtherFood: 2582.92,
+                          GlossaryCore.OtherFood: 3061.06,
                           }
 
     # Our World in Data (emissions per kg of food product)
@@ -198,7 +196,13 @@ class CropDiscipline(ClimateEcoDiscipline):
     #diet default for veg = 260+32.93 of cereals
     # unit: kg/person/year
     '''
-    Default diet baseline comes from 
+    Default diet baseline comes from [1] modified manually following [2] in order to:
+    - have rougly 2900kcal
+    - have a correct landuse
+    
+    Sources:
+    [1]: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
+    [2] : https://capgemini.sharepoint.com/:p:/r/sites/SoSTradesCapgemini/_layouts/15/Doc.aspx?sourcedoc=%7B24B3F100-A5AD-4CCA-8021-3A273C1E4D9E%7D&file=diet%20problem.pptx&action=edit&mobileredirect=true
     '''
     diet_df_default = pd.DataFrame({"red meat": [11.02],
                                     "white meat": [31.11],

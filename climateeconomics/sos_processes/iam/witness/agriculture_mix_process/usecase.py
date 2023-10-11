@@ -91,25 +91,25 @@ class Study(StudyManager):
         population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.PopulationValue: population})
         population_df.index = years
-        diet_df_default = pd.DataFrame({"red meat": [13.43],
-                                        "white meat": [31.02],
-                                        "milk": [73.07],
-                                        "eggs": [10.45],
-                                        "rice and maize": [98.06],
-                                        "cereals": [10.3],
-                                        "fruits and vegetables": [266.28],
+        diet_df_default = pd.DataFrame({"red meat": [11.02],
+                                        "white meat": [31.11],
+                                        "milk": [79.27],
+                                        "eggs": [9.68],
+                                        "rice and maize": [98.08],
+                                        "cereals": [78],
+                                        "fruits and vegetables": [293],
                                         GlossaryCore.Fish: [23.38],
-                                        GlossaryCore.OtherFood: [177.02]
+                                        GlossaryCore.OtherFood: [77.24]
                                         })
         default_kg_to_kcal = {'red meat': 1551.05,
                               'white meat': 2131.99,
                               'milk': 921.76,
                               'eggs': 1425.07,
                               'rice and maize': 2572.46,
-                              'cereals': 2937.36,
-                              'fruits and vegetables': 543.67,
+                              'cereals': 2964.99,
+                              'fruits and vegetables': 559.65,
                               GlossaryCore.Fish: 609.17,
-                              GlossaryCore.OtherFood: 2582.92,
+                              GlossaryCore.OtherFood: 3061.06,
                               }
         red_meat_average_ca_daily_intake = default_kg_to_kcal['red meat'] * diet_df_default['red meat'].values[0] / 365
         milk_eggs_average_ca_daily_intake = default_kg_to_kcal['eggs'] * diet_df_default['eggs'].values[0] / 365 + \
