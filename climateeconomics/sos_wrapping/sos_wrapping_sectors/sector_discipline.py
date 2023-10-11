@@ -1,6 +1,8 @@
 import numpy as np
 from copy import deepcopy
 
+import pandas as pd
+
 from climateeconomics.core.core_sectorization.sector_model import SectorModel
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
@@ -67,6 +69,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
         """setup sos disciplines"""
         dynamic_outputs = {}
         dynamic_inputs = {}
+        if GlossaryCore.WorkforceDfValue in self.get_sosdisc_inputs():
+            workforce_df: pd.DataFrame = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
+            if workforce_df is not None and self.sector_name not in workforce_df.columns:
+                raise Exception(f"Data integrity : workforce_df does should have a column for sector {self.sector_name}")
         if 'prod_function_fitting' in self.get_sosdisc_inputs():
             prod_function_fitting = self.get_sosdisc_inputs('prod_function_fitting')
             if prod_function_fitting:
