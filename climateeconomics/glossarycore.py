@@ -545,7 +545,7 @@ class GlossaryCore:
     ShareSectorInvestmentDf = {
         "type": "dataframe",
         "unit": "%",
-        "description": "Amount of the total investment to the specific sector",
+        "description": "Amount of output net of damage allocated to the specific sector",
         "visibility": "Shared",
         "namespace": "ns_witness",
         "dataframe_descriptor": {

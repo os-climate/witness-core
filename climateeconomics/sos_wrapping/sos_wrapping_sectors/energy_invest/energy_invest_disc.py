@@ -40,14 +40,12 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
     }
     DESC_IN = {
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
-        GlossaryCore.EnergyInvestmentsValue: GlossaryCore.EnergyInvestments,
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
         GlossaryCore.CO2TaxEfficiencyValue: GlossaryCore.CO2TaxEfficiency,
         GlossaryCore.CO2TaxesValue: GlossaryCore.CO2Taxes,
     }
     DESC_OUT = {
         GlossaryCore.RenewablesEnergyInvestmentsValue: GlossaryCore.RenewablesEnergyInvestments,
-        GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
         GlossaryCore.EnergyInvestmentsValue: GlossaryCore.EnergyInvestments,
     }
 
@@ -60,7 +58,6 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
 
         dict_values = {
             GlossaryCore.RenewablesEnergyInvestmentsValue: self.model.added_renewables_investments,
-            GlossaryCore.EnergyInvestmentsWoTaxValue: self.model.raw_energy_investments,
             GlossaryCore.EnergyInvestmentsValue: self.model.energy_investments,
         }
         self.store_sos_outputs_values(dict_values)

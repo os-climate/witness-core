@@ -30,16 +30,11 @@ class UtilityModel():
         '''
         self.param = param
         self.set_data()
-        self.normalized_welfare = None
-        self.inverse_welfare_objective = None
-        self.negative_welfare_objective = None
-        self.last_year_utility_objective = None
 
         self.n_years = None
 
         self.economics_df = None
         self.energy_mean_price = None
-        self.energy_price_ref = None
         self.population_df = None
         self.create_dataframe()
 
