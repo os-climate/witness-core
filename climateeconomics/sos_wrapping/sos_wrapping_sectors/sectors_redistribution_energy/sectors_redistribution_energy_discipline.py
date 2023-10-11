@@ -127,16 +127,16 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
             redistribution_energy_production_df = self.get_sosdisc_outputs(GlossaryCore.RedistributionEnergyProductionDfValue)
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
 
-            chart_name = f"Energy allocated to sectors [{GlossaryCore.RedistributionEnergyProductionDf['unit']}]"
+            chart_name = f"Energy allocated to sectors [TWh]"
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.RedistributionEnergyProductionDf['unit'],
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[TWh]',
                                                  stacked_bar=True,
                                                  chart_name=chart_name)
 
             years = list(redistribution_energy_production_df[GlossaryCore.Years])
             for sector in sector_list:
                 new_series = InstanciatedSeries(years,
-                                                list(redistribution_energy_production_df[sector]),
+                                                list(redistribution_energy_production_df[sector] * 1000),
                                                 sector, 'bar', True)
                 new_chart.series.append(new_series)
 
