@@ -294,7 +294,10 @@ class MacroEconomics:
         self.economics_df[GlossaryCore.OptimalEnergyProduction] = optimal_energy_production * 1e3
         self.economics_df[GlossaryCore.UsedEnergy] = np.minimum(net_energy_production, optimal_energy_production) * 1e3
         self.economics_df[GlossaryCore.UnusedEnergy] = np.maximum(net_energy_production - optimal_energy_production, 0.) * 1e3
+        # Energy_wasted = max((Enet - Eoptimal),0.)
         self.economics_df[GlossaryCore.EnergyWasted] = (net_energy_production - optimal_energy_production) * 1e3 #TWh
+        self.economics_df.loc[self.economics_df[GlossaryCore.EnergyWasted] < 0.] = 0.
+
 
     def compute_energy_efficiency(self):
         """compute energy_efficiency"""
@@ -674,6 +677,9 @@ class MacroEconomics:
         # energy_efficiency is function of the years. Eoptimal in TWh
         k = np.diag(self.max_capital_utilisation_ratio / self.capital_utilisation_ratio / energy_efficiency * 1.e3)
         d_Ew_dE = self._identity_derivative() * 1.e3 - np.matmul(k, d_Kne_dE) # Enet converted from PWh to TWh
+        # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
+        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        d_Ew_dE = np.multiply(matrix_of_years_E_is_wasted, d_Ew_dE)
 
         return dY_dE, d_Ku_d_E, d_lower_bound_constraint_dE, d_Ew_dE
 
@@ -734,6 +740,9 @@ class MacroEconomics:
         energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
         k = np.diag(self.max_capital_utilisation_ratio / self.capital_utilisation_ratio / energy_efficiency * 1.e3)
         d_Ew_d_wap = - np.matmul(k, d_Kne_d_wap)
+        # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
+        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        d_Ew_d_wap = np.multiply(matrix_of_years_E_is_wasted, d_Ew_d_wap)
 
         return d_Ku_d_wap, d_Ew_d_wap, d_Y_d_wap, d_lower_bound_constraint_d_wap
 
@@ -961,6 +970,10 @@ class MacroEconomics:
         energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
         k = np.diag(self.max_capital_utilisation_ratio / self.capital_utilisation_ratio / energy_efficiency * 1.e3)
         d_Ew_d_dfo = - np.matmul(k, d_Kne_d_dfo)
+        # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
+        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        d_Ew_d_dfo = np.multiply(matrix_of_years_E_is_wasted, d_Ew_d_dfo)
+
 
         return d_Y_d_dfo, d_Ku_d_dfo, d_Ew_d_dfo, d_lower_bound_constraint_d_dfo
 
