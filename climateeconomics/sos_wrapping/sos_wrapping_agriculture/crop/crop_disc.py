@@ -103,7 +103,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                         'cereals': 4.5,
                         'fruits and vegetables': 0.8,
                         GlossaryCore.Fish: 0.,
-                        GlossaryCore.OtherFood: 8.1,
+                        GlossaryCore.OtherFood: 2.2255,
                         }
     # unit kcal/kg
     default_kg_to_kcal = {'red meat': 1551.05,
