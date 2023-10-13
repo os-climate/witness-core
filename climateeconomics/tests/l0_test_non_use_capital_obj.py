@@ -27,7 +27,7 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.name = 'Test'
+        self.name = 'usecase_1_witness_coarse_fixed_gdp_wo_damage_wo_co2_tax.WITNESS_MDO.WITNESS_Eval.WITNESS'
         self.ee = ExecutionEngine(self.name)
 
     def test_execute(self):
@@ -53,8 +53,6 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         self.ee.display_treeview_nodes()
         year_end = 2100
         year_start = 2020
-        year_range = year_end - year_start + 1
-        years = np.arange(year_start, year_end + 1)
         loss_fg = 12
         loss_ct = 2
         loss_ub = 22
@@ -85,8 +83,6 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         non_use_capital_obj_ref = 100.
         delta_years = year_end + 1 - year_start
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
-                       f'{self.name}.alpha': alpha,
-                       f'{self.name}.gamma': gamma,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.is_dev': True,
                        f'{self.name}.non_use_capital_obj_ref': non_use_capital_obj_ref,
@@ -120,5 +116,6 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #    graph.to_plotly().show()
+        for graph in graph_list:
+           #graph.to_plotly().show()
+           pass
