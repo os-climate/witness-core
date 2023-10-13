@@ -11,6 +11,7 @@ class ColectedData:
         self.description = description
         self.link = link
         self.source = source
+        self.last_update_date = last_update_date
 
 
 class DatabaseWitnessCore:
