@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 from os.path import join, dirname
 "read DataFrame"
 data_folder = join(dirname(dirname(__file__)), 'data_energy', 'data')
@@ -39,7 +40,25 @@ for name, group in grouped_data:
 
 
 section_weighted_averages = {}
+section_weighted_averages_percent = {}
 for section, section_sum in section_sums.items():
     section_weighted_average = section_sum / total_weight
     section_weighted_averages[section] = section_weighted_average
-    print(f"Section: {section}, Weighted Average: {section_weighted_average}")
+
+    #print(f"Section: {section}, Weighted Average: {section_weighted_average}")
+
+# Calcul de la somme des Weighted Averages
+total_weighted_average = sum(value for value in section_weighted_averages.values() if not math.isnan(value))
+
+# Création d'un nouveau dictionnaire pour stocker les résultats divisés
+section_weighted_averages_percent = {}
+
+# Mise à jour des pourcentages pondérés dans le même dictionnaire
+for section, weighted_average in section_weighted_averages.items():
+    percent =(weighted_average / total_weighted_average) *100
+    if not math.isnan(percent):
+        section_weighted_averages_percent[section] = percent
+
+# Affichage des résultats
+for section, percent in section_weighted_averages_percent.items():
+    print(f"Section: {section}, Weighted Average Percentage: {percent}")
