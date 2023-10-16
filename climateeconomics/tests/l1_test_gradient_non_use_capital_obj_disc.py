@@ -24,12 +24,11 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
-    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
             self.test_01_grad_non_use_capital_objective,
-            self.test_02_grad_non_use_capital_objective_dev
         ]
 
     def setUp(self):
@@ -62,8 +61,6 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
         year_end = 2100
         year_start = 2020
-        year_range = year_end - year_start + 1
-        years = np.arange(year_start, year_end + 1)
         loss_fg = 12
         loss_ct = 2
         loss_ub = 22
@@ -111,8 +108,6 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.EnergyMix.methane.UpgradingBiogas.techno_capital': non_use_capital_ub,
                             f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.techno_capital': non_use_capital_rf,
                             f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.techno_capital': non_use_capital_ft,
-                            f'{self.name}.alpha': 0.5,
-                            f'{self.name}.gamma': 0.5,
                             f'{self.name}.AgricultureMix.Forest.non_use_capital': non_use_capital_ref,
                             f'{self.name}.AgricultureMix.Forest.techno_capital': non_use_capital_ref,
                             f'{self.name}.AgricultureMix.Forest.forest_lost_capital': forest_lost_capital,
@@ -128,13 +123,7 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_non_use_capital_objective.pkl',
                             discipline=disc_techno,
                             step=1e-15, local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.EnergyMix.methane.FossilGas.non_use_capital',
-                                    f'{self.name}.EnergyMix.methane.UpgradingBiogas.non_use_capital',
-                                    f'{self.name}.CCUS.carbon_capture.direct_air_capture.AmineScrubbing.non_use_capital',
-                                    f'{self.name}.EnergyMix.fuel.liquid_fuel.Refinery.non_use_capital',
-                                    f'{self.name}.EnergyMix.fuel.liquid_fuel.FischerTropsch.non_use_capital',
-                                    f'{self.name}.AgricultureMix.Forest.non_use_capital',
-                                    f'{self.name}.AgricultureMix.Forest.techno_capital'],
+                            inputs=list(filter(lambda s: s.endswith('non_use_capital'), disc_techno.local_data.keys())),
                             outputs=[f'{self.name}.non_use_capital_objective',
                                      f'{self.name}.non_use_capital_cons',
                                      f'{self.name}.energy_capital'],

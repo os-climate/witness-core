@@ -58,11 +58,6 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                      'user_level': 1, 'structuring': True, 'unit': '-'},
         'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit': 'G$', 'user_level': 2,
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared',
-                  'namespace': 'ns_witness', 'user_level': 1},
-        'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': 'Shared',
-                  'namespace': 'ns_witness',
-                  'user_level': 1},
         'non_use_capital_cons_ref': {'type': 'float', 'default': 20000., 'unit': 'G$', 'user_level': 2,
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
@@ -175,40 +170,13 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                             'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                             'namespace': non_use_capital_tuple[1],
                                                                             'unit': 'G$',
-                                                                            'dataframe_descriptor':
-                                                                                {
-                                                                                    GlossaryCore.Years: ('float', None, False),
-                                                                                    'Forest': ('float', None, True),
-                                                                                    'FischerTropsch': ('float', None, True),
-                                                                                    'FossilGas': ('float', None, True),
-                                                                                    'UpgradingBiogas': ('float', None, True),
-                                                                                    'direct_air_capture.AmineScrubbing': (
-                                                                                    'float', None, True),
-                                                                                    'Refinery': (
-                                                                                    'float', None, True),
-                                                                                    GlossaryCore.BaseCarbonPrice: (
-                                                                                    'float', None, True),
-                                                                                }
+                                                                            "dynamic_dataframe_columns": True,
                                                                             }
             dynamic_inputs[f'{non_use_capital_tuple[0]}techno_capital'] = {'type': 'dataframe',
                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                            'namespace': non_use_capital_tuple[1],
                                                                            'unit': 'G$',
-                                                                           'dataframe_descriptor':
-                                                                                {
-                                                                                    GlossaryCore.Years: ('float', None, False),
-                                                                                    'Forest': ('float', None, True),
-                                                                                    'FischerTropsch': (
-                                                                                    'float', None, True),
-                                                                                    'FossilGas': ('float', None, True),
-                                                                                    'UpgradingBiogas': ('float', None, True),
-                                                                                    'direct_air_capture.AmineScrubbing': (
-                                                                                    'float', None, True),
-                                                                                    'Refinery': (
-                                                                                    'float', None, True),
-                                                                                    GlossaryCore.BaseCarbonPrice: (
-                                                                                    'float', None, True),
-                                                                                }
+                                                                           "dynamic_dataframe_columns": True,
                                                                            }
 
         self.add_inputs(dynamic_inputs)
@@ -225,19 +193,12 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
         self.model.compute(inp_dict)
 
-        non_use_capital_objective = self.model.get_objective()
-        non_use_capital_df = self.model.get_non_use_capital_df()
-        techno_capital_df = self.model.get_techno_capital_df()
-        energy_capital = self.model.get_energy_capital_trillion_dollars()
-        non_use_capital_cons = self.model.get_constraint()
-        forest_lost_capital_cons = self.model.get_reforestation_constraint()
-        # store output data
-        dict_values = {'non_use_capital_df': non_use_capital_df,
-                       'techno_capital_df': techno_capital_df,
-                       'energy_capital': energy_capital,
-                       'non_use_capital_objective': non_use_capital_objective,
-                       'non_use_capital_cons': non_use_capital_cons,
-                       'forest_lost_capital_cons': forest_lost_capital_cons}
+        dict_values = {'non_use_capital_df': self.model.non_use_capital_df,
+                       'techno_capital_df': self.model.techno_capital_df,
+                       'energy_capital': self.model.get_energy_capital_trillion_dollars(),
+                       'non_use_capital_objective': self.model.non_use_capital_objective,
+                       'non_use_capital_cons': self.model.non_use_capital_cons,
+                       'forest_lost_capital_cons': self.model.forest_lost_capital_cons}
 
         self.store_sos_outputs_values(dict_values)
 
@@ -251,7 +212,6 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         years = np.arange(inputs_dict[GlossaryCore.YearStart],
                           inputs_dict[GlossaryCore.YearEnd] + 1)
         non_use_capital_obj_ref = inputs_dict['non_use_capital_obj_ref']
-        alpha, gamma = inputs_dict['alpha'], inputs_dict['gamma']
         non_use_capital_cons_ref = inputs_dict['non_use_capital_cons_ref']
         outputs_dict = self.get_sosdisc_outputs()
         non_use_capital_df = outputs_dict['non_use_capital_df']
@@ -263,7 +223,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                 col for col in inputs_dict[non_use_capital].columns if col != GlossaryCore.Years][0]
             self.set_partial_derivative_for_other_types(
                 ('non_use_capital_objective',), (non_use_capital, column_name),
-                np.ones(len(years)) * alpha * (1 - gamma) / non_use_capital_obj_ref / delta_years)
+                np.ones(len(years))  / non_use_capital_obj_ref / delta_years)
             self.set_partial_derivative_for_other_types(
                 ('non_use_capital_cons',), (non_use_capital, column_name),
                 - np.ones(len(years)) / non_use_capital_cons_ref / delta_years)
