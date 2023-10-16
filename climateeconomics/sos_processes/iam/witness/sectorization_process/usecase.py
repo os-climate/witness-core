@@ -158,25 +158,25 @@ class Study(StudyManager):
         cons_input = {}
         cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         cons_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
-        cons_input[f"{self.study_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
+        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
-        cons_input[f"{self.study_name}.{self.macro_name}.{'residential_energy'}"] = residential_energy_df
-        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
-        cons_input[f"{self.study_name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}"] = base_dummy_data
+        cons_input[f"{self.study_name}.{'residential_energy'}"] = residential_energy_df
+        cons_input[f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
+        #cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}"] = base_dummy_data
         cons_input[f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}"] = workforce_share
         cons_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = economics_df
 
-        cons_input[f"{self.study_name}.Services.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_services
-        cons_input[f"{self.study_name}.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_agriculture
-        cons_input[f"{self.study_name}.Industry.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_indus
+        cons_input[f"{self.study_name}.{self.macro_name}.Services.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_services
+        cons_input[f"{self.study_name}.{self.macro_name}.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_agriculture
+        cons_input[f"{self.study_name}.{self.macro_name}.Industry.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_indus
 
-        cons_input[f"{self.study_name}.Services.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_services
-        cons_input[f"{self.study_name}.Agriculture.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_agriculture
+        cons_input[f"{self.study_name}.{self.macro_name}.Services.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_services
+        cons_input[f"{self.study_name}.{self.macro_name}.Agriculture.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_agriculture
 
-        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.EnergyProductionValue}"] = energy_production
+        cons_input[f"{self.study_name}.{GlossaryCore.EnergyProductionValue}"] = energy_production
 
         setup_data_list.append(cons_input)
 
@@ -195,7 +195,5 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    #uc_cls.setup_usecase()
-    #uc_cls.run()
     uc_cls.test()
-    print('----')
+
