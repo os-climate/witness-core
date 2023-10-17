@@ -35,6 +35,7 @@ class MacroEconomics:
         self.param = param
         self.inputs = None
         self.economics_df = None
+        self.energy_wasted_objective = None
 
         self.set_data()
         self.create_dataframe()
@@ -298,6 +299,16 @@ class MacroEconomics:
         self.economics_df[GlossaryCore.EnergyWasted] = (net_energy_production - optimal_energy_production) * 1e3 #TWh
         self.economics_df.loc[self.economics_df[GlossaryCore.EnergyWasted] < 0., GlossaryCore.EnergyWasted] = 0.
 
+    def compute_energy_wasted_objective(self):
+        """Computes normalized energy wasted constraint. Ewasted=max(Enet - Eoptimal, 0)
+        Normalize by total energy since Energy wasted is around 10% of total energy => have constraint around 0.1
+        which can be compared to the negative welfare objective (same order of magnitude)
+        """
+        # total energy is supposed to be > 0.
+        energy_wasted_objective = self.economics_df[GlossaryCore.EnergyWasted].values.sum() / \
+                                  max(1.e-10, abs(self.energy_production[GlossaryCore.TotalProductionValue].values.sum()))
+
+        self.energy_wasted_objective = np.array([energy_wasted_objective])
 
     def compute_energy_efficiency(self):
         """compute energy_efficiency"""
@@ -588,12 +599,13 @@ class MacroEconomics:
         self.compute_sector_gdp()
         self.compute_usable_capital_lower_bound_constraint()
         self.compute_energy_usage()
+        self.compute_energy_wasted_objective()
 
         self.prepare_outputs()
 
         return self.economics_detail_df, self.economics_df, self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
-            self.capital_df, self.sector_gdp_df
+            self.capital_df, self.sector_gdp_df, self.energy_wasted_objective
 
     """-------------------Gradient functions-------------------"""
 
@@ -1048,6 +1060,29 @@ class MacroEconomics:
     def d_net_output_d_energy_invest(self):
         """derivative of net output wrt share energy_invest"""
         return self._null_derivative()
+
+    def d_partial_energy_wasted_objective_d_partial_energy_wasted(self):
+        """derivative of energy wasted objective wrt energy wasted
+        Eobj = sum_years(Ewasted)/sum_years(Etotal)
+        dEobj/dEwasted = d(sum_years(Ewasted))/dEwasted/sum_years(Etotal)
+        Eobj is a scalar
+        derivatives above are partial derivatives
+        """
+        d_partial_ew_obj_d_partial_ew = 1. / max(1.e-10, abs(self.energy_production[GlossaryCore.TotalProductionValue].values.sum())) \
+                        * np.ones(len(self.years_range))
+        return d_partial_ew_obj_d_partial_ew
+
+    def d_partial_energy_wasted_objective_d_parital_total_energy_prod(self):
+        """ derivative of energy wasted objective wrt total energy production
+                Eobj = sum_years(Ewasted)/sum_years(Etotal)
+        dEobj/dEtotal = sum_years(Ewasted))* -d(sum_years(Etotal))dEtotal/sum_years(Etotal)^2
+        Eobj is a scalar
+        Derivatives above are partial derivatives
+        """
+        d_partial_ew_obj_d_partial_etot = - self.economics_df[GlossaryCore.EnergyWasted].values.sum() / \
+                          (max(1.e-10, abs(self.energy_production[GlossaryCore.TotalProductionValue].values.sum()))) ** 2 \
+                          * np.ones(len(self.years_range))
+        return d_partial_ew_obj_d_partial_etot
 
     """-------------------END of Gradient functions-------------------"""
 

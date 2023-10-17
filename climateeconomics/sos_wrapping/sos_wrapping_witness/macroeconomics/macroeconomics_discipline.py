@@ -124,6 +124,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                               'dataframe_descriptor':GlossaryCore.DetailedCapitalDf['dataframe_descriptor']},
         GlossaryCore.ConstraintLowerBoundUsableCapital: {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                      'namespace': 'ns_functions'},
+        GlossaryCore.EnergyWastedObjective: {'type': 'array',
+                                             'unit': '-',
+                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                             'namespace': 'ns_functions'}
     }
 
     def setup_sos_disciplines(self):
@@ -272,6 +276,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.DetailedCapitalDfValue: capital_df,
                        GlossaryCore.CapitalDfValue: capital_df[GlossaryCore.CapitalDf['dataframe_descriptor'].keys()],
                        GlossaryCore.ConstraintLowerBoundUsableCapital: self.macro_model.delta_capital_cons,
+                       GlossaryCore.EnergyWastedObjective: self.macro_model.energy_wasted_objective,
                        }
 
         self.store_sos_outputs_values(dict_values)
@@ -313,6 +318,15 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         # Compute gradient for coupling variable Total production
         d_gross_output_d_energy, d_usable_capital_d_energy, d_lower_bound_constraint_dE, d_energy_wasted_d_energy = self.macro_model.d_Y_Ku_Ew_Constraint_d_energy()
+        """
+        For the objective on the Energy wasted:
+        dEobj = d_partial_Eobj/d_partial_Ew * dEw + d_partial_Eobj/d_partial_Etotal * dEtotal
+        dEobj/dEtot = d_partial_Eobj/d_partialEw * dEw/dEtotal + d_partial_Eobj/d_partial_Etotal
+        compute it here in order not to compute twice d_Y, dKu, dE_constraint/d_energy if it was done in macroeconomics_model
+        """
+        d_partial_ew_obj_d_partial_etot = self.macro_model.d_partial_energy_wasted_objective_d_parital_total_energy_prod()
+        d_partial_ew_obj_d_partial_ew = self.macro_model.d_partial_energy_wasted_objective_d_partial_energy_wasted()
+        d_ew_obj_d_etot = d_partial_ew_obj_d_partial_ew @ d_energy_wasted_d_energy + d_partial_ew_obj_d_partial_etot
 
         d_net_output_d_energy = self.macro_model.d_net_output_d_user_input(d_gross_output_d_energy)
         d_energy_investment_d_energy, d_investment_d_energy, d_non_energy_investment_d_energy = self.macro_model.d_investment_d_user_input(d_net_output_d_energy)
@@ -352,6 +366,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_energy_wasted_d_energy)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EnergyWastedObjective,),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            d_ew_obj_d_etot)
 
         # Compute gradient for coupling variable damage (column damage frac output)
         d_gross_output_d_damage_frac_output, d_Ku_d_dfo, d_Ew_d_dfo, d_lower_bound_constraint_d_dfo = \
