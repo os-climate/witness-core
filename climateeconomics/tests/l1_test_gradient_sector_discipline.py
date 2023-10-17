@@ -95,7 +95,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}',
-                   'ns_macro': f'{self.name}'}
+                   'ns_macro': f'{self.name}',
+                   'ns_sectors': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -152,7 +153,9 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}',
-                   'ns_macro': f'{self.name}'}
+                   'ns_macro': f'{self.name}',
+                   'ns_sectors': f'{self.name}'
+                   }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

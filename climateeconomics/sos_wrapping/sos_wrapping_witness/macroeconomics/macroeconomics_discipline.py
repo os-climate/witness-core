@@ -80,7 +80,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared',
                              'namespace': 'ns_witness', 'user_level': 2},
         # sectorisation
-        GlossaryCore.SectorListValue: GlossaryCore.SectorsList,
+        GlossaryCore.SectorListValue: GlossaryCore.SectorList,
         # Lower and upper bounds
         'lo_capital': {'type': 'float', 'unit': 'T$', 'default': 1.0, 'user_level': 3},
         'lo_conso': {'type': 'float', 'unit': 'T$', 'default': 2.0, 'user_level': 3},
@@ -550,6 +550,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         chart_filters = []
 
         chart_list = [GlossaryCore.GrossOutput,
+                      GlossaryCore.OutputNetOfDamage,
                       GlossaryCore.EnergyInvestmentsValue,
                       GlossaryCore.InvestmentsValue,
                       GlossaryCore.EnergyInvestmentsWoTaxValue,
@@ -594,10 +595,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.GrossOutput in chart_list:
 
-            to_plot = [GlossaryCore.InvestmentsValue, GlossaryCore.Consumption, GlossaryCore.Damages]
+            to_plot = [GlossaryCore.OutputNetOfDamage, GlossaryCore.Damages]
 
-            legend = {GlossaryCore.InvestmentsValue: 'Investments',
-                      GlossaryCore.Consumption: 'Consumption',
+            legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
                       GlossaryCore.Damages: 'Damages'}
 
             years = list(economics_detail_df.index)
@@ -616,30 +616,38 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
                 new_chart.series.append(new_series)
 
+            new_series = InstanciatedSeries(
+                years, list(economics_detail_df[GlossaryCore.GrossOutput].values), 'Gross output', 'lines', True)
+
+            new_chart.series.append(new_series)
+
             instanciated_charts.append(new_chart)
-        
-        if 'output of damage' in chart_list:
 
-            to_plot = [GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]
+        if GlossaryCore.OutputNetOfDamage in chart_list:
 
-            legend = {GlossaryCore.GrossOutput: 'world gross output',
-                      GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
+            to_plot = [GlossaryCore.InvestmentsValue, GlossaryCore.Consumption]
+
+            legend = {GlossaryCore.InvestmentsValue: 'Investments',
+                      GlossaryCore.Consumption: 'Consumption',}
 
             years = list(economics_detail_df.index)
-            chart_name = 'Economics output (Power Purchase Parity)'
+            chart_name = 'Breakdown of net output'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion $2020]',
-                                                 chart_name=chart_name)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
+                                                 chart_name=chart_name, stacked_bar=True)
 
             for key in to_plot:
-                visible_line = True
-
                 ordonate_data = list(economics_detail_df[key])
 
                 new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'lines', visible_line)
+                    years, ordonate_data, legend[key], 'bar', True)
 
                 new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(economics_detail_df[GlossaryCore.OutputNetOfDamage].values), 'Net output', 'lines', True)
+
+            new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 

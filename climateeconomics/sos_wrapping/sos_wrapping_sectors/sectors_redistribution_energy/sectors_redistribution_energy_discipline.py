@@ -36,7 +36,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
                     dynamic_inputs[f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ShareSectorEnergyDf)
 
             for sector in sector_list:
-                dynamic_outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDf)
+                dynamic_outputs[f'{sector}.{GlossaryCore.EnergyProductionValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.EnergyProductionDfSectors)
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
