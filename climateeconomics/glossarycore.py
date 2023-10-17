@@ -216,18 +216,6 @@ class GlossaryCore:
     Consumption = "consumption"
     PerCapitaConsumption = "pc_consumption"
 
-    SectorsList = {
-        "var_name": "sectors_list",
-        "type": "list",
-        "subtype": "string",
-        "unit": "-",
-        "structuring": True,
-        "possible_values": SectorsPossibleValues,
-        "visibility": "Shared",
-        "namespace": "ns_witness",
-        "default": SectorsPossibleValues,
-    }
-
     # The number of columns depends dynamically on SectorsList
     SectorGdpDf = {
         "var_name": SectorGdpDfValue,

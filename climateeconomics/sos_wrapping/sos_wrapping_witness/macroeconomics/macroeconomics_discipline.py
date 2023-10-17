@@ -80,7 +80,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared',
                              'namespace': 'ns_witness', 'user_level': 2},
         # sectorisation
-        GlossaryCore.SectorListValue: GlossaryCore.SectorsList,
+        GlossaryCore.SectorListValue: GlossaryCore.SectorList,
         # Lower and upper bounds
         'lo_capital': {'type': 'float', 'unit': 'T$', 'default': 1.0, 'user_level': 3},
         'lo_conso': {'type': 'float', 'unit': 'T$', 'default': 2.0, 'user_level': 3},
