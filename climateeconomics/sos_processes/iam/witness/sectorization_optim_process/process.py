@@ -37,7 +37,7 @@ class ProcessBuilder(BaseProcessBuilder):
         macro_name = "Macroeconomics"
 
         chain_builders = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'sectorization_process')
+            'climateeconomics.sos_processes.iam.witness', 'economics_sector_process')
 
         # design variables builder
         design_var_path = 'sostrades_core.execution_engine.design_var.design_var_disc.DesignVarDiscipline'
@@ -64,11 +64,12 @@ class ProcessBuilder(BaseProcessBuilder):
             f"{optim_name}.{coupling_name}", after_name=self.ee.study_name)
 
         ns_dict = {
-                    'ns_optim': f"{ns_scatter}.{optim_name}",
+                   'ns_optim': f"{ns_scatter}.{optim_name}",
                    'ns_services':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorServices}",
                    'ns_indus':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorIndustry}",
                    'ns_agri':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorAgriculture}",
                    'ns_obj': f"{ns_scatter}.{optim_name}.{coupling_name}.{'Objectives'}",
+                   'ns_sectors': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}"
                    }
         self.ee.ns_manager.add_ns_def(ns_dict)
 

@@ -40,8 +40,6 @@ class NonUseCapitalObjective():
         self.year_start = self.param[GlossaryCore.YearStart]
         self.year_end = self.param[GlossaryCore.YearEnd]
         self.non_use_capital_obj_ref = self.param['non_use_capital_obj_ref']
-        self.alpha = self.param['alpha']
-        self.gamma = self.param['gamma']
         self.non_use_capital_cons_limit = self.param['non_use_capital_cons_limit']
         self.non_use_capital_cons_ref = self.param['non_use_capital_cons_ref']
 
@@ -103,8 +101,7 @@ class NonUseCapitalObjective():
         if 'Sum of non use capital' in self.non_use_capital_df:
             self.non_use_capital_objective_wo_ponderation = np.asarray(
                 [self.non_use_capital_df['Sum of non use capital'].sum()]) / self.delta_years
-            self.non_use_capital_objective = self.alpha * \
-                                             (1 - self.gamma) * self.non_use_capital_objective_wo_ponderation / \
+            self.non_use_capital_objective = self.non_use_capital_objective_wo_ponderation / \
                                              self.non_use_capital_obj_ref
 
     def compute_constraint(self):
@@ -126,36 +123,6 @@ class NonUseCapitalObjective():
                                              deforestation_lost_capital_wo_ponderation
         self.forest_lost_capital_cons = (
                                                 self.forest_lost_capital_cons_limit - forest_lost_capital_wo_ponderation) / self.forest_lost_capital_cons_ref
-
-    def get_objective(self):
-        '''
-        Get non_use capital objective
-        '''
-        return self.non_use_capital_objective
-
-    def get_constraint(self):
-        '''
-        Get non_use capital constraint
-        '''
-        return self.non_use_capital_cons
-
-    def get_reforestation_constraint(self):
-        '''
-        Get reforestation lost capital constraint
-        '''
-        return self.forest_lost_capital_cons
-
-    def get_non_use_capital_df(self):
-        '''
-        Get non_use capital dataframe with all non_use capitals
-        '''
-        return self.non_use_capital_df
-
-    def get_techno_capital_df(self):
-        '''
-        Get techno capital dataframe with all non_use capitals
-        '''
-        return self.techno_capital_df
 
     def get_energy_capital_trillion_dollars(self):
         '''

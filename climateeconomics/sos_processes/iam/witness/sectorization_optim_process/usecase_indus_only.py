@@ -137,6 +137,7 @@ class Study(StudyManager):
         disc_dict[f"{ns_optim}.{'energy_eff_cst_indus_in'}"] = np.array([0.16])
         disc_dict[f"{ns_optim}.{'energy_eff_xzero_indus_in'}"] = np.array([2015.0])
         disc_dict[f"{ns_optim}.{'energy_eff_max_indus_in'}"] = np.array([4.19])
+        disc_dict[f"{ns_coupling}.{'workforce_df'}"] = 0
 
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
@@ -171,6 +172,15 @@ class Study(StudyManager):
         lt_enef_services = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
                                          GlossaryCore.EnergyEfficiency: long_term_energy_eff[
                                              GlossaryCore.SectorServices]})
+
+        n_years = len(long_term_energy_eff)
+        workforce_df = pd.DataFrame({
+            GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
+            GlossaryCore.SectorIndustry: np.ones(n_years) * 1000,
+            GlossaryCore.SectorServices: np.ones(n_years) * 1000,
+            GlossaryCore.SectorAgriculture: np.ones(n_years) * 1000,
+        })
+
         sect_input = {}
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_capital'}"] = hist_capital
@@ -182,6 +192,7 @@ class Study(StudyManager):
         sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
         sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
         sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
+        sect_input[f"{ns_coupling}.{'workforce_df'}"] = workforce_df
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'
@@ -189,7 +200,51 @@ class Study(StudyManager):
         for dict_data in witness_sect_uc_data:
             disc_dict.update(dict_data)
 
+        #################
+        # add inputs that are now computed in "redistribution" disciplines
+        years = np.arange(self.year_start, self.year_end + 1, 1)
+
+        # Energy
+        brut_net = 1 / 1.45
+        energy_outlook = pd.DataFrame({
+            'year': [2000, 2005, 2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
+            'energy': [118.112, 134.122, 149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842,
+                       206.1201182, 220.000, 250.0, 300.0]})
+        f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
+        # Find values for 2020, 2050 and concat dfs
+        energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
+        energy_supply_values = energy_supply * brut_net
+
+        energy_production = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values*0.7})
+        indus_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.2894})
+        agri_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.02136})
+        services_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.37})
+
+        invest_indus = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40,65, len(years))*1/3})
+
+        invest_services = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years)) * 1/6})
+
+        invest_agriculture = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))* 1/2})
+
+        sect_input = {}
+        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
+        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}"] = invest_agriculture
+        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}"] = invest_services
+        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
+        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
+        sect_input[f"{ns_coupling}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
+
+        disc_dict.update(sect_input)
+
+
         return [disc_dict]
+
 
 
 if '__main__' == __name__:

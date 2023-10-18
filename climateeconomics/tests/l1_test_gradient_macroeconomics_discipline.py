@@ -199,6 +199,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
                             ])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
@@ -259,6 +260,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
         ])
 
     def test_macro_economics_analytic_grad_max_damage(self):
@@ -322,6 +324,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
         ])
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
@@ -390,6 +393,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
         ])
 
     def test_macro_economics_very_high_emissions(self):
@@ -462,6 +466,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
         ])
 
     def test_macro_economics_negativeco2_emissions(self):
@@ -536,6 +541,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
         ])
 
     def test_macro_economics_negativeco2_tax(self):
@@ -586,19 +592,20 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_macroeconomics_discipline_negative_co2_tax.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',local_data = disc_techno.local_data,
-                             inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
-                                     f'{self.name}.{GlossaryCore.DamageDfValue}',
-                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
-                                     f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
-                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                     f'{self.name}.energy_capital'
-                                     ],
-                             outputs=[#f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
-                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
-                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                            inputs=[f'{self.name}.{GlossaryCore.EnergyProductionValue}',
+                                    f'{self.name}.{GlossaryCore.DamageDfValue}',
+                                    f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}',
+                                    f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
+                                    f'{self.name}.{GlossaryCore.CO2TaxesValue}',
+                                    f'{self.name}.{GlossaryCore.PopulationDfValue}',
+                                    f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
+                                    f'{self.name}.energy_capital'
+                                    ],
+                            outputs=[#f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
+                                     f'{self.name}.{GlossaryCore.EconomicsDfValue}',
+                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
+                                     f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
         ])
 
     def test_macro_economics_without_compute_gdp_analytic_grad(self):
@@ -673,7 +680,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
-                                     ])
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+        ])
 
     def test_macro_economics_without_compute_gdp_w_damage_to_productivity_analytic_grad(self):
         """
@@ -747,6 +755,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
                                      ])
 
     def test_macro_economics_analytic_grad_deactive_co2_tax_investment(self):
@@ -818,6 +827,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
                                      ])
 
     def test_gigantic_energy_production_no_damage_productivity(self):
@@ -892,6 +902,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
                                      ])
 
     def test_gigantic_energy_production_damage_productivity(self):
@@ -967,6 +978,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
                                      ])
 
     def test_gigantic_energy_production_wo_compute_gdp(self):
@@ -1047,6 +1059,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
+                                     f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
                                      ])
 
 

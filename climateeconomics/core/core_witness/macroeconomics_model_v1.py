@@ -35,6 +35,7 @@ class MacroEconomics:
         self.param = param
         self.inputs = None
         self.economics_df = None
+        self.energy_wasted_objective = None
 
         self.set_data()
         self.create_dataframe()
@@ -288,12 +289,26 @@ class MacroEconomics:
     def compute_energy_usage(self):
         """Wasted energy is the overshoot of energy production not used by usable capital"""
         non_energy_capital = self.capital_df[GlossaryCore.NonEnergyCapital]
-        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue]
+        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue] #PWh
         energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency]
         optimal_energy_production = self.max_capital_utilisation_ratio * non_energy_capital / self.capital_utilisation_ratio / energy_efficiency
         self.economics_df[GlossaryCore.OptimalEnergyProduction] = optimal_energy_production * 1e3
         self.economics_df[GlossaryCore.UsedEnergy] = np.minimum(net_energy_production, optimal_energy_production) * 1e3
         self.economics_df[GlossaryCore.UnusedEnergy] = np.maximum(net_energy_production - optimal_energy_production, 0.) * 1e3
+        # Energy_wasted = max((Enet - Eoptimal),0.)
+        self.economics_df[GlossaryCore.EnergyWasted] = (net_energy_production - optimal_energy_production) * 1e3 #TWh
+        self.economics_df.loc[self.economics_df[GlossaryCore.EnergyWasted] < 0., GlossaryCore.EnergyWasted] = 0.
+
+    def compute_energy_wasted_objective(self):
+        """Computes normalized energy wasted constraint. Ewasted=max(Enet - Eoptimal, 0)
+        Normalize by total energy since Energy wasted is around 10% of total energy => have constraint around 0.1
+        which can be compared to the negative welfare objective (same order of magnitude)
+        """
+        # total energy is supposed to be > 0.
+        energy_wasted_objective = self.economics_df[GlossaryCore.EnergyWasted].values.sum() / \
+                                  self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
+
+        self.energy_wasted_objective = np.array([energy_wasted_objective])
 
     def compute_energy_efficiency(self):
         """compute energy_efficiency"""
@@ -517,6 +532,7 @@ class MacroEconomics:
         usable_capital = self.capital_df[GlossaryCore.UsableCapital].values
         self.delta_capital_cons = (usable_capital - self.capital_utilisation_ratio * ne_capital) / self.usable_capital_ref if not self.compute_gdp else np.zeros(self.nb_per)
 
+
     def prepare_outputs(self):
         """post processing"""
         self.economics_df = self.economics_df.fillna(0.0)
@@ -583,18 +599,23 @@ class MacroEconomics:
         self.compute_sector_gdp()
         self.compute_usable_capital_lower_bound_constraint()
         self.compute_energy_usage()
+        self.compute_energy_wasted_objective()
 
         self.prepare_outputs()
 
         return self.economics_detail_df, self.economics_df, self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
-            self.capital_df, self.sector_gdp_df
+            self.capital_df, self.sector_gdp_df, self.energy_wasted_objective
 
     """-------------------Gradient functions-------------------"""
 
     def _null_derivative(self):
         nb_years = len(self.years_range)
         return np.zeros((nb_years, nb_years))
+
+    def _identity_derivative(self):
+        nb_years = len(self.years_range)
+        return np.identity(nb_years)
 
     def d_productivity_d_damage_frac_output(self):
         """gradient for productivity for damage_df"""
@@ -621,12 +642,14 @@ class MacroEconomics:
 
         return d_productivity_d_damage_frac_output
 
-    def d_Y_Ku_Constraint_d_energy(self):
+    def d_Y_Ku_Ew_Constraint_d_energy(self):
         """
         Derivative of :
         - usable capital
+        - Non-energy capital
         - gross output
         - lower bound constraint
+        - Energy_wasted
         wrt energy
         """
         alpha = self.output_alpha
@@ -662,7 +685,16 @@ class MacroEconomics:
 
         d_lower_bound_constraint_dE = (d_Ku_d_E - self.capital_utilisation_ratio * d_Kne_dE) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
 
-        return dY_dE, d_Ku_d_E, d_lower_bound_constraint_dE
+        # Energy_wasted Ew = E - KNE * k where k = max_capital_utilisation_ratio/capital_utilisation_ratio/energy_efficiency*1.e3
+        # energy_efficiency is function of the years. Eoptimal in TWh
+        k = np.diag(self.max_capital_utilisation_ratio / self.capital_utilisation_ratio / energy_efficiency * 1.e3)
+        d_Ew_dE = self._identity_derivative() * 1.e3 - np.matmul(k, d_Kne_dE) # Enet converted from PWh to TWh
+        # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
+        # => put to 0 the lines of the gradient matrix corresponding to the years where Ewasted=0
+        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        d_Ew_dE = np.transpose(np.multiply(matrix_of_years_E_is_wasted, np.transpose(d_Ew_dE)))
+
+        return dY_dE, d_Ku_d_E, d_lower_bound_constraint_dE, d_Ew_dE
 
     def d_workforce_d_workagepop(self):
         """Gradient for workforce wrt working age population"""
@@ -715,7 +747,18 @@ class MacroEconomics:
                     d_Ku_d_wap[i, j] = index_zeros[i] * self.max_capital_utilisation_ratio * d_Kne_d_wap[i, j]
 
         d_lower_bound_constraint_d_wap = (d_Ku_d_wap - self.capital_utilisation_ratio * d_Kne_d_wap) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
-        return d_Ku_d_wap, d_Y_d_wap, d_lower_bound_constraint_d_wap
+
+        # Energy_wasted Ew = E - KNE * k where k = max_capital_utilisation_ratio/capital_utilisation_ratio/energy_efficiency * 1e3
+        # energy_efficiency is function of the years. Eoptimal in TWh
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
+        k = np.diag(self.max_capital_utilisation_ratio / self.capital_utilisation_ratio / energy_efficiency * 1.e3)
+        d_Ew_d_wap = - np.matmul(k, d_Kne_d_wap)
+        # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
+        # => put to 0 the lines of the gradient matrix corresponding to the years where Ewasted=0
+        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        d_Ew_d_wap = np.transpose(np.multiply(matrix_of_years_E_is_wasted, np.transpose(d_Ew_d_wap)))
+
+        return d_Ku_d_wap, d_Ew_d_wap, d_Y_d_wap, d_lower_bound_constraint_d_wap
 
     def d_net_output_d_user_input(self, d_gross_output_d_user_input):
         """derivative of net output wrt X, user should provide the derivative of gross output wrt X"""
@@ -935,7 +978,21 @@ class MacroEconomics:
                 ) if self.compute_gdp else 0.
 
         d_lower_bound_constraint_d_dfo = (d_Ku_d_dfo - self.capital_utilisation_ratio * d_Kne_d_dfo) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
-        return d_Y_d_dfo, d_Ku_d_dfo, d_Kne_d_dfo, d_lower_bound_constraint_d_dfo
+
+        # Energy_wasted Ew = E - KNE * k where k = max_capital_utilisation_ratio/capital_utilisation_ratio/energy_efficiency*1e3
+        # energy_efficiency is function of the years. Eoptimal in TWh
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
+        k = np.diag(self.max_capital_utilisation_ratio / self.capital_utilisation_ratio / energy_efficiency * 1.e3)
+        d_Ew_d_dfo = - np.matmul(k, d_Kne_d_dfo)
+        # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
+        # => put to 0 the lines of the gradient matrix corresponding to the years where Ewasted=0
+        matrix_of_years_E_is_wasted = (self.economics_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        d_Ew_d_dfo = np.transpose(np.multiply(matrix_of_years_E_is_wasted, np.transpose(d_Ew_d_dfo)))
+
+
+        return d_Y_d_dfo, d_Ku_d_dfo, d_Ew_d_dfo, d_lower_bound_constraint_d_dfo
+
+
 
     def d_net_output_d_damage_frac_output(self, d_gross_output_d_damage_frac_output):
         """derivative of net output wrt damage frac output #todo: refactor!!!"""
@@ -1003,6 +1060,26 @@ class MacroEconomics:
     def d_net_output_d_energy_invest(self):
         """derivative of net output wrt share energy_invest"""
         return self._null_derivative()
+
+    def grad_energy_wasted_objective(self, grad_sum_energy_wasted, grad_sum_energy_total):
+        """
+        gradient of the Energy_wasted objective as function of the gradients of:
+        - the sum of the energy_wasted
+        - the sum of the total energy production
+        grad(Ew_obj) = grad(sum_year(Ew)/sum_year(Etotal)) =
+        ((sum_year(Etotal) * grad(sum_year(Ewasted) - (sum_year(Ewasted) * grad(sum_year(Etotal)))/
+        (sum_year(Etotal))^2
+        where grad(sum_year(E)) = sum_year(grad(E))
+        grad(sum_year(Ewasted)) = sum_year(grad(Ewasted)) = np.ones(self.years_range) @ grad(Ewasted)
+        grad(sum_year(Etotal)) = sum_year(grad(Etotal)) = np.ones(self.years_range) @ grad(Etotal)
+        """
+        sum_ewasted = self.economics_df[GlossaryCore.EnergyWasted].values.sum()
+        sum_etotal = self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
+        # sumetotal is supposed > 0 otherwise no energy in the system => cannot work
+        grad_energy_wasted_obj = (sum_etotal * grad_sum_energy_wasted - sum_ewasted * grad_sum_energy_total) / \
+                                 sum_etotal ** 2
+
+        return grad_energy_wasted_obj
 
     """-------------------END of Gradient functions-------------------"""
 

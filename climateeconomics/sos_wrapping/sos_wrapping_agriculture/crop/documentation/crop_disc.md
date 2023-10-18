@@ -225,17 +225,6 @@ The following points list the limitations of the agriculture model:
 * The land use to produce food are assumed to be able to produce any type of food, without regarding average weather or climate conditions. For example equatorial or temperate climate may have different affinity with food production.
 
 
-## Example of diet
-This section gives example of diet data that can be used as diet_df input.
-Data are extracted from [^7], and are given in kg/person for the year 2018
-
-|Region|Red meat|White meat|Milk|Eggs|Rice and Maize|Potatoes|Fruit and vegetables|Unit|Year|
-| ---- | ------ |:--------:|----|----|:------------:|:------:|:------------------:|----|----|
-|World|11.02|31.11|79.27|9.68|97.76|32.93|217.62|kg/person|2018|
-|USA|37.7|84.63|223.7|16.21|22.99|52.26|203.07|kg/person|2018|
-|China|8.97|52.51|23.13|19.74|125.47|41.9|463.29|kg/person|2018|
-|France|23.43|54.44|185|211.72|20.06|49.18|181.92|kg/person|2018|
-
 ## Biomass dry Production
 
 Initial production: production of energy crop in 2020.

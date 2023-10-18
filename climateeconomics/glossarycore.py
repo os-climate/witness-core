@@ -17,6 +17,8 @@ class GlossaryCore:
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
 
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
+    EnergyWasted = "energy wasted [TWh]"
+    EnergyWastedObjective = "energy_wasted_objective"
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
@@ -51,11 +53,16 @@ class GlossaryCore:
     FishDailyCal = "fish_calories_per_day"
     OtherDailyCal = "other_calories_per_day"
 
+
+    # namespaces
+    NS_MACRO = "ns_macro"
+    NS_SECTORS = "ns_sectors"
+
     SectorsPossibleValues = [
         SectorServices,
         SectorAgriculture,
         SectorIndustry,
-    ]  # SectorEnergy,
+    ]
     SectorListValue = "sector_list"
 
     SectorList = {
@@ -65,6 +72,15 @@ class GlossaryCore:
         "default": SectorsPossibleValues,
         "visibility": "Shared",
         "namespace": "ns_witness",
+        "editable": False,
+        "structuring": True,
+    }
+
+    MissingSectorNameValue = "sector_name_deduced_share"
+    MissingSectorName = {
+        "var_name": MissingSectorNameValue,
+        "type": "string",
+        "default": SectorsPossibleValues[-1],
         "editable": False,
         "structuring": True,
     }
@@ -206,18 +222,6 @@ class GlossaryCore:
     Consumption = "consumption"
     PerCapitaConsumption = "pc_consumption"
 
-    SectorsList = {
-        "var_name": "sectors_list",
-        "type": "list",
-        "subtype": "string",
-        "unit": "-",
-        "structuring": True,
-        "possible_values": SectorsPossibleValues,
-        "visibility": "Shared",
-        "namespace": "ns_witness",
-        "default": SectorsPossibleValues,
-    }
-
     # The number of columns depends dynamically on SectorsList
     SectorGdpDf = {
         "var_name": SectorGdpDfValue,
@@ -240,6 +244,7 @@ class GlossaryCore:
             GrossOutput: ("float", None, False),
             OutputNetOfDamage: ("float", None, False),
             PerCapitaConsumption: ("float", None, False),
+            EnergyWasted: ("float", None, False),
         },
     }
 
@@ -273,6 +278,7 @@ class GlossaryCore:
             UsedEnergy: ("float", None, False),
             UnusedEnergy: ("float", None, False),
             OptimalEnergyProduction: ("float", None, False),
+            EnergyWasted: ("float", None, False),
         },
     }
     PopulationValue = "population"
@@ -317,6 +323,19 @@ class GlossaryCore:
         },
     }
 
+    EnergyProductionDfSectors = {
+        "var_name": EnergyProductionValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "unit": "PWh",
+        "namespace": "ns_sectors",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            TotalProductionValue: ("float", None, False),
+        },
+    }
+
+
     EnergyInvestments = {
         "var_name": EnergyInvestmentsValue,
         "type": "dataframe",
@@ -345,6 +364,7 @@ class GlossaryCore:
             "namespace": "ns_witness",
         }
     )
+
     RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"
     RenewablesEnergyInvestments = {
         "var_name": RenewablesEnergyInvestmentsValue,
@@ -424,7 +444,7 @@ class GlossaryCore:
     ProductionDfValue = "production_df"
     ProductionDf = {
         "var_name": ProductionDfValue,
-        "namespace": "ns_witness",
+        "namespace": "ns_sectors",
         "visibility": "Shared",
         "type": "dataframe",
         "unit": "T$",
@@ -536,9 +556,9 @@ class GlossaryCore:
     ShareSectorInvestmentDf = {
         "type": "dataframe",
         "unit": "%",
-        "description": "Amount of the total investment to the specific sector",
+        "description": "Amount of output net of damage allocated to the specific sector",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": "ns_sectors",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             ShareInvestment: ("float", [0.0, 100.0], False),
@@ -552,7 +572,21 @@ class GlossaryCore:
         "unit": "%",
         "description": "Amount of the total energy production attributed to the specific sector",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": "ns_sectors",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            ShareSectorEnergy: ("float", [0.0, 100.0], False),
+        },
+    }
+
+    ShareSectorEnergyDfValue = "share_sector_energy_df"
+    ShareSectorEnergy = "Share of total energy production [%]"
+    ShareSectorEnergyDf = {
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Amount of the total energy production attributed to the specific sector",
+        "visibility": "Shared",
+        "namespace": "ns_sectors",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
@@ -602,7 +636,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "T$",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": "ns_sectors",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             InvestmentsValue: ("float", None, False),

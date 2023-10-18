@@ -55,7 +55,9 @@ class ConsumptionDiscTest(unittest.TestCase):
             join(data_dir, 'economics_data_onestep.csv'))
         economics_df = economics_df[economics_df[GlossaryCore.Years] >= 2020]
 
-        economics_df = economics_df[GlossaryCore.EconomicsDf['dataframe_descriptor'].keys()]
+        # remove energy wasted as not used for the test and breaks other l0 tests (CO2 emissions) if adds it to
+        # the csv file
+        economics_df = economics_df[[key for key in GlossaryCore.EconomicsDf['dataframe_descriptor'].keys() if key != GlossaryCore.EnergyWasted]]
 
         global_data_dir = join(dirname(dirname(__file__)), 'data')
         population_df = read_csv(
