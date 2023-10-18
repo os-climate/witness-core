@@ -21,7 +21,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS sectorization process',
+        'label': 'Sectorization process',
         'description': '',
         'category': '',
         'version': '',
@@ -39,8 +39,11 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_ref': ns_scatter,
                    'ns_sectors': ns_macro
                    }
+
+        # economics sector process called here before create_builder_list to avoid process overwriting namespace
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'economics_sector_process')
+
         mods_dict = {'Population':'climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline.PopulationDiscipline',
                      'LaborMarket': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.labor_market.labor_market_discipline.LaborMarketDiscipline',
                      'Consumption':'climateeconomics.sos_wrapping.sos_wrapping_witness.consumption.consumption_discipline.ConsumptionDiscipline',
@@ -48,6 +51,8 @@ class ProcessBuilder(BaseProcessBuilder):
                      'SectorsEnergyDistribution': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_energy.sectors_redistribution_energy_discipline.SectorsRedistributionEnergyDiscipline'}
                            
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
+
+
 
         chain_builders.append(builder_list)
 
