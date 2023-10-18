@@ -100,31 +100,4 @@ class Study(StudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-
-    # print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
-    #  self.exec_eng.dm.export_couplings(
-    #     in_csv=True, f_name='couplings.csv')
-
-    # uc_cls.execution_engine.root_process.coupling_structure.graph.export_initial_graph(
-    #     "initial.pdf")
-    #     uc_cls.execution_engine.root_process.coupling_structure.graph.export_reduced_graph(
-    #         "reduced.pdf")
-
-    # DEBUG MIN MAX COUPLINGS
-    #     uc_cls.execution_engine.set_debug_mode(mode='min_max_couplings')
-    #     pd.set_option('display.max_rows', None)
-    #     pd.set_option('display.max_columns', None)
-    #     pd.set_option('display.width', None)
-
     uc_cls.run()
-
-    """ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-        if disc.sos_name == 'EnergyMix':
-            filters = ppf.get_post_processing_filters_by_discipline(
-                disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
-
-#             for graph in graph_list:
-#                 graph.to_plotly().show()"""

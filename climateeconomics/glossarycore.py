@@ -53,6 +53,11 @@ class GlossaryCore:
     FishDailyCal = "fish_calories_per_day"
     OtherDailyCal = "other_calories_per_day"
 
+
+    # namespaces
+    NS_MACRO = "ns_macro"
+    NS_SECTORS = "ns_sectors"
+
     SectorsPossibleValues = [
         SectorServices,
         SectorAgriculture,
