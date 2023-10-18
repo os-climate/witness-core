@@ -49,8 +49,6 @@ class ProcessBuilder(BaseProcessBuilder):
                            
         builder_list = self.create_builder_list(mods_dict, ns_dict=ns_dict)
 
-
-
         chain_builders.append(builder_list)
 
         return chain_builders
