@@ -99,11 +99,11 @@ class MacroeconomicsTestCase(unittest.TestCase):
             f'{name}.{GlossaryCore.InvestmentDfValue}': self.invests,
             f'{name}.{GlossaryCore.SectorListValue}': self.sectors_list,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
-            f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
+            f'{name}.{GlossaryCore.SectorAgriculture}.{model_name}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
             f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
-            f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
+            f'{name}.{GlossaryCore.SectorIndustry}.{model_name}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
             f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
-            f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
+            f'{name}.{GlossaryCore.SectorServices}.{model_name}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
         }
 
         ee.load_study_from_input_dict(inputs_dict)
