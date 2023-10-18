@@ -306,7 +306,7 @@ class MacroEconomics:
         """
         # total energy is supposed to be > 0.
         energy_wasted_objective = self.economics_df[GlossaryCore.EnergyWasted].values.sum() / \
-                                  max(1.e-10, abs(self.energy_production[GlossaryCore.TotalProductionValue].values.sum()))
+                                  self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
 
         self.energy_wasted_objective = np.array([energy_wasted_objective])
 
@@ -1061,28 +1061,25 @@ class MacroEconomics:
         """derivative of net output wrt share energy_invest"""
         return self._null_derivative()
 
-    def d_partial_energy_wasted_objective_d_partial_energy_wasted(self):
-        """derivative of energy wasted objective wrt energy wasted
-        Eobj = sum_years(Ewasted)/sum_years(Etotal)
-        dEobj/dEwasted = d(sum_years(Ewasted))/dEwasted/sum_years(Etotal)
-        Eobj is a scalar
-        derivatives above are partial derivatives
+    def grad_energy_wasted_objective(self, grad_sum_energy_wasted, grad_sum_energy_total):
         """
-        d_partial_ew_obj_d_partial_ew = 1. / max(1.e-10, abs(self.energy_production[GlossaryCore.TotalProductionValue].values.sum())) \
-                        * np.ones(len(self.years_range))
-        return d_partial_ew_obj_d_partial_ew
+        gradient of the Energy_wasted objective as function of the gradients of:
+        - the sum of the energy_wasted
+        - the sum of the total energy production
+        grad(Ew_obj) = grad(sum_year(Ew)/sum_year(Etotal)) =
+        ((sum_year(Etotal) * grad(sum_year(Ewasted) - (sum_year(Ewasted) * grad(sum_year(Etotal)))/
+        (sum_year(Etotal))^2
+        where grad(sum_year(E)) = sum_year(grad(E))
+        grad(sum_year(Ewasted)) = sum_year(grad(Ewasted)) = np.ones(self.years_range) @ grad(Ewasted)
+        grad(sum_year(Etotal)) = sum_year(grad(Etotal)) = np.ones(self.years_range) @ grad(Etotal)
+        """
+        sum_ewasted = self.economics_df[GlossaryCore.EnergyWasted].values.sum()
+        sum_etotal = self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
+        # sumetotal is supposed > 0 otherwise no energy in the system => cannot work
+        grad_energy_wasted_obj = (sum_etotal * grad_sum_energy_wasted - sum_ewasted * grad_sum_energy_total) / \
+                                 sum_etotal ** 2
 
-    def d_partial_energy_wasted_objective_d_parital_total_energy_prod(self):
-        """ derivative of energy wasted objective wrt total energy production
-                Eobj = sum_years(Ewasted)/sum_years(Etotal)
-        dEobj/dEtotal = sum_years(Ewasted))* -d(sum_years(Etotal))dEtotal/sum_years(Etotal)^2
-        Eobj is a scalar
-        Derivatives above are partial derivatives
-        """
-        d_partial_ew_obj_d_partial_etot = - self.economics_df[GlossaryCore.EnergyWasted].values.sum() / \
-                          (max(1.e-10, abs(self.energy_production[GlossaryCore.TotalProductionValue].values.sum()))) ** 2 \
-                          * np.ones(len(self.years_range))
-        return d_partial_ew_obj_d_partial_etot
+        return grad_energy_wasted_obj
 
     """-------------------END of Gradient functions-------------------"""
 
