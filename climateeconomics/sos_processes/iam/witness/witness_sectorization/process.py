@@ -23,7 +23,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Coarse Process',
+        'label': 'WITNESS Coarse sectorization Process',
         'description': '',
         'category': '',
         'version': '',
