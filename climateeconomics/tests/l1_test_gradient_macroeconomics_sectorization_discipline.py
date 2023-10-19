@@ -127,11 +127,11 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data= disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.InvestmentDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}',
-                                    f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}'],
+                                    f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}']
                             )
         
