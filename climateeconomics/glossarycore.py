@@ -479,7 +479,7 @@ class GlossaryCore:
     DetailedCapitalDf = {
         "var_name": DetailedCapitalDfValue,
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": "ns_macro",
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {

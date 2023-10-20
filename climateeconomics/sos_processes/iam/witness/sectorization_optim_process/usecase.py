@@ -266,7 +266,9 @@ class Study(StudyManager):
             GlossaryCore.SectorServices: long_term_energy_eff[GlossaryCore.Years],
             GlossaryCore.SectorAgriculture: long_term_energy_eff[GlossaryCore.Years],
         })
-
+        ns_industry_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}"
+        ns_agriculture_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}"
+        ns_services_macro = f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.macro_name}.{GlossaryCore.SectorServices}"
         sect_input = {}
         sect_input[f"{ns_coupling}.{'workforce_df'}"] = workforce_df
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
@@ -278,9 +280,9 @@ class Study(StudyManager):
         sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = agri_invest
         sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = services_invest
         sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = indus_invest
-        sect_input[f"{self.ns_industry}.{'longterm_energy_efficiency'}"] = lt_enef_indus
-        sect_input[f"{self.ns_agriculture}.{'longterm_energy_efficiency'}"] = lt_enef_agri
-        sect_input[f"{self.ns_services}.{'longterm_energy_efficiency'}"] = lt_enef_services
+        sect_input[f"{ns_industry_macro}.{'longterm_energy_efficiency'}"] = lt_enef_indus
+        sect_input[f"{ns_agriculture_macro}.{'longterm_energy_efficiency'}"] = lt_enef_agri
+        sect_input[f"{ns_services_macro}.{'longterm_energy_efficiency'}"] = lt_enef_services
         disc_dict.update(sect_input)
 
         self.witness_sect_uc.study_name = f'{ns_coupling}'
@@ -354,5 +356,5 @@ class ComplexJsonEncoder(_json.JSONEncoder):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    #uc_cls.load_data()
+    uc_cls.load_data()
     uc_cls.test()

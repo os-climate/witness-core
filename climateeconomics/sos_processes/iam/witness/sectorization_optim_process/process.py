@@ -18,7 +18,6 @@ from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):
-
     # ontology information
     _ontology_data = {
         'label': 'WITNESS Sectorization Opt process',
@@ -28,7 +27,6 @@ class ProcessBuilder(BaseProcessBuilder):
     }
 
     def get_builders(self):
-
         coupling_name = "Sectorization_Eval"
         designvariable_name = "DesignVariables"
         func_manager_name = "FunctionsManager"
@@ -64,14 +62,14 @@ class ProcessBuilder(BaseProcessBuilder):
             f"{optim_name}.{coupling_name}", after_name=self.ee.study_name)
 
         ns_dict = {
-                   'ns_optim': f"{ns_scatter}.{optim_name}",
-                   'ns_services':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorServices}",
-                   'ns_indus':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorIndustry}",
-                   'ns_agri':  f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorAgriculture}",
-                   'ns_obj': f"{ns_scatter}.{optim_name}.{coupling_name}.{'Objectives'}",
-                   'ns_sectors': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}",
-                    #'ns_macro': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}",
-                   }
+            'ns_optim': f"{ns_scatter}.{optim_name}",
+            'ns_services': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorServices}",
+            'ns_indus': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorIndustry}",
+            'ns_agri': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorAgriculture}",
+            'ns_obj': f"{ns_scatter}.{optim_name}.{coupling_name}.{'Objectives'}",
+            'ns_sectors': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}",
+            'ns_macro': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}",
+        }
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         # create coupling builder
