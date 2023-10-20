@@ -523,7 +523,7 @@ class GlossaryCore:
 
     ProductivityDfValue = "productivity_df"
     ProductivityDf = {
-        "var_name": CapitalDfValue,
+        "var_name": ProductivityDfValue,
         "type": "dataframe",
         "unit": "T$",
         "dataframe_descriptor": {
