@@ -17,6 +17,7 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
+from climateeconomics.database_witness_core import DatabaseWitnessCore
 
 from os.path import join, dirname
 from pandas import read_csv
@@ -89,7 +90,6 @@ class Study(StudyManager):
 
         energy_production = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values*0.7})
 
-
         # workforce share
         agrishare = 27.4
         indusshare = 21.7
@@ -116,33 +116,44 @@ class Study(StudyManager):
 
 
         # economisc df to init mda
-        # Test With a GDP that grows at 2%
         gdp = [130.187] * len(years)
         economics_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp})
         economics_df.index = years
 
+        #Investment
+        invest_indus_start = DatabaseWitnessCore.InvestInduspercofgdp2020.value
+        invest_agri_start = DatabaseWitnessCore.InvestAgriculturepercofgdp2020.value
+        invest_services_start = DatabaseWitnessCore.InvestServicespercofgdp2020.value
+        invest_energy_start = 1.077
+        total_invest_start = invest_indus_start + invest_agri_start + invest_services_start + invest_energy_start
+
         total_invests = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))})
+             GlossaryCore.InvestmentsValue: total_invest_start})
 
         invest_indus = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.ShareInvestment: np.linspace(40, 65, len(years)) * 1 / 3})
+             GlossaryCore.ShareInvestment: invest_indus_start})
 
         invest_services = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.ShareInvestment: np.linspace(40, 65, len(years)) * 1 / 6})
+             GlossaryCore.ShareInvestment: invest_services_start})
 
         invest_agriculture = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.ShareInvestment: np.linspace(40, 65, len(years)) * 1 / 2})
+             GlossaryCore.ShareInvestment: invest_agri_start})
 
+       #Energy
+        share_energy_agri_2020 = DatabaseWitnessCore.EnergyshareAgriculture2020.value
+        share_energy_indus_2020 = DatabaseWitnessCore.EnergyshareIndustry2020.value
+        share_energy_services_2020 = DatabaseWitnessCore.EnergyshareServices2020.value
         share_energy_agriculture = pd.DataFrame({GlossaryCore.Years: years,
-                                                      GlossaryCore.ShareSectorEnergy: np.linspace(12, 20, len(years))})
+                                                      GlossaryCore.ShareSectorEnergy: share_energy_agri_2020})
 
         share_energy_services = pd.DataFrame({GlossaryCore.Years: years,
-                                                   GlossaryCore.ShareSectorEnergy: np.linspace(39, 59, len(years))})
-
+                                                   GlossaryCore.ShareSectorEnergy: share_energy_services_2020})
+        share_energy_industry = pd.DataFrame({GlossaryCore.Years: years,
+                                              GlossaryCore.ShareSectorEnergy: share_energy_indus_2020})
 
         cons_input = {}
         cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
@@ -187,5 +198,7 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
+    # uc_cls.load_data()
+    # uc_cls.run()
     uc_cls.test()
 
