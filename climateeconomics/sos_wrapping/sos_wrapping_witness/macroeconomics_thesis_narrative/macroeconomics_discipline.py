@@ -278,7 +278,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             scaling_factor_energy_production * dconsumption_pc)
         self.set_partial_derivative_for_other_types(
             ('pc_consumption_constraint',), (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            - scaling_factor_energy_production \
+            -1 *  scaling_factor_energy_production \
             * dconsumption_pc / ref_pc_consumption_constraint)
 
         self.set_partial_derivative_for_other_types(

@@ -99,7 +99,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                  'emitted_N2O_evol_cumulative': ('float', None, True),}}
 
-        self.add_inputs(dynamic_inputs, clean_inputs=False)
+        self.add_inputs(dynamic_inputs)
 
     def run(self):
         # -- get CO2 emissions inputs
