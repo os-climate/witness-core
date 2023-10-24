@@ -120,7 +120,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
             for sector in sector_list:
                 dynamic_inputs[f'{sector}.{GlossaryCore.DetailedCapitalDfValue}'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro',
+                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_sectors',
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                              GlossaryCore.Capital: ('float', None, False),
                                              GlossaryCore.UsableCapital: ('float', None, False),
@@ -128,14 +128,14 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 }
                 dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro',
+                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_sectors',
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                              GlossaryCore.Output: ('float', None, False),
                                              GlossaryCore.OutputNetOfDamage: ('float', None, False),}
                 }
                 dynamic_inputs[f'{sector}.longterm_energy_efficiency'] = {
                     'type': 'dataframe', 'unit': MacroeconomicsModel.SECTORS_OUT_UNIT[sector],
-                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_macro',
+                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_sectors',
                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                              GlossaryCore.EnergyEfficiency: ('float', None, False),}
                 }

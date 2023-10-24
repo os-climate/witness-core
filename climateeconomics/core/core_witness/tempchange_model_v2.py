@@ -574,7 +574,7 @@ class TempChange(object):
         mat[:, 0] = 0.0
         return mat
 
-    def compute(self, in_dict):
+    def compute(self, in_dict) -> DataFrame:
         """
         Compute all
         """

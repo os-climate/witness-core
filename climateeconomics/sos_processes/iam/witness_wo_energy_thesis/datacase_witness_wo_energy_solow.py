@@ -191,16 +191,16 @@ class DataStudy():
         list_aggr_type = []
         list_ns = []
         list_var.extend(
-            [GlossaryCore.WelfareObjective,  'temperature_objective', 'CO2_objective', 'ppm_objective',  GlossaryCore.NegativeWelfareObjective])
+            [GlossaryCore.WelfareObjective,  'temperature_objective', 'CO2_objective', 'ppm_objective',  GlossaryCore.NegativeWelfareObjective, GlossaryCore.EnergyWastedObjective])
         list_parent.extend(['utility_objective',
-                            'CO2_obj', 'CO2_obj', 'CO2_obj', 'utility_objective'])
+                            'CO2_obj', 'CO2_obj', 'CO2_obj', 'utility_objective', 'utility_objective'])
         list_ns.extend(['ns_functions',
-                        'ns_functions', 'ns_functions', 'ns_functions', 'ns_functions'])
+                        'ns_functions', 'ns_functions', 'ns_functions', 'ns_functions', 'ns_functions'])
         list_ftype.extend(
-            [OBJECTIVE,  OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
-        list_weight.extend([0.0,  0.0, 0.0, 0.0, 1.0])
+            [OBJECTIVE,  OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE])
+        list_weight.extend([0.0,  0.0, 0.0, 0.0, 1.0, 1.0])
         list_aggr_type.extend(
-            [AGGR_TYPE_SUM,  AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
+            [AGGR_TYPE_SUM,  AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM])
 
         func_df['variable'] = list_var
         func_df['parent'] = list_parent

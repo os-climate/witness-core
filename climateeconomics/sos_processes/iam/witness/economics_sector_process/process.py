@@ -35,7 +35,8 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_macro': ns_macro,
                    'ns_public': ns_scatter,
                    'ns_functions': ns_scatter,
-                   'ns_ref': ns_scatter
+                   'ns_ref': ns_scatter,
+                   'ns_sectors': ns_macro
                    }
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',

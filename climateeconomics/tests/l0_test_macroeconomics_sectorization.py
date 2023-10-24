@@ -84,7 +84,8 @@ class MacroeconomicsTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness':  f'{name}', 
-                   'ns_macro': f'{name}.{model_name}' }
+                   'ns_macro': f'{name}.{model_name}',
+                   'ns_sectors': f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
@@ -98,11 +99,11 @@ class MacroeconomicsTestCase(unittest.TestCase):
             f'{name}.{GlossaryCore.InvestmentDfValue}': self.invests,
             f'{name}.{GlossaryCore.SectorListValue}': self.sectors_list,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
-            f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
+            f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
             f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
-            f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
+            f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
             f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
-            f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
+            f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
         }
 
         ee.load_study_from_input_dict(inputs_dict)

@@ -15,7 +15,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     """Generic sector discipline"""
     sector_name = 'UndefinedSector'  # to overwrite
     prod_cap_unit = 'T$' # to overwrite if necessary
-
+    NS_SECTORS = 'ns_sectors'
     DESC_IN = {
         GlossaryCore.DamageDfValue: {'type': 'dataframe',
                                      'unit': GlossaryCore.DamageDf['unit'],
@@ -89,8 +89,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
             GlossaryCore.InvestmentDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(
             GlossaryCore.ProductionDf)
-        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.CapitalDfValue}"] = GlossaryCore.get_dynamic_variable(
+        capital_df_disc = GlossaryCore.get_dynamic_variable(
             GlossaryCore.CapitalDf)
+        capital_df_disc[self.NAMESPACE] = self.NS_SECTORS
+        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.CapitalDfValue}"] = capital_df_disc
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}"] = GlossaryCore.get_dynamic_variable(
             GlossaryCore.DetailedCapitalDf)
 

@@ -70,7 +70,8 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
                    'ns_functions': f'{name}',
                    'ns_energy_mix': f'{name}',
                    'ns_coal_resource': f'{name}',
-                   'ns_resource': f'{name}'}
+                   'ns_resource': f'{name}',
+                   'ns_sectors': f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sectors_redistribution_invests.sectors_redistribution_invest_discipline.SectorsRedistributionInvestsDiscipline'

@@ -17,6 +17,7 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
+from climateeconomics.database_witness_core import DatabaseWitnessCore
 
 from os.path import join, dirname
 from pandas import read_csv
@@ -88,9 +89,6 @@ class Study(StudyManager):
         energy_supply_values = energy_supply * brut_net
 
         energy_production = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values*0.7})
-        indus_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.2894})
-        agri_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.02136})
-        services_energy = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply_values * 0.37})
 
         # workforce share
         agrishare = 27.4
@@ -103,8 +101,7 @@ class Study(StudyManager):
         damage_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
              GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
-        data_dir = join(
-            dirname(dirname(dirname(dirname(dirname(__file__))))), 'tests', 'data')
+
 
         # data for consumption
         temperature = np.linspace(1, 3, len(years))
@@ -116,67 +113,73 @@ class Study(StudyManager):
         energy_price = np.arange(110, 110 + len(years))
         energy_mean_price = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
-        # Share invest
-        share_invest = np.asarray([27.0] * self.nb_per)
-        share_invest = pd.DataFrame({GlossaryCore.Years: years, 'share_investment': share_invest})
-        share_invest_df = share_invest
 
-        # Sectors invest
-        base_dummy_data = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.SectorAgriculture: np.ones(self.nb_per), GlossaryCore.SectorIndustry: np.ones(self.nb_per),
-             GlossaryCore.SectorServices: np.ones(self.nb_per)})
 
         # economisc df to init mda
-        # Test With a GDP that grows at 2%
         gdp = [130.187] * len(years)
         economics_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.OutputNetOfDamage: gdp})
         economics_df.index = years
 
+        #Investment
+        invest_indus_start = DatabaseWitnessCore.InvestInduspercofgdp2020.value
+        invest_agri_start = DatabaseWitnessCore.InvestAgriculturepercofgdp2020.value
+        invest_services_start = DatabaseWitnessCore.InvestServicespercofgdp2020.value
+        invest_energy_start = 1.077
+        total_invest_start = invest_indus_start + invest_agri_start + invest_services_start + invest_energy_start
+
         total_invests = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))})
+             GlossaryCore.InvestmentsValue: total_invest_start})
 
         invest_indus = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.ShareInvestment: np.linspace(40, 65, len(years)) * 1 / 3})
+             GlossaryCore.ShareInvestment: invest_indus_start})
 
         invest_services = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.ShareInvestment: np.linspace(40, 65, len(years)) * 1 / 6})
+             GlossaryCore.ShareInvestment: invest_services_start})
 
         invest_agriculture = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.ShareInvestment: np.linspace(40, 65, len(years)) * 1 / 2})
+             GlossaryCore.ShareInvestment: invest_agri_start})
 
+       #Energy
+        share_energy_agri_2020 = DatabaseWitnessCore.EnergyshareAgriculture2020.value
+        share_energy_indus_2020 = DatabaseWitnessCore.EnergyshareIndustry2020.value
+        share_energy_services_2020 = DatabaseWitnessCore.EnergyshareServices2020.value
         share_energy_agriculture = pd.DataFrame({GlossaryCore.Years: years,
-                                                      GlossaryCore.ShareSectorEnergy: np.linspace(12, 20, len(years))})
+                                                      GlossaryCore.ShareSectorEnergy: share_energy_agri_2020})
 
         share_energy_services = pd.DataFrame({GlossaryCore.Years: years,
-                                                   GlossaryCore.ShareSectorEnergy: np.linspace(39, 59, len(years))})
-
+                                                   GlossaryCore.ShareSectorEnergy: share_energy_services_2020})
+        share_energy_industry = pd.DataFrame({GlossaryCore.Years: years,
+                                              GlossaryCore.ShareSectorEnergy: share_energy_indus_2020})
 
         cons_input = {}
         cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         cons_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
-        cons_input[f"{self.study_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
+        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
-        cons_input[f"{self.study_name}.{self.macro_name}.{'residential_energy'}"] = residential_energy_df
-        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
-        cons_input[f"{self.study_name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}"] = base_dummy_data
+        cons_input[f"{self.study_name}.EnergyMix.residential_energy"] = residential_energy_df
+        # TODO clean this quick workaround
+        cons_input[f"{self.study_name}.residential_energy"] = residential_energy_df
+
+        cons_input[f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
+        #cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}"] = base_dummy_data
         cons_input[f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}"] = workforce_share
         cons_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = economics_df
 
-        cons_input[f"{self.study_name}.Services.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_services
-        cons_input[f"{self.study_name}.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_agriculture
-        cons_input[f"{self.study_name}.Industry.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_indus
+        cons_input[f"{self.study_name}.{self.macro_name}.Services.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_services
+        cons_input[f"{self.study_name}.{self.macro_name}.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_agriculture
+        cons_input[f"{self.study_name}.{self.macro_name}.Industry.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_indus
 
-        cons_input[f"{self.study_name}.Services.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_services
-        cons_input[f"{self.study_name}.Agriculture.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_agriculture
+        cons_input[f"{self.study_name}.{self.macro_name}.Services.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_services
+        cons_input[f"{self.study_name}.{self.macro_name}.Agriculture.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_agriculture
 
-        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.EnergyProductionValue}"] = energy_production
+        cons_input[f"{self.study_name}.{GlossaryCore.EnergyProductionValue}"] = energy_production
 
         setup_data_list.append(cons_input)
 
@@ -195,7 +198,7 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    #uc_cls.setup_usecase()
-    #uc_cls.run()
+    # uc_cls.load_data()
+    # uc_cls.run()
     uc_cls.test()
-    print('----')
+

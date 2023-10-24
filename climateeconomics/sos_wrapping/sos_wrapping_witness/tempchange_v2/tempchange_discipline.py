@@ -158,7 +158,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         # store output data
         out_dict = {"temperature_detail_df": temperature_df,
-                    GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, GlossaryCore.TempAtmo]],
+                    # disable pylint warning, known issue for pylint >2.4, pylint cannot get some variable type even if it has been set
+                    GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, GlossaryCore.TempAtmo]],  # pylint: disable=unsubscriptable-object
                     'forcing_detail_df': self.model.forcing_df,
                     'temperature_constraint': self.model.temperature_end_constraint}
         self.store_sos_outputs_values(out_dict)

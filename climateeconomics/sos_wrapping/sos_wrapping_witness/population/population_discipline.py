@@ -165,11 +165,12 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         # Convert population in billion of people
         population_df[GlossaryCore.PopulationValue] = population_df[GlossaryCore.PopulationValue] / \
             self.model.million
-        population_detail_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570]
-        working_age_population_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570] / self.model.million
+        # disable pylint warning, known issue for pylint >2.4, pylint cannot get some variable type even if it has been set
+        population_detail_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570] # pylint: disable=unsubscriptable-object
+        working_age_population_df[GlossaryCore.Population1570] = working_age_population_df[GlossaryCore.Population1570] / self.model.million # pylint: disable=unsupported-assignment-operation,unsubscriptable-object
         # store output data
         out_dict = {GlossaryCore.PopulationDfValue: population_df,
-                    GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df,
+                    GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df, # pylint: disable=unsubscriptable-object
                     "population_detail_df": population_detail_df,
                     "birth_rate_df": birth_rate_df,
                     "death_rate_dict": death_rate_dict,
