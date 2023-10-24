@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 class NonUseCapitalObjective():
@@ -66,7 +67,7 @@ class NonUseCapitalObjective():
             'non_use_capital', inputs_dict)
 
         self.techno_capital_df = self.agreggate_and_compute_sum(
-            'techno_capital', inputs_dict)
+            GlossaryEnergy.TechnoCapitalDfValue, inputs_dict)
 
         self.forest_lost_capital = inputs_dict['forest_lost_capital']
 
@@ -134,6 +135,6 @@ class NonUseCapitalObjective():
         else:
             sum_techno_capital = 0.0
         energy_capital_df = pd.DataFrame({GlossaryCore.Years: self.years_range,
-                                          'energy_capital': sum_techno_capital})
+                                          GlossaryCore.Capital: sum_techno_capital})
 
         return energy_capital_df

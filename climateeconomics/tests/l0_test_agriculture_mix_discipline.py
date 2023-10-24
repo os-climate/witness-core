@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
@@ -176,6 +177,10 @@ class AgricultureMixModelTestCase(unittest.TestCase):
 
         ee.factory.set_builders_to_coupling_builder(builder)
 
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
         ee.configure()
         ee.display_treeview_nodes()
         inputs_dict = {f'{test_name}.{GlossaryCore.YearStart}': self.year_start,
@@ -186,6 +191,8 @@ class AgricultureMixModelTestCase(unittest.TestCase):
                        f'{test_name}.{disc_name}.Crop.techno_prices': self.techno_prices_crop,
                        f'{test_name}.{disc_name}.Crop.CO2_emissions': self.CO2_emissions_crop,
                        f'{test_name}.{disc_name}.Crop.land_use_required': self.land_use_required_crop,
+                       f'{test_name}.{disc_name}.Crop.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{test_name}.{disc_name}.Forest.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
                        f'{test_name}.{disc_name}.Forest.techno_consumption': self.techno_consumption_forest,
                        f'{test_name}.{disc_name}.Forest.techno_consumption_woratio': self.techno_consumption_woratio_forest,
                        f'{test_name}.{disc_name}.Forest.techno_production': self.techno_production_forest,

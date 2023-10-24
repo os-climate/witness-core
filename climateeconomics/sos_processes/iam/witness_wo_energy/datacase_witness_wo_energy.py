@@ -222,18 +222,16 @@ class DataStudy():
                 GlossaryCore.NegativeWelfareObjective,
                 GlossaryCore.LastYearDiscountedUtilityObjective,
                 'gwp100_objective',
-                'non_use_capital_objective'
             ],
             'parent': [
                 'utility_objective',
                 'utility_objective',
                 'GWP_long_term_obj',
-                'non_use_capital_objective'
             ],
-            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [1.0, 1.0, 0.0, 0.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', 'ns_witness']
+            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE],
+            'weight': [1.0, 1.0, 0.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, ],
+            'namespace': ['ns_functions', 'ns_functions', 'ns_witness']
         }
 
         func_df = DataFrame(data)

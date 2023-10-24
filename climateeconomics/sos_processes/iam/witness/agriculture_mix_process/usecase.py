@@ -188,7 +188,12 @@ class Study(StudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+           {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
 
         values_dict = {
             f'{self.study_name}.{GlossaryCore.YearStart}': self.year_start,
@@ -210,6 +215,8 @@ class Study(StudyManager):
             f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
             f'{self.study_name}.{energy_name}.Forest.managed_wood_investment': self.mw_invest_df,
             f'{self.study_name}.{energy_name}.Forest.deforestation_investment': deforest_invest_df,
+            f'{self.study_name}.{energy_name}.Forest.techno_capital': techno_capital,
+            f'{self.study_name}.{energy_name}.Crop.techno_capital': techno_capital,
             f'{self.study_name}.{GlossaryCore.PopulationDfValue}': population_df,
             f'{self.study_name}.{GlossaryCore.TemperatureDfValue}': temperature_df
         }
@@ -292,6 +299,8 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
+    uc_cls.test()
+    """
     uc_cls.load_data()
     uc_cls.run()
     ppf = PostProcessingFactory()
@@ -304,3 +313,4 @@ if '__main__' == __name__:
         for graph in graph_list:
             graph.to_plotly().show()
 
+"""

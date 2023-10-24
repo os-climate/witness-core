@@ -63,28 +63,15 @@ class Study(ClimateEconomicsStudyManager):
         datacase_energy.setup_process(self)
 
     def setup_constraint_land_use(self):
-        func_df = DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-        list_var.extend(
-            ['land_demand_constraint_df'])
-        list_parent.extend([None])
-        list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-1.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions'])
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
+        # Create the DataFrame
+        func_df = DataFrame({
+            'variable': ['land_demand_constraint_df'],
+            'parent': [None],
+            'ftype': [INEQ_CONSTRAINT],
+            'weight': [-1.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM],
+            'namespace': ['ns_functions']
+        })
 
         return func_df
 
@@ -149,15 +136,17 @@ if '__main__' == __name__:
     #     pd.set_option('display.width', None)
 
     uc_cls.test()
-    """
-    ppf = PostProcessingFactory()
-    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
-        if disc.sos_name == 'EnergyMix':
-            filters = ppf.get_post_processing_filters_by_discipline(
-                disc)
-            graph_list = ppf.get_post_processing_by_discipline(
-                disc, filters, as_json=False)
 
-#             for graph in graph_list:
-#                 graph.to_plotly().show()
-"""
+    ppf = PostProcessingFactory()
+    ll = ['Macroeconomics', 'FossilSimpleTechno', 'RenewableSimpleTechno']
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
+        for l in ll:
+            if l in disc.sos_name:
+                filters = ppf.get_post_processing_filters_by_discipline(
+                    disc)
+                graph_list = ppf.get_post_processing_by_discipline(
+                    disc, filters, as_json=False)
+
+                for graph in graph_list:
+                    graph.to_plotly().show()
+

@@ -13,7 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import pandas as pd
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 
 """
 mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8
@@ -57,7 +59,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.name = 'Test_Coarse'
-        years = np.arange(2020, 2051)
+        years = np.arange(2020, 2101)
         self.years = years
 
     def tearDown(self):
@@ -534,6 +536,18 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
+        technos = inputs_dict[f"{self.name}.technologies_list"]
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+        for techno in technos:
+            inputs_dict[
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
+
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -601,6 +615,17 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
             if mda_data_output_dict[self.energy_name][key]['is_coupling']:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
 
+        technos = inputs_dict[f"{self.name}.technologies_list"]
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+        for techno in technos:
+            inputs_dict[
+                f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{techno}.{GlossaryEnergy.TechnoCapitalDfValue}")
+
+        coupled_outputs.append(f"{self.name}.{self.energy_name}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
         self.ee.load_study_from_input_dict(inputs_dict)
 
         self.ee.execute()
@@ -625,6 +650,7 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                    'ns_hydrogen': f'{self.name}',
                    'ns_syngas': f'{self.name}',
                    'ns_methane': f'{self.name}',
+                   'ns_witness': f'{self.name}',
                    'ns_energy_study': f'{self.name}.{self.energy_name}',
                    'ns_energy_mix': f'{self.name}.{self.energy_name}',
                    'ns_functions': f'{self.name}.{self.energy_name}',
@@ -671,6 +697,19 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
         for key in mda_data_output_dict.keys():
             if mda_data_output_dict[key]['is_coupling'] and key not in excluded_elem:
                 coupled_outputs += [f'{namespace}.{self.energy_name}.{key}']
+
+
+        energy_types = inputs_dict[f"{self.name}.{self.energy_name}.energy_list"]
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
+        for energy in energy_types:
+            inputs_dict[
+                f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
+
+        coupled_outputs.append(f"{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}")
 
         self.ee.load_study_from_input_dict(inputs_dict)
 

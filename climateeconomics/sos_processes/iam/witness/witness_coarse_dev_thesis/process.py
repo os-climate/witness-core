@@ -88,7 +88,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             }
         non_use_capital_list = self.create_builder_list(
             mods_dict, ns_dict=ns_dict)
-        builder_list.extend(non_use_capital_list)
+        #builder_list.extend(non_use_capital_list)
 
         '''
         Add emissions disciplines

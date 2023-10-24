@@ -279,9 +279,4 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    #uc_cls.run()
     uc_cls.test()
-
-#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_initial_graph(
-#         "initial.pdf")

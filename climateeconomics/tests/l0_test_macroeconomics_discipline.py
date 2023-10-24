@@ -109,7 +109,7 @@ class MacroDiscTest(unittest.TestCase):
         energy_capital.append(energy_capital_year_start)
         for year in np.arange(1, nb_per):
             energy_capital.append(energy_capital[year - 1] * 1.02)
-        self.energy_capital_df = pd.DataFrame({GlossaryCore.Years: self.years, 'energy_capital': energy_capital})
+        self.energy_capital_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Capital: energy_capital})
 
         # retrieve co2_emissions_gt input
         data_dir = join(dirname(__file__), 'data')
@@ -149,7 +149,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': working_age_pop_df, 
-                       f'{self.name}.energy_capital': self.energy_capital_df,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital_df,
                        f'{self.name}.{GlossaryCore.SectorListValue}': sectors_list,
                        }
 

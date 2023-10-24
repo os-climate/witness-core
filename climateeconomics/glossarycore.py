@@ -465,6 +465,20 @@ class GlossaryCore:
         },
     }
 
+    EnergyCapitalDfValue = "energy_capital"
+    EnergyCapitalDf = {
+        "var_name": EnergyCapitalDfValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "description": "Capital of energy in T$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            Capital: ("float", None, False),
+        },
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+    }
+
     DetailedCapitalDfValue = "detailed_capital_df"
     Emax = "e_max"
     EnergyEfficiency = "energy_efficiency"
@@ -584,6 +598,9 @@ class GlossaryCore:
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
+
+
+
 
     FractionDamageToProductivityValue = "frac_damage_prod"
     FractionDamageToProductivity = {

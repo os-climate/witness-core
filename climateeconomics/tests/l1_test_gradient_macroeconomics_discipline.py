@@ -117,7 +117,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         energy_capital.append(energy_capital_year_start)
         for year in np.arange(1, nb_per):
             energy_capital.append(energy_capital[year - 1] * 1.02)
-        self.energy_capital = pd.DataFrame({GlossaryCore.Years: self.years, 'energy_capital': energy_capital})
+        self.energy_capital = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Capital: energy_capital})
         self.sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
 
     def analytic_grad_entry(self):
@@ -167,7 +167,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list
                        }
 
@@ -193,7 +193,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[#f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                      f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -235,7 +235,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list
                        }
 
@@ -253,7 +253,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -298,7 +298,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list
                        }
 
@@ -316,7 +316,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -366,7 +366,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list
                        }
 
@@ -384,7 +384,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -439,7 +439,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list
                        }
 
@@ -456,7 +456,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -513,7 +513,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list
                        }
 
@@ -530,7 +530,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -575,7 +575,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}' : self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list
                        }
 
@@ -593,7 +593,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -640,7 +640,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
@@ -667,7 +667,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -714,7 +714,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
@@ -741,7 +741,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -787,7 +787,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': True,
@@ -812,7 +812,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -859,7 +859,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list
                        }
 
@@ -886,7 +886,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -934,7 +934,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.{GlossaryCore.SectorListValue}': self.sectors_list
                        }
 
@@ -961,7 +961,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',
@@ -1008,7 +1008,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': self.default_co2_efficiency,
                        f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': self.co2_emissions_gt,
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': self.working_age_population_df,
-                       f'{self.name}.energy_capital': self.energy_capital,
+                       f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital,
                        f'{self.name}.assumptions_dict':
                            {'compute_gdp': False,
                             'compute_climate_impact_on_gdp': True,
@@ -1041,7 +1041,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.CO2TaxesValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}',
-                                    f'{self.name}.energy_capital'
+                                    f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'
                                     ],
                             outputs=[  # f'{self.name}.{self.model_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{GlossaryCore.EconomicsDfValue}',

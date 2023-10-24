@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -42,7 +43,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         'version': '',
     }
     _maturity = 'Research'
-    years = np.arange(2020, 2101)
+
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
@@ -62,13 +63,26 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
                                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'forest_lost_capital': {'type': 'dataframe', 'unit': 'G$', 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY,
+                                'namespace': 'ns_forest', 'dataframe_descriptor':{
+                                                         GlossaryCore.Years: ('float', None, False),
+                                                         'reforestation': ('float', None, True),
+                                                         'managed_wood': ('float', None, True),
+                                                         'deforestation': ('float', None, True),
+                                                     }
+                                                 },
+        'forest_lost_capital_cons_ref': {'type': 'float',  'unit': 'G$', 'default': 20., 'user_level': 2,
+                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref',},
+        'forest_lost_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 40., 'user_level': 2,
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref',
+                                           }
 
     }
     DESC_OUT = {
         'non_use_capital_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
         'non_use_capital_df': {'type': 'dataframe', 'unit': 'G$'},
         'techno_capital_df': {'type': 'dataframe', 'unit': 'G$'},
-        'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
         'non_use_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
         'forest_lost_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
     }
@@ -81,36 +95,6 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         # Recover the full techno list to get all non_use capital by energy mix
         energy_techno_dict = {}
 
-        dynamic_inputs['forest_lost_capital'] = {'type': 'dataframe',
-                                                 'unit': 'G$',
-                                                 'user_level': 2,
-                                                 'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                 'namespace': 'ns_forest',
-                                                 'structuring': True,
-                                                 'dataframe_descriptor':
-                                                     {
-                                                         GlossaryCore.Years: ('float', None, False),
-                                                         'reforestation': ('float', None, True),
-                                                         'managed_wood': ('float', None, True),
-                                                         'deforestation': ('float', None, True),
-                                                     }
-                                                 }
-        dynamic_inputs['forest_lost_capital_cons_ref'] = {'type': 'float',
-                                                          'unit': 'G$',
-                                                          'default': 20.,
-                                                          'user_level': 2,
-                                                          'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                          'namespace': 'ns_ref',
-                                                          'structuring': True,
-                                                          }
-        dynamic_inputs['forest_lost_capital_cons_limit'] = {'type': 'float',
-                                                            'unit': 'G$',
-                                                            'default': 40.,
-                                                            'user_level': 2,
-                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                            'namespace': 'ns_ref',
-                                                            'structuring': True,
-                                                            }
         if GlossaryCore.energy_list in self.get_data_in():
             energy_list = self.get_sosdisc_inputs(GlossaryCore.energy_list)
             if energy_list is not None:
@@ -171,7 +155,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                                             'namespace': non_use_capital_tuple[1],
                                                                             'unit': 'G$',
                                                                             "dynamic_dataframe_columns": True,
-                                                                            }
+                                                                             }
             dynamic_inputs[f'{non_use_capital_tuple[0]}techno_capital'] = {'type': 'dataframe',
                                                                            'visibility': SoSWrapp.SHARED_VISIBILITY,
                                                                            'namespace': non_use_capital_tuple[1],
@@ -195,7 +179,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
         dict_values = {'non_use_capital_df': self.model.non_use_capital_df,
                        'techno_capital_df': self.model.techno_capital_df,
-                       'energy_capital': self.model.get_energy_capital_trillion_dollars(),
+                       GlossaryCore.EnergyCapitalDfValue: self.model.get_energy_capital_trillion_dollars(),
                        'non_use_capital_objective': self.model.non_use_capital_objective,
                        'non_use_capital_cons': self.model.non_use_capital_cons,
                        'forest_lost_capital_cons': self.model.forest_lost_capital_cons}
@@ -215,38 +199,40 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         non_use_capital_cons_ref = inputs_dict['non_use_capital_cons_ref']
         outputs_dict = self.get_sosdisc_outputs()
         non_use_capital_df = outputs_dict['non_use_capital_df']
-        input_nonusecapital_list = [
-            key for key in inputs_dict.keys() if key.endswith('non_use_capital')]
+        input_nonusecapital_list = [key for key in inputs_dict.keys() if key.endswith('non_use_capital')]
         delta_years = len(non_use_capital_df[GlossaryCore.Years].values)
+
         for non_use_capital in input_nonusecapital_list:
-            column_name = [
-                col for col in inputs_dict[non_use_capital].columns if col != GlossaryCore.Years][0]
+            column_name = [col for col in inputs_dict[non_use_capital].columns if col != GlossaryCore.Years][0]
             self.set_partial_derivative_for_other_types(
-                ('non_use_capital_objective',), (non_use_capital, column_name),
+                ('non_use_capital_objective',),
+                (non_use_capital, column_name),
                 np.ones(len(years))  / non_use_capital_obj_ref / delta_years)
             self.set_partial_derivative_for_other_types(
-                ('non_use_capital_cons',), (non_use_capital, column_name),
+                ('non_use_capital_cons',),
+                (non_use_capital, column_name),
                 - np.ones(len(years)) / non_use_capital_cons_ref / delta_years)
-        input_capital_list = [
-            key for key in inputs_dict.keys() if key.endswith('techno_capital')]
+        input_capital_list = [key for key in inputs_dict.keys() if key.endswith(GlossaryEnergy.TechnoCapitalDfValue)]
 
         for capital in input_capital_list:
-            column_name = [
-                col for col in inputs_dict[capital].columns if col != GlossaryCore.Years][0]
+            column_name = [col for col in inputs_dict[capital].columns if col != GlossaryCore.Years][0]
             self.set_partial_derivative_for_other_types(
-                ('energy_capital', 'energy_capital'), (capital, column_name), np.identity(len(years)) / 1.e3)
+                (GlossaryCore.EnergyCapitalDfValue, GlossaryCore.Capital),
+                (capital, column_name),
+                np.identity(len(years)) / 1.e3)
 
         forest_lost_capital_cons_ref = inputs_dict['forest_lost_capital_cons_ref']
         self.set_partial_derivative_for_other_types(
-            ('forest_lost_capital_cons',
-             ), ('forest_lost_capital', 'reforestation'),
+            ('forest_lost_capital_cons',),
+            ('forest_lost_capital', 'reforestation'),
             - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
         self.set_partial_derivative_for_other_types(
-            ('forest_lost_capital_cons',), ('forest_lost_capital', 'managed_wood'),
+            ('forest_lost_capital_cons',),
+            ('forest_lost_capital', 'managed_wood'),
             - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
         self.set_partial_derivative_for_other_types(
-            ('forest_lost_capital_cons',
-             ), ('forest_lost_capital', 'deforestation'),
+            ('forest_lost_capital_cons',),
+            ('forest_lost_capital', 'deforestation'),
             - np.ones(len(years)) / forest_lost_capital_cons_ref / delta_years)
 
     def get_chart_filter_list(self):

@@ -131,7 +131,8 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
+    uc_cls.test()
+"""
 
     # print(len(uc_cls.execution_engine.root_process.proxy_disciplines))
     #  self.exec_eng.dm.export_couplings(
@@ -150,7 +151,8 @@ if '__main__' == __name__:
 
     uc_cls.run()
 
-    """ppf = PostProcessingFactory()
+
+    ppf = PostProcessingFactory()
     for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
         if disc.sos_name == 'EnergyMix':
             filters = ppf.get_post_processing_filters_by_discipline(

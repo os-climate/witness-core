@@ -269,7 +269,7 @@ class MacroEconomics:
         if year > self.year_end:
             pass
         elif year == self.year_start: 
-            capital = self.capital_start_ne + self.energy_capital.loc[year_start, 'energy_capital']
+            capital = self.capital_start_ne + self.energy_capital.loc[year_start, GlossaryCore.Capital]
             self.capital_df.loc[year_start, GlossaryCore.Capital] = capital
         else: 
             #first compute non energy capital 
@@ -280,7 +280,7 @@ class MacroEconomics:
             #Then total capital = ne_capital + energy_capital 
             self.capital_df.loc[year, GlossaryCore.NonEnergyCapital] = capital_a
             # Lower bound for capital
-            tot_capital = capital_a + self.energy_capital.loc[year, 'energy_capital']
+            tot_capital = capital_a + self.energy_capital.loc[year, GlossaryCore.Capital]
             self.capital_df.loc[year,GlossaryCore.Capital] = max(tot_capital, self.lo_capital)
                                   
             return capital_a

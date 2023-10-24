@@ -105,9 +105,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'energy_capital': {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness',
+        GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness',
                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                    'energy_capital': ('float', None, False), }
+                                                    GlossaryCore.Capital: ('float', None, False), }
                            },
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
     }
@@ -119,7 +119,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyInvestmentsWoRenewable['var_name']: GlossaryCore.EnergyInvestmentsWoRenewable, # todo : can be deleted
         GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'], 'unit': GlossaryCore.WorkforceDf['unit']},
         GlossaryCore.CapitalDfValue: {'type': 'dataframe', 'unit': '-',
-                                      'dataframe_descriptor':GlossaryCore.CapitalDf['dataframe_descriptor']},
+                                      'dataframe_descriptor': GlossaryCore.CapitalDf['dataframe_descriptor']},
         GlossaryCore.DetailedCapitalDfValue: {'type': 'dataframe', 'unit': '-',
                                               'dataframe_descriptor':GlossaryCore.DetailedCapitalDf['dataframe_descriptor']},
         GlossaryCore.ConstraintLowerBoundUsableCapital: {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -236,7 +236,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         co2_invest_limit = param.pop('co2_invest_limit')
         population_df = param.pop(GlossaryCore.PopulationDfValue)
         working_age_population_df = param.pop(GlossaryCore.WorkingAgePopulationDfValue)
-        energy_capital_df = param['energy_capital']
+        energy_capital_df = param[GlossaryCore.EnergyCapitalDfValue]
         compute_gdp: bool = param['assumptions_dict']['compute_gdp']
         sector_list = param[GlossaryCore.SectorListValue]
         macro_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
@@ -769,10 +769,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.Capital in chart_list:
-            energy_capital_df = self.get_sosdisc_inputs('energy_capital')
+            energy_capital_df = self.get_sosdisc_inputs(GlossaryCore.EnergyCapitalDfValue)
             capital_df = self.get_sosdisc_outputs(GlossaryCore.DetailedCapitalDfValue)
             first_serie = capital_df[GlossaryCore.NonEnergyCapital]
-            second_serie = energy_capital_df['energy_capital']
+            second_serie = energy_capital_df[GlossaryCore.Capital]
             third_serie = capital_df[GlossaryCore.Capital]
             years = list(capital_df.index)
 

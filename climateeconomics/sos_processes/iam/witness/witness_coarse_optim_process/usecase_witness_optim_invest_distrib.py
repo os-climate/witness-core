@@ -132,8 +132,8 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
+    uc_cls = Study()
+    uc_cls.test()
     # print(
     #    len(uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines))
     # df_xvect = pd.read_pickle('df_xvect.pkl')

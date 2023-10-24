@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.glossaryenergy import GlossaryEnergy
 
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
@@ -197,6 +198,10 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         self.co2_taxes = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: func(self.years)})
 
+        techno_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 20000 * np.ones_like(self.years)
+        })
                                                         
         inputs_dict = {f'{self.test_name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.test_name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -206,6 +211,8 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.test_name}.{disc_name}.Crop.techno_prices': self.techno_prices_crop,
                        f'{self.test_name}.{disc_name}.Crop.CO2_emissions': self.CO2_emissions_crop,
                        f'{self.test_name}.{disc_name}.Crop.land_use_required': self.land_use_required_crop,
+                       f'{self.test_name}.{disc_name}.Crop.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{self.test_name}.{disc_name}.Forest.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
                        f'{self.test_name}.{disc_name}.Forest.techno_consumption': self.techno_consumption_forest,
                        f'{self.test_name}.{disc_name}.Forest.techno_consumption_woratio': self.techno_consumption_woratio_forest,
                        f'{self.test_name}.{disc_name}.Forest.techno_production': self.techno_production_forest,

@@ -24,7 +24,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def analytic_grad_entry(self):
         return [
@@ -126,5 +126,5 @@ class NonUseCapitalObjJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=list(filter(lambda s: s.endswith('non_use_capital'), disc_techno.local_data.keys())),
                             outputs=[f'{self.name}.non_use_capital_objective',
                                      f'{self.name}.non_use_capital_cons',
-                                     f'{self.name}.energy_capital'],
+                                     f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}'],
                             derr_approx='complex_step')
