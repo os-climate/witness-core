@@ -368,7 +368,7 @@ class Population:
 
         return self.life_expectancy_df
 
-    def compute(self, in_dict):
+    def compute(self, in_dict) -> tuple[DataFrame, DataFrame, dict[str, DataFrame], DataFrame, dict, DataFrame, DataFrame]:
         """
         Compute all
         """
