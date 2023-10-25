@@ -709,6 +709,11 @@ class CoarseJacobianTestCase(AbstractJacobianUnittest):
                 f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"] = techno_capital
             coupled_inputs.append(f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
 
+        for energy in inputs_dict[f"{self.name}.{self.energy_name}.ccs_list"]:
+            inputs_dict[
+                f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}"] = techno_capital
+            coupled_inputs.append(f"{self.name}.{self.energy_name}.{energy}.{GlossaryEnergy.EnergyTypeCapitalDfValue}")
+
         coupled_outputs.append(f"{self.name}.{GlossaryEnergy.EnergyCapitalDfValue}")
 
         self.ee.load_study_from_input_dict(inputs_dict)
