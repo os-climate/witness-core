@@ -39,13 +39,15 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
         self.sector_list = GlossaryCore.SectorsPossibleValues
 
         self.energy_production_df = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                  GlossaryCore.TotalProductionValue: 25000 * 1.02 ** time})
-
+                                                 GlossaryCore.TotalProductionValue: 10000 * 1.02 ** time})
         self.share_energy_agriculture = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                      GlossaryCore.ShareSectorEnergy: np.linspace(12, 20, n_years)})
-
+                                                      GlossaryCore.ShareSectorEnergy: np.linspace(5, 2, n_years)})
         self.share_energy_services = pd.DataFrame({GlossaryCore.Years: self.years,
-                                                   GlossaryCore.ShareSectorEnergy: np.linspace(39, 59, n_years)})
+                                                   GlossaryCore.ShareSectorEnergy: np.linspace(30, 35, n_years)})
+        self.share_energy_residential = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                      GlossaryCore.ShareSectorEnergy: np.linspace(20, 25, n_years)})
+        self.share_energy_other = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                GlossaryCore.ShareSectorEnergy: np.linspace(10, 10, n_years)})
 
     def analytic_grad_entry(self):
         return [
@@ -76,13 +78,17 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
         inputs_dict = {f'{name}.{GlossaryCore.EnergyProductionValue}': self.energy_production_df,
                        f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_agriculture,
                        f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}': self.share_energy_services,
+                       f'{name}.{GlossaryCore.ShareResidentialEnergyDfValue}': self.share_energy_residential,
+                       f'{name}.{model_name}.{GlossaryCore.ShareOtherEnergyDfValue}': self.share_energy_other,
                        }
         ee.load_study_from_input_dict(inputs_dict)
         ee.execute()
         inputs_checked = [f"{name}.{GlossaryCore.EnergyProductionValue}"]
-        #inputs_checked += [f'{name}.{sector}.{GlossaryCore.ShareSectorEnergyDfValue}' for sector in self.sector_list[:-1]]
+        inputs_checked += [f'{name}.{sector}.{GlossaryCore.ShareSectorEnergyDfValue}' for sector in self.sector_list[:-1]]
+        inputs_checked += [f'{name}.{GlossaryCore.ShareResidentialEnergyDfValue}']
 
         output_checked = [f'{name}.{sector}.{GlossaryCore.EnergyProductionValue}' for sector in self.sector_list]
+        output_checked += [f'{name}.{GlossaryCore.ResidentialEnergyProductionDfValue}']
         
         disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
