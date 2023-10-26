@@ -17,11 +17,17 @@ class ColectedData:
 class DatabaseWitnessCore:
     """Stocke les valeurs utilisées dans witness core"""
     # Example :
-    InvestFossil2020 = ColectedData(750,
-                                    description="Investment in fossil in 2020 in Trillion US$",
-                                    link="lol.com",
-                                    source="IEA rapport XXXX",
-                                    last_update_date=date(2023, 10, 13))
+    InvestFossil2020 = ColectedData(839.,
+                                    description="Investment in fossil in 2020 in G US$",
+                                    link="https://www.iea.org/reports/world-energy-investment-2023/overview-and-key-findings",
+                                    source="World energy investment",
+                                    last_update_date=date(2023, 10, 26))
+
+    InvestCleanEnergy2020 = ColectedData(1259.,
+                                    description="Investment in clean energy in 2020 in G US$",
+                                    link="https://www.iea.org/reports/world-energy-investment-2023/overview-and-key-findings",
+                                    source="World energy investment",
+                                    last_update_date=date(2023, 10, 26))
     #Data for sectorization
     InvestInduspercofgdp2020 = ColectedData(5.831,
                                     description="Investment in Industry sector as percentage of GDP for year 2020",
