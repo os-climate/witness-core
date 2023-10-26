@@ -22,7 +22,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     InstanciatedSeries
 
 
-class UtilityModelDiscipline(ClimateEcoDiscipline):
+class EnergyInvestDiscipline(ClimateEcoDiscipline):
     "UtilityModel discipline for DICE"
 
     # ontology information
