@@ -15,10 +15,13 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
         GlossaryCore.EnergyProductionValue: GlossaryCore.EnergyProductionDf,
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
         GlossaryCore.MissingSectorNameValue: GlossaryCore.MissingSectorName,
+        GlossaryCore.ShareResidentialEnergyDfValue: GlossaryCore.ShareResidentialEnergyDf,
+        GlossaryCore.ShareOtherEnergyDfValue: GlossaryCore.ShareOtherEnergyDf
     }
 
     DESC_OUT = {
         GlossaryCore.RedistributionEnergyProductionDfValue: GlossaryCore.RedistributionEnergyProductionDf,
+        GlossaryCore.ResidentialEnergyProductionDfValue: GlossaryCore.ResidentialEnergyProductionDf
     }
 
     def setup_sos_disciplines(self):
@@ -47,12 +50,13 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
         model = SectorRedistributionEnergyModel()
 
-        sectors_energy, all_sectors_energy_df= model.compute(inputs)
+        sectors_energy, all_sectors_energy_df, residential_energy_df = model.compute(inputs)
 
         sector_list = inputs[GlossaryCore.SectorListValue]
 
         outputs = {
             GlossaryCore.RedistributionEnergyProductionDfValue: all_sectors_energy_df,
+            GlossaryCore.ResidentialEnergyProductionDfValue: residential_energy_df
         }
 
         for sector in sector_list:
@@ -92,6 +96,31 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
                 (f'{sector}.{GlossaryCore.ShareSectorEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
                 np.diag(-total_energy_production / 100.)
             )
+        #For residential
+        res_share_energy = inputs[f'{GlossaryCore.ShareResidentialEnergyDfValue}'][GlossaryCore.ShareSectorEnergy].values
+        self.set_partial_derivative_for_other_types(
+            (f'{GlossaryCore.ResidentialEnergyProductionDfValue}', GlossaryCore.TotalProductionValue),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            np.diag(res_share_energy / 100.)
+        )
+
+        self.set_partial_derivative_for_other_types(
+            (f'{GlossaryCore.ResidentialEnergyProductionDfValue}', GlossaryCore.TotalProductionValue),
+            (f'{GlossaryCore.ShareResidentialEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
+            np.diag(total_energy_production / 100.)
+        )
+
+        self.set_partial_derivative_for_other_types(
+            (f'{deduced_sector}.{GlossaryCore.EnergyProductionValue}', GlossaryCore.TotalProductionValue),
+            (f'{GlossaryCore.ShareResidentialEnergyDfValue}', GlossaryCore.ShareSectorEnergy),
+            np.diag(-total_energy_production / 100.)
+        )
+        sum_share_other_sectors.append(res_share_energy)
+
+        #Deduced sector
+        other_share_energy = inputs[f'{GlossaryCore.ShareOtherEnergyDfValue}'][
+            GlossaryCore.ShareSectorEnergy].values
+        sum_share_other_sectors.append(other_share_energy)
         sum_share_other_sectors = np.sum(sum_share_other_sectors, axis=0)
 
         self.set_partial_derivative_for_other_types(
@@ -99,7 +128,6 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             np.diag(1 - sum_share_other_sectors / 100.)
         )
-        
 
 
     def get_chart_filter_list(self):
@@ -126,6 +154,8 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
             total_production_values = self.get_sosdisc_inputs(GlossaryCore.EnergyProductionValue)[GlossaryCore.TotalProductionValue].values
             redistribution_energy_production_df = self.get_sosdisc_outputs(GlossaryCore.RedistributionEnergyProductionDfValue)
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
+            categories_list = [col for col in redistribution_energy_production_df.columns if col != GlossaryCore.Years]
+            other_categ_list = [categ for categ in categories_list if categ not in sector_list]
 
             chart_name = f"Energy allocated to sectors [TWh]"
 
@@ -134,10 +164,10 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
                                                  chart_name=chart_name)
 
             years = list(redistribution_energy_production_df[GlossaryCore.Years])
-            for sector in sector_list:
+            for categ in categories_list:
                 new_series = InstanciatedSeries(years,
-                                                list(redistribution_energy_production_df[sector] * 1000),
-                                                sector, 'bar', True)
+                                                list(redistribution_energy_production_df[categ] * 1000),
+                                                categ, 'bar', True)
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -150,12 +180,12 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
                                                  stacked_bar=True,
                                                  chart_name=chart_name)
 
-            for sector in sector_list:
-                share_sector = redistribution_energy_production_df[sector].values / total_production_values * 100
+            for categ in categories_list:
+                share_sector = redistribution_energy_production_df[categ].values / total_production_values * 100
 
                 new_series = InstanciatedSeries(years,
                                                 list(share_sector),
-                                                sector, 'bar', True)
+                                                categ, 'bar', True)
                 new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)

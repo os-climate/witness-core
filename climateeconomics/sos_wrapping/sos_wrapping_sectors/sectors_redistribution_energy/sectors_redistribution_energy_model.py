@@ -11,8 +11,11 @@ class SectorRedistributionEnergyModel:
         self.deduced_sector = ''
         self.missing_sector_share = None
 
-    def compute_energy_redistribution(self) -> tuple[dict, pd.DataFrame]:
-        """distrubute total energy production between sectors"""
+    def compute_energy_redistribution(self) -> tuple[dict, pd.DataFrame, pd.DataFrame]:
+        """
+        Distribute total energy production between sectors using sector list and share per sector input
+        In addition to sectors list energy is distributed for residential and "other" category
+        """
         total_energy_production: pd.DataFrame = self.inputs[GlossaryCore.EnergyProductionValue]
         total_energy_production_values = total_energy_production[GlossaryCore.TotalProductionValue].values
         all_sectors_energy_df = {GlossaryCore.Years: total_energy_production[GlossaryCore.Years]}
@@ -27,9 +30,27 @@ class SectorRedistributionEnergyModel:
             )
             sectors_energy[sector] = sector_energy_df
             all_sectors_energy_df[sector] = sector_energy_values
+
+        #Residential energy
+        residential_energy_values = self.inputs[GlossaryCore.ShareResidentialEnergyDfValue][
+                                                GlossaryCore.ShareSectorEnergy].values/100 * total_energy_production_values
+
+        residential_energy_df = pd.DataFrame(
+                {GlossaryCore.Years: total_energy_production[GlossaryCore.Years].values,
+                 GlossaryCore.TotalProductionValue: residential_energy_values}
+            )
+        all_sectors_energy_df[GlossaryCore.ResidentialCategory] = residential_energy_values
+
+        #Other category
+        other_energy_values = self.inputs[GlossaryCore.ShareOtherEnergyDfValue][
+                                                GlossaryCore.ShareSectorEnergy].values/100 * total_energy_production_values
+        all_sectors_energy_df[GlossaryCore.OtherEnergyCategory] = other_energy_values
+
         all_sectors_energy_df = pd.DataFrame(all_sectors_energy_df)
 
-        missing_sector_energy = total_energy_production_values - all_sectors_energy_df[computed_sectors].sum(axis=1).values
+        #Compute leftover energy for last sector
+        missing_sector_energy = total_energy_production_values -\
+                                all_sectors_energy_df.loc[:,all_sectors_energy_df.columns != GlossaryCore.Years].sum(axis=1).values
 
         all_sectors_energy_df[self.deduced_sector] = missing_sector_energy
         sectors_energy[self.deduced_sector] = pd.DataFrame(
@@ -37,13 +58,13 @@ class SectorRedistributionEnergyModel:
                  GlossaryCore.TotalProductionValue: missing_sector_energy}
             )
 
-        return sectors_energy, all_sectors_energy_df
+        return sectors_energy, all_sectors_energy_df, residential_energy_df
 
     def compute(self, inputs: dict):
         self.inputs = inputs
         self.sectors = inputs[GlossaryCore.SectorListValue]
         self.deduced_sector = inputs[GlossaryCore.MissingSectorNameValue]
 
-        sectors_energy, all_sectors_energy_df = self.compute_energy_redistribution()
+        sectors_energy, all_sectors_energy_df, residential_energy_df = self.compute_energy_redistribution()
 
-        return sectors_energy, all_sectors_energy_df
+        return sectors_energy, all_sectors_energy_df, residential_energy_df

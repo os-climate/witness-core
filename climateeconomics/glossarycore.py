@@ -335,6 +335,20 @@ class GlossaryCore:
         },
     }
 
+    EnergyProductionResidentialValue = "energy_residential_production"
+    EnergyProductionDfResidential = {
+        "var_name": EnergyProductionResidentialValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "description": "Energy production dedicated to residential",
+        "unit": "PWh",
+        "namespace": "ns_sectors",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            TotalProductionValue: ("float", None, False),
+        },
+    }
+
 
     EnergyInvestments = {
         "var_name": EnergyInvestmentsValue,
@@ -592,15 +606,38 @@ class GlossaryCore:
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
-
-    ShareSectorEnergyDfValue = "share_sector_energy_df"
-    ShareSectorEnergy = "Share of total energy production [%]"
-    ShareSectorEnergyDf = {
+    ResidentialCategory = "Residential"
+    ShareResidentialEnergyDfValue = "share_residential_energy_df"
+    ShareResidentialEnergyDf = {
         "type": "dataframe",
         "unit": "%",
-        "description": "Amount of the total energy production attributed to the specific sector",
+        "description": "Amount of the total energy production attributed to residential",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            ShareSectorEnergy: ("float", [0.0, 100.0], False),
+        },
+    }
+    ResidentialEnergyProductionDfValue = "residential_energy_production_df"
+    ResidentialEnergyProductionDf = {
+        "var_name": RedistributionEnergyProductionDfValue,
+        "type": "dataframe",
+        "unit": "PWh",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            TotalProductionValue: ("float", None, False),
+        },
+    }
+
+    OtherEnergyCategory = "Other"
+    ShareOtherEnergyDfValue = "share_other_energy_df"
+    ShareOtherEnergyDf = {
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Amount of the total energy production attributed to other category",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             ShareSectorEnergy: ("float", [0.0, 100.0], False),

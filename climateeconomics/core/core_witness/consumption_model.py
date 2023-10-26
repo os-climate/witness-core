@@ -88,7 +88,7 @@ class ConsumptionModel:
         self.population_df.index = self.population_df[GlossaryCore.Years].values
         self.total_investment_share_of_gdp = self.inputs[GlossaryCore.InvestmentShareGDPValue]
         self.total_investment_share_of_gdp.index = self.total_investment_share_of_gdp[GlossaryCore.Years].values
-        self.residential_energy = self.inputs['residential_energy']
+        self.residential_energy = self.inputs[GlossaryCore.ResidentialEnergyProductionDfValue]
         self.residential_energy.index = self.residential_energy[GlossaryCore.Years].values
  
     def compute_consumption(self, year):
@@ -146,7 +146,7 @@ class ConsumptionModel:
         # Compute energy price ratio
         energy_price = self.energy_mean_price.at[year, GlossaryCore.EnergyPriceValue]
         energy_price_ratio = self.energy_price_ref / energy_price
-        residential_energy = self.residential_energy.at[year, 'residential_energy']
+        residential_energy = self.residential_energy.at[year, GlossaryCore.TotalProductionValue]
         residential_energy_ratio = residential_energy / self.residential_energy_conso_ref
         pc_consumption = self.utility_df.at[year, GlossaryCore.PerCapitaConsumption]
         period_utility = (
@@ -257,7 +257,7 @@ class ConsumptionModel:
         energy_price = self.energy_mean_price[GlossaryCore.EnergyPriceValue].values
         u_discount_rate = self.utility_df[GlossaryCore.UtilityDiscountRate].values
         period_utility_pc = self.utility_df[GlossaryCore.PeriodUtilityPerCapita].values
-        residential_energy = self.residential_energy['residential_energy'].values
+        residential_energy = self.residential_energy[GlossaryCore.TotalProductionValue].values
         # compute gradient
         d_pc_consumption_d_output_net_of_d = np.zeros((nb_years, nb_years))
         d_pc_consumption_d_share_investment = np.zeros((nb_years, nb_years))
@@ -354,7 +354,7 @@ class ConsumptionModel:
 
         population = self.population_df[GlossaryCore.PopulationValue].values
         u_discount_rate = self.utility_df[GlossaryCore.UtilityDiscountRate].values
-        residential_energy = self.residential_energy['residential_energy'].values
+        residential_energy = self.residential_energy[GlossaryCore.TotalProductionValue].values
 
         d_period_utility_d_residential_energy = self.utility_df[GlossaryCore.PeriodUtilityPerCapita].values / residential_energy * np.identity(nb_years)
 

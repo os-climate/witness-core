@@ -66,6 +66,7 @@ class Study(StudyManager):
         self.study_name = 'usecase'
         self.macro_name = 'Macroeconomics'
         self.labormarket_name = 'LaborMarket'
+        self.redistrib_energy_name = 'SectorsEnergyDistribution'
         self.year_start = year_start
         self.year_end = year_end
         self.time_step = time_step
@@ -144,16 +145,18 @@ class Study(StudyManager):
              GlossaryCore.ShareInvestment: invest_agri_start})
 
        #Energy
+        share_energy_resi_2020 = DatabaseWitnessCore.EnergyshareResidential2020.value
+        share_energy_other_2020 = DatabaseWitnessCore.EnergyshareOther2020.value
         share_energy_agri_2020 = DatabaseWitnessCore.EnergyshareAgriculture2020.value
-        share_energy_indus_2020 = DatabaseWitnessCore.EnergyshareIndustry2020.value
         share_energy_services_2020 = DatabaseWitnessCore.EnergyshareServices2020.value
         share_energy_agriculture = pd.DataFrame({GlossaryCore.Years: years,
                                                       GlossaryCore.ShareSectorEnergy: share_energy_agri_2020})
-
         share_energy_services = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.ShareSectorEnergy: share_energy_services_2020})
-        share_energy_industry = pd.DataFrame({GlossaryCore.Years: years,
-                                              GlossaryCore.ShareSectorEnergy: share_energy_indus_2020})
+        share_energy_resi = pd.DataFrame({GlossaryCore.Years: years,
+                                                 GlossaryCore.ShareSectorEnergy: share_energy_resi_2020})
+        share_energy_other = pd.DataFrame({GlossaryCore.Years: years,
+                                                 GlossaryCore.ShareSectorEnergy: share_energy_other_2020})
 
         cons_input = {}
         cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
@@ -163,9 +166,9 @@ class Study(StudyManager):
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
-        cons_input[f"{self.study_name}.EnergyMix.residential_energy"] = residential_energy_df
+        #cons_input[f"{self.study_name}.EnergyMix.residential_energy"] = residential_energy_df
         # TODO clean this quick workaround
-        cons_input[f"{self.study_name}.residential_energy"] = residential_energy_df
+       # cons_input[f"{self.study_name}.residential_energy"] = residential_energy_df
 
         cons_input[f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
         #cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}"] = base_dummy_data
@@ -178,7 +181,8 @@ class Study(StudyManager):
 
         cons_input[f"{self.study_name}.{self.macro_name}.Services.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_services
         cons_input[f"{self.study_name}.{self.macro_name}.Agriculture.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_agriculture
-
+        cons_input[f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}"] = share_energy_resi
+        cons_input[f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}"] = share_energy_other
         cons_input[f"{self.study_name}.{GlossaryCore.EnergyProductionValue}"] = energy_production
 
         setup_data_list.append(cons_input)
@@ -198,7 +202,7 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    # uc_cls.load_data()
-    # uc_cls.run()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
+    #uc_cls.test()
 
