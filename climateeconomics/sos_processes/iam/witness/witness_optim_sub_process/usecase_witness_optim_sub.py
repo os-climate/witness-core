@@ -97,10 +97,16 @@ class Study(ClimateEconomicsStudyManager):
 
             for technology in self.witness_uc.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = \
-                    dspace_df[
+
+                dvar_value = dspace_df[
                         f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['value']
+                activated_dvar = dspace_df[
+                        f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix']['activated_elem']
+                activated_value = np.array([elem for i,elem in enumerate(dvar_value) if activated_dvar[i]])
+
+                dv_arrays_dict[
+                    f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = activated_value
+
                 design_var_descriptor[f'{energy}.{technology}.{energy_wo_dot}_{technology_wo_dot}_array_mix'] = {
                     'out_name': GlossaryCore.invest_mix,
                     'out_type': 'dataframe',
@@ -127,10 +133,16 @@ class Study(ClimateEconomicsStudyManager):
 
             for technology in self.witness_uc.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
+                dvar_value = dspace_df[
+                        f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
+                activated_dvar = dspace_df[
+                        f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['activated_elem']
+                activated_value = np.array([elem for i,elem in enumerate(dvar_value) if activated_dvar[i]])
+
+
                 dv_arrays_dict[
                     f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
-                    dspace_df[
-                        f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix']['value']
+                    activated_value
                 design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
                     'out_name': GlossaryCore.invest_mix,
                     'out_type': 'dataframe',
@@ -262,14 +274,15 @@ class Study(ClimateEconomicsStudyManager):
             dspace_df = dspace_df.append(dict_var, ignore_index=True)
 
         self.dspace = dspace_df
+        """
+
         keys_to_update = ['carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
                           'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
                           'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
-
         for key in keys_to_update:
             self.dspace.loc[self.dspace['variable'] == key, 'value'] = \
                 np.array(self.dspace.loc[self.dspace['variable'] == key, 'lower_bnd'])
-
+        """
         values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         setup_data_list.append(values_dict)
