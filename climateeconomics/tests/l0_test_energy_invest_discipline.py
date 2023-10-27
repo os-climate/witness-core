@@ -44,7 +44,7 @@ class EnergyInvestDiscTest(unittest.TestCase):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.energy_invest.energy_invest_disc.UtilityModelDiscipline'
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.energy_invest.energy_invest_disc.EnergyInvestDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
