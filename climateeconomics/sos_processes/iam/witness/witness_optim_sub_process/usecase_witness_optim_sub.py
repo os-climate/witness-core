@@ -274,14 +274,15 @@ class Study(ClimateEconomicsStudyManager):
             dspace_df = dspace_df.append(dict_var, ignore_index=True)
 
         self.dspace = dspace_df
+        """
+
         keys_to_update = ['carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
                           'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
                           'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
-
         for key in keys_to_update:
             self.dspace.loc[self.dspace['variable'] == key, 'value'] = \
                 np.array(self.dspace.loc[self.dspace['variable'] == key, 'lower_bnd'])
-
+        """
         values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         setup_data_list.append(values_dict)
