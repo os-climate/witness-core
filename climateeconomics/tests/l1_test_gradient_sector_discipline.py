@@ -34,7 +34,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
         self.year_start = 2020
-        self.year_end = 2023
+        self.year_end = 2050
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.nb_per = round((self.year_end - self.year_start) / self.time_step + 1)
@@ -55,8 +55,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         # prepare energy df
         energy_outlook = pd.DataFrame({
             'year': [2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
-            'energy': [149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182,
-                       220.000, 250.0, 300.0]})
+            'energy': [149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 600,
+                       670, 250.0, 300.0]})
         f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
         # Find values for 2020, 2050 and concat dfs
         energy_supply = f2(np.arange(self.year_start, self.year_end + 1))
@@ -134,17 +134,28 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.ee.load_study_from_input_dict(inputs_dict)
         self.ee.execute()
 
+        disc = self.ee.dm.get_disciplines_with_name(
+            f'{self.name}.{SectorDiscipline.sector_name}')[0]
+        filterr = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filterr)
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
+
+
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=os.path.abspath(dirname(__file__)), filename=f'jacobian_sector_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'],
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
+                                    ],
                             outputs=[
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
-                                f'{self.name}.{SectorDiscipline.sector_name}.emax_enet_constraint'])
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyWastedObjective}',
+                                ])
 
     def test_gradient_withotudamagetoproductivity(self):
         self.model_name = SectorDiscipline.sector_name
@@ -200,7 +211,9 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
-                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'],
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
+                                    ],
                             outputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
                                      f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
-                                     f'{self.name}.{SectorDiscipline.sector_name}.emax_enet_constraint'])
+                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyWastedObjective}',
+                                     ])

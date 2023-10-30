@@ -208,12 +208,14 @@ class SectorModel():
         Output: usable capital in trill dollars constant 2020
         """
         capital = self.capital_df.loc[year, GlossaryCore.Capital]
-        energy = self.energy_production.at[year, GlossaryCore.TotalProductionValue]
-        e_max = self.capital_df.loc[year, GlossaryCore.Emax]
-        # compute usable capital
-        usable_capital = capital * (energy / e_max)
+
+        usable_capital_unbounded = self.capital_df.loc[year, GlossaryCore.UsableCapitalUnbounded]
+        upper_bound = self.max_capital_utilisation_ratio * capital
+
+        usable_capital = upper_bound if np.real(usable_capital_unbounded) > np.real(
+            upper_bound) else usable_capital_unbounded
+
         self.capital_df.loc[year, GlossaryCore.UsableCapital] = usable_capital
-        return usable_capital
 
     def compute_gross_output(self, year):
         """ Compute the gdp 
@@ -278,8 +280,8 @@ class SectorModel():
         energy = self.energy_production[GlossaryCore.TotalProductionValue].values
         self.emax_enet_constraint = - \
             (energy - e_max * self.max_capital_utilisation_ratio) / self.ref_emax_enet_constraint
-    
-    ### For production fitting optim  only  
+
+    ### For production fitting optim  only
     def compute_long_term_energy_efficiency(self):
         """ Compute energy efficiency function on a longer time scale to analyse shape
         of the function. 
@@ -307,7 +309,44 @@ class SectorModel():
         self.range_energy_eff_cstrt = np.array([self.range_energy_eff_cstrt])
    
         return self.range_energy_eff_cstrt
-    
+
+    def compute_energy_efficiency(self):
+        """compute energy_efficiency"""
+        years = self.capital_df[GlossaryCore.Years].values
+        energy_efficiency = self.energy_eff_cst + self.energy_eff_max / (1 + np.exp(-self.energy_eff_k *
+                                                                                    (years - self.energy_eff_xzero)))
+        self.capital_df[GlossaryCore.EnergyEfficiency] = energy_efficiency
+
+    def compute_unbounded_usable_capital(self):
+        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue]
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency]
+        usable_capital_unbounded = self.capital_utilisation_ratio * net_energy_production * energy_efficiency * 1e-3
+        self.capital_df[GlossaryCore.UsableCapitalUnbounded] = usable_capital_unbounded
+
+    def compute_energy_usage(self):
+        """Wasted energy is the overshoot of energy production not used by usable capital"""
+        capital = self.capital_df[GlossaryCore.Capital]
+        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue]  # PWh
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency]
+        optimal_energy_production = self.max_capital_utilisation_ratio * capital / self.capital_utilisation_ratio / energy_efficiency * 1e3
+        self.productivity_df[GlossaryCore.OptimalEnergyProduction] = optimal_energy_production
+        self.productivity_df[GlossaryCore.UsedEnergy] = np.minimum(net_energy_production, optimal_energy_production)
+        self.productivity_df[GlossaryCore.UnusedEnergy] = np.maximum(net_energy_production - optimal_energy_production, 0.)
+        # Energy_wasted = max((Enet - Eoptimal),0.)
+        self.productivity_df[GlossaryCore.EnergyWasted] = (net_energy_production - optimal_energy_production) * 1e3  # TWh
+        self.productivity_df.loc[self.productivity_df[GlossaryCore.EnergyWasted] < 0., GlossaryCore.EnergyWasted] = 0.
+
+    def compute_energy_wasted_objective(self):
+        """Computes normalized energy wasted constraint. Ewasted=max(Enet - Eoptimal, 0)
+        Normalize by total energy since Energy wasted is around 10% of total energy => have constraint around 0.1
+        which can be compared to the negative welfare objective (same order of magnitude)
+        """
+        # total energy is supposed to be > 0.
+        energy_wasted_objective = self.productivity_df[GlossaryCore.EnergyWasted].values.sum() / \
+                                  self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
+
+        self.energy_wasted_objective = np.array([energy_wasted_objective])
+
     #RUN
     def compute(self, inputs):
         """
@@ -317,6 +356,9 @@ class SectorModel():
         self.inputs = inputs
         self.set_coupling_inputs(inputs)
         self.compute_productivity_growthrate()
+        self.compute_energy_efficiency()
+        self.compute_unbounded_usable_capital()
+
         # iterate over years
         for year in self.years_range:
             self.compute_productivity(year)
@@ -330,14 +372,23 @@ class SectorModel():
         self.production_df = self.production_df.fillna(0.0)
         self.capital_df = self.capital_df.fillna(0.0)
         self.productivity_df = self.productivity_df.fillna(0.0)
-        self.compute_emax_enet_constraint()
         if self.prod_function_fitting:
             self.compute_long_term_energy_efficiency()
             self.compute_energy_eff_constraints()
 
+        self.compute_energy_usage()
+        self.compute_energy_wasted_objective()
         return self.production_df, self.capital_df, self.productivity_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt
     
     ### GRADIENTS ###
+
+    def _null_derivative(self):
+        nb_years = len(self.years_range)
+        return np.zeros((nb_years, nb_years))
+
+    def _identity_derivative(self):
+        nb_years = len(self.years_range)
+        return np.identity(nb_years)
 
     def compute_doutput_dworkforce(self):
         """ Gradient for output output wrt workforce
@@ -361,20 +412,7 @@ class SectorModel():
         f_prime = productivity * (1 / gamma) * g * g_prime
         doutput *= f_prime
         return doutput
-    
-    def dusablecapital_denergy(self):
-        """ Gradient of usable capital wrt energy 
-        usable_capital = capital * (energy / e_max)  
-        """
-        #derivative: capital/e_max
-        nb_years = self.nb_years
-        # Inputs
-        capital = self.capital_df[GlossaryCore.Capital].values
-        e_max = self.capital_df[GlossaryCore.Emax].values
-        dusablecapital_denergy = np.identity(nb_years)
-        dusablecapital_denergy *= capital / e_max
-        return dusablecapital_denergy
-    
+
     def doutput_denergy(self, dcapitalu_denergy):
         years = self.years_range
         nb_years = len(years)
@@ -445,11 +483,38 @@ class SectorModel():
         nb_years = self.nb_years
         #capital depends on invest from year before. diagonal k-1
         dcapital = np.eye(nb_years, k=-1)
+        d_Ku_d_invests = self._null_derivative()
+        index_zeros = self.productivity_df[GlossaryCore.UnusedEnergy].values > 0.
         for i in range(0, nb_years-1):
             for j in range(0, i + 1):
-                dcapital[i + 1, j] += dcapital[i, j] * (1 - self.depreciation_capital)  
+                dcapital[i + 1, j] += dcapital[i, j] * (1 - self.depreciation_capital)
+                d_Ku_d_invests[i + 1, j] += index_zeros[i+1] * dcapital[i + 1, j] * self.max_capital_utilisation_ratio
 
-        return dcapital
+        return dcapital, d_Ku_d_invests
+
+    def d_enegy_wasted_obj_d_invest(self, d_capital_d_invest):
+        index_zeros = self.productivity_df[GlossaryCore.UnusedEnergy].values > 0.
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
+        d_Ew_d_invest = - np.diag(index_zeros * self.max_capital_utilisation_ratio * 1e6 / self.capital_utilisation_ratio / energy_efficiency) @ d_capital_d_invest
+
+        sum_energy_prod = self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
+        d_EWO_d_EW = np.ones_like(self.years) / sum_energy_prod
+        d_EWO_d_invests = d_EWO_d_EW @d_Ew_d_invest
+        return d_Ew_d_invest, d_EWO_d_invests
+
+    def doutput_dinvest(self, d_usable_capital_d_invest):
+        alpha = self.output_alpha
+        gamma = self.output_gamma
+        working_pop = self.workforce_df[self.sector_name].values
+        capital_u = self.capital_df[GlossaryCore.UsableCapital].values
+        productivity = self.productivity_df[GlossaryCore.Productivity].values
+        # Derivative of output wrt usable capital
+        doutput_dusable_capital = np.diag(productivity * alpha * capital_u ** (gamma - 1) *
+                                (alpha * capital_u ** gamma + (1 - alpha) * (working_pop) ** gamma) ** (1 / gamma - 1)
+                                )
+        # Then doutput = doutput_d_prod * dproductivity
+        doutput_dinvests = doutput_dusable_capital @ d_usable_capital_d_invest
+        return doutput_dinvests
     
     def demaxconstraint(self, dcapital):
         """ Compute derivative of e_max and emax constraint using derivative of capital. 
@@ -506,6 +571,64 @@ class SectorModel():
                     else:
                         dnet_output[i, j] = (1 - damefrac) * doutput[i, j]
         return dnet_output
-    
-    
-    
+
+    def d_Y_Ku_Ew_Constraint_d_energy(self):
+        """
+        Derivative of :
+        - usable capital
+        - Non-energy capital
+        - gross output
+        - lower bound constraint
+        - Energy_wasted
+        wrt energy
+        """
+        alpha = self.output_alpha
+        gamma = self.output_gamma
+        productivity = self.productivity_df[GlossaryCore.Productivity].values
+        working_pop = self.workforce_df[self.sector_name].values
+        usable_capital = self.capital_df[GlossaryCore.UsableCapital].values
+
+        energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
+        d_UKu_d_E = np.diag(self.capital_utilisation_ratio * energy_efficiency)
+        d_Ku_d_E = np.diag(self.capital_utilisation_ratio * energy_efficiency)
+
+        index_zeros = self.productivity_df[GlossaryCore.UnusedEnergy].values > 0.
+
+        d_Ku_d_E[index_zeros, index_zeros] = 0.
+
+        damefrac = self.damage_df[GlossaryCore.DamageFractionOutput].values
+        dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
+        d_K_d_E = self._null_derivative()
+        dY_dE = np.diag(
+            productivity * alpha * usable_capital ** (gamma - 1) * np.diag(d_Ku_d_E) *
+            (alpha * usable_capital ** gamma + (1 - alpha) * working_pop ** gamma) ** (1. / gamma - 1.)
+        )
+        dY_dE[0, 0] = 0.
+
+        for i in range(1, self.nb_years + 1):
+            for j in range(1, i):
+                dY_dE[i - 1, j] = productivity[i-1] * alpha * usable_capital[i-1] ** (gamma - 1) *\
+                    d_Ku_d_E[i - 1, j] * (alpha * usable_capital[i-1] ** gamma + (1 - alpha) * working_pop[i-1] ** gamma) ** (1. / gamma - 1.)
+                if i < self.nb_years:
+                    d_K_d_E[i, j] = (1 - self.depreciation_capital) * d_K_d_E[i - 1, j]
+                    d_Ku_d_E[i, j] = index_zeros[i] * self.max_capital_utilisation_ratio * d_K_d_E[i, j]
+
+
+        # Energy_wasted Ew = E - KNE * k where k = max_capital_utilisation_ratio/capital_utilisation_ratio/energy_efficiency*1.e3
+        # energy_efficiency is function of the years. Eoptimal in TWh
+        k = np.diag(self.max_capital_utilisation_ratio / self.capital_utilisation_ratio / energy_efficiency * 1.e3)
+        d_energy_wasted_d_energy = self._identity_derivative() * 1.e3 - np.matmul(k, d_K_d_E) # Enet converted from PWh to TWh
+        # Since Ewasted = max(Enet - Eoptimal, 0.), gradient should be 0 when Enet - Eoptimal <=0, ie when Ewasted =0
+        # => put to 0 the lines of the gradient matrix corresponding to the years where Ewasted=0
+        matrix_of_years_E_is_wasted = (self.productivity_df[GlossaryCore.EnergyWasted].values > 0.).astype(int)
+        d_energy_wasted_d_energy = np.transpose(np.multiply(matrix_of_years_E_is_wasted, np.transpose(d_energy_wasted_d_energy)))
+        d_sum_energy_wasted_d_energy_total = np.ones(self.nb_years) @ d_energy_wasted_d_energy
+        d_sum_energy_total_d_energy_total = np.ones(self.nb_years) @ self._identity_derivative()
+
+        sum_ewasted = self.productivity_df[GlossaryCore.EnergyWasted].values.sum()
+        sum_etotal = self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
+        # sumetotal is supposed > 0 otherwise no energy in the system => cannot work
+        grad_energy_wasted_obj = (sum_etotal * d_sum_energy_wasted_d_energy_total - sum_ewasted * d_sum_energy_total_d_energy_total) / \
+                                 sum_etotal ** 2 * 1e3
+
+        return dY_dE, d_UKu_d_E,d_Ku_d_E, grad_energy_wasted_obj

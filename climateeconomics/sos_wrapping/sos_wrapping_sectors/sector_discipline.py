@@ -63,6 +63,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'emax_enet_constraint': {'type': 'array'},
+        GlossaryCore.EnergyWastedObjective: {'type': 'array',
+                                             'unit': '-',
+                                             'namespace': 'ns_functions'}
     }
 
     def setup_sos_disciplines(self):
@@ -129,11 +132,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
         dict_values = {GlossaryCore.ProductivityDfValue: productivity_df,
                        f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}": detailed_capital_df,
                        'growth_rate_df': growth_rate_df,
-                       'emax_enet_constraint': emax_enet_constraint,
-                       f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[
-                           [GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]],
+                       f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[[GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]],
                        f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[
-                           [GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital]],
+                           [GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
+                       GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
                        }
 
         if prod_function_fitting:
@@ -154,33 +156,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 - usable capital
                 - output
         """
-        scaling_factor_energy_production, ref_emax_enet_constraint = self.get_sosdisc_inputs(
-            ['scaling_factor_energy_production', 'ref_emax_enet_constraint'])
-        year_start = self.get_sosdisc_inputs(GlossaryCore.YearStart)
-        year_end = self.get_sosdisc_inputs(GlossaryCore.YearEnd)
-        time_step = self.get_sosdisc_inputs(GlossaryCore.TimeStep)
-        nb_years = len(np.arange(year_start, year_end + 1, time_step))
-
-        # Gradients wrt energy
-        dcapitalu_denergy = self.model.dusablecapital_denergy()
-        doutput_denergy = self.model.doutput_denergy(dcapitalu_denergy)
-        dnetoutput_denergy = self.model.dnetoutput(doutput_denergy)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            scaling_factor_energy_production * doutput_denergy)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            scaling_factor_energy_production * dnetoutput_denergy)
-        self.set_partial_derivative_for_other_types(
-            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            scaling_factor_energy_production * dcapitalu_denergy)
-        self.set_partial_derivative_for_other_types(
-            ('emax_enet_constraint',),
-            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
-            - scaling_factor_energy_production * (np.identity(nb_years) / ref_emax_enet_constraint))
 
         # gradients wrt workforce
         doutput_dworkforce = self.model.compute_doutput_dworkforce()
@@ -217,25 +192,77 @@ class SectorDiscipline(ClimateEcoDiscipline):
             invest_df = 'hist_sector_investment'
         else:
             invest_df = f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"
-        dcapital_dinvest = self.model.dcapital_dinvest()
-        demax_cstrt_dinvest = self.model.demaxconstraint(
-            dcapital_dinvest)
+        dcapital_dinvest, d_Ku_d_invests = self.model.dcapital_dinvest()
+        doutput_dinvests = self.model.doutput_dinvest(d_Ku_d_invests)
+        dnetoutput_dinvests = self.model.dnetoutput(doutput_dinvests)
+        d_enegy_wasted_obj_d_invest, d_EWO_d_invests = self.model.d_enegy_wasted_obj_d_invest(dcapital_dinvest)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EnergyWastedObjective,),
+            (invest_df, GlossaryCore.InvestmentsValue),
+            d_EWO_d_invests)
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.Capital),
             (invest_df, GlossaryCore.InvestmentsValue),
             dcapital_dinvest)
         self.set_partial_derivative_for_other_types(
-            ('emax_enet_constraint',),
+            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital),
             (invest_df, GlossaryCore.InvestmentsValue),
-            demax_cstrt_dinvest)
+            d_Ku_d_invests)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
+            (invest_df, GlossaryCore.InvestmentsValue),
+            doutput_dinvests)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
+            (invest_df, GlossaryCore.InvestmentsValue),
+            dnetoutput_dinvests)
+
+        dY_dE, d_UKu_d_E, d_Ku_d_E, d_Ew_dE = self.model.d_Y_Ku_Ew_Constraint_d_energy()
+        dnetoutput_denergy = self.model.dnetoutput(dY_dE)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            d_Ku_d_E)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapitalUnbounded),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            d_UKu_d_E)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            dY_dE)
+
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.OutputNetOfDamage),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            dnetoutput_denergy)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.EnergyWastedObjective,),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            d_Ew_dE)
 
     def get_chart_filter_list(self):
 
         chart_filters = []
 
-        chart_list = ['sector output', GlossaryCore.InvestmentsValue, 'output growth', 'energy supply',
-                      GlossaryCore.UsableCapital, GlossaryCore.Capital, GlossaryCore.EmploymentRate, GlossaryCore.Workforce,
-                      GlossaryCore.Productivity, GlossaryCore.EnergyEfficiency, GlossaryCore.Emax]
+        chart_list = ['sector output',
+                      GlossaryCore.InvestmentsValue,
+                      'output growth',
+                      'energy supply',
+                      GlossaryCore.Emax,
+                      GlossaryCore.UsableCapital,
+                      GlossaryCore.Capital,
+                      GlossaryCore.EmploymentRate,
+                      GlossaryCore.Workforce,
+                      GlossaryCore.Productivity,
+                      GlossaryCore.EnergyEfficiency,
+                      GlossaryCore.EnergyUsage,]
 
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         if prod_func_fit:
@@ -294,14 +321,17 @@ class SectorDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.UsableCapital in chart_list:
-            first_serie = detailed_capital_df[GlossaryCore.Capital]
-            second_serie = detailed_capital_df[GlossaryCore.UsableCapital]
-            years = list(detailed_capital_df.index)
+            capital_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.CapitalDfValue}")
+            first_serie = capital_df[GlossaryCore.Capital]
+            second_serie = capital_df[GlossaryCore.UsableCapital]
+            years = list(capital_df.index)
 
             chart_name = 'Productive capital stock and usable capital for production'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital stock [trillion dollars]',
                                                  chart_name=chart_name)
+            note = {'Productive Capital': ' Non energy capital'}
+            new_chart.annotation_upper_left = note
 
             visible_line = True
             ordonate_data = list(first_serie)
@@ -314,12 +344,42 @@ class SectorDiscipline(ClimateEcoDiscipline):
             new_series = InstanciatedSeries(
                 years, ordonate_data_bis, 'Usable capital', 'lines', visible_line)
             new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(capital_df[GlossaryCore.UsableCapitalUnbounded]), 'Unbounded Usable capital', 'lines',
+                visible_line)
+
+            new_chart.series.append(new_series)
             new_series = InstanciatedSeries(
                 years, percentage_productive_capital_stock,
                 f'{capital_utilisation_ratio * 100}% of Productive Capital Stock', 'lines', visible_line)
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
+
+        if GlossaryCore.EnergyUsage in chart_list:
+            economics_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'TWh',
+                                                 chart_name=GlossaryCore.EnergyUsage,
+                                                 stacked_bar=True)
+
+            to_plot = [GlossaryCore.UsedEnergy, GlossaryCore.UnusedEnergy]
+            for p in to_plot:
+                new_series = InstanciatedSeries(
+                    list(economics_df[GlossaryCore.Years]),
+                    list(economics_df[p]),
+                    p, 'bar', True)
+                new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                list(economics_df[GlossaryCore.Years]),
+                list(economics_df[GlossaryCore.OptimalEnergyProduction]),
+                GlossaryCore.OptimalEnergyProduction, 'lines', True)
+            new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+
 
         if GlossaryCore.Capital in chart_list:
             serie = detailed_capital_df[GlossaryCore.Capital]
