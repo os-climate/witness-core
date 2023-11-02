@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/08/23-2023/11/02 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -86,8 +87,8 @@ class ConsumptionModel:
         self.energy_price_ref = self.initial_raw_energy_price
         self.population_df = self.inputs[GlossaryCore.PopulationDfValue]
         self.population_df.index = self.population_df[GlossaryCore.Years].values
-        self.total_investment_share_of_gdp = self.inputs[GlossaryCore.InvestmentShareGDPValue]
-        self.total_investment_share_of_gdp.index = self.total_investment_share_of_gdp[GlossaryCore.Years].values
+        self.investment_df = self.inputs[GlossaryCore.InvestmentDfValue]
+        self.investment_df.index = self.investment_df[GlossaryCore.Years].values
         self.residential_energy = self.inputs[GlossaryCore.ResidentialEnergyProductionDfValue]
         self.residential_energy.index = self.residential_energy[GlossaryCore.Years].values
  
@@ -99,8 +100,8 @@ class ConsumptionModel:
             savings: Savings rate at t
         """
         net_output = self.economics_df.at[year, GlossaryCore.OutputNetOfDamage]
-        total_investment_share_of_gdp = self.total_investment_share_of_gdp.at[year, 'share_investment']
-        consumption = (1 - total_investment_share_of_gdp / 100) * net_output
+        investment = self.investment_df.at[year, GlossaryCore.InvestmentsValue]
+        consumption = net_output - investment
         # lower bound for conso
         self.utility_df.loc[year, GlossaryCore.Consumption] = max(
             consumption, self.lo_conso)
@@ -249,8 +250,6 @@ class ConsumptionModel:
         years = np.arange(self.year_start,
                           self.year_end + 1, self.time_step)
         nb_years = len(years)
-        total_investment_share_of_gdp = self.total_investment_share_of_gdp['share_investment'].values
-        net_output = self.economics_df[GlossaryCore.OutputNetOfDamage].values
         population = self.population_df[GlossaryCore.PopulationValue].values
         consumption = self.utility_df[GlossaryCore.Consumption].values
         pc_consumption = self.utility_df[GlossaryCore.PerCapitaConsumption].values
@@ -259,14 +258,11 @@ class ConsumptionModel:
         period_utility_pc = self.utility_df[GlossaryCore.PeriodUtilityPerCapita].values
         residential_energy = self.residential_energy[GlossaryCore.TotalProductionValue].values
         # compute gradient
-        d_pc_consumption_d_output_net_of_d = np.zeros((nb_years, nb_years))
-        d_pc_consumption_d_share_investment = np.zeros((nb_years, nb_years))
-        d_discounted_utility_d_population = np.zeros((nb_years, nb_years))
         d_welfare_d_output_net_of_d = np.zeros((nb_years, nb_years))
-        d_welfare_d_share_investment = np.zeros((nb_years, nb_years))
+        d_welfare_d_investment = np.zeros((nb_years, nb_years))
         d_welfare_d_population = np.zeros((nb_years, nb_years))
 
-        d_consumption_d_output_net_of_d = (1 - total_investment_share_of_gdp / 100) * np.identity(nb_years)
+        d_consumption_d_output_net_of_d = np.identity(nb_years)
         # find index where lower bound reached
         theyears = np.where(consumption == self.lo_conso)[0]
         # Then for these years derivative = 0
@@ -276,11 +272,11 @@ class ConsumptionModel:
         theyears = np.where(pc_consumption == self.lo_per_capita_conso)[0]
         d_pc_consumption_d_output_net_of_d[theyears] = 0
 
-        d_consumption_d_share_investment = - 1 / 100 * net_output * np.identity(nb_years)
-        theyears = np.where(consumption == self.lo_conso)[0]
-        d_consumption_d_share_investment[theyears] = 0
+        #For investment
+        d_consumption_d_invest = - np.identity(nb_years)
+        d_consumption_d_invest[theyears] = 0
 
-        d_pc_consumption_d_share_investment = d_consumption_d_share_investment / population * 1000
+        d_pc_consumption_d_investment = d_consumption_d_invest/ population * 1000
         theyears = np.where(pc_consumption == self.lo_per_capita_conso)[0]
         d_pc_consumption_d_output_net_of_d[theyears] = 0
 
@@ -297,9 +293,9 @@ class ConsumptionModel:
         d_period_utility_pc_d_output_net_of_d[theyears] = d_period_utility_pc_d_output_net_of_d[theyears] * self.min_period_utility / 10. * \
             (np.exp(period_utility / self.min_period_utility) * np.exp(-1)) / self.min_period_utility
 
-        d_period_utility_pc_d_share_investment = d_pc_consumption_d_share_investment * pc_consumption ** (- self.conso_elasticity) * \
+        d_period_utility_pc_d_investment = d_pc_consumption_d_investment * pc_consumption ** (- self.conso_elasticity) * \
             self.energy_price_ref / energy_price * residential_energy / self.residential_energy_conso_ref
-        d_period_utility_pc_d_share_investment[theyears] = d_period_utility_pc_d_share_investment[theyears] * self.min_period_utility / 10. * \
+        d_period_utility_pc_d_investment[theyears] = d_period_utility_pc_d_investment[theyears] * self.min_period_utility / 10. * \
             (np.exp(period_utility / self.min_period_utility) * np.exp(-1)) / self.min_period_utility
 
         d_period_utility_d_population = d_pc_consumption_d_population * pc_consumption ** (- self.conso_elasticity) * \
@@ -308,17 +304,17 @@ class ConsumptionModel:
             (np.exp(period_utility / self.min_period_utility) * np.exp(-1)) / self.min_period_utility
 
         d_discounted_utility_d_output_net_of_d = d_period_utility_pc_d_output_net_of_d * u_discount_rate * population
-        d_discounted_utility_d_share_investment = d_period_utility_pc_d_share_investment * u_discount_rate * population
+        d_discounted_utility_d_investment = d_period_utility_pc_d_investment * u_discount_rate * population
         d_discounted_utility_d_population = d_period_utility_d_population * u_discount_rate * population + \
             period_utility_pc  * u_discount_rate * np.identity(nb_years)
         d_welfare_d_output_net_of_d[nb_years - 1] = d_discounted_utility_d_output_net_of_d.diagonal()
-        d_welfare_d_share_investment[nb_years - 1] = d_discounted_utility_d_share_investment.diagonal()
+        d_welfare_d_investment[nb_years - 1] = d_discounted_utility_d_investment.diagonal()
         d_welfare_d_population[nb_years - 1] = d_discounted_utility_d_population.diagonal()
 
-        return d_pc_consumption_d_output_net_of_d, d_pc_consumption_d_share_investment, d_pc_consumption_d_population, \
-            d_period_utility_pc_d_output_net_of_d, d_period_utility_pc_d_share_investment, d_period_utility_d_population, \
-            d_discounted_utility_d_output_net_of_d, d_discounted_utility_d_share_investment, d_discounted_utility_d_population, \
-            d_welfare_d_output_net_of_d, d_welfare_d_share_investment, d_welfare_d_population
+        return d_pc_consumption_d_output_net_of_d, d_pc_consumption_d_investment, d_pc_consumption_d_population, \
+            d_period_utility_pc_d_output_net_of_d, d_period_utility_pc_d_investment, d_period_utility_d_population, \
+            d_discounted_utility_d_output_net_of_d, d_discounted_utility_d_investment, d_discounted_utility_d_population, \
+            d_welfare_d_output_net_of_d, d_welfare_d_investment, d_welfare_d_population
 
     def compute_gradient_energy_mean_price(self):
         years = np.arange(self.year_start,

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/02 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -37,15 +38,17 @@ class AgricultureDiscipline(SectorDiscipline):
     _maturity = 'Research'
 
     # update default values:
-    DESC_IN = SectorDiscipline.DESC_IN
-    DESC_IN['productivity_start']['default'] = 1.31162
-    DESC_IN['capital_start']['default'] = 6.92448579
-    DESC_IN['productivity_gr_start']['default'] = 0.0027844
-    DESC_IN['decline_rate_tfp']['default'] = 0.098585
-    DESC_IN['energy_eff_k']['default'] = 0.1
-    DESC_IN['energy_eff_cst']['default'] = 0.490463
-    DESC_IN['energy_eff_xzero']['default'] = 1993
-    DESC_IN['energy_eff_max']['default'] = 2.35832
-    DESC_IN['output_alpha']['default'] = 0.99
-    DESC_IN['depreciation_capital']['default'] = 0.058
+    def setup_sos_disciplines(self):
+        SectorDiscipline.setup_sos_disciplines(self)
+        self.update_default_value('capital_start', 'in', 6.92448579)
+        self.update_default_value('productivity_start', 'in', 1.31162)
+        self.update_default_value('productivity_gr_start', 'in', 0.0027844)
+        self.update_default_value('decline_rate_tfp', 'in', 0.098585)
+        self.update_default_value('energy_eff_k', 'in', 0.1)
+        self.update_default_value('energy_eff_cst', 'in', 0.490463)
+        self.update_default_value('energy_eff_xzero', 'in', 1993)
+        self.update_default_value('energy_eff_max', 'in',2.35832)
+        self.update_default_value('output_alpha', 'in', 0.99)
+        self.update_default_value('depreciation_capital', 'in', 0.058)
+
 
