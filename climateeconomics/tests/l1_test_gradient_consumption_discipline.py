@@ -39,7 +39,9 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   'ns_ref': f'{self.name}',
+                   'ns_sectors':f'{self.name}'}
+
         self.ee = ExecutionEngine(self.name)
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -79,9 +81,9 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         residential_energy = np.linspace(200, 10, len(self.years))
         self.residential_energy_df = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: residential_energy})
-        #Share invest
-        share_invest = np.asarray([27.0] * len(self.years))
-        self.total_investment_share_of_gdp = pd.DataFrame({GlossaryCore.Years: self.years, 'share_investment': share_invest})
+        #Invest
+        invest = np.asarray([10.0] * len(self.years))
+        self.investment_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.InvestmentsValue: invest})
 
         self.values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -89,7 +91,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': self.energy_mean_price,
                             f'{self.name}.{GlossaryCore.ResidentialEnergyProductionDfValue}': self.residential_energy_df,
-                            f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}': self.total_investment_share_of_gdp}
+                            f'{self.name}.{GlossaryCore.InvestmentDfValue}': self.investment_df}
 
         self.ee.load_study_from_input_dict(self.values_dict)
 
@@ -112,7 +114,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.ResidentialEnergyProductionDfValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}'],
+                                    f'{self.name}.{GlossaryCore.InvestmentDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
                                      f'{self.name}.{GlossaryCore.WelfareObjective}',
                                      f'{self.name}.min_utility_objective',
@@ -136,7 +138,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.ResidentialEnergyProductionDfValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}'],
+                                    f'{self.name}.{GlossaryCore.InvestmentDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
                                      f'{self.name}.{GlossaryCore.WelfareObjective}',
                                      f'{self.name}.min_utility_objective',
@@ -155,7 +157,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                             f'{self.name}.{GlossaryCore.EnergyPriceValue}': self.energy_mean_price,
                             f'{self.name}.{GlossaryCore.ResidentialEnergyProductionDfValue}': self.residential_energy_df,
-                            f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}': self.total_investment_share_of_gdp}
+                            f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}': self.investment_df}
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
@@ -167,7 +169,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}',
                                     f'{self.name}.{GlossaryCore.ResidentialEnergyProductionDfValue}',
                                     f'{self.name}.{GlossaryCore.PopulationDfValue}',
-                                    f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}'],
+                                    f'{self.name}.{GlossaryCore.InvestmentDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.UtilityDfValue}',
                                      f'{self.name}.{GlossaryCore.WelfareObjective}',
                                      f'{self.name}.min_utility_objective',
