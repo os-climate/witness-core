@@ -45,13 +45,16 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_IN = {
-        GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
+        GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
+        GlossaryCore.ShareMaxInvestName: GlossaryCore.ShareMaxInvest,
+        GlossaryCore.MaxInvestConstraintRefName: GlossaryCore.MaxInvestConstraintRef
     }
 
     DESC_OUT = {
         GlossaryCore.EconomicsDfValue: GlossaryCore.SectorizedEconomicsDf,
         GlossaryCore.EconomicsDetailDfValue: GlossaryCore.SectorizedEconomicsDetailDf,
+        GlossaryCore.MaxInvestConstraintName: GlossaryCore.MaxInvestConstraint
     }
 
     def init_execution(self):
@@ -63,12 +66,15 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.SectorListValue in self.get_data_in():
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
-
-            for sector in sector_list:
-                capital_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.CapitalDf)
-                capital_df_disc[self.NAMESPACE] = GlossaryCore.NS_MACRO
-                dynamic_inputs[f'{sector}.{GlossaryCore.CapitalDfValue}'] = capital_df_disc
-                dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
+            # ensure sector list is not None before going further for configuration steps
+            if sector_list is not None:
+                for sector in sector_list:
+                    capital_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.CapitalDf)
+                    capital_df_disc[self.NAMESPACE] = GlossaryCore.NS_MACRO
+                    dynamic_inputs[f'{sector}.{GlossaryCore.CapitalDfValue}'] = capital_df_disc
+                    dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
+                    # add investment_df for each sector as input
+                    dynamic_inputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
 
             self.add_inputs(dynamic_inputs)
 
@@ -79,9 +85,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         outputs_dict = {
             GlossaryCore.EconomicsDfValue: self.macro_model.economics_df,
-            GlossaryCore.EconomicsDetailDfValue: self.macro_model.economics_detail_df
+            GlossaryCore.EconomicsDetailDfValue: self.macro_model.economics_detail_df,
+            GlossaryCore.MaxInvestConstraintName: self.macro_model.max_invest_constraint
         }
-
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -90,21 +96,45 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         gradient of coupling variable to compute:
         net_output and invest wrt sector net_output 
         """
-        sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
+        inputs_dict = self.get_sosdisc_inputs()
+        sector_list = inputs_dict[GlossaryCore.SectorListValue]
+        share_max_invest = inputs_dict[GlossaryCore.ShareMaxInvestName]
+        max_invest_ref = inputs_dict[GlossaryCore.MaxInvestConstraintRefName]
 
-        # Gradient wrt each sector production df: same for all sectors
-        grad_netoutput = self.macro_model.get_derivative_sectors()
+        # Generic gradient wrt each sector : same for all sectors
+        identity_mat = self.macro_model.get_derivative_sectors()
         for sector in sector_list:
             self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
                                                         (f'{sector}.{GlossaryCore.ProductionDfValue}',
                                                          GlossaryCore.GrossOutput),
-                                                        grad_netoutput)
+                                                        identity_mat)
             self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
                                                         (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
-                                                        grad_netoutput)
+                                                        identity_mat)
             self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.Capital),
-                                                        (f'{sector}.{GlossaryCore.CapitalDfValue}', GlossaryCore.Capital), grad_netoutput)
+                                                        (f'{sector}.{GlossaryCore.CapitalDfValue}', GlossaryCore.Capital), identity_mat)
 
+            # gradient of constraint wrt output net damage for each sector
+
+            self.set_partial_derivative_for_other_types((GlossaryCore.MaxInvestConstraintName, ),
+                                                        (f'{sector}.{GlossaryCore.ProductionDfValue}',
+                                                         GlossaryCore.OutputNetOfDamage),
+                                                        identity_mat/100 * share_max_invest / max_invest_ref)
+
+            # gradient of constraint wrt invest for each sector (except for energy)
+
+            self.set_partial_derivative_for_other_types((GlossaryCore.MaxInvestConstraintName,),
+                                                        (f'{sector}.{GlossaryCore.InvestmentDfValue}',
+                                                         GlossaryCore.InvestmentsValue),
+                                                        -1.0 * identity_mat / max_invest_ref)
+
+
+        # gradient of constraint wrt output net damage for each
+
+        self.set_partial_derivative_for_other_types((GlossaryCore.MaxInvestConstraintName,),
+                                                    (f'{GlossaryCore.EnergyInvestmentsWoTaxValue}',
+                                                     GlossaryCore.EnergyInvestmentsWoTaxValue),
+                                                    -1.0 * identity_mat / max_invest_ref)
     def get_chart_filter_list(self):
 
         chart_filters = []
@@ -132,7 +162,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         economics_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue))
-        investment_df = deepcopy(self.get_sosdisc_inputs(GlossaryCore.InvestmentDfValue))
         sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
 
         # Overload default value with chart filter
@@ -148,13 +177,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion $2020]',
                                                  chart_name=chart_name, stacked_bar=True)
 
-            new_series = InstanciatedSeries(
-                years, list(investment_df[GlossaryCore.InvestmentsValue]),'Investments', 'bar', True)
-            new_chart.series.append(new_series)
-
-            new_series = InstanciatedSeries(
-                years, list(economics_df[GlossaryCore.Consumption]), 'Consumption', 'bar', True)
-            new_chart.series.append(new_series)
 
             new_series = InstanciatedSeries(
                 years, list(economics_df[GlossaryCore.Damages]), 'Damages', 'bar', True)
