@@ -740,6 +740,7 @@ class GlossaryCore:
         "var_name": ShareMaxInvestName,
         "type": "float",
         "unit": "%",
+        "default": 10. ,
         "description": "float to set maximum percentage of GDP to allow to investments in sectors and energy"
     }
 
@@ -756,6 +757,7 @@ class GlossaryCore:
         "var_name": MaxInvestConstraintRefName,
         "type": "float",
         "unit": "G$",
+        "default": 100.,
         "user_level": 3,
         "description": "Max investment reference to normalize associated constraint"
     }
