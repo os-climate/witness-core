@@ -145,5 +145,6 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
-                                     f'{self.name}.{model_name}.{GlossaryCore.MaxInvestConstraintName}']
+                                     f'{self.name}.{model_name}.{GlossaryCore.MaxInvestConstraintName}',
+                                     f'{self.name}.{GlossaryCore.InvestmentDfValue}']
                             )
