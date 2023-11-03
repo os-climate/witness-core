@@ -101,9 +101,10 @@ class MacroeconomicsModel():
 
         # compute total sum of all invests
         self.sum_invests_df = pd.DataFrame(columns= [GlossaryCore.Years, GlossaryCore.InvestmentsValue])
-        self.sum_invests_df[GlossaryCore.InvestmentsValue] = sum(df_invest[GlossaryCore.InvestmentsValue] for df_invest in invest_to_sum)
-        # add invests in energy to sum of invests
-        self.sum_invests_df[GlossaryCore.InvestmentsValue] += self.invests_energy_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue]
+        self.sum_invests_df[GlossaryCore.Years] = self.years_range
+        self.sum_invests_df[GlossaryCore.InvestmentsValue] = sum(df_invest[GlossaryCore.InvestmentsValue].values for df_invest in invest_to_sum)
+        # add invests in energy to sum of invests (use .values to avoid index issues)
+        self.sum_invests_df[GlossaryCore.InvestmentsValue] += self.invests_energy_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values
 
     def compute(self, inputs):
         """Compute all models for year range"""
