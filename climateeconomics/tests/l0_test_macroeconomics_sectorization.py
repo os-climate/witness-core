@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/29-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -74,6 +75,9 @@ class MacroeconomicsTestCase(unittest.TestCase):
         self.cap_service_df = DataFrame({GlossaryCore.Years:self. years,GlossaryCore.Capital: cap_service, GlossaryCore.UsableCapital: cap_service*0.8})
 
         self.sectors_list = GlossaryCore.SectorsPossibleValues
+        self.share_max_invest = 10.
+        self.energy_investment_wo_tax = DataFrame({GlossaryCore.Years: self.years, GlossaryCore.EnergyInvestmentsWoTaxValue : invests})
+        self.max_invest_constraint_ref = 10.
 
     def test_macroeconomics_discipline(self):
         '''
@@ -96,7 +100,9 @@ class MacroeconomicsTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
         inputs_dict = {
-            f'{name}.{GlossaryCore.InvestmentDfValue}': self.invests,
+            f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}': self.invests,
+            f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.invests,
+            f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}': self.invests,
             f'{name}.{GlossaryCore.SectorListValue}': self.sectors_list,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
             f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
@@ -104,6 +110,10 @@ class MacroeconomicsTestCase(unittest.TestCase):
             f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
             f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
             f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
+            f'{name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
+            f'{name}.{model_name}.{GlossaryCore.ShareMaxInvestName}': self.share_max_invest,
+            f'{name}.{model_name}.{GlossaryCore.MaxInvestConstraintRefName}': self.max_invest_constraint_ref,
+
         }
 
         ee.load_study_from_input_dict(inputs_dict)

@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/08/17-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -36,7 +37,8 @@ class ConsumptionDiscTest(unittest.TestCase):
         ns_dict = {'ns_witness': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_energy_mix': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   'ns_ref': f'{self.name}',
+                   'ns_sectors': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -75,9 +77,8 @@ class ConsumptionDiscTest(unittest.TestCase):
         residential_energy_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: residential_energy})
         #Share invest
-        share_invest = np.asarray([1.65] * len(years))
-        # total_investment_share_of_gdp = pd.DataFrame({GlossaryCore.Years:years, 'share_investment': share_invest})
-        share_n_energy_investment = pd.DataFrame({GlossaryCore.Years: years, 'share_investment': share_invest})
+        invest = np.asarray([10] * len(years))
+        investment_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: invest})
         np.set_printoptions(threshold=np.inf)
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
                        f'{self.name}.{GlossaryCore.YearEnd}': 2100,
@@ -89,7 +90,7 @@ class ConsumptionDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
                        f'{self.name}.residential_energy_conso_ref': residential_energy_conso_ref,
                        f'{self.name}.{GlossaryCore.ResidentialEnergyProductionDfValue}': residential_energy_df,
-                       f'{self.name}.share_n_energy_investment': share_n_energy_investment}
+                       f'{self.name}.{GlossaryCore.InvestmentDfValue}': investment_df}
 
         self.ee.load_study_from_input_dict(values_dict)
 

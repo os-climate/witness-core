@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -158,6 +159,10 @@ class Study(StudyManager):
         share_energy_other = pd.DataFrame({GlossaryCore.Years: years,
                                                  GlossaryCore.ShareSectorEnergy: share_energy_other_2020})
 
+        energy_investment_wo_tax = pd.DataFrame({GlossaryCore.Years: years,
+                                                 GlossaryCore.EnergyInvestmentsWoTaxValue: 1000.
+                                                 })
+
         cons_input = {}
         cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         cons_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
@@ -184,6 +189,7 @@ class Study(StudyManager):
         cons_input[f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}"] = share_energy_resi
         cons_input[f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}"] = share_energy_other
         cons_input[f"{self.study_name}.{GlossaryCore.EnergyProductionValue}"] = energy_production
+        cons_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}"] = energy_investment_wo_tax
 
         setup_data_list.append(cons_input)
 

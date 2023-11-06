@@ -3,20 +3,26 @@ External Dependencies
 
 witness-core depends on software with compatible licenses that are listed below.
 
-`numpy <https://numpy.org/>`_
-    BSD 3-Clause
+`matplotlib (3.4.3) <https://matplotlib.org>`_
+    PSF
 
-`Pandas <https://pandas.pydata.org/>`_
-    BSD 3-Clause
-        
-`scipy <https://www.scipy.org/scipylib/>`_
-    BSD 3-Clause
+`numpy (1.24.3) <https://numpy.org>`_
+    BSD License
 
-`nose2 <https://docs.nose2.io/>`_
-    BSD 3-Clause
-    
-`plotly <https://github.com/plotly/plotly.py>`_
-	MIT
-    
-`scikit-learn <https://scikit-learn.org/stable/>`_
-	BSD 3-Clause
+`pandas (1.3.0) <https://pandas.pydata.org>`_
+    BSD License
+
+`plotly (5.3.0) <https://plotly.com/python/>`_
+    MIT
+
+`scipy (1.10.1) <https://scipy.org/>`_
+    BSD License
+
+`seaborn (0.9.0) <None>`_
+    BSD License
+
+`tqdm (4.61.0) <https://tqdm.github.io>`_
+    MPL-2.0 AND MIT
+
+`nose2 (0.9.1) <https://docs.nose2.io/>`_
+    BSD-2-Clause

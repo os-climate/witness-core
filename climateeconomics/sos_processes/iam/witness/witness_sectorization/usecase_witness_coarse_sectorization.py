@@ -1,5 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
+Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ class Study(StudyManager):
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
-            f'{self.study_name}.sub_mda_class': 'MDAGaussSeidel',
+            f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
             f'{self.study_name}.cache_type': 'SimpleCache'}
 
         setup_data_list.append(numerical_values_dict)
@@ -101,3 +101,16 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
+
+    # ppf = PostProcessingFactory()
+    # ll = ['Macroeconomics']
+    # for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
+    #     for l in ll:
+    #         if l in disc.sos_name:
+    #             filters = ppf.get_post_processing_filters_by_discipline(
+    #                 disc)
+    #             graph_list = ppf.get_post_processing_by_discipline(
+    #                 disc, filters, as_json=False)
+    #
+    #             for graph in graph_list:
+    #                 graph.to_plotly().show()

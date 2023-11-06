@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/06-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -35,6 +36,9 @@ with open('README.md') as f:
 with open('LICENSE') as f:
     license = f.read()
 
+# Read the requirements.in file and extract the required dependencies
+with open('requirements.in', 'r') as requirements_file:
+    reqs_list = [line.strip() for line in requirements_file if line.strip()]
 
 # Manage module version using date
 today = date.today()
@@ -59,22 +63,11 @@ setup(
     version=version,
     description='Python library to evaluate climate change impact',
     long_description=readme,
-    author='Airbus SAS',
-    url='https://idas661.eu.airbus.corp/sostrades/climateeconomics',
+    author='Airbus SAS, Capgemini',
+    url='https://github.com/os-climate/witness-core',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
     include_package_data=True,
-    python_requires='>=3.7',
-    install_requires=[
-        'nose2>=0.9.1',
-        'sos-trades-core',
-        'nose2==0.9.1',
-        'scikit-learn>=0.24.2',
-        'numpy==1.24.3',
-        'pandas==1.3.0',
-        'plotly==5.3.0',
-        'scipy==1.10.1',
-        'seaborn==0.9.0',
-        'matplotlib==3.4.3'
-    ]
+    python_requires='>=3.9',
+    install_requires=reqs_list,
 )
