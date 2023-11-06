@@ -47,7 +47,7 @@ class GlossaryCore:
     EnergyInvestmentsWoTaxValue = "energy_investment_wo_tax"
     EnergyInvestmentsWoRenewableValue = "energy_investment_wo_renewable"
     NonEnergyInvestmentsValue = "non_energy_investment"
-    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
+    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # G$
     WelfareObjective = "welfare_objective"
     NormalizedWelfare = "Normalized welfare"
     NegativeWelfareObjective = "negative_welfare_objective"
@@ -221,7 +221,7 @@ class GlossaryCore:
     InitialGrossOutput = {
         "var_name": "init_gross_output",
         "type": "float",
-        "unit": "T$",
+        "unit": "G$",
         "visibility": "Shared",
         "default": 130.187,
         "namespace": "ns_witness",
@@ -277,18 +277,18 @@ class GlossaryCore:
         "unit": "-",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
-            GrossOutput: ("float", None, False),  # T$
-            OutputNetOfDamage: ("float", None, False),  # T$
-            Damages: ("float", None, False),  # T$
+            GrossOutput: ("float", None, False),  # G$
+            OutputNetOfDamage: ("float", None, False),  # G$
+            Damages: ("float", None, False),  # G$
             Productivity: ("float", None, False),
             ProductivityGrowthRate: ("float", None, False),
-            Consumption: ("float", None, False),  # T$
+            Consumption: ("float", None, False),  # G$
             PerCapitaConsumption: ("float", None, False),
-            InvestmentsValue: ("float", None, False),  # T$
-            EnergyInvestmentsValue: ("float", None, False),  # T$
-            EnergyInvestmentsWoTaxValue: ("float", None, False),  # T$
-            NonEnergyInvestmentsValue: ("float", None, False),  # T$
-            EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
+            InvestmentsValue: ("float", None, False),  # G$
+            EnergyInvestmentsValue: ("float", None, False),  # G$
+            EnergyInvestmentsWoTaxValue: ("float", None, False),  # G$
+            NonEnergyInvestmentsValue: ("float", None, False),  # G$
+            EnergyInvestmentsFromTaxValue: ("float", None, False),  # G$
             OutputGrowth: ("float", None, False),
             UsedEnergy: ("float", None, False),
             UnusedEnergy: ("float", None, False),
@@ -383,7 +383,7 @@ class GlossaryCore:
         {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
             "var_name": EnergyInvestmentsWoTaxValue,
             "type": "dataframe",
-            "unit": "T$",
+            "unit": "G$",
             "dataframe_descriptor": {
                 Years: ("int", [1900, 2100], False),
                 EnergyInvestmentsWoTaxValue: ("float", [0.0, 1e30], True),
@@ -476,7 +476,7 @@ class GlossaryCore:
         "namespace": "ns_sectors",
         "visibility": "Shared",
         "type": "dataframe",
-        "unit": "T$",
+        "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             GrossOutput: ("float", None, False),
@@ -487,14 +487,14 @@ class GlossaryCore:
     CapitalDfValue = "capital_df"
     Capital = "capital"
     UsableCapital = "usable_capital"
-    UsableCapitalUnbounded = "Unbounded usable capital [T$]"
+    UsableCapitalUnbounded = "Unbounded usable capital [G$]"
     NonEnergyCapital = "non_energy_capital"
     CapitalDf = {
         "var_name": CapitalDfValue,
         "namespace": "ns_witness",
         "visibility": "Shared",
         "type": "dataframe",
-        "unit": "T$",
+        "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Capital: ("float", None, False),
@@ -506,8 +506,8 @@ class GlossaryCore:
     EnergyCapitalDf = {
         "var_name": EnergyCapitalDfValue,
         "type": "dataframe",
-        "unit": "T$",
-        "description": "Capital of energy in T$",
+        "unit": "G$",
+        "description": "Capital of energy in G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Capital: ("float", None, False),
@@ -524,7 +524,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": "ns_macro",
         "type": "dataframe",
-        "unit": "T$",
+        "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Capital: ("float", None, False),
@@ -539,7 +539,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": "ns_witness",
-        "unit": "T$",
+        "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             GrossOutput: ("float", None, False),
@@ -568,7 +568,7 @@ class GlossaryCore:
     ProductivityDf = {
         "var_name": ProductivityDfValue,
         "type": "dataframe",
-        "unit": "T$",
+        "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Productivity: ("float", None, False),
@@ -580,7 +580,7 @@ class GlossaryCore:
     RedistributionInvestmentsDf = {
         "var_name": RedistributionInvestmentsDfValue,
         "type": "dataframe",
-        "unit": "T$",
+        "unit": "G$",
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
     }
@@ -660,8 +660,6 @@ class GlossaryCore:
     }
 
 
-
-
     FractionDamageToProductivityValue = "frac_damage_prod"
     FractionDamageToProductivity = {
         "var_name": FractionDamageToProductivityValue,
@@ -703,7 +701,7 @@ class GlossaryCore:
     InvestmentDf = {
         "var_name": InvestmentDfValue,
         "type": "dataframe",
-        "unit": "T$",
+        "unit": "G$",
         "visibility": "Shared",
         "namespace": "ns_sectors",
         "dataframe_descriptor": {
@@ -737,6 +735,32 @@ class GlossaryCore:
         "dataframe_edition_locked": False,
     }
 
+    ShareMaxInvestName = "share_max_invest"
+    ShareMaxInvest = {
+        "var_name": ShareMaxInvestName,
+        "type": "float",
+        "unit": "%",
+        "default": 10. ,
+        "description": "float to set maximum percentage of GDP to allow to investments in sectors and energy"
+    }
+
+    MaxInvestConstraintName = "max_invest_constraint"
+    MaxInvestConstraint = {
+        "var_name": MaxInvestConstraintName,
+        "type": "array",
+        "unit": "[]",
+        "description": "Max investment in sectors constraint using share_max_invest percentage"
+    }
+
+    MaxInvestConstraintRefName = "max_invest_constraint_ref"
+    MaxInvestConstraintRef = {
+        "var_name": MaxInvestConstraintRefName,
+        "type": "float",
+        "unit": "G$",
+        "default": 100.,
+        "user_level": 3,
+        "description": "Max investment reference to normalize associated constraint"
+    }
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""

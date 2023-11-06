@@ -142,7 +142,8 @@ class ServicesDiscTest(unittest.TestCase):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for graph in graph_list:
-            graph.to_plotly().show()
+            #graph.to_plotly().show()
+            pass
 
     def test_execute_forfitting(self):
 
