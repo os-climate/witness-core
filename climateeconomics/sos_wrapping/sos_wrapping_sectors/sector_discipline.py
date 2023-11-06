@@ -62,7 +62,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
-        'emax_enet_constraint': {'type': 'array'},
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
                                              'unit': '-',
                                              'namespace': 'ns_functions'}
@@ -255,7 +254,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.InvestmentsValue,
                       'output growth',
                       'energy supply',
-                      GlossaryCore.Emax,
                       GlossaryCore.UsableCapital,
                       GlossaryCore.Capital,
                       GlossaryCore.EmploymentRate,
@@ -380,7 +378,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-
         if GlossaryCore.Capital in chart_list:
             serie = detailed_capital_df[GlossaryCore.Capital]
             years = list(detailed_capital_df.index)
@@ -445,51 +442,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                     years, ordonate_data, key, 'lines', visible_line)
                 new_chart.series.append(new_series)
 
-            instanciated_charts.append(new_chart)
-
-        if GlossaryCore.Emax in chart_list:
-            to_plot = GlossaryCore.Emax
-            energy_production = deepcopy(
-                self.get_sosdisc_inputs(GlossaryCore.EnergyProductionValue))
-            scaling_factor_energy_production = self.get_sosdisc_inputs(
-                'scaling_factor_energy_production')
-            total_production = energy_production[GlossaryCore.TotalProductionValue] * \
-                               scaling_factor_energy_production
-
-            years = list(detailed_capital_df.index)
-
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-
-            max_values = {}
-            min_values = {}
-            min_values[GlossaryCore.Emax], max_values[GlossaryCore.Emax] = self.get_greataxisrange(
-                detailed_capital_df[to_plot])
-            min_values['energy'], max_values['energy'] = self.get_greataxisrange(
-                total_production)
-
-            min_value = min(min_values.values())
-            max_value = max(max_values.values())
-
-            chart_name = 'E_max value and Net Energy'
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[Twh]',
-                                                 [year_start, year_end],
-                                                 [min_value, max_value], chart_name)
-            visible_line = True
-
-            ordonate_data = list(detailed_capital_df[to_plot])
-            ordonate_data_enet = list(total_production)
-
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'E_max', 'lines', visible_line)
-            note = {
-                'E_max': ' maximum energy that capital stock can absorb for production'}
-            new_chart.annotation_upper_left = note
-            new_chart.series.append(new_series)
-            new_series = InstanciatedSeries(
-                years, ordonate_data_enet, 'Net energy', 'lines', visible_line)
-            new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
         if 'Energy_supply' in chart_list:

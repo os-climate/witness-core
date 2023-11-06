@@ -179,27 +179,6 @@ class SectorModel():
                                   
             return capital_a
 
-    def compute_emax(self, year):
-        """E_max is the maximum energy capital can use to produce output
-        E_max = K/(capital_utilisation_ratio*energy_efficiency(year)
-        energy_efficiency = 1+ max/(1+exp(-k(x-x0)))
-        energy_efficiency is a logistic function because it represent technological progress
-        """
-        k = self.energy_eff_k
-        cst = self.energy_eff_cst
-        xo = self.energy_eff_xzero
-        capital_utilisation_ratio = self.capital_utilisation_ratio
-        max_e = self.energy_eff_max
-        # Convert capital in billion: to get same order of magnitude (1e6) as energy 
-        capital = self.capital_df.loc[year, GlossaryCore.Capital] * 1e3
-        # compute energy_efficiency
-        energy_efficiency = cst + max_e / (1 + np.exp(-k * (year - xo)))
-        # Then compute e_max
-        e_max = capital / (capital_utilisation_ratio * energy_efficiency)
-
-        self.capital_df.loc[year,GlossaryCore.EnergyEfficiency] = energy_efficiency
-        self.capital_df.loc[year, GlossaryCore.Emax] = e_max
-
     def compute_usable_capital(self, year):
         """  Usable capital is the part of the capital stock that can be used in the production process. 
         To be usable the capital needs enough energy.
@@ -271,17 +250,8 @@ class SectorModel():
         #For the last year put the vale of the year before 
         if year == self.year_end: 
             self.growth_rate_df.loc[year, 'net_output_growth_rate'] = output_growth
-    
-    ### CONSTRAINTS ###
-    def compute_emax_enet_constraint(self):
-        """ Equation for Emax constraint 
-        """
-        e_max = self.capital_df[GlossaryCore.Emax].values
-        energy = self.energy_production[GlossaryCore.TotalProductionValue].values
-        self.emax_enet_constraint = - \
-            (energy - e_max * self.max_capital_utilisation_ratio) / self.ref_emax_enet_constraint
 
-    ### For production fitting optim  only
+    # For production fitting optim  only
     def compute_long_term_energy_efficiency(self):
         """ Compute energy efficiency function on a longer time scale to analyse shape
         of the function. 
@@ -362,7 +332,6 @@ class SectorModel():
         # iterate over years
         for year in self.years_range:
             self.compute_productivity(year)
-            self.compute_emax(year)
             self.compute_usable_capital(year)
             self.compute_gross_output(year)
             self.compute_output_net_of_damage(year)
