@@ -139,6 +139,10 @@ class Study(StudyManager):
             {GlossaryCore.Years: years,
              GlossaryCore.InvestmentsValue: np.linspace(40, 65, len(years))* 1/2})
 
+        invest_energy_wo_tax = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.EnergyInvestmentsWoTaxValue: np.linspace(40, 65, len(years))})
+
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
@@ -150,6 +154,7 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
         sect_input[f"{self.study_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
+        sect_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}"] = invest_energy_wo_tax
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}"] = damage_df
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
