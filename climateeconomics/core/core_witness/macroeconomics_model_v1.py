@@ -39,6 +39,7 @@ class MacroEconomics:
         self.energy_wasted_objective = None
         self.gdp_percentage_per_section_df = None
         self.sector_gdp_df = None
+        self.section_gdp_df = None
         self.set_data()
         self.create_dataframe()
 
@@ -472,17 +473,22 @@ class MacroEconomics:
 
     def compute_sector_gdp(self):
         """
-
+        Compute gdp per sector based on gdp per section
         """
-        dict_services = {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsServices}
-        dict_industry = {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsIndustry}
-        dict_agriculture = {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsAgriculture}
-        dict_sector = {}
-        dict_sector[GlossaryCore.SectorServices] = np.sum(list(dict_services.values()), axis=0)
-        dict_sector[GlossaryCore.SectorIndustry] = np.sum(list(dict_industry.values()), axis=0)
-        dict_sector[GlossaryCore.SectorAgriculture] = np.sum(list(dict_agriculture.values()), axis=0)
-        self.sector_gdp_df = pd.DataFrame(data=dict_sector)
-        self.sector_gdp_df[GlossaryCore.Years] = self.years_range
+        # prepare dictionary with values for each section per sector
+        dict_sectors_sections = {
+            GlossaryCore.SectorServices: {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsServices},
+            GlossaryCore.SectorIndustry: {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsIndustry},
+            GlossaryCore.SectorAgriculture: {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsAgriculture}
+        }
+        # create dictionary with sector as key and sum of values for sections
+        dict_sum_by_sector = {GlossaryCore.Years: self.years_range}
+        dict_sum_by_sector.update({
+            sector: np.sum(list(sub_dict.values()), axis=0)
+            for sector, sub_dict in dict_sectors_sections.items()
+        })
+        # create dataframe based on the created dictionnary
+        self.sector_gdp_df = pd.DataFrame(data=dict_sum_by_sector)
 
     def compute_output_growth(self):
         """
