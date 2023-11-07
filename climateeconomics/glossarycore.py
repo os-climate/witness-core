@@ -40,6 +40,7 @@ class GlossaryCore:
     DamageDfValue = "damage_df"
     EconomicsDfValue = "economics_df"
     SectorGdpDfValue = "sector_gdp_df"
+    SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
     UtilityDfValue = "utility_df"
@@ -79,6 +80,27 @@ class GlossaryCore:
         SectorIndustry,
     ]
     SectorListValue = "sector_list"
+
+    SectionA = "Agriculture, forestry and fishing"
+    SectionB = "Mining and quarrying"
+    SectionC = "Manufacturing"
+    SectionD = "Electricity, gas, steam and air conditioning supply"
+    SectionE = "Water supply; sewerage, waste management and remediation activities"
+    SectionF = "Construction"
+    SectionG = "Wholesale and retail trade; repair of motor vehicles and motorcycles"
+    SectionH = "Transportation and storage"
+    SectionI = "Accommodation and food service activities"
+    SectionJ = "Information and communication"
+    SectionK = "Financial and insurance activities"
+    SectionL = "Real estate activities"
+    SectionM = "Professional, scientific and technical activities"
+    SectionN = "Administrative and support service activities"
+    SectionO = "Public administration and defence; compulsory social security"
+    SectionP = "Education"
+    SectionQ = "Human health and social work activities"
+    SectionR = "Arts, entertainment and recreation"
+    SectionS = "Other service activities"
+    SectionT = "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"
 
     SectorList = {
         "var_name": SectorListValue,
@@ -761,6 +783,54 @@ class GlossaryCore:
         "user_level": 3,
         "description": "Max investment reference to normalize associated constraint"
     }
+
+    SectionsPossibleValues = [
+        SectionA,
+        SectionB,
+        SectionC,
+        SectionD,
+        SectionE,
+        SectionF,
+        SectionG,
+        SectionH,
+        SectionI,
+        SectionJ,
+        SectionK,
+        SectionL,
+        SectionM,
+        SectionN,
+        SectionO,
+        SectionP,
+        SectionQ,
+        SectionR,
+        SectionS,
+        SectionT,
+
+    ]
+    SectionListValue = "section_list"
+
+    SectionList = {
+        "var_name": SectionListValue,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+        "default": SectionsPossibleValues,
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "editable": False,
+        "structuring": True,
+    }
+
+    SectionGdpPercentageDf = {
+        "var_name": SectionGdpPercentageDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {Years: ("int", [1900, 2100], False)},
+        "editable": False
+    }
+
+
+
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""

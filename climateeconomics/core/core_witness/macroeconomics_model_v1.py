@@ -37,7 +37,7 @@ class MacroEconomics:
         self.inputs = None
         self.economics_df = None
         self.energy_wasted_objective = None
-
+        self.gdp_percentage_per_section_df = None
         self.set_data()
         self.create_dataframe()
 
@@ -91,7 +91,7 @@ class MacroEconomics:
         self.usable_capital_ref = self.param['usable_capital_ref']
         self.invest_co2_tax_in_renawables = self.param['assumptions_dict']['invest_co2_tax_in_renewables']
         self.sector_list = self.param[GlossaryCore.SectorListValue]
-      
+        self.gdp_percentage_per_section_df = self.param[GlossaryCore.SectionGdpPercentageDfValue]
     def create_dataframe(self):
         """Create the dataframe and fill it with values at year_start"""
         default_index = np.arange(
@@ -430,36 +430,26 @@ class MacroEconomics:
         '''
         Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
         '''
-        global_data_dir = join(Path(__file__).parents[2], self.DATA_FOLDER)
-        gdp_percentage_per_sector_file = join(global_data_dir, self.GDP_PERCENTAGE_PER_SECTOR_FILE)
-        self.gdp_percentage_per_sector_df = None
-        if isfile(gdp_percentage_per_sector_file):
-             df = pd.read_csv(gdp_percentage_per_sector_file)
-             missing_sectors = [k for k in self.sector_list + [GlossaryCore.Years] if k not in df.keys()]
-             if len(missing_sectors) > 0:
-                 raise ValueError(f'Missing column(s) {missing_sectors} in file {gdp_percentage_per_sector_file}')
-             else:
-                self.gdp_percentage_per_sector_df = df[[GlossaryCore.Years] + self.sector_list]
-             # the year range for the study can differ from that stated in the csv file
-             start_year_csv = self.gdp_percentage_per_sector_df.iloc[0][GlossaryCore.Years]
-             if start_year_csv > self.year_start:
-                self.gdp_percentage_per_sector_df = pd.concat([[self.gdp_percentage_per_sector_df.iloc[0:1]] * (start_year_csv - self.year_start),
-                                                               self.gdp_percentage_per_sector_df]).reset_index(drop=True)
-                self.gdp_percentage_per_sector_df.iloc[0:(start_year_csv - self.year_start)][GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
 
-             elif start_year_csv < self.year_start:
-                self.gdp_percentage_per_sector_df = self.gdp_percentage_per_sector_df[self.gdp_percentage_per_sector_df[GlossaryCore.Years] > self.year_start - 1]
+        # the year range for the study can differ from that stated in the csv file
+        start_year_csv = self.gdp_percentage_per_section_df.iloc[0][GlossaryCore.Years]
+        if start_year_csv > self.year_start:
+            self.gdp_percentage_per_section_df = pd.concat([[self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start),
+                                                           self.gdp_percentage_per_section_df]).reset_index(drop=True)
+            self.gdp_percentage_per_section_df.iloc[0:(start_year_csv - self.year_start)][GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
 
-             end_year_csv = self.gdp_percentage_per_sector_df.iloc[-1][GlossaryCore.Years]
-             if end_year_csv > self.year_end:
-                self.gdp_percentage_per_sector_df = self.gdp_percentage_per_sector_df[self.gdp_percentage_per_sector_df[GlossaryCore.Years] < self.year_end + 1]
-             elif end_year_csv < self.year_end:
-                self.gdp_percentage_per_sector_df = pd.concat([self.gdp_percentage_per_sector_df,
-                                                               [self.gdp_percentage_per_sector_df.iloc[-1:]] * (start_year_csv - self.year_start)]).reset_index(drop=True)
-                self.gdp_percentage_per_sector_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(end_year_csv, self.year_end)
+         elif start_year_csv < self.year_start:
+            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[self.gdp_percentage_per_section_df[GlossaryCore.Years] > self.year_start - 1]
 
-        else:
-            raise ValueError(f'Missing file {gdp_percentage_per_sector_file} that provides percentage of GDP per sector')
+         end_year_csv = self.gdp_percentage_per_section_df.iloc[-1][GlossaryCore.Years]
+         if end_year_csv > self.year_end:
+            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[self.gdp_percentage_per_section_df[GlossaryCore.Years] < self.year_end + 1]
+         elif end_year_csv < self.year_end:
+            self.gdp_percentage_per_section_df = pd.concat([self.gdp_percentage_per_section_df,
+                                                           [self.gdp_percentage_per_section_df.iloc[-1:]] * (start_year_csv - self.year_start)]).reset_index(drop=True)
+            self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(end_year_csv, self.year_end)
+
+
 
     def compute_sector_gdp(self):
         """
@@ -597,6 +587,7 @@ class MacroEconomics:
             self.compute_capital(year+1)
 
         self.compute_output_growth()
+        self.compute_section_gdp()
         self.compute_sector_gdp()
         self.compute_usable_capital_lower_bound_constraint()
         self.compute_energy_usage()

@@ -111,6 +111,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                     GlossaryCore.Capital: ('float', None, False), }
                            },
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
+        GlossaryCore.SectionListValue : GlossaryCore.SectionList,
+        GlossaryCore.SectionGdpPercentageDfValue :GlossaryCore.SectionGdpPercentageDf
     }
 
     DESC_OUT = {
@@ -156,11 +158,16 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if sectorlist is not None:
             sector_gdg_desc = copy.deepcopy(GlossaryCore.SectorGdpDf)  # deepcopy not to modify dataframe_descriptor in Glossary
+            section_gdp_percentage = copy.deepcopy(GlossaryCore.SectionGdpPercentageDf)
             for sector in sectorlist:
                 sector_gdg_desc['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
+                section_gdp_percentage['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
+
             # make sure the namespaces references are good in case shared namespaces were reassociated
             sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
-            dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc})
+            dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,
+                                    })
+            dynamic_inputs.update({GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage })
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
