@@ -112,7 +112,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                            },
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         GlossaryCore.SectionListValue : GlossaryCore.SectionList,
-        GlossaryCore.SectionGdpPercentageDfValue :GlossaryCore.SectionGdpPercentageDf
     }
 
     DESC_OUT = {
@@ -137,6 +136,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         dynamic_inputs = {}
         dynamic_outputs = {}
         sectorlist = None
+        sectionlist = None
         if self.get_data_in() is not None:
             if 'assumptions_dict' in self.get_data_in():
                 assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
@@ -156,18 +156,23 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             if GlossaryCore.SectorListValue in self.get_data_in():
                 sectorlist = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
 
-        if sectorlist is not None:
-            sector_gdg_desc = copy.deepcopy(GlossaryCore.SectorGdpDf)  # deepcopy not to modify dataframe_descriptor in Glossary
-            section_gdp_percentage = copy.deepcopy(GlossaryCore.SectionGdpPercentageDf)
-            for sector in sectorlist:
-                sector_gdg_desc['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
-                section_gdp_percentage['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
+            if GlossaryCore.SectionListValue in self.get_data_in():
+                sectionlist = self.get_sosdisc_inputs(GlossaryCore.SectionListValue)
 
-            # make sure the namespaces references are good in case shared namespaces were reassociated
-            sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
-            dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,
-                                    })
-            dynamic_inputs.update({GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage })
+            if sectorlist is not None:
+                sector_gdg_desc = copy.deepcopy(GlossaryCore.SectorGdpDf)  # deepcopy not to modify dataframe_descriptor in Glossary
+                for sector in sectorlist:
+                    sector_gdg_desc['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
+
+                # make sure the namespaces references are good in case shared namespaces were reassociated
+                sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
+                dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,
+                                        })
+            if sectionlist is not None:
+                section_gdp_percentage = copy.deepcopy(GlossaryCore.SectionGdpPercentageDf)
+                for section in sectionlist:
+                    section_gdp_percentage['dataframe_descriptor'].update({section: ('float', [1.e-8, 1e30], True)})
+                dynamic_inputs.update({GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage})
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -251,6 +256,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         energy_capital_df = param[GlossaryCore.EnergyCapitalDfValue]
         compute_gdp: bool = param['assumptions_dict']['compute_gdp']
         sector_list = param[GlossaryCore.SectorListValue]
+        section_gdp_percentage_df = param[GlossaryCore.SectionGdpPercentageDfValue]
         macro_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
                         GlossaryCore.EnergyProductionValue: energy_production,
                         GlossaryCore.EnergyInvestmentsWoTaxValue: param[GlossaryCore.EnergyInvestmentsWoTaxValue],
@@ -263,7 +269,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df[[GlossaryCore.Years, GlossaryCore.Population1570]],
                         'energy_capital_df': energy_capital_df,
                         'compute_gdp': compute_gdp,
-                        GlossaryCore.SectorListValue: sector_list
+                        GlossaryCore.SectorListValue: sector_list,
+                        GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df
                         }
 
         if not compute_gdp:

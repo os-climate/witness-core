@@ -38,6 +38,7 @@ class MacroEconomics:
         self.economics_df = None
         self.energy_wasted_objective = None
         self.gdp_percentage_per_section_df = None
+        self.sector_gdp_df = None
         self.set_data()
         self.create_dataframe()
 
@@ -91,7 +92,8 @@ class MacroEconomics:
         self.usable_capital_ref = self.param['usable_capital_ref']
         self.invest_co2_tax_in_renawables = self.param['assumptions_dict']['invest_co2_tax_in_renewables']
         self.sector_list = self.param[GlossaryCore.SectorListValue]
-        self.gdp_percentage_per_section_df = self.param[GlossaryCore.SectionGdpPercentageDfValue]
+        self.section_list = self.param[GlossaryCore.SectionListValue]
+
     def create_dataframe(self):
         """Create the dataframe and fill it with values at year_start"""
         default_index = np.arange(
@@ -186,6 +188,7 @@ class MacroEconomics:
         self.working_age_population_df = self.inputs[GlossaryCore.WorkingAgePopulationDfValue]
         self.working_age_population_df.index = self.working_age_population_df[GlossaryCore.Years].values
         self.compute_gdp = self.inputs['compute_gdp']
+        self.gdp_percentage_per_section_df = self.inputs[GlossaryCore.SectionGdpPercentageDfValue]
         if not self.compute_gdp:
             self.gross_output_in = self.inputs['gross_output_in']
       
@@ -426,11 +429,10 @@ class MacroEconomics:
         self.economics_df = self.economics_df.drop(GlossaryCore.GrossOutput, axis=1)
         self.economics_df = self.economics_df.merge(self.gross_output_in[[GlossaryCore.Years, GlossaryCore.GrossOutput]], on = GlossaryCore.Years, how='left').set_index(self.economics_df.index)
 
-    def get_gdp_percentage_per_sector(self):
+    def get_gdp_percentage_per_section(self):
         '''
         Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
         '''
-
         # the year range for the study can differ from that stated in the csv file
         start_year_csv = self.gdp_percentage_per_section_df.iloc[0][GlossaryCore.Years]
         if start_year_csv > self.year_start:
@@ -438,13 +440,13 @@ class MacroEconomics:
                                                            self.gdp_percentage_per_section_df]).reset_index(drop=True)
             self.gdp_percentage_per_section_df.iloc[0:(start_year_csv - self.year_start)][GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
 
-         elif start_year_csv < self.year_start:
+        elif start_year_csv < self.year_start:
             self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[self.gdp_percentage_per_section_df[GlossaryCore.Years] > self.year_start - 1]
 
-         end_year_csv = self.gdp_percentage_per_section_df.iloc[-1][GlossaryCore.Years]
-         if end_year_csv > self.year_end:
+        end_year_csv = self.gdp_percentage_per_section_df.iloc[-1][GlossaryCore.Years]
+        if end_year_csv > self.year_end:
             self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[self.gdp_percentage_per_section_df[GlossaryCore.Years] < self.year_end + 1]
-         elif end_year_csv < self.year_end:
+        elif end_year_csv < self.year_end:
             self.gdp_percentage_per_section_df = pd.concat([self.gdp_percentage_per_section_df,
                                                            [self.gdp_percentage_per_section_df.iloc[-1:]] * (start_year_csv - self.year_start)]).reset_index(drop=True)
             self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(end_year_csv, self.year_end)
@@ -469,8 +471,18 @@ class MacroEconomics:
         self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(self.economics_df.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
 
     def compute_sector_gdp(self):
-        for sector in self.sector_list:
-            for section in
+        """
+
+        """
+        dict_services = {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsServices}
+        dict_industry = {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsIndustry}
+        dict_agriculture = {section: self.section_gdp_df[section].values for section in GlossaryCore.SectionsAgriculture}
+        dict_sector = {}
+        dict_sector[GlossaryCore.SectorServices] = np.sum(list(dict_services.values()), axis=0)
+        dict_sector[GlossaryCore.SectorIndustry] = np.sum(list(dict_industry.values()), axis=0)
+        dict_sector[GlossaryCore.SectorAgriculture] = np.sum(list(dict_agriculture.values()), axis=0)
+        self.sector_gdp_df = pd.DataFrame(data=dict_sector)
+        self.sector_gdp_df[GlossaryCore.Years] = self.years_range
 
     def compute_output_growth(self):
         """

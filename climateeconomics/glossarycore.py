@@ -140,8 +140,9 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": "ns_witness",
-        "dataframe_descriptor": {Years: ("int", [1900, 2100], False)},
-        "editable": False
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+        },
     }
 
     SectorsPossibleValues = [

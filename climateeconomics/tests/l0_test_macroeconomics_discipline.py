@@ -133,7 +133,13 @@ class MacroDiscTest(unittest.TestCase):
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: 40.0}, index=years)
         sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
-
+        section_list = GlossaryCore.SectionsPossibleValues
+        data_energy = join(dirname(dirname(dirname(__file__))), 'data_energy', 'data')
+        #section_gdp_df = pd.read_csv(join(data_energy, 'weighted_average_percentage_per_sector.csv'))
+        dict_sections = {GlossaryCore.Years: years}
+        for sect in section_list:
+            dict_sections.update({sect: 10.})
+        section_gdp_df = pd.DataFrame(data=dict_sections)
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
@@ -152,6 +158,8 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}': working_age_pop_df, 
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital_df,
                        f'{self.name}.{GlossaryCore.SectorListValue}': sectors_list,
+                       f'{self.name}.{GlossaryCore.SectionList}': section_list,
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
