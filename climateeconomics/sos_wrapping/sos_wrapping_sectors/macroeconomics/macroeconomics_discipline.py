@@ -196,7 +196,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
 
             new_series = InstanciatedSeries(
-                years, list(economics_df[GlossaryCore.Damages]), 'Investments', 'bar', True)
+                years, list(economics_df[GlossaryCore.OutputNetOfDamage]), 'Gross output net of damage', 'bar', True)
+            new_chart.series.append(new_series)
+            new_series = InstanciatedSeries(
+                years, list(economics_df[GlossaryCore.GrossOutput]), 'Gross output', 'line', True)
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -305,6 +308,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_series = InstanciatedSeries(
                 years, ordonate_data, f'energy investments', 'bar')
             new_chart.series.append(new_series)
+
+            #add total investments
+            total_invest = self.get_sosdisc_outputs(GlossaryCore.InvestmentDfValue)
+            ordonate_data = list(total_invest[GlossaryCore.InvestmentDfValue])
+            new_series = InstanciatedSeries(
+                years, ordonate_data, f'total investments', 'bar')
+            new_chart.series.append(new_series)
+
             # add chart to instanciated charts
             instanciated_charts.append(new_chart)
 
