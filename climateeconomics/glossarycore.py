@@ -68,6 +68,23 @@ class GlossaryCore:
     FishDailyCal = "fish_calories_per_day"
     OtherDailyCal = "other_calories_per_day"
 
+    AllStreamsDemandRatioValue = "all_streams_demand_ratio"
+    FlueGasMean = "flue_gas_mean"
+    MarginValue = "margin"
+    CO2EmissionsValue = "CO2_emissions"
+    EnergyCO2EmissionsValue = "energy_CO2_emissions"
+    TechnoProductionValue = "techno_production"
+    TechnoPricesValue = "techno_prices"
+    TechnoDetailedConsumptionValue = "techno_detailed_consumption"
+    TechnoDetailedProductionValue = "techno_detailed_production"
+    TechnoDetailedPricesValue = "techno_detailed_prices"
+    TechnoConsumptionValue = "techno_consumption"
+    TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
+    RessourcesCO2EmissionsValue = "resources_CO2_emissions"
+    TransportCostValue = "transport_cost"
+    TransportMarginValue = "transport_margin"
+    TransportDemandValue = "transport_demand"
+    ForestInvestmentValue = "forest_investment"
 
     # namespaces
     NS_MACRO = "ns_macro"
@@ -311,6 +328,8 @@ class GlossaryCore:
 
     EnergyMeanPriceValue = "energy_mean_price"
 
+    EnergyPricesValue = "energy_prices"
+    ResourcesPriceValue = "resources_price"
     EnergyPriceValue = "energy_price"
     EnergyMeanPrice = {
         "var_name": EnergyMeanPriceValue,
@@ -325,6 +344,12 @@ class GlossaryCore:
     }
 
     EnergyProductionValue = "energy_production"
+    EnergyProductionDetailedValue = "energy_production_detailed"
+    EnergyProcductionWithoutRatioValue = "energy_production_woratio"
+    EnergyConsumptionValue = "energy_consumption"
+    EnergyConsumptionWithoutRatioValue = "energy_consumption_woratio"
+    LandUseRequiredValue = "land_use_required"
+
     TotalProductionValue = "Total production"
     EnergyProductionDf = {
         "var_name": EnergyProductionValue,
