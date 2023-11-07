@@ -311,7 +311,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             #add total investments
             total_invest = self.get_sosdisc_outputs(GlossaryCore.InvestmentDfValue)
-            ordonate_data = list(total_invest[GlossaryCore.InvestmentDfValue])
+            ordonate_data = list(total_invest[GlossaryCore.InvestmentsValue])
             new_series = InstanciatedSeries(
                 years, ordonate_data, f'total investments', 'lines')
             new_chart.series.append(new_series)
