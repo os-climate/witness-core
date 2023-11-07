@@ -74,13 +74,6 @@ class GlossaryCore:
     NS_MACRO = "ns_macro"
     NS_SECTORS = "ns_sectors"
 
-    SectorsPossibleValues = [
-        SectorServices,
-        SectorAgriculture,
-        SectorIndustry,
-    ]
-    SectorListValue = "sector_list"
-
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
     SectionC = "Manufacturing"
@@ -101,6 +94,62 @@ class GlossaryCore:
     SectionR = "Arts, entertainment and recreation"
     SectionS = "Other service activities"
     SectionT = "Activities of households as employers; undifferentiated goods- and services-producing activities of households for own use"
+
+    SectionsAgriculture = [SectionA]
+    SectionsIndustry = [SectionB, SectionC, SectionD, SectionE, SectionF]
+    SectionsServices = [SectionG, SectionH, SectionI, SectionJ, SectionK, SectionL, SectionM, SectionN, SectionO, SectionP, SectionQ, SectionR, SectionS, SectionT]
+
+    SectionsPossibleValues = [
+        SectionA,
+        SectionB,
+        SectionC,
+        SectionD,
+        SectionE,
+        SectionF,
+        SectionG,
+        SectionH,
+        SectionI,
+        SectionJ,
+        SectionK,
+        SectionL,
+        SectionM,
+        SectionN,
+        SectionO,
+        SectionP,
+        SectionQ,
+        SectionR,
+        SectionS,
+        SectionT,
+
+    ]
+    SectionListValue = "section_list"
+
+    SectionList = {
+        "var_name": SectionListValue,
+        "type": "list",
+        "subtype_descriptor": {"list": "string"},
+        "default": SectionsPossibleValues,
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "editable": False,
+        "structuring": True,
+    }
+
+    SectionGdpPercentageDf = {
+        "var_name": SectionGdpPercentageDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {Years: ("int", [1900, 2100], False)},
+        "editable": False
+    }
+
+    SectorsPossibleValues = [
+        SectorServices,
+        SectorAgriculture,
+        SectorIndustry,
+    ]
+    SectorListValue = "sector_list"
 
     SectorList = {
         "var_name": SectorListValue,
@@ -783,53 +832,6 @@ class GlossaryCore:
         "user_level": 3,
         "description": "Max investment reference to normalize associated constraint"
     }
-
-    SectionsPossibleValues = [
-        SectionA,
-        SectionB,
-        SectionC,
-        SectionD,
-        SectionE,
-        SectionF,
-        SectionG,
-        SectionH,
-        SectionI,
-        SectionJ,
-        SectionK,
-        SectionL,
-        SectionM,
-        SectionN,
-        SectionO,
-        SectionP,
-        SectionQ,
-        SectionR,
-        SectionS,
-        SectionT,
-
-    ]
-    SectionListValue = "section_list"
-
-    SectionList = {
-        "var_name": SectionListValue,
-        "type": "list",
-        "subtype_descriptor": {"list": "string"},
-        "default": SectionsPossibleValues,
-        "visibility": "Shared",
-        "namespace": "ns_witness",
-        "editable": False,
-        "structuring": True,
-    }
-
-    SectionGdpPercentageDf = {
-        "var_name": SectionGdpPercentageDfValue,
-        "type": "dataframe",
-        "visibility": "Shared",
-        "namespace": "ns_witness",
-        "dataframe_descriptor": {Years: ("int", [1900, 2100], False)},
-        "editable": False
-    }
-
-
 
     @staticmethod
     def get_dynamic_variable(variable: dict):
