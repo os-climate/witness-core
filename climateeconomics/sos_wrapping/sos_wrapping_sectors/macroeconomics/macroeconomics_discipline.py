@@ -195,6 +195,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 years, list(economics_df[GlossaryCore.Damages]), 'Damages', 'bar', True)
             new_chart.series.append(new_series)
 
+            new_series = InstanciatedSeries(
+                years, list(economics_df[GlossaryCore.Damages]), 'Investments', 'bar', True)
+            new_chart.series.append(new_series)
+
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.OutputNetOfDamage in chart_list:
