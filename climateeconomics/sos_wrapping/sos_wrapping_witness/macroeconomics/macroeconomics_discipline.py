@@ -1013,9 +1013,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     new_chart.series.append(new_series)
 
                 fig = new_chart.to_plotly()
-                fig.update_layout(showlegend=False)
+                fig.update_traces(hoverlabel=dict(namelength=-1))
                 if len(list(dict_section.keys())) > 5:
-                    fig.update_traces(hoverlabel=dict(namelength=-1))
+                    fig.update_layout(showlegend=False)
                 else:
                     fig.update_layout(showlegend=True)
                 instanciated_charts.append(InstantiatedPlotlyNativeChart(
