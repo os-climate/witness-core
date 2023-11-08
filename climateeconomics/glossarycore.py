@@ -42,7 +42,7 @@ class GlossaryCore:
     DamageDfValue = "damage_df"
     EconomicsDfValue = "economics_df"
     SectorGdpDfValue = "sector_gdp_df"
-    SectionGdpDfValue = "section_gdp_df"
+    SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
@@ -325,15 +325,12 @@ class GlossaryCore:
     }
 
     # The number of columns depends dynamically on SectionsList
-    SectionGdpDf = {
-        "var_name": SectionGdpDfValue,
-        "type": "dataframe",
+    SectionGdpDict = {
+        "var_name": SectionGdpDictValue,
+        "type": "dict",
         "visibility": "Shared",
         "namespace": "ns_witness",
         "unit": "G$",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, 2100], False),
-        },
     }
 
     EconomicsDf = {

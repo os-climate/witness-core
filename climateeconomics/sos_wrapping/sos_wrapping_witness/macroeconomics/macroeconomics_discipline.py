@@ -111,7 +111,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                     GlossaryCore.Capital: ('float', None, False), }
                            },
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
-        GlossaryCore.SectionListValue : GlossaryCore.SectionList,
+        GlossaryCore.SectionListValue: GlossaryCore.SectionList,
     }
 
     DESC_OUT = {
@@ -130,7 +130,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                              'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                              'namespace': 'ns_functions'},
-        GlossaryCore.SectionGdpDfValue: GlossaryCore.SectionGdpDf
+        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict
     }
 
     def setup_sos_disciplines(self):
@@ -295,6 +295,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.CapitalDfValue: capital_df[GlossaryCore.CapitalDf['dataframe_descriptor'].keys()],
                        GlossaryCore.ConstraintLowerBoundUsableCapital: self.macro_model.delta_capital_cons,
                        GlossaryCore.EnergyWastedObjective: energy_wasted_objective,
+                       GlossaryCore.SectionGdpDictValue: self.macro_model.dict_sectors_detailed
                        }
 
         self.store_sos_outputs_values(dict_values)

@@ -40,6 +40,7 @@ class MacroEconomics:
         self.gdp_percentage_per_section_df = None
         self.sector_gdp_df = None
         self.section_gdp_df = None
+        self.dict_sectors_detailed = None
         self.set_data()
         self.create_dataframe()
 
@@ -489,6 +490,7 @@ class MacroEconomics:
         })
         # create dataframe based on the created dictionnary
         self.sector_gdp_df = pd.DataFrame(data=dict_sum_by_sector)
+        self.dict_sectors_detailed = dict_sectors_sections
 
     def compute_output_growth(self):
         """
