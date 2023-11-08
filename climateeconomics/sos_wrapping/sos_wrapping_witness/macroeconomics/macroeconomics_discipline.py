@@ -169,8 +169,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
                 dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,
                                         })
+            # add section gdp percentage variable
             if sectionlist is not None:
                 section_gdp_percentage = copy.deepcopy(GlossaryCore.SectionGdpPercentageDf)
+                # update dataframe descriptor
                 for section in sectionlist:
                     section_gdp_percentage['dataframe_descriptor'].update({section: ('float', [1.e-8, 1e30], True)})
                 dynamic_inputs.update({GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage})
