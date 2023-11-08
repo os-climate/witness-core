@@ -134,13 +134,7 @@ class MacroDiscTest(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: 40.0}, index=years)
         sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
         section_list = GlossaryCore.SectionsPossibleValues
-        data_energy = join(dirname(dirname(__file__)), 'data')
-        section_gdp_df = pd.read_csv(join(data_energy, 'weighted_average_percentage_per_sector.csv'))
-        """
-        for sect in section_list:
-            dict_sections.update({sect: 10.})
-        section_gdp_df = pd.DataFrame(data=dict_sections)
-        """
+        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
