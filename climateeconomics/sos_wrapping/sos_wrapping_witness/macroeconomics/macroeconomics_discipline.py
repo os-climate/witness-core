@@ -21,12 +21,15 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import pandas as pd
 import numpy as np
 from os.path import join, isfile
 from copy import deepcopy
 from climateeconomics.glossarycore import GlossaryCore
+import plotly.express as px
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -1009,6 +1012,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         years, list(section_value),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
                     new_chart.series.append(new_series)
 
-                instanciated_charts.append(new_chart)
+                fig = new_chart.to_plotly()
+                fig.update_layout(showlegend=False)
+                if len(list(dict_section.keys())) > 5:
+                    fig.update_traces(hoverlabel=dict(namelength=-1))
+                else:
+                    fig.update_layout(showlegend=True)
+                instanciated_charts.append(InstantiatedPlotlyNativeChart(
+                    fig, chart_name=chart_name,
+                    default_title=True, default_legend=False))
 
         return instanciated_charts
