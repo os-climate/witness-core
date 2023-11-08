@@ -134,7 +134,7 @@ class MacroDiscTest(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: 40.0}, index=years)
         sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
         section_list = GlossaryCore.SectionsPossibleValues
-        data_energy = join(dirname(dirname(dirname(__file__))), 'data_energy', 'data')
+        data_energy = join(dirname(dirname(__file__)), 'data')
         section_gdp_df = pd.read_csv(join(data_energy, 'weighted_average_percentage_per_sector.csv'))
         """
         for sect in section_list:
