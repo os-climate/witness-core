@@ -129,7 +129,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
                                              'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                             'namespace': 'ns_functions'}
+                                             'namespace': 'ns_functions'},
+        GlossaryCore.SectionGdpDfValue: GlossaryCore.SectionGdpDf
     }
 
     def setup_sos_disciplines(self):
@@ -591,6 +592,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.Productivity,
                       GlossaryCore.EnergyEfficiency,
                       GlossaryCore.SectorGdpPart,
+                      GlossaryCore.SectionGdpPart,
                       ]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -989,5 +991,53 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(serie)
 
             instanciated_charts.append(new_chart)
+
+        if GlossaryCore.SectionGdpPart in chart_list:
+            for sector in sectors_list:
+                #to_plot =  f"Sections [{GlossaryCore.['unit']}] per {category} over the years"
+                legend = {sector: sector for sector in sectors_list}
+                # Graph with distribution per sector in absolute value
+                legend[GlossaryCore.OutputNetOfDamage] = 'Total GDP net of damage'
+
+                years = list(sector_gdp_df[GlossaryCore.Years])
+
+                chart_name = 'Breakdown of GDP per sector [G$]'
+
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorGdpPart,
+                                                     chart_name=chart_name, stacked_bar=True)
+
+                for key in to_plot:
+                    visible_line = True
+
+                    new_series = InstanciatedSeries(
+                        years, list(sector_gdp_df[key]), legend[key], InstanciatedSeries.BAR_DISPLAY, visible_line)
+
+                    new_chart.series.append(new_series)
+
+                new_series = InstanciatedSeries(
+                    years, list(economics_df[GlossaryCore.OutputNetOfDamage]),
+                    legend[GlossaryCore.OutputNetOfDamage],
+                    'lines', True)
+
+                new_chart.series.append(new_series)
+
+                instanciated_charts.append(new_chart)
+
+                # graph in percentage of GDP
+                total_gdp = economics_df[GlossaryCore.OutputNetOfDamage].values
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, "Contribution [%]",
+                                                     chart_name=GlossaryCore.ChartSectorGDPPercentage, stacked_bar=True)
+
+                for sector in sectors_list:
+                    sector_gdp_part = sector_gdp_df[sector] / total_gdp * 100.
+                    sector_gdp_part = np.nan_to_num(sector_gdp_part, nan=0.)
+                    serie = InstanciatedSeries(list(sector_gdp_df[GlossaryCore.Years]), list(sector_gdp_part), sector,
+                                               'bar', True)
+                    new_chart.series.append(serie)
+
+                instanciated_charts.append(new_chart)
+
+
+
 
         return instanciated_charts

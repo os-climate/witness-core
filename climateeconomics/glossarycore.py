@@ -30,6 +30,8 @@ class GlossaryCore:
 
     SectorGdpPart = "Part of the GDP per sector [G$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
+    SectionGdpPart = "Part of the GDP per section [G$]"
+    ChartSectionGDPPercentage = "Part of the GDP per section [%]"
 
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
@@ -40,6 +42,7 @@ class GlossaryCore:
     DamageDfValue = "damage_df"
     EconomicsDfValue = "economics_df"
     SectorGdpDfValue = "sector_gdp_df"
+    SectionGdpDfValue = "section_gdp_df"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
@@ -320,6 +323,19 @@ class GlossaryCore:
             Years: ("int", [1900, 2100], False),
         },
     }
+
+    # The number of columns depends dynamically on SectionsList
+    SectionGdpDf = {
+        "var_name": SectionGdpDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+        },
+    }
+
     EconomicsDf = {
         "var_name": EconomicsDfValue,
         "type": "dataframe",
