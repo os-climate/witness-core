@@ -1000,6 +1000,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         years, list(section_value),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
                     new_chart.series.append(new_series)
 
+                # plot total gdp for the current sector in line
+                new_series = InstanciatedSeries(
+                    years, list(sector_gdp_df[sector]),
+                    f"Total GDP for {sector} sector",
+                    'lines', True)
+                new_chart.series.append(new_series)
+
                 # have a full label on chart (for long names)
                 fig = new_chart.to_plotly()
                 fig.update_traces(hoverlabel=dict(namelength=-1))
