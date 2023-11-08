@@ -458,6 +458,7 @@ class MacroEconomics:
         """
         Computes the GDP net of damage per section
         """
+        # get gdp percentage per section, and compute gdp per section using Net output of damage
         self.get_gdp_percentage_per_section()
         self.section_gdp_df = self.gdp_percentage_per_section_df.copy()
         self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(self.economics_df.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.

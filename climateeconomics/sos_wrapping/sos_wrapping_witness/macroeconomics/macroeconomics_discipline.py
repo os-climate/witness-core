@@ -748,19 +748,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             new_chart.series.append(new_series)
 
-            """
-            # CO2 invest Limit
-            visible_line = True
-            ordonate_data = list(
-                economics_detail_df[GlossaryCore.EnergyInvestmentsWoTaxValue] * co2_invest_limit)
-            abscisse_data = np.linspace(
-                year_start, year_end, len(years))
-            new_series = InstanciatedSeries(
-                abscisse_data.tolist(), ordonate_data, 'CO2 invest limit: co2_invest_limit * energy_investment_wo_tax',
-                'scatter', visible_line)
-            
-            new_chart.series.append(new_series)
-            """
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.UsableCapital in chart_list:
@@ -999,7 +986,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.SectionGdpPart in chart_list:
             dict_sections_detailed = self.get_sosdisc_outputs(GlossaryCore.SectionGdpDictValue)
-            # loop on
+            # loop on all sectors to plot a chart per sector
             for sector, dict_section in dict_sections_detailed.items():
 
                 chart_name = f'Breakdown of GDP per section for {sector} sector [G$]'
@@ -1007,13 +994,16 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionGdpPart,
                                                      chart_name=chart_name, stacked_bar=True)
 
+                # loop on all sections of current sector
                 for section, section_value in dict_section.items():
                     new_series = InstanciatedSeries(
                         years, list(section_value),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
                     new_chart.series.append(new_series)
 
+                # have a full label on chart (for long names)
                 fig = new_chart.to_plotly()
                 fig.update_traces(hoverlabel=dict(namelength=-1))
+                # if dictionaries has big size, do not show legen, otherwise show it
                 if len(list(dict_section.keys())) > 5:
                     fig.update_layout(showlegend=False)
                 else:
