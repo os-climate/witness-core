@@ -454,16 +454,6 @@ class MacroEconomics:
             self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(end_year_csv, self.year_end)
 
 
-
-    # def compute_sector_gdp(self):
-    #     """
-    #     Computes the GDP net of damage per sector
-    #     """
-    #     # Source for percentage of GDP per sector: https://e-3d-dc1.capgemini.com/jira/browse/DC0154-21
-    #     self.get_gdp_percentage_per_sector()
-    #     self.sector_gdp_df = self.gdp_percentage_per_sector_df.copy()
-    #     self.sector_gdp_df[self.sector_list] = self.sector_gdp_df[self.sector_list].multiply(self.economics_df.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
-
     def compute_section_gdp(self):
         """
         Computes the GDP net of damage per section
