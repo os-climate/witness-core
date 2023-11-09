@@ -21,12 +21,15 @@ from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoD
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import pandas as pd
 import numpy as np
 from os.path import join, isfile
 from copy import deepcopy
 from climateeconomics.glossarycore import GlossaryCore
+import plotly.express as px
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -111,6 +114,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                     GlossaryCore.Capital: ('float', None, False), }
                            },
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
+        GlossaryCore.SectionListValue: GlossaryCore.SectionList,
     }
 
     DESC_OUT = {
@@ -128,13 +132,15 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
                                              'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                             'namespace': 'ns_functions'}
+                                             'namespace': 'ns_functions'},
+        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict
     }
 
     def setup_sos_disciplines(self):
         dynamic_inputs = {}
         dynamic_outputs = {}
         sectorlist = None
+        sectionlist = None
         if self.get_data_in() is not None:
             if 'assumptions_dict' in self.get_data_in():
                 assumptions_dict = self.get_sosdisc_inputs('assumptions_dict')
@@ -154,13 +160,25 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             if GlossaryCore.SectorListValue in self.get_data_in():
                 sectorlist = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
 
-        if sectorlist is not None:
-            sector_gdg_desc = copy.deepcopy(GlossaryCore.SectorGdpDf)  # deepcopy not to modify dataframe_descriptor in Glossary
-            for sector in sectorlist:
-                sector_gdg_desc['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
-            # make sure the namespaces references are good in case shared namespaces were reassociated
-            sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
-            dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc})
+            if GlossaryCore.SectionListValue in self.get_data_in():
+                sectionlist = self.get_sosdisc_inputs(GlossaryCore.SectionListValue)
+
+            if sectorlist is not None:
+                sector_gdg_desc = copy.deepcopy(GlossaryCore.SectorGdpDf)  # deepcopy not to modify dataframe_descriptor in Glossary
+                for sector in sectorlist:
+                    sector_gdg_desc['dataframe_descriptor'].update({sector: ('float', [1.e-8, 1e30], True)})
+
+                # make sure the namespaces references are good in case shared namespaces were reassociated
+                sector_gdg_desc[SoSWrapp.NS_REFERENCE] = self.get_shared_ns_dict()[sector_gdg_desc[SoSWrapp.NAMESPACE]]
+                dynamic_outputs.update({GlossaryCore.SectorGdpDfValue: sector_gdg_desc,
+                                        })
+            # add section gdp percentage variable
+            if sectionlist is not None:
+                section_gdp_percentage = copy.deepcopy(GlossaryCore.SectionGdpPercentageDf)
+                # update dataframe descriptor
+                for section in sectionlist:
+                    section_gdp_percentage['dataframe_descriptor'].update({section: ('float', [1.e-8, 1e30], True)})
+                dynamic_inputs.update({GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage})
 
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
@@ -244,6 +262,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         energy_capital_df = param[GlossaryCore.EnergyCapitalDfValue]
         compute_gdp: bool = param['assumptions_dict']['compute_gdp']
         sector_list = param[GlossaryCore.SectorListValue]
+        section_gdp_percentage_df = param[GlossaryCore.SectionGdpPercentageDfValue]
         macro_inputs = {GlossaryCore.DamageDfValue: damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
                         GlossaryCore.EnergyProductionValue: energy_production,
                         GlossaryCore.EnergyInvestmentsWoTaxValue: param[GlossaryCore.EnergyInvestmentsWoTaxValue],
@@ -256,7 +275,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df[[GlossaryCore.Years, GlossaryCore.Population1570]],
                         'energy_capital_df': energy_capital_df,
                         'compute_gdp': compute_gdp,
-                        GlossaryCore.SectorListValue: sector_list
+                        GlossaryCore.SectorListValue: sector_list,
+                        GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df
                         }
 
         if not compute_gdp:
@@ -278,6 +298,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.CapitalDfValue: capital_df[GlossaryCore.CapitalDf['dataframe_descriptor'].keys()],
                        GlossaryCore.ConstraintLowerBoundUsableCapital: self.macro_model.delta_capital_cons,
                        GlossaryCore.EnergyWastedObjective: energy_wasted_objective,
+                       GlossaryCore.SectionGdpDictValue: self.macro_model.dict_sectors_detailed
                        }
 
         self.store_sos_outputs_values(dict_values)
@@ -577,6 +598,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.Productivity,
                       GlossaryCore.EnergyEfficiency,
                       GlossaryCore.SectorGdpPart,
+                      GlossaryCore.SectionGdpPart,
                       ]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -606,7 +628,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             self.get_sosdisc_outputs(GlossaryCore.EconomicsDfValue))
         sectors_list = deepcopy(
             self.get_sosdisc_inputs(GlossaryCore.SectorListValue))
-
+        years = list(economics_detail_df.index)
         if GlossaryCore.GrossOutput in chart_list:
 
             to_plot = [GlossaryCore.OutputNetOfDamage, GlossaryCore.Damages]
@@ -614,7 +636,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
                       GlossaryCore.Damages: 'Damages'}
 
-            years = list(economics_detail_df.index)
             chart_name = 'Breakdown of gross output'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
@@ -727,19 +748,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             new_chart.series.append(new_series)
 
-            """
-            # CO2 invest Limit
-            visible_line = True
-            ordonate_data = list(
-                economics_detail_df[GlossaryCore.EnergyInvestmentsWoTaxValue] * co2_invest_limit)
-            abscisse_data = np.linspace(
-                year_start, year_end, len(years))
-            new_series = InstanciatedSeries(
-                abscisse_data.tolist(), ordonate_data, 'CO2 invest limit: co2_invest_limit * energy_investment_wo_tax',
-                'scatter', visible_line)
-            
-            new_chart.series.append(new_series)
-            """
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.UsableCapital in chart_list:
@@ -975,5 +983,40 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(serie)
 
             instanciated_charts.append(new_chart)
+
+        if GlossaryCore.SectionGdpPart in chart_list:
+            dict_sections_detailed = self.get_sosdisc_outputs(GlossaryCore.SectionGdpDictValue)
+            # loop on all sectors to plot a chart per sector
+            for sector, dict_section in dict_sections_detailed.items():
+
+                chart_name = f'Breakdown of GDP per section for {sector} sector [G$]'
+
+                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionGdpPart,
+                                                     chart_name=chart_name, stacked_bar=True)
+
+                # loop on all sections of current sector
+                for section, section_value in dict_section.items():
+                    new_series = InstanciatedSeries(
+                        years, list(section_value),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
+                    new_chart.series.append(new_series)
+
+                # plot total gdp for the current sector in line
+                new_series = InstanciatedSeries(
+                    years, list(sector_gdp_df[sector]),
+                    f"Total GDP for {sector} sector",
+                    'lines', True)
+                new_chart.series.append(new_series)
+
+                # have a full label on chart (for long names)
+                fig = new_chart.to_plotly()
+                fig.update_traces(hoverlabel=dict(namelength=-1))
+                # if dictionaries has big size, do not show legen, otherwise show it
+                if len(list(dict_section.keys())) > 5:
+                    fig.update_layout(showlegend=False)
+                else:
+                    fig.update_layout(showlegend=True)
+                instanciated_charts.append(InstantiatedPlotlyNativeChart(
+                    fig, chart_name=chart_name,
+                    default_title=True, default_legend=False))
 
         return instanciated_charts
