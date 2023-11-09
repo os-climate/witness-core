@@ -86,6 +86,7 @@ class GlossaryCore:
     TransportDemandValue = "transport_demand"
     ForestInvestmentValue = "forest_investment"
 
+
     # namespaces
     NS_MACRO = "ns_macro"
     NS_SECTORS = "ns_sectors"
@@ -684,7 +685,6 @@ class GlossaryCore:
         },
     }
 
-
     FractionDamageToProductivityValue = "frac_damage_prod"
     FractionDamageToProductivity = {
         "var_name": FractionDamageToProductivityValue,
@@ -767,6 +767,17 @@ class GlossaryCore:
         "unit": "%",
         "default": 10. ,
         "description": "float to set maximum percentage of GDP to allow to investments in sectors and energy"
+    }
+
+    UtilisationRatioValue = "Utilisation Ratio [%]"
+    UtilisationRatioDf = {
+        "var_name": UtilisationRatioValue,
+        "type": "dataframe",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            UtilisationRatioValue: ("float", [0, 100], False),
+        },
     }
 
     MaxInvestConstraintName = "max_invest_constraint"
