@@ -148,58 +148,51 @@ class CropDiscipline(ClimateEcoDiscipline):
     ghg_emissions_unit = 'kg/kg'  # in kgCo2eq per kg of food
     # Consider farm fish emissions, assuming that 53% of fish consumed comes from farm fish
     # values computed in https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=uqOX8c
-    default_ghg_emissions = {'red meat': 17.45,
-                             'white meat': 4.24,
-                             'milk': 1.21,
-                             'eggs': 1.80,
-                             'rice and maize': 1.51,
-                             'cereals': 0.61,
-                             'fruits and vegetables': 0.61,
-                             GlossaryCore.Fish: 2.78,
-                             GlossaryCore.OtherFood: 1.34,
+    default_ghg_emissions = {'red meat': 20.98,
+                             'white meat': 4.29,
+                             'milk': 1.04,
+                             'eggs': 1.88,
+                             'rice and maize': 1.93,
+                             'cereals': 0.51,
+                             'fruits and vegetables': 0.49,
+                             GlossaryCore.Fish: 3.23,
+                             GlossaryCore.OtherFood: 0.91,
                              }
 
     # Our World in Data
     # https://ourworldindata.org/carbon-footprint-food-methane
     ch4_emissions_unit = 'kg/kg'  # in kgCH4 per kg food
-    # set up as a ratio of total ghg emissions
     # values computed in https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=uqOX8c
-    ch4_emissions_ratios = {'red meat': 0.37,
-                            'white meat': 0.04,
-                            'milk': 0.3,
+    default_ch4_emissions = {'red meat': 6.609e-1,
+                            'white meat': 1.21e-2,
+                            'milk': 3.47e-2,
                             'eggs': 0.0,
-                            'rice and maize': 0.31,
+                            'rice and maize': 3.08e-2,
                             # negligible methane in this category
                             'cereals': 0.0,
                             'fruits and vegetables': 0.0,
                             # consider fish farm only
-                            GlossaryCore.Fish: 0.17,
+                            GlossaryCore.Fish: 3.3e-2,
                             GlossaryCore.OtherFood: 0.,
                             }
-
-    default_ch4_emissions = {}
-    for food in default_ghg_emissions:
-        default_ch4_emissions[food] = (
-                default_ghg_emissions[food] * ch4_emissions_ratios[food] / ch4_gwp_100)
 
     # FAO Stats
     # https://www.fao.org/faostat/en/#data/GT
     # data preparation detailed in https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=U4Tbjl&nav=MTVfe0VBRUJDOTAyLUIzNjEtNEI0Ni05RjhCLUE5QTZDQzc5NTY1OX0
-    # n2o_emission_per_kg_food = n2o_emission_per_m2 * m2_per_kg_of_food / n2o_gwp_100
+    # n2o_emission_per_kg_food = n2o_emission / (kg_food/capita/year * population)
+    # where n2o_emission = land_use_food/total_land_use * land_n2O_emissions
+    # where total_land_use is split between crop and pastures since land_n2O_emissions is split between land and pastures
     n2o_emissions_unit = 'kg/kg'  # in kgN2O per kg food$
-    pastures_emissions = 2.2536e-5 #kgCO2eq(N2O)/m2 from FAO
-    crops_emissions = 1.0921e-4 #kgCO2eq(N2O)/m2 from FAO
-    calibration = 0.81035 # calibration factor so that N2O emissions computed from diet = global N2O emissions from FAO stats
 
-    default_n2o_emissions = {'red meat': pastures_emissions * default_kg_to_m2['red meat'] / n2o_gwp_100 * calibration,
-                             'white meat': pastures_emissions * default_kg_to_m2['white meat'] / n2o_gwp_100 * calibration,
-                             'milk': pastures_emissions * default_kg_to_m2['milk'] / n2o_gwp_100 * calibration,
-                             'eggs': pastures_emissions * default_kg_to_m2['eggs'] / n2o_gwp_100 * calibration,
-                             'rice and maize': crops_emissions * default_kg_to_m2['rice and maize'] / n2o_gwp_100 * calibration,
-                             'cereals': crops_emissions * default_kg_to_m2['cereals'] / n2o_gwp_100 * calibration,
-                             'fruits and vegetables': crops_emissions * default_kg_to_m2['fruits and vegetables'] / n2o_gwp_100 * calibration,
-                             GlossaryCore.Fish: 0. * default_kg_to_m2[GlossaryCore.Fis] / n2o_gwp_100 * calibration, #no crop or livestock related
-                             GlossaryCore.OtherFood: crops_emissions * default_kg_to_m2[GlossaryCore.OtherFood] / n2o_gwp_100 * calibration,
+    default_n2o_emissions = {'red meat': 9.330e-3,
+                             'white meat': 3.92e-4,
+                             'milk': 2.42e-4,
+                             'eggs': 1.7e-4,
+                             'rice and maize': 1.159e-3,
+                             'cereals': 1.805e-3,
+                             'fruits and vegetables': 3.21e-4,
+                             GlossaryCore.Fish: 0., #no crop or livestock related
+                             GlossaryCore.OtherFood: 8.92e-4,
                              }
 
     co2_emissions_unit = 'kg/kg'  # in kgCO2 per kg food$
