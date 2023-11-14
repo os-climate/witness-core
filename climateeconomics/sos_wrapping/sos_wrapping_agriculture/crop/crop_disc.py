@@ -96,7 +96,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     It could be computed from the average of all land use per kg of all components of others (12.41 m2/kg) 
     but assuming the same ponderation for each food of others does not provide reliable results
     '''
-    default_kg_to_m2 = {'red meat': 345,
+    default_kg_to_m2 = {'red meat': 345.,
                         'white meat': 14.5,
                         'milk': 8.95,
                         'eggs': 6.27,
@@ -104,7 +104,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                         'cereals': 4.5,
                         'fruits and vegetables': 0.8,
                         GlossaryCore.Fish: 0.,
-                        GlossaryCore.OtherFood: 2.2255,
+                        GlossaryCore.OtherFood: 5.1041,
                         }
     # unit kcal/kg
     default_kg_to_kcal = {'red meat': 1551.05,
@@ -118,90 +118,6 @@ class CropDiscipline(ClimateEcoDiscipline):
                           GlossaryCore.OtherFood: 3061.06,
                           }
 
-    # Our World in Data (emissions per kg of food product)
-    # https://ourworldindata.org/environmental-impacts-of-food#co2-and-greenhouse-gas-emissions
-    # FAO Stats (total production)
-    # https://www.fao.org/faostat/en/#data/FBS
-
-    co2_gwp_100 = 1.0
-    ch4_gwp_100 = 28.0
-    n2o_gwp_100 = 265.0
-
-    ghg_emissions_unit = 'kg/kg'  # in kgCo2eq per kg of food
-    # does not consider farm fish for emissions at this stage as it would require to split farm fish from wild fish in the computations
-    default_ghg_emissions = {'red meat': 32.7,
-                             'white meat': 4.09,
-                             'milk': 1.16,
-                             'eggs': 1.72,
-                             'rice and maize': 1.45,
-                             'cereals': 0.170,
-                             'fruits and vegetables': 0.372,
-                             GlossaryCore.Fish: 0.,
-                             GlossaryCore.OtherFood: 3.44,
-                             }
-
-    # Our World in Data
-    # https://ourworldindata.org/carbon-footprint-food-methane
-    ch4_emissions_unit = 'kg/kg'  # in kgCH4 per kg food
-    calibration = 0.134635 / 0.108958
-    # set up as a ratio of total ghg emissions
-    ch4_emissions_ratios = {'red meat': 49 / 100 * calibration,
-                            'white meat': 2 / 20 * calibration,
-                            'milk': 17.0 / 33 * calibration,
-                            'eggs': 0.0 * calibration,
-                            'rice and maize': 4 / 6.5 * calibration,
-                            'cereals': 0.0 * calibration,
-                            # negligible methane in this category
-                            'fruits and vegetables': 0.0 * calibration,
-                            GlossaryCore.Fish: 0.0 * calibration,
-                            GlossaryCore.OtherFood: (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0) / (
-                                        14 + 24 + 33 + 27 + 29 + 34) * calibration,
-                            }
-
-    default_ch4_emissions = {}
-    for food in default_ghg_emissions:
-        default_ch4_emissions[food] = (
-                default_ghg_emissions[food] * ch4_emissions_ratios[food] / ch4_gwp_100)
-
-    # FAO Stats
-    # https://www.fao.org/faostat/en/#data/GT
-    n2o_emissions_unit = 'kg/kg'  # in kgN2O per kg food$
-    calibration = 7.332 / 6.0199
-    pastures_emissions = 3.039e-3 * calibration
-    crops_emissions = 1.504e-3 * calibration
-
-    # with land use ratio on n2o emissions
-    default_n2o_emissions = {'red meat': pastures_emissions * 3.0239241372696104 / 0.9959932034220041,
-                             'white meat': pastures_emissions * 0.3555438662130599 / 0.9959932034220041,
-                             'milk': pastures_emissions * 0.5564085980770741 / 0.9959932034220041,
-                             'eggs': pastures_emissions * 0.048096212128271996 / 0.9959932034220041,
-                             'rice and maize': crops_emissions * 0.2236252183903196 / 0.29719264680276536,
-                             'cereals': crops_emissions * 0.023377379498821543 / 0.29719264680276536,
-                             'fruits and vegetables': crops_emissions * 0.13732524416192043 / 0.29719264680276536,
-                             GlossaryCore.Fish: 0., #CO2eq included in ghg emissions
-                             GlossaryCore.OtherFood: crops_emissions * 0.8044427451599999 / 0.29719264680276536,
-                             }
-
-    # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100 -
-    # n2o_emissions * n2o_gwp_100)/co2_gwp_100
-    co2_emissions_unit = 'kg/kg'  # in kgCo2 per kg food
-    calibration = 0.722 / 3.417569
-    default_co2_emissions = {'red meat': 0.0 * calibration,
-                             'white meat': 0.0 * calibration,
-                             'milk': 0.0 * calibration,
-                             'eggs': 0.0 * calibration,
-                             'rice and maize': 1.45 * calibration,
-                             'cereals': 0.170 * calibration,
-                             'fruits and vegetables': 0.372 * calibration,
-                             GlossaryCore.Fish: 0.,
-                             GlossaryCore.OtherFood: 3.44 * calibration,
-                             }
-
-    # Difference method
-    # default_co2_emissions = {}
-    # for food in default_ghg_emissions:
-    #     default_co2_emissions[food] = (default_ghg_emissions[food] - default_ch4_emissions[food]*ch4_gwp_100 - default_n2o_emissions[food]*n2o_gwp_100) / co2_gwp_100
-    #     # default_co2_emissions[food] = 0.0
     #diet default for veg = 260+32.93 of cereals
     # unit: kg/person/year
     '''
@@ -219,6 +135,74 @@ class CropDiscipline(ClimateEcoDiscipline):
                                     GlossaryCore.Fish: [23.38],
                                     GlossaryCore.OtherFood: [77.24]
                                     })
+
+    # Our World in Data (emissions per kg of food product)
+    # https://ourworldindata.org/environmental-impacts-of-food#co2-and-greenhouse-gas-emissions
+    # FAO Stats (total production)
+    # https://www.fao.org/faostat/en/#data/FBS
+
+    co2_gwp_100 = 1.0
+    ch4_gwp_100 = 28.0
+    n2o_gwp_100 = 265.0
+
+    ghg_emissions_unit = 'kg/kg'  # in kgCo2eq per kg of food
+    # Consider farm fish emissions, assuming that 53% of fish consumed comes from farm fish
+    # values computed in https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=uqOX8c
+    default_ghg_emissions = {'red meat': 21.56,
+                             'white meat': 4.41,
+                             'milk': 1.07,
+                             'eggs': 1.93,
+                             'rice and maize': 1.98,
+                             'cereals': 0.52,
+                             'fruits and vegetables': 0.51,
+                             GlossaryCore.Fish: 3.32,
+                             GlossaryCore.OtherFood: 0.93,
+                             }
+
+    # Our World in Data
+    # https://ourworldindata.org/carbon-footprint-food-methane
+    ch4_emissions_unit = 'kg/kg'  # in kgCH4 per kg food
+    # values computed in https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=uqOX8c
+    default_ch4_emissions = {'red meat': 6.823e-1,
+                            'white meat': 1.25e-2,
+                            'milk': 3.58e-2,
+                            'eggs': 0.0,
+                            'rice and maize': 3.17e-2,
+                            # negligible methane in this category
+                            'cereals': 0.0,
+                            'fruits and vegetables': 0.0,
+                            # consider fish farm only
+                            GlossaryCore.Fish: 3.39e-2,
+                            GlossaryCore.OtherFood: 0.,
+                            }
+
+    # FAO Stats
+    # https://www.fao.org/faostat/en/#data/GT
+    # data preparation detailed in https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=U4Tbjl&nav=MTVfe0VBRUJDOTAyLUIzNjEtNEI0Ni05RjhCLUE5QTZDQzc5NTY1OX0
+    # n2o_emission_per_kg_food = n2o_emission / (kg_food/capita/year * population)
+    # where n2o_emission = land_use_food/total_land_use * land_n2O_emissions
+    # where total_land_use is split between crop and pastures since land_n2O_emissions is split between land and pastures
+    n2o_emissions_unit = 'kg/kg'  # in kgN2O per kg food$
+
+    default_n2o_emissions = {'red meat': 9.268e-3,
+                             'white meat': 3.90e-4,
+                             'milk': 2.40e-4,
+                             'eggs': 1.68e-4,
+                             'rice and maize': 9.486e-4,
+                             'cereals': 1.477e-3,
+                             'fruits and vegetables': 2.63e-4,
+                             GlossaryCore.Fish: 0., #no crop or livestock related
+                             GlossaryCore.OtherFood: 1.68e-3,
+                             }
+
+    co2_emissions_unit = 'kg/kg'  # in kgCO2 per kg food$
+    # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100 -
+    # n2o_emissions * n2o_gwp_100)/co2_gwp_100
+    # Difference method
+    default_co2_emissions = {}
+    for food in default_ghg_emissions:
+        default_co2_emissions[food] = max(0., (default_ghg_emissions[food] - default_ch4_emissions[food]*ch4_gwp_100 - default_n2o_emissions[food]*n2o_gwp_100) / co2_gwp_100)
+
 
     year_range = default_year_end - default_year_start + 1
     total_kcal = 1067961. #kcal/person/year

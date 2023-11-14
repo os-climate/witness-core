@@ -717,6 +717,12 @@ class Crop():
                                      co2_emissions_frominput_energies
 
     def compute_land_emissions(self):
+        '''
+        Emissions are computed for each food from land surface used by the food:
+            emission_per_kg * kg_to_m2 * surface * m2toha * 10^9 * 10^-12
+        For fish, this does not make sense as no land is used. However, there are some emissions from fish farming.
+            emission_per_kg * kg_food_per_capita_per_year * population
+        '''
 
         self.CO2_land_emissions['emitted_CO2_evol_cumulative'] = 0.0
         self.CH4_land_emissions['emitted_CH4_evol_cumulative'] = 0.0
@@ -726,6 +732,7 @@ class Crop():
             # add crop energy surface for rice and maize
             if food == 'rice and maize':
                 surface = self.food_land_surface_df[f'{food} (Gha)'] + self.land_use_required['Crop (Gha)']
+
             else:
                 surface = self.food_land_surface_df[f'{food} (Gha)']
             if self.kg_to_m2_dict[food] > 0.:
@@ -741,6 +748,22 @@ class Crop():
                 self.N2O_land_emissions_detailed[f'{food} (Gt)'] = self.n2o_emissions_per_kg[food] / \
                                                                    self.kg_to_m2_dict[food] * surface * \
                                                                    self.m2toha * 1e9 * 1e-12  # to m^2 and then to GtCo2
+            elif food == GlossaryCore.Fish:
+                # CO2
+                self.CO2_land_emissions_detailed[f'{food} (Gt)'] = self.co2_emissions_per_kg[food] * \
+                                                                   self.updated_diet_df[food] * \
+                                                                   self.population_df[GlossaryCore.PopulationValue].values * \
+                                                                   1e6 / 1e12 #pop in millions, emissions in Gt
+                # CH4
+                self.CH4_land_emissions_detailed[f'{food} (Gt)'] = self.ch4_emissions_per_kg[food] * \
+                                                                   self.updated_diet_df[food] * \
+                                                                   self.population_df[GlossaryCore.PopulationValue].values * \
+                                                                   1e6 / 1e12 #pop in millions, emissions in Gt
+                # N20
+                self.N2O_land_emissions_detailed[f'{food} (Gt)'] = self.n2o_emissions_per_kg[food] * \
+                                                                   self.updated_diet_df[food] * \
+                                                                   self.population_df[GlossaryCore.PopulationValue].values * \
+                                                                   1e6 / 1e12 #pop in millions, emissions in Gt
             else:
                 self.CO2_land_emissions_detailed[f'{food} (Gt)'] = 0.
                 self.CH4_land_emissions_detailed[f'{food} (Gt)'] = 0.
