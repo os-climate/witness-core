@@ -203,9 +203,11 @@ The kgCO2eq_ghg coefficient for each food is partially given in [^18] (see graph
 considered accross livestock and crops, emissions for land use and retail being accounted for elsewhere.
 ![](food-emissions-supply-chain.png)
 However, [^18] shows more categories of food than the 7 mentioned above. They therefore need to be grouped as shown in the table below. 
-|Red meat|White meat|Milk|Eggs|Rice and Maize| cereals |Fruit and vegetables|    Fish |  Other |
-| --- |:--------:|----|----|:------------:|:-------:|:------------------:|--------:|-------:|
-|Beef herd, dairy herd, Lamb & Mutton|Pig, poultry|Milk|Eggs|Rice, Maize|Barely, Oatmeal, Wheat and Rye  |Apples, Bananas, Berries and grapes, Brassicas, Cassava, Cirtus fruit, Onions and leeks, other fruit, other pulses, other vegetables, peas, potatoes, root vegetables, tomatoes| Fish(farmed) |   Sugar, cheese, coffee, chocolate, oils, soybean, wine |
+
+|Red meat|White meat|Milk|Eggs|Rice and Maize| cereals |Fruit and vegetables|    Fish |                                                   Other |
+| --- |:--------:|----|----|:------------:|:-------:|:------------------:|--------:|--------------------------------------------------------:|
+|Beef herd, dairy herd, Lamb & Mutton|Pig, poultry|Milk|Eggs|Rice, Maize|   Barely, Oatmeal, Wheat and Rye   |Apples, Bananas, Berries and grapes, Brassicas, Cassava, Cirtus fruit, Onions and leeks, other fruit, other pulses, other vegetables, peas, potatoes, root vegetables, tomatoes|     Fish(farmed) |   Sugar, cheese, coffee, chocolate, oils, soybean, wine |
+
 For each food sub-category, the kgCO2eq_ghg coefficient is weighted by the world's production of that sub-category taken 
 from FAO's values of food production in 2019 [^20].
 NB: FAO does not distinguish production for dairy and beef herd nor between wild and farm fish. The percentage of meat 
