@@ -238,7 +238,7 @@ Therefore, those ratio need be corrected. In particular, for red meat, methane e
 fermentation and manure management. Those steps do not occur during food pre and post-process, then CH4/ghg of [^19] 
 is underestimated accross livestock and crop. 
 * Global CH4 emissions for livestock 
-(=red meat, white meat, eggs and meat) account for 3.08 GtCO2eq [^21]. NB: this figure is obtained while 
+(=red meat, white meat, eggs and milk) account for 3.08 GtCO2eq [^21]. NB: this figure is obtained while 
 discarding the agri systems waste disposal that is considered as part of the post-production process [^26] (p.2).
 It is therefore not considered for livestock & crops CH4 emissions accounting. 
 * Global CH4 emissions for crop account for 0.7 Gt CO2eq, mostly corresponding to rice cultivation, which is 
