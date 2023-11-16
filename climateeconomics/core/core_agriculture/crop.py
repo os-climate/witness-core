@@ -807,6 +807,44 @@ class Crop():
 
         return (d_land_surface_d_pop)
 
+    def d_ghg_fish_emission_d_population(self):
+        '''
+        computing the derivative of the ghg emission (in Gt) wrt population (in million people) for the
+        particular case of fish that does not depend on land surface but on population
+        ghg(fish) = ghg_per_kg(fish)/ 10^12 * kg(fish) * population * 10^6
+
+        dghg(fish)/dpop = ghg_per_kg(fish)/ 10^12 * kg(fish) * 10^6
+        '''
+        dghg_dpop_co2 = np.diag(self.co2_emissions_per_kg[GlossaryCore.Fish] * \
+                        self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
+        dghg_dpop_ch4 = np.diag(self.ch4_emissions_per_kg[GlossaryCore.Fish] * \
+                        self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
+        dghg_dpop_n2o = np.diag(self.n2o_emissions_per_kg[GlossaryCore.Fish] * \
+                        self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
+
+        return {'CO2': dghg_dpop_co2,
+                'CH4': dghg_dpop_ch4,
+                'N2O': dghg_dpop_n2o,}
+
+    def d_ghg_fish_emission_d_fish_kcal(self):
+        '''
+        computing the derivative of the ghg emission (in Gt) wrt fish kcal for the
+        particular case of fish that does not depend on land surface but on kg of food
+        ghg(fish) = ghg_per_kg(fish)/ 10^12 * kg(fish) * population * 10^6
+        d_kcal(fish) = kcal_per_kg(fish) * d_kg(Fish)
+        dghg(fish)/dkcal(fish) = 1/kcal_per_kg(fish) * dghg(fish)/dkg(fish) = ghg_per_kg(fish)/ 10^12/kcal_per_kg(fish) * population * 10^6
+        '''
+        dco2_dkcal_fish = np.diag(self.co2_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
+                        self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
+        dch4_dkcal_fish = np.diag(self.ch4_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
+                        self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
+        dn2o_dkcal_fish = np.diag(self.n2o_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
+                        self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
+
+        return {'CO2': dco2_dkcal_fish,
+                'CH4': dch4_dkcal_fish,
+                'N2O': dn2o_dkcal_fish,}
+
     def d_food_land_surface_d_temperature(self, temperature_df, column_name):
         """
         Compute the derivative of land surface wrt temperature

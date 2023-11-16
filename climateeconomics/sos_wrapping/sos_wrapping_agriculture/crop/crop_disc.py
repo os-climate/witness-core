@@ -828,13 +828,17 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         vegetables_column_names = ['fruits and vegetables', 'cereals', 'rice and maize']
 
+        # gradient for emissions. Specific case of Fish. Needs be computed only once for all ghg
+        dghg_fish_dpop = model.d_ghg_fish_emission_d_population()
+        dghg_fish_dkcal = model.d_ghg_fish_emission_d_fish_kcal()
+
         # gradient for land emissions
         for ghg in ['CO2', 'CH4', 'N2O']:
             dco2_dpop = 0.0
             dco2_dtemp = 0.0
             dco2_dred_meat = 0.0
             dco2_dwhite_meat = 0.0
-            dco2_dfish = 0.0
+            dco2_dfish = dghg_fish_dkcal[ghg]
             dco2_dinvest = 0.0
             dco2_dother_cal = 0.0
             dco2_dveg_cal = 0.0
@@ -842,7 +846,12 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             for food in self.get_sosdisc_inputs('co2_emissions_per_kg'):
                 food = food.replace(' (Gt)', '')
-                if food != GlossaryCore.Years:
+
+                # particular processing of Fish since no land surface is associated but ghg are emitted by this sector
+                if food == GlossaryCore.Fish:
+                    dco2_dpop += dghg_fish_dpop[ghg]
+
+                elif food != GlossaryCore.Years:
 
                     dland_emissions_dfood_land_surface = model.compute_dland_emissions_dfood_land_surface_df(
                         food)
@@ -866,15 +875,16 @@ class CropDiscipline(ClimateEcoDiscipline):
                             population_df, food)
 
                     dco2_dpop += dland_emissions_dfood_land_surface[ghg] * dland_dpop
+                    dco2_dfish += dland_emissions_dfood_land_surface[ghg] * \
+                                        d_food_surface_d_fish_percentage
                     dco2_dtemp += dland_emissions_dfood_land_surface[ghg] * dland_dtemp
                     dco2_dred_meat += dland_emissions_dfood_land_surface[ghg] * \
                                       d_food_surface_d_red_meat_percentage
                     dco2_dwhite_meat += dland_emissions_dfood_land_surface[ghg] * \
                                         d_food_surface_d_white_meat_percentage
-                    dco2_dfish += dland_emissions_dfood_land_surface[ghg] * \
-                                        d_food_surface_d_fish_percentage
                     dco2_dother_cal += dland_emissions_dfood_land_surface[ghg] * \
                                   d_food_surface_d_other_food_percentage
+
                     if food == 'rice and maize':
                         dco2_dinvest += dland_emissions_dfood_land_surface[ghg] * dprod_dinvest * \
                                         scaling_factor_crop_investment * (1 - residue_density_percentage) / \
