@@ -82,13 +82,17 @@ class GlossaryCore:
     TechnoDetailedConsumptionValue = "techno_detailed_consumption"
     TechnoDetailedProductionValue = "techno_detailed_production"
     TechnoDetailedPricesValue = "techno_detailed_prices"
+    TechnoCapitalValue = "techno_capital"
     TechnoConsumptionValue = "techno_consumption"
     TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
+    TechnoProductionWithoutRatioValue = "techno_production_woratio"
     RessourcesCO2EmissionsValue = "resources_CO2_emissions"
     TransportCostValue = "transport_cost"
     TransportMarginValue = "transport_margin"
     TransportDemandValue = "transport_demand"
     ForestInvestmentValue = "forest_investment"
+    InstalledPower = "power_production"  # todo : rename string to 'Installed Power [MW]' (check unit)
+    ConstructionDelay = "construction_delay"
 
     # namespaces
     NS_MACRO = "ns_macro"
@@ -769,7 +773,6 @@ class GlossaryCore:
         },
     }
 
-
     FractionDamageToProductivityValue = "frac_damage_prod"
     FractionDamageToProductivity = {
         "var_name": FractionDamageToProductivityValue,
@@ -852,6 +855,17 @@ class GlossaryCore:
         "unit": "%",
         "default": 10. ,
         "description": "float to set maximum percentage of GDP to allow to investments in sectors and energy"
+    }
+
+    UtilisationRatioValue = "Utilisation Ratio [%]"
+    UtilisationRatioDf = {
+        "var_name": UtilisationRatioValue,
+        "type": "dataframe",
+        "namespace": "ns_witness",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            UtilisationRatioValue: ("float", [0, 100], False),
+        },
     }
 
     MaxInvestConstraintName = "max_invest_constraint"

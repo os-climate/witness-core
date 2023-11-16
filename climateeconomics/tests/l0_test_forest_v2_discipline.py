@@ -91,7 +91,7 @@ class ForestTestCase(unittest.TestCase):
                                          'years_between_harvest': years_between_harvest,
                                          'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                          'recycle_part': recycle_part,
-                                         'construction_delay': construction_delay,
+                                         GlossaryCore.ConstructionDelay: construction_delay,
                                          'WACC': 0.07,
                                          # 1 tonne of tree absorbs 1.8t of CO2 in one
                                          # year

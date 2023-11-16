@@ -127,7 +127,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         'years_between_harvest': years_between_harvest,
                         'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                         'recycle_part': recycle_part,
-                        'construction_delay': construction_delay,
+                        GlossaryCore.ConstructionDelay: construction_delay,
                         'WACC': 0.07,
                         # CO2 from production from tractor is taken
                         # into account into the energy net factor

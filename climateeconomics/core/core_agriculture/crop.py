@@ -106,8 +106,8 @@ class Crop():
         self.nb_years_amort_capex = 10
         self.construction_delay = 3  # default value
         self.margin = self.param['margin']
-        if 'construction_delay' in self.techno_infos_dict:
-            self.construction_delay = self.techno_infos_dict['construction_delay']
+        if GlossaryCore.ConstructionDelay in self.techno_infos_dict:
+            self.construction_delay = self.techno_infos_dict[GlossaryCore.ConstructionDelay]
         else:
             print(
                 f'The construction_delay data is not set for Crop : default = 3 years  ')
