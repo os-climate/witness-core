@@ -118,7 +118,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'years_between_harvest': years_between_harvest,
                                          'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                          'recycle_part': recycle_part,
-                                         'construction_delay': construction_delay,
+                                         GlossaryCore.ConstructionDelay: construction_delay,
                                          'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
@@ -174,7 +174,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                 f'{self.name}.Forest.techno_production',
                                 f'{self.name}.Forest.techno_prices',
                                 f'{self.name}.Forest.techno_consumption',
-                                f'{self.name}.Forest.techno_consumption_woratio',
+                                f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                 f'{self.name}.Forest.land_use_required',
                                 f'{self.name}.Forest.CO2_emissions',
                                 f'{self.name}.Forest.forest_lost_capital',
@@ -265,7 +265,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'years_between_harvest': years_between_harvest,
                                          'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                          'recycle_part': recycle_part,
-                                         'construction_delay': construction_delay,
+                                         GlossaryCore.ConstructionDelay: construction_delay,
                                          'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
@@ -321,7 +321,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                      f'{self.name}.Forest.CO2_emissions',
                      f'{self.name}.Forest.techno_production',
                      f'{self.name}.Forest.techno_consumption',
-                     f'{self.name}.Forest.techno_consumption_woratio',
+                     f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                      f'{self.name}.Forest.techno_prices',
                      f'{self.name}.Forest.forest_lost_capital',
                      ]
@@ -412,7 +412,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'years_between_harvest': years_between_harvest,
                                          'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                          'recycle_part': recycle_part,
-                                         'construction_delay': construction_delay,
+                                         GlossaryCore.ConstructionDelay: construction_delay,
                                          'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
@@ -467,7 +467,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                      f'{self.name}.Forest.CO2_emissions',
                      f'{self.name}.Forest.techno_production',
                      f'{self.name}.Forest.techno_consumption',
-                     f'{self.name}.Forest.techno_consumption_woratio',
+                     f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                      f'{self.name}.Forest.techno_prices',
                      f'{self.name}.Forest.forest_lost_capital',
                      ]
@@ -559,7 +559,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                          'years_between_harvest': years_between_harvest,
                                          'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
                                          'recycle_part': recycle_part,
-                                         'construction_delay': construction_delay,
+                                         GlossaryCore.ConstructionDelay: construction_delay,
                                          'WACC': 0.07
                                          }
         self.invest_before_year_start = pd.DataFrame(
@@ -614,7 +614,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                      f'{self.name}.Forest.CO2_emissions',
                      f'{self.name}.Forest.techno_production',
                      f'{self.name}.Forest.techno_consumption',
-                     f'{self.name}.Forest.techno_consumption_woratio',
+                     f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                      f'{self.name}.Forest.techno_prices',
                      f'{self.name}.Forest.forest_lost_capital',
 

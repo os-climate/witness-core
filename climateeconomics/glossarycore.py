@@ -82,14 +82,17 @@ class GlossaryCore:
     TechnoDetailedConsumptionValue = "techno_detailed_consumption"
     TechnoDetailedProductionValue = "techno_detailed_production"
     TechnoDetailedPricesValue = "techno_detailed_prices"
+    TechnoCapitalValue = "techno_capital"
     TechnoConsumptionValue = "techno_consumption"
     TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
+    TechnoProductionWithoutRatioValue = "techno_production_woratio"
     RessourcesCO2EmissionsValue = "resources_CO2_emissions"
     TransportCostValue = "transport_cost"
     TransportMarginValue = "transport_margin"
     TransportDemandValue = "transport_demand"
     ForestInvestmentValue = "forest_investment"
-
+    InstalledPower = "power_production"  # todo : rename string to 'Installed Power [MW]' (check unit)
+    ConstructionDelay = "construction_delay"
 
     # namespaces
     NS_MACRO = "ns_macro"

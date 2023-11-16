@@ -213,7 +213,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                 ('non_use_capital_cons',),
                 (non_use_capital, column_name),
                 - np.ones(len(years)) / non_use_capital_cons_ref / delta_years)
-        input_capital_list = [key for key in inputs_dict.keys() if key.endswith(GlossaryEnergy.TechnoCapitalDfValue)]
+        input_capital_list = [key for key in inputs_dict.keys() if key.endswith(GlossaryEnergy.TechnoCapitalValue)]
 
         for capital in input_capital_list:
             column_name = [col for col in inputs_dict[capital].columns if col != GlossaryCore.Years][0]

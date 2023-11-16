@@ -312,7 +312,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'efficiency': 1.0,
         'techno_evo_eff': 'no',
         'crop_residue_price_percent_dif': crop_residue_price_percent_dif,
-        'construction_delay': construction_delay,  # years
+        GlossaryCore.ConstructionDelay: construction_delay,  # years
     }
 
     # Age distribution of forests in 2008 (

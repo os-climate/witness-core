@@ -212,7 +212,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.techno_prices',
                                      f'{self.name}.techno_production',
                                      f'{self.name}.techno_consumption',
-                                     f'{self.name}.techno_consumption_woratio',
+                                     f'{self.name}.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
                                      f'{self.name}.CO2_emissions',
                                      f'{self.name}.CO2_land_emission_df',
                                      f'{self.name}.CH4_land_emission_df',

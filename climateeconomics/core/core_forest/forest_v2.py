@@ -205,7 +205,7 @@ class Forest():
         compute managed wood delta and cumulative surface from investments
         Will be recalculate with deforestation impact in compute_reforestation_deforestation_surface method
         """
-        construction_delay = self.techno_wood_info['construction_delay']
+        construction_delay = self.techno_wood_info[GlossaryCore.ConstructionDelay]
         mw_cost = self.techno_wood_info['managed_wood_price_per_ha']
         # managed wood from past invest. invest in G$ - surface in Gha.
         mw_from_past_invest = self.managed_wood_invest_before_year_start[
@@ -552,7 +552,7 @@ class Forest():
         """
         number_of_values = (self.year_end - self.year_start + 1)
         result = np.identity(number_of_values) * 0.0
-        construction_delay = self.techno_wood_info['construction_delay']
+        construction_delay = self.techno_wood_info[GlossaryCore.ConstructionDelay]
         for i in range(construction_delay, number_of_values):
             result[i, i - construction_delay] = 1 / \
                 self.techno_wood_info['managed_wood_price_per_ha']

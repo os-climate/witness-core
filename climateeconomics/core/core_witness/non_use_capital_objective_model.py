@@ -68,7 +68,7 @@ class NonUseCapitalObjective():
             'non_use_capital', inputs_dict)
 
         self.techno_capital_df = self.agreggate_and_compute_sum(
-            GlossaryEnergy.TechnoCapitalDfValue, inputs_dict)
+            GlossaryEnergy.TechnoCapitalValue, inputs_dict)
 
         self.forest_lost_capital = inputs_dict['forest_lost_capital']
 
