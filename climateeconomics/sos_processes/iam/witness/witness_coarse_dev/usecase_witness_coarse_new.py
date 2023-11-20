@@ -55,12 +55,11 @@ class Study(ClimateEconomicsStudyManager):
         self.invest_discipline = invest_discipline
         self.energy_list = DEFAULT_ENERGY_LIST
         self.ccs_list = DEFAULT_CCS_LIST
+        self.ismdo = ismdo # if ismdo is False, running an mda only, not an MDO
         self.dc_energy = datacase_energy(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, ismdo=self.ismdo, techno_dict=techno_dict)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
-        # running an mda only, not an MDO
-        self.ismdo = ismdo
 
     def setup_process(self):
         datacase_energy.setup_process(self)
