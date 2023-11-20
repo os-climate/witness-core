@@ -241,7 +241,7 @@ fermentation and manure management. Those steps do not occur during food pre and
 is underestimated accross livestock and crop. 
 * Global CH4 emissions for livestock 
 (=red meat, white meat, eggs and milk) account for 3.08 GtCO2eq [^21]. NB: this figure is obtained while 
-discarding the agri systems waste disposal that is considered as part of the post-production process [^26] (p.2).
+discarding the agri systems waste disposal that is considered as part of the post-production process [^25] (p.2).
 It is therefore not considered for livestock & crops CH4 emissions accounting. 
 * Global CH4 emissions for crop account for 0.7 Gt CO2eq, mostly corresponding to rice cultivation, which is 
 already well estimated from the CH4/ghg ratio. 
@@ -351,5 +351,4 @@ Prices are computed with the input parameter crop_residue_price_percent_dif.
 [^22]: United Nations, https://www.un.org/en/observances/end-food-waste-day
 [^23]: Le monde, https://www.lemonde.fr/planete/article/2013/02/28/la-viande-de-boeuf-dans-votre-assiette-de-la-vieille-vache_1839589_3244.html
 [^24]: OurWorldInData: Rise of Aquaculture, https://ourworldindata.org/rise-of-aquaculture
-[^25]: Capgemini internal methodology document: https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=jCcJza
-[^26]: Food and Agriculture Organisation, https://www.fao.org/3/cc8543en/cc8543en.pdf
+[^25]: Food and Agriculture Organisation, https://www.fao.org/3/cc8543en/cc8543en.pdf
