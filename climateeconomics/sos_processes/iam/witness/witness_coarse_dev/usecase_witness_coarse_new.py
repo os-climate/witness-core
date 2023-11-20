@@ -46,7 +46,7 @@ class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False,
                  execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], ismda=True, techno_dict=DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -59,6 +59,8 @@ class Study(ClimateEconomicsStudyManager):
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
+        # running an mda only, not an MDO
+        self.ismda = ismda
 
     def setup_process(self):
         datacase_energy.setup_process(self)
@@ -108,7 +110,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.max_mda_iter': 50,
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
-            f'{self.study_name}.linearization_mode': 'adjoint',
+            f'{self.study_name}.linearization_mode': 'auto', #'adjoint',
             f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
             f'{self.study_name}.cache_type': 'SimpleCache'}
 
