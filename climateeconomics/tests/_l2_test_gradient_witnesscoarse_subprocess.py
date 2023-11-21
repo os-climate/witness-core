@@ -156,6 +156,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
         full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
+        # same hypothesis as uc1
         full_values_dict[
             f'{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.assumptions_dict'] = {
             'compute_gdp': False,
@@ -175,6 +176,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         iter = 0
         test_results = []
         for dspace_dict in all_iterations_dspace_list:
+            self.ee.logger.info(f'testing iteration {iter}')
             design_space_values_dict = {}
             for variable_name, variable_value in dspace_dict.items():
                 design_space_values_dict[self.ee.dm.get_all_namespaces_from_var_name(variable_name)[0]] = array(variable_value)
@@ -212,8 +214,11 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                     inputs=inputs,
                                     outputs=outputs)
                 test_results.append((iter, True))
+                self.ee.logger.info(f'iteration {iter} succeeded')
             except AssertionError:
                 test_results.append((iter, False))
+                self.ee.logger.info(f'iteration {iter} failed')
             iter += 1
-            print(test_results)
+            self.ee.logger.info(f'Result of each iteration {test_results}')
+
 
