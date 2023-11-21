@@ -34,7 +34,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
         self.process_level = process_level
         # Running an mda only, not a mdo
-        self.ismdo = False
+        self.energy_invest_input_in_abs_value = False
 
     def get_builders(self):
 
@@ -50,7 +50,8 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=techno_dict, invest_discipline=self.invest_discipline, ismdo=self.ismdo, process_level=self.process_level)
+            techno_dict=techno_dict, invest_discipline=self.invest_discipline,
+            energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value, process_level=self.process_level)
 
         chain_builders.extend(chain_builders_energy)
 
