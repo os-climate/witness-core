@@ -19,7 +19,6 @@ mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 import unittest
 import pprint
 from sostrades_core.tools.check_headers import check_headers
-from sostrades_core.sos_processes.script_test_all_usecases import test_all_usecases
 
 
 class Testheader(unittest.TestCase):
