@@ -32,10 +32,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$' # to overwrite if necessary
     NS_SECTORS = 'ns_sectors'
     DESC_IN = {
-        GlossaryCore.DamageDfValue: {'type': 'dataframe',
-                                     'unit': GlossaryCore.DamageDf['unit'],
-                                     'dataframe_descriptor': GlossaryCore.DamageDf['dataframe_descriptor'],
-                                     },
+        GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
