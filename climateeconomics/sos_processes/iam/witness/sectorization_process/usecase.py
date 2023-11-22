@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2023/11/22 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -167,13 +167,8 @@ class Study(StudyManager):
         cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         cons_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
-        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}"] = damage_df
-        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
-        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
+        cons_input[f"{self.study_name}.{GlossaryCore.DamageDfValue}"] = damage_df
         cons_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
-        #cons_input[f"{self.study_name}.EnergyMix.residential_energy"] = residential_energy_df
-        # TODO clean this quick workaround
-       # cons_input[f"{self.study_name}.residential_energy"] = residential_energy_df
 
         cons_input[f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
         #cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}"] = base_dummy_data
