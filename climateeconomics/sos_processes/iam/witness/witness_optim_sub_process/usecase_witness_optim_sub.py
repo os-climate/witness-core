@@ -96,19 +96,6 @@ class Study(ClimateEconomicsStudyManager):
 
         for energy in self.witness_uc.energy_list:
             energy_wo_dot = energy.replace('.', '_')
-            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
-                dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}.{energy_wo_dot}_array_mix'] = \
-                    dspace_df[f'{energy}.{energy_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{energy}.{energy_wo_dot}_array_mix'] = {'out_name': GlossaryCore.invest_mix,
-                                                                                'out_type': 'dataframe',
-                                                                                'key': f'{energy}',
-                                                                                'index': years,
-                                                                                'index_name': GlossaryCore.Years,
-                                                                                'namespace_in': 'ns_energy_mix',
-                                                                                'namespace_out': 'ns_invest'
-                                                                                }
-
             for technology in self.witness_uc.dict_technos[energy]:
                 technology_wo_dot = technology.replace('.', '_')
 
@@ -133,18 +120,6 @@ class Study(ClimateEconomicsStudyManager):
 
         for ccs in self.witness_uc.ccs_list:
             ccs_wo_dot = ccs.replace('.', '_')
-            if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{ccs_wo_dot}_array_mix'] = \
-                    dspace_df[f'{ccs}.{ccs_wo_dot}_array_mix']['value']
-                design_var_descriptor[f'{ccs}.{ccs_wo_dot}_array_mix'] = {'out_name': GlossaryCore.invest_mix,
-                                                                          'out_type': 'dataframe',
-                                                                          'key': f'{ccs}',
-                                                                          'index': years,
-                                                                          'index_name': GlossaryCore.Years,
-                                                                          'namespace_in': 'ns_ccs',
-                                                                          'namespace_out': 'ns_invest'
-                                                                          }
-
             for technology in self.witness_uc.dict_technos[ccs]:
                 technology_wo_dot = technology.replace('.', '_')
                 dvar_value = dspace_df[
@@ -166,10 +141,6 @@ class Study(ClimateEconomicsStudyManager):
                     'namespace_in': 'ns_ccs',
                     'namespace_out': 'ns_invest'
                 }
-
-        if self.invest_discipline == INVEST_DISCIPLINE_OPTIONS[0]:
-            dv_arrays_dict[f'{self.witness_uc.study_name}.ccs_percentage_array'] = dspace_df[f'ccs_percentage_array'][
-                'value']
 
         dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']
         design_var_descriptor['forest_investment_array_mix'] = {'out_name': 'forest_investment',

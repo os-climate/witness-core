@@ -14,21 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-
 import pandas as pd
 import numpy as np
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+
+from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import Study as usecase_diet
 
