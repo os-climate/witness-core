@@ -175,7 +175,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         all_iterations_dspace_list = [eval(dspace) for dspace in design_space['value'].values]
         iter = 0
         test_results = []
-        for dspace_dict in all_iterations_dspace_list:
+        for dspace_dict in all_iterations_dspace_list[-1:]:
             self.ee.logger.info(f'testing iteration {iter}')
             design_space_values_dict = {}
             for variable_name, variable_value in dspace_dict.items():

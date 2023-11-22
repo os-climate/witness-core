@@ -140,7 +140,7 @@ if '__main__' == __name__:
     #     pd.set_option('display.width', None)
 
     uc_cls.test()
-
+    """
     ppf = PostProcessingFactory()
     ll = ['Macroeconomics', 'FossilSimpleTechno', 'RenewableSimpleTechno']
     for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
@@ -154,3 +154,4 @@ if '__main__' == __name__:
                 for graph in graph_list:
                     graph.to_plotly().show()
 
+"""
