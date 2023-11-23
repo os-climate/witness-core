@@ -15,17 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import unittest
 from os.path import join, dirname
-from pandas import read_csv
-from pathlib import Path
 
+import numpy as np
+from pandas import read_csv
+
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-import unittest
-import pandas as pd
-import numpy as np
 
 
 class ResourceJacobianDiscTest(AbstractJacobianUnittest):

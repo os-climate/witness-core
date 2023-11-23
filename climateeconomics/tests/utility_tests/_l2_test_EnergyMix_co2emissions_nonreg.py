@@ -14,20 +14,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname, exists
-import pandas as pd
+import pickle
+from copy import deepcopy
+from os.path import join, dirname
+
 import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import Study as EnergyMDA
-import unittest
-from sostrades_core.study_manager.base_study_manager import BaseStudyManager
 from gemseo.utils.compare_data_manager_tooling import compare_dict
-from copy import deepcopy
-import sys
-import pickle
 
 
 class EnergyMix_co2emissions_nonreg_test():

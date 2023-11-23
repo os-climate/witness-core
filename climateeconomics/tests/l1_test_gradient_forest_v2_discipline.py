@@ -14,12 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from os.path import dirname
+
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
+
 from climateeconomics.core.core_forest.forest_v2 import Forest
 from climateeconomics.glossarycore import GlossaryCore
-
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 

@@ -14,24 +14,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from numpy import arange, asarray
-from pandas import DataFrame
-import numpy as np
-import pandas as pd
+from os.path import join, dirname
 from pathlib import Path
 
+import numpy as np
+import pandas as pd
+from numpy import arange, asarray
+from pandas import DataFrame
+
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from os.path import join, dirname
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import Study as datacase_agriculture_mix
+from climateeconomics.sos_processes.iam.witness.land_use_v2_process.usecase import Study as datacase_landuse
 from climateeconomics.sos_processes.iam.witness.resources_process.usecase import Study as datacase_resource
-from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
-
-from climateeconomics.sos_processes.iam.witness.agriculture_process.usecase import update_dspace_dict_with
+from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT

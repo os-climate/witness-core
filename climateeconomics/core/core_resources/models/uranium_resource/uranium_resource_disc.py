@@ -14,12 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pandas as pd
 from os.path import join, dirname
-from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
-from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_model import UraniumResourceModel
-import numpy as np
 
+import numpy as np
+import pandas as pd
+
+from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_model import UraniumResourceModel
+from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 

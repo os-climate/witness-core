@@ -15,12 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import DEFAULT_COARSE_TECHNO_DICT
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import \
+    DEFAULT_COARSE_TECHNO_DICT
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import \
+    AgricultureEmissionsDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
+    GHGemissionsDiscipline
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline import \
+    IndusemissionsDiscipline
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import GHGemissionsDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline import IndusemissionsDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import AgricultureEmissionsDiscipline
+from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):

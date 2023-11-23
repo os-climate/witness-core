@@ -14,13 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from os.path import join, dirname
-import numpy as np
-import pandas as pd
 import random as rd
 
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+import numpy as np
+import pandas as pd
+
 from sostrades_core.study_manager.study_manager import StudyManager
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(StudyManager):
