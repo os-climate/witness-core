@@ -15,19 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
-import pandas as pd
 from copy import deepcopy
 
-from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
+import numpy as np
+import pandas as pd
+
 from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import CoalResourceDiscipline
-from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import NaturalGasResourceDiscipline
-from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
 from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
-from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import PlatinumResourceDiscipline
+from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import \
+    NaturalGasResourceDiscipline
+from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
+from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min,\
+from sostrades_core.tools.base_functions.exp_min import compute_dfunc_with_exp_min, \
     compute_func_with_exp_min
 
 

@@ -15,32 +15,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+import cProfile
+import pstats
+from io import StringIO
 from os.path import join, dirname
-from pandas import DataFrame, concat
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
-from sostrades_core.study_manager.study_manager import StudyManager
+from pandas import DataFrame, concat
+
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
+    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import \
     DataStudy as datacase_witness
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
     DataStudy as datacase_witness_dev
 from climateeconomics.sos_processes.iam.witness_wo_energy_thesis.datacase_witness_wo_energy_solow import \
     DataStudy as datacase_witness_thesis
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
-
+from energy_models.tools.jsonhandling import convert_to_editable_json, preprocess_data_and_save_json
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
-    AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
-from energy_models.tools.jsonhandling import convert_to_editable_json, preprocess_data_and_save_json, insert_json_to_mongodb_bis
-
-import cProfile
-from io import StringIO
-import pstats
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE

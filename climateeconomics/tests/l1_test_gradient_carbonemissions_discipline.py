@@ -15,16 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
+from os.path import join, dirname
+
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
-from pandas import DataFrame, read_csv
+from pandas import read_csv
 
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
 
 
 class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):

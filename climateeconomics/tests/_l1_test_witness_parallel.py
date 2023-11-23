@@ -15,13 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from tempfile import gettempdir
 from copy import deepcopy
+from tempfile import gettempdir
+
+import numpy as np
+
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import Study
 from gemseo.utils.compare_data_manager_tooling import delete_keys_from_dict, \
     compare_dict
-import numpy as np
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class WITNESSParallelTest(unittest.TestCase):

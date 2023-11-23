@@ -14,12 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import Study as witness_proc_usecase
 import unittest
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
+
+from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import \
+    Study as witness_proc_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from gemseo.utils.compare_data_manager_tooling import compare_dict
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class WitnessCoarseCache(unittest.TestCase):

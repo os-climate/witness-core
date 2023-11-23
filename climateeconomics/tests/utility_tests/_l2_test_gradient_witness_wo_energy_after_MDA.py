@@ -15,16 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 # -*- coding: utf-8 -*-
-import unittest
+
+from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import \
+    DataStudy as datacase_witness
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-
-from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy as datacase_witness
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 

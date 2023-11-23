@@ -13,14 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
 from os.path import join, dirname
 
-from sostrades_core.study_manager.study_manager import StudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import Study as witness_optim_usecase
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+import numpy as np
+
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
+    Study as witness_optim_usecase
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(ClimateEconomicsStudyManager):

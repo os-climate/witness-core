@@ -14,17 +14,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.core.core_forest.forest_v1 import Forest
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from climateeconomics.core.core_forest.forest_v1 import Forest
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
 
 
 class ForestDiscipline(ClimateEcoDiscipline):

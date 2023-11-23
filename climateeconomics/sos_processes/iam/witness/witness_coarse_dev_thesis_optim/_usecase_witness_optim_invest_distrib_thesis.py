@@ -14,19 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_optim_sub_usecase
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
     COUPLING_NAME, EXTRA_NAME
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_optim_sub_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT

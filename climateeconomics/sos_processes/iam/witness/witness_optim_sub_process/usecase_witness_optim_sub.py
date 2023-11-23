@@ -14,22 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+import pandas as pd
+
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-
-from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-
-import pandas as pd
-import numpy as np
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study as witness_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -122,7 +118,7 @@ class Study(ClimateEconomicsStudyManager):
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}_{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
                 # add design variable for utilization ratio per technology
                 design_var_descriptor[f'{energy}_{technology}_utilization_ratio_array'] = {
-                    'out_name':  f'{energy}.{technology}.GlossaryCore.UtilisationRatioValue',
+                    'out_name':  f'{energy}.{technology}.{GlossaryCore.UtilisationRatioValue}',
                     'out_type': 'dataframe',
                     'key': GlossaryCore.UtilisationRatioValue,
                     'index': years,

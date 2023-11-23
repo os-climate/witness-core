@@ -14,16 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
+    COUPLING_NAME, EXTRA_NAME
+from sostrades_core.execution_engine.data_manager import DataManager
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
     InstantiatedParetoFrontOptimalChart
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sostrades_core.execution_engine.data_manager import DataManager
-import numpy as np
-import pandas as pd
-
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
 
 
 def post_processing_filters(execution_engine, namespace):

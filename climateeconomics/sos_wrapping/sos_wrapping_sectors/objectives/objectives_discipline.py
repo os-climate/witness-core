@@ -14,19 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from copy import deepcopy
+
+import numpy as np
+import pandas as pd
+
+from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model import MacroeconomicsModel
+from climateeconomics.core.core_sectorization.sectorization_objectives_model import ObjectivesModel
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from climateeconomics.core.core_sectorization.sectorization_objectives_model import ObjectivesModel
-from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model import MacroeconomicsModel
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.agriculture.agriculture_discipline import AgricultureDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.services.services_discipline import ServicesDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline import IndustrialDiscipline
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-import numpy as np
-import pandas as pd
-from copy import deepcopy
 
 
 class ObjectivesDiscipline(ClimateEcoDiscipline):
