@@ -115,7 +115,7 @@ class Study(ClimateEconomicsStudyManager):
 
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 3,
+            f'{self.study_name}.max_mda_iter': 50,
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
