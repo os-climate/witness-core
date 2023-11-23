@@ -118,7 +118,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
                        f'{self.name}.prod_function_fitting': False,
