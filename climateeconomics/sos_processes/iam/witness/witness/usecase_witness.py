@@ -20,6 +20,7 @@ import pstats
 from io import StringIO
 from os.path import join, dirname
 
+import pandas as pd
 from pandas import DataFrame, concat
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
@@ -83,28 +84,15 @@ class Study(ClimateEconomicsStudyManager):
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_constraint_land_use(self):
-        func_df = DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-        list_var.extend(
-            ['land_demand_constraint'])
-        list_parent.extend(['agriculture_constraint'])
-        list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-1.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions'])
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
+
+        func_df = pd.DataFrame({
+            'variable': ['land_demand_constraint'],
+            'parent': ['agriculture_constraint'],
+            'ftype': [INEQ_CONSTRAINT],
+            'weight': [-1.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM],
+            'namespace': ['ns_functions']
+        })
 
         return func_df
 

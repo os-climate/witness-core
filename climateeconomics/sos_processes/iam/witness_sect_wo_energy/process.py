@@ -70,15 +70,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        '''
-        Add non_use capital objective discipline to all WITNESS processes
-        '''
-        mods_dict = {
-            'NonUseCapitalDiscipline': 'climateeconomics.sos_wrapping.sos_wrapping_witness.non_use_capital_objective.non_use_capital_obj_discipline.NonUseCapitalObjectiveDiscipline'
-        }
-        non_use_capital_list = self.create_builder_list(
-            mods_dict, ns_dict=ns_dict)
-        #builder_list.extend(non_use_capital_list)
 
         '''
         Add emissions disciplines
