@@ -175,7 +175,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         all_iterations_dspace_list = [eval(dspace) for dspace in design_space['value'].values]
         iter = 0
         test_results = []
-        for dspace_dict in all_iterations_dspace_list[-1:]:
+        for dspace_dict in all_iterations_dspace_list[0:1]:
             self.ee.logger.info(f'testing iteration {iter}')
             design_space_values_dict = {}
             for variable_name, variable_value in dspace_dict.items():
@@ -206,6 +206,29 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             pkl_name = f'jacobian_obj_vs_design_var_witness_coarse_subprocess_iter_{iter}.pkl'
 
             AbstractJacobianUnittest.DUMP_JACOBIAN = True
+            # store all these variables for next test
+            var_in_to_store = [self.ee.dm.get_all_namespaces_from_var_name('Energy invest minimization objective')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('last_year_discounted_utility_objective')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('minimum_ppm_constraint')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('Lower bound usable capital constraint')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('function_df')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name(GlossaryCore.NegativeWelfareObjective)[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('gwp20_objective')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('gwp100_objective')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('energy_wasted_objective')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('rockstrom_limit_constraint')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('minimum_ppm_constraint')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('calories_per_day_constraint')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('carbon_storage_constraint')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('total_prod_minus_min_prod_constraint_df')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('energy_production_objective')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('syngas_prod_objective')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('land_demand_constraint')[0],
+                               self.ee.dm.get_all_namespaces_from_var_name('function_df')[0],
+                               ]
+            self.dict_val_updt = {}
+            for elem in var_in_to_store:
+                self.dict_val_updt.update({elem: self.ee.dm.get_value(elem)})
             try:
                 self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                                     discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
@@ -221,4 +244,58 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             iter += 1
             self.ee.logger.info(f'Result of each iteration {test_results}')
 
+    def _test_03_func_manager_w_point(self):
+        """
+        Test only func manager with a special point from test 02.
+        This test cannont be executed without some modifications on FuncManager. Default type is dataframe if variable not in dm
+        (like in witness) but we have arrays
+        """
+
+        # The test was developped to check gradient of func manager at same point as failure in test_02
+        self.test_02_gradient_subprocess_objective_over_design_var_for_all_iterations()
+        self.name = 'Test'
+        # -- init the case
+        func_mng_name = 'FunctionsManager'
+        prefix = self.name + '.' + func_mng_name + '.'
+
+        ee = ExecutionEngine(self.name)
+        ns_dict = {'ns_functions': self.name + '.' + 'WITNESS_Eval.WITNESS',
+                   'ns_optim': self.name + '.' + func_mng_name}
+        ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_list = 'sostrades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
+        fm_builder = ee.factory.get_builder_from_module(
+            'WITNESS_Eval.FunctionsManager', mod_list)
+        ee.factory.set_builders_to_coupling_builder(fm_builder)
+        ee.configure()
+        # Test.WITNESS_Eval.FunctionManager.function_df
+        # Test.WITNESS_Eval.FunctionManager.function_df
+        ee.load_study_from_input_dict(self.dict_val_updt)
+        ee.execute()
+
+        # all inputs to test
+        inputs = [ee.dm.get_all_namespaces_from_var_name('minimum_ppm_constraint')[0],
+                  ee.dm.get_all_namespaces_from_var_name('Energy invest minimization objective')[0],
+                  ee.dm.get_all_namespaces_from_var_name('last_year_discounted_utility_objective')[0],
+                  ee.dm.get_all_namespaces_from_var_name('minimum_ppm_constraint')[0],
+                  ee.dm.get_all_namespaces_from_var_name('Lower bound usable capital constraint')[0],
+                  ee.dm.get_all_namespaces_from_var_name(GlossaryCore.NegativeWelfareObjective)[0],
+                  ee.dm.get_all_namespaces_from_var_name('gwp20_objective')[0],
+                  ee.dm.get_all_namespaces_from_var_name('gwp100_objective')[0],
+                  ee.dm.get_all_namespaces_from_var_name('energy_wasted_objective')[0],
+                  ee.dm.get_all_namespaces_from_var_name('rockstrom_limit_constraint')[0],
+                  ee.dm.get_all_namespaces_from_var_name('minimum_ppm_constraint')[0],
+                  ee.dm.get_all_namespaces_from_var_name('calories_per_day_constraint')[0],
+                  ee.dm.get_all_namespaces_from_var_name('carbon_storage_constraint')[0],
+                  ee.dm.get_all_namespaces_from_var_name('total_prod_minus_min_prod_constraint_df')[0],
+                  ee.dm.get_all_namespaces_from_var_name('energy_production_objective')[0],
+                  ee.dm.get_all_namespaces_from_var_name('syngas_prod_objective')[0],
+                  ee.dm.get_all_namespaces_from_var_name('land_demand_constraint')[0],
+                  ]
+        outputs = [ee.dm.get_all_namespaces_from_var_name('objective_lagrangian')[0]]
+        disc = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        disc.check_jacobian(
+            input_data=disc.local_data,
+            threshold=1e-15, inputs=inputs, step=1e-4,
+            outputs=outputs, derr_approx='finite_differences')
 
