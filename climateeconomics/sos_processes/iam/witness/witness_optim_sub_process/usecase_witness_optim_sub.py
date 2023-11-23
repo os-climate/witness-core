@@ -118,13 +118,13 @@ class Study(ClimateEconomicsStudyManager):
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.energy_mix_name}.{energy}_{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
                 # add design variable for utilization ratio per technology
                 design_var_descriptor[f'{energy}_{technology}_utilization_ratio_array'] = {
-                    'out_name':  f'{energy}.{technology}.GlossaryCore.UtilisationRatioValue',
+                    'out_name':  f'{energy}.{technology}.{GlossaryCore.UtilisationRatioValue}',
                     'out_type': 'dataframe',
                     'key': GlossaryCore.UtilisationRatioValue,
                     'index': years,
                     'index_name': GlossaryCore.Years,
                     'namespace_in': 'ns_energy_mix',
-                    'namespace_out': 'ns_witness'
+                    'namespace_out': 'ns_energy_mix'
                 }
 
         for ccs in self.witness_uc.ccs_list:
@@ -155,13 +155,13 @@ class Study(ClimateEconomicsStudyManager):
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}_{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
                 # add design variable for utilization ratio per technology
                 design_var_descriptor[f'{ccs}_{technology}_utilization_ratio_array'] = {
-                    'out_name': f'{ccs}.{technology}.GlossaryCore.UtilisationRatioValue',
+                    'out_name': f'{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}',
                     'out_type': 'dataframe',
                     'key': GlossaryCore.UtilisationRatioValue,
                     'index': years,
                     'index_name': GlossaryCore.Years,
                     'namespace_in': 'ns_ccs',
-                    'namespace_out': 'ns_witness'
+                    'namespace_out': 'ns_ccs'
                 }
 
         dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']
