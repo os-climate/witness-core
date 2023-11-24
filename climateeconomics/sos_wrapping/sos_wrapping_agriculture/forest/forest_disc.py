@@ -19,10 +19,11 @@ from copy import deepcopy
 import numpy as np
 import pandas as pd
 
-from climateeconomics.core.core_forest.forest_v2 import Forest
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
+
+from climateeconomics.core.core_forest.forest_v2 import Forest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -54,78 +55,53 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     deforestation_limit = 1000
     initial_emissions = 3.21
+    construction_delay = 3
 
-    construction_delay = 3  # years, time for wood to dry
+    # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
+    # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
+    # 92% of the production come from managed wood. 8% from unmanaged wood
+    # 1150MHa of forest are production forest
+    # GHa
+    wood_production_surface = 1.15  # GHa
 
-    # available planted forests in 2020: 294 Mha (worldbioenergy.org)
+    # Roundwood demand for energy FAO in the world see fao.org (2020) = 1697 (non coniferous) + 229 (coniferous) = 1926 Mm3
+    energy_wood_production_2020 = 1697 + 229  # Mm3
+    # Roundwood demand for industry FAO in the world see fao.org (2020) = 1984 Mm3 ; Total = 1926 + 1984 = 3910 Mm3
+    industry_wood_production_2020 = 1984  # Mm3
+    # then % of wood for energy = 1926/(1926+1984)= 49.2 %
+    total_wood_production_2020 = energy_wood_production_2020 + industry_wood_production_2020
+    wood_percentage_for_energy = energy_wood_production_2020 / total_wood_production_2020
+    # FAO 2020 : Chips = 262 Mm3, Residues = 233Mm3, Total Wood fuel : 1926 Mm3
+    # % of residues  + chips = (233+262)/1926 = 25.7%
+    residues_wood_production = 233 + 262  # Mm3
+    residue_percentage = residues_wood_production / energy_wood_production_2020
+
+    # Based on FAO, 2020 plantations forest are 131MHa and supply 654Mm3
+    # then managed yield or plantation froest yield (which are forest where you invest in for managed wood) is : 654/131 m3/Ha
+    managed_yield = 654 / 131
+    # However actually roundwood production is not only plantation forests, then the yield is lower and can be computed with 2020 data (FAO)
+    # 1.15GHa supply the total roundwood production which is 3910Mm3
+    actual_yield = total_wood_production_2020 / wood_production_surface
 
     # reference:
     # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
     wood_density = 600.0  # kg/m3
     residues_density = 200.0  # kg/m3
 
-    # reference :
-    # https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
-    # average of 155 and 310 divided by 5
-    residue_density_m3_per_ha = 46.5
-    # average of 360 and 600 divided by 5
-    wood_density_m3_per_ha = 96
-
-    # in litterature, average price of residue is 30-50euro/t
-    # wood price is 100-200euro/t => 26% between
-    wood_residue_price_percent_dif = 0.34
-
-    # 1,62% of managed wood is used for energy purpose
-    # (3% of global forest is used for energy purpose and
-    # 54% of global forest are managed forests)
-    wood_percentage_for_energy = 0.48
-    residue_percentage_for_energy = 0.48
-
-    density_per_ha = residue_density_m3_per_ha + \
-        wood_density_m3_per_ha
-
-    wood_percentage = wood_density_m3_per_ha / density_per_ha
-    residue_percentage = residue_density_m3_per_ha / density_per_ha
-
-    mean_density = wood_percentage * wood_density + \
-        residue_percentage * residues_density
-
-    # reference :
-    # https://www.eubia.org/cms/wiki-biomass/biomass-resources/challenges-related-to-biomass/recovery-of-forest-residues/
-    years_between_harvest = 25
-
-    recycle_part = 0.52  # 52%
-#     mean_calorific_value = BiomassDryTechnoDiscipline.data_energy_dict[
-#         'calorific_value']
-
     wood_techno_dict = {'maturity': 5,
                         'wood_residues_moisture': 0.35,  # 35% moisture content
-                        'wood_residue_colorific_value': 4.356,
-                        # teagasc : 235euro/ha/year for planting 5% and spot spraying and manual cleaning
-                        # +  chipping + off_road transport 8 euro/Mwh (www.eubia.org )
-                        # for wood + residues
-                        'Opex_percentage': 0.045,
-                        # Capex init: 12000 $/ha to buy the land (CCUS-report_V1.30)
-                        # + 2564.128 euro/ha (ground preparation, planting) (www.teagasc.ie)
-                        # 1USD = 0,87360 euro in 2019
-                        'managed_wood_price_per_ha': 13047,
-                        'Price_per_ha_unit': '$/ha',
-                        'full_load_hours': 8760.0,
-                        'euro_dollar': 1.1447,  # in 2019, date of the paper
-                        'percentage_production': 0.52,
-                        'residue_density_percentage': residue_percentage,
-                        'non_residue_density_percentage': wood_percentage,
-                        'density_per_ha': density_per_ha,
+                        # afforestation costs = monitoring and maintenance costs + establishment costs + harvesting costs = 500+2000+1000 $/Ha
+                        'managed_wood_price_per_ha': 3500.,
+                        'Price_per_ha_unit': '$/ha',  # in 2019, date of the paper
+                        'residues_density_percentage': residue_percentage,
                         'wood_percentage_for_energy': wood_percentage_for_energy,
-                        'residue_percentage_for_energy': residue_percentage_for_energy,
-                        'density': mean_density,
+                        'actual_yield': actual_yield,
+                        'managed_yield': managed_yield,
+                        'yield_unit': 'm3/Ha',
+                        'density_unit': 'm^3/ha',
                         'wood_density': wood_density,
                         'residues_density': residues_density,
-                        'density_per_ha_unit': 'm^3/ha',
-                        'techno_evo_eff': 'no',  # yes or no
-                        'years_between_harvest': years_between_harvest,
-                        'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
-                        'recycle_part': recycle_part,
+                        'residue_calorific_value': 4.356,
                         GlossaryCore.ConstructionDelay: construction_delay,
                         'WACC': 0.07,
                         # CO2 from production from tractor is taken
@@ -135,17 +111,11 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         'CO2_from_production': - 0.425 * 44.01 / 12.0,
                         'CO2_from_production_unit': 'kg/kg'}
 
-# invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
+    # invest: 0.19 Mha are planted each year at 13047.328euro/ha, and 28% is
     # the share of wood (not residue)
     invest_before_year_start = pd.DataFrame(
-        {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: [1.135081, 1.135081, 1.135081]})
-    # www.fao.org : forest under long-term management plans = 2.05 Billion Ha
-    # 31% of All forests is used for production : 0.31 * 4.06 = 1.25
-    # 92% of the production come from managed wood. 8% from unmanaged wood
-    mw_initial_production = round(1.25 * 0.92 *
-                                  density_per_ha * mean_density * biomass_cal_val /
-                                  years_between_harvest / (1 - recycle_part), 6)  # in Twh
-    mw_initial_surface = round(1.25 * 0.92, 6)
+        {'past_years': np.arange(-construction_delay, 0),
+         GlossaryCore.InvestmentsValue: [1.135081, 1.135081, 1.135081]})
 
     # protected forest are 21% of total forest
     # https://research.wri.org/gfr/forest-designation-indicators/protected-forests
@@ -160,45 +130,61 @@ class ForestDiscipline(ClimateEcoDiscipline):
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         Forest.DEFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                   GlossaryCore.InvestmentsValue: ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
-        Forest.DEFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha',  'default': 8000,
+                                                                   GlossaryCore.InvestmentsValue: (
+                                                                       'float', [0, 1e9], True)},
+                                          'dataframe_edition_locked': False,
+                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                          'namespace': 'ns_forest'},
+        Forest.DEFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 8000,
                                            'namespace': 'ns_forest'},
-        Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2',  'default': -7.6,
+        Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': -7.6,
                                        'namespace': 'ns_forest', },
-        Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year',  'default': 4000,
+        Forest.CO2_PER_HA: {'type': 'float', 'unit': 'kgCO2/ha/year', 'default': 4000,
                             'namespace': 'ns_forest'},
-        Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha',  'default': 13800,
+        Forest.REFORESTATION_COST_PER_HA: {'type': 'float', 'unit': '$/ha', 'default': 13800,
                                            'namespace': 'ns_forest'},
         Forest.REFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                                   'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
-        Forest.WOOD_TECHNO_DICT: {'type': 'dict', 'unit': '-',  'default': wood_techno_dict,
+                                                                   'forest_investment': ('float', [0, 1e9], True)},
+                                          'dataframe_edition_locked': False,
+                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                          'namespace': 'ns_invest'},
+        Forest.WOOD_TECHNO_DICT: {'type': 'dict', 'unit': '-', 'default': wood_techno_dict,
                                   'namespace': 'ns_forest'},
-        Forest.MW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha',  'default': mw_initial_surface,
+        Forest.MW_INITIAL_SURFACE: {'type': 'float', 'unit': 'Gha', 'default': wood_production_surface,
                                     'namespace': 'ns_forest'},
         Forest.MW_INVEST_BEFORE_YEAR_START: {'type': 'dataframe', 'unit': 'G$',
                                              'dataframe_descriptor': {'past_years': ('float', None, False),
-                                                                      GlossaryCore.InvestmentsValue: ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                                                      GlossaryCore.InvestmentsValue: (
+                                                                          'float', [0, 1e9], True)},
+                                             'dataframe_edition_locked': False,
                                              'default': invest_before_year_start,
                                              'namespace': 'ns_forest'},
         Forest.MW_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                        GlossaryCore.InvestmentsValue: ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
+                                                        GlossaryCore.InvestmentsValue: ('float', [0, 1e9], True)},
+                               'dataframe_edition_locked': False,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
-        Forest.TRANSPORT_COST: {'type': 'dataframe', 'unit': '$/t', 'namespace': 'ns_witness', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+        Forest.TRANSPORT_COST: {'type': 'dataframe', 'unit': '$/t', 'namespace': 'ns_witness',
+                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                         'transport': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
-        Forest.MARGIN: {'type': 'dataframe', 'unit': '%', 'namespace': 'ns_witness', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                         'margin': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False},
-        Forest.UNMANAGED_FOREST: {'type': 'float', 'unit': 'Gha',   'default': initial_unmanaged_forest_surface,
+                                                         'transport': ('float', [0, 1e9], True)},
+                                'dataframe_edition_locked': False},
+        Forest.MARGIN: {'type': 'dataframe', 'unit': '%', 'namespace': 'ns_witness',
+                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                        'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
+                                                 'margin': ('float', [0, 1e9], True)},
+                        'dataframe_edition_locked': False},
+        Forest.UNMANAGED_FOREST: {'type': 'float', 'unit': 'Gha', 'default': initial_unmanaged_forest_surface,
                                   'namespace': 'ns_forest'},
-        Forest.PROTECTED_FOREST: {'type': 'float', 'unit': 'Gha',   'default': initial_protected_forest_surface,
+        Forest.PROTECTED_FOREST: {'type': 'float', 'unit': 'Gha', 'default': initial_protected_forest_surface,
                                   'namespace': 'ns_forest'},
-        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
-        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_consumption': {'type': 'float', 'default': 1e3, 'unit': '-',
+                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                              'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
+                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                             'namespace': 'ns_public', 'user_level': 2},
     }
 
     DESC_OUT = {
@@ -221,21 +207,27 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': '-', 'namespace': 'ns_forest'},
 
         'techno_production': {
-            'type': 'dataframe', 'unit': 'TWh or Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'unit': 'TWh or Mt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+            'namespace': 'ns_forest'},
         'techno_prices': {
-            'type': 'dataframe', 'unit': '$/MWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'unit': '$/MWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+            'namespace': 'ns_forest'},
         'techno_consumption': {
-            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest', 'unit': 'TWh or Mt'},
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest',
+            'unit': 'TWh or Mt'},
         'techno_consumption_woratio': {
-            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest', 'unit': 'TWh or Mt',
+            'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest',
+            'unit': 'TWh or Mt',
         },
         'land_use_required': {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+            'namespace': 'ns_forest'},
         'CO2_emissions': {
             'type': 'dataframe', 'unit': 'kg/kWh', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_forest'},
         'forest_lost_capital': {
-            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
+            'type': 'dataframe', 'unit': 'G$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+            'namespace': 'ns_forest'},
     }
 
     FOREST_CHARTS = 'Forest chart'
@@ -248,11 +240,11 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     def run(self):
 
-        #-- get inputs
+        # -- get inputs
         #         inputs = list(self.DESC_IN.keys())
         #         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
 
-        #-- compute
+        # -- compute
         inputs_dict = self.get_sosdisc_inputs()
         self.forest_model.compute(inputs_dict)
         # Scale production TWh -> PWh
@@ -262,7 +254,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             if column == GlossaryCore.Years:
                 continue
             techno_production[column] = techno_production[column].values / \
-                inputs_dict['scaling_factor_techno_production']
+                                        inputs_dict['scaling_factor_techno_production']
         # Scale production Mt -> Gt
         techno_consumption = deepcopy(self.forest_model.techno_consumption)
         techno_consumption_woratio = deepcopy(
@@ -271,18 +263,21 @@ class ForestDiscipline(ClimateEcoDiscipline):
             if column == GlossaryCore.Years:
                 continue
             techno_consumption[column] = techno_consumption[column].values / \
-                inputs_dict['scaling_factor_techno_consumption']
+                                         inputs_dict['scaling_factor_techno_consumption']
             techno_consumption_woratio[column] = techno_consumption_woratio[column].values / \
-                inputs_dict['scaling_factor_techno_consumption']
+                                                 inputs_dict['scaling_factor_techno_consumption']
 
         outputs_dict = {
             Forest.CO2_EMITTED_DETAIL_DF: self.forest_model.CO2_emitted_df,
             Forest.FOREST_DETAIL_SURFACE_DF: self.forest_model.forest_surface_df,
-            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[[GlossaryCore.Years, 'global_forest_surface', 'forest_constraint_evolution']],
-            'CO2_land_emission_df': self.forest_model.CO2_emitted_df[[GlossaryCore.Years, 'emitted_CO2_evol_cumulative']],
+            Forest.FOREST_SURFACE_DF: self.forest_model.forest_surface_df[
+                [GlossaryCore.Years, 'global_forest_surface', 'forest_constraint_evolution']],
+            'CO2_land_emission_df': self.forest_model.CO2_emitted_df[
+                [GlossaryCore.Years, 'emitted_CO2_evol_cumulative']],
             'managed_wood_df': self.forest_model.managed_wood_df,
             'biomass_dry_detail_df': self.forest_model.biomass_dry_df,
-            'biomass_dry_df': self.forest_model.biomass_dry_df[[GlossaryCore.Years, 'price_per_MWh', 'biomass_dry_for_energy (Mt)']],
+            'biomass_dry_df': self.forest_model.biomass_dry_df[
+                [GlossaryCore.Years, 'price_per_MWh', 'biomass_dry_for_energy (Mt)']],
 
             'techno_production': techno_production,
             'techno_prices': self.forest_model.techno_prices,
@@ -292,7 +287,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'CO2_emissions': self.forest_model.CO2_emissions,
             'forest_lost_capital': self.forest_model.forest_lost_capital
         }
-        #-- store outputs
+        # -- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
@@ -339,11 +334,14 @@ class ForestDiscipline(ClimateEcoDiscipline):
         # compute gradient global forest surface vs  invest: global_surface =
         # cum_mw_surface + cum_deforestation_surface
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
-            Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue), d_cum_mw_surface_d_deforestation_invest + d_cum_umw_d_deforestation_invest)
+            Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
+                                                    d_cum_mw_surface_d_deforestation_invest + d_cum_umw_d_deforestation_invest)
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
-            Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_cum_mw_surface_d_reforestation_invest + d_cum_umw_d_reforestation_invest)
+            Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+                                                    d_cum_mw_surface_d_reforestation_invest + d_cum_umw_d_reforestation_invest)
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'global_forest_surface'), (
-            'managed_wood_investment', GlossaryCore.InvestmentsValue), d_cum_mw_surface_d_mw_invest + d_cum_umw_d_mw_invest)
+            'managed_wood_investment', GlossaryCore.InvestmentsValue),
+                                                    d_cum_mw_surface_d_mw_invest + d_cum_umw_d_mw_invest)
 
         # compute gradient constraint surface vs invest. Comstraint surface = cum_deforestation_surface + cum_reforestation_surface
         # forest constraint surface vs deforestation invest
@@ -353,7 +351,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         # forest constraint surface vs reforestation invest
         d_forest_constraint_d_reforestation_invest = d_cum_deforestation_surface_d_reforestation_invest + \
-            d_cum_reforestation_surface_d_reforestation_invest
+                                                     d_cum_reforestation_surface_d_reforestation_invest
         self.set_partial_derivative_for_other_types((Forest.FOREST_SURFACE_DF, 'forest_constraint_evolution'), (
             Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_forest_constraint_d_reforestation_invest)
 
@@ -395,11 +393,14 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_techno_prod_d_mw_invest = self.forest_model.compute_d_techno_prod_d_invest(
             d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest)
 
-        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'),
+                                                    (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
                                                     d_techno_prod_d_deforestation_invest / scaling_factor_techno_production)
-        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'),
+                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
                                                     d_techno_prod_d_reforestation_invest / scaling_factor_techno_production)
-        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'), ('managed_wood_investment', GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'),
+                                                    ('managed_wood_investment', GlossaryCore.InvestmentsValue),
                                                     d_techno_prod_d_mw_invest / scaling_factor_techno_production)
 
         # compute gradient of techno consumption vs invest
@@ -410,21 +411,33 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_techno_conso_d_mw_invest = self.forest_model.compute_d_techno_conso_d_invest(
             d_techno_prod_d_mw_invest)
 
-        self.set_partial_derivative_for_other_types(('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                    (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue), d_techno_conso_d_deforestation_invest / scaling_factor_techno_consumption)
-        self.set_partial_derivative_for_other_types(('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
-        self.set_partial_derivative_for_other_types(('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                    ('managed_wood_investment', GlossaryCore.InvestmentsValue), d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
+            d_techno_conso_d_deforestation_invest / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+            d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            ('managed_wood_investment', GlossaryCore.InvestmentsValue),
+            d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
 
         # gradient of techno consumption wo ratio (same as techno_consumption
         # here)
-        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                    (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue), d_techno_conso_d_deforestation_invest / scaling_factor_techno_consumption)
-        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'), d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
-        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
-                                                    ('managed_wood_investment', GlossaryCore.InvestmentsValue), d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
+            d_techno_conso_d_deforestation_invest / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+            d_techno_conso_d_reforestation_invest / scaling_factor_techno_consumption)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio', f'{CO2.name} ({self.forest_model.mass_unit})'),
+            ('managed_wood_investment', GlossaryCore.InvestmentsValue),
+            d_techno_conso_d_mw_invest / scaling_factor_techno_consumption)
 
         # compute gradient of techno prices vs invest
         d_techno_price_d_deforestation_invest = self.forest_model.compute_d_techno_price_d_invest(
@@ -434,46 +447,61 @@ class ForestDiscipline(ClimateEcoDiscipline):
         d_techno_price_d_mw_invest = self.forest_model.compute_d_techno_price_d_invest(
             d_delta_mw_d_mw_invest, d_delta_deforestation_d_mw_invest)
 
-        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'),
+                                                    (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
                                                     d_techno_price_d_deforestation_invest)
-        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'),
+                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
                                                     d_techno_price_d_reforestation_invest)
-        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'), ('managed_wood_investment', GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest'),
+                                                    ('managed_wood_investment', GlossaryCore.InvestmentsValue),
                                                     d_techno_price_d_mw_invest)
 
         # gradient of techno prices wo ratio (same as techno_price here)
-        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'),
+                                                    (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
                                                     d_techno_price_d_deforestation_invest)
-        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'),
+                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
                                                     d_techno_price_d_reforestation_invest)
-        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'), ('managed_wood_investment', GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('techno_prices', 'Forest_wotaxes'),
+                                                    ('managed_wood_investment', GlossaryCore.InvestmentsValue),
                                                     d_techno_price_d_mw_invest)
 
         # gradient lost capital vs reforestation investment
 
-        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'),
+                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
                                                     d_lc_reforestation_d_reforestation_invest)
-        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'),
+                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
                                                     d_lc_deforestation_d_reforestation_invest)
-        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'), (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'),
+                                                    (Forest.REFORESTATION_INVESTMENT, 'forest_investment'),
                                                     d_lc_mw_d_reforestation_invest)
 
         # gradient lost capital vs deforestation investment
 
-        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'), (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'),
+                                                    (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
                                                     d_lc_reforestation_d_deforestation_invest)
-        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'), (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'),
+                                                    (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
                                                     d_lc_deforestation_d_deforestation_invest)
-        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'), (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'),
+                                                    (Forest.DEFORESTATION_INVESTMENT, GlossaryCore.InvestmentsValue),
                                                     d_lc_mw_d_deforestation_invest)
 
         # gradient lost capital vs managed wood investment
 
-        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'), ('managed_wood_investment', GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'reforestation'),
+                                                    ('managed_wood_investment', GlossaryCore.InvestmentsValue),
                                                     d_lc_reforestation_d_mw_invest)
-        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'), ('managed_wood_investment', GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'deforestation'),
+                                                    ('managed_wood_investment', GlossaryCore.InvestmentsValue),
                                                     d_lc_deforestation_d_mw_invest)
-        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'), ('managed_wood_investment', GlossaryCore.InvestmentsValue),
+        self.set_partial_derivative_for_other_types(('forest_lost_capital', 'managed_wood'),
+                                                    ('managed_wood_investment', GlossaryCore.InvestmentsValue),
                                                     d_lc_mw_d_mw_invest)
 
     def get_chart_filter_list(self):
@@ -511,7 +539,6 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'managed_wood_df')
 
         if ForestDiscipline.FOREST_CHARTS in chart_list:
-
             years = forest_surface_df[GlossaryCore.Years].values.tolist()
             # values are *1000 to convert from Gha to Mha
             delta_reforestation = forest_surface_df['delta_reforestation_surface'].values * 1000
@@ -556,8 +583,10 @@ class ForestDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
             # forest evolution year by year chart
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Yearly delta of forest surface evolution [Mha / year]',
-                                                 chart_name='Yearly delta of forest surface evolution', stacked_bar=True)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
+                                                 'Yearly delta of forest surface evolution [Mha / year]',
+                                                 chart_name='Yearly delta of forest surface evolution',
+                                                 stacked_bar=True)
 
             deforested_series = InstanciatedSeries(
                 years, delta_deforestation.tolist(), 'Deforestation', 'bar')
@@ -655,7 +684,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             # chart biomass dry for energy production
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Biomass dry [Mt]',
-                                                 chart_name='Break down of biomass dry production for energy', stacked_bar=True)
+                                                 chart_name='Break down of biomass dry production for energy',
+                                                 stacked_bar=True)
             mw_residues_energy = managed_wood_df[
                 'residues_production_for_energy (Mt)']
             mw_wood_energy = managed_wood_df['wood_production_for_energy (Mt)']
@@ -679,15 +709,16 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
             # chart biomass dry for energy production
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Biomass dry [TWh]',
-                                                 chart_name='Break down of biomass dry production for energy', stacked_bar=True)
+                                                 chart_name='Break down of biomass dry production for energy',
+                                                 stacked_bar=True)
             mw_residues_energy_twh = managed_wood_df[
-                'residues_production_for_energy (Mt)'] * ForestDiscipline.biomass_cal_val
+                                         'residues_production_for_energy (Mt)'] * ForestDiscipline.biomass_cal_val
             mw_wood_energy_twh = managed_wood_df['wood_production_for_energy (Mt)'] * \
-                ForestDiscipline.biomass_cal_val
+                                 ForestDiscipline.biomass_cal_val
             biomass_dry_energy_twh = biomass_dry_df['biomass_dry_for_energy (Mt)'] * \
-                ForestDiscipline.biomass_cal_val
+                                     ForestDiscipline.biomass_cal_val
             deforestation_energy_twh = biomass_dry_df['deforestation_for_energy'] * \
-                ForestDiscipline.biomass_cal_val
+                                       ForestDiscipline.biomass_cal_val
 
             mn_residues_series = InstanciatedSeries(
                 years, mw_residues_energy_twh.tolist(), 'Residues from managed wood', InstanciatedSeries.BAR_DISPLAY)
@@ -774,7 +805,8 @@ class ForestDiscipline(ClimateEcoDiscipline):
             lost_capital_deforestation = lost_capital_df['deforestation']
 
             lost_capital_reforestation_series = InstanciatedSeries(
-                years, lost_capital_reforestation.tolist(), 'Reforestation lost capital', InstanciatedSeries.BAR_DISPLAY)
+                years, lost_capital_reforestation.tolist(), 'Reforestation lost capital',
+                InstanciatedSeries.BAR_DISPLAY)
             lost_capital_managed_wood_series = InstanciatedSeries(
                 years, lost_capital_managed_wood.tolist(), 'Managed wood lost capital', InstanciatedSeries.BAR_DISPLAY)
             lost_capital_deforestation = InstanciatedSeries(

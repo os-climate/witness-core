@@ -26,12 +26,11 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class ForestJacobianDiscTest(AbstractJacobianUnittest):
+    # AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
     # np.set_printoptions(threshold=np.inf)
 
     def setUp(self):
-
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
@@ -76,54 +75,11 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
         self.reforestation_cost_per_ha = 13800
 
-        wood_density = 600.0  # kg/m3
-        residues_density = 200.0  # kg/m3
-        residue_density_m3_per_ha = 46.5
-        # average of 360 and 600 divided by 5
-        wood_density_m3_per_ha = 96
         construction_delay = 3
-        wood_residue_price_percent_dif = 0.34
-        wood_percentage_for_energy = 0.48
-        residue_percentage_for_energy = 0.48
 
-        density_per_ha = residue_density_m3_per_ha + \
-            wood_density_m3_per_ha
-
-        wood_percentage = wood_density_m3_per_ha / density_per_ha
-        residue_percentage = residue_density_m3_per_ha / density_per_ha
-
-        mean_density = wood_percentage * wood_density + \
-            residue_percentage * residues_density
-        years_between_harvest = 20
-
-        recycle_part = 0.52  # 52%
-        self.managed_wood_techno_dict = {'maturity': 5,
-                                         'wood_residues_moisture': 0.35,  # 35% moisture content
-                                         'wood_residue_colorific_value': 4.356,
-                                         'Opex_percentage': 0.045,
-                                         'managed_wood_price_per_ha': 15000,  # 13047,
-                                         'Price_per_ha_unit': 'euro/ha',
-                                         'full_load_hours': 8760.0,
-                                         'euro_dollar': 1.1447,  # in 2019, date of the paper
-                                         'percentage_production': 0.52,
-                                         'residue_density_percentage': residue_percentage,
-                                         'non_residue_density_percentage': wood_percentage,
-                                         'density_per_ha': density_per_ha,
-                                         'wood_percentage_for_energy': wood_percentage_for_energy,
-                                         'residue_percentage_for_energy': residue_percentage_for_energy,
-                                         'density': mean_density,
-                                         'wood_density': wood_density,
-                                         'residues_density': residues_density,
-                                         'density_per_ha_unit': 'm^3/ha',
-                                         'techno_evo_eff': 'no',  # yes or no
-                                         'years_between_harvest': years_between_harvest,
-                                         'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
-                                         'recycle_part': recycle_part,
-                                         GlossaryCore.ConstructionDelay: construction_delay,
-                                         'WACC': 0.07
-                                         }
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: [1.135081, 1.135081, 1.135081]})
+            {'past_years': np.arange(-construction_delay, 0),
+             GlossaryCore.InvestmentsValue: [1.135081, 1.135081, 1.135081]})
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -135,7 +91,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
         self.initial_unmanaged_forest_surface = 4 - \
-            1.25 - self.initial_protected_forest_surface
+                                                1.25 - self.initial_protected_forest_surface
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -146,7 +102,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
-                       f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
                        f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{self.name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
@@ -162,14 +117,15 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl', local_data = disc_techno.local_data,
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline.pkl',
+                            local_data=disc_techno.local_data,
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step',
                             inputs=[
-            f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
-            f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
-            f'{self.name}.{model_name}.managed_wood_investment',
-        ],
-            outputs=[
+                                f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
+                                f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
+                                f'{self.name}.{model_name}.managed_wood_investment',
+                            ],
+                            outputs=[
                                 f'{self.name}.{Forest.FOREST_SURFACE_DF}',
                                 f'{self.name}.{model_name}.CO2_land_emission_df',
                                 f'{self.name}.Forest.techno_production',
@@ -179,8 +135,8 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                                 f'{self.name}.Forest.land_use_required',
                                 f'{self.name}.Forest.CO2_emissions',
                                 f'{self.name}.Forest.forest_lost_capital',
-        ]
-        )
+                            ]
+                            )
 
     def test_forest_analytic_grad_unmanaged_limit(self):
         # deforestation reaches the unmanaged limits
@@ -219,58 +175,15 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([5000.00, 5000.00, 5000.00, 2000.00,
-                                                     1.00, 1.00, 1.00, 0000.00,
-                                                     0000.00, 0000.00, 0000.00])})
+                                                                                 1.00, 1.00, 1.00, 0000.00,
+                                                                                 0000.00, 0000.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
 
-        wood_density = 600.0  # kg/m3
-        residues_density = 200.0  # kg/m3
-        residue_density_m3_per_ha = 46.5
-        # average of 360 and 600 divided by 5
-        wood_density_m3_per_ha = 96
-        construction_delay = 5
-        wood_residue_price_percent_dif = 0.34
-        wood_percentage_for_energy = 0.48
-        residue_percentage_for_energy = 0.48
+        construction_delay = 3
 
-        density_per_ha = residue_density_m3_per_ha + \
-            wood_density_m3_per_ha
-
-        wood_percentage = wood_density_m3_per_ha / density_per_ha
-        residue_percentage = residue_density_m3_per_ha / density_per_ha
-
-        mean_density = wood_percentage * wood_density + \
-            residue_percentage * residues_density
-        years_between_harvest = 25
-
-        recycle_part = 0.52  # 52%
-        self.managed_wood_techno_dict = {'maturity': 5,
-                                         'wood_residues_moisture': 0.35,  # 35% moisture content
-                                         'wood_residue_colorific_value': 4.356,
-                                         'Opex_percentage': 0.045,
-                                         'managed_wood_price_per_ha': 15000,  # 13047,
-                                         'Price_per_ha_unit': 'euro/ha',
-                                         'full_load_hours': 8760.0,
-                                         'euro_dollar': 1.1447,  # in 2019, date of the paper
-                                         'percentage_production': 0.52,
-                                         'residue_density_percentage': residue_percentage,
-                                         'non_residue_density_percentage': wood_percentage,
-                                         'density_per_ha': density_per_ha,
-                                         'wood_percentage_for_energy': wood_percentage_for_energy,
-                                         'residue_percentage_for_energy': residue_percentage_for_energy,
-                                         'density': mean_density,
-                                         'wood_density': wood_density,
-                                         'residues_density': residues_density,
-                                         'density_per_ha_unit': 'm^3/ha',
-                                         'techno_evo_eff': 'no',  # yes or no
-                                         'years_between_harvest': years_between_harvest,
-                                         'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
-                                         'recycle_part': recycle_part,
-                                         GlossaryCore.ConstructionDelay: construction_delay,
-                                         'WACC': 0.07
-                                         }
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0),
+             GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -282,7 +195,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
         self.initial_unmanaged_forest_surface = 4 - \
-            1.25 - self.initial_protected_forest_surface
+                                                1.25 - self.initial_protected_forest_surface
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -293,8 +206,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
-                       f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{self.name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{self.name}.transport_cost': self.transport_df,
@@ -310,23 +221,24 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline_2.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[
-            f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
-            f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
-            f'{self.name}.{model_name}.managed_wood_investment',
-        ],
-            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-                     f'{self.name}.Forest.land_use_required',
-                     f'{self.name}.{model_name}.CO2_land_emission_df',
-                     f'{self.name}.Forest.CO2_emissions',
-                     f'{self.name}.Forest.techno_production',
-                     f'{self.name}.Forest.techno_consumption',
-                     f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                     f'{self.name}.Forest.techno_prices',
-                     f'{self.name}.Forest.forest_lost_capital',
-                     ]
-        )
+                                f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
+                                f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
+                                f'{self.name}.{model_name}.managed_wood_investment',
+                            ],
+                            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
+                                     f'{self.name}.Forest.land_use_required',
+                                     f'{self.name}.{model_name}.CO2_land_emission_df',
+                                     f'{self.name}.Forest.CO2_emissions',
+                                     f'{self.name}.Forest.techno_production',
+                                     f'{self.name}.Forest.techno_consumption',
+                                     f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.Forest.techno_prices',
+                                     f'{self.name}.Forest.forest_lost_capital',
+                                     ]
+                            )
 
     def test_forest_analytic_grad_managed_limit(self):
         # deforestation reaches the unmanaged and managed limits
@@ -365,59 +277,13 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([5000.00, 5000.00, 5000.00, 2000.00,
-                                                     2000.00, 2000.00, 0000.00, 0000.00,
-                                                     3000.00, 3000.00, 0000.00])})
+                                                                                 2000.00, 2000.00, 0000.00, 0000.00,
+                                                                                 3000.00, 3000.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
-
-        wood_density = 600.0  # kg/m3
-        residues_density = 200.0  # kg/m3
-        residue_density_m3_per_ha = 46.5
-        # average of 360 and 600 divided by 5
-        wood_density_m3_per_ha = 96
-        construction_delay = 5
-        wood_residue_price_percent_dif = 0.34
-        wood_percentage_for_energy = 0.48
-        residue_percentage_for_energy = 0.48
-
-        density_per_ha = residue_density_m3_per_ha + \
-            wood_density_m3_per_ha
-
-        wood_percentage = wood_density_m3_per_ha / density_per_ha
-        residue_percentage = residue_density_m3_per_ha / density_per_ha
-
-        mean_density = wood_percentage * wood_density + \
-            residue_percentage * residues_density
-        years_between_harvest = 25
-
-        recycle_part = 0.52  # 52%
-        self.managed_wood_techno_dict = {'maturity': 5,
-                                         'wood_residues_moisture': 0.35,  # 35% moisture content
-                                         'wood_residue_colorific_value': 4.356,
-                                         'Opex_percentage': 0.045,
-                                         'managed_wood_price_per_ha': 15000,  # 13047,
-                                         'unmanaged_wood_price_per_ha': 11000,  # 10483,
-                                         'Price_per_ha_unit': 'euro/ha',
-                                         'full_load_hours': 8760.0,
-                                         'euro_dollar': 1.1447,  # in 2019, date of the paper
-                                         'percentage_production': 0.52,
-                                         'residue_density_percentage': residue_percentage,
-                                         'non_residue_density_percentage': wood_percentage,
-                                         'density_per_ha': density_per_ha,
-                                         'wood_percentage_for_energy': wood_percentage_for_energy,
-                                         'residue_percentage_for_energy': residue_percentage_for_energy,
-                                         'density': mean_density,
-                                         'wood_density': wood_density,
-                                         'residues_density': residues_density,
-                                         'density_per_ha_unit': 'm^3/ha',
-                                         'techno_evo_eff': 'no',  # yes or no
-                                         'years_between_harvest': years_between_harvest,
-                                         'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
-                                         'recycle_part': recycle_part,
-                                         GlossaryCore.ConstructionDelay: construction_delay,
-                                         'WACC': 0.07
-                                         }
+        construction_delay = 3
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0),
+             GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -429,7 +295,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
         self.initial_unmanaged_forest_surface = 4 - \
-            1.25 - self.initial_protected_forest_surface
+                                                1.25 - self.initial_protected_forest_surface
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -440,8 +306,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
-                       f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{self.name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{self.name}.transport_cost': self.transport_df,
@@ -456,23 +320,24 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline_3.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[
-            f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
-            f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
-            f'{self.name}.{model_name}.managed_wood_investment',
-        ],
-            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-                     f'{self.name}.Forest.land_use_required',
-                     f'{self.name}.{model_name}.CO2_land_emission_df',
-                     f'{self.name}.Forest.CO2_emissions',
-                     f'{self.name}.Forest.techno_production',
-                     f'{self.name}.Forest.techno_consumption',
-                     f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                     f'{self.name}.Forest.techno_prices',
-                     f'{self.name}.Forest.forest_lost_capital',
-                     ]
-        )
+                                f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
+                                f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
+                                f'{self.name}.{model_name}.managed_wood_investment',
+                            ],
+                            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
+                                     f'{self.name}.Forest.land_use_required',
+                                     f'{self.name}.{model_name}.CO2_land_emission_df',
+                                     f'{self.name}.Forest.CO2_emissions',
+                                     f'{self.name}.Forest.techno_production',
+                                     f'{self.name}.Forest.techno_consumption',
+                                     f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.Forest.techno_prices',
+                                     f'{self.name}.Forest.forest_lost_capital',
+                                     ]
+                            )
 
     def test_forest_analytic_grad_bigmanaged_limit(self):
         # deforestation reaches the unmanaged and managed limits in one time
@@ -512,59 +377,13 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, "forest_investment": forest_invest})
         self.deforest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: np.array([0.00, 0.00, 0.00, 0.00,
-                                                     0.00, 0.00, 30000.00, 10.00,
-                                                     0.00, 0.00, 0000.00])})
+                                                                                 0.00, 0.00, 30000.00, 10.00,
+                                                                                 0.00, 0.00, 0000.00])})
         self.reforestation_cost_per_ha = 13800
-
-        wood_density = 600.0  # kg/m3
-        residues_density = 200.0  # kg/m3
-        residue_density_m3_per_ha = 46.5
-        # average of 360 and 600 divided by 5
-        wood_density_m3_per_ha = 96
         construction_delay = 3
-        wood_residue_price_percent_dif = 0.34
-        wood_percentage_for_energy = 0.48
-        residue_percentage_for_energy = 0.48
-
-        density_per_ha = residue_density_m3_per_ha + \
-            wood_density_m3_per_ha
-
-        wood_percentage = wood_density_m3_per_ha / density_per_ha
-        residue_percentage = residue_density_m3_per_ha / density_per_ha
-
-        mean_density = wood_percentage * wood_density + \
-            residue_percentage * residues_density
-        years_between_harvest = 25
-
-        recycle_part = 0.52  # 52%
-        self.managed_wood_techno_dict = {'maturity': 5,
-                                         'wood_residues_moisture': 0.35,  # 35% moisture content
-                                         'wood_residue_colorific_value': 4.356,
-                                         'Opex_percentage': 0.045,
-                                         'managed_wood_price_per_ha': 15000,  # 13047,
-                                         'unmanaged_wood_price_per_ha': 11000,  # 10483,
-                                         'Price_per_ha_unit': 'euro/ha',
-                                         'full_load_hours': 8760.0,
-                                         'euro_dollar': 1.1447,  # in 2019, date of the paper
-                                         'percentage_production': 0.52,
-                                         'residue_density_percentage': residue_percentage,
-                                         'non_residue_density_percentage': wood_percentage,
-                                         'density_per_ha': density_per_ha,
-                                         'wood_percentage_for_energy': wood_percentage_for_energy,
-                                         'residue_percentage_for_energy': residue_percentage_for_energy,
-                                         'density': mean_density,
-                                         'wood_density': wood_density,
-                                         'residues_density': residues_density,
-                                         'density_per_ha_unit': 'm^3/ha',
-                                         'techno_evo_eff': 'no',  # yes or no
-                                         'years_between_harvest': years_between_harvest,
-                                         'wood_residue_price_percent_dif': wood_residue_price_percent_dif,
-                                         'recycle_part': recycle_part,
-                                         GlossaryCore.ConstructionDelay: construction_delay,
-                                         'WACC': 0.07
-                                         }
         self.invest_before_year_start = pd.DataFrame(
-            {'past_years': np.arange(-construction_delay, 0), GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
+            {'past_years': np.arange(-construction_delay, 0),
+             GlossaryCore.InvestmentsValue: np.array([1.135081] * construction_delay)})
 
         mw_invest = np.linspace(1, 10, year_range)
         self.mw_invest_df = pd.DataFrame(
@@ -576,7 +395,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: years, 'margin': np.ones(len(years)) * 110.0})
         self.initial_protected_forest_surface = 4 * 0.21
         self.initial_unmanaged_forest_surface = 4 - \
-            1.25 - self.initial_protected_forest_surface
+                                                1.25 - self.initial_protected_forest_surface
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -587,8 +406,6 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{self.name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
-                       f'{self.name}.{model_name}.wood_techno_dict': self.managed_wood_techno_dict,
-                       f'{self.name}.{model_name}.managed_wood_initial_surface': 1.25 * 0.92,
                        f'{self.name}.{model_name}.managed_wood_invest_before_year_start': self.invest_before_year_start,
                        f'{self.name}.{model_name}.managed_wood_investment': self.mw_invest_df,
                        f'{self.name}.transport_cost': self.transport_df,
@@ -603,21 +420,22 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_forest_v2_discipline_4.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step',
+                            local_data=disc_techno.local_data,
                             inputs=[
-            f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
-            f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
-            f'{self.name}.{model_name}.managed_wood_investment',
-        ],
-            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
-                     f'{self.name}.Forest.land_use_required',
-                     f'{self.name}.{model_name}.CO2_land_emission_df',
-                     f'{self.name}.Forest.CO2_emissions',
-                     f'{self.name}.Forest.techno_production',
-                     f'{self.name}.Forest.techno_consumption',
-                     f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
-                     f'{self.name}.Forest.techno_prices',
-                     f'{self.name}.Forest.forest_lost_capital',
+                                f'{self.name}.{model_name}.{Forest.DEFORESTATION_INVESTMENT}',
+                                f'{self.name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}',
+                                f'{self.name}.{model_name}.managed_wood_investment',
+                            ],
+                            outputs=[f'{self.name}.{Forest.FOREST_SURFACE_DF}',
+                                     f'{self.name}.Forest.land_use_required',
+                                     f'{self.name}.{model_name}.CO2_land_emission_df',
+                                     f'{self.name}.Forest.CO2_emissions',
+                                     f'{self.name}.Forest.techno_production',
+                                     f'{self.name}.Forest.techno_consumption',
+                                     f'{self.name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}',
+                                     f'{self.name}.Forest.techno_prices',
+                                     f'{self.name}.Forest.forest_lost_capital',
 
-                     ]
-        )
+                                     ]
+                            )

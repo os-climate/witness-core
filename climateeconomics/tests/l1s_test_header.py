@@ -35,8 +35,7 @@ class Testheader(unittest.TestCase):
         self.ExtensionToIgnore = ["pkl", "png", "jpg", "csv", "md", "markdown", "avif", "json", "in", "gitignore", "cfg", "puml", "pdf", "txt", "ipynb", "zip", "rst"]
         #Add here the files to ignore       
         self.FilesToIgnore = ["climateeconomics/sos_processes/iam/witness/economics_sector_process/__init__.py",
-                              "climateeconomics/sos_processes/iam/witness/climate_process/__init__.py",
-                              "climateeconomics/core/core_thesis_narrative/__init__.py"]
+                              "climateeconomics/sos_processes/iam/witness/climate_process/__init__.py",]
         #commit from where to compare added, modeified deleted ...
         self.airbus_rev_commit = "fb7c7e2"
 
