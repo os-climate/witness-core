@@ -81,7 +81,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
     managed_yield = 654 / 131
     # However actually roundwood production is not only plantation forests, then the yield is lower and can be computed with 2020 data (FAO)
     # 1.15GHa supply the total roundwood production which is 3910Mm3
-    actual_yield = total_wood_production_2020 / wood_production_surface
+    actual_yield = total_wood_production_2020 * 1e6 / (wood_production_surface * 1e9)
 
     # reference:
     # https://qtimber.daf.qld.gov.au/guides/wood-density-and-hardness
