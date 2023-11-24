@@ -102,6 +102,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                         'wood_density': wood_density,
                         'residues_density': residues_density,
                         'residue_calorific_value': 4.356,
+                        'residue_calorific_value_unit': 'kWh/kg',
                         GlossaryCore.ConstructionDelay: construction_delay,
                         'WACC': 0.07,
                         # CO2 from production from tractor is taken
