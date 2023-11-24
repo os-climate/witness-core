@@ -44,7 +44,7 @@ class Study(ClimateEconomicsStudyManager):
 
     def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=True,
                  execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], energy_invest_input_in_abs_value=False,
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
                  techno_dict=DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -54,10 +54,9 @@ class Study(ClimateEconomicsStudyManager):
         self.invest_discipline = invest_discipline
         self.energy_list = DEFAULT_ENERGY_LIST
         self.ccs_list = DEFAULT_CCS_LIST
-        self.energy_invest_input_in_abs_value = energy_invest_input_in_abs_value # if False, inputs in percentage and an investmentDistribution discipline is introduced to compute the invest in abs value
         self.dc_energy = datacase_energy(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, energy_invest_input_in_abs_value=self.energy_invest_input_in_abs_value,
+            invest_discipline=self.invest_discipline,
             techno_dict=techno_dict)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
