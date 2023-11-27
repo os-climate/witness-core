@@ -35,7 +35,7 @@ class Study(ClimateEconomicsStudyManager):
     - invest: mix fossil renewable, with CCS = CCS_2020
     '''
 
-    def __init__(self, run_usecase=False, execution_engine=None, year_start=2020, year_end=2100, time_step=1):
+    def __init__(self, run_usecase=True, execution_engine=None, year_start=2020, year_end=2100, time_step=1):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -71,7 +71,7 @@ class Study(ClimateEconomicsStudyManager):
         percentage_DirectAirCaptureTechno = 25.
 
         dbwitness = DatabaseWitnessEnergy()
-        invest_percentage_per_techno_df = dbwitness.data_invest_nze_scenario
+        invest_percentage_per_techno_df = dbwitness.data_invest_steps_scenario
         # data_invest is defined between 2019 and 2100
         invest_percentage_per_techno_df = invest_percentage_per_techno_df.loc[
                 (invest_percentage_per_techno_df[GlossaryCore.Years] >= self.year_start) &
