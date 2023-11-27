@@ -59,7 +59,7 @@ class Study(ClimateEconomicsStudyManager):
 
         # update of the energy investment values from the template usecase and csv file of investment
         study_v0 = witness_uc.dc_energy.study_v0
-        study_v0.invest_percentage_gdp = pd.DataFrame(data={GlossaryCore.Years: study_v0.years,
+        invest_percentage_gdp = pd.DataFrame(data={GlossaryCore.Years: study_v0.years,
                                                         GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(
                                                             2., 2., len(study_v0.years))})
 
@@ -90,19 +90,13 @@ class Study(ClimateEconomicsStudyManager):
             invest_percentage_per_techno_df[GlossaryEnergy.CarbonStorageTechno] - \
             invest_percentage_per_techno_df[GlossaryEnergy.DirectAirCapture]
 
-        # overwrite the techno list values in parent usecase to make sure they are consistent with dbwitness data
-        #study_v0.techno_list_fossil = [GlossaryEnergy.FossilSimpleTechno]
-        #study_v0.techno_list_renewable = [GlossaryEnergy.RenewableSimpleTechno]
-        #study_v0.techno_list_carbon_capture = [GlossaryEnergy.DirectAirCapture,
-        #                                   GlossaryEnergy.FlueGasCapture]
-        #study_v0.techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
-        study_v0.invest_percentage_per_techno = invest_percentage_per_techno_df.loc[:,
+        invest_percentage_per_techno = invest_percentage_per_techno_df.loc[:,
                                                 invest_percentage_per_techno_df.columns !=
                                                 GlossaryEnergy.CarbonCaptureAndStorageTechno]
         data_witness.append(
             {
-                f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': study_v0.invest_percentage_gdp,
-                f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.TechnoInvestPercentageName}': study_v0.invest_percentage_per_techno,
+                f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_percentage_gdp,
+                f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.TechnoInvestPercentageName}': invest_percentage_per_techno,
                 }
         )
 
