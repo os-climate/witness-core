@@ -270,7 +270,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSPureNewtonMDA'
         # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
-        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 3
+        values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
         values_dict[f'{self.study_name}.{self.coupling_name}.linearization_mode'] = 'adjoint'
         values_dict[f'{self.study_name}.{self.coupling_name}.epsilon0'] = 1.0
         # design space

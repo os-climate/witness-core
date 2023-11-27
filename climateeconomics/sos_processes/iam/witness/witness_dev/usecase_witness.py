@@ -52,28 +52,17 @@ class Study(ClimateEconomicsStudyManager):
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_constraint_land_use(self):
-        func_df = pd.DataFrame(
-            columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
-        list_var.extend(
-            ['land_demand_constraint_df'])
-        list_parent.extend([None])
-        list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-1.0])
-        list_aggr_type.extend(
-            [AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions'])
-        func_df['variable'] = list_var
-        func_df['parent'] = list_parent
-        func_df['ftype'] = list_ftype
-        func_df['weight'] = list_weight
-        func_df[AGGR_TYPE] = list_aggr_type
-        func_df['namespace'] = list_ns
+
+        data = {
+            'variable': ['land_demand_constraint_df'],
+            'parent': [None],
+            'ftype': [INEQ_CONSTRAINT],
+            'weight': [-1.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM],
+            'namespace': ['ns_functions']
+        }
+
+        func_df = pd.DataFrame(data)
 
         return func_df
 
@@ -115,7 +104,7 @@ class Study(ClimateEconomicsStudyManager):
 
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 50,
+            f'{self.study_name}.max_mda_iter': 2,
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',

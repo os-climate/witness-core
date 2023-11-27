@@ -142,7 +142,7 @@ class Study(ClimateEconomicsStudyManager):
 
         updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
 
-        dspace_file_name = f'design_space_out.csv'
+        dspace_file_name = f'design_space_out_2.csv'
         dspace_out = pd.read_csv(join(dirname(__file__), 'data', dspace_file_name))
         values_dict_updt = {}
         for index, row in dspace_df.iterrows():

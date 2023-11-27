@@ -121,9 +121,10 @@ class Study(StudyManager):
                                                        diet_df_default['rice and maize'].values[0] / 365 * \
                                                        default_kg_to_kcal['rice and maize']
         fish_average_ca_daily_intake = default_kg_to_kcal[
-                                                 GlossaryCore.Fish] * diet_df_default[GlossaryCore.Fish].values[0] / 365
+                                           GlossaryCore.Fish] * diet_df_default[GlossaryCore.Fish].values[0] / 365
         other_average_ca_daily_intake = default_kg_to_kcal[
-                                                 GlossaryCore.OtherFood] * diet_df_default[GlossaryCore.OtherFood].values[0] / 365
+                                            GlossaryCore.OtherFood] * diet_df_default[GlossaryCore.OtherFood].values[
+                                            0] / 365
         self.red_meat_ca_per_day = pd.DataFrame({
             GlossaryCore.Years: years,
             'red_meat_calories_per_day': [red_meat_average_ca_daily_intake] * year_range})
@@ -150,7 +151,8 @@ class Study(StudyManager):
             {GlossaryCore.Years: years, 'transport': np.ones(len(years)) * 7.6})
 
         self.energy_carbon_emissions = pd.DataFrame(
-            {GlossaryCore.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0, 'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
+            {GlossaryCore.Years: years, 'biomass_dry': - 0.64 / 4.86, 'solid_fuel': 0.64 / 4.86, 'electricity': 0.0,
+             'methane': 0.123 / 15.4, 'syngas': 0.0, 'hydrogen.gaseous_hydrogen': 0.0, 'crude oil': 0.02533})
 
         deforestation_surface = np.linspace(10, 5, year_range)
         self.deforestation_surface_df = pd.DataFrame(
@@ -174,7 +176,25 @@ class Study(StudyManager):
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: mw_invest})
         self.crop_investment = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: crop_invest})
-        deforest_invest = np.linspace(10, 1, year_range)
+        # deforest_invest = np.linspace(10, 1, year_range)
+        deforest_invest = [114.548759121872, 117.184116493791, 119.627727466938, 121.881049634694, 123.945540590445,
+                           125.82265792757, 127.513859239454, 129.02060211948, 130.34434416103, 131.486542957486,
+                           132.448656102233, 133.232141188651, 133.838455810126, 134.269057560038, 134.525404031772,
+                           134.60895281871, 134.521161514233, 134.264348221602, 133.844273083575, 133.267556752788,
+                           132.540819881875, 131.670683123473, 130.663767130216, 129.52669255474, 128.266080049678,
+                           126.888550267669, 125.400723861344, 123.809221483342, 122.120663786294, 120.341671422839,
+                           118.47886504561, 116.538865307244, 114.528292860374, 112.453964415913, 110.323480917878,
+                           108.144639368564, 105.925236770266, 103.673070125275, 101.395936435889, 99.1016327044,
+                           96.7979559331032, 94.492703124292, 92.1936712802624, 89.9086574033064, 87.6454584957192,
+                           85.411871559796, 83.2156935978296, 81.0647216121152, 78.9667526049464, 76.9282359492362,
+                           74.9502305003717, 73.0324474843579, 71.1745981272006, 69.3763936549051, 67.6375452934767,
+                           65.957764268921, 64.3367618072431, 62.7742491344488, 61.2699374765432, 59.8235380595319,
+                           58.4347621094202, 57.1033208522136, 55.8289255139174, 54.6112873205371, 53.4501174980782,
+                           52.3443211421342, 51.2895788266526, 50.2807649951686, 49.3127540912181, 48.3804205583364,
+                           47.4786388400591, 46.6022833799217, 45.7462286214598, 44.905349008209, 44.0745189837049,
+                           43.2486129914827, 42.4225054750783, 41.591070878027, 40.7491836438646, 39.8917182161264,
+                           39.013549038348]
+
         deforest_invest_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
 
@@ -185,7 +205,7 @@ class Study(StudyManager):
                            kind='linear', fill_value='extrapolate')
 
         self.co2_taxes = pd.DataFrame(
-           {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
+            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: func(years)})
 
         techno_capital = pd.DataFrame({
             GlossaryCore.Years: self.years,
@@ -231,13 +251,13 @@ class Study(StudyManager):
         managed_wood_investment_array_mix = np.linspace(
             2.0, 3.0, self.nb_poles)
 
-
         design_space_ctrl_dict = {}
         design_space_ctrl_dict['red_meat_calories_per_day_ctrl'] = red_meat_percentage_ctrl
         design_space_ctrl_dict['white_meat_calories_per_day_ctrl'] = white_meat_percentage_ctrl
-        design_space_ctrl_dict[GlossaryCore.FishDailyCal +'_ctrl'] = fish_calories_per_day_ctrl
-        design_space_ctrl_dict[GlossaryCore.OtherDailyCal +'_ctrl'] = other_calories_per_day_ctrl
-        design_space_ctrl_dict['vegetables_and_carbs_calories_per_day_ctrl'] = vegetables_and_carbs_calories_per_day_ctrl
+        design_space_ctrl_dict[GlossaryCore.FishDailyCal + '_ctrl'] = fish_calories_per_day_ctrl
+        design_space_ctrl_dict[GlossaryCore.OtherDailyCal + '_ctrl'] = other_calories_per_day_ctrl
+        design_space_ctrl_dict[
+            'vegetables_and_carbs_calories_per_day_ctrl'] = vegetables_and_carbs_calories_per_day_ctrl
         design_space_ctrl_dict['milk_and_eggs_calories_per_day_ctrl'] = milk_and_eggs_calories_per_day_ctrl
         design_space_ctrl_dict['deforestation_investment_ctrl'] = deforestation_investment_ctrl
         design_space_ctrl_dict['forest_investment_array_mix'] = forest_investment_array_mix
@@ -263,13 +283,17 @@ class Study(StudyManager):
         # -----------------------------------------
         # Crop related
         update_dspace_dict_with(ddict, 'red_meat_calories_per_day_ctrl',
-                                np.asarray(self.design_space_ctrl['red_meat_calories_per_day_ctrl']), [1.0] * self.nb_poles, [1000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                np.asarray(self.design_space_ctrl['red_meat_calories_per_day_ctrl']),
+                                [1.0] * self.nb_poles, [1000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'white_meat_calories_per_day_ctrl',
-                                np.asarray(self.design_space_ctrl['white_meat_calories_per_day_ctrl']), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                np.asarray(self.design_space_ctrl['white_meat_calories_per_day_ctrl']),
+                                [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'vegetables_and_carbs_calories_per_day_ctrl',
-                                np.asarray(self.design_space_ctrl['vegetables_and_carbs_calories_per_day_ctrl']), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                np.asarray(self.design_space_ctrl['vegetables_and_carbs_calories_per_day_ctrl']),
+                                [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
         update_dspace_dict_with(ddict, 'milk_and_eggs_calories_per_day_ctrl',
-                                np.asarray(self.design_space_ctrl['milk_and_eggs_calories_per_day_ctrl']), [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
+                                np.asarray(self.design_space_ctrl['milk_and_eggs_calories_per_day_ctrl']),
+                                [5.0] * self.nb_poles, [2000.0] * self.nb_poles, activated_elem=[True] * self.nb_poles)
 
         update_dspace_dict_with(ddict, 'deforestation_investment_ctrl',
                                 self.design_space_ctrl['deforestation_investment_ctrl'].values,

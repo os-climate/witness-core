@@ -30,8 +30,6 @@ from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_en
     DataStudy as datacase_witness
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
     DataStudy as datacase_witness_dev
-from climateeconomics.sos_processes.iam.witness_wo_energy_thesis.datacase_witness_wo_energy_solow import \
-    DataStudy as datacase_witness_thesis
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
@@ -108,11 +106,6 @@ class Study(ClimateEconomicsStudyManager):
         if self.process_level == 'val':
             dc_witness = datacase_witness(
                 self.year_start, self.year_end, self.time_step)
-
-        elif self.process_level == 'thesis':
-            dc_witness = datacase_witness_thesis(
-                self.year_start, self.year_end, self.time_step)
-
         else:
             dc_witness = datacase_witness_dev(
                 self.year_start, self.year_end, self.time_step, agri_techno_list=self.agri_techno_list)
@@ -143,7 +136,7 @@ class Study(ClimateEconomicsStudyManager):
 
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
-            f'{self.study_name}.max_mda_iter': 50,
+            f'{self.study_name}.max_mda_iter': 2,
             f'{self.study_name}.tolerance': 1.0e-10,
             f'{self.study_name}.n_processes': 1,
             f'{self.study_name}.linearization_mode': 'adjoint',
