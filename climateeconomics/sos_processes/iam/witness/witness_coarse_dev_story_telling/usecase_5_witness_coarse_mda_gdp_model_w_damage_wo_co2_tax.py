@@ -71,7 +71,7 @@ class Study(ClimateEconomicsStudyManager):
         percentage_DirectAirCaptureTechno = 25.
 
         dbwitness = DatabaseWitnessEnergy()
-        invest_percentage_per_techno_df = dbwitness.data_invest_nze_scenario
+        invest_percentage_per_techno_df = dbwitness.data_invest_steps_scenario
         # data_invest is defined between 2019 and 2100
         invest_percentage_per_techno_df = invest_percentage_per_techno_df.loc[
                 (invest_percentage_per_techno_df[GlossaryCore.Years] >= self.year_start) &
