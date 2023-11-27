@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from os.path import join
+
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_sub_proc_usecase
+from climateeconomics.tests.witness_jacobian_disc_test import WitnessJacobianDiscTest
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import Study as witness_sub_proc_usecase
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT, DEFAULT_TECHNO_DICT_DEV
-from climateeconomics.tests.witness_jacobian_disc_test import WitnessJacobianDiscTest
 
 
 class WitnessFullJacobianDiscTest(WitnessJacobianDiscTest):

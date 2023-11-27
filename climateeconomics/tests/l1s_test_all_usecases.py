@@ -15,8 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
 import pprint
+import unittest
+
 from sostrades_core.sos_processes.script_test_all_usecases import _test_all_usecases
 
 

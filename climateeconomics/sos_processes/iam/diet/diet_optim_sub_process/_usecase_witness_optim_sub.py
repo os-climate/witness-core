@@ -13,18 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
 # mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 import pandas as pd
-import numpy as np
 
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-
+from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import Study as usecase_diet
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-
-from climateeconomics.sos_processes.iam.diet.diet_process.usecase_diet import Study as usecase_diet
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT

@@ -14,19 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from copy import deepcopy
 import math
 from os.path import join, dirname
-import random as rd
-from tkinter import Y
 
-from matplotlib import use
+import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
 
 def sigmoid(ratio):

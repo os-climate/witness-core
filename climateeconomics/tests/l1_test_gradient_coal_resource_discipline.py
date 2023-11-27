@@ -16,7 +16,7 @@ limitations under the License.
 '''
 
 from os.path import join, dirname
-import unittest
+
 from pandas import read_csv
 
 from climateeconomics.glossarycore import GlossaryCore

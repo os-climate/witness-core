@@ -1,9 +1,11 @@
 
 
-import unittest
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-import pandas as pd
 import random as rd
+import unittest
+
+import pandas as pd
+
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestSoSDiscipline(unittest.TestCase):

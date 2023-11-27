@@ -14,21 +14,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sostrades_core.study_manager.study_manager import StudyManager
-from climateeconomics.database_witness_core import DatabaseWitnessCore
-
-from os.path import join, dirname
-from pandas import read_csv
-from numpy import asarray, arange, array
-import pandas as pd
 import numpy as np
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-import matplotlib.pyplot as plt
+import pandas as pd
 from scipy.interpolate import interp1d
+
+from climateeconomics.database_witness_core import DatabaseWitnessCore
+from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.study_manager.study_manager import StudyManager
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):

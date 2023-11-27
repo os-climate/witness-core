@@ -15,19 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
+from copy import deepcopy
+from os.path import join, dirname
+from tempfile import gettempdir
+
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
+from scipy.interpolate.interpolate import interp1d
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from tempfile import gettempdir
-from copy import deepcopy
-from gemseo.utils.compare_data_manager_tooling import delete_keys_from_dict,\
-    compare_dict
 from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from scipy.interpolate.interpolate import interp1d
+from gemseo.utils.compare_data_manager_tooling import delete_keys_from_dict, \
+    compare_dict
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class DICEParallelTest(unittest.TestCase):

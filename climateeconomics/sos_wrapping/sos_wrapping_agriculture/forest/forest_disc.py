@@ -14,20 +14,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from copy import deepcopy
+
+import numpy as np
+import pandas as pd
+
+from climateeconomics.core.core_forest.forest_v2 import Forest
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
-    TwoAxesInstanciatedChart
-from climateeconomics.core.core_forest.forest_v2 import Forest
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-import numpy as np
-import pandas as pd
-import plotly.graph_objects as go
-from copy import deepcopy
-from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
-    InstantiatedPlotlyNativeChart
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 
 
 class ForestDiscipline(ClimateEcoDiscipline):

@@ -14,16 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-# coding: utf-8
-
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 import numpy as np
 
-from climateeconomics.core.core_witness.policy_model import PolicyModel
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.core.core_witness.policy_model import PolicyModel
+from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
+
+
+# coding: utf-8
 
 
 class PolicyDiscipline(SoSWrapp):

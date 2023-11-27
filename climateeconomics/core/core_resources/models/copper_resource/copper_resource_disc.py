@@ -15,16 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 from os.path import join, dirname
-from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
-from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import CopperResourceModel
-import numpy as np
 
+import numpy as np
+import pandas as pd
+
+from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import CopperResourceModel
+from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
-    TwoAxesInstanciatedChart
 
 
 class CopperResourceDiscipline(ResourceDiscipline):

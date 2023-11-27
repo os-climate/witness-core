@@ -15,18 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import logging
-from copy import deepcopy
 
+import numpy as np
+
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from climateeconomics.core.core_resources.resource_model.resource_model import ResourceModel
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-import numpy as np
-import pandas as pd
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class ResourceDiscipline(SoSWrapp):

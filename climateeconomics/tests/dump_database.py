@@ -19,10 +19,11 @@ import unittest
 
 import numpy as np
 import pandas as pd
-from climateeconomics.tests.dump_database_configure import dump_value_into_dict, retrieve_input_from_dict, \
-    generate_dict_from_usecase, get_all_usecases, dump_json_for_database, dump_json_for_database_energy
 from numpy.testing import assert_array_equal
 from pandas._testing import assert_frame_equal
+
+from climateeconomics.tests.dump_database_configure import dump_value_into_dict, retrieve_input_from_dict, \
+    dump_json_for_database_energy
 
 
 class TestUseCases(unittest.TestCase):

@@ -17,13 +17,9 @@ limitations under the License.
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from numpy import asarray, arange, array
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 from sostrades_core.study_manager.study_manager import StudyManager
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from climateeconomics.sos_processes.iam.witness.forest_v2_process.usecase import Study as datacase_forest
 
 AGRI_MIX_MODEL_LIST = ['Crop', 'Forest']
 AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT = [

@@ -14,12 +14,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import Study as witness_proc_usecase
 import unittest
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
+
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness_coarse_optim_process.usecase_witness_optim_invest_distrib import \
+    Study as witness_proc_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class WitnessCoarseDesynchro(unittest.TestCase):

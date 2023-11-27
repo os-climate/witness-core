@@ -14,14 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
+
 import numpy as np
-from pandas import DataFrame, read_csv
-from os.path import join, dirname
+from pandas import DataFrame
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from scipy.interpolate import interp1d
 
 
 class EnergyInvestDiscTest(unittest.TestCase):

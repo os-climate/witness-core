@@ -16,13 +16,9 @@ limitations under the License.
 '''
 import csv
 
+import numpy as np
 import pandas as pd
 import seaborn as sns  # pylint: disable=E0401
-import numpy as np
-
-from gemseo.utils.compare_data_manager_tooling import compare_dict, \
-    delete_keys_from_dict
-
 
 '''
 mode: python; py-indent-offset: 4; tab-width: 4; coding: utf-8

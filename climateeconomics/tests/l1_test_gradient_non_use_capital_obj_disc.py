@@ -15,9 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from os.path import dirname
+
 import numpy as np
 import pandas as pd
-from os.path import dirname
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine

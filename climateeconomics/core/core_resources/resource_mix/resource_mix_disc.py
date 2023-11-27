@@ -14,24 +14,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+import pandas as pd
+
+from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import CoalResourceDiscipline
+from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
+from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import \
+    NaturalGasResourceDiscipline
+from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
+from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import \
+    PlatinumResourceDiscipline
+from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
+from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 # from climateeconomics.core.core_land_use.land_use import LandUse,\
 # OrderOfMagnitude
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from climateeconomics.core.core_resources.resource_mix.resource_mix import ResourceMixModel
-from climateeconomics.core.core_resources.models.uranium_resource.uranium_resource_disc import UraniumResourceDiscipline
-from climateeconomics.core.core_resources.models.coal_resource.coal_resource_disc import CoalResourceDiscipline
-from climateeconomics.core.core_resources.models.natural_gas_resource.natural_gas_resource_disc import \
-    NaturalGasResourceDiscipline
-from climateeconomics.core.core_resources.models.oil_resource.oil_resource_disc import OilResourceDiscipline
-from climateeconomics.core.core_resources.models.platinum_resource.platinum_resource_disc import PlatinumResourceDiscipline
-from climateeconomics.core.core_resources.models.copper_resource.copper_resource_disc import CopperResourceDiscipline
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-import numpy as np
-import pandas as pd
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 
 
 class ResourceMixDiscipline(SoSWrapp):

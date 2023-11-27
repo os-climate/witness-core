@@ -3,11 +3,11 @@ Created on 10 May 2021
 
 '''
 
-import climateeconomics.tests as jacobian_target
-
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from climateeconomics.tests.data.mda_coarse_data_generator import launch_data_pickle_generation
 import os
+
+import climateeconomics.tests as jacobian_target
+from climateeconomics.tests.data.mda_coarse_data_generator import launch_data_pickle_generation
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 if __name__ == '__main__':
 

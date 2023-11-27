@@ -15,11 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import unittest
-import numpy as np
-import pandas as pd
 from os.path import join, dirname
-from pandas import DataFrame, read_csv
+
+import numpy as np
+from pandas import read_csv
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine

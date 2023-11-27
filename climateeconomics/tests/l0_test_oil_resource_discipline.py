@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -24,7 +23,6 @@ mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 import unittest
 from os.path import join, dirname
 from pandas import read_csv
-from climateeconomics.core.core_resources.models.oil_resource.oil_resource_model import OilResourceModel
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 class OilModelTestCase(unittest.TestCase):

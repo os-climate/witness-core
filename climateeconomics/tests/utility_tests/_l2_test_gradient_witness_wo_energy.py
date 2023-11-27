@@ -16,14 +16,15 @@ limitations under the License.
 '''
 # -*- coding: utf-8 -*-
 
-import numpy as np
-import pandas as pd
 from os.path import join, dirname
 
-from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+import numpy as np
+import pandas as pd
 
-from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy as datacase_witness
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import \
+    DataStudy as datacase_witness
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 

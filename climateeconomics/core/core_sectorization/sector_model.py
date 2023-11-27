@@ -17,7 +17,6 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
 
 from climateeconomics.glossarycore import GlossaryCore
 

@@ -14,17 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from pandas import DataFrame, concat
-
-from sostrades_core.study_manager.study_manager import StudyManager
 from climateeconomics.sos_processes.iam.witness_sect_wo_energy.datacase_witness_wo_energy import \
     DataStudy as datacase_witness
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from sostrades_core.study_manager.study_manager import StudyManager
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE

@@ -17,12 +17,11 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-from copy import deepcopy
 
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.stream_type.carbon_models.carbon_dioxyde import CO2
-from sostrades_core.tools.cst_manager.constraint_manager import compute_func_with_exp_min, compute_dfunc_with_exp_min
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from sostrades_core.tools.cst_manager.constraint_manager import compute_func_with_exp_min
 
 
 class Forest():

@@ -15,11 +15,9 @@ limitations under the License.
 '''
 
 
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import Study as usecase_witness
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-
-from pandas import DataFrame
-from numpy import arange, linspace, full
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
+    Study as usecase_witness
 
 
 class Study(ClimateEconomicsStudyManager):

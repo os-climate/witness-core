@@ -14,16 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.core.core_agriculture.agriculture import Agriculture,\
-    OrderOfMagnitude
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries,\
-    TwoAxesInstanciatedChart
+from copy import deepcopy
+
 import numpy as np
 import pandas as pd
-from copy import deepcopy
+
+from climateeconomics.core.core_agriculture.agriculture import Agriculture
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 
 
 class AgricultureDiscipline(ClimateEcoDiscipline):
