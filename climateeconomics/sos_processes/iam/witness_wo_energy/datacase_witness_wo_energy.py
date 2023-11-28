@@ -70,7 +70,7 @@ class DataStudy():
         witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
         witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
-        witness_input[f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}"] = False
+        witness_input[f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}"] = True
         witness_input[f"{self.study_name}.{GlossaryCore.FractionDamageToProductivityValue}"] = 0.30
         witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015
         witness_input[f"{self.study_name}.{'conso_elasticity'}"] = 1.45
