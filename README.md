@@ -51,10 +51,10 @@ documentation folder gives details about the optimisation problem formulation.
 
 ## Looking at the future
 
-### Regionalisation
+### Regionalization
 
 At the moment, results given by Witness process and the different models are global results which are an average over the world.
-In order to have more accuracy, we want to add regionalisation aspect. The first step is to propose a regionalisation continent by continent.
+In order to have more accuracy, we want to add regionalization aspect. The first step is to propose a regionalisation continent by continent.
 
 ## License 
 The witness-core source code is distributed under the Apache License Version 2.0.
