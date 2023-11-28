@@ -18,7 +18,7 @@ $$pip install -r requirements.in --trusted-host pypi.org --trusted-host files.py
 ## Overview
 
 This package contains the following disciplines:
-* agiculture, to determine the area taken by food to feed humanity
+* agriculture, to determine the area taken by food to feed humanity
 * resources (coal, gas, oil, uranium), to evaluate to quantity left and the extraction price of resources.
 * carboncycle, to take into account the natural cycle of carbon
 * carbonemissions, to evaluate the quantity of CO2 emitted
