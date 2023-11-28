@@ -46,16 +46,18 @@ class Study(ClimateEconomicsStudyManager):
         serie_index = dspace['variable'].isin(var_to_set_to_2020_level)
         activated_elem_column = copy(dspace['activated_elem'])
         value_column = copy(dspace['value'])
+        lower_bnd_column = copy(dspace['value'])
         enable_variable_column = copy(dspace['enable_variable'])
         for index, value in serie_index.items():
             if value:
                 activated_elem_column[index] = [True for value in dspace['activated_elem'][index]]
                 enable_variable_column[index] = False
                 value_column[index] = np.array([dspace['value'][index][0] for val in dspace['value'][index]])
+                lower_bnd_column[index] = value_column[index]
 
         dspace['activated_elem'] = activated_elem_column
         dspace['value'] = value_column
-        dspace['lower_bnd'] = value_column
+        dspace['lower_bnd'] = lower_bnd_column
         dspace['enable_variable'] = enable_variable_column
 
         # clean dspace

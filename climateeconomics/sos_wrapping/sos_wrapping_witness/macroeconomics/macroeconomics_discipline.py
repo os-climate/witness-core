@@ -632,12 +632,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         years = list(economics_detail_df.index)
         if GlossaryCore.GrossOutput in chart_list:
 
-            to_plot = [GlossaryCore.OutputNetOfDamage, GlossaryCore.Damages]
+            to_plot = [GlossaryCore.OutputNetOfDamage]
 
-            legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
-                      GlossaryCore.Damages: 'Damages'}
+            legend = {GlossaryCore.OutputNetOfDamage: 'Net output'}
 
-            chart_name = 'Breakdown of gross output'
+            chart_name = 'Gross and net of damage output per year'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
                                                  chart_name=chart_name, stacked_bar=True)
@@ -648,13 +647,18 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 ordonate_data = list(economics_detail_df[key])
 
                 new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'bar', visible_line)
+                    years, ordonate_data, legend[key], 'lines', visible_line)
 
                 new_chart.series.append(new_series)
 
             new_series = InstanciatedSeries(
                 years, list(economics_detail_df[GlossaryCore.GrossOutput].values), 'Gross output', 'lines', True)
 
+            new_chart.series.append(new_series)
+
+            to_plot = GlossaryCore.Damages
+            ordonate_data = list(economics_detail_df[to_plot]*-1)
+            new_series = InstanciatedSeries(years, ordonate_data, 'Damages', 'bar')
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
