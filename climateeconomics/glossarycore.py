@@ -28,9 +28,9 @@ class GlossaryCore:
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
 
-    SectorGdpPart = "Part of the GDP per sector [G$]"
+    SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
-    SectionGdpPart = "Part of the GDP per section [G$]"
+    SectionGdpPart = "Part of the GDP per section [T$]"
     ChartSectionGDPPercentage = "Part of the GDP per section [%]"
 
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
