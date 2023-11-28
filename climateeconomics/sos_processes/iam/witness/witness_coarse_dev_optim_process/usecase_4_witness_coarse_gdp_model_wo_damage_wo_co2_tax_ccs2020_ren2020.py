@@ -55,6 +55,7 @@ class Study(ClimateEconomicsStudyManager):
 
         dspace['activated_elem'] = activated_elem_column
         dspace['value'] = value_column
+        dspace['lower_bnd'] = value_column
         dspace['enable_variable'] = enable_variable_column
 
         # clean dspace
