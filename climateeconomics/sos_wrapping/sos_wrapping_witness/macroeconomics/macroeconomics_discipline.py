@@ -950,7 +950,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             years = list(sector_gdp_df[GlossaryCore.Years])
 
-            chart_name = 'Breakdown of GDP per sector [G$]'
+            chart_name = 'Breakdown of GDP per sector [T$]'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorGdpPart,
                                                  chart_name=chart_name, stacked_bar=True)
@@ -990,7 +990,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             # loop on all sectors to plot a chart per sector
             for sector, dict_section in dict_sections_detailed.items():
 
-                chart_name = f'Breakdown of GDP per section for {sector} sector [G$]'
+                chart_name = f'Breakdown of GDP per section for {sector} sector [T$]'
 
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionGdpPart,
                                                      chart_name=chart_name, stacked_bar=True)
