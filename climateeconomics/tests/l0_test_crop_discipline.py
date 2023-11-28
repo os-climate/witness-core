@@ -20,13 +20,10 @@ from climateeconomics.glossarycore import GlossaryCore
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
 import unittest
-from os.path import join, dirname
-from pandas import read_csv
 from climateeconomics.core.core_agriculture.crop import Crop
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.sos_wrapping.sos_wrapping_agriculture.crop.crop_disc import CropDiscipline
-from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -62,15 +59,15 @@ class CropTestCase(unittest.TestCase):
                                                          2.51, 2.59, 2.67, 2.75, 2.83, 2.9, 2.98, 3.06, 3.14, 3.22,
                                                          3.3, 3.38, 3.45, 3.53, 3.61, 3.69, 3.77, 3.85, 3.92]})
 
-        self.default_kg_to_m2 = {'red meat': 348,
+        self.default_kg_to_m2 = {'red meat': 345.,
                             'white meat': 14.5,
                             'milk': 8.95,
                             'eggs': 6.27,
                             'rice and maize': 2.89,
-                            'cereals': 0.88,
+                            'cereals': 4.5,
                             'fruits and vegetables': 0.8,
                             GlossaryCore.Fish: 0.,
-                            GlossaryCore.OtherFood: 0.173,
+                            GlossaryCore.OtherFood: 5.1041,
                             }
         # land use of other is provided in variable 'other_use_crop'
 
@@ -79,22 +76,22 @@ class CropTestCase(unittest.TestCase):
                               'milk': 921.76,
                               'eggs': 1425.07,
                               'rice and maize': 2572.46,
-                              'cereals': 2937.36,
-                              'fruits and vegetables': 543.67,
+                              'cereals': 2964.99,
+                              'fruits and vegetables': 559.65,
                               GlossaryCore.Fish: 609.17,
-                              GlossaryCore.OtherFood: 2582.92,
+                              GlossaryCore.OtherFood: 3061.06,
                               }
 
-        self.diet_df = pd.DataFrame({"red meat": [13.43],
-                      "white meat": [31.02],
-                      "milk": [73.07],
-                      "eggs": [10.45],
-                      "rice and maize": [98.06],
-                      "cereals": [10.3],
-                      "fruits and vegetables": [266.28],
-                      GlossaryCore.Fish: [23.38],
-                      GlossaryCore.OtherFood: [177.02]
-                      })
+        self.diet_df = pd.DataFrame({"red meat": [11.02],
+                                    "white meat": [31.11],
+                                    "milk": [79.27],
+                                    "eggs": [9.68],
+                                    "rice and maize": [98.08],
+                                    "cereals": [78],
+                                    "fruits and vegetables": [293],
+                                    GlossaryCore.Fish: [23.38],
+                                    GlossaryCore.OtherFood: [77.24]
+                                    })
 
         # investment: 1Mha of crop land each year
         self.crop_investment = pd.DataFrame(
@@ -125,75 +122,64 @@ class CropTestCase(unittest.TestCase):
         n2o_gwp_100 = 265.0
 
         ghg_emissions_unit = 'kg/kg'  # in kgCo2eq per kg of food
-        default_ghg_emissions = {'red meat': 32.7,
-                                 'white meat': 4.09,
-                                 'milk': 1.16,
-                                 'eggs': 1.72,
-                                 'rice and maize': 1.45,
-                                 'cereals': 0.170,
-                                 'fruits and vegetables': 0.372,
-                                 'other': 3.44,
+        default_ghg_emissions = {'red meat': 21.56,
+                                 'white meat': 4.41,
+                                 'milk': 1.07,
+                                 'eggs': 1.93,
+                                 'rice and maize': 1.98,
+                                 'cereals': 0.52,
+                                 'fruits and vegetables': 0.51,
+                                 GlossaryCore.Fish: 3.32,
+                                 GlossaryCore.OtherFood: 0.93,
                                  }
 
         # Our World in Data
         # https://ourworldindata.org/carbon-footprint-food-methane
         ch4_emissions_unit = 'kg/kg'  # in kgCH4 per kg food
-        calibration = 0.134635 / 0.108958
-        # set up as a ratio of total ghg emissions
-        ch4_emissions_ratios = {'red meat': 49 / 100 * calibration,
-                                'white meat': 2 / 20 * calibration,
-                                'milk': 17.0 / 33 * calibration,
-                                'eggs': 0.0 * calibration,
-                                'rice and maize': 4 / 6.5 * calibration,
-                                'cereals': 0.0 * calibration,
-                                'fruits and vegetables': 0.0 * calibration,  # negligible methane in this category
-                                'other': (0.0 + 0.0 + 11.0 + 4.0 + 5.0 + 17.0) / (
-                                            14 + 24 + 33 + 27 + 29 + 34) * calibration,
-                                }
-
-        default_ch4_emissions = {}
-        for food in default_ghg_emissions:
-            default_ch4_emissions[food] = (default_ghg_emissions[food] * ch4_emissions_ratios[food] / ch4_gwp_100)
+        default_ch4_emissions = {'red meat': 6.823e-1,
+                                 'white meat': 1.25e-2,
+                                 'milk': 3.58e-2,
+                                 'eggs': 0.0,
+                                 'rice and maize': 3.17e-2,
+                                 # negligible methane in this category
+                                 'cereals': 0.0,
+                                 'fruits and vegetables': 0.0,
+                                 # consider fish farm only
+                                 GlossaryCore.Fish: 3.39e-2,
+                                 GlossaryCore.OtherFood: 0.,
+                                 }
 
         # FAO Stats
         # https://www.fao.org/faostat/en/#data/GT
         n2o_emissions_unit = 'kg/kg'  # in kgN2O per kg food$
-        calibration = 7.332 / 6.0199
-        pastures_emissions = 3.039e-3 * calibration
-        crops_emissions = 1.504e-3 * calibration
-
-        # with land use ratio on n2o emissions
-        default_n2o_emissions = {'red meat': pastures_emissions * 3.0239241372696104 / 0.9959932034220041,
-                                 'white meat': pastures_emissions * 0.3555438662130599 / 0.9959932034220041,
-                                 'milk': pastures_emissions * 0.5564085980770741 / 0.9959932034220041,
-                                 'eggs': pastures_emissions * 0.048096212128271996 / 0.9959932034220041,
-                                 'rice and maize': crops_emissions * 0.2236252183903196 / 0.29719264680276536,
-                                 'cereals': crops_emissions * 0.023377379498821543 / 0.29719264680276536,
-                                 'fruits and vegetables': crops_emissions * 0.13732524416192043 / 0.29719264680276536,
-                                 'other': crops_emissions * 0.8044427451599999 / 0.29719264680276536,
+        default_n2o_emissions = {'red meat': 9.268e-3,
+                                 'white meat': 3.90e-4,
+                                 'milk': 2.40e-4,
+                                 'eggs': 1.68e-4,
+                                 'rice and maize': 9.486e-4,
+                                 'cereals': 1.477e-3,
+                                 'fruits and vegetables': 2.63e-4,
+                                 GlossaryCore.Fish: 0.,  # no crop or livestock related
+                                 GlossaryCore.OtherFood: 1.68e-3,
                                  }
 
-        # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100 - n2o_emissions * n2o_gwp_100)/co2_gwp_100
-        co2_emissions_unit = 'kg/kg'  # in kgCo2 per kg food
-        calibration = 0.722 / 3.417569
-        default_co2_emissions = {'red meat': 0.0 * calibration,
-                                 'white meat': 0.0 * calibration,
-                                 'milk': 0.0 * calibration,
-                                 'eggs': 0.0 * calibration,
-                                 'rice and maize': 1.45 * calibration,
-                                 'cereals': 0.170 * calibration,
-                                 'fruits and vegetables': 0.372 * calibration,
-                                 'other': 3.44 * calibration,
-                                 }
+        co2_emissions_unit = 'kg/kg'  # in kgCO2 per kg food$
+        # co2 emissions = (total_emissions - ch4_emissions * ch4_gwp_100 -
+        # n2o_emissions * n2o_gwp_100)/co2_gwp_100
+        # Difference method
+        default_co2_emissions = {}
+        for food in default_ghg_emissions:
+            default_co2_emissions[food] = max(0., (default_ghg_emissions[food] - default_ch4_emissions[food] * ch4_gwp_100 -
+                                           default_n2o_emissions[food] * n2o_gwp_100) / co2_gwp_100)
 
         # values taken from https://capgemini.sharepoint.com/:x:/r/sites/SoSTradesCapgemini/Shared%20Documents/General/Development/WITNESS/Agriculture/Faostatfoodsupplykgandkcalpercapita.xlsx?d=w2b79154f7109433c86a28a585d9f6276&csf=1&web=1&e=OgMTTe
         # tab computekcalandkg for the design var to reach 2925.92 kcal/person/day
-        red_meat_daily_cal = np.linspace(57.07, 57.07, year_range)
-        white_meat_daily_cal = np.linspace(181.19, 181.19, year_range)
-        vegetables_and_carbs_calories_per_day = np.linspace(1170.63, 1170.63, year_range)
-        milk_and_eggs = np.linspace(225.33, 225.33, year_range)
+        red_meat_daily_cal = np.linspace(46.82, 46.82, year_range)
+        white_meat_daily_cal = np.linspace(181.71, 181.71, year_range)
+        vegetables_and_carbs_calories_per_day = np.linspace(1774.12, 1774.12, year_range)
+        milk_and_eggs = np.linspace(237.98, 237.98, year_range)
         fish_daily_cal = np.linspace(39.02, 39.02, year_range)
-        other_food_daily_cal = np.linspace(1252.68, 1252.68, year_range)
+        other_food_daily_cal = np.linspace(647.77, 647.77, year_range)
         self.red_meat_calories_per_day = pd.DataFrame({
                             GlossaryCore.Years: years,
                             'red_meat_calories_per_day': red_meat_daily_cal})
@@ -316,6 +302,7 @@ class CropTestCase(unittest.TestCase):
 
         disc = ee.dm.get_disciplines_with_name(
             f'{name}.{model_name}')[0]
+        #outputs = disc.get_sosdisc_outputs() # to compare the emissions and land use with the ones computed on excel
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         #for graph in graph_list:

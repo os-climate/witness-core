@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
 from copy import deepcopy
 
 import pandas as pd
@@ -32,10 +31,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$' # to overwrite if necessary
     NS_SECTORS = 'ns_sectors'
     DESC_IN = {
-        GlossaryCore.DamageDfValue: {'type': 'dataframe',
-                                     'unit': GlossaryCore.DamageDf['unit'],
-                                     'dataframe_descriptor': GlossaryCore.DamageDf['dataframe_descriptor'],
-                                     },
+        GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
@@ -317,10 +313,16 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.OutputNetOfDamage: 'world output net of damage'}
 
             years = list(production_df.index)
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+            min_value, not_max_value = self.get_greataxisrange(production_df[to_plot[1]])
+            not_min_value, max_value = self.get_greataxisrange(production_df[to_plot[0]])
 
             chart_name = f'{self.sector_name} sector economics output'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion dollars]',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
                                                  chart_name=chart_name)
 
             for key in to_plot:
@@ -409,9 +411,15 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.Workforce in chart_list:
             years = list(workforce_df[GlossaryCore.Years])
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+            min_value, max_value = self.get_greataxisrange(workforce_df[self.sector_name])
+
             chart_name = 'Workforce'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Number of people [million]',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
                                                  chart_name=chart_name)
 
             visible_line = True
@@ -425,10 +433,15 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.Productivity in chart_list:
             years = list(productivity_df.index)
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+            min_value, max_value = self.get_greataxisrange(productivity_df[GlossaryCore.Productivity])
 
             chart_name = 'Total Factor Productivity'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Total Factor Productivity [-]',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
                                                  chart_name=chart_name)
 
             ordonate_data = list(productivity_df[GlossaryCore.Productivity])
@@ -445,9 +458,14 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
             to_plot = [GlossaryCore.EnergyEfficiency]
             years = list(detailed_capital_df.index)
+            year_start = years[0]
+            year_end = years[len(years) - 1]
+            min_value, max_value = self.get_greataxisrange(detailed_capital_df[GlossaryCore.EnergyEfficiency])
             chart_name = 'Capital energy efficiency over the years'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Capital energy efficiency [-]',
+                                                 [year_start - 5, year_end + 5],
+                                                 [min_value, max_value],
                                                  chart_name=chart_name)
 
             for key in to_plot:

@@ -17,13 +17,10 @@ limitations under the License.
 
 from os.path import join, dirname
 
-from scipy.fftpack import diff
-from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import CopperResourceModel
 import numpy as np
 import pandas as pd
-from climateeconomics.core.tools.Hubbert_Curve import compute_Hubbert_regression
-from matplotlib import pyplot as plt
 
+from climateeconomics.core.core_resources.models.copper_resource.copper_resource_model import CopperResourceModel
 from climateeconomics.glossarycore import GlossaryCore
 
 resource_name = CopperResourceModel.resource_name #CopperResourceModel.resource_name  PlatinumResourceModel.resource_name

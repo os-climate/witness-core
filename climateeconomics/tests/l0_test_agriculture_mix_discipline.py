@@ -21,12 +21,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
 import unittest
-from os.path import join, dirname
-from pandas import read_csv
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from numpy import asarray, arange, array
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
@@ -187,15 +184,15 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         inputs_dict = {f'{test_name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{test_name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{test_name}.{disc_name}.Crop.techno_consumption': self.techno_consumption_crop,
-                       f'{test_name}.{disc_name}.Crop.techno_consumption_woratio': self.techno_consumption_woratio_crop,
+                       f'{test_name}.{disc_name}.Crop.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.techno_consumption_woratio_crop,
                        f'{test_name}.{disc_name}.Crop.techno_production': self.techno_production_crop,
                        f'{test_name}.{disc_name}.Crop.techno_prices': self.techno_prices_crop,
                        f'{test_name}.{disc_name}.Crop.CO2_emissions': self.CO2_emissions_crop,
                        f'{test_name}.{disc_name}.Crop.land_use_required': self.land_use_required_crop,
-                       f'{test_name}.{disc_name}.Crop.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
-                       f'{test_name}.{disc_name}.Forest.{GlossaryEnergy.TechnoCapitalDfValue}': techno_capital,
+                       f'{test_name}.{disc_name}.Crop.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
+                       f'{test_name}.{disc_name}.Forest.{GlossaryEnergy.TechnoCapitalValue}': techno_capital,
                        f'{test_name}.{disc_name}.Forest.techno_consumption': self.techno_consumption_forest,
-                       f'{test_name}.{disc_name}.Forest.techno_consumption_woratio': self.techno_consumption_woratio_forest,
+                       f'{test_name}.{disc_name}.Forest.{GlossaryCore.TechnoConsumptionWithoutRatioValue}': self.techno_consumption_woratio_forest,
                        f'{test_name}.{disc_name}.Forest.techno_production': self.techno_production_forest,
                        f'{test_name}.{disc_name}.Forest.techno_prices': self.techno_prices_forest,
                        f'{test_name}.{disc_name}.Forest.CO2_emissions': self.CO2_emissions_forest,

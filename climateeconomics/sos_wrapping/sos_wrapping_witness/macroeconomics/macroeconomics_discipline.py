@@ -14,22 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from pathlib import Path
 import copy
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from copy import deepcopy
+from os.path import join, isfile
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
+from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-import pandas as pd
-import numpy as np
-from os.path import join, isfile
-from copy import deepcopy
-from climateeconomics.glossarycore import GlossaryCore
-import plotly.express as px
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -949,7 +950,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             years = list(sector_gdp_df[GlossaryCore.Years])
 
-            chart_name = 'Breakdown of GDP per sector [G$]'
+            chart_name = 'Breakdown of GDP per sector [T$]'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorGdpPart,
                                                  chart_name=chart_name, stacked_bar=True)
@@ -989,7 +990,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             # loop on all sectors to plot a chart per sector
             for sector, dict_section in dict_sections_detailed.items():
 
-                chart_name = f'Breakdown of GDP per section for {sector} sector [G$]'
+                chart_name = f'Breakdown of GDP per section for {sector} sector [T$]'
 
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionGdpPart,
                                                      chart_name=chart_name, stacked_bar=True)

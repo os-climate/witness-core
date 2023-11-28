@@ -72,23 +72,9 @@ class GlossaryCore:
     FishDailyCal = "fish_calories_per_day"
     OtherDailyCal = "other_calories_per_day"
 
-    AllStreamsDemandRatioValue = "all_streams_demand_ratio"
-    FlueGasMean = "flue_gas_mean"
-    MarginValue = "margin"
-    CO2EmissionsValue = "CO2_emissions"
-    EnergyCO2EmissionsValue = "energy_CO2_emissions"
-    TechnoProductionValue = "techno_production"
-    TechnoPricesValue = "techno_prices"
-    TechnoDetailedConsumptionValue = "techno_detailed_consumption"
-    TechnoDetailedProductionValue = "techno_detailed_production"
-    TechnoDetailedPricesValue = "techno_detailed_prices"
-    TechnoConsumptionValue = "techno_consumption"
+    TechnoCapitalValue = "techno_capital"
     TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
-    RessourcesCO2EmissionsValue = "resources_CO2_emissions"
-    TransportCostValue = "transport_cost"
-    TransportMarginValue = "transport_margin"
-    TransportDemandValue = "transport_demand"
-    ForestInvestmentValue = "forest_investment"
+    ConstructionDelay = "construction_delay"
 
     # namespaces
     NS_MACRO = "ns_macro"
@@ -769,7 +755,6 @@ class GlossaryCore:
         },
     }
 
-
     FractionDamageToProductivityValue = "frac_damage_prod"
     FractionDamageToProductivity = {
         "var_name": FractionDamageToProductivityValue,
@@ -853,6 +838,8 @@ class GlossaryCore:
         "default": 10. ,
         "description": "float to set maximum percentage of GDP to allow to investments in sectors and energy"
     }
+
+    UtilisationRatioValue = "Utilisation Ratio [%]"
 
     MaxInvestConstraintName = "max_invest_constraint"
     MaxInvestConstraint = {

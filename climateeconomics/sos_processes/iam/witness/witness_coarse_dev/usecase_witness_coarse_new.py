@@ -15,17 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from pandas import DataFrame, concat
+from pandas import DataFrame
 
-from sostrades_core.study_manager.study_manager import StudyManager
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
     DataStudy as datacase_witness
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.sos_processes.energy.MDA.energy_process_v0_mda.usecase import Study as datacase_energy
 from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
 AGGR_TYPE = FunctionManagerDisc.AGGR_TYPE
@@ -44,9 +42,10 @@ DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False,
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=True,
                  execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT):
+                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
+                 techno_dict=DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
@@ -57,7 +56,8 @@ class Study(ClimateEconomicsStudyManager):
         self.ccs_list = DEFAULT_CCS_LIST
         self.dc_energy = datacase_energy(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline,
+            techno_dict=techno_dict)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_process(self):
@@ -137,7 +137,7 @@ if '__main__' == __name__:
     #     pd.set_option('display.width', None)
 
     uc_cls.test()
-
+    """
     ppf = PostProcessingFactory()
     ll = ['Macroeconomics', 'FossilSimpleTechno', 'RenewableSimpleTechno']
     for disc in uc_cls.execution_engine.root_process.proxy_disciplines:
@@ -151,3 +151,4 @@ if '__main__' == __name__:
                 for graph in graph_list:
                     graph.to_plotly().show()
 
+"""

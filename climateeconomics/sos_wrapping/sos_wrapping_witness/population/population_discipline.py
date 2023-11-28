@@ -15,16 +15,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from copy import deepcopy
+from os.path import join
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.population_model import Population
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from os.path import join, dirname
-from pathlib import Path
-from copy import deepcopy
-import pandas as pd
-import numpy as np
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
+
 
 class PopulationDiscipline(ClimateEcoDiscipline):
     "     Temperature evolution"

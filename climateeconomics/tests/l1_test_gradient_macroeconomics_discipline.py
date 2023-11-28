@@ -14,9 +14,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from os.path import join, dirname
+
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
 from pandas import DataFrame, read_csv
 from scipy.interpolate import interp1d
 

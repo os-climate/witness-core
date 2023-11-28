@@ -14,15 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-import pandas as pd
-import numpy as np
-from pandas import DataFrame, read_csv
 from os.path import join, dirname
+
+import numpy as np
+import pandas as pd
+from pandas import read_csv
+from scipy.interpolate import interp1d
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from scipy.interpolate import interp1d
 
 
 class ServicesDiscTest(unittest.TestCase):
@@ -118,7 +119,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
                        f'{self.name}.prod_function_fitting': False,
@@ -155,7 +156,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest, #To check if not used
                        f'{self.name}.{SectorDiscipline.sector_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
                        f'{self.name}.prod_function_fitting': True,
@@ -179,6 +180,6 @@ class ServicesDiscTest(unittest.TestCase):
             f'{self.name}.{SectorDiscipline.sector_name}')[0]
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
-#         for graph in graph_list:
-#             graph.to_plotly().show()
+        # for graph in graph_list:
+        #     graph.to_plotly().show()
 

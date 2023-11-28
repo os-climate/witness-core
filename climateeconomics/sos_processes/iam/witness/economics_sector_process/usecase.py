@@ -13,18 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from sostrades_core.study_manager.study_manager import StudyManager
-
 from os.path import join, dirname
-from numpy import asarray, arange, array
-import pandas as pd
+
 import numpy as np
-from sostrades_core.execution_engine.func_manager.func_manager import FunctionManager
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-import matplotlib.pyplot as plt
+import pandas as pd
 from scipy.interpolate import interp1d
+
+from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.study_manager.study_manager import StudyManager
 
 
 def update_dspace_with(dspace_dict, name, value, lower, upper):
@@ -155,15 +151,13 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
         sect_input[f"{self.study_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
         sect_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}"] = invest_energy_wo_tax
-        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}"] = damage_df
-        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}"] = damage_df
-        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}"] = damage_df
+        sect_input[f"{self.study_name}.{GlossaryCore.DamageDfValue}"] = damage_df
 
         if self.year_start == 2000:
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{'capital_start'}"] = 31.763
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{'capital_start'}"] = 4.035565
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{'capital_start'}"] = 139.1369
-            sect_input[f"{self.study_name}.{'damage_to_productivity'}"] = False
+            sect_input[f"{self.study_name}.{'damage_to_productivity'}"] = True
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{'init_output_growth'}"] = 0
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{'init_output_growth'}"] = 0
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{'init_output_growth'}"] = 0

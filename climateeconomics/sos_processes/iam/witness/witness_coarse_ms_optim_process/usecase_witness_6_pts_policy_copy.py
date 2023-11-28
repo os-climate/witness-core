@@ -13,15 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import numpy as np
-import pandas as pd
 from os.path import join, dirname
 
-from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.study_manager.study_manager import StudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import Study as witness_optim_usecase
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+import numpy as np
+import pandas as pd
+
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
+    Study as witness_optim_usecase
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -106,7 +106,7 @@ class Study(ClimateEconomicsStudyManager):
                                  'enthalpy': 1.124,
                                  'enthalpy_unit': 'kWh/kgC02',
                                  GlossaryCore.EnergyEfficiency: 0.78,
-                                 'construction_delay': construction_delay,
+                                 GlossaryCore.ConstructionDelay: construction_delay,
                                  'techno_evo_eff': 'no',
                                  'CO2_from_production': 0.0,
                                  'CO2_from_production_unit': 'kg/kg',

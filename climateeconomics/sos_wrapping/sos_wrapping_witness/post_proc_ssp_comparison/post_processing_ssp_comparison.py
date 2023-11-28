@@ -13,18 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from sostrades_core.tools.post_processing.pareto_front_optimal_charts.instanciated_pareto_front_optimal_chart import \
-    InstantiatedParetoFrontOptimalChart
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
-from sostrades_core.execution_engine.data_manager import DataManager
+import os.path
+
 import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
-import os.path
+from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 
 WITNESS_SERIES_NAME = 'WITNESS'
 WITNESS_YEARS = np.arange(2020, 2101, 1)

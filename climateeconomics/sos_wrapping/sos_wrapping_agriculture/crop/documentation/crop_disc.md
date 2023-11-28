@@ -1,6 +1,6 @@
 ## Agricultural lands
 
-Agricultural lands are divided in 2 type of fields that are mixed in this model.
+Agricultural lands are divided into 2 types of fields that are mixed in this model.
 Crops for cereal, vegetables or other production, and grazing lands for switchgrass or other products.
 
 The area available for crops is 1.1Gha and for grazing lands 3.8 Gha for a total around 4.9Gha[^1].
@@ -17,7 +17,7 @@ This model computes the biomass dry producted with crops for energy.
 In a field, 50% of the harvest is left, this is what is called crop residues. 
 The field residues are left on the field (to minimize the erosion of soil by wind and water), 
 and the process residues are from the processing of the crops in usable resources 
-(for esample  husks, seeds, bagasse, molasses and roots). 25% of residues can be used as biomass for energy[^2].
+(for example  husks, seeds, bagasse, molasses and roots). 25% of residues can be used as biomass for energy[^2].
 The biomass potential from crops residues for energy is high but not yet fully exploited. The residue potential is between 4900Twh (17.8EJ) 
 to 22000Twh(82.3EJ)[^3], but in reality, biomass from agriculture is around 1555Twh(5.6EJ)[^4].
 
@@ -33,21 +33,21 @@ fields[^6] and an average crop yield of 2565.68kg/ha for 3.8Gha of grazing lands
 The total yield (crop + 25% residue) is:
 $$Y = 2903kg/ha * 1.25 = 3628.75kg/ha$$
 
-The crop energy production computed corresponds in a mix of crops and residue available for energy. 
+The crop energy production computed corresponds to a mix of crops and residue available for energy. 
 The crop production dedicated to industry (food or other) has been removed.
 
 ## Agricultural sectors
 
-Crops model computes the place needed to feed the humanity and how much crops can be used for energy.
+Crops model computes the land surface needed to feed humanity and how much crops can be used for energy.
 
 **Land for food**
 
-Food is one of the primary needs of human being. 
-However, it is also a real challenge to produce food with the limited space of the land on our planet, 
-and the important population.
-The agriculture model aims to answer to the following question:
-Given a food diet for humanity, how much space do we need to to feed everyone ?
-This model allows to test different food diets, and computes the agriculture surface 
+Food is one of the primary needs of human beings. 
+However, it is also a real challenge to produce food with the limited land space available on our planet, 
+and the large population.
+The agriculture model aims at answering the following question:
+Given a food diet for humanity, how much space is needed to feed everyone ?
+This model allows to test different food diets, and computes the agriculture land area  
 needed to produce enough food to feed all human beings.
 
 **crops for energy**
@@ -62,32 +62,38 @@ This section lists the inputs and outputs of the model.
 The model inputs are:
 * **year start**, this defines the starting year of the study.
 * **year end**, this defines the last year of the study.
-* **population_df**, this gives the population number, for each year of the study. The unit is the million of people.
+* **population_df**, this gives the population number, for each year of the study. The unit is in millions of people.
 * **temperature_df**, gives the temperature in degree Celsius above pre-industrial level for each year of the study. 
-* **starting diet**, this gives the food diet for the first year of the study. For each food, the quantity in kg/person/year need to be filled. The different food taken into account are:
-red meat, white meat, milk, eggs, rice and maize, cereals, fruits and vegetables, fish and other including all the remaining food sucha as sugar, oil, wheat, cocoa, alcohol (etc.). By default, data are:
+* **starting diet**, this gives the food diet for the first year of the study. For each food category of the diet, 
+the quantity in kg/person/year needs to be filled out. The different foods taken into account are:
+red meat, white meat, milk, eggs, rice and maize, cereals, fruits and vegetables, fish and other including all 
+the remaining foods,  such as sugar, all kind of nuts and oils, cocoa, coffee, tea, alcohol, soybeans, honey. 
+The default diet per capita per year in kg of food is:
 
 |Red meat| White meat |Milk|Eggs|Rice and Maize| cereals |Fruit and vegetables|Fish|          Other | Unit            |
 | - |:----------:|-|-|:------------:|:-------:|:------------------:|---:|---------------:|-----------------|
 |13.43|   31.02|73.07|10.45|       98.06       |  10.3 |266.28 |23.38|         177.02 |  kg/person/year |
 
-These data are the average world diet [^7]. This leads to a daily diet of 2925 kcal/person.
+These data are the average world diet [^7], in other words it represents the world food produced (not eaten) normalized by the 
+world population. This leads to a daily diet of 2927 kcal/person. It therefore includes the food wasted, namely not eaten.
+Since about 30% of the food produced is wasted [^22], the daily diet actually eaten is around 2049 kcal/person. 
 
 * **m2 per kg**, gives the average area needed to produce 1kg of the considered food. The unit is m^2/kg. By default, data comes from [^8]. 
-For the specific case of the category other, the average ha per person for the use of agriculture in other way that the 7 food types is 
-0.102ha/person to represent around of 800 millions of ha for a population of 7.8billions of people. [^10]. It is converted to 
-kg/m2 considering an average consumption of 177.02 kg/person/year of food in this category "other"
+The value for category other is adjusted so that the total land use of 4.9 Gha is reached considering the average diet for a population of 
+7.8billions of people [^10]. 
+At this stage, water area used for farm fishing is not accounted for in the crop model and is therefore set to 0.
+
 * **kcal per kg**, gives the number of kilocalories for 1kg of the considered food. The unit is kcal/kg.
-By default, the values are:
+Extracted from [^9], the default values are:
 
 |Red meat|White meat|Milk|Eggs|Rice and Maize| cereals |Fruit and vegetables|    Fish |  Other | Unit|
 | --- |:--------:|----|----|:------------:|:-------:|:------------------:|--------:|-------:|---------|
 |1551|2131|921|1425|2572|   2937   |543|     609 |   2582 | kcal/kg |
 
-These data are extracted from [^9].
+
 * **red meat calories per day**, gives the calories(kcal) of red meat in a person's diet per day.
 * **white meat calory percentage**, gives the calories(kcal) of white meat in a person's diet per day.
-* **fish caloris per day**, gives the calories(kcal) of fish in a person's diet per day.
+* **fish calories per day**, gives the calories(kcal) of fish in a person's diet per day.
 * **vegetable and carbs calories per day**, gives the calories(kcal) of vegetables and fruits in a person's diet per day.
 * **egg and milk calories per day**, gives the calories(kcal) of egg and milk in a person's diet per day.
 * **other calories per day**, gives the calories(kcal) in a person's diet per day of the food that does not belong to the categories above.
@@ -134,19 +140,20 @@ Then, knowing the conversion factor between mass of food and surface needed to p
 $$required\_surface = quantity\_of\_food * square\_meter\_per\_food$$
 
 To all of this, an other contribution will be added to the agriculture surface. This other contribution represents the use of agriculture for other purpose than producing the 7 food types already taken into account. It mainly takes into account :
-cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) - tobacco - yams - natural rubber - millet - textile fiber (cotton and other) - wheat...
+cocoa - coffee - olive - sugar - oil(palm, sunflower,...) - tea - grapes(wine) - tobacco - yams - natural rubber - millet - textile fiber (cotton and other)...
 
 ## Changing the diet
-This section aims to explain how the diet change works in the agriculture model.
+This section aims at explaining how the diet change works in the agriculture model.
 
 In this model, the user is able to change diet over time, then, to observe the effect of the changes.
-First of all, when a diet change, one of the risk is to be undernourished. 
+First of all, when a diet changes, one of the risk is to be undernourished. 
 To prevent that, the diet will remain at the same amount of kcal all the time.
 When the term "convert" a food X to an other Y is used, it means suppress a quantity of food X, which corresponds to an amount of E kcal, 
-and then add a amount of food Y that fill the E kcal removed.
+and then add an amount of food Y that fill the E kcal removed.
 
 The model starts from the base-diet given in input, **diet_df**.
-The first change is to convert red meat and white meat, using **red_meat_percentage** and **white_meat_percentage** to vegetables (fruit and vegetables, potatoes and rice and maize).
+The first change is to convert red meat and white meat, using **red_meat_percentage** and **white_meat_percentage** 
+to vegetables (fruit and vegetables, potatoes and rice and maize).
 This will give the percentage converted, based on the base-diet.
 For red_meat_percentage = 6.86%, nothing will change, it is the same as the starting diet.
 For red_meat_percentage = 0%, all red meat is removed, and missing kcal are filled by additional vegetables.
@@ -176,7 +183,8 @@ calories from "vegetables and carbs" variable. It is also used to compute the ac
 
 
 ## Climate change impact
-The increase in temperature due to global warming has consequences on crop productivity. Effects of global warming on agriculture are for example drought, flooding and increased crops water needs.   
+The increase in temperature due to global warming has consequences on crop productivity. 
+Effects of global warming on agriculture are for example drought, flooding and increased crops water needs.   
 Some models estimate the impact of increased temperature on crop productivity but results are quite disparate.
 We therefore chose to implement one impact for all agriculture productivity and not one per type of crop 
 (maize, rice, wheat...). Our bilbiography to define the effect includes IPCC[^11] 
@@ -189,20 +197,68 @@ $$with~~T_t = temperature_t -temperature_{t=0}$$
 By default $\alpha$ and $b$ are respectively set at  -0.00833 and - 0.04167. So that at +2 degrees (above pre industrial level) the decrease in productivity is 5% and 30% at +5 degrees celsius.   
 Then, when temperature rises, the surface required to produce the same amount of food increases by the share of production reduction. 
 
-Greenhouse Gas emissions of food production and crops are computed from ratios of kgCO2eq per kg of food from [^18] and scaled using FAO's food production in 2019 [^20].
-A weighed kgCO2eq per kg of food is then computed for each modelled category of food products (red meat, white meat, etc...)
-![](food-footprints.png)
+Greenhouse Gas emissions of food production and crops are computed from ratios of kgCO2eq per kg:
+$$GHG(food) = kgCO2eq\_ghg(food) \times land\_use(food)$$ 
+The kgCO2eq_ghg coefficient for each food is partially given in [^18] (see graph below). They are however only 
+considered accross livestock and crops, emissions for land use and retail being accounted for elsewhere.
+![](food-emissions-supply-chain.png)
+However, [^18] shows more categories of food than the 7 mentioned above. They therefore need to be grouped as shown in the table below. 
 
-Resulted greenhouse gas emissions are finally calibrated using OurWorldInData global Food Grenhouse gas emissions [^17]. We consider only emissions from Crops and Livestock as all supply chain and lan use emissions are computed elsewhere. 
+|Red meat|White meat|Milk|Eggs|Rice and Maize| cereals |Fruit and vegetables|    Fish |                                                   Other |
+| --- |:--------:|----|----|:------------:|:-------:|:------------------:|--------:|--------------------------------------------------------:|
+|Beef herd, dairy herd, Lamb & Mutton|Pig, poultry|Milk|Eggs|Rice, Maize|   Barely, Oatmeal, Wheat and Rye   |Apples, Bananas, Berries and grapes, Brassicas, Cassava, Cirtus fruit, Onions and leeks, other fruit, other pulses, other vegetables, peas, potatoes, root vegetables, tomatoes|     Fish(farmed) |   Sugar, cheese, coffee, chocolate, oils, soybean, wine |
+
+For each food sub-category, the kgCO2eq_ghg coefficient is weighted by the world's production of that sub-category taken 
+from FAO's values of food production in 2019 [^20].
+NB: FAO does not distinguish production for dairy and beef herd nor between wild and farm fish. The percentage of meat 
+and fish coming respectively from dairy beef and farm fish are considered to be respectively 80% [^23] and 53% [^24].
+For the other sub-categories, FAO actually introduces sub-sub-categories which production is summed up to obtain 
+the sub-category worlwide production. The actual data pre-processing approach is extensively described in an internal 
+Capgemini document [^25].
+
+The raw kgCO2eq coefficients obtained above applied to the average diet surprinsingly overestimate the ghg for livestock and crops 
+by a factor of 1.92. Therefore, the kgCO2eq_ghg coefficients are scaled down by this factor in order to obtain the 
+expected global ghg emissions of 7.89 GtCO2eq for livestock and crops (see OurWorldInData global Food Grenhouse gas 
+emissions [^17]). Again, we consider only emissions from Crops and Livestock as all supply chain and land use emissions are computed elsewhere. 
 ![](How-much-of-GHGs-come-from-food.png)
 
-Note that each of those sources deal with CO2eq emissions of all greenhouse gases. From OurWorldInData: Carbon footprint and methane [^19], we are able to identify the CH4 part in these global GHG emissions.
-Nitrous Oxide emissions (N20) are extracted from FAO Stats from 2019 [^20]. All calibrations are also done using the total emissions given by the FAO.
+N2O emissions are estimated from global crop and pastures emissions of respectively 0.28 and 0.86 GtCO2eq (considering 
+a ghg power of 28). Values are computed from the 2019 FAO stats [^21] considering that the N2O emissions for:
+* crop come from crop residues, burning crop residues, manure management, 
+manure applied on soils, Synthetic fertilizers, fertilizers and pesticides manufacturing
+* pastures come from manure left on pastures and drained organic soils
 
+It is assumed that cereals, fruitveggies and maize&rice and other have N2O emissions from crops, the rest from pastures. 
+Then the kgCO2eq_N2O for N2O for each food category is computed from:
+$$kgCO2eq\_N2O = emission(N2O) \times land\_use(food)/Total\_land\_use$$
+
+CH4 emissions are initially obtained from the CH4 emission ratio provided by OurWorldInData, 
+Carbon footprint and methane [^19], which allows to identify the CH4 part in these global GHG emissions.
+However, those values are valid accross the supply chain whereas we are restricting the emissions computation 
+accross livestock and crops only, excluding contributions of emissions from land use and retail. 
+Therefore, those ratio need be corrected. In particular, for red meat, methane emissions are mostly due to enteric 
+fermentation and manure management. Those steps do not occur during food pre and post-process, then CH4/ghg of [^19] 
+is underestimated accross livestock and crop. 
+* Global CH4 emissions for livestock 
+(=red meat, white meat, eggs and milk) account for 3.08 GtCO2eq [^21]. NB: this figure is obtained while 
+discarding the agri systems waste disposal that is considered as part of the post-production process [^25] (p.2).
+It is therefore not considered for livestock & crops CH4 emissions accounting. 
+* Global CH4 emissions for crop account for 0.7 Gt CO2eq, mostly corresponding to rice cultivation, which is 
+already well estimated from the CH4/ghg ratio. 
+
+To recalibrate the kgCO2eq_CH4 coefficient for livestock, tt is assumed that those coefficients are identical 
+for each livestock category for manure management. The remaining CH4 emissions from enteric fermentation must then 
+be split between red meat and milk (due to ruminants). This accounts for 2.81 GtCO2eq. 
+In practice, those 2.81 GtCO2eq are split between red meat and milk following the ratio of CH4 obtained between 
+those 2 categories from the CH4 emission ratio. For those 2 categories, this however leads to CH4 emissions values (CO2eq) 
+higher than the ghg values computed. Then, for the red meat and milk categories, the CH4 value taken = ghg - N2O emissions 
+(which are assumed to be correct) leading to CO2 emissions of 0 for red meat and milk. 
+This approach is debatable, but it's the only way to recompute the global CH4 emissions with 8% error 
+while keeping accurate the global ghg and N2O emissions.  
 
 
 ## Results
-This sections aims to describes the results charts.
+This sections aims at describing the results charts.
 
 * Surface taken to produce food over time:
 This is a bar graph, displaying the surface needed (Gha) over the time (years of the study).
@@ -213,16 +269,23 @@ This graph display the same information than the last one, but values are normal
 This graphs gives the diet evolution for each year of the study, in kg / person / year, for each food.
 
 ## Model limitation
-This section aims to gives the limitations of the model.
+This section aims at giving the limitations of the model.
 
 The agriculture model gives output data as the result of different computations described previously. 
-However, the different hypothesis lead to limitations that should be kept in mind in order to have a critical point of view regarding results.
-The following points list the limitations of the agriculture model:
+However, the different hypothesis lead to limitations that should be kept in mind in order to have a critical 
+point of view regarding the results.
+The following lists the limitations of the agriculture model:
 
 * The model does not allow a modification of the global kcal amount of the diet. This kcal amount is set by the initial diet, and will remain the same.
-* The model does not test the feasibility of the diet change. For example, convert 100% of red meat or white meat in one year is allowed in the model, even if it is probably not realisable.
+* The model does not test the feasibility of the diet change. For example, convert 100% of red meat or white meat 
+in one year is allowed in the model, even if it is probably not realisable.
 * The model considers a global average diet, and does not include change depending on country or habits.
-* The land use to produce food are assumed to be able to produce any type of food, without regarding average weather or climate conditions. For example equatorial or temperate climate may have different affinity with food production.
+* The land use to produce food are assumed to be able to produce any type of food, 
+with no regards of average weather or climate conditions. 
+For example equatorial or temperate climate may have different affinity with food production.
+* The CH4 emissions for livestock are underestimated to keep global ghg estimates accurate
+* The average diet describes the food produced, not the food eaten, ie it includes food waste. In the future, 
+if food waste is reduced, the number of calories of the average diet should be reduced as well
 
 
 ## Biomass dry Production
@@ -285,3 +348,7 @@ Prices are computed with the input parameter crop_residue_price_percent_dif.
 [^19]: OurWorldInData: Carbon footprint and methane, https://ourworldindata.org/carbon-footprint-food-methane
 [^20]: Food and Agriculture Organisation, World Statistics, https://www.fao.org/faostat/en/#data/FBS
 [^21]: Food and Agriculture Organisation, World Statistics, https://www.fao.org/faostat/en/#data/GT
+[^22]: United Nations, https://www.un.org/en/observances/end-food-waste-day
+[^23]: Le monde, https://www.lemonde.fr/planete/article/2013/02/28/la-viande-de-boeuf-dans-votre-assiette-de-la-vieille-vache_1839589_3244.html
+[^24]: OurWorldInData: Rise of Aquaculture, https://ourworldindata.org/rise-of-aquaculture
+[^25]: Food and Agriculture Organisation, https://www.fao.org/3/cc8543en/cc8543en.pdf

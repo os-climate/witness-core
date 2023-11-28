@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
-from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -44,10 +44,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         if self.process_level == 'dev':
             chain_builders_witness = self.ee.factory.get_builder_from_process(
                 'climateeconomics.sos_processes.iam', 'witness_wo_energy_dev')
-
-        elif self.process_level == 'thesis':
-            chain_builders_witness = self.ee.factory.get_builder_from_process(
-                'climateeconomics.sos_processes.iam', 'witness_wo_energy_thesis')
 
         else:
             chain_builders_witness = self.ee.factory.get_builder_from_process(

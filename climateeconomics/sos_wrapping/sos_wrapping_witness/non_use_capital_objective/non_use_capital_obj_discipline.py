@@ -14,17 +14,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+
+from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.core.core_witness.non_use_capital_objective_model import NonUseCapitalObjective
 from climateeconomics.glossarycore import GlossaryCore
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.glossaryenergy import GlossaryEnergy
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-import numpy as np
-from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from climateeconomics.core.core_witness.non_use_capital_objective_model import NonUseCapitalObjective
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from energy_models.core.energy_mix.energy_mix import EnergyMix
 
 
 class NonUseCapitalObjectiveDiscipline(SoSWrapp):
@@ -213,7 +214,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                 ('non_use_capital_cons',),
                 (non_use_capital, column_name),
                 - np.ones(len(years)) / non_use_capital_cons_ref / delta_years)
-        input_capital_list = [key for key in inputs_dict.keys() if key.endswith(GlossaryEnergy.TechnoCapitalDfValue)]
+        input_capital_list = [key for key in inputs_dict.keys() if key.endswith(GlossaryEnergy.TechnoCapitalValue)]
 
         for capital in input_capital_list:
             column_name = [col for col in inputs_dict[capital].columns if col != GlossaryCore.Years][0]
