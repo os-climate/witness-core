@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import os.path
-import unittest
+from os.path import join, dirname
+
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
 from pandas import read_csv
 from scipy.interpolate import interp1d
 
@@ -114,7 +114,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f'{self.name}.damage_to_productivity': True,
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.alpha': 0.5,
@@ -147,7 +147,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.check_jacobian(location=os.path.abspath(dirname(__file__)), filename=f'jacobian_sector_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
+                                    f'{self.name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
                                     ],
@@ -185,7 +185,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f'{self.name}.damage_to_productivity': False,
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.alpha': 0.5,
@@ -209,7 +209,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sector_discipline_withoutdamage.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
+                                    f'{self.name}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
                                     ],

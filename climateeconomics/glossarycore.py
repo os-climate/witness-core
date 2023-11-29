@@ -28,9 +28,9 @@ class GlossaryCore:
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
 
-    SectorGdpPart = "Part of the GDP per sector [G$]"
+    SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
-    SectionGdpPart = "Part of the GDP per section [G$]"
+    SectionGdpPart = "Part of the GDP per section [T$]"
     ChartSectionGDPPercentage = "Part of the GDP per section [%]"
 
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
@@ -72,26 +72,8 @@ class GlossaryCore:
     FishDailyCal = "fish_calories_per_day"
     OtherDailyCal = "other_calories_per_day"
 
-    AllStreamsDemandRatioValue = "all_streams_demand_ratio"
-    FlueGasMean = "flue_gas_mean"
-    MarginValue = "margin"
-    CO2EmissionsValue = "CO2_emissions"
-    EnergyCO2EmissionsValue = "energy_CO2_emissions"
-    TechnoProductionValue = "techno_production"
-    TechnoPricesValue = "techno_prices"
-    TechnoDetailedConsumptionValue = "techno_detailed_consumption"
-    TechnoDetailedProductionValue = "techno_detailed_production"
-    TechnoDetailedPricesValue = "techno_detailed_prices"
     TechnoCapitalValue = "techno_capital"
-    TechnoConsumptionValue = "techno_consumption"
     TechnoConsumptionWithoutRatioValue = "techno_consumption_woratio"
-    TechnoProductionWithoutRatioValue = "techno_production_woratio"
-    RessourcesCO2EmissionsValue = "resources_CO2_emissions"
-    TransportCostValue = "transport_cost"
-    TransportMarginValue = "transport_margin"
-    TransportDemandValue = "transport_demand"
-    ForestInvestmentValue = "forest_investment"
-    InstalledPower = "power_production"  # todo : rename string to 'Installed Power [MW]' (check unit)
     ConstructionDelay = "construction_delay"
 
     # namespaces
@@ -858,15 +840,6 @@ class GlossaryCore:
     }
 
     UtilisationRatioValue = "Utilisation Ratio [%]"
-    UtilisationRatioDf = {
-        "var_name": UtilisationRatioValue,
-        "type": "dataframe",
-        "namespace": "ns_witness",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, 2100], False),
-            UtilisationRatioValue: ("float", [0, 100], False),
-        },
-    }
 
     MaxInvestConstraintName = "max_invest_constraint"
     MaxInvestConstraint = {

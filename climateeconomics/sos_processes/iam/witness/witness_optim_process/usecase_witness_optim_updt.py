@@ -17,17 +17,17 @@ from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from sostrades_core.study_manager.study_manager import StudyManager
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
-    Study as witness_optim_sub_usecase
+
+from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
     COUPLING_NAME, EXTRA_NAME
-from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
-from sostrades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
-from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+    Study as witness_optim_sub_usecase
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
+from sostrades_core.execution_engine.design_var.design_var_disc import DesignVarDiscipline
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 OBJECTIVE = FunctionManagerDisc.OBJECTIVE
 INEQ_CONSTRAINT = FunctionManagerDisc.INEQ_CONSTRAINT
@@ -92,6 +92,7 @@ class Study(ClimateEconomicsStudyManager):
 
                              # optimization parameters:
                              f'{ns}.{self.optim_name}.max_iter': 1,
+                             f'{ns}.{self.optim_name}.eval_mode': True,
                              f'{ns}.warm_start': True,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
                              # SLSQP, NLOPT_SLSQP
@@ -128,23 +129,25 @@ class Study(ClimateEconomicsStudyManager):
 
         # print("Design space dimension is ", dspace_size)
 
-        list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl', 'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl', 'forest_investment_array_mix', 'deforestation_investment_ctrl']
+        list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl',
+                                    'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl',
+                                    'forest_investment_array_mix', 'deforestation_investment_ctrl']
         diet_mortality_df = pd.read_csv(join(dirname(__file__), 'data', 'diet_mortality.csv'))
 
         # clean dspace
         dspace_df.drop(dspace_df.loc[dspace_df['variable'].isin(list_design_var_to_clean)].index, inplace=True)
 
-        # clean dspace descriptor 
+        # clean dspace descriptor
         dvar_descriptor = self.witness_uc.design_var_descriptor
-        
-        updated_dvar_descriptor = {k:v for k,v in dvar_descriptor.items() if k not in list_design_var_to_clean}
 
-        dspace_file_name = f'design_space_out.csv'
+        updated_dvar_descriptor = {k: v for k, v in dvar_descriptor.items() if k not in list_design_var_to_clean}
+
+        dspace_file_name = f'design_space_out_2.csv'
         dspace_out = pd.read_csv(join(dirname(__file__), 'data', dspace_file_name))
         values_dict_updt = {}
         for index, row in dspace_df.iterrows():
             variable = row["variable"]
-            
+
             if variable in dspace_out["variable"].values:
                 valeur_str = dspace_out[dspace_out["variable"] == variable]["value"].iloc[0]
                 upper_bnd_str = dspace_out[dspace_out["variable"] == variable]["upper_bnd"].iloc[0]
@@ -160,23 +163,24 @@ class Study(ClimateEconomicsStudyManager):
                 dspace_df.at[index, "upper_bnd"] = upper_bnd_array
                 dspace_df.at[index, "lower_bnd"] = lower_bnd_array
                 dspace_df.at[index, "activated_elem"] = activated_elem_array
-                values_dict_updt.update({f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.{variable}':valeur_array,
-                                            f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.CCUS.{variable}':valeur_array})
-        dspace_df['enable_variable'] = False
+                values_dict_updt.update({
+                    f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.EnergyMix.{variable}': valeur_array,
+                    f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.CCUS.{variable}': valeur_array})
+        dspace_df['enable_variable'] = True
 
         invest_mix_file = f'investment_mix.csv'
         invest_mix = pd.read_csv(join(dirname(__file__), 'data', invest_mix_file))
         forest_invest_file = f'forest_investment.csv'
         forest_invest = pd.read_csv(join(dirname(__file__), 'data', forest_invest_file))
 
-        values_dict_updt.update({f'{ns}.{self.optim_name}.design_space' : dspace_df,
-        f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor, 
-        f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix, 
-        f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.forest_investment': forest_invest,
-        f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Forest.reforestation_cost_per_ha': 3800.,
-        f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Population.diet_mortality_param_df': diet_mortality_df,
+        values_dict_updt.update({f'{ns}.{self.optim_name}.design_space': dspace_df,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.{self.witness_uc.designvariable_name}.design_var_descriptor': updated_dvar_descriptor,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.invest_mix': invest_mix,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.InvestmentDistribution.forest_investment': forest_invest,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.AgricultureMix.Forest.reforestation_cost_per_ha': 3800.,
+                                 f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.WITNESS.Population.diet_mortality_param_df': diet_mortality_df,
 
-        })
+                                 })
 
         values_dict.update(values_dict_updt)
         optim_values_dict.update(values_dict_updt)
@@ -186,20 +190,14 @@ class Study(ClimateEconomicsStudyManager):
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
-    print(
-        len(uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines))
-    # df_xvect = pd.read_pickle('df_xvect.pkl')
-    # df_xvect.columns = [
-    # f'{uc_cls.study_name}.{uc_cls.optim_name}.{uc_cls.coupling_name}.DesignVariables' + col for col in df_xvect.columns]
-    # dict_xvect = df_xvect.iloc[-1].to_dict()
-    # dict_xvect[f'{uc_cls.study_name}.{uc_cls.optim_name}.eval_mode'] = True
-    # uc_cls.load_data(from_input_dict=dict_xvect)
-    # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.DesignVariables'
-    # uc_cls.execution_engine.root_process.proxy_disciplines[0].set_opt_scenario()
-    # uc_cls.execution_engine.set_debug_mode()
     uc_cls.run()
+    ppf = PostProcessingFactory()
+    for disc in uc_cls.execution_engine.root_process.proxy_disciplines[0].proxy_disciplines[0].proxy_disciplines:
+        if 'Forest' in disc.get_disc_full_name():
+            filters = ppf.get_post_processing_filters_by_discipline(
+                disc)
+            graph_list = ppf.get_post_processing_by_discipline(
+                disc, filters, as_json=False)
 
-#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_reduced_graph(
-#         "reduced.pdf")
-#     uc_cls.execution_engine.root_process.proxy_disciplines[0].coupling_structure.graph.export_initial_graph(
-#         "initial.pdf")
+            for graph in graph_list:
+                graph.to_plotly().show()

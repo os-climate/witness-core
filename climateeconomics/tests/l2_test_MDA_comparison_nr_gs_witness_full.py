@@ -16,14 +16,13 @@ limitations under the License.
 '''
 
 import unittest
-from time import sleep
-from shutil import rmtree
 from pathlib import Path
+from shutil import rmtree
+from time import sleep
 
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from climateeconomics.sos_processes.iam.witness.witness.usecase_witness import Study
-from numpy import array
+from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
 class TestComparisonNR_GS(unittest.TestCase):

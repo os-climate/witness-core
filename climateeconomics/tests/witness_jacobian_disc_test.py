@@ -15,11 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import climateeconomics.tests as jacobian_target
-from os.path import join, dirname, exists
-from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
-from tqdm import tqdm
 import platform
+from os.path import join, dirname, exists
+
+from tqdm import tqdm
+
+from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest
 
 
 class WitnessJacobianDiscTest(AbstractJacobianUnittest):

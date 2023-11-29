@@ -14,22 +14,23 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from pathlib import Path
 import copy
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from copy import deepcopy
+from os.path import join, isfile
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
+from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
+from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
-from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-import pandas as pd
-import numpy as np
-from os.path import join, isfile
-from copy import deepcopy
-from climateeconomics.glossarycore import GlossaryCore
-import plotly.express as px
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -247,6 +248,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
+        self.logger.info(f"Instanciating MacroEconomics with damage_to_productivity : {param['damage_to_productivity']}")
         self.macro_model = MacroEconomics(param)
 
     def run(self):
@@ -631,12 +633,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         years = list(economics_detail_df.index)
         if GlossaryCore.GrossOutput in chart_list:
 
-            to_plot = [GlossaryCore.OutputNetOfDamage, GlossaryCore.Damages]
+            to_plot = [GlossaryCore.OutputNetOfDamage]
 
-            legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
-                      GlossaryCore.Damages: 'Damages'}
+            legend = {GlossaryCore.OutputNetOfDamage: 'Net output'}
 
-            chart_name = 'Breakdown of gross output'
+            chart_name = 'Gross and net of damage output per year'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
                                                  chart_name=chart_name, stacked_bar=True)
@@ -647,13 +648,18 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 ordonate_data = list(economics_detail_df[key])
 
                 new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'bar', visible_line)
+                    years, ordonate_data, legend[key], 'lines', visible_line)
 
                 new_chart.series.append(new_series)
 
             new_series = InstanciatedSeries(
                 years, list(economics_detail_df[GlossaryCore.GrossOutput].values), 'Gross output', 'lines', True)
 
+            new_chart.series.append(new_series)
+
+            to_plot = GlossaryCore.Damages
+            ordonate_data = list(economics_detail_df[to_plot]*-1)
+            new_series = InstanciatedSeries(years, ordonate_data, 'Damages', 'bar')
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
@@ -949,7 +955,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             years = list(sector_gdp_df[GlossaryCore.Years])
 
-            chart_name = 'Breakdown of GDP per sector [G$]'
+            chart_name = 'Breakdown of GDP per sector [T$]'
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectorGdpPart,
                                                  chart_name=chart_name, stacked_bar=True)
@@ -989,7 +995,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             # loop on all sectors to plot a chart per sector
             for sector, dict_section in dict_sections_detailed.items():
 
-                chart_name = f'Breakdown of GDP per section for {sector} sector [G$]'
+                chart_name = f'Breakdown of GDP per section for {sector} sector [T$]'
 
                 new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionGdpPart,
                                                      chart_name=chart_name, stacked_bar=True)

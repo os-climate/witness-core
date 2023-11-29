@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-
+Modifications on 2023/05/12-2023/11/21 Copyright 2023 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -14,9 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import DEFAULT_COARSE_TECHNO_DICT
-from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
+from climateeconomics.sos_processes.iam.witness.witness_coarse.usecase_witness_coarse_new import \
+    DEFAULT_COARSE_TECHNO_DICT
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
+from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):
@@ -33,6 +34,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         WITNESSSubProcessBuilder.__init__(self, ee)
         self.invest_discipline = INVEST_DISCIPLINE_OPTIONS[2]
         self.process_level = process_level
+        # Running an mda only, not a mdo
 
     def get_builders(self):
 

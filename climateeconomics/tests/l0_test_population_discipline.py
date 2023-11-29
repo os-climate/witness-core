@@ -14,21 +14,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import time
 import unittest
+from os.path import join, dirname
+
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
-from pandas import DataFrame, read_csv
+from pandas import read_csv
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from scipy.interpolate import interp1d
-import pickle
-import time
-import cProfile
-from _io import StringIO
-import pstats
 
 
 class PopDiscTest(unittest.TestCase):

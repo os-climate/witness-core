@@ -15,10 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
+from copy import deepcopy
+
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
-from copy import deepcopy
+
 from climateeconomics.core.tools.Hubbert_Curve import compute_Hubbert_regression
 from climateeconomics.glossarycore import GlossaryCore
 

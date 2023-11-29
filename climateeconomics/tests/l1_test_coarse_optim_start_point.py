@@ -13,14 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 import unittest
+from tempfile import gettempdir
 
-from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_1_witness_coarse_fixed_gdp_wo_damage_wo_co2_tax import \
     Study
+from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-from tempfile import gettempdir
-import logging
 
 
 class StartPointOptimTest(unittest.TestCase):

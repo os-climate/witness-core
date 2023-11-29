@@ -20,13 +20,10 @@ from energy_models.glossaryenergy import GlossaryEnergy
 '''
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
-import unittest
-from os.path import join, dirname
-from pandas import read_csv
+from os.path import dirname
 import numpy as np
 import pandas as pd
 import scipy.interpolate as sc
-from numpy import asarray, arange, array
 
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobianUnittest

@@ -14,16 +14,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+
+from climateeconomics.core.core_emissions.indus_emissions_model import IndusEmissions
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
-from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, TwoAxesInstanciatedChart
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
+    GHGemissionsDiscipline
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
-from copy import deepcopy
-import pandas as pd
-import numpy as np
-from climateeconomics.core.core_emissions.indus_emissions_model import IndusEmissions
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import GHGemissionsDiscipline
+from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
+    TwoAxesInstanciatedChart
 
 
 class IndusemissionsDiscipline(ClimateEcoDiscipline):

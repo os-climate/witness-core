@@ -14,15 +14,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-# -*- coding: utf-8 -*-
-# mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
-from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
+from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import \
+    AgricultureEmissionsDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline import \
     GHGemissionsDiscipline
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.indus_emissions.indusemissions_discipline import \
     IndusemissionsDiscipline
-from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import \
-    AgricultureEmissionsDiscipline
+# -*- coding: utf-8 -*-
+# mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
+from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
 class ProcessBuilder(BaseProcessBuilder):
@@ -72,15 +72,6 @@ class ProcessBuilder(BaseProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        '''
-        Add non_use capital objective discipline to all WITNESS processes
-        '''
-        mods_dict = {
-            'NonUseCapitalDiscipline': 'climateeconomics.sos_wrapping.sos_wrapping_witness.non_use_capital_objective.non_use_capital_obj_discipline.NonUseCapitalObjectiveDiscipline'
-        }
-        non_use_capital_list = self.create_builder_list(
-            mods_dict, ns_dict=ns_dict)
-        #builder_list.extend(non_use_capital_list)
 
         '''
         Add emissions disciplines

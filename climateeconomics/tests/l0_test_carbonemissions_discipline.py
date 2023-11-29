@@ -15,9 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
+from os.path import join, dirname
+
 import numpy as np
 import pandas as pd
-from os.path import join, dirname
 from pandas import read_csv
 
 from climateeconomics.glossarycore import GlossaryCore
