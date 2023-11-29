@@ -148,7 +148,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['GHG emissions per sector', 'Global Warming Potential']
+        chart_list = ['GHG emissions per sector', 'Global Warming Potential', 'Total emissions']
         #chart_list = ['sectoral energy carbon emissions cumulated']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -178,6 +178,12 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 new_chart = self.get_chart_gwp(gwp_year)
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
+
+        if 'Total emissions' in charts:
+            new_chart = self.get_chart_total_per_type()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_chart_gwp(self, gwp_year):
@@ -213,3 +219,21 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(new_serie)
 
         return new_chart
+
+    def get_chart_total_per_type(self):
+        """
+        Chart with total ghg emissions per type
+        """
+        total_ghg_df = self.get_sosdisc_outputs('GHG_emissions_df')
+        chart_name = f'total ghg emissions'
+        new_chart = TwoAxesInstanciatedChart(
+            GlossaryCore.Years, f'Total emissions [Gt]', chart_name=chart_name)
+        for ghg in GHGEmissions.GHG_TYPE_LIST:
+            new_serie = InstanciatedSeries(list(total_ghg_df[GlossaryCore.Years].values),
+                                           total_ghg_df[f'Total {ghg} emissions'].to_list(),
+                                           f'{ghg} emissions', 'lines')
+            new_chart.series.append(new_serie)
+        return new_chart
+
+
+
