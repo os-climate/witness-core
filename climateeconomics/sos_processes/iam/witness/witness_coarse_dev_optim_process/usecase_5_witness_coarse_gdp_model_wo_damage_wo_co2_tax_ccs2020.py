@@ -37,11 +37,21 @@ class Study(ClimateEconomicsStudyManager):
 
         # deactivate CCS and Renewable design variables and set values to their 2020 value.
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl', 'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl', 'forest_investment_array_mix', 'deforestation_investment_ctrl']
+        carbon_capture_var = ['carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix',
+                              'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
+                              'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
+                              'renewable_RenewableSimpleTechno_utilization_ratio_array',
+                              'fossil_FossilSimpleTechno_utilization_ratio_array',
+                              'carbon_capture_direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array',
+                              'carbon_capture_flue_gas_capture.FlueGasTechno_utilization_ratio_array',
+                              'carbon_storage_CarbonStorageTechno_utilization_ratio_array']
+        """
         var_to_set_to_2020_level = ['carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix',
                                     'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
                                     'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
                                     'carbon_capture_direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array',
                                     'carbon_capture_flue_gas_capture.FlueGasTechno_utilization_ratio_array',]
+        
         serie_index = dspace['variable'].isin(var_to_set_to_2020_level)
         activated_elem_column = copy(dspace['activated_elem'])
         value_column = copy(dspace['value'])
@@ -58,9 +68,10 @@ class Study(ClimateEconomicsStudyManager):
         dspace['value'] = value_column
         dspace['lower_bnd'] = lower_bnd_column
         dspace['enable_variable'] = enable_variable_column
-
+        """
         # clean dspace
         dspace.drop(dspace.loc[dspace['variable'].isin(list_design_var_to_clean)].index, inplace=True)
+        dspace.loc[dspace['variable'].isin(carbon_capture_var), 'enable_variable'] = False
 
         # clean dspace descriptor 
         dvar_descriptor = witness_uc.witness_uc.design_var_descriptor
