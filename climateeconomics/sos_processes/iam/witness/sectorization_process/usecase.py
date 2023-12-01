@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 
-from climateeconomics.database_witness_core import DatabaseWitnessCore
+from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.study_manager.study_manager import StudyManager
 
