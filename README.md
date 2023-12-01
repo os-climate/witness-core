@@ -18,7 +18,7 @@ $$pip install -r requirements.in --trusted-host pypi.org --trusted-host files.py
 ## Overview
 
 This package contains the following disciplines:
-* agiculture, to determine the area taken by food to feed humanity
+* agriculture, to determine the area taken by food to feed humanity
 * resources (coal, gas, oil, uranium), to evaluate to quantity left and the extraction price of resources.
 * carboncycle, to take into account the natural cycle of carbon
 * carbonemissions, to evaluate the quantity of CO2 emitted
@@ -51,10 +51,10 @@ documentation folder gives details about the optimisation problem formulation.
 
 ## Looking at the future
 
-### Regionalisation
+### Regionalization
 
 At the moment, results given by Witness process and the different models are global results which are an average over the world.
-In order to have more accuracy, we want to add regionalisation aspect. The first step is to propose a regionalisation continent by continent.
+In order to have more accuracy, we want to add regionalization aspect. The first step is to propose a regionalisation continent by continent.
 
 ## License 
 The witness-core source code is distributed under the Apache License Version 2.0.
