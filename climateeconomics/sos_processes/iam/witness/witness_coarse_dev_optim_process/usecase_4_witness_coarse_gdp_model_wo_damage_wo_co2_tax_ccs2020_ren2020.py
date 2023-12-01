@@ -18,6 +18,7 @@ import numpy as np
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
     Study as usecase_witness
+from energy_models.database_witness_energy import DatabaseWitnessEnergy
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -45,6 +46,7 @@ class Study(ClimateEconomicsStudyManager):
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix',
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
+            'renewable_RenewableSimpleTechno_array_mix',
             'renewable_RenewableSimpleTechno_utilization_ratio_array',
             'fossil_FossilSimpleTechno_utilization_ratio_array',
             'carbon_capture_direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array',
@@ -61,6 +63,20 @@ class Study(ClimateEconomicsStudyManager):
 
         # clean dspace
         dspace.loc[dspace['variable'].isin(carbon_capture_and_renewable_vars), 'enable_variable'] = False
+
+        # set CCUS values :
+        ns = f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.CCUS'
+        for var in carbon_capture_and_renewable_vars[:3]:
+            varname_to_update = f'{ns}.{var}'
+            actual_value = data_witness[0][varname_to_update]
+            new_value = np.zeros_like(actual_value) + DatabaseWitnessEnergy.InvestCCUS2020.value / 3
+            data_witness[0][varname_to_update] = new_value
+
+        # set Renewable value values :
+        var_to_update = f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.EnergyMix.renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix'
+        actual_value = data_witness[0][var_to_update]
+        new_value = np.zeros_like(actual_value) + DatabaseWitnessEnergy.InvestCleanEnergy2020.value
+        data_witness[0][var_to_update] = new_value
 
         # clean dspace descriptor 
         dvar_descriptor = witness_uc.witness_uc.design_var_descriptor
