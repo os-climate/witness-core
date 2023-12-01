@@ -42,9 +42,10 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         share_gdp_industry_2021 = DatabaseWitnessCore.ShareGlobalGDPIndustry2021.value
         share_gdp_services_2021 = DatabaseWitnessCore.ShareGlobalGDPServices2021.value
 
-        demand_agriculture_per_person_population_2021 = gdp_forecast[0] * share_gdp_agriculture_2021 / population_2021
-        demand_industry_per_person_population_2021 = gdp_forecast[0] * share_gdp_industry_2021 / population_2021
-        demand_services_per_person_population_2021 = gdp_forecast[0] * share_gdp_services_2021 / population_2021
+        # has to be in $/person : G$ x constant  / (Mperson) = k$/person = 1000 $/person
+        demand_agriculture_per_person_population_2021 = gdp_forecast[0] * share_gdp_agriculture_2021 / population_2021 * 1e3
+        demand_industry_per_person_population_2021 = gdp_forecast[0] * share_gdp_industry_2021 / population_2021 * 1e3
+        demand_services_per_person_population_2021 = gdp_forecast[0] * share_gdp_services_2021 / population_2021 * 1e3
 
         # todo: put real data when found :
         self.demand_per_capita_agriculture = pd.DataFrame({GlossaryCore.Years: self.years,
@@ -92,6 +93,6 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
         for graph in graph_list:
-            #graph.to_plotly().show()
+            graph.to_plotly().show()
             pass
 

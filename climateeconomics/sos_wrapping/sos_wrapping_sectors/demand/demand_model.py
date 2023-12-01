@@ -35,7 +35,9 @@ class DemandModel:
         for sector in self.sectors:
             sector_demand_per_person_values = self.inputs[f'{sector}.{GlossaryCore.SectorDemandPerCapitaDfValue}'][GlossaryCore.SectorDemandPerCapitaDfValue].values
 
-            sectors_demand_values = sector_demand_per_person_values * self.population
+            # $ /person x million person -> million $ -> 1e-3 G$
+            sectors_demand_values = sector_demand_per_person_values * self.population * 1e-3
+
             sector_demand_df = pd.DataFrame(
                 {GlossaryCore.Years: self.years,
                  GlossaryCore.SectorGDPDemandDfValue: sectors_demand_values}

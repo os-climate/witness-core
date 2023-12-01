@@ -68,27 +68,6 @@ class DemandDiscipline(SoSWrapp):
 
         self.store_sos_outputs_values(outputs)
 
-    def compute_sos_jacobian(self):
-        """compute gradients"""
-        inputs = self.get_sosdisc_inputs()
-
-        sectors_list = inputs[GlossaryCore.SectorListValue]
-        net_output = inputs[GlossaryCore.EconomicsDfValue][GlossaryCore.OutputNetOfDamage].values
-
-        for sector in sectors_list:
-            sector_share_invests = inputs[f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}'][GlossaryCore.ShareInvestment].values
-            self.set_partial_derivative_for_other_types(
-                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
-                (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
-                np.diag(sector_share_invests/ 100.)
-            )
-
-            self.set_partial_derivative_for_other_types(
-                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
-                (f'{sector}.{GlossaryCore.ShareSectorInvestmentDfValue}', GlossaryCore.ShareInvestment),
-                np.diag(net_output) / 100.
-            )
-
     def get_chart_filter_list(self):
         chart_filters = []
 
