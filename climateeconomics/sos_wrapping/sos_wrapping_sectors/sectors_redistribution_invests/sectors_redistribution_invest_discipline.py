@@ -26,6 +26,19 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 
 class SectorsRedistributionInvestsDiscipline(SoSWrapp):
     """Discipline redistributing energy production and global investment into sectors"""
+    _ontology_data = {
+        'label': 'Demand WITNESS Model',
+        'type': 'Research',
+        'source': 'SoSTrades Project',
+        'validated': '',
+        'validated_by': 'SoSTrades Project',
+        'last_modification_date': '',
+        'category': '',
+        'definition': '',
+        'icon': 'fa-solid fa-arrows-split-up-and-left',
+        'version': '',
+    }
+    _maturity = 'Research'
 
     DESC_IN = {
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
