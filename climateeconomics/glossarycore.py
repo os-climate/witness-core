@@ -676,7 +676,7 @@ class GlossaryCore:
     AllSectorsDemandDf = {
         "var_name": AllSectorsDemandDfValue,
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "T$",
         "description": "all sectors demands aggregated",
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
@@ -833,7 +833,7 @@ class GlossaryCore:
     SectorGDPDemandDf = {
         "var_name": SectorGDPDemandDfValue,
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "T$",
         "visibility": "Shared",
         "namespace": "ns_sectors",
         "dataframe_descriptor": {

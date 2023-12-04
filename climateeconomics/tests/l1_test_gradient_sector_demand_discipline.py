@@ -42,15 +42,14 @@ class SectorsDemandDiscipline(AbstractJacobianUnittest):
         gdp_forecast = DatabaseWitnessCore.WorldGDPForecastSSP3.value[GlossaryCore.GrossOutput].values
         population_2021 = DatabaseWitnessCore.WorldPopulationForecast.value[GlossaryCore.PopulationValue].values[1]
 
-        share_gdp_agriculture_2021 = DatabaseWitnessCore.ShareGlobalGDPAgriculture2021.value
-        share_gdp_industry_2021 = DatabaseWitnessCore.ShareGlobalGDPIndustry2021.value
-        share_gdp_services_2021 = DatabaseWitnessCore.ShareGlobalGDPServices2021.value
+        share_gdp_agriculture_2021 = DatabaseWitnessCore.ShareGlobalGDPAgriculture2021.value / 100.
+        share_gdp_industry_2021 = DatabaseWitnessCore.ShareGlobalGDPIndustry2021.value / 100.
+        share_gdp_services_2021 = DatabaseWitnessCore.ShareGlobalGDPServices2021.value / 100.
 
-        # has to be in $/person : G$ x constant  / (Mperson) = k$/person = 1000 $/person
-        demand_agriculture_per_person_population_2021 = gdp_forecast[
-                                                            0] * share_gdp_agriculture_2021 / population_2021 * 1e3
-        demand_industry_per_person_population_2021 = gdp_forecast[0] * share_gdp_industry_2021 / population_2021 * 1e3
-        demand_services_per_person_population_2021 = gdp_forecast[0] * share_gdp_services_2021 / population_2021 * 1e3
+        # has to be in $/person : T$ x constant  / (Mperson) = M$/person = 1 000 000 $/person
+        demand_agriculture_per_person_population_2021 = gdp_forecast[1] * share_gdp_agriculture_2021 / population_2021 * 1e6
+        demand_industry_per_person_population_2021 = gdp_forecast[1] * share_gdp_industry_2021 / population_2021 * 1e6
+        demand_services_per_person_population_2021 = gdp_forecast[1] * share_gdp_services_2021 / population_2021 * 1e6
 
         self.demand_per_capita_agriculture = pd.DataFrame({GlossaryCore.Years: self.years,
                                                            GlossaryCore.SectorDemandPerCapitaDfValue: demand_agriculture_per_person_population_2021})

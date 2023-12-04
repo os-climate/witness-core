@@ -94,13 +94,13 @@ class DemandDiscipline(SoSWrapp):
             self.set_partial_derivative_for_other_types(
                 (f'{sector}.{GlossaryCore.SectorGDPDemandDfValue}', GlossaryCore.SectorGDPDemandDfValue),
                 (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-                np.diag(sector_demand_per_capita * 1e-3)
+                np.diag(sector_demand_per_capita * 1e-6)
             )
 
             self.set_partial_derivative_for_other_types(
                 (f'{sector}.{GlossaryCore.SectorGDPDemandDfValue}', GlossaryCore.SectorGDPDemandDfValue),
                 (f'{sector}.{GlossaryCore.SectorDemandPerCapitaDfValue}', GlossaryCore.SectorDemandPerCapitaDfValue),
-                np.diag(population) * 1e-3
+                np.diag(population) * 1e-6
             )
 
     def get_chart_filter_list(self):
