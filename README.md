@@ -1,7 +1,6 @@
 # ClimateEconomics
 
 
-
 ## Description
 ClimateEconomics is the Python package to evaluate the effect of energy way of production on climate change and macro-economy.
 
