@@ -25,7 +25,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class SectorsDemandDiscipline(AbstractJacobianUnittest):
-    #   AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -89,18 +89,18 @@ class SectorsDemandDiscipline(AbstractJacobianUnittest):
 
         inputs_dict = {f'{name}.{model_name}.{GlossaryCore.SectorListValue}': self.sector_list,
                        f'{name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_agriculture,
-                       f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_industry,
-                       f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_services,
+                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_agriculture,
+                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_industry,
+                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_services,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
         ee.execute()
         inputs_checked = [f'{name}.{GlossaryCore.PopulationDfValue}']
-        inputs_checked += [f'{name}.{model_name}.{sector}.{GlossaryCore.SectorDemandPerCapitaDfValue}' for sector in
+        inputs_checked += [f'{name}.{sector}.{GlossaryCore.SectorDemandPerCapitaDfValue}' for sector in
                            self.sector_list]
 
-        output_checked = [f'{name}.{model_name}.{sector}.{GlossaryCore.SectorGDPDemandDfValue}' for sector in self.sector_list]
+        output_checked = [f'{name}.{sector}.{GlossaryCore.SectorGDPDemandDfValue}' for sector in self.sector_list]
 
         disc_techno = ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sectors_demand_discipline.pkl',
