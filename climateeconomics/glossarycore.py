@@ -820,6 +820,7 @@ class GlossaryCore:
         "var_name": SectorDemandPerCapitaDfValue,
         "type": "dataframe",
         "unit": "$/person",
+        "visibility": "Shared",
         "namespace": "ns_sectors",
         "description": "Sector demand per person per year [$/year]",
         "dataframe_descriptor": {
@@ -833,6 +834,7 @@ class GlossaryCore:
         "var_name": SectorGDPDemandDfValue,
         "type": "dataframe",
         "unit": "G$",
+        "visibility": "Shared",
         "namespace": "ns_sectors",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),

@@ -58,7 +58,6 @@ class Study(StudyManager):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.macro_name = 'Macroeconomics'
-        self.demand_name = 'SectorsDemand'
         self.labormarket_name = 'LaborMarket'
         self.redistrib_energy_name = 'SectorsEnergyDistribution'
         self.year_start = year_start
@@ -187,18 +186,18 @@ class Study(StudyManager):
             f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}": energy_mean_price,
             f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}": workforce_share,
             f"{self.study_name}.{GlossaryCore.EconomicsDfValue}": economics_df,
-            f"{self.study_name}.{self.macro_name}.Services.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_services,
-            f"{self.study_name}.{self.macro_name}.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_agriculture,
-            f"{self.study_name}.{self.macro_name}.Industry.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_indus,
-            f"{self.study_name}.{self.macro_name}.Services.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_services,
-            f"{self.study_name}.{self.macro_name}.Agriculture.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_agriculture,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_services,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_agriculture,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_indus,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_services,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_agriculture,
             f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}": share_energy_resi,
             f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}": share_energy_other,
             f"{self.study_name}.{GlossaryCore.EnergyProductionValue}": energy_production,
             f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}": energy_investment_wo_tax,
-            f'{self.study_name}.{self.demand_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_agriculture,
-            f'{self.study_name}.{self.demand_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_industry,
-            f'{self.study_name}.{self.demand_name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_services,
+            f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_agriculture,
+            f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_industry,
+            f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_services,
         }
 
         setup_data_list.append(cons_input)

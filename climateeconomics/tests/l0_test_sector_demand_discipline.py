@@ -81,9 +81,9 @@ class SectorDemandDisciplineTest(unittest.TestCase):
 
         inputs_dict = {f'{name}.{model_name}.{GlossaryCore.SectorListValue}': self.sector_list,
                        f'{name}.{GlossaryCore.PopulationDfValue}': self.population_df,
-                       f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_agriculture,
-                       f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_industry,
-                       f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_services,
+                       f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_agriculture,
+                       f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_industry,
+                       f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': self.demand_per_capita_services,
         }
         ee.load_study_from_input_dict(inputs_dict)
 
