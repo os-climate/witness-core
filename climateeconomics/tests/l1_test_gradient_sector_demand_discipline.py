@@ -52,7 +52,6 @@ class SectorsDemandDiscipline(AbstractJacobianUnittest):
         demand_industry_per_person_population_2021 = gdp_forecast[0] * share_gdp_industry_2021 / population_2021 * 1e3
         demand_services_per_person_population_2021 = gdp_forecast[0] * share_gdp_services_2021 / population_2021 * 1e3
 
-        # todo: put real data when found :
         self.demand_per_capita_agriculture = pd.DataFrame({GlossaryCore.Years: self.years,
                                                            GlossaryCore.SectorDemandPerCapitaDfValue: demand_agriculture_per_person_population_2021})
 
