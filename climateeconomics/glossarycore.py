@@ -672,6 +672,16 @@ class GlossaryCore:
         },
     }
 
+    AllSectorsDemandDfValue = "all_sector_demand_df"
+    AllSectorsDemandDf = {
+        "var_name": AllSectorsDemandDfValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "description": "all sectors demands aggregated",
+        "dataframe_descriptor": {},
+        "dynamic_dataframe_columns": True,
+    }
+
     RedistributionInvestmentsDfValue = "redistribution_investments_df"
     RedistributionInvestmentsDf = {
         "var_name": RedistributionInvestmentsDfValue,
@@ -804,6 +814,34 @@ class GlossaryCore:
             InvestmentsValue: ("float", None, False),
         },
     }
+
+    SectorDemandPerCapitaDfValue = "sector_demand_per_capita"
+    SectorDemandPerCapitaDf = {
+        "var_name": SectorDemandPerCapitaDfValue,
+        "type": "dataframe",
+        "unit": "$/person",
+        "visibility": "Shared",
+        "namespace": "ns_sectors",
+        "description": "Sector demand per person per year [$/year]",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            SectorDemandPerCapitaDfValue: ("float", None, False),
+        },
+    }
+
+    SectorGDPDemandDfValue = "GDP sector demand [G$]"
+    SectorGDPDemandDf = {
+        "var_name": SectorGDPDemandDfValue,
+        "type": "dataframe",
+        "unit": "T$",
+        "visibility": "Shared",
+        "namespace": "ns_sectors",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            SectorGDPDemandDfValue: ("float", None, False),
+        },
+    }
+
     InvestmentShareGDPValue = "total_investment_share_of_gdp"
     InvestmentShareGDP = {
         "var_name": InvestmentShareGDPValue,

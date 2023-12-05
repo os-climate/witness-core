@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
 
-from climateeconomics.database_witness_core import DatabaseWitnessCore
+from climateeconomics.database.database_witness_core import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.study_manager.study_manager import StudyManager
 
@@ -155,28 +155,49 @@ class Study(StudyManager):
                                                  GlossaryCore.EnergyInvestmentsWoTaxValue: 1000.
                                                  })
 
-        cons_input = {}
-        cons_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
-        cons_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
-        cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
-        cons_input[f"{self.study_name}.{GlossaryCore.DamageDfValue}"] = damage_df
-        cons_input[f"{self.study_name}.{GlossaryCore.TemperatureDfValue}"] = temperature_df
+        gdp_forecast = DatabaseWitnessCore.WorldGDPForecastSSP3.value[GlossaryCore.GrossOutput].values
+        population_2021 = DatabaseWitnessCore.WorldPopulationForecast.value[GlossaryCore.PopulationValue].values[1]
 
-        cons_input[f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}"] = energy_mean_price
-        #cons_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}"] = base_dummy_data
-        cons_input[f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}"] = workforce_share
-        cons_input[f"{self.study_name}.{GlossaryCore.EconomicsDfValue}"] = economics_df
+        share_gdp_agriculture_2021 = DatabaseWitnessCore.ShareGlobalGDPAgriculture2021.value / 100.
+        share_gdp_industry_2021 = DatabaseWitnessCore.ShareGlobalGDPIndustry2021.value / 100.
+        share_gdp_services_2021 = DatabaseWitnessCore.ShareGlobalGDPServices2021.value / 100.
 
-        cons_input[f"{self.study_name}.{self.macro_name}.Services.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_services
-        cons_input[f"{self.study_name}.{self.macro_name}.Agriculture.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_agriculture
-        cons_input[f"{self.study_name}.{self.macro_name}.Industry.{GlossaryCore.ShareSectorInvestmentDfValue}"] = invest_indus
+        # has to be in $/person : T$ x constant  / (Mperson) = M$/person = 1 000 000 $/person
+        demand_agriculture_per_person_population_2021 = gdp_forecast[1] * share_gdp_agriculture_2021 / population_2021 * 1e6
+        demand_industry_per_person_population_2021 = gdp_forecast[1] * share_gdp_industry_2021 / population_2021 * 1e6
+        demand_services_per_person_population_2021 = gdp_forecast[1] * share_gdp_services_2021 / population_2021 * 1e6
 
-        cons_input[f"{self.study_name}.{self.macro_name}.Services.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_services
-        cons_input[f"{self.study_name}.{self.macro_name}.Agriculture.{GlossaryCore.ShareSectorEnergyDfValue}"] = share_energy_agriculture
-        cons_input[f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}"] = share_energy_resi
-        cons_input[f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}"] = share_energy_other
-        cons_input[f"{self.study_name}.{GlossaryCore.EnergyProductionValue}"] = energy_production
-        cons_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}"] = energy_investment_wo_tax
+        demand_per_capita_agriculture = pd.DataFrame({GlossaryCore.Years: years,
+                                                           GlossaryCore.SectorDemandPerCapitaDfValue: demand_agriculture_per_person_population_2021})
+
+        demand_per_capita_industry = pd.DataFrame({GlossaryCore.Years: years,
+                                                        GlossaryCore.SectorDemandPerCapitaDfValue: demand_industry_per_person_population_2021})
+
+        demand_per_capita_services = pd.DataFrame({GlossaryCore.Years: years,
+                                                        GlossaryCore.SectorDemandPerCapitaDfValue: demand_services_per_person_population_2021})
+
+        cons_input = {
+            f"{self.study_name}.{GlossaryCore.YearStart}": self.year_start,
+            f"{self.study_name}.{GlossaryCore.YearEnd}": self.year_end,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}": total_invests,
+            f"{self.study_name}.{GlossaryCore.DamageDfValue}": damage_df,
+            f"{self.study_name}.{GlossaryCore.TemperatureDfValue}": temperature_df,
+            f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}": energy_mean_price,
+            f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}": workforce_share,
+            f"{self.study_name}.{GlossaryCore.EconomicsDfValue}": economics_df,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_services,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_agriculture,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ShareSectorInvestmentDfValue}": invest_indus,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_services,
+            f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ShareSectorEnergyDfValue}": share_energy_agriculture,
+            f"{self.study_name}.{GlossaryCore.ShareResidentialEnergyDfValue}": share_energy_resi,
+            f"{self.study_name}.{self.redistrib_energy_name}.{GlossaryCore.ShareOtherEnergyDfValue}": share_energy_other,
+            f"{self.study_name}.{GlossaryCore.EnergyProductionValue}": energy_production,
+            f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}": energy_investment_wo_tax,
+            f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_agriculture,
+            f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_industry,
+            f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_services,
+        }
 
         setup_data_list.append(cons_input)
 
