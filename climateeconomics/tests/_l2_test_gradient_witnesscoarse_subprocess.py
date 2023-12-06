@@ -169,7 +169,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[
             f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.co2_damage_price_percentage"] = 0.0
         self.ee.load_study_from_input_dict(full_values_dict)
-
         # Add design space to the study by filling design variables :
         design_space = pd.read_csv(join(dirname(__file__), 'data',  'all_iteration_dict.csv'))
         all_iterations_dspace_list = [eval(dspace) for dspace in design_space['value'].values]
@@ -180,9 +179,11 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             design_space_values_dict = {}
             for variable_name, variable_value in dspace_dict.items():
                 design_space_values_dict[self.ee.dm.get_all_namespaces_from_var_name(variable_name)[0]] = array(variable_value)
-
+            design_space_values_dict.update(full_values_dict)
             self.ee.load_study_from_input_dict(design_space_values_dict)
-            self.ee.execute()
+
+            self.ee.update_from_dm()
+            self.ee.prepare_execution()
 
             # loop over all disciplines
 
@@ -207,6 +208,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
 
             AbstractJacobianUnittest.DUMP_JACOBIAN = True
             # store all these variables for next test
+            """
             var_in_to_store = [self.ee.dm.get_all_namespaces_from_var_name('Energy invest minimization objective')[0],
                                self.ee.dm.get_all_namespaces_from_var_name('last_year_discounted_utility_objective')[0],
                                self.ee.dm.get_all_namespaces_from_var_name('minimum_ppm_constraint')[0],
@@ -227,13 +229,16 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                self.ee.dm.get_all_namespaces_from_var_name('function_df')[0],
                                ]
             self.dict_val_updt = {}
+            
             for elem in var_in_to_store:
                 self.dict_val_updt.update({elem: self.ee.dm.get_value(elem)})
+            """
+            #self.ee.execute()
             try:
                 self.check_jacobian(location=dirname(__file__), filename=pkl_name,
                                     discipline=coupling_disc.mdo_discipline_wrapp.mdo_discipline,
                                     step=1.0e-4, derr_approx='finite_differences', threshold=1e-15,
-                                    local_data=coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,
+                                    local_data=design_space_values_dict,#coupling_disc.mdo_discipline_wrapp.mdo_discipline.local_data,#design_space_values_dict,
                                     inputs=inputs,
                                     outputs=outputs)
                 test_results.append((iter, True))
