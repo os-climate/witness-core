@@ -46,7 +46,7 @@ class Study(ClimateEconomicsStudyManager):
             'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix',
             'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
             'carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
-            'renewable_RenewableSimpleTechno_array_mix',
+            'renewable.RenewableSimpleTechno.renewable_RenewableSimpleTechno_array_mix',
             'renewable_RenewableSimpleTechno_utilization_ratio_array',
             'fossil_FossilSimpleTechno_utilization_ratio_array',
             'carbon_capture_direct_air_capture.DirectAirCaptureTechno_utilization_ratio_array',
