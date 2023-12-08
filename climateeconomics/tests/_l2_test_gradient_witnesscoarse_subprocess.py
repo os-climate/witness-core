@@ -129,7 +129,9 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         # Add design space to the study by filling design variables :
         design_space = pd.read_csv(join(dirname(__file__), 'data',  'all_iteration_dict.csv'))
         all_iterations_dspace_list = [eval(dspace) for dspace in design_space['value'].values]
-        for dspace_dict in all_iterations_dspace_list[0:5]:
+        iter = 0
+
+        for dspace_dict in all_iterations_dspace_list[-5:]:
 
             self.name = 'Test'
             self.ee = ExecutionEngine(self.name)
@@ -174,7 +176,6 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
             full_values_dict[
                 f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.co2_damage_price_percentage"] = 0.0
             self.ee.load_study_from_input_dict(full_values_dict)
-            iter = 0
             test_results = []
             self.ee.logger.info(f'testing iteration {iter}')
             design_space_values_dict = {}
