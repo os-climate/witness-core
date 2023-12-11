@@ -1,7 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/07/18-2023/11/03 Copyright 2023 Capgemini
-
+Copyright 2023 Capgemini
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -27,10 +25,10 @@ def post_processing_filters(execution_engine, namespace):
 
     chart_list = ['CO2 tax per scenario',
                   'Temperature per scenario',
-                  'Welfare per scenario',
+                  #'Welfare per scenario',
                   'Utility per scenario',
                   'CO2 emissions per scenario',
-                  'ppm per scenario',
+                  #'ppm per scenario',
                   'Total production per scenario',
                   'invest per scenario',
                   ]
@@ -55,18 +53,22 @@ def post_processings(execution_engine, namespace, filters):
     scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
 
     # Overload default value with chart filter
+    graphs_list = ['CO2 tax per scenario',
+                  'Temperature per scenario',
+                  #'Welfare per scenario',
+                  'Utility per scenario',
+                  'CO2 emissions per scenario',
+                  #'ppm per scenario',
+                  'Total production per scenario',
+                  'invest per scenario',
+                  ]
+
     if filters is not None:
         for chart_filter in filters:
             if chart_filter.filter_key == 'Charts':
                 graphs_list = chart_filter.selected_values
             if chart_filter.filter_key == 'Scenarios':
                 selected_scenarios = chart_filter.selected_values
-    else:
-        graphs_list = ['Temperature vs Welfare',
-                       'CO2 Emissions vs Welfare', 'CO2 Emissions vs min(Utility)'
-                       'CO2 tax per scenario', 'Temperature per scenario', 'Welfare per scenario',
-                       'Utility per scenario', 'CO2 emissions per scenario', 'ppm(mean) vs Welfare',
-                       'Total production per scenario', 'ppm per scenario', 'invest per scenario']
 
         selected_scenarios = scenario_list
 
