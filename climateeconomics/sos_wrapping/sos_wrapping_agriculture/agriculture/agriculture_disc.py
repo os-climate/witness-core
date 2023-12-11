@@ -86,7 +86,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-               GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
+               GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
                'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
                                    'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True),
                                                             'cereals': ('float', [0, 1e9], True),

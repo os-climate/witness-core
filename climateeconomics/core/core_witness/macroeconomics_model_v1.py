@@ -589,8 +589,18 @@ class MacroEconomics:
     def compute_total_damages(self):
         """Damages are the sum of damages from climate + damges from loss of productivity"""
 
-        self.economics_df[GlossaryCore.DamagesFromClimate] = self.economics_df[GlossaryCore.GrossOutput] - \
-                                                                    self.economics_df[GlossaryCore.OutputNetOfDamage]
+        damefrac = self.damefrac[GlossaryCore.DamageFractionOutput]
+        gross_output = self.economics_df[GlossaryCore.GrossOutput]
+
+        if self.damage_to_productivity:
+            damage = 1 - ((1 - damefrac) /
+                          (1 - self.frac_damage_prod * damefrac))
+            output_net_of_d = (1 - damage) * gross_output
+        else:
+            output_net_of_d = gross_output * (1 - damefrac)
+
+        damage_from_climate = gross_output - output_net_of_d
+        self.economics_df[GlossaryCore.DamagesFromClimate] = damage_from_climate
         self.economics_df[GlossaryCore.Damages] = self.economics_df[GlossaryCore.DamagesFromClimate] + \
                                                          self.economics_df[GlossaryCore.DamagesFromProductivityLoss]
 

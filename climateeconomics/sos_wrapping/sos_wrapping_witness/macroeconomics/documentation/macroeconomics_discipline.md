@@ -59,7 +59,7 @@ $$A^*_t=(1-f\Omega_t) \cdot \frac{A^*_{t-1}}{1-A_{gt-1}}$$ with $A_0 =A^*_0$.
 and then damage to output $\Omega_{yt}$ becomes: 
 $$\Omega_{yt} = 1- \frac{1- \Omega_t}{1-f\Omega_t}$$
 such that the output net of climate damage is 
-$$Q^*_t = (1-\Omega_{yt}) \cdot Y_t \cdot (Ku_t, L_t)$$
+$$Q^*_t = (1-\Omega_{yt}) \cdot Y_t (Ku_t, L_t)$$
 
 ### Labor force 
 To obtain the labor force we use the population in working age and the employment rate. We defined the population in working age as the population in the 15-70 age range. 
