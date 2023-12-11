@@ -67,7 +67,7 @@ class MacroEconomics():
         self.saving_rate = pd.Series(
             [self.param['saving_rate']] * self.nb_per, index=self.years_range)
         self.frac_damage_prod = self.param[GlossaryCore.FractionDamageToProductivityValue]
-        self.damage_to_productivity = self.param['damage_to_productivity']
+        self.damage_to_productivity = self.param[GlossaryCore.DamageToProductivity]
 
     def create_dataframe(self):
         '''

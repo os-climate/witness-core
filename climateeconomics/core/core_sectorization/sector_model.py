@@ -69,7 +69,7 @@ class SectorModel():
         self.decline_rate_tfp = inputs_dict['decline_rate_tfp']
         self.depreciation_capital = inputs_dict['depreciation_capital']
         self.frac_damage_prod = inputs_dict[GlossaryCore.FractionDamageToProductivityValue]
-        self.damage_to_productivity = inputs_dict['damage_to_productivity']
+        self.damage_to_productivity = inputs_dict[GlossaryCore.DamageToProductivity]
         self.init_output_growth = inputs_dict['init_output_growth']
         self.output_alpha = inputs_dict['output_alpha']
         self.output_gamma = inputs_dict['output_gamma']
