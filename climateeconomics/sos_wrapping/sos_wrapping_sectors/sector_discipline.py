@@ -51,7 +51,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         'output_alpha': {'type': 'float', 'user_level': 2, 'unit': '-'},
         'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '-'},
         'depreciation_capital': {'type': 'float', 'user_level': 2, 'unit': '-'},
-        'damage_to_productivity': {'type': 'bool', 'default': True,
+        GlossaryCore.DamageToProductivity: {'type': 'bool', 'default': True,
                                    'visibility': 'Shared',
                                    'unit': '-', 'namespace': 'ns_witness'},
         GlossaryCore.FractionDamageToProductivityValue: GlossaryCore.FractionDamageToProductivity,
