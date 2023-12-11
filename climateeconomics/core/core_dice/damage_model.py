@@ -117,7 +117,7 @@ class DamageModel():
         If tipping point = True : Martin Weitzman damage function.
         """
         temp_atmo = self.temperature_df.loc[year, GlossaryCore.TempAtmo]
-        if self.tipping_point == True:
+        if self.tipping_point:
             dam = (temp_atmo / self.tp_a1)**self.tp_a2 + \
                 (temp_atmo / self.tp_a3)**self.tp_a4
             damage_frac_output = 1 - (1 / (1 + dam))

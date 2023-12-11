@@ -98,10 +98,14 @@ class PolicyDiscipline(SoSWrapp):
         dCO2_tax_dCO2_damage, dCO2_tax_dCCS_price = self.policy_model.compute_CO2_tax_dCCS_dCO2_damage_smooth()
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), ('CO2_damage_price', 'CO2_damage_price'),  np.identity(len(dCO2_tax_dCO2_damage)) * np.array(dCO2_tax_dCO2_damage))
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax),
+            ('CO2_damage_price', 'CO2_damage_price'),
+            np.identity(len(dCO2_tax_dCO2_damage)) * np.array(dCO2_tax_dCO2_damage))
 
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax), ('CCS_price', 'ccs_price_per_tCO2'),  np.identity(len(dCO2_tax_dCCS_price)) * np.array(dCO2_tax_dCCS_price))
+            (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax),
+            ('CCS_price', 'ccs_price_per_tCO2'),
+            np.identity(len(dCO2_tax_dCCS_price)) * np.array(dCO2_tax_dCCS_price))
 
     def get_chart_filter_list(self):
 
