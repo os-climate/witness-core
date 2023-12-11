@@ -116,7 +116,7 @@ class ServicesDiscTest(unittest.TestCase):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
-                       f'{self.name}.damage_to_productivity': True,
+                       f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
                        f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
@@ -152,7 +152,7 @@ class ServicesDiscTest(unittest.TestCase):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
-                       f'{self.name}.damage_to_productivity': True,
+                       f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest, #To check if not used
                        f'{self.name}.{SectorDiscipline.sector_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,

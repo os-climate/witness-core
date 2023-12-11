@@ -142,7 +142,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.TimeStep}': time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
-                       f'{self.name}.{self.model_name}.damage_to_productivity': True,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': share_non_energy_investment,
                        f'{self.name}.{GlossaryCore.EnergyProductionValue}': energy_supply_df,

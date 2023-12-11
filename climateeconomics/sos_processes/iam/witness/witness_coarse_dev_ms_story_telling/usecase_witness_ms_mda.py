@@ -56,8 +56,8 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
         values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
-        #values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        #values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 2
+        values_dict[f'{self.study_name}.epsilon0'] = 1.0
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 2
 
         for scenario, uc in {scenario_list[0]: uc1,
                              scenario_list[1]: uc2}.items():
@@ -77,11 +77,9 @@ if '__main__' == __name__:
     post_processing_factory = PostProcessingFactory()
     post_processing_factory.get_post_processing_by_namespace(
         uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
-    all_post_processings = post_processing_factory.get_all_post_processings(
-         uc_cls.execution_engine, False, as_json=False, for_test=False)
+    #all_post_processings = post_processing_factory.get_all_post_processings(
+    #     uc_cls.execution_engine, False, as_json=False, for_test=False)
 
-    for namespace, post_proc_list in all_post_processings.items():
-        for chart in post_proc_list:
-            chart.to_plotly().show()
-
-    print()
+#    for namespace, post_proc_list in all_post_processings.items():
+#        for chart in post_proc_list:
+#            chart.to_plotly().show()
