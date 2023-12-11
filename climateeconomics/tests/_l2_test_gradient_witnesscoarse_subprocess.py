@@ -126,55 +126,57 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         """
         Check gradient of objective wrt design variables for all stored iterations of a previously runned study
         """
-        self.name = 'Test'
-        self.ee = ExecutionEngine(self.name)
-
-        builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
-                                                           'witness_optim_sub_process',
-                                                           techno_dict=DEFAULT_COARSE_TECHNO_DICT,
-                                                           invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
-                                                           process_level='dev')
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-        self.ee.configure()
-
-        usecase = witness_sub_proc_usecase(bspline=False,
-                                           execution_engine=self.ee,
-                                           techno_dict=DEFAULT_COARSE_TECHNO_DICT,
-                                           process_level='dev',
-                                           )
-        usecase.study_name = self.name
-        usecase.init_from_subusecase = True
-        directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'optim_check_gradient_dev')
-
-        values_dict = usecase.setup_usecase()
-        full_values_dict = {}
-        for dict_v in values_dict:
-            full_values_dict.update(dict_v)
-
-        # Do not use a gradient method to validate gradient is better, Gauss Seidel works
-        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.tolerance'] = 1.0e-15
-        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
-        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
-        full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
-        # same hypothesis as uc1
-        full_values_dict[
-            f'{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.assumptions_dict'] = {
-            'compute_gdp': False,
-            'compute_climate_impact_on_gdp': False,
-            'activate_climate_effect_population': False,
-            'invest_co2_tax_in_renewables': False
-        }
-        full_values_dict[
-            f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_price_percentage"] = 0.0
-        full_values_dict[
-            f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.co2_damage_price_percentage"] = 0.0
-        self.ee.load_study_from_input_dict(full_values_dict)
         # Add design space to the study by filling design variables :
         design_space = pd.read_csv(join(dirname(__file__), 'data',  'all_iteration_dict.csv'))
         all_iterations_dspace_list = [eval(dspace) for dspace in design_space['value'].values]
         iter = 0
-        test_results = []
-        for dspace_dict in all_iterations_dspace_list[0:5]:
+
+        for dspace_dict in all_iterations_dspace_list[-5:]:
+
+            self.name = 'Test'
+            self.ee = ExecutionEngine(self.name)
+
+            builder = self.ee.factory.get_builder_from_process('climateeconomics.sos_processes.iam.witness',
+                                                               'witness_optim_sub_process',
+                                                               techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                                               invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
+                                                               process_level='dev')
+            self.ee.factory.set_builders_to_coupling_builder(builder)
+            self.ee.configure()
+
+            usecase = witness_sub_proc_usecase(bspline=False,
+                                               execution_engine=self.ee,
+                                               techno_dict=DEFAULT_COARSE_TECHNO_DICT,
+                                               process_level='dev',
+                                               )
+            usecase.study_name = self.name
+            usecase.init_from_subusecase = True
+            directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'optim_check_gradient_dev')
+
+            values_dict = usecase.setup_usecase()
+            full_values_dict = {}
+            for dict_v in values_dict:
+                full_values_dict.update(dict_v)
+
+            # Do not use a gradient method to validate gradient is better, Gauss Seidel works
+            full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.tolerance'] = 1.0e-15
+            full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
+            full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.max_mda_iter'] = 30
+            full_values_dict[f'{usecase.study_name}.{usecase.coupling_name}.warm_start'] = False
+            # same hypothesis as uc1
+            full_values_dict[
+                f'{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.assumptions_dict'] = {
+                'compute_gdp': False,
+                'compute_climate_impact_on_gdp': False,
+                'activate_climate_effect_population': False,
+                'invest_co2_tax_in_renewables': False
+            }
+            full_values_dict[
+                f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.ccs_price_percentage"] = 0.0
+            full_values_dict[
+                f"{usecase.study_name}.{usecase.coupling_name}.{usecase.extra_name}.co2_damage_price_percentage"] = 0.0
+            self.ee.load_study_from_input_dict(full_values_dict)
+            test_results = []
             self.ee.logger.info(f'testing iteration {iter}')
             design_space_values_dict = {}
             for variable_name, variable_value in dspace_dict.items():
