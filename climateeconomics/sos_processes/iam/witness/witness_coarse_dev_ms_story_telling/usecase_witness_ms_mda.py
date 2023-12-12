@@ -63,7 +63,8 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
         values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = len(scenario_df.loc[scenario_df['selected_scenario']==True])
+        # assumes max of 16 cores per computational node
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
 
         for scenario, uc in scenario_dict.items():
             uc.study_name = f'{self.study_name}.{self.scatter_scenario}.{scenario}'
