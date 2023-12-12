@@ -89,7 +89,6 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15, inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.{GlossaryCore.EconomicsDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.DamageDfValue}',
-                                     f'{self.name}.expected_damage_df',
                                      f'{self.name}.CO2_damage_price'],
                             derr_approx='complex_step')
 
@@ -155,6 +154,5 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15, inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.{GlossaryCore.EconomicsDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.DamageDfValue}',
-                                     f'{self.name}.expected_damage_df',
                                      f'{self.name}.CO2_damage_price'],
                             derr_approx='complex_step')

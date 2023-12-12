@@ -52,7 +52,7 @@ class DamageModel():
         self.tp_a2 = self.param['tp_a2']
         self.tp_a3 = self.param['tp_a3']
         self.tp_a4 = self.param['tp_a4']
-        self.damage_to_productivity = self.param['damage_to_productivity']
+        self.damage_to_productivity = self.param[GlossaryCore.DamageToProductivity]
         self.frac_damage_prod = self.param[GlossaryCore.FractionDamageToProductivityValue]
 
     def create_dataframe(self):
@@ -117,7 +117,7 @@ class DamageModel():
         If tipping point = True : Martin Weitzman damage function.
         """
         temp_atmo = self.temperature_df.loc[year, GlossaryCore.TempAtmo]
-        if self.tipping_point == True:
+        if self.tipping_point:
             dam = (temp_atmo / self.tp_a1)**self.tp_a2 + \
                 (temp_atmo / self.tp_a3)**self.tp_a4
             damage_frac_output = 1 - (1 / (1 + dam))

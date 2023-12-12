@@ -60,7 +60,6 @@ class DamageDiscTest(unittest.TestCase):
         # remove energy wasted as not used for the test and breaks other l0 tests (CO2 emissions) if adds it to
         # the csv file
         economics_df_all = economics_df_all[[key for key in GlossaryCore.EconomicsDf['dataframe_descriptor'].keys() if key != GlossaryCore.EnergyWasted]]
-        #economics_df_all = economics_df_all[GlossaryCore.EconomicsDf['dataframe_descriptor'].keys()]
 
         economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
         temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020]
@@ -80,12 +79,11 @@ class DamageDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_damage = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.DamageDfValue}')
-
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
 
-        # for graph in graph_list:
-        #    graph.to_plotly().show()
+        for graph in graph_list:
+           #graph.to_plotly().show()
+           pass
