@@ -69,9 +69,6 @@ class ProcessBuilder(BaseProcessBuilder):
             'climateeconomics.sos_processes.iam.witness', 'witness_coarse_dev_optim_process')
 
         scatter_scenario_name = 'optimization scenarios'
-        # modify namespaces defined in the child process
-        self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            scatter_scenario_name, after_name=self.ee.study_name)
 
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
@@ -79,9 +76,11 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_ref': f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
+        self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': ['ns_ref', 'ns_post_processing',
+                                                                                  'ns_scatter_scenario']})
 
         multi_scenario = self.ee.factory.create_driver(
-            'optimization scenarios', builder_cdf_list, flatten_subprocess=False
+            'optimization scenarios', builder_cdf_list, flatten_subprocess=False, map_name='new_map'
         )
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
                                                                                 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_ms.post_processing_witness_full')

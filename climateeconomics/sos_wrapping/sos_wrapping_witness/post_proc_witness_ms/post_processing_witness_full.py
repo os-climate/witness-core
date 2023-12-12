@@ -30,10 +30,11 @@ def post_processing_filters(execution_engine, namespace):
 
     filters = []
 
-    chart_list = ['Temperature vs Welfare',
-                  'CO2 Emissions vs Welfare', 'CO2 Emissions vs min(Utility)',
-                  'CO2 tax per scenario', 'Temperature per scenario', 'Welfare per scenario',
-                  'Utility per scenario', 'CO2 emissions per scenario', 'ppm(mean) vs Welfare',
+    chart_list = ['Temperature vs Utility',
+                  #'CO2 Emissions vs Welfare',
+                  'CO2 Emissions vs min(Utility)',
+                  'CO2 tax per scenario', 'Temperature per scenario', #'Welfare per scenario',
+                  'Utility per scenario', 'CO2 emissions per scenario', 'ppm(mean) vs Utility',
                   'Total production per scenario', 'ppm per scenario', 'invest per scenario']
 
     scatter_scenario = 'optimization scenarios'
@@ -56,11 +57,12 @@ def post_processings(execution_engine, namespace, filters):
     scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
 
     # Overload default value with chart filter
-    graphs_list = ['Temperature vs Welfare',
-                   'CO2 Emissions vs Welfare', 'CO2 Emissions vs min(Utility)'
+    graphs_list = ['Temperature vs Utility',
+                   #'CO2 Emissions vs Welfare',
+                   'CO2 Emissions vs min(Utility)'
                                                'CO2 tax per scenario', 'Temperature per scenario',
-                   'Welfare per scenario',
-                   'Utility per scenario', 'CO2 emissions per scenario', 'ppm(mean) vs Welfare',
+                   #'Welfare per scenario',
+                   'Utility per scenario', 'CO2 emissions per scenario', 'ppm(mean) vs Utility',
                    'Total production per scenario', 'ppm per scenario', 'invest per scenario']
 
     if filters is not None:
@@ -88,11 +90,11 @@ def post_processings(execution_engine, namespace, filters):
         -------------
     """
 
-    if 'Temperature vs Welfare' in graphs_list:
+    if 'Temperature vs Utility' in graphs_list:
 
-        chart_name = f'Temperature in {year_end} vs Welfare'
+        chart_name = f'Temperature in {year_end} vs Utility'
         x_axis_name = f'Temperature increase since industrial revolution in degree Celsius'
-        y_axis_name = 'Welfare'
+        y_axis_name = 'Utility'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.Temperature_change.temperature_detail_df',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}'
@@ -103,7 +105,7 @@ def post_processings(execution_engine, namespace, filters):
         last_temperature_dict, welfare_dict = {}, {}
         for scenario in scenario_list:
             last_temperature_dict[scenario] = temperature_df_dict[scenario][GlossaryCore.TempAtmo][year_end]
-            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.Welfare][year_end]
+            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtility][year_end]
         namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
 
         new_pareto_chart = get_chart_pareto_front(last_temperature_dict, welfare_dict, scenario_list,
@@ -163,11 +165,11 @@ def post_processings(execution_engine, namespace, filters):
 
         instanciated_charts.append(new_pareto_chart)
 
-    if 'ppm(mean) vs Welfare' in graphs_list:
+    if 'ppm(mean) vs Utility' in graphs_list:
 
         chart_name = f'mean ppm vs Welfare'
         x_axis_name = f'Mean ppm'
-        y_axis_name = f'Welfare in {year_end}'
+        y_axis_name = f'Utility in {year_end}'
 
         df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.ghg_cycle_df',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
@@ -179,7 +181,7 @@ def post_processings(execution_engine, namespace, filters):
         for scenario in scenario_list:
             mean_co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario]['co2_ppm'].mean(
             )
-            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.Welfare][year_end]
+            welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtility][year_end]
         namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
 
         new_pareto_chart = get_chart_pareto_front(mean_co2_ppm_dict, welfare_dict, scenario_list,
