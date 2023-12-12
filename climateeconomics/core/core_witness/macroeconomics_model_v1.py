@@ -233,17 +233,14 @@ class MacroEconomics:
         self.workforce_df[GlossaryCore.Workforce] = self.workforce_df[GlossaryCore.EmploymentRate] * \
                                                     self.working_age_population_df[GlossaryCore.Population1570]
 
-    def compute_productivity_growthrate(self, year: int):
+    def compute_productivity_growthrate(self):
         """
         A_g, Growth rate of total factor productivity.
         Returns:
             :returns: A_g(0) * exp(-Δ_a * (t-1))
         """
-        t = ((year - self.year_start) / self.time_step) + 1
-        productivity_gr = self.productivity_gr_start * \
-            np.exp(-self.decline_rate_tfp * self.time_step * (t - 1))
-        self.economics_df.loc[year, GlossaryCore.ProductivityGrowthRate] = productivity_gr
-        return productivity_gr
+        prod_growth_rate = self.productivity_gr_start * np.exp(- self.decline_rate_tfp * (self.years_range - self.year_start))
+        self.economics_df[GlossaryCore.ProductivityGrowthRate] = prod_growth_rate
 
     def compute_productivity(self, year: int):
         """
@@ -632,11 +629,11 @@ class MacroEconomics:
         self.compute_consumption_pc(year_start)
         # for year 0 compute capital +1
         self.compute_capital(year_start + 1)
+        self.compute_productivity_growthrate()
 
         # Then iterate over years from year_start + tstep:
         for year in self.years_range[1:]:
             # First independant variables
-            self.compute_productivity_growthrate(year)
             self.compute_productivity(year)
             # Then others:
             self.compute_usable_capital(year)
