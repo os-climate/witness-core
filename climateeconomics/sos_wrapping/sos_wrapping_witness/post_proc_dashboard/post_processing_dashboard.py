@@ -18,6 +18,7 @@ from copy import deepcopy
 
 import numpy as np
 
+from sostrades_core.execution_engine.proxy_discipline import ProxyDiscipline
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model_v2 import TempChange
 from climateeconomics.glossarycore import GlossaryCore
@@ -57,7 +58,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
     if 'temperature evolution' in chart_list:
 
-        model = execution_engine.dm.get_sosdisc_inputs('temperature_model')
+        model = ProxyDiscipline.get_sosdisc_inputs('temperature_model')
         temperature_df = deepcopy(
             execution_engine.dm.get_sosdisc_outputs('temperature_detail_df'))
 
