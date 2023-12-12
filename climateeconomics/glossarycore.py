@@ -290,9 +290,9 @@ class GlossaryCore:
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
-            Damages: ("float", None, False),
             DamageFractionOutput: ("float", None, False),
             BaseCarbonPrice: ("float", None, False),
+            Damages: ("float", None, False),
         },
     }
 
