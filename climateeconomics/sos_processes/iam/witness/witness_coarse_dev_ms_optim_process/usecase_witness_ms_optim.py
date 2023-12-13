@@ -42,7 +42,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict = {}
         scenario_list = []
-        alpha_list = np.linspace(0, 100, 2, endpoint=True) / 100.0
+        alpha_list = np.linspace(0, 100, 11, endpoint=True) / 100.0
         for alpha_i in alpha_list:
             scenario_i = 'scenario_\u03B1=%.2f' % alpha_i
             scenario_i = scenario_i.replace('.', ',')
