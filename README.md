@@ -1,4 +1,4 @@
-# ClimateEconomics
+# ClimateEconomics / witness-core
 
 
 ## Description
