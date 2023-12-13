@@ -1,4 +1,4 @@
-# ClimateEconomics
+# ClimateEconomics - witness-core
 
 
 ## Description
@@ -6,19 +6,19 @@ ClimateEconomics is the Python package to evaluate the effect of energy way of p
 
 ## Prerequisite
 In order to satisfy dependencies, following prerequisites need to be satisfied:
-* deployment of gemseo package and its requirements (see requirements.txt of gemseo package)
-* deployment of energy\_models package and its requirements (see requirements.in of energy\_models package)
-* deployment of sostrades\_core\_package and its requirements (see requirements.in of sostrades\_core\_package package)
-* libraries in requirements.in
+* deployment of gems package and its requirements (see requirements.txt of gems package)
+* deployment of energy\_models package and its requirements (see requirements.txt of energy\_models package)
+* deployment of sostrades\_core\_package and its requirements (see requirements.txt of sostrades\_core\_package package)
+* libraries in requirements.txt
 
-The following command can be used to install the package listed in requirements.in
-$$pip install -r requirements.in --trusted-host pypi.org --trusted-host files.pythonhosted.org$$
+The following command can be used to install the package listed in requirements.txt
+$$pip install -r requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org$$
 
 
 ## Overview
 
 This package contains the following disciplines:
-* agriculture, to determine the area taken by food to feed humanity
+* agiculture, to determine the area taken by food to feed humanity
 * resources (coal, gas, oil, uranium), to evaluate to quantity left and the extraction price of resources.
 * carboncycle, to take into account the natural cycle of carbon
 * carbonemissions, to evaluate the quantity of CO2 emitted
@@ -51,10 +51,10 @@ documentation folder gives details about the optimisation problem formulation.
 
 ## Looking at the future
 
-### Regionalization
+### Regionalisation
 
 At the moment, results given by Witness process and the different models are global results which are an average over the world.
-In order to have more accuracy, we want to add regionalization aspect. The first step is to propose a regionalisation continent by continent.
+In order to have more accuracy, we want to add regionalisation aspect. The first step is to propose a regionalisation continent by continent.
 
 ## License 
 The witness-core source code is distributed under the Apache License Version 2.0.
