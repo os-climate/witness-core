@@ -588,6 +588,21 @@ class GlossaryCore:
         },
     }
 
+    ProductionDetailedDfValue = "production_detailed_df"
+    ProductionDetailedDf = {
+        "var_name": ProductionDetailedDfValue,
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
+            Damages: ("float", None, False),
+            DamagesFromClimate: ("float", None, False),
+            DamagesFromProductivityLoss: ("float", None, False),
+        },
+    }
+
     CapitalDfValue = "capital_df"
     Capital = "capital"
     UsableCapital = "usable_capital"
@@ -672,11 +687,14 @@ class GlossaryCore:
     ProductivityDf = {
         "var_name": ProductivityDfValue,
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "-",
+        "description": "productivity levels through years, applied, with damage, and without wamage.",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Productivity: ("float", None, False),
             ProductivityGrowthRate: ("float", None, False),
+            ProductivityWithoutDamage: ("float", None, False),
+            ProductivityWithDamage: ("float", None, False),
         },
     }
 
