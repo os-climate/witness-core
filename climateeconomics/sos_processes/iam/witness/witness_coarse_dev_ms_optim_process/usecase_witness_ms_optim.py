@@ -17,6 +17,7 @@ limitations under the License.
 from os.path import join, dirname
 
 import numpy as np
+import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
@@ -48,9 +49,14 @@ class Study(ClimateEconomicsStudyManager):
             scenario_list.append(scenario_i)
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_i}.{witness_ms_usecase.optim_name}.{witness_ms_usecase.coupling_name}.{witness_ms_usecase.extra_name}.alpha'] = alpha_i
 
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_list),
+                                    'scenario_name': scenario_list})
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
-        values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 11
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
+
+        #values_dict[f'{self.study_name}.epsilon0'] = 1.0
+        # assumes max of 16 cores per computational node
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
         for scenario in scenario_list:
             scenarioUseCase = witness_optim_usecase(
                 bspline=self.bspline, execution_engine=self.execution_engine)
@@ -79,8 +85,8 @@ if '__main__' == __name__:
     post_processing_factory = PostProcessingFactory()
     post_processing_factory.get_post_processing_by_namespace(
         uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
-#     all_post_processings = post_processing_factory.get_all_post_processings(
-#         uc_cls.execution_engine, False, as_json=False, for_test=False)
+    all_post_processings = post_processing_factory.get_all_post_processings(
+        uc_cls.execution_engine, False, as_json=False, for_test=False)
 #
 #     for namespace, post_proc_list in all_post_processings.items():
 #         for chart in post_proc_list:

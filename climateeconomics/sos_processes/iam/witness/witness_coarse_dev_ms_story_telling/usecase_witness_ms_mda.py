@@ -15,7 +15,6 @@ limitations under the License.
 '''
 from os.path import join, dirname
 
-import numpy as np
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
@@ -44,23 +43,30 @@ class Study(ClimateEconomicsStudyManager):
         self.data_dir = join(dirname(__file__), 'data')
 
     def setup_usecase(self):
-        uc1 = usecase1(execution_engine=self.execution_engine)
-        uc2 = usecase2(execution_engine=self.execution_engine)
 
         self.scatter_scenario = 'mda_scenarios'
 
+        scenario_dict = {'usecase_1': usecase1(execution_engine=self.execution_engine),
+                         'usecase_2': usecase2(execution_engine=self.execution_engine),
+                         'usecase_3': usecase3(execution_engine=self.execution_engine),
+                         'usecase_4': usecase4(execution_engine=self.execution_engine),
+                         'usecase_5': usecase5(execution_engine=self.execution_engine),
+                         'usecase_6': usecase6(execution_engine=self.execution_engine),
+                         'usecase_7': usecase7(execution_engine=self.execution_engine),
+                         }
+
+        scenario_list = list(scenario_dict.keys())
         values_dict = {}
-        scenario_list = ['usecase_1', 'usecase_2']
-        scenario_df = pd.DataFrame({'selected_scenario': [True, True],
+
+        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_list),
                                     'scenario_name': scenario_list})
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
         values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
-        values_dict[f'{self.study_name}.epsilon0'] = 1.0
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 2
+        # assumes max of 16 cores per computational node
+        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
 
-        for scenario, uc in {scenario_list[0]: uc1,
-                             scenario_list[1]: uc2}.items():
+        for scenario, uc in scenario_dict.items():
             uc.study_name = f'{self.study_name}.{self.scatter_scenario}.{scenario}'
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
@@ -77,8 +83,8 @@ if '__main__' == __name__:
     post_processing_factory = PostProcessingFactory()
     post_processing_factory.get_post_processing_by_namespace(
         uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
-    #all_post_processings = post_processing_factory.get_all_post_processings(
-    #     uc_cls.execution_engine, False, as_json=False, for_test=False)
+    all_post_processings = post_processing_factory.get_all_post_processings(
+         uc_cls.execution_engine, False, as_json=False, for_test=False)
 
 #    for namespace, post_proc_list in all_post_processings.items():
 #        for chart in post_proc_list:
