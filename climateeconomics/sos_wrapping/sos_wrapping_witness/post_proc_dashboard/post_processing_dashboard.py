@@ -18,7 +18,9 @@ from copy import deepcopy
 
 import numpy as np
 
-from sostrades_core.execution_engine.proxy_discipline import ProxyDiscipline
+import logging
+
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model_v2 import TempChange
 from climateeconomics.glossarycore import GlossaryCore
@@ -58,9 +60,9 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
     if 'temperature evolution' in chart_list:
 
-        model = ProxyDiscipline.get_sosdisc_inputs('temperature_model')
+        model = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('temperature_model')[0])
         temperature_df = deepcopy(
-            execution_engine.dm.get_sosdisc_outputs('temperature_detail_df'))
+            execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('temperature_detail_df')[0]))
 
         if model == 'DICE':
             to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
@@ -81,8 +83,9 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
         max_values = {}
         min_values = {}
+        ced = ClimateEcoDiscipline('ced', logging.Logger)
         for key in to_plot:
-            min_values[key], max_values[key] = execution_engine.dm.get_greataxisrange(
+            min_values[key], max_values[key] = ced.get_greataxisrange(
                 temperature_df[to_plot])
 
         min_value = min(min_values.values())
@@ -126,7 +129,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
     if 'Radiative forcing' in chart_list:
 
-        forcing_df = execution_engine.dm.get_sosdisc_outputs('forcing_detail_df')
+        forcing_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('forcing_detail_df')[0])
 
         years = forcing_df[GlossaryCore.Years].values.tolist()
 
