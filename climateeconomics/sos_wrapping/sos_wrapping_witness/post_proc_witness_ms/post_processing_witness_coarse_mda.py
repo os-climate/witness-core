@@ -353,7 +353,7 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Total Energy production per scenario'
         x_axis_name = 'Years'
-        y_axis_name = GlossaryCore.TotalProductionValue + ' (' + GlossaryCore.EnergyProductionDf['unit'] + ')'
+        y_axis_name = GlossaryCore.TotalProductionValue + ' [TWh]'
 
         df_paths = [
             'EnergyMix.energy_production_detailed']
