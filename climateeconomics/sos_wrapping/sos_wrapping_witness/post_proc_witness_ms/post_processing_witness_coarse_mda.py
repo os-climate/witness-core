@@ -402,10 +402,10 @@ def post_processings(execution_engine, namespace, filters):
 
 
 def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios):
-    # graphs ordinate should start at 0, except for CO2 emissions that could go <0
-    min_x = min(0, min(x_list))
+    min_x = min(x_list)
     max_x = max(x_list)
-    min_y = min([min(list(y)) for y in y_dict.values()])
+    # graphs ordinate should start at 0, except for CO2 emissions that could go <0
+    min_y = min(0, min([min(list(y)) for y in y_dict.values()]))
     max_y = max([max(list(y)) for y in y_dict.values()])
 
     new_chart = TwoAxesInstanciatedChart(x_axis_name, y_axis_name,
