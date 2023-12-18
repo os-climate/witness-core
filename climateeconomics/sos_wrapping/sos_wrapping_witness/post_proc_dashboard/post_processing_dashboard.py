@@ -20,9 +20,7 @@ import numpy as np
 
 import logging
 
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
-from climateeconomics.core.core_witness.tempchange_model_v2 import TempChange
+import climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline as TempChange
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -64,88 +62,14 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         temperature_df = deepcopy(
             execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('temperature_detail_df')[0]))
 
-        if model == 'DICE':
-            to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
-            legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
-                      GlossaryCore.TempOcean: 'ocean temperature'}
-
-        elif model == 'FUND':
-            to_plot = [GlossaryCore.TempAtmo]
-            legend = {GlossaryCore.TempAtmo: 'atmosphere temperature'}
-
-        elif model == 'FAIR':
-            raise NotImplementedError('Model not implemented yet')
-
-        years = list(temperature_df.index)
-
-        year_start = years[0]
-        year_end = years[len(years) - 1]
-
-        max_values = {}
-        min_values = {}
-        ced = ClimateEcoDiscipline('ced', logging.Logger)
-        for key in to_plot:
-            min_values[key], max_values[key] = ced.get_greataxisrange(
-                temperature_df[to_plot])
-
-        min_value = min(min_values.values())
-        max_value = max(max_values.values())
-
-        chart_name = 'Temperature evolution over the years'
-
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
-                                             'temperature evolution (degrees Celsius above preindustrial)',
-                                             [year_start - 5, year_end + 5], [
-                                                 min_value, max_value],
-                                             chart_name)
-
-        for key in to_plot:
-            visible_line = True
-
-            ordonate_data = list(temperature_df[key])
-
-            new_series = InstanciatedSeries(
-                years, ordonate_data, legend[key], 'lines', visible_line)
-
-            new_chart.series.append(new_series)
-
-        instanciated_charts.append(new_chart)
-
-        # Seal level chart for FUND pyworld3
-        if model == 'FUND':
-            chart_name = 'Sea level evolution over the years'
-            min_value, max_value = execution_engine.dm.get_greataxisrange(temperature_df['sea_level'])
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
-                                                 'Seal level evolution',
-                                                 [year_start - 5, year_end + 5], [min_value, max_value],
-                                                 chart_name)
-            visible_line = True
-            ordonate_data = list(temperature_df['sea_level'])
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'Seal level evolution [m]', 'lines', visible_line)
-            new_chart.series.append(new_series)
-
-            instanciated_charts.append(new_chart)
+        instanciated_charts = TempChange.temperature_evolution(model,temperature_df,instanciated_charts)
 
     if 'Radiative forcing' in chart_list:
 
         forcing_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('forcing_detail_df')[0])
 
-        years = forcing_df[GlossaryCore.Years].values.tolist()
+        instanciated_charts = TempChange.radiative_forcing(forcing_df,instanciated_charts)
 
-        chart_name = 'Gas Radiative forcing evolution over the years'
-
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Radiative forcing (W.m-2)',
-                                             chart_name=chart_name)
-
-        for forcing in forcing_df.columns:
-            if forcing != GlossaryCore.Years:
-                new_series = InstanciatedSeries(
-                    years, forcing_df[forcing].values.tolist(), forcing, 'lines')
-
-                new_chart.series.append(new_series)
-
-        instanciated_charts.append(new_chart)
     return instanciated_charts
 
 
