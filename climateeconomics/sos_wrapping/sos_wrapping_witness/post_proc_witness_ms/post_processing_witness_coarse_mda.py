@@ -116,6 +116,26 @@ def post_processings(execution_engine, namespace, filters):
 
         instanciated_charts.append(new_chart)
 
+    if 'GDP per scenario' in graphs_list:
+
+        chart_name = 'World GDP Net of Damage over years per scenario'
+        x_axis_name = 'Years'
+        y_axis_name = 'World GDP Net of Damage (Trillion $2020)'
+
+        df_paths = ['Macroeconomics.' + GlossaryCore.EconomicsDetailDfValue, ]
+        (gdp_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+        gdp_dict = {}
+        for scenario in scenario_list:
+            gdp_dict[scenario] = gdp_df_dict[scenario][GlossaryCore.OutputNetOfDamage].values.tolist(
+            )
+
+        new_chart = get_scenario_comparison_chart(years, gdp_dict,
+                                                  chart_name=chart_name,
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+
+        instanciated_charts.append(new_chart)
+
     if 'CO2 emissions per scenario' in graphs_list:
 
         chart_name = 'CO2 emissions per scenario'
@@ -143,7 +163,7 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'World population over years per scenario'
         x_axis_name = 'Years'
-        y_axis_name = 'World Population (Billions)'
+        y_axis_name = 'World Population'
 
         df_paths = ['Population.population_detail_df', ]
         (pop_df_dict,) = get_df_per_scenario_dict(
@@ -163,36 +183,16 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Cumulative climate deaths over years per scenario'
         x_axis_name = 'Years'
-        y_axis_name = 'Cumulative climate deaths (Millions)'
+        y_axis_name = 'Cumulative climate deaths'
 
         df_paths = ['Population.death_dict', ]
         (death_dict_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         death_dict = {}
         for scenario in scenario_list:
-            death_dict[scenario] = death_dict_dict[scenario]['climate']['total'].values.tolist()
+            death_dict[scenario] = death_dict_dict[scenario]['climate']['cum_total'].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, death_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        instanciated_charts.append(new_chart)
-
-    if 'GDP per scenario' in graphs_list:
-
-        chart_name = 'World GDP Net of Damage over years per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = 'World GDP Net of Damage (Trillion $2020)'
-
-        df_paths = ['Macroeconomics.' + GlossaryCore.EconomicsDetailDfValue, ]
-        (gdp_df_dict,) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-        gdp_dict = {}
-        for scenario in scenario_list:
-            gdp_dict[scenario] = gdp_df_dict[scenario][GlossaryCore.OutputNetOfDamage].values.tolist(
-            )
-
-        new_chart = get_scenario_comparison_chart(years, gdp_dict,
                                                   chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
 
@@ -297,7 +297,7 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Utility per scenario'
         x_axis_name = 'Years'
-        y_axis_name = 'Discounted Utility (trill $)'
+        y_axis_name = 'Discounted Utility [-]'
 
         df_paths = [f'{GlossaryCore.UtilityDfValue}', ]
         (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
@@ -351,9 +351,9 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Total production per scenario' in graphs_list:
 
-        chart_name = 'Total production per scenario'
+        chart_name = 'Total Energy production per scenario'
         x_axis_name = 'Years'
-        y_axis_name = GlossaryCore.TotalProductionValue
+        y_axis_name = GlossaryCore.TotalProductionValue + ' [TWh]'
 
         df_paths = [
             'EnergyMix.energy_production_detailed']
@@ -374,12 +374,38 @@ def post_processings(execution_engine, namespace, filters):
 
     return instanciated_charts
 
+    if 'Fossil production per scenario' in graphs_list:
+
+        chart_name = 'Total Fossil Energy production per scenario'
+        x_axis_name = 'Years'
+        y_axis_name = GlossaryCore.TotalProductionValue + ' (' + GlossaryCore.EnergyProductionDf['unit'] + ')'
+
+        df_paths = [
+            'EnergyMix.energy_production_brut_detailed']
+        (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+
+        energy_production_brut_detailed_dict = {}
+        for scenario in scenario_list:
+            energy_production_brut_detailed_dict[scenario] = energy_production_brut_detailed_df_dict[
+                scenario]['Total production (uncut)'].values.tolist()
+
+        new_chart = get_scenario_comparison_chart(years, energy_production_detailed_dict,
+                                                  chart_name=chart_name,
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+
+        instanciated_charts.append(new_chart)
+
+
+    return instanciated_charts
+
+
 
 def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios):
-
     min_x = min(x_list)
     max_x = max(x_list)
-    min_y = min([min(list(y)) for y in y_dict.values()])
+    # graphs ordinate should start at 0, except for CO2 emissions that could go <0
+    min_y = min(0, min([min(list(y)) for y in y_dict.values()]))
     max_y = max([max(list(y)) for y in y_dict.values()])
 
     new_chart = TwoAxesInstanciatedChart(x_axis_name, y_axis_name,
