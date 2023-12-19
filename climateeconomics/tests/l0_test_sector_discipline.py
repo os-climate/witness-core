@@ -105,7 +105,7 @@ class ServicesDiscTest(unittest.TestCase):
         #damage
         self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years,
                                        GlossaryCore.Damages: np.zeros(self.nb_per),
-                                       GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
+                                       GlossaryCore.DamageFractionOutput: np.linspace(0.02, 0.05, len(self.years)),
                                        GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
         self.damage_df.index = self.years
 
