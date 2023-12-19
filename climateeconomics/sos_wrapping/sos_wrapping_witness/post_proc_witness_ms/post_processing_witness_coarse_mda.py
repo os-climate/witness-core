@@ -398,7 +398,7 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Total production per scenario' in graphs_list:
 
-        chart_name = 'Total Energy production per scenario'
+        chart_name = 'Total Net Energy production per scenario'
         x_axis_name = 'Years'
         y_axis_name = GlossaryCore.TotalProductionValue + ' [TWh]'
 
@@ -422,11 +422,11 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Fossil production per scenario' in graphs_list:
 
-        chart_name = 'Total Fossil Energy production per scenario'
+        chart_name = 'Total Net Fossil Energy production per scenario'
         x_axis_name = 'Years'
         y_axis_name = 'Fossil energy production [TWh]'
 
-        df_paths = [f'{EnergyMix.name}.energy_production_brut_detailed']
+        df_paths = [f'{EnergyMix.name}.energy_production_detailed']
         (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
@@ -442,11 +442,11 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Renewable production per scenario' in graphs_list:
 
-        chart_name = 'Total renewable Energy production per scenario'
+        chart_name = 'Total Net Renewable Energy production per scenario'
         x_axis_name = 'Years'
-        y_axis_name = 'Renewable energy production [TWh]'
+        y_axis_name = 'Renewable net energy production [TWh]'
 
-        df_paths = [f'{EnergyMix.name}.energy_production_brut_detailed']
+        df_paths = [f'{EnergyMix.name}.energy_production_detailed']
         (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
 
         energy_production_brut_detailed_dict = {}
