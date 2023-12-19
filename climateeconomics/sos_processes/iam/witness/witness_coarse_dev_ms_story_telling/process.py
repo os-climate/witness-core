@@ -71,7 +71,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
-                   'ns_post_processing': f'{self.ee.study_name}.Post-processing',
+                   'ns_post_processing': f'{self.ee.study_name}.mda_scenarios',
                    'ns_ref': f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences'}
 
 
