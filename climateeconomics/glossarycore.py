@@ -278,7 +278,7 @@ class GlossaryCore:
     }
 
     Alpha = "alpha"
-
+    DamageToProductivity = "damage_to_productivity"
     Damages = "damages"
     DamageFractionOutput = "damage_frac_output"
     BaseCarbonPrice = "base_carbon_price"
@@ -290,9 +290,9 @@ class GlossaryCore:
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
-            Damages: ("float", None, False),
             DamageFractionOutput: ("float", None, False),
             BaseCarbonPrice: ("float", None, False),
+            Damages: ("float", None, False),
         },
     }
 
@@ -353,12 +353,16 @@ class GlossaryCore:
 
     EconomicsDetailDfValue = "economics_detail_df"
     Productivity = "productivity"
+    ProductivityWithDamage = "Productivity with damages"
+    ProductivityWithoutDamage = "Productivity without damages"
     ProductivityGrowthRate = "productivity_gr"
     OutputGrowth = "output_growth"
     OptimalEnergyProduction = "Optimal Energy Production [TWh]"
     UsedEnergy = "Used Energy [TWh]"
     UnusedEnergy = "Unused Energy [TWh]"
     EnergyUsage = "Energy Usage"
+    DamagesFromProductivityLoss = "Damages from productivity loss [G$]"
+    DamagesFromClimate = "Damages from climate [G$]"
     EconomicsDetailDf = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
@@ -368,7 +372,11 @@ class GlossaryCore:
             GrossOutput: ("float", None, False),  # G$
             OutputNetOfDamage: ("float", None, False),  # G$
             Damages: ("float", None, False),  # G$
+            DamagesFromClimate: ("float", None, False),  # G$
+            DamagesFromProductivityLoss: ("float", None, False),  # G$
             Productivity: ("float", None, False),
+            ProductivityWithDamage: ("float", None, False),
+            ProductivityWithoutDamage: ("float", None, False),
             ProductivityGrowthRate: ("float", None, False),
             Consumption: ("float", None, False),  # G$
             PerCapitaConsumption: ("float", None, False),
@@ -580,6 +588,21 @@ class GlossaryCore:
         },
     }
 
+    ProductionDetailedDfValue = "production_detailed_df"
+    ProductionDetailedDf = {
+        "var_name": ProductionDetailedDfValue,
+        "type": "dataframe",
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            GrossOutput: ("float", None, False),
+            OutputNetOfDamage: ("float", None, False),
+            Damages: ("float", None, False),
+            DamagesFromClimate: ("float", None, False),
+            DamagesFromProductivityLoss: ("float", None, False),
+        },
+    }
+
     CapitalDfValue = "capital_df"
     Capital = "capital"
     UsableCapital = "usable_capital"
@@ -664,11 +687,18 @@ class GlossaryCore:
     ProductivityDf = {
         "var_name": ProductivityDfValue,
         "type": "dataframe",
-        "unit": "G$",
+        "unit": "-",
+        "description": "productivity levels through years, applied, with damage, and without wamage.",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Productivity: ("float", None, False),
             ProductivityGrowthRate: ("float", None, False),
+            ProductivityWithoutDamage: ("float", None, False),
+            ProductivityWithDamage: ("float", None, False),
+            OptimalEnergyProduction: ("float", None, False),
+            UsedEnergy: ("float", None, False),
+            UnusedEnergy: ("float", None, False),
+            EnergyWasted: ("float", None, False)
         },
     }
 

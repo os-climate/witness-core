@@ -60,7 +60,7 @@ class DamageDiscipline(SoSWrapp):
         'tp_a2': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 2},
         'tp_a3': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.081},
         'tp_a4': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.754},
-        'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.DamageToProductivity: {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',

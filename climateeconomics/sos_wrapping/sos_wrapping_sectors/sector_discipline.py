@@ -51,7 +51,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         'output_alpha': {'type': 'float', 'user_level': 2, 'unit': '-'},
         'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '-'},
         'depreciation_capital': {'type': 'float', 'user_level': 2, 'unit': '-'},
-        'damage_to_productivity': {'type': 'bool', 'default': True,
+        GlossaryCore.DamageToProductivity: {'type': 'bool', 'default': True,
                                    'visibility': 'Shared',
                                    'unit': '-', 'namespace': 'ns_witness'},
         GlossaryCore.FractionDamageToProductivityValue: GlossaryCore.FractionDamageToProductivity,
@@ -72,6 +72,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
+        GlossaryCore.ProductionDetailedDfValue: GlossaryCore.ProductionDetailedDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
                                              'unit': '-',
@@ -139,12 +140,12 @@ class SectorDiscipline(ClimateEcoDiscipline):
             model_inputs)
 
         # Store output data
-        dict_values = {GlossaryCore.ProductivityDfValue: productivity_df,
+        dict_values = {GlossaryCore.ProductivityDfValue: productivity_df[GlossaryCore.ProductivityDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}": detailed_capital_df,
                        'growth_rate_df': growth_rate_df,
-                       f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[[GlossaryCore.Years, GlossaryCore.GrossOutput, GlossaryCore.OutputNetOfDamage]],
-                       f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[
-                           [GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
+                       GlossaryCore.ProductionDetailedDfValue: production_df[GlossaryCore.ProductionDetailedDf['dataframe_descriptor'].keys()],
+                       f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
+                       f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
                        GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
                        }
 
@@ -264,6 +265,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         chart_list = ['sector output',
                       GlossaryCore.InvestmentsValue,
                       'output growth',
+                      GlossaryCore.Damages,
                       'energy supply',
                       GlossaryCore.UsableCapital,
                       GlossaryCore.Capital,
@@ -372,6 +374,35 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
+        if GlossaryCore.Damages in chart_list:
+
+            damage_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity)
+            production_detail_df = self.get_sosdisc_outputs(GlossaryCore.ProductionDetailedDfValue)
+
+            to_plot = {GlossaryCore.DamagesFromClimate: f'Immediate climate damage',
+                       GlossaryCore.DamagesFromProductivityLoss: 'Damages due to loss of productivity (' + 'not ' * (not damage_to_productivity) +'applied to gross output)',}
+
+            years = list(production_detail_df.index)
+            chart_name = f'Breakdown of damages'
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Trillion$2020',
+                                                 chart_name=chart_name, stacked_bar=True)
+
+            for key, legend in to_plot.items():
+                ordonate_data = list(production_detail_df[key])
+
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, legend, 'bar', True)
+
+                new_chart.series.append(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(production_detail_df[GlossaryCore.Damages].values), 'Total', 'lines', True)
+
+            new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
+
         if GlossaryCore.EnergyUsage in chart_list:
             economics_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
 
@@ -432,25 +463,28 @@ class SectorDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.Productivity in chart_list:
+
+            to_plot = {
+                GlossaryCore.ProductivityWithoutDamage: 'Without damages',
+                GlossaryCore.ProductivityWithDamage: 'With damages'}
+            damages_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity)
+            productivity_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
             years = list(productivity_df.index)
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-            min_value, max_value = self.get_greataxisrange(productivity_df[GlossaryCore.Productivity])
+            extra_name = 'damages applied' if damages_to_productivity else 'damages not applied'
+            chart_name = f'Total Factor Productivity ({extra_name})'
 
-            chart_name = 'Total Factor Productivity'
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Total Factor Productivity [-]',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value],
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Total Factor Productivity [no unit]',
                                                  chart_name=chart_name)
 
-            ordonate_data = list(productivity_df[GlossaryCore.Productivity])
-            visible_line = True
+            for key, legend in to_plot.items():
+                visible_line = True
 
-            new_series = InstanciatedSeries(
-                years, ordonate_data, 'Total Factor productivity', 'lines', visible_line)
+                ordonate_data = list(productivity_df[key])
 
-            new_chart.series.append(new_series)
+                new_series = InstanciatedSeries(
+                    years, ordonate_data, legend, 'lines', visible_line)
+
+                new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 

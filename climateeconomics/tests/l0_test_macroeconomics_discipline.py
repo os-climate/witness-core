@@ -96,7 +96,6 @@ class MacroDiscTest(unittest.TestCase):
         energy_supply_df.loc[2021, GlossaryCore.TotalProductionValue] = 116.1036348
 
         self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years,
-                                       GlossaryCore.Damages: np.zeros(self.nb_per),
                                        GlossaryCore.DamageFractionOutput: np.linspace(0.01, 0.05, nb_per),
                                        GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
         self.damage_df.index = self.years
@@ -142,7 +141,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.TimeStep}': time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
-                       f'{self.name}.{self.model_name}.damage_to_productivity': True,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': False,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': share_non_energy_investment,
                        f'{self.name}.{GlossaryCore.EnergyProductionValue}': energy_supply_df,
@@ -155,7 +154,13 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital_df,
                        f'{self.name}.{GlossaryCore.SectorListValue}': sectors_list,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
+                       f'{self.name}.assumptions_dict': {
+                           'compute_gdp': True,
+                           'compute_climate_impact_on_gdp': False,
+                           'activate_climate_effect_population': True,
+                           'invest_co2_tax_in_renewables': True
+                           }
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
