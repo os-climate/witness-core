@@ -46,12 +46,8 @@ class Study(ClimateEconomicsStudyManager):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {'usecase_1': usecase1(execution_engine=self.execution_engine),
-                         'usecase_2': usecase2(execution_engine=self.execution_engine),
-                         'usecase_3': usecase3(execution_engine=self.execution_engine),
+        scenario_dict = {'usecase_2': usecase2(execution_engine=self.execution_engine),
                          'usecase_4': usecase4(execution_engine=self.execution_engine),
-                         'usecase_5': usecase5(execution_engine=self.execution_engine),
-                         'usecase_6': usecase6(execution_engine=self.execution_engine),
                          'usecase_7': usecase7(execution_engine=self.execution_engine),
                          }
 
