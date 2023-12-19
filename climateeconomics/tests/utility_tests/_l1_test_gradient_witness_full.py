@@ -129,7 +129,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         disc = self.ee.root_process
 
         output_full_names = [f'Test.{GlossaryCore.TemperatureDfValue}', f'Test.{GlossaryCore.UtilityDfValue}', f'Test.{GlossaryCore.EconomicsDfValue}',
-                             f'Test.{GlossaryCore.CarbonCycleDfValue}', 'Test.CO2_emissions_df', f'Test.{GlossaryCore.DamageDfValue}',
+                             f'Test.{GlossaryCore.CarbonCycleDfValue}', 'Test.CO2_emissions_df', f'Test.{GlossaryCore.DamageFractionDfValue}',
                              f'Test.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'Test.EnergyMix.{GlossaryCore.EnergyInvestmentsValue}',
                              f'Test.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'Test.EnergyMix.{GlossaryCore.EnergyMeanPriceValue}']
 
@@ -213,7 +213,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         disc = self.ee.root_process.proxy_disciplines[0]
         namespace = 'Test.WITNESS_Eval.WITNESS'
         output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.{GlossaryCore.UtilityDfValue}', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
-                             f'{namespace}.{GlossaryCore.CarbonCycleDfValue}', f'{namespace}.{GlossaryCore.CO2EmissionsDfValue}', f'{namespace}.{GlossaryCore.DamageDfValue}',
+                             f'{namespace}.{GlossaryCore.CarbonCycleDfValue}', f'{namespace}.{GlossaryCore.CO2EmissionsDfValue}', f'{namespace}.{GlossaryCore.DamageFractionDfValue}',
                              f'{namespace}.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'{namespace}.EnergyMix.{GlossaryCore.EnergyInvestmentsValue}',
                              f'{namespace}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'{namespace}.EnergyMix.{GlossaryCore.EnergyMeanPriceValue}',
                              f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',
@@ -371,7 +371,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         disc = self.ee.root_process.proxy_disciplines[0]
         namespace = 'Test.WITNESS_Eval.WITNESS'
         output_full_names = [f'{namespace}.{GlossaryCore.TemperatureDfValue}', f'{namespace}.{GlossaryCore.UtilityDfValue}', f'{namespace}.{GlossaryCore.EconomicsDfValue}',
-                             f'{namespace}.{GlossaryCore.CarbonCycleDfValue}', f'{namespace}.{GlossaryCore.CO2EmissionsDfValue}', f'{namespace}.{GlossaryCore.DamageDfValue}',
+                             f'{namespace}.{GlossaryCore.CarbonCycleDfValue}', f'{namespace}.{GlossaryCore.CO2EmissionsDfValue}', f'{namespace}.{GlossaryCore.DamageFractionDfValue}',
                              f'{namespace}.EnergyMix.{GlossaryCore.EnergyProductionValue}', f'{namespace}.EnergyMix{GlossaryCore.EnergyInvestmentsValue}',
                              f'{namespace}.EnergyMix.{GlossaryCore.CO2EmissionsGtValue}', f'{namespace}.EnergyMix.{GlossaryCore.EnergyMeanPriceValue}',
                              f'{namespace}.CO2_objective', f'{namespace}.ppm_objective',
