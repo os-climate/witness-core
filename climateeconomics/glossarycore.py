@@ -695,6 +695,10 @@ class GlossaryCore:
             ProductivityGrowthRate: ("float", None, False),
             ProductivityWithoutDamage: ("float", None, False),
             ProductivityWithDamage: ("float", None, False),
+            OptimalEnergyProduction: ("float", None, False),
+            UsedEnergy: ("float", None, False),
+            UnusedEnergy: ("float", None, False),
+            EnergyWasted: ("float", None, False)
         },
     }
 
