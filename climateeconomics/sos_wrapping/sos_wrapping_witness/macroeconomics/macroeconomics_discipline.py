@@ -657,10 +657,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 years, list(economics_detail_df[GlossaryCore.GrossOutput].values), 'Gross output', 'lines', True)
 
             new_chart.series.append(new_series)
-
-            ordonate_data = list(-economics_detail_df[GlossaryCore.DamagesFromClimate])
-            new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
-            new_chart.series.append(new_series)
+            compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
+            if compute_climate_impact_on_gdp:
+                ordonate_data = list(-economics_detail_df[GlossaryCore.DamagesFromClimate])
+                new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
+                new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
 
@@ -696,15 +697,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
             damage_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity)
-            both_damages = compute_climate_impact_on_gdp and damage_to_productivity
-            extra_chart_name = ' (assumed null)' if not both_damages else ''
-            to_plot = {GlossaryCore.DamagesFromClimate: f'Immediate climate damage' + ' (assumed null)' * (not compute_climate_impact_on_gdp and not both_damages),
-                       GlossaryCore.DamagesFromProductivityLoss: 'Damages due to loss of productivity' + ' (assumed null)' * (not damage_to_productivity and not both_damages),}
+            to_plot = {GlossaryCore.DamagesFromClimate: f'Immediate climate damage (' + 'not ' * (not compute_climate_impact_on_gdp) +'applied to net output)',
+                       GlossaryCore.DamagesFromProductivityLoss: 'Damages due to loss of productivity (' + 'not ' * (not damage_to_productivity) +'applied to gross output)',}
 
             years = list(economics_detail_df.index)
-            chart_name = f'Breakdown of damages{extra_chart_name}'
+            chart_name = f'Breakdown of damages'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'G$2020',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Trillion $2020',
                                                  chart_name=chart_name, stacked_bar=True)
 
             for key, legend in to_plot.items():
@@ -721,8 +720,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(new_series)
 
             instanciated_charts.append(new_chart)
-
-
 
         if GlossaryCore.InvestmentsValue in chart_list:
 

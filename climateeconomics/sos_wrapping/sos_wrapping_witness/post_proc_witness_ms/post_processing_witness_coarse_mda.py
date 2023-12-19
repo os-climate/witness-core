@@ -19,6 +19,9 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+from energy_models.core.energy_mix.energy_mix import EnergyMix
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
+from energy_models.core.ccus.ccus import CCUS
 
 def post_processing_filters(execution_engine, namespace):
 
@@ -29,11 +32,14 @@ def post_processing_filters(execution_engine, namespace):
                   'Population per scenario',
                   'Cumulative climate deaths per scenario',
                   'GDP per scenario',
+                  #'invest per scenario',
                   'invest in energy per scenario',
-                  'invest per scenario',
+                  'invest in energy and ccus per scenario',
                   'CO2 tax per scenario',
                   'Utility per scenario',
                   'Total production per scenario',
+                  'Fossil production per scenario',
+                  'Renewable production per scenario'
                   ]
 
     scatter_scenario = 'mda_scenarios'
@@ -57,17 +63,18 @@ def post_processings(execution_engine, namespace, filters):
 
     # Overload default value with chart filter
     graphs_list = ['Temperature per scenario',
-                   'CO2 emissions per scenario',
-                   'Population per scenario',
-                   'Cumulative climate deaths per scenario',
-                   'GDP per scenario',
-                   'invest in energy per scenario',
-                   'invest per scenario',
-                   'CO2 tax per scenario',
-                   #'Welfare per scenario',
-                   'Utility per scenario',
-                   #'ppm per scenario',
-                   'Total production per scenario',
+                  'CO2 emissions per scenario',
+                  'Population per scenario',
+                  'Cumulative climate deaths per scenario',
+                  'GDP per scenario',
+                  #'invest per scenario',
+                  'invest in energy per scenario',
+                  'invest in energy and ccus per scenario',
+                  'CO2 tax per scenario',
+                  'Utility per scenario',
+                  'Total production per scenario',
+                  'Fossil production per scenario',
+                  'Renewable production per scenario'
                   ]
 
     if filters is not None:
@@ -116,6 +123,26 @@ def post_processings(execution_engine, namespace, filters):
 
         instanciated_charts.append(new_chart)
 
+    if 'GDP per scenario' in graphs_list:
+
+        chart_name = 'World GDP Net of Damage over years per scenario'
+        x_axis_name = 'Years'
+        y_axis_name = 'World GDP Net of Damage (Trillion $2020)'
+
+        df_paths = ['Macroeconomics.' + GlossaryCore.EconomicsDetailDfValue, ]
+        (gdp_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+        gdp_dict = {}
+        for scenario in scenario_list:
+            gdp_dict[scenario] = gdp_df_dict[scenario][GlossaryCore.OutputNetOfDamage].values.tolist(
+            )
+
+        new_chart = get_scenario_comparison_chart(years, gdp_dict,
+                                                  chart_name=chart_name,
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+
+        instanciated_charts.append(new_chart)
+
     if 'CO2 emissions per scenario' in graphs_list:
 
         chart_name = 'CO2 emissions per scenario'
@@ -143,7 +170,7 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'World population over years per scenario'
         x_axis_name = 'Years'
-        y_axis_name = 'World Population (Billions)'
+        y_axis_name = 'World Population'
 
         df_paths = ['Population.population_detail_df', ]
         (pop_df_dict,) = get_df_per_scenario_dict(
@@ -163,56 +190,16 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Cumulative climate deaths over years per scenario'
         x_axis_name = 'Years'
-        y_axis_name = 'Cumulative climate deaths (Millions)'
+        y_axis_name = 'Cumulative climate deaths'
 
         df_paths = ['Population.death_dict', ]
         (death_dict_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
         death_dict = {}
         for scenario in scenario_list:
-            death_dict[scenario] = death_dict_dict[scenario]['climate']['total'].values.tolist()
+            death_dict[scenario] = death_dict_dict[scenario]['climate']['cum_total'].values.tolist()
 
         new_chart = get_scenario_comparison_chart(years, death_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        instanciated_charts.append(new_chart)
-
-    if 'GDP per scenario' in graphs_list:
-
-        chart_name = 'World GDP Net of Damage over years per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = 'World GDP Net of Damage (Trillion $2020)'
-
-        df_paths = ['Macroeconomics.' + GlossaryCore.EconomicsDetailDfValue, ]
-        (gdp_df_dict,) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-        gdp_dict = {}
-        for scenario in scenario_list:
-            gdp_dict[scenario] = gdp_df_dict[scenario][GlossaryCore.OutputNetOfDamage].values.tolist(
-            )
-
-        new_chart = get_scenario_comparison_chart(years, gdp_dict,
-                                                  chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
-
-        instanciated_charts.append(new_chart)
-
-    if 'invest in energy per scenario' in graphs_list:
-
-        chart_name = 'Energy investments without tax over years per scenario'
-        x_axis_name = 'Years'
-        y_axis_name = 'Energy investments wo tax (Billion $2020)'
-
-        df_paths = [GlossaryEnergy.EnergyInvestmentsWoTaxValue, ]
-        (invest_df_dict,) = get_df_per_scenario_dict(
-            execution_engine, df_paths)
-        invest_dict = {}
-        for scenario in scenario_list:
-            invest_dict[scenario] = invest_df_dict[scenario][GlossaryEnergy.EnergyInvestmentsWoTaxValue].values.tolist(
-            )
-
-        new_chart = get_scenario_comparison_chart(years, invest_dict,
                                                   chart_name=chart_name,
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
 
@@ -240,6 +227,66 @@ def post_processings(execution_engine, namespace, filters):
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
 
         instanciated_charts.append(new_chart)
+
+
+
+    if 'invest in energy per scenario' in graphs_list:
+
+        chart_name = 'Energy investments without tax over years per scenario'
+        x_axis_name = 'Years'
+        y_axis_name = 'Energy investments wo tax (Trillion $2020)'
+
+        df_paths = [GlossaryEnergy.EnergyInvestmentsWoTaxValue, ]
+        (invest_df_dict,) = get_df_per_scenario_dict(
+            execution_engine, df_paths)
+        invest_dict = {}
+        for scenario in scenario_list:
+            invest_dict[scenario] = invest_df_dict[scenario][GlossaryEnergy.EnergyInvestmentsWoTaxValue].values.tolist(
+            )
+
+        new_chart = get_scenario_comparison_chart(years, invest_dict,
+                                                  chart_name=chart_name,
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+
+        instanciated_charts.append(new_chart)
+
+    if 'invest in energy and ccus per scenario' in graphs_list:
+
+        namespace_w = f'{execution_engine.study_name}.{scatter_scenario}.{scenario_list[0]}'
+        energy_list = execution_engine.dm.get_value(f'{namespace_w}.{GlossaryEnergy.energy_list}')
+        ccs_list = execution_engine.dm.get_value(f'{namespace_w}.{GlossaryEnergy.ccs_list}')
+
+        for energy in energy_list + ccs_list:
+            # will sum in list_energy all the invests of all the technos of a given energy
+            list_energy = []
+            if energy in energy_list:
+                energy_disc = EnergyMix.name
+            else:
+                energy_disc = CCUS.name
+            if energy != BiomassDry.name:
+                techno_list = execution_engine.dm.get_value(f'{namespace_w}.{energy_disc}.{energy}.{GlossaryEnergy.TechnoListName}')
+
+                for techno in techno_list:
+                    df_paths = [f'{energy_disc}.{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}', ]
+                    (invest_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+                    invest_dict = {}
+                    for scenario in scenario_list:
+                        invest_dict[scenario] = invest_df_dict[scenario][GlossaryEnergy.InvestValue].values.tolist()
+                    list_energy.append(invest_dict)
+
+                invest_per_energy = {}
+                for scenario in scenario_list:
+                    invest_per_energy[scenario] = list(np.sum([invest_dict[scenario] for invest_dict in list_energy], axis=0))
+
+            chart_name = f'Distribution of investments for {energy} vs years'
+            x_axis_name = GlossaryEnergy.Years
+            y_axis_name = f'Investments in {energy} (Billion $2020)'
+
+            new_chart = get_scenario_comparison_chart(years, invest_per_energy,
+                                                      chart_name=chart_name,
+                                                      x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+
+            instanciated_charts.append(new_chart)
 
 
     if 'CO2 tax per scenario' in graphs_list:
@@ -297,7 +344,7 @@ def post_processings(execution_engine, namespace, filters):
 
         chart_name = 'Utility per scenario'
         x_axis_name = 'Years'
-        y_axis_name = 'Discounted Utility (trill $)'
+        y_axis_name = 'Discounted Utility [-]'
 
         df_paths = [f'{GlossaryCore.UtilityDfValue}', ]
         (utility_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
@@ -351,12 +398,12 @@ def post_processings(execution_engine, namespace, filters):
 
     if 'Total production per scenario' in graphs_list:
 
-        chart_name = 'Total production per scenario'
+        chart_name = 'Total Net Energy production per scenario'
         x_axis_name = 'Years'
-        y_axis_name = GlossaryCore.TotalProductionValue
+        y_axis_name = GlossaryCore.TotalProductionValue + ' [TWh]'
 
         df_paths = [
-            'EnergyMix.energy_production_detailed']
+            f'{EnergyMix.name}.energy_production_detailed']
         (energy_production_detailed_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
@@ -372,14 +419,57 @@ def post_processings(execution_engine, namespace, filters):
         instanciated_charts.append(new_chart)
 
 
+
+    if 'Fossil production per scenario' in graphs_list:
+
+        chart_name = 'Total Net Fossil Energy production per scenario'
+        x_axis_name = 'Years'
+        y_axis_name = 'Fossil energy production [TWh]'
+
+        df_paths = [f'{EnergyMix.name}.energy_production_detailed']
+        (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+
+        energy_production_brut_detailed_dict = {}
+        for scenario in scenario_list:
+            energy_production_brut_detailed_dict[scenario] = energy_production_brut_detailed_df_dict[
+                scenario]['production fossil (TWh)'].values.tolist()
+
+        new_chart = get_scenario_comparison_chart(years, energy_production_brut_detailed_dict,
+                                                  chart_name=chart_name,
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+
+        instanciated_charts.append(new_chart)
+
+    if 'Renewable production per scenario' in graphs_list:
+
+        chart_name = 'Total Net Renewable Energy production per scenario'
+        x_axis_name = 'Years'
+        y_axis_name = 'Renewable net energy production [TWh]'
+
+        df_paths = [f'{EnergyMix.name}.energy_production_detailed']
+        (energy_production_brut_detailed_df_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+
+        energy_production_brut_detailed_dict = {}
+        for scenario in scenario_list:
+            energy_production_brut_detailed_dict[scenario] = energy_production_brut_detailed_df_dict[
+                scenario]['production renewable (TWh)'].values.tolist()
+
+        new_chart = get_scenario_comparison_chart(years, energy_production_brut_detailed_dict,
+                                                  chart_name=chart_name,
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+
+        instanciated_charts.append(new_chart)
+
+
     return instanciated_charts
 
 
-def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios):
 
+def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios):
     min_x = min(x_list)
     max_x = max(x_list)
-    min_y = min([min(list(y)) for y in y_dict.values()])
+    # graphs ordinate should start at 0, except for CO2 emissions that could go <0
+    min_y = min(0, min([min(list(y)) for y in y_dict.values()]))
     max_y = max([max(list(y)) for y in y_dict.values()])
 
     new_chart = TwoAxesInstanciatedChart(x_axis_name, y_axis_name,
