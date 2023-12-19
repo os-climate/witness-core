@@ -39,7 +39,7 @@ class GlossaryCore:
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
-    DamageDfValue = "damage_df"
+    DamageFractionDfValue = "damage_fraction_df"
     EconomicsDfValue = "economics_df"
     SectorGdpDfValue = "sector_gdp_df"
     SectionGdpDictValue = "detailed_section_gdp"
@@ -279,9 +279,24 @@ class GlossaryCore:
 
     Alpha = "alpha"
     DamageToProductivity = "damage_to_productivity"
-    Damages = "damages"
     DamageFractionOutput = "damage_frac_output"
     BaseCarbonPrice = "base_carbon_price"
+    DamageFractionDf = {
+        "var_name": DamageFractionDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": "ns_witness",
+        "unit": "-",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            DamageFractionOutput: ("float", [0., 1.], False),
+            BaseCarbonPrice: ("float", None, False),
+        },
+    }
+    Damages = "Damages [G$]"
+    DamageDfValue = "damage_df"
+    DamagesFromClimate = "Damages from climate [G$]"
+    DamagesFromProductivityLoss = "Damages from productivity loss [G$]"
     DamageDf = {
         "var_name": DamageDfValue,
         "type": "dataframe",
@@ -290,9 +305,26 @@ class GlossaryCore:
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
-            DamageFractionOutput: ("float", None, False),
-            BaseCarbonPrice: ("float", None, False),
             Damages: ("float", None, False),
+        },
+    }
+
+    EstimatedDamagesFromProductivityLoss = "Estimated damages from productivity loss (not applied) [G$]"
+    EstimatedDamagesFromClimate = "Estimated damages from climate (not applied) [G$]"
+    DamageDetailedDfValue = "damage_detailed_df"
+    DamageDetailedDf = {
+        "var_name": DamageDetailedDfValue,
+        "type": "dataframe",
+        "namespace": NS_MACRO,
+        "visibility": "Shared",
+        "unit": "T$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            Damages: ("float", None, False),  # G$
+            DamagesFromClimate: ("float", None, False),  # G$
+            DamagesFromProductivityLoss: ("float", None, False),  # G$
+            EstimatedDamagesFromClimate: ("float", None, False),  # G$
+            EstimatedDamagesFromProductivityLoss: ("float", None, False),  # G$
         },
     }
 
@@ -361,8 +393,6 @@ class GlossaryCore:
     UsedEnergy = "Used Energy [TWh]"
     UnusedEnergy = "Unused Energy [TWh]"
     EnergyUsage = "Energy Usage"
-    DamagesFromProductivityLoss = "Damages from productivity loss [G$]"
-    DamagesFromClimate = "Damages from climate [G$]"
     EconomicsDetailDf = {
         "var_name": EconomicsDetailDfValue,
         "type": "dataframe",
@@ -371,9 +401,6 @@ class GlossaryCore:
             Years: ("int", [1900, 2100], False),
             GrossOutput: ("float", None, False),  # G$
             OutputNetOfDamage: ("float", None, False),  # G$
-            Damages: ("float", None, False),  # G$
-            DamagesFromClimate: ("float", None, False),  # G$
-            DamagesFromProductivityLoss: ("float", None, False),  # G$
             Productivity: ("float", None, False),
             ProductivityWithDamage: ("float", None, False),
             ProductivityWithoutDamage: ("float", None, False),
@@ -467,7 +494,6 @@ class GlossaryCore:
             TotalProductionValue: ("float", None, False),
         },
     }
-
 
     EnergyInvestments = {
         "var_name": EnergyInvestmentsValue,
@@ -585,21 +611,6 @@ class GlossaryCore:
             Years: ("int", [1900, 2100], False),
             GrossOutput: ("float", None, False),
             OutputNetOfDamage: ("float", None, False),
-        },
-    }
-
-    ProductionDetailedDfValue = "production_detailed_df"
-    ProductionDetailedDf = {
-        "var_name": ProductionDetailedDfValue,
-        "type": "dataframe",
-        "unit": "G$",
-        "dataframe_descriptor": {
-            Years: ("int", [1900, 2100], False),
-            GrossOutput: ("float", None, False),
-            OutputNetOfDamage: ("float", None, False),
-            Damages: ("float", None, False),
-            DamagesFromClimate: ("float", None, False),
-            DamagesFromProductivityLoss: ("float", None, False),
         },
     }
 

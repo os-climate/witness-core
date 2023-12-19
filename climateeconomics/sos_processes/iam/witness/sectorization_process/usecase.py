@@ -92,8 +92,9 @@ class Study(StudyManager):
                                         GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: serviceshare})
 
         # Damage
-        damage_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
+        damage_fraction_df = pd.DataFrame(
+            {GlossaryCore.Years: years,
+             GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
              GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
 
 
@@ -180,7 +181,7 @@ class Study(StudyManager):
             f"{self.study_name}.{GlossaryCore.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryCore.YearEnd}": self.year_end,
             f"{self.study_name}.{self.macro_name}.{GlossaryCore.InvestmentDfValue}": total_invests,
-            f"{self.study_name}.{GlossaryCore.DamageDfValue}": damage_df,
+            f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}": damage_fraction_df,
             f"{self.study_name}.{GlossaryCore.TemperatureDfValue}": temperature_df,
             f"{self.study_name}.{GlossaryCore.EnergyMeanPriceValue}": energy_mean_price,
             f"{self.study_name}.{self.labormarket_name}.{'workforce_share_per_sector'}": workforce_share,

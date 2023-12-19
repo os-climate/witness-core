@@ -129,7 +129,7 @@ class DamageDiscipline(SoSWrapp):
         if GlossaryCore.Damages in chart_list:
 
             to_plot = [GlossaryCore.Damages]
-            damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
+            damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageFractionDfValue)
             damage_df = resize_df(damage_df)
 
             damage = damage_df[GlossaryCore.Damages]
@@ -151,7 +151,7 @@ class DamageDiscipline(SoSWrapp):
         if 'Abatement cost' in chart_list:
 
             to_plot = ['abatecost']
-            abate_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
+            abate_df = self.get_sosdisc_outputs(GlossaryCore.DamageFractionDfValue)
 
             abatecost = damage_df['abatecost']
 
