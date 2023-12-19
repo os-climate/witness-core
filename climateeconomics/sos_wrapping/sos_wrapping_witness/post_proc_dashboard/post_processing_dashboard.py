@@ -21,6 +21,7 @@ import numpy as np
 import logging
 
 import climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline as TempChange
+import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -33,7 +34,7 @@ def post_processing_filters(execution_engine, namespace):
     '''
     chart_filters = []
 
-    chart_list = ['temperature evolution', 'Radiative forcing']
+    chart_list = ['temperature evolution', 'Radiative forcing', 'population and death']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
         'Charts', chart_list, chart_list, 'Charts'))
@@ -69,6 +70,12 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         forcing_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('forcing_detail_df')[0])
 
         instanciated_charts = TempChange.radiative_forcing(forcing_df,instanciated_charts)
+
+    if 'population and death' in chart_list:
+
+        pop_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('population_detail_df')[0])
+        death_dict = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('death_dict')[0])
+        instanciated_charts = Population.graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts)
 
     return instanciated_charts
 
