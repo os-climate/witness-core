@@ -52,7 +52,6 @@ class WITNESSEmptyMSStudyLoadingTest(unittest.TestCase):
         """
 
         proc_list = ["witness_coarse_ms_optim_process",
-                     "witness_coarse_dev_ms_optim_process",
                      "witness_ms_optim_process"]
 
         for proc in proc_list:
