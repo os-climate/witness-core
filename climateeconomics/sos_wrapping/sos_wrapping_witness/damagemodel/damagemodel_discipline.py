@@ -213,7 +213,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             # add CO2 damage price serie
             new_series = InstanciatedSeries(
-                years, co2_damage_price.values.tolist(), 'CO2 damage price', 'lines', visible_line)
+                years, np.round(co2_damage_price.values, 2).tolist(), 'CO2 damage price', 'lines', visible_line)
             new_chart.add_series(new_series)
 
             # add chart
@@ -223,8 +223,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
             return damage / (1 + damage) * 100
 
         if True:
-            import numpy as np
 
+            tipping_point_model = self.get_sosdisc_inputs('tipping_point')
             tp_a1 = self.get_sosdisc_inputs("tp_a1")
             tp_a2 = self.get_sosdisc_inputs("tp_a2")
             tp_a3 = self.get_sosdisc_inputs("tp_a3")
@@ -237,19 +237,17 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             damage_frac = damage_fraction(damage_function_tipping_point_weitzmann(temperature_increase))
 
-            chart_name = "Tipping point damage model (Weitzman, 2009)"
+            chart_name = "Damages models"
             new_chart = TwoAxesInstanciatedChart('Temperature increase (°C)',
                                                  'Impact on GDP (%)',
                                                  chart_name=chart_name)
 
+            legend = "Tipping point damage model (Weitzman, 2009)" + ' (selected model)'* tipping_point_model
             new_series = InstanciatedSeries(list(temperature_increase), list(damage_frac),
-                'Climate damage on GDP', 'lines', True)
+                legend, 'lines', True)
 
             new_chart.add_series(new_series)
 
-            instanciated_charts.append(new_chart)
-
-        if True:
             damag_int = self.get_sosdisc_inputs("damag_int")
             damag_quad = self.get_sosdisc_inputs("damag_quad")
 
@@ -260,13 +258,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             damage_frac = damage_fraction(damage_function_tipping_point_nordhaus(temperature_increase))
 
-            chart_name = "Standard DICE damage model (Nordhaus, 2017)"
-            new_chart = TwoAxesInstanciatedChart('Temperature increase (°C)',
-                                                 'Impact on GDP (%)',
-                                                 chart_name=chart_name)
-
+            legend = "Standard DICE damage model (Nordhaus, 2017)" + " (selected model)" * (not tipping_point_model)
             new_series = InstanciatedSeries(list(temperature_increase), list(damage_frac),
-                'Climate damage on GDP', 'lines', True)
+                legend, 'lines', True)
 
             new_chart.add_series(new_series)
 
