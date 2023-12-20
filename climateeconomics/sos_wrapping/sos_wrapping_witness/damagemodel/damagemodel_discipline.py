@@ -219,6 +219,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
             # add chart
             instanciated_charts.append(new_chart)
 
+        def damage_fraction(damage):
+            return damage / (1 + damage) * 100
+
         if True:
             import numpy as np
 
@@ -227,15 +230,12 @@ class DamageDiscipline(ClimateEcoDiscipline):
             tp_a3 = self.get_sosdisc_inputs("tp_a3")
             tp_a4 = self.get_sosdisc_inputs("tp_a4")
 
-            def damage_function_tipping_point(temp_increase):
+            def damage_function_tipping_point_weitzmann(temp_increase):
                 return (temp_increase / tp_a1) ** tp_a2 + (temp_increase / tp_a3) ** tp_a4
-
-            def damage_fraction(damage):
-                return damage / (1 + damage) * 100
 
             temperature_increase = np.linspace(0, 8, 100)
 
-            damage_frac = damage_fraction(damage_function_tipping_point(temperature_increase))
+            damage_frac = damage_fraction(damage_function_tipping_point_weitzmann(temperature_increase))
 
             chart_name = "Tipping point damage model (Weitzman, 2009)"
             new_chart = TwoAxesInstanciatedChart('Temperature increase (°C)',
@@ -253,15 +253,12 @@ class DamageDiscipline(ClimateEcoDiscipline):
             damag_int = self.get_sosdisc_inputs("damag_int")
             damag_quad = self.get_sosdisc_inputs("damag_quad")
 
-            def damage_function_tipping_point(temp_increase):
+            def damage_function_tipping_point_nordhaus(temp_increase):
                 return damag_int * temp_increase + damag_quad * temp_increase ** 2
-
-            def damage_fraction(damage):
-                return damage / (1 + damage) * 100
 
             temperature_increase = np.linspace(0, 8, 100)
 
-            damage_frac = damage_fraction(damage_function_tipping_point(temperature_increase))
+            damage_frac = damage_fraction(damage_function_tipping_point_nordhaus(temperature_increase))
 
             chart_name = "Standard DICE damage model (Nordhaus, 2017)"
             new_chart = TwoAxesInstanciatedChart('Temperature increase (°C)',
