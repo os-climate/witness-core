@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2022 Airbus SAS
 Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
