@@ -63,12 +63,12 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         model_name = 'demand_discipline.DemandDiscipline'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness': f'{name}',
+                   GlossaryCore.NS_WITNESS: f'{name}',
                    'ns_functions': f'{name}',
-                   'ns_energy_mix': f'{name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{name}',
                    'ns_coal_resource': f'{name}',
                    'ns_resource': f'{name}',
-                   'ns_sectors': f'{name}'}
+                   GlossaryCore.NS_SECTORS: f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.demand.demand_discipline.DemandDiscipline'

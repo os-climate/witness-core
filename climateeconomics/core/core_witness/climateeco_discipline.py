@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 
@@ -34,7 +35,7 @@ class ClimateEcoDiscipline(SoSWrapp):
                         'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public'}
     TIMESTEP_DESC_IN = {'type': 'int', 'default': 1, 'unit': 'year per period',
                         'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}
-    ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
+    ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                      'user_level': 1, 'unit': '-'}
     GWP_100_default = {'CO2': 1.0,
                        'CH4': 28.,
@@ -44,7 +45,7 @@ class ClimateEcoDiscipline(SoSWrapp):
                       'CH4': 85.,
                       'N2O': 265.}
     ASSUMPTIONS_DESC_IN = {
-        'var_name': 'assumptions_dict', 'type': 'dict', 'default': assumptions_dict_default , 'visibility': 'Shared', 'namespace': 'ns_witness', 'structuring': True, 'unit': '-'}
+        'var_name': 'assumptions_dict', 'type': 'dict', 'default': assumptions_dict_default , 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'structuring': True, 'unit': '-'}
 
     # ontology information
     _ontology_data = {

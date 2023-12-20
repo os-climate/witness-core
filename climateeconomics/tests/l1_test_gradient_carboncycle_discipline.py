@@ -42,7 +42,7 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
     def test_execute(self):
 
         self.model_name = 'carboncycle'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_ref': f'{self.name}',
                    'ns_public': f'{self.name}'}
 
@@ -89,7 +89,7 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         # test limit for max for lower_ocean_conc / upper_ocean_conc /
         # atmo_conc
         self.model_name = 'carboncycle'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 

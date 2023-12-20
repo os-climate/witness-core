@@ -241,7 +241,7 @@ class DataStudy():
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE],
             'weight': [1.0, 1.0, 0.0],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, ],
-            'namespace': ['ns_functions', 'ns_functions', 'ns_witness']
+            'namespace': ['ns_functions', 'ns_functions', GlossaryCore.NS_WITNESS]
         }
 
         func_df = DataFrame(data)

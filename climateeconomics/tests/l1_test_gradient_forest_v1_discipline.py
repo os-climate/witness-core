@@ -42,7 +42,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
     def test_forest_analytic_grad(self):
 
         model_name = 'Test'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}'}

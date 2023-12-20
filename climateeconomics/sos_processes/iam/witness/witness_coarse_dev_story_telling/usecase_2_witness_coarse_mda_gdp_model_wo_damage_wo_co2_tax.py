@@ -24,6 +24,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witne
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -82,8 +83,12 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study() #Study(run_usecase=True)
-    #uc_cls.load_data()
-    #uc_cls.run()
-    uc_cls.test()
+    uc_cls = Study(run_usecase=True)
+    uc_cls.load_data()
+    uc_cls.run()
+
+    ppf = PostProcessingFactory()
+    al = ppf.get_all_post_processings(uc_cls.ee, False)
+    b=1
+
 
