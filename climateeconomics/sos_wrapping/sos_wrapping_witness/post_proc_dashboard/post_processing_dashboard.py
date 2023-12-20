@@ -22,6 +22,7 @@ import logging
 
 import climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline as TempChange
 import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
+from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -34,7 +35,7 @@ def post_processing_filters(execution_engine, namespace):
     '''
     chart_filters = []
 
-    chart_list = ['temperature evolution', 'Radiative forcing', 'population and death']
+    chart_list = ['temperature evolution', 'Radiative forcing', 'population and death', 'land use']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
         'Charts', chart_list, chart_list, 'Charts'))
@@ -76,6 +77,42 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         pop_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('population_detail_df')[0])
         death_dict = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('death_dict')[0])
         instanciated_charts = Population.graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts)
+
+    if 'land use' in chart_list:
+
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
+                                             chart_name='Surface for forest, food production, crop vs available land over time', stacked_bar=True)
+
+        # total crop surface
+        surface_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('food_land_surface_df')[0])
+        years = surface_df[GlossaryCore.Years].values.tolist()
+        crop_surfaces = surface_df['total surface (Gha)'].values
+        crop_surface_series = InstanciatedSeries(
+            years, crop_surfaces.tolist(), 'Total crop surface', InstanciatedSeries.LINES_DISPLAY)
+        new_chart.add_series(crop_surface_series)
+
+        # total food and forest surface, food should be at the bottom to be compared with crop surface
+        land_surface_detailed = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(LandUseV2.LAND_SURFACE_DETAIL_DF)[0])
+        for column in ['Food Surface (Gha)', 'Forest Surface (Gha)']:
+            legend = column.replace(' (Gha)', '')
+            new_series = InstanciatedSeries(
+                years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
+            new_chart.add_series(new_series)
+
+        # total land available
+        total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
+                                    land_surface_detailed['Available Forest Surface (Gha)'].values + \
+                                    land_surface_detailed['Available Shrub Surface (Gha)'])
+
+        total_land_available_series = InstanciatedSeries(
+            years, list(np.ones(len(years)) * total_land_available),
+            'Total land available', InstanciatedSeries.LINES_DISPLAY
+        )
+
+        new_chart.add_series(total_land_available_series)
+
+        instanciated_charts.append(new_chart)
+
 
     return instanciated_charts
 
