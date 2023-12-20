@@ -115,7 +115,6 @@ class Study(StudyManager):
         # Damage
         damage_df = pd.DataFrame(
             {GlossaryCore.Years: years,
-             GlossaryCore.Damages: np.zeros(self.nb_per),
              GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
              GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
 
@@ -143,15 +142,15 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         sect_input[f"{self.study_name}.{GlossaryCore.WorkforceDfValue}"] = workforce_df
-        sect_input[f"{self.study_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
-        sect_input[f"{self.study_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}"] = invest_agriculture
-        sect_input[f"{self.study_name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}"] = invest_services
+        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}"] = invest_indus
+        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}"] = invest_agriculture
+        sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}"] = invest_services
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
         sect_input[f"{self.study_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
         sect_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}"] = invest_energy_wo_tax
-        sect_input[f"{self.study_name}.{GlossaryCore.DamageDfValue}"] = damage_df
+        sect_input[f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}"] = damage_df
 
         if self.year_start == 2000:
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{'capital_start'}"] = 31.763
@@ -169,4 +168,5 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()
