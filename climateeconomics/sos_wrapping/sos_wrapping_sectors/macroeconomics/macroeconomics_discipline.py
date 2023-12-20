@@ -248,8 +248,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                 sector, 'bar', True)
                 new_chart.add_series(new_series)
 
-            gross_output = economics_df[GlossaryCore.GrossOutput].values
-            new_series = InstanciatedSeries(years, list(gross_output), 'Total', 'lines', True)
+            net_output = economics_df[GlossaryCore.OutputNetOfDamage].values
+            new_series = InstanciatedSeries(years, list(net_output), 'Total', 'lines', True)
             new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
