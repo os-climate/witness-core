@@ -20,9 +20,10 @@ import numpy as np
 
 import logging
 
-import climateeconomics.sos_wrapping.sos_wrapping_witness.tempchange_v2.tempchange_discipline as TempChange
 import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
 from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
+import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
+from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -41,7 +42,7 @@ def post_processing_filters(execution_engine, namespace):
     '''
     chart_filters = []
 
-    chart_list = ['temperature and ghg evolution', 'Radiative forcing', 'population and death', 'land use', 'energy mix']
+    chart_list = ['temperature and ghg evolution', 'population and death', 'land use', 'energy mix', 'investment distribution']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
         'Charts', chart_list, chart_list, 'Charts'))
@@ -98,25 +99,16 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
         instanciated_charts.append(new_chart)
 
-    if 'temperature evolution' in chart_list:
-
-        model = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('temperature_model')[0])
-        temperature_df = deepcopy(
-            execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('temperature_detail_df')[0]))
-
-        instanciated_charts = TempChange.temperature_evolution(model,temperature_df,instanciated_charts)
-
-    if 'Radiative forcing' in chart_list:
-
-        forcing_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('forcing_detail_df')[0])
-
-        instanciated_charts = TempChange.radiative_forcing(forcing_df,instanciated_charts)
-
     if 'population and death' in chart_list:
 
         pop_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('population_detail_df')[0])
         death_dict = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('death_dict')[0])
         instanciated_charts = Population.graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts)
+
+    # if 'gdp breakdown' in chart_list:
+    #     economics_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.EconomicsDetailDfValue)[0])
+    #     compute_climate_impact_on_gdp = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('assumptions_dict')[0])['compute_climate_impact_on_gdp']
+    #     instanciated_charts = MacroEconomics.breakdown_gdp(economics_df, compute_climate_impact_on_gdp, instanciated_charts)
 
     if 'land use' in chart_list:
 
@@ -211,6 +203,74 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
         instanciated_charts.append(new_chart)
 
+    if 'investment distribution' in chart_list:
+
+        forest_investment = execution_engine.dm.get_value(
+            execution_engine.dm.get_all_namespaces_from_var_name(GlossaryEnergy.ForestInvestmentValue)[0])
+        years = forest_investment[GlossaryEnergy.Years]
+
+        chart_name = f'Distribution of investments on each energy vs years'
+
+        new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
+                                                    chart_name=chart_name, stacked_bar=True)
+        energy_list = execution_engine.dm.get_value(
+            execution_engine.dm.get_all_namespaces_from_var_name(GlossaryEnergy.energy_list)[0])
+        ccs_list = execution_engine.dm.get_value(
+            execution_engine.dm.get_all_namespaces_from_var_name(GlossaryEnergy.ccs_list)[0])
+
+        # add a chart per energy with breakdown of investments in every technology of the energy
+        for energy in energy_list + ccs_list:
+            list_energy = []
+            if energy != BiomassDry.name:
+                chart_name = f'Distribution of investments for {energy} vs years'
+                new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
+                                                            chart_name=chart_name, stacked_bar=True)
+                techno_list_name = f'{energy}.{GlossaryEnergy.TechnoListName}'
+                techno_list = execution_engine.dm.get_value(
+                    execution_engine.dm.get_all_namespaces_from_var_name(techno_list_name)[0])
+                for techno in techno_list:
+                    invest_level = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(
+                        f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}')[0])
+                    serie = InstanciatedSeries(
+                        years.tolist(),
+                        invest_level[f'{GlossaryEnergy.InvestValue}'].values.tolist(), techno, 'bar')
+                    list_energy.append(invest_level[f'{GlossaryEnergy.InvestValue}'].values)
+
+                total_invest = list(np.sum(list_energy, axis=0))
+                # Add total inbest
+                serie = InstanciatedSeries(
+                    years.tolist(),
+                    total_invest, energy, 'bar')
+
+                new_chart_energy.series.append(serie)
+
+        chart_name = f'Distribution of reforestation investments vs years'
+        agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
+                                                     chart_name=chart_name, stacked_bar=True)
+        serie_agriculture = InstanciatedSeries(
+            forest_investment[GlossaryEnergy.Years].values.tolist(),
+            forest_investment[GlossaryEnergy.ForestInvestmentValue].values.tolist(), 'Reforestation', 'bar')
+
+        serie = InstanciatedSeries(
+            forest_investment[GlossaryEnergy.Years].values.tolist(),
+            forest_investment[GlossaryEnergy.ForestInvestmentValue].tolist(), 'Reforestation', 'bar')
+
+        if BiomassDry.name in energy_list:
+            chart_name = f'Distribution of agriculture sector investments vs years'
+            agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
+                                                         chart_name=chart_name, stacked_bar=True)
+
+            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
+                invest = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(techno)[0])
+                serie_agriculture = InstanciatedSeries(
+                    invest[GlossaryEnergy.Years].values.tolist(),
+                    invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""), 'bar')
+
+                serie = InstanciatedSeries(
+                    invest[GlossaryEnergy.Years].values.tolist(),
+                    invest[GlossaryEnergy.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
+
+        instanciated_charts.insert(0, new_chart_energy)
 
     return instanciated_charts
 
