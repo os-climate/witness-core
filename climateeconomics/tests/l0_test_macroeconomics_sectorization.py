@@ -106,7 +106,7 @@ class MacroeconomicsTestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness':  f'{name}', 
                    'ns_macro': f'{name}.{model_name}',
-                   'ns_sectors': f'{name}'}
+                   GlossaryCore.NS_SECTORS: f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'

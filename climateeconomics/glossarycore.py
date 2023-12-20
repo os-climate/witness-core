@@ -474,7 +474,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "unit": "PWh",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             TotalProductionValue: ("float", None, False),
@@ -488,7 +488,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "description": "Energy production dedicated to residential",
         "unit": "PWh",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             TotalProductionValue: ("float", None, False),
@@ -603,7 +603,7 @@ class GlossaryCore:
     ProductionDfValue = "production_df"
     ProductionDf = {
         "var_name": ProductionDfValue,
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "visibility": "Shared",
         "type": "dataframe",
         "unit": "G$",
@@ -652,7 +652,7 @@ class GlossaryCore:
     DetailedCapitalDf = {
         "var_name": DetailedCapitalDfValue,
         "visibility": "Shared",
-        "namespace": "ns_macro",
+        "namespace": NS_MACRO,
         "type": "dataframe",
         "unit": "G$",
         "dataframe_descriptor": {
@@ -748,7 +748,7 @@ class GlossaryCore:
         "unit": "%",
         "description": "Amount of output net of damage allocated to the specific sector",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             ShareInvestment: ("float", [0.0, 100.0], False),
@@ -762,7 +762,7 @@ class GlossaryCore:
         "unit": "%",
         "description": "Amount of the total energy production attributed to the specific sector",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
@@ -849,7 +849,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "G$",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             InvestmentsValue: ("float", None, False),
@@ -862,7 +862,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "$/person",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "description": "Sector demand per person per year [$/year]",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -876,7 +876,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "T$",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             SectorGDPDemandDfValue: ("float", None, False),

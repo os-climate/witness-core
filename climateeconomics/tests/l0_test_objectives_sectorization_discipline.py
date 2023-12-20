@@ -88,7 +88,7 @@ class ObjectivesTestCase(unittest.TestCase):
                    'ns_witness':  f'{name}',
                    'ns_macro': f'{name}.{model_name}',
                    'ns_obj': f'{name}.{model_name}',
-                   'ns_sectors': f'{name}.{model_name}'}
+                   GlossaryCore.NS_SECTORS: f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.objectives.objectives_discipline.ObjectivesDiscipline'
@@ -134,7 +134,7 @@ class ObjectivesTestCase(unittest.TestCase):
                    'ns_witness':  f'{name}',
                    'ns_macro': f'{name}.{model_name}',
                    'ns_obj': f'{name}.{model_name}',
-                   'ns_sectors': f'{name}.{model_name}'}
+                   GlossaryCore.NS_SECTORS: f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.objectives.objectives_discipline.ObjectivesDiscipline'
@@ -178,7 +178,7 @@ class ObjectivesTestCase(unittest.TestCase):
                    'ns_witness':  f'{name}',
                    'ns_macro': f'{name}.{model_name}',
                    'ns_obj': f'{name}.{model_name}',
-                   'ns_sectors': f'{name}.{model_name}'}
+                   GlossaryCore.NS_SECTORS: f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.objectives.objectives_discipline.ObjectivesDiscipline'

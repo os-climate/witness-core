@@ -659,7 +659,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             self.get_sosdisc_outputs(GlossaryCore.EconomicsDfValue))
         sectors_list = deepcopy(
             self.get_sosdisc_inputs(GlossaryCore.SectorListValue))
-        years = list(economics_detail_df.index)
+        years = list(economics_detail_df[GlossaryCore.Years].values)
         if GlossaryCore.GrossOutput in chart_list:
 
             to_plot = [GlossaryCore.OutputNetOfDamage]

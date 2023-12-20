@@ -177,7 +177,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.Damages in chart_list:
 
             damage_fraction_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.DamageFractionDfValue))
-            years = list(damage_fraction_df.index)
+            years = list(damage_fraction_df[GlossaryCore.Years].values)
 
             chart_name = 'Lost GDP due to climate damages [%]'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '%', chart_name=chart_name, y_min_zero=True)
