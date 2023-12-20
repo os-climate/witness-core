@@ -53,14 +53,14 @@ class SectorDiscipline(ClimateEcoDiscipline):
         'depreciation_capital': {'type': 'float', 'user_level': 2, 'unit': '-'},
         GlossaryCore.DamageToProductivity: {'type': 'bool', 'default': True,
                                    'visibility': 'Shared',
-                                   'unit': '-', 'namespace': 'ns_witness'},
+                                   'unit': '-', 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.FractionDamageToProductivityValue: GlossaryCore.FractionDamageToProductivity,
         GlossaryCore.EnergyProductionValue: {'type': 'dataframe', 'unit': GlossaryCore.EnergyProductionDf['unit'],
                                              'dataframe_descriptor': GlossaryCore.EnergyProductionDf['dataframe_descriptor'],
                                              'dataframe_edition_locked': False},
         'scaling_factor_energy_production': {'type': 'float', 'default': 1e3, 'user_level': 2, 'visibility': 'Shared',
-                                             'namespace': 'ns_witness', 'unit': '-'},
-        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness',
+                                             'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
+        'alpha': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                   'user_level': 1, 'unit': '-'},
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2, 'unit': '-'},
         'ref_emax_enet_constraint': {'type': 'float', 'default': 60e3, 'user_level': 3,
@@ -68,7 +68,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                      'unit': '-'},
         'prod_function_fitting': {'type': 'bool', 'default': False,
                                   'visibility': 'Shared',
-                                  'unit': '-', 'namespace': 'ns_macro', 'structuring': True}
+                                  'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True}
     }
     DESC_OUT = {
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,

@@ -114,7 +114,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'total_food_land_surface': {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'food_land_surface_df': {
             'type': 'dataframe', 'unit': 'Gha'},
         'food_land_surface_percentage_df': {'type': 'dataframe', 'unit': '%'},

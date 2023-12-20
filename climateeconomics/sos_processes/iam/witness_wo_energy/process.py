@@ -38,8 +38,8 @@ class ProcessBuilder(BaseProcessBuilder):
     def get_builders(self):
         ns_scatter = self.ee.study_name
 
-        ns_dict = {'ns_witness': ns_scatter,
-                   'ns_energy_mix': ns_scatter,
+        ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
+                   GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    'ns_ref': f'{ns_scatter}.NormalizationReferences',
                    'ns_agriculture': ns_scatter,
                    GlossaryCore.NS_MACRO: ns_scatter,

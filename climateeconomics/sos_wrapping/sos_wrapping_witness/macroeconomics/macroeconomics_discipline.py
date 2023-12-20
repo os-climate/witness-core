@@ -62,7 +62,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
 
         GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
-                                      'namespace': 'ns_witness',
+                                      'namespace': GlossaryCore.NS_WITNESS,
                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                GlossaryCore.Population1570: ('float', None, False),
                                                                }
@@ -81,9 +81,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'output_gamma': {'type': 'float', 'default': 0.5, 'user_level': 2, 'unit': '-'},
         'depreciation_capital': {'type': 'float', 'default': 0.07, 'user_level': 2, 'unit': '-'},
         'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'unit': '-', 'visibility': 'Shared',
-                                'namespace': 'ns_witness'},
+                                'namespace': GlossaryCore.NS_WITNESS},
         'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared',
-                             'namespace': 'ns_witness', 'user_level': 2},
+                             'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         # sectorisation
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
         # Lower and upper bounds
@@ -93,7 +93,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'hi_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 70, 'user_level': 3},
 
         GlossaryCore.DamageToProductivity: {'type': 'bool'},
-        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_witness', 'default': 0.3,
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'default': 0.3,
                              'unit': '-', 'user_level': 2},
 
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
@@ -110,7 +110,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness',
+        GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                     GlossaryCore.Capital: ('float', None, False), }
                            },
@@ -158,7 +158,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                                                             'float', None, True)},
                                                                'default': gross_output_df,
                                                                'dataframe_edition_locked': False,
-                                                               'namespace': 'ns_witness'}})
+                                                               'namespace': GlossaryCore.NS_WITNESS}})
 
             if GlossaryCore.SectorListValue in self.get_data_in():
                 sectorlist = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)

@@ -69,7 +69,7 @@ class ProcessBuilder(BaseProcessBuilder):
             'ns_agri': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}.{GlossaryCore.SectorAgriculture}",
             'ns_obj': f"{ns_scatter}.{optim_name}.{coupling_name}.{'Objectives'}",
             GlossaryCore.NS_SECTORS: f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}",
-            'ns_macro': f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}",
+            GlossaryCore.NS_MACRO: f"{ns_scatter}.{optim_name}.{coupling_name}.{macro_name}",
         }
         self.ee.ns_manager.add_ns_def(ns_dict)
 

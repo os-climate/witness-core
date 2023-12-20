@@ -48,7 +48,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.MaxInvestConstraintRefName: GlossaryCore.MaxInvestConstraintRef,
         GlossaryCore.DamageToProductivity: {'type': 'bool', 'default': True,
                                             'visibility': 'Shared',
-                                            'unit': '-', 'namespace': 'ns_witness'},
+                                            'unit': '-', 'namespace': GlossaryCore.NS_WITNESS},
     }
 
     DESC_OUT = {

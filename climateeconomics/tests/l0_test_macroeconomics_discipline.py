@@ -40,8 +40,8 @@ class MacroDiscTest(unittest.TestCase):
 
     def test_execute(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_functions': f'{self.name}',

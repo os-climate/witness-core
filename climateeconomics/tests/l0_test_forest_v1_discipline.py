@@ -81,7 +81,7 @@ class ForestTestCase(unittest.TestCase):
         model_name = 'forest'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness': f'{name}.{model_name}',
+                   GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
                    'ns_forest': f'{name}.{model_name}',
                    'ns_invest': f'{name}.{model_name}' }

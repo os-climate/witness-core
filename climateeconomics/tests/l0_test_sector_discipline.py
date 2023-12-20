@@ -39,9 +39,9 @@ class ServicesDiscTest(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         
         self.model_name = SectorDiscipline.sector_name
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_macro': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_MACRO: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}',

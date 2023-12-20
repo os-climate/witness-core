@@ -60,7 +60,7 @@ class LaborMarketTestCase(unittest.TestCase):
         model_name = 'Labor Market'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness':  f'{name}'}
+                   GlossaryCore.NS_WITNESS:  f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.labor_market.labor_market_discipline.LaborMarketDiscipline'
@@ -103,7 +103,7 @@ class LaborMarketTestCase(unittest.TestCase):
         model_name = 'Labor Market'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness':  f'{name}'}
+                   GlossaryCore.NS_WITNESS:  f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.labor_market.labor_market_discipline.LaborMarketDiscipline'

@@ -61,7 +61,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'tp_a2': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 2, 'user_level': 3, 'unit': '-'},
         'tp_a3': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.081, 'user_level': 3, 'unit': '-'},
         'tp_a4': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.754, 'user_level': 3, 'unit': '-'},
-        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -71,7 +71,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.CO2DamagePrice: GlossaryCore.CO2DamagePriceDf,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
     }
 
@@ -119,7 +119,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         # store output data
         out_dict = {GlossaryCore.DamageFractionDfValue: damage_fraction_df[GlossaryCore.DamageFractionDf['dataframe_descriptor'].keys()],
-                    'CO2_damage_price': co2_damage_price_df}
+                    GlossaryCore.CO2DamagePrice: co2_damage_price_df}
 
         self.store_sos_outputs_values(out_dict)
 
@@ -143,7 +143,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             ddamage_frac_output_temp_atmo)
         self.set_partial_derivative_for_other_types(
-            ('CO2_damage_price', 'CO2_damage_price'),
+            (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
             (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
             d_co2_damage_price_d_damages)
 
@@ -196,9 +196,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         if 'CO2 damage price' in chart_list:
 
             co2_damage_price_df = deepcopy(
-                self.get_sosdisc_outputs('CO2_damage_price'))
+                self.get_sosdisc_outputs(GlossaryCore.CO2DamagePrice))
 
-            co2_damage_price = co2_damage_price_df['CO2_damage_price']
+            co2_damage_price = co2_damage_price_df[GlossaryCore.CO2DamagePrice]
 
             years = list(co2_damage_price_df[GlossaryCore.Years].values.tolist())
 

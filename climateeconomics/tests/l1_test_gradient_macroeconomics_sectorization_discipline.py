@@ -117,9 +117,9 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
     def test_macro_analytic_grad(self):
         model_name = 'Macroeconomics'
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}',
-                   'ns_macro': f'{self.name}.{model_name}'}
+                   GlossaryCore.NS_MACRO: f'{self.name}.{model_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

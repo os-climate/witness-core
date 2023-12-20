@@ -89,7 +89,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'key': 'forest_investment',
                                                                 'index': years,
                                                                 'index_name': GlossaryCore.Years,
-                                                                'namespace_in': 'ns_witness',
+                                                                'namespace_in': GlossaryCore.NS_WITNESS,
                                                                 'namespace_out': 'ns_invest'
                                                                 }
         if 'CropEnergy' in self.agri_techno_list:
@@ -99,7 +99,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                     'key': GlossaryCore.InvestmentsValue,
                                                                     'index': years,
                                                                     'index_name': GlossaryCore.Years,
-                                                                    'namespace_in': 'ns_witness',
+                                                                    'namespace_in': GlossaryCore.NS_WITNESS,
                                                                     'namespace_out': 'ns_crop'
                                                                     }
         if 'ManagedWood' in self.agri_techno_list:
@@ -109,7 +109,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                             'key': GlossaryCore.InvestmentsValue,
                                                                             'index': years,
                                                                             'index_name': GlossaryCore.Years,
-                                                                            'namespace_in': 'ns_witness',
+                                                                            'namespace_in': GlossaryCore.NS_WITNESS,
                                                                             'namespace_out': 'ns_forest'
                                                                             }
         dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_ctrl'] = dspace_df[f'deforestation_investment_ctrl']['value']
@@ -118,7 +118,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                         'key': GlossaryCore.InvestmentsValue,
                                                                         'index': years,
                                                                         'index_name': GlossaryCore.Years,
-                                                                        'namespace_in': 'ns_witness',
+                                                                        'namespace_in': GlossaryCore.NS_WITNESS,
                                                                         'namespace_out': 'ns_forest'
                                                                         }
         dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_calories_per_day_ctrl'] = dspace_df[f'red_meat_calories_per_day_ctrl']['value']
@@ -127,7 +127,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'key': 'red_meat_calories_per_day',
                                                                 'index': years,
                                                                 'index_name': GlossaryCore.Years,
-                                                                'namespace_in': 'ns_witness',
+                                                                'namespace_in': GlossaryCore.NS_WITNESS,
                                                                 'namespace_out': 'ns_crop'
                                                                 }
         dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_calories_per_day_ctrl'] = dspace_df[f'white_meat_calories_per_day_ctrl']['value']
@@ -136,7 +136,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'key': 'white_meat_calories_per_day',
                                                                 'index': years,
                                                                 'index_name': GlossaryCore.Years,
-                                                                'namespace_in': 'ns_witness',
+                                                                'namespace_in': GlossaryCore.NS_WITNESS,
                                                                 'namespace_out': 'ns_crop'
                                                                 }
         dv_arrays_dict[f'{self.witness_uc.study_name}.vegetables_and_carbs_calories_per_day_ctrl'] = dspace_df[f'vegetables_and_carbs_calories_per_day_ctrl']['value']
@@ -145,7 +145,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'key': 'vegetables_and_carbs_calories_per_day',
                                                                 'index': years,
                                                                 'index_name': GlossaryCore.Years,
-                                                                'namespace_in': 'ns_witness',
+                                                                'namespace_in': GlossaryCore.NS_WITNESS,
                                                                 'namespace_out': 'ns_crop'
                                                                 }
         dv_arrays_dict[f'{self.witness_uc.study_name}.milk_and_eggs_calories_per_day_ctrl'] = \
@@ -156,7 +156,7 @@ class Study(ClimateEconomicsStudyManager):
             'key': 'milk_and_eggs_calories_per_day',
             'index': years,
             'index_name': GlossaryCore.Years,
-            'namespace_in': 'ns_witness',
+            'namespace_in': GlossaryCore.NS_WITNESS,
             'namespace_out': 'ns_crop'
             }
  
