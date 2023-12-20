@@ -133,7 +133,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         disc_macro = self.ee2.dm.get_disciplines_with_name(f'{self.name}.Macroeconomics')[
             0]
 
-        input_full_names = [f'{self.name}.{GlossaryCore.EnergyProductionValue}', f'{self.name}.{GlossaryCore.DamageDfValue}',
+        input_full_names = [f'{self.name}.{GlossaryCore.EnergyProductionValue}', f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
                             f'{self.name}.share_energy_investment', f'{self.name}.{GlossaryCore.InvestmentShareGDPValue}']
         output_full_names = [f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                              f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}']
@@ -167,7 +167,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
 
         input_full_names = [
             f'{self.name}.{GlossaryCore.EconomicsDfValue}', f'{self.name}.{GlossaryCore.TemperatureDfValue}', f'{self.name}.{GlossaryCore.CO2TaxesValue}']
-        output_full_names = [f'{self.name}.{GlossaryCore.DamageDfValue}',
+        output_full_names = [f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
                              f'{self.name}.CO2_tax_minus_CO2_damage_constraint_df']
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_witness_wo_energy.pkl', discipline=disc_macro, inputs=input_full_names,

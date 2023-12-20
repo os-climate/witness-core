@@ -170,39 +170,6 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
 
-#     uc_cls = Study(run_usecase=True)
-#     uc_cls.load_data()
-#
-#
-#     data = uc_cls.ee.dm.get_discipline(list(uc_cls.ee.dm.disciplines_dict.keys())[3]).get_data_in()
-#     dm = uc_cls.ee.dm
-#
-#     #dict_data = prepare_data(dm)
-#     #for k,v in dict_data.items():
-#     #    generate_json_by_discipline(v, k)
-#     connection_string = ''
-#     database_name = 'regionalization'
-#     container_name = 'regionalizationv0'
-#     json_path = join(dirname(__file__), 'data', 'AgricultureMix.Crop.json')
-#     import os
-#     """    for f in os.listdir(join(dirname(__file__), 'data')):
-#         insert_json_to_mongodb_bis(join(dirname(__file__), 'data' ,f), container_name, database_name, connection_string)
-#     """
-#
-#
-#     uc_cls.run()
-#
-#
-#     ppf = PostProcessingFactory()
-#     filters = ppf.get_post_processing_filters_by_namespace(
-#         uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing')
-#     graph_list = ppf.get_post_processing_by_namespace(uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing',
-#                                                       filters, as_json=False)
-#
-# #    for graph in graph_list:
-# #        graph.to_plotly().show()
-
     # TODO : careful, this usecase is quite long to test ! 800 sec
     uc_cls = Study()
-    uc_cls.test()
-
+    uc_cls.test(force_run=True)
