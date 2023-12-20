@@ -741,7 +741,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             to_plot = {}
             if compute_climate_impact_on_gdp:
                 to_plot.update({GlossaryCore.DamagesFromClimate: f'Immediate climate damage (applied to net output)',
-                                GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation' + 'not ' * (not damage_to_productivity) +'applied to gross output)',})
+                                GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damage_to_productivity) +'applied to gross output)',})
             else:
                 to_plot.update({GlossaryCore.EstimatedDamagesFromClimate: f'Immediate climate damage (estimation not applied to net output)',
                                 GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damage_to_productivity) +'applied to gross output)',})
