@@ -206,9 +206,6 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Price ($/tCO2)', chart_name=chart_name, y_min_zero=True)
 
-            note = {'Note': 'Damages due to loss of productivity are not included'}
-            new_chart.annotation_upper_left = note
-
             visible_line = True
 
             # add CO2 damage price serie

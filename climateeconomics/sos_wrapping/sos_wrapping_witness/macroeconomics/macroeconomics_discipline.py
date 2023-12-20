@@ -744,12 +744,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                 GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (' + 'not ' * (not damage_to_productivity) +'applied to gross output)',})
             else:
                 to_plot.update({GlossaryCore.EstimatedDamagesFromClimate: f'Immediate climate damage (estimation not applied to net output)',
-                                GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (' + 'not ' * (not damage_to_productivity) +'applied to gross output)',})
+                                GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damage_to_productivity) +'applied to gross output)',})
 
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
             all_damages = damage_detailed_df[GlossaryCore.EstimatedDamagesFromClimate].values + damage_detailed_df[GlossaryCore.EstimatedDamagesFromProductivityLoss].values
             years = list(damage_detailed_df[GlossaryCore.Years].values)
-            chart_name = f'Breakdown of damages'
+            chart_name = f'Breakdown of damages' + ' (not applied)' * (not compute_climate_impact_on_gdp)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
                                                  chart_name=chart_name, stacked_bar=True)

@@ -259,7 +259,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
             damage_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity)
             to_plot = {GlossaryCore.DamagesFromClimate: f'Immediate climate damage',
-                       GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (' + 'not ' * (
+                       GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (
                            not damage_to_productivity) + 'applied to gross output)', }
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
             all_damages = damage_detailed_df[GlossaryCore.EstimatedDamagesFromClimate].values + damage_detailed_df[GlossaryCore.EstimatedDamagesFromProductivityLoss].values

@@ -439,7 +439,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             damage_detailed_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}")
 
             to_plot = {GlossaryCore.DamagesFromClimate: f'Immediate climate damage',
-                       GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (' + 'not ' * (not damage_to_productivity) +'applied to gross output)',}
+                       GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damage_to_productivity) +'applied to gross output)',}
 
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
             all_damages = damage_detailed_df[GlossaryCore.DamagesFromClimate].values + \
