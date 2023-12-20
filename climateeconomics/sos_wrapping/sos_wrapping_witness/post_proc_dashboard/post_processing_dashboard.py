@@ -90,14 +90,30 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         crop_surface_series = InstanciatedSeries(
             years, crop_surfaces.tolist(), 'Total crop surface', InstanciatedSeries.LINES_DISPLAY)
         new_chart.add_series(crop_surface_series)
+        for key in surface_df.keys():
+            if key == GlossaryCore.Years:
+                pass
+            elif key.startswith('total'):
+                pass
+            else:
+                new_series = InstanciatedSeries(
+                    years, (surface_df[key]).values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
+
+            new_chart.add_series(new_series)
 
         # total food and forest surface, food should be at the bottom to be compared with crop surface
         land_surface_detailed = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(LandUseV2.LAND_SURFACE_DETAIL_DF)[0])
-        for column in ['Food Surface (Gha)', 'Forest Surface (Gha)']:
-            legend = column.replace(' (Gha)', '')
-            new_series = InstanciatedSeries(
-                years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
-            new_chart.add_series(new_series)
+        column = 'Forest Surface (Gha)'
+        legend = column.replace(' (Gha)', '')
+        new_series = InstanciatedSeries(
+            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
+        new_chart.add_series(new_series)
+
+        column = 'Food Surface (Gha)'
+        legend = column.replace(' (Gha)', '')
+        new_series = InstanciatedSeries(
+            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.LINES_DISPLAY)
+        new_chart.add_series(new_series)
 
         # total land available
         total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
