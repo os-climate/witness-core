@@ -77,6 +77,25 @@ class MacroeconomicsTestCase(unittest.TestCase):
         self.energy_investment_wo_tax = DataFrame({GlossaryCore.Years: self.years, GlossaryCore.EnergyInvestmentsWoTaxValue : invests})
         self.max_invest_constraint_ref = 10.
 
+        self.damage_agri = DataFrame({GlossaryCore.Years: self.years,
+                                      GlossaryCore.Damages: np.linspace(20, 48, self.nb_per),
+                                      GlossaryCore.DamagesFromClimate: np.linspace(10, 24, self.nb_per),
+                                      GlossaryCore.DamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
+                                      GlossaryCore.EstimatedDamagesFromClimate: np.linspace(10, 24, self.nb_per),
+                                      GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),})
+        self.damage_indus = DataFrame({GlossaryCore.Years: self.years,
+                                       GlossaryCore.Damages: np.linspace(15, 34, self.nb_per),
+                                       GlossaryCore.DamagesFromClimate: np.linspace(5, 10, self.nb_per),
+                                       GlossaryCore.DamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
+                                       GlossaryCore.EstimatedDamagesFromClimate: np.linspace(5, 10, self.nb_per),
+                                       GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),})
+        self.damage_service = DataFrame({GlossaryCore.Years: self.years,
+                                         GlossaryCore.Damages: np.linspace(4, 15, self.nb_per),
+                                         GlossaryCore.DamagesFromClimate: np.linspace(1, 6, self.nb_per),
+                                         GlossaryCore.DamagesFromProductivityLoss: np.linspace(3, 9, self.nb_per),
+                                         GlossaryCore.EstimatedDamagesFromClimate: np.linspace(1, 6, self.nb_per),
+                                         GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(3, 9, self.nb_per),})
+
     def test_macroeconomics_discipline(self):
         '''
         Check discipline setup and run
@@ -87,7 +106,7 @@ class MacroeconomicsTestCase(unittest.TestCase):
         ns_dict = {'ns_public': f'{name}',
                    'ns_witness':  f'{name}', 
                    'ns_macro': f'{name}.{model_name}',
-                   'ns_sectors': f'{name}'}
+                   GlossaryCore.NS_SECTORS: f'{name}'}
         ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
@@ -98,20 +117,26 @@ class MacroeconomicsTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
         inputs_dict = {
+            f'{name}.{GlossaryCore.DamageToProductivity}': False,
             f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}': self.invests,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.invests,
             f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}': self.invests,
             f'{name}.{GlossaryCore.SectorListValue}': self.sectors_list,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
-            f'{name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
+            f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
             f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
-            f'{name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
+            f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
             f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
-            f'{name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
+            f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
             f'{name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
             f'{name}.{model_name}.{GlossaryCore.ShareMaxInvestName}': self.share_max_invest,
             f'{name}.{model_name}.{GlossaryCore.MaxInvestConstraintRefName}': self.max_invest_constraint_ref,
-
+            f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': self.damage_indus[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
+            f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': self.damage_agri[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
+            f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': self.damage_service[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
+            f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDetailedDfValue}': self.damage_indus[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
+            f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDetailedDfValue}': self.damage_agri[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
+            f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDetailedDfValue}': self.damage_service[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
         }
 
         ee.load_study_from_input_dict(inputs_dict)

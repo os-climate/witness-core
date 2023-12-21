@@ -87,6 +87,28 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
             {GlossaryCore.Years: self.years, GlossaryCore.EnergyInvestmentsWoTaxValue: invests})
         self.max_invest_constraint_ref = 10.
 
+        self.damage_agri = DataFrame({GlossaryCore.Years: self.years,
+                                      GlossaryCore.Damages: np.linspace(20, 48, self.nb_per),
+                                      GlossaryCore.DamagesFromClimate: np.linspace(10, 24, self.nb_per),
+                                      GlossaryCore.DamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
+                                      GlossaryCore.EstimatedDamagesFromClimate: np.linspace(10, 24, self.nb_per),
+                                      GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24,
+                                                                                                     self.nb_per), })
+        self.damage_indus = DataFrame({GlossaryCore.Years: self.years,
+                                       GlossaryCore.Damages: np.linspace(15, 34, self.nb_per),
+                                       GlossaryCore.DamagesFromClimate: np.linspace(5, 10, self.nb_per),
+                                       GlossaryCore.DamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
+                                       GlossaryCore.EstimatedDamagesFromClimate: np.linspace(5, 10, self.nb_per),
+                                       GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24,
+                                                                                                      self.nb_per), })
+        self.damage_service = DataFrame({GlossaryCore.Years: self.years,
+                                         GlossaryCore.Damages: np.linspace(4, 15, self.nb_per),
+                                         GlossaryCore.DamagesFromClimate: np.linspace(1, 6, self.nb_per),
+                                         GlossaryCore.DamagesFromProductivityLoss: np.linspace(3, 9, self.nb_per),
+                                         GlossaryCore.EstimatedDamagesFromClimate: np.linspace(1, 6, self.nb_per),
+                                         GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(3, 9,
+                                                                                                        self.nb_per), })
+
     def analytic_grad_entry(self):
         return [
             self.test_macro_analytic_grad
@@ -96,7 +118,7 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Macroeconomics'
         ns_dict = {'ns_public': f'{self.name}',
                    'ns_witness': f'{self.name}',
-                   'ns_sectors': f'{self.name}',
+                   GlossaryCore.NS_SECTORS: f'{self.name}',
                    'ns_macro': f'{self.name}.{model_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -116,14 +138,20 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.sectors_investment_share': self.share_sector_invest,
                        f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}': self.prod_agri,
-                       f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
+                       f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}': self.cap_agri_df,
                        f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}': self.prod_indus,
-                       f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
+                       f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}': self.cap_indus_df,
                        f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}': self.prod_service,
-                       f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
+                       f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}': self.cap_service_df,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': self.energy_investment_wo_tax,
                        f'{self.name}.{model_name}.{GlossaryCore.ShareMaxInvestName}': self.share_max_invest,
                        f'{self.name}.{model_name}.{GlossaryCore.MaxInvestConstraintRefName}': self.max_invest_constraint_ref,
+                       f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}': self.damage_indus[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
+                       f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}': self.damage_agri[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
+                       f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}': self.damage_service[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
+                       f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDetailedDfValue}': self.damage_indus[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
+                       f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDetailedDfValue}': self.damage_agri[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
+                       f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDetailedDfValue}': self.damage_service[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -137,13 +165,17 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.ProductionDfValue}',
-                                    f'{self.name}.{model_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.CapitalDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.ProductionDfValue}',
-                                    f'{self.name}.{model_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.CapitalDfValue}',
                                     f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.ProductionDfValue}',
-                                    f'{self.name}.{model_name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.CapitalDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDfValue}',
+                                    f'{self.name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDfValue}',
                                     f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.EconomicsDfValue}',
                                      f'{self.name}.{model_name}.{GlossaryCore.MaxInvestConstraintName}',
-                                     f'{self.name}.{GlossaryCore.InvestmentDfValue}']
+                                     f'{self.name}.{GlossaryCore.InvestmentDfValue}',
+                                     f'{self.name}.{GlossaryCore.DamageDfValue}',]
                             )

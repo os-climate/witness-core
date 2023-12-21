@@ -36,6 +36,8 @@ class MacroEconomics:
         self.param = param
         self.inputs = None
         self.economics_df = None
+        self.damage_df = None
+        self.capital_df = None
         self.energy_wasted_objective = None
         self.gdp_percentage_per_section_df = None
         self.sector_gdp_df = None
@@ -93,6 +95,9 @@ class MacroEconomics:
         self.employment_rate_base_value = self.param['employment_rate_base_value']
         self.usable_capital_ref = self.param['usable_capital_ref']
         self.invest_co2_tax_in_renawables = self.param['assumptions_dict']['invest_co2_tax_in_renewables']
+        self.compute_climate_impact_on_gdp = self.param['assumptions_dict']['compute_climate_impact_on_gdp']
+        if not self.compute_climate_impact_on_gdp:
+            self.damage_to_productivity = False
         self.sector_list = self.param[GlossaryCore.SectorListValue]
         self.section_list = self.param[GlossaryCore.SectionListValue]
 
@@ -149,19 +154,24 @@ class MacroEconomics:
         workforce_df[GlossaryCore.Years] = self.years_range
         self.workforce_df = workforce_df
         #capital df
-        capital_df = pd.DataFrame(index=default_index, 
-                                  columns=[GlossaryCore.Years,
-                                           GlossaryCore.Capital,
-                                           GlossaryCore.NonEnergyCapital,
-                                           GlossaryCore.EnergyEfficiency,
-                                           GlossaryCore.Emax,
-                                           GlossaryCore.UsableCapital,
-                                           GlossaryCore.UsableCapitalUnbounded])
-        for key in capital_df.keys():
-            capital_df[key] = 0
-        capital_df[GlossaryCore.Years] = self.years_range
-        capital_df.loc[param[GlossaryCore.YearStart], GlossaryCore.NonEnergyCapital] = self.capital_start_ne
-        self.capital_df = capital_df
+        self.capital_df = pd.DataFrame(index=default_index,
+                                       columns=[GlossaryCore.Years,
+                                                GlossaryCore.Capital,
+                                                GlossaryCore.NonEnergyCapital,
+                                                GlossaryCore.EnergyEfficiency,
+                                                GlossaryCore.Emax,
+                                                GlossaryCore.UsableCapital,
+                                                GlossaryCore.UsableCapitalUnbounded])
+        for key in self.capital_df.columns:
+            self.capital_df[key] = 0
+        self.capital_df[GlossaryCore.Years] = self.years_range
+        self.capital_df.loc[param[GlossaryCore.YearStart], GlossaryCore.NonEnergyCapital] = self.capital_start_ne
+
+        self.damage_df = pd.DataFrame(index=default_index,
+                                      columns=GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
+        for key in self.damage_df.columns:
+            self.damage_df[key] = 0
+        self.damage_df[GlossaryCore.Years] = self.years_range
 
         return economics_df.fillna(0.0), energy_investment.fillna(0.0),
 
@@ -169,8 +179,8 @@ class MacroEconomics:
         """
         Set couplings inputs with right index, scaling... 
         """
-        self.damefrac = self.inputs[GlossaryCore.DamageDfValue]
-        self.damefrac.index = self.damefrac[GlossaryCore.Years].values
+        self.damage_fraction_output_df = self.inputs[GlossaryCore.DamageFractionDfValue]
+        self.damage_fraction_output_df.index = self.damage_fraction_output_df[GlossaryCore.Years].values
         # Scale energy production
         self.energy_production = self.inputs[GlossaryCore.EnergyProductionValue].copy(deep=True)
         self.co2_emissions_Gt = pd.DataFrame({GlossaryCore.Years: self.inputs[GlossaryCore.CO2EmissionsGtValue][GlossaryCore.Years].values,
@@ -233,17 +243,14 @@ class MacroEconomics:
         self.workforce_df[GlossaryCore.Workforce] = self.workforce_df[GlossaryCore.EmploymentRate] * \
                                                     self.working_age_population_df[GlossaryCore.Population1570]
 
-    def compute_productivity_growthrate(self, year: int):
+    def compute_productivity_growthrate(self):
         """
         A_g, Growth rate of total factor productivity.
         Returns:
             :returns: A_g(0) * exp(-Δ_a * (t-1))
         """
-        t = ((year - self.year_start) / self.time_step) + 1
-        productivity_gr = self.productivity_gr_start * \
-            np.exp(-self.decline_rate_tfp * self.time_step * (t - 1))
-        self.economics_df.loc[year, GlossaryCore.ProductivityGrowthRate] = productivity_gr
-        return productivity_gr
+        prod_growth_rate = self.productivity_gr_start * np.exp(- self.decline_rate_tfp * (self.years_range - self.year_start))
+        self.economics_df[GlossaryCore.ProductivityGrowthRate] = prod_growth_rate
 
     def compute_productivity(self, year: int):
         """
@@ -252,17 +259,14 @@ class MacroEconomics:
         if  not: productivity evolves independently from other variables (except productivity growthrate)
         """
         damage_to_productivity = self.damage_to_productivity
-        p_productivity = self.economics_df.loc[year -
-                                              self.time_step, GlossaryCore.Productivity]
-        p_productivity_gr = self.economics_df.loc[year -
-                                                 self.time_step, GlossaryCore.ProductivityGrowthRate]
-        damefrac = self.damefrac.loc[year, GlossaryCore.DamageFractionOutput]
+        p_productivity_wo_damage = self.economics_df.loc[year - self.time_step, GlossaryCore.ProductivityWithoutDamage]
+        p_productivity_w_damage = self.economics_df.loc[year - self.time_step, GlossaryCore.ProductivityWithDamage]
+        p_productivity_gr = self.economics_df.loc[year - self.time_step, GlossaryCore.ProductivityGrowthRate]
+        damefrac = self.damage_fraction_output_df.loc[year, GlossaryCore.DamageFractionOutput]
         # we divide the productivity growth rate by 5/time_step because of change in time_step (as
         # advised in Traeger, 2013)
-        productivity_wo_damage = (p_productivity /
-                            (1 - (p_productivity_gr / (5 / self.time_step))))
-        productivity_w_damage = ((1 - self.frac_damage_prod * damefrac) *
-                            (p_productivity / (1 - (p_productivity_gr / (5 / self.time_step)))))
+        productivity_wo_damage = p_productivity_wo_damage / (1 - p_productivity_gr / (5 / self.time_step))
+        productivity_w_damage = p_productivity_w_damage * (1 - self.frac_damage_prod * damefrac) / (1 - p_productivity_gr / (5 / self.time_step))
         self.economics_df.loc[year, GlossaryCore.ProductivityWithDamage] = productivity_w_damage
         self.economics_df.loc[year, GlossaryCore.ProductivityWithoutDamage] = productivity_wo_damage
 
@@ -506,16 +510,17 @@ class MacroEconomics:
         """
         Output net of damages, trillions USD
         """
-        damefrac = self.damefrac.loc[year, GlossaryCore.DamageFractionOutput]
-        gross_output = self.economics_df.loc[year,
-                                            GlossaryCore.GrossOutput]
-
-        if self.damage_to_productivity:
-            damage = 1 - ((1 - damefrac) /
-                          (1 - self.frac_damage_prod * damefrac))
-            output_net_of_d = (1 - damage) * gross_output
+        damefrac = self.damage_fraction_output_df.loc[year, GlossaryCore.DamageFractionOutput]
+        gross_output = self.economics_df.loc[year, GlossaryCore.GrossOutput]
+        if not self.compute_climate_impact_on_gdp:
+            output_net_of_d = gross_output
         else:
-            output_net_of_d = gross_output * (1 - damefrac)
+            if self.damage_to_productivity:
+                damage = 1 - ((1 - damefrac) /
+                              (1 - self.frac_damage_prod * damefrac))
+                output_net_of_d = (1 - damage) * gross_output
+            else:
+                output_net_of_d = gross_output * (1 - damefrac)
         self.economics_df.loc[year, GlossaryCore.OutputNetOfDamage] = output_net_of_d
         return output_net_of_d
 
@@ -555,7 +560,6 @@ class MacroEconomics:
         usable_capital = self.capital_df[GlossaryCore.UsableCapital].values
         self.delta_capital_cons = (usable_capital - self.capital_utilisation_ratio * ne_capital) / self.usable_capital_ref if not self.compute_gdp else np.zeros(self.nb_per)
 
-
     def prepare_outputs(self):
         """post processing"""
         self.economics_df = self.economics_df.fillna(0.0)
@@ -573,7 +577,7 @@ class MacroEconomics:
         """
         Compute damages due to loss of productivity.
 
-        As GDP ~= productivity x (Usable capital + Labor), and that we can compute productivity with or without damages,
+        As GDP ~= productivity x (Usable capital + Labor)², and that we can compute productivity with or without damages,
         we compute the damages on GDP from loss of productivity as
         (productivity wo damage - productivity w damage) x (Usable capital + Labor).
         """
@@ -582,27 +586,35 @@ class MacroEconomics:
         applied_productivity = self.economics_df[GlossaryCore.Productivity]
         gross_output = self.economics_df[GlossaryCore.GrossOutput]
 
-        damage_from_productivity_loss = (productivity_wo_damage - productivity_w_damage) * (
-                    gross_output / applied_productivity)
-        self.economics_df[GlossaryCore.DamagesFromProductivityLoss] = damage_from_productivity_loss
+        estimated_damage_from_productivity_loss = (productivity_wo_damage - productivity_w_damage) / applied_productivity * gross_output
+        if self.damage_to_productivity:
+            damage_from_productivity_loss = estimated_damage_from_productivity_loss
+        else:
+            damage_from_productivity_loss = np.zeros_like(estimated_damage_from_productivity_loss)
+
+        self.damage_df[GlossaryCore.DamagesFromProductivityLoss] = damage_from_productivity_loss
+        self.damage_df[GlossaryCore.EstimatedDamagesFromProductivityLoss] = estimated_damage_from_productivity_loss
 
     def compute_total_damages(self):
         """Damages are the sum of damages from climate + damges from loss of productivity"""
 
-        damefrac = self.damefrac[GlossaryCore.DamageFractionOutput]
-        gross_output = self.economics_df[GlossaryCore.GrossOutput]
+        damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput]
+        gross_output = self.economics_df[GlossaryCore.GrossOutput].values
+        net_output = self.economics_df[GlossaryCore.OutputNetOfDamage].values
 
-        if self.damage_to_productivity:
-            damage = 1 - ((1 - damefrac) /
-                          (1 - self.frac_damage_prod * damefrac))
-            output_net_of_d = (1 - damage) * gross_output
+        damage_from_climate = np.zeros_like(gross_output)
+        if self.compute_climate_impact_on_gdp:
+            damage_from_climate = gross_output - net_output
+            estimated_damage_from_climate = damage_from_climate
         else:
-            output_net_of_d = gross_output * (1 - damefrac)
+            if self.damage_to_productivity:
+                estimated_damage_from_climate = gross_output * damefrac * (1 - self.frac_damage_prod) / (1 - self.frac_damage_prod * damefrac)
+            else:
+                estimated_damage_from_climate = gross_output * damefrac
 
-        damage_from_climate = gross_output - output_net_of_d
-        self.economics_df[GlossaryCore.DamagesFromClimate] = damage_from_climate
-        self.economics_df[GlossaryCore.Damages] = self.economics_df[GlossaryCore.DamagesFromClimate] + \
-                                                         self.economics_df[GlossaryCore.DamagesFromProductivityLoss]
+        self.damage_df[GlossaryCore.DamagesFromClimate] = damage_from_climate
+        self.damage_df[GlossaryCore.EstimatedDamagesFromClimate] = estimated_damage_from_climate
+        self.damage_df[GlossaryCore.Damages] = self.damage_df[GlossaryCore.DamagesFromClimate] + self.damage_df[GlossaryCore.DamagesFromProductivityLoss]
 
     def compute(self, inputs: dict):
         """
@@ -632,11 +644,11 @@ class MacroEconomics:
         self.compute_consumption_pc(year_start)
         # for year 0 compute capital +1
         self.compute_capital(year_start + 1)
+        self.compute_productivity_growthrate()
 
         # Then iterate over years from year_start + tstep:
         for year in self.years_range[1:]:
             # First independant variables
-            self.compute_productivity_growthrate(year)
             self.compute_productivity(year)
             # Then others:
             self.compute_usable_capital(year)
@@ -661,7 +673,7 @@ class MacroEconomics:
 
         self.prepare_outputs()
 
-        return self.economics_detail_df, self.economics_df, self.energy_investment, \
+        return self.economics_detail_df, self.economics_df, self.damage_df,self.energy_investment, \
             self.energy_investment_wo_renewable, self.workforce_df, \
             self.capital_df, self.sector_gdp_df, self.energy_wasted_objective
 
@@ -675,29 +687,38 @@ class MacroEconomics:
         nb_years = len(self.years_range)
         return np.identity(nb_years)
 
-    def d_productivity_d_damage_frac_output(self):
-        """gradient for productivity for damage_df"""
+    def d_productivity_w_damage_d_damage_frac_output(self):
+        """derivative of productivity with damage wrt damage frac output"""
         nb_years = len(self.years_range)
 
+        d_productivity_w_damage_d_damage_frac_output = self._null_derivative()
+        p_productivity_gr = self.economics_detail_df[GlossaryCore.ProductivityGrowthRate].values
+        p_productivity = self.economics_detail_df[GlossaryCore.Productivity].values
+
+        # first line stays at zero since derivatives of initial values are zero
+        for i in range(1, nb_years):
+            d_productivity_w_damage_d_damage_frac_output[i, i] = (1 - self.frac_damage_prod * self.damage_fraction_output_df.loc[
+                self.years_range[i], GlossaryCore.DamageFractionOutput]) * \
+                                                        d_productivity_w_damage_d_damage_frac_output[i - 1, i] / (
+                                                                    1 - (p_productivity_gr[i - 1] /
+                                                                         (5 / self.time_step))) - \
+                                                        self.frac_damage_prod * \
+                                                        p_productivity[i - 1] / \
+                                                        (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
+            for j in range(1, i):
+                d_productivity_w_damage_d_damage_frac_output[i, j] = (1 - self.frac_damage_prod *
+                                                             self.damage_fraction_output_df.loc[self.years_range[
+                                                                                                    i], GlossaryCore.DamageFractionOutput]) * \
+                                                            d_productivity_w_damage_d_damage_frac_output[i - 1, j] / \
+                                                            (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
+        return d_productivity_w_damage_d_damage_frac_output
+
+    def d_productivity_d_damage_frac_output(self):
+        """gradient for productivity for damage_df"""
         d_productivity_d_damage_frac_output = self._null_derivative()
 
         if self.damage_to_productivity:
-            p_productivity_gr = self.economics_detail_df[GlossaryCore.ProductivityGrowthRate].values
-            p_productivity = self.economics_detail_df[GlossaryCore.Productivity].values
-
-            # first line stays at zero since derivatives of initial values are zero
-            for i in range(1, nb_years):
-                d_productivity_d_damage_frac_output[i, i] = (1 - self.frac_damage_prod * self.damefrac.loc[self.years_range[i], GlossaryCore.DamageFractionOutput]) * \
-                    d_productivity_d_damage_frac_output[i - 1, i] / (1 - (p_productivity_gr[i - 1] /
-                                                     (5 / self.time_step))) -\
-                    self.frac_damage_prod * \
-                    p_productivity[i - 1] / \
-                    (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
-                for j in range(1, i):
-                    d_productivity_d_damage_frac_output[i, j] = (1 - self.frac_damage_prod * self.damefrac.loc[self.years_range[i], GlossaryCore.DamageFractionOutput]) * \
-                        d_productivity_d_damage_frac_output[i - 1, j] / \
-                        (1 - (p_productivity_gr[i - 1] / (5 / self.time_step)))
-
+            d_productivity_d_damage_frac_output = self.d_productivity_w_damage_d_damage_frac_output()
         return d_productivity_d_damage_frac_output
 
     def d_Y_Ku_Ew_Constraint_d_energy(self):
@@ -723,7 +744,7 @@ class MacroEconomics:
 
         d_Ku_d_E[index_zeros, index_zeros] = 0.
 
-        damefrac = self.damefrac[GlossaryCore.DamageFractionOutput].values
+        damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
         dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
         d_Kne_dE = self._null_derivative()
         dY_dE = np.diag(
@@ -787,7 +808,7 @@ class MacroEconomics:
         d_Ku_d_wap = self._null_derivative()
         d_Kne_d_wap = self._null_derivative()
 
-        damefrac = self.damefrac[GlossaryCore.DamageFractionOutput].values
+        damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
         dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
 
         for i in range(1, self.nb_per + 1):
@@ -820,7 +841,7 @@ class MacroEconomics:
 
     def d_net_output_d_user_input(self, d_gross_output_d_user_input):
         """derivative of net output wrt X, user should provide the derivative of gross output wrt X"""
-        damefrac = self.damefrac[GlossaryCore.DamageFractionOutput].values
+        damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
 
         if self.damage_to_productivity:
             dQ_dY = np.diag((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
@@ -1018,7 +1039,7 @@ class MacroEconomics:
         ############
         index_zeros = self.economics_detail_df[GlossaryCore.UnusedEnergy].values > 0.
 
-        damefrac = self.damefrac[GlossaryCore.DamageFractionOutput].values
+        damefrac = self.damage_fraction_output_df[GlossaryCore.DamageFractionOutput].values
         Y = self.economics_df[GlossaryCore.GrossOutput].values
         dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
 
@@ -1050,15 +1071,13 @@ class MacroEconomics:
 
         return d_Y_d_dfo, d_Ku_d_dfo, d_Ew_d_dfo, d_lower_bound_constraint_d_dfo
 
-
-
     def d_net_output_d_damage_frac_output(self, d_gross_output_d_damage_frac_output):
         """derivative of net output wrt damage frac output #todo: refactor!!!"""
         nb_years = len(self.years_range)
         d_net_output_d_damage_frac_output = self._null_derivative()
         for i in range(nb_years):
             gross_output = self.economics_detail_df.loc[self.years_range[i], GlossaryCore.GrossOutput]
-            damage_frac_output = self.damefrac.loc[self.years_range[i], GlossaryCore.DamageFractionOutput]
+            damage_frac_output = self.damage_fraction_output_df.loc[self.years_range[i], GlossaryCore.DamageFractionOutput]
             for j in range(0, i + 1):
                 if i == j:
                     if self.damage_to_productivity:
@@ -1139,4 +1158,43 @@ class MacroEconomics:
 
         return grad_energy_wasted_obj
 
+    def d_damages_from_climate_d_user_input(self, d_gross_output_d_user_input, d_net_output_d_user_input):
+        """
+        damages_from_climate = gross output - net output
+        """
+        derivative = d_gross_output_d_user_input - d_net_output_d_user_input
+        return derivative
+
+    def d_damages_from_productivity_loss_d_damage_fraction_output(self, d_gross_output_d_damage_fraction_output):
+        gross_output = self.economics_detail_df[GlossaryCore.GrossOutput].values
+        productivity_wo_damage = self.economics_detail_df[GlossaryCore.ProductivityWithoutDamage].values
+        productivity_w_damage = self.economics_detail_df[GlossaryCore.ProductivityWithDamage].values
+
+        d_productivity_w_damage_d_damage_frac_output = self.d_productivity_w_damage_d_damage_frac_output()
+        nb_years = len(self.years_range)
+        d_damages_from_productivity_loss_d_damage_fraction_output = self._null_derivative()
+        if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
+            '''
+            d_damages_from_productivity_loss_d_damage_fraction_output = np.diag(productivity_wo_damage / productivity_w_damage - 1) @ d_gross_output_d_damage_fraction_output + \
+                   np.diag(- gross_output * productivity_wo_damage / productivity_w_damage **2) @ d_productivity_w_damage_d_damage_frac_output
+            '''
+            for i in range(nb_years):
+                for j in range(nb_years):
+                    d_damages_from_productivity_loss_d_damage_fraction_output[i,j] = d_gross_output_d_damage_fraction_output[i,j] * (productivity_wo_damage[i]/productivity_w_damage[i] - 1) +\
+                        - gross_output[i] * productivity_wo_damage[i] / productivity_w_damage[i] ** 2 * d_productivity_w_damage_d_damage_frac_output[i, j]
+
+        return d_damages_from_productivity_loss_d_damage_fraction_output
+
+    def d_damages_from_productivity_loss_d_user_input(self, d_gross_output_d_user_input):
+        productivity_wo_damage = self.economics_detail_df[GlossaryCore.ProductivityWithoutDamage].values
+        productivity_w_damage = self.economics_detail_df[GlossaryCore.ProductivityWithDamage].values
+
+        d_damages_from_productivity_loss_d_user_input = self._null_derivative()
+        if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
+            d_damages_from_productivity_loss_d_user_input = np.diag((productivity_wo_damage - productivity_w_damage) / (
+                productivity_w_damage)) @  d_gross_output_d_user_input
+        return d_damages_from_productivity_loss_d_user_input
+
+    def d_damages_d_user_input(self, d_damages_from_climate_d_user_input, d_damages_from_productivity_loss_d_user_input):
+        return d_damages_from_climate_d_user_input + d_damages_from_productivity_loss_d_user_input
     """-------------------END of Gradient functions-------------------"""

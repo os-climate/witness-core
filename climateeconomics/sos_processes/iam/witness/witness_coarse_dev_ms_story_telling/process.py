@@ -1,5 +1,6 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -71,7 +72,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
-                   'ns_post_processing': f'{self.ee.study_name}.Post-processing',
+                   'ns_post_processing': f'{self.ee.study_name}.mda_scenarios',
                    'ns_ref': f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences'}
 
 
