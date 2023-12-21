@@ -34,7 +34,7 @@ class TemperatureDiscTest(unittest.TestCase):
     def test_01_execute_DICE(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -87,7 +87,7 @@ class TemperatureDiscTest(unittest.TestCase):
     def test_02_execute_DICE_Etminan(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -141,7 +141,7 @@ class TemperatureDiscTest(unittest.TestCase):
     def test_03_execute_DICE_Meinshausen(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -195,7 +195,7 @@ class TemperatureDiscTest(unittest.TestCase):
     def test_04_execute_FUND_Mhyre(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -249,7 +249,7 @@ class TemperatureDiscTest(unittest.TestCase):
     def test_05_execute_FUND_Meinshausen(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 

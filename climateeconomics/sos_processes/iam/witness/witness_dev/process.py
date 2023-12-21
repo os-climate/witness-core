@@ -14,7 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT_DEV
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
@@ -63,7 +63,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace(
-            'ns_witness',
+            GlossaryCore.NS_WITNESS,
             'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_optim.post_processing_witness_full')
 
         for resource_namespace in ['ns_coal_resource', 'ns_oil_resource', 'ns_natural_gas_resource', 'ns_uranium_resource']:

@@ -48,7 +48,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.MaxInvestConstraintRefName: GlossaryCore.MaxInvestConstraintRef,
         GlossaryCore.DamageToProductivity: {'type': 'bool', 'default': True,
                                             'visibility': 'Shared',
-                                            'unit': '-', 'namespace': 'ns_witness'},
+                                            'unit': '-', 'namespace': GlossaryCore.NS_WITNESS},
     }
 
     DESC_OUT = {
@@ -248,8 +248,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                 sector, 'bar', True)
                 new_chart.add_series(new_series)
 
-            gross_output = economics_df[GlossaryCore.GrossOutput].values
-            new_series = InstanciatedSeries(years, list(gross_output), 'Total', 'bar', True)
+            net_output = economics_df[GlossaryCore.OutputNetOfDamage].values
+            new_series = InstanciatedSeries(years, list(net_output), 'Total', 'lines', True)
             new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
@@ -259,7 +259,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
             damage_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity)
             to_plot = {GlossaryCore.DamagesFromClimate: f'Immediate climate damage',
-                       GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (' + 'not ' * (
+                       GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (
                            not damage_to_productivity) + 'applied to gross output)', }
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
             all_damages = damage_detailed_df[GlossaryCore.EstimatedDamagesFromClimate].values + damage_detailed_df[GlossaryCore.EstimatedDamagesFromProductivityLoss].values

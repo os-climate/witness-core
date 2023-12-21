@@ -56,7 +56,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'init_indus_emissions': {'type': 'float', 'default': 34, 'unit': 'GtCO2 per year', 'user_level': 2},
         GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'init_cum_indus_emissions': {'type': 'float', 'default': 577.31, 'unit': 'GtCO2', 'user_level': 2},
-        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-',
                          'dataframe_descriptor': {'years': ('float', None, False),
                                                   'gross_output': ('float', None, False),
                                                   GlossaryCore.PopulationValue: ('float', None, False),
@@ -78,7 +78,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'},
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
-                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'min_co2_objective': {'type': 'float', 'default': -1000., 'unit': 'GtCO2', 'user_level': 2},
         'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'GtCO2', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs',
@@ -100,7 +100,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
 
         # Ref in 2020 is around 34 Gt, the objective is normalized with this
         # reference
-        'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+        'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {
                                    GlossaryCore.Years: ('float', None, False),
                                    'emitted_CO2_evol': ('float', None, False),
@@ -109,7 +109,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         GlossaryCore.CO2EmissionsDetailDfValue: GlossaryCore.CO2EmissionsDetailDf,
         GlossaryCore.CO2EmissionsDfValue: GlossaryCore.CO2EmissionsDf,
-        'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': ''},
+        'CO2_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': ''},
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
     }
 

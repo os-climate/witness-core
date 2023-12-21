@@ -57,7 +57,7 @@ class UraniumModelTestCase(unittest.TestCase):
         model_name = 'uranium_use'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness': f'{name}.{model_name}',
+                   GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
                    'ns_uranium_resource': f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}'}

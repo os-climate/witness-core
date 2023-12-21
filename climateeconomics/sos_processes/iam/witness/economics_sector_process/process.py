@@ -32,12 +32,12 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_macro = f"{self.ee.study_name}.{'Macroeconomics'}"
         ns_scatter = self.ee.study_name
 
-        ns_dict = {'ns_witness': ns_scatter,
-                   'ns_macro': ns_macro,
+        ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
+                   GlossaryCore.NS_MACRO: ns_macro,
                    'ns_public': ns_scatter,
                    'ns_functions': ns_scatter,
                    'ns_ref': ns_scatter,
-                   'ns_sectors': ns_macro
+                   GlossaryCore.NS_SECTORS: ns_macro
                    }
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',

@@ -410,16 +410,16 @@ class CropDiscipline(ClimateEcoDiscipline):
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                              'namespace': 'ns_public', 'user_level': 2},
         'margin': {'type': 'dataframe', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'unit': '%',
-                   'namespace': 'ns_witness',
+                   'namespace': GlossaryCore.NS_WITNESS,
                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                             'margin': ('float', None, True)}},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                           'namespace': 'ns_witness',
+                           'namespace': GlossaryCore.NS_WITNESS,
                            'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                     'transport': ('float', None, True)},
                            'dataframe_edition_locked': False},
         'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                             'namespace': 'ns_witness',
+                             'namespace': GlossaryCore.NS_WITNESS,
                              'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
                                                       'margin': ('float', None, True)},
                              'dataframe_edition_locked': False},
@@ -448,7 +448,7 @@ class CropDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'total_food_land_surface': {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_witness'},
+            'namespace': GlossaryCore.NS_WITNESS},
         'food_land_surface_df': {
             'type': 'dataframe', 'unit': 'Gha'},
         'food_land_surface_percentage_df': {'type': 'dataframe', 'unit': '%'},
@@ -493,7 +493,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                         'namespace': 'ns_functions'},
         'calories_pc_df': {'type': 'dataframe', 'unit': 'kcal',
-                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
     }
 
     CROP_CHARTS = 'crop and diet charts'

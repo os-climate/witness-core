@@ -49,30 +49,24 @@ class PolicyDiscipline(SoSWrapp):
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
-        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+        'CCS_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                       'dataframe_descriptor':
                           {
                               GlossaryCore.Years: ('float', None, False),
                               'ccs_price_per_tCO2': ('float', None, True),
                           }
                       },
-        'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
-                             'dataframe_descriptor':
-                                 {
-                                     GlossaryCore.Years: ('float', None, False),
-                                     'CO2_damage_price': ('float', None, True),
-                                 }
-                             },
+        GlossaryCore.CO2DamagePrice: GlossaryCore.CO2DamagePriceDf,
         'ccs_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                   'namespace': 'ns_witness', 'user_level': 2},
+                                   'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'co2_damage_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                   'namespace': 'ns_witness', 'user_level': 2},
+                                   'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
     }
 
     DESC_OUT = {
-        GlossaryCore.CO2TaxesValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '$/tCO2'}
+        GlossaryCore.CO2TaxesValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '$/tCO2'}
 
     }
 
@@ -99,7 +93,7 @@ class PolicyDiscipline(SoSWrapp):
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CO2TaxesValue, GlossaryCore.CO2Tax),
-            ('CO2_damage_price', 'CO2_damage_price'),
+            (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
             np.identity(len(dCO2_tax_dCO2_damage)) * np.array(dCO2_tax_dCO2_damage))
 
         self.set_partial_derivative_for_other_types(
@@ -135,7 +129,7 @@ class PolicyDiscipline(SoSWrapp):
                     chart_list = chart_filter.selected_values
         if 'CO2 tax' in chart_list:
             CCS_price = self.get_sosdisc_inputs('CCS_price')
-            CO2_damage_price = self.get_sosdisc_inputs('CO2_damage_price')
+            CO2_damage_price = self.get_sosdisc_inputs(GlossaryCore.CO2DamagePrice)
             CO2_tax = self.get_sosdisc_outputs(GlossaryCore.CO2TaxesValue)
             years = list(CCS_price[GlossaryCore.Years].values)
 
@@ -149,7 +143,7 @@ class PolicyDiscipline(SoSWrapp):
                 years, list(CCS_price['ccs_price_per_tCO2'].values), 'CCS price', 'lines')
 
             new_series2 = InstanciatedSeries(
-                years, list(CO2_damage_price['CO2_damage_price'].values), 'CO2 damage', 'lines')
+                years, list(CO2_damage_price[GlossaryCore.CO2DamagePrice].values), 'CO2 damage', 'lines')
 
             new_series3 = InstanciatedSeries(
                 years, list(CO2_tax[GlossaryCore.CO2Tax].values), 'CO2 tax', 'lines')

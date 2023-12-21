@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2022 Airbus SAS
 Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -36,9 +36,9 @@ class ProcessBuilder(BaseProcessBuilder):
                         'output_name': 'scenario_name',
                         'scatter_ns': 'ns_scenario',
                         'gather_ns': 'ns_scatter_scenario',
-                        'ns_to_update': ['ns_witness',
+                        'ns_to_update': [GlossaryCore.NS_WITNESS,
                                          'ns_functions',
-                                         'ns_energy_mix',
+                                         GlossaryCore.NS_ENERGY_MIX,
                                          'ns_public',
                                          'ns_optim',
                                          'ns_flue_gas',

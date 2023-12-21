@@ -79,6 +79,8 @@ class GlossaryCore:
     # namespaces
     NS_MACRO = "ns_macro"
     NS_SECTORS = "ns_sectors"
+    NS_WITNESS = "ns_witness"
+    NS_ENERGY_MIX = "ns_energy_mix"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -136,7 +138,7 @@ class GlossaryCore:
         "subtype_descriptor": {"list": "string"},
         "default": SectionsPossibleValues,
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "editable": False,
         "structuring": True,
     }
@@ -145,7 +147,7 @@ class GlossaryCore:
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
         },
@@ -164,7 +166,7 @@ class GlossaryCore:
         "subtype_descriptor": {"list": "string"},
         "default": SectorsPossibleValues,
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "editable": False,
         "structuring": True,
     }
@@ -183,7 +185,7 @@ class GlossaryCore:
         "var_name": CarbonCycleDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             "atmo_conc": ("float", None, False),
@@ -194,13 +196,27 @@ class GlossaryCore:
             "atmo_share_sinceystart": ("float", None, False),
         },
     }
+
+    CO2DamagePrice = "CO2_damage_price"
+    CO2DamagePriceDf = {
+        "var_name": CO2DamagePrice,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "unit": "$/tCO2",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            CO2DamagePrice: ("float", None, False),
+        },
+    }
+
     CO2EmissionsDetailDfValue = "CO2_emissions_detail_df"
     CO2EmissionsDfValue = "CO2_emissions_df"
     CO2EmissionsDetailDf = {
         "var_name": CO2EmissionsDetailDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("float", None, False),
@@ -219,7 +235,7 @@ class GlossaryCore:
         "var_name": CO2EmissionsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("float", None, False),
@@ -233,7 +249,7 @@ class GlossaryCore:
         "var_name": CO2EmissionsGtValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_energy_mix",
+        "namespace": NS_ENERGY_MIX,
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -256,7 +272,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "$/tCO2",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             CO2Tax: ("float", None, True),
@@ -285,7 +301,7 @@ class GlossaryCore:
         "var_name": DamageFractionDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "unit": "-",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -301,7 +317,7 @@ class GlossaryCore:
         "var_name": DamageDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -334,7 +350,7 @@ class GlossaryCore:
         "unit": "G$",
         "visibility": "Shared",
         "default": 130.187,
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "user_level": 2,
     }
 
@@ -352,7 +368,7 @@ class GlossaryCore:
         "var_name": SectorGdpDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -364,7 +380,7 @@ class GlossaryCore:
         "var_name": SectionGdpDictValue,
         "type": "dict",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "unit": "G$",
     }
 
@@ -372,7 +388,7 @@ class GlossaryCore:
         "var_name": EconomicsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "unit": "-",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -425,7 +441,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "millions of people",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             PopulationValue: ("float", None, False),
@@ -441,7 +457,7 @@ class GlossaryCore:
         "var_name": EnergyMeanPriceValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_energy_mix",
+        "namespace": NS_ENERGY_MIX,
         "unit": "$/MWh",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -462,7 +478,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "unit": "PWh",
-        "namespace": "ns_energy_mix",
+        "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             TotalProductionValue: ("float", None, False),
@@ -474,7 +490,7 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "unit": "PWh",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             TotalProductionValue: ("float", None, False),
@@ -488,7 +504,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "description": "Energy production dedicated to residential",
         "unit": "PWh",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             TotalProductionValue: ("float", None, False),
@@ -505,7 +521,7 @@ class GlossaryCore:
         },
         "dataframe_edition_locked": False,
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
     }
 
     EnergyInvestmentsMinimizationObjective = "Energy invest minimization objective"
@@ -520,14 +536,14 @@ class GlossaryCore:
             },
             "dataframe_edition_locked": False,
             "visibility": "Shared",
-            "namespace": "ns_witness",
+            "namespace": NS_WITNESS,
         }
     )
 
     RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"
     RenewablesEnergyInvestments = {
         "var_name": RenewablesEnergyInvestmentsValue,
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "type": "dataframe",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -556,7 +572,7 @@ class GlossaryCore:
         },
         "dataframe_edition_locked": False,
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
     }
 
     ExoGForcing = "exog_forcing"
@@ -567,7 +583,7 @@ class GlossaryCore:
         "var_name": TemperatureDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "unit": "°C",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -588,7 +604,7 @@ class GlossaryCore:
         "var_name": UtilityDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             UtilityDiscountRate: ("float", None, False),
@@ -603,7 +619,7 @@ class GlossaryCore:
     ProductionDfValue = "production_df"
     ProductionDf = {
         "var_name": ProductionDfValue,
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "visibility": "Shared",
         "type": "dataframe",
         "unit": "G$",
@@ -621,7 +637,7 @@ class GlossaryCore:
     NonEnergyCapital = "non_energy_capital"
     CapitalDf = {
         "var_name": CapitalDfValue,
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "visibility": "Shared",
         "type": "dataframe",
         "unit": "G$",
@@ -643,7 +659,7 @@ class GlossaryCore:
             Capital: ("float", None, False),
         },
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
     }
 
     DetailedCapitalDfValue = "detailed_capital_df"
@@ -652,7 +668,7 @@ class GlossaryCore:
     DetailedCapitalDf = {
         "var_name": DetailedCapitalDfValue,
         "visibility": "Shared",
-        "namespace": "ns_macro",
+        "namespace": NS_MACRO,
         "type": "dataframe",
         "unit": "G$",
         "dataframe_descriptor": {
@@ -668,7 +684,7 @@ class GlossaryCore:
         "var_name": EconomicsDfValue,
         "type": "dataframe",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -748,7 +764,7 @@ class GlossaryCore:
         "unit": "%",
         "description": "Amount of output net of damage allocated to the specific sector",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             ShareInvestment: ("float", [0.0, 100.0], False),
@@ -762,7 +778,7 @@ class GlossaryCore:
         "unit": "%",
         "description": "Amount of the total energy production attributed to the specific sector",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
@@ -775,7 +791,7 @@ class GlossaryCore:
         "unit": "%",
         "description": "Amount of the total energy production attributed to residential",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
@@ -787,7 +803,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "PWh",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             TotalProductionValue: ("float", None, False),
@@ -814,7 +830,7 @@ class GlossaryCore:
         "user_level": 2,
         "unit": "-",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
     }
 
     WorkforceDfValue = "workforce_df"
@@ -825,7 +841,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "millions of people",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "dataframe_descriptor": {},
         "dynamic_dataframe_columns": True,
     }
@@ -836,7 +852,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "millions of people",
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("float", None, False),
             Population1570: ("float", None, False),
@@ -849,7 +865,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "G$",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             InvestmentsValue: ("float", None, False),
@@ -862,7 +878,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "$/person",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "description": "Sector demand per person per year [$/year]",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -876,7 +892,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "T$",
         "visibility": "Shared",
-        "namespace": "ns_sectors",
+        "namespace": NS_SECTORS,
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             SectorGDPDemandDfValue: ("float", None, False),
@@ -894,7 +910,7 @@ class GlossaryCore:
         },
         "dataframe_edition_locked": False,
         "visibility": "Shared",
-        "namespace": "ns_witness",
+        "namespace": NS_WITNESS,
     }
 
     InvestmentBeforeYearStartValue = "invest_before_ystart"

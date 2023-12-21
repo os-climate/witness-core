@@ -73,15 +73,5 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-    post_processing_factory = PostProcessingFactory()
-    post_processing_factory.get_post_processing_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
-    all_post_processings = post_processing_factory.get_all_post_processings(
-         uc_cls.execution_engine, False, as_json=False, for_test=False)
-
-#    for namespace, post_proc_list in all_post_processings.items():
-#        for chart in post_proc_list:
-#            chart.to_plotly().show()
+    uc_cls = Study(run_usecase=False)
+    uc_cls.test()

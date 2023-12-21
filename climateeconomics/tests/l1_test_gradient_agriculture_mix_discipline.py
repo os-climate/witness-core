@@ -49,7 +49,7 @@ class AgricultureMixJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {'ns_agriculture': f'{self.test_name}',
                    'ns_energy_study': f'{self.test_name}',
                    'ns_public': f'{self.test_name}',
-                   'ns_witness': f'{self.test_name}'}
+                   GlossaryCore.NS_WITNESS: f'{self.test_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
