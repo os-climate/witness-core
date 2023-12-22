@@ -139,8 +139,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
     def test_macro_economics_analytic_grad(self):
 
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -211,8 +211,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -276,8 +276,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
     def test_macro_economics_analytic_grad_max_damage(self):
 
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -342,8 +342,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -414,8 +414,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_macro_economics_very_high_emissions(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -490,8 +490,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_macro_economics_negativeco2_emissions(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -568,8 +568,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_macro_economics_negativeco2_tax(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -639,8 +639,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         """
 
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -716,8 +716,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         """
 
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -792,8 +792,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         Test of analytic gradient when invest_co2_tax_in_renawables is set to False
         """
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -863,8 +863,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_gigantic_energy_production_no_damage_productivity(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -940,8 +940,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_gigantic_energy_production_damage_productivity(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
@@ -1019,8 +1019,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_gigantic_energy_production_wo_compute_gdp(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',

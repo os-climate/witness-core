@@ -61,7 +61,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'tp_a2': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 2, 'user_level': 3, 'unit': '-'},
         'tp_a3': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.081, 'user_level': 3, 'unit': '-'},
         'tp_a4': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.754, 'user_level': 3, 'unit': '-'},
-        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -71,7 +71,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_OUT = {
-        'CO2_damage_price': {'type': 'dataframe', 'unit': '$/tCO2', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.CO2DamagePrice: GlossaryCore.CO2DamagePriceDf,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
     }
 
@@ -119,7 +119,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         # store output data
         out_dict = {GlossaryCore.DamageFractionDfValue: damage_fraction_df[GlossaryCore.DamageFractionDf['dataframe_descriptor'].keys()],
-                    'CO2_damage_price': co2_damage_price_df}
+                    GlossaryCore.CO2DamagePrice: co2_damage_price_df}
 
         self.store_sos_outputs_values(out_dict)
 
@@ -143,7 +143,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             ddamage_frac_output_temp_atmo)
         self.set_partial_derivative_for_other_types(
-            ('CO2_damage_price', 'CO2_damage_price'),
+            (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
             (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
             d_co2_damage_price_d_damages)
 
@@ -196,9 +196,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         if 'CO2 damage price' in chart_list:
 
             co2_damage_price_df = deepcopy(
-                self.get_sosdisc_outputs('CO2_damage_price'))
+                self.get_sosdisc_outputs(GlossaryCore.CO2DamagePrice))
 
-            co2_damage_price = co2_damage_price_df['CO2_damage_price']
+            co2_damage_price = co2_damage_price_df[GlossaryCore.CO2DamagePrice]
 
             years = list(co2_damage_price_df[GlossaryCore.Years].values.tolist())
 
@@ -206,14 +206,11 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Price ($/tCO2)', chart_name=chart_name, y_min_zero=True)
 
-            note = {'Note': 'Damages due to loss of productivity are not included'}
-            new_chart.annotation_upper_left = note
-
             visible_line = True
 
             # add CO2 damage price serie
             new_series = InstanciatedSeries(
-                years, co2_damage_price.values.tolist(), 'CO2 damage price', 'lines', visible_line)
+                years, np.round(co2_damage_price.values, 2).tolist(), 'CO2 damage price', 'lines', visible_line)
             new_chart.add_series(new_series)
 
             # add chart
@@ -223,8 +220,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
             return damage / (1 + damage) * 100
 
         if True:
-            import numpy as np
 
+            tipping_point_model = self.get_sosdisc_inputs('tipping_point')
             tp_a1 = self.get_sosdisc_inputs("tp_a1")
             tp_a2 = self.get_sosdisc_inputs("tp_a2")
             tp_a3 = self.get_sosdisc_inputs("tp_a3")
@@ -237,19 +234,17 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             damage_frac = damage_fraction(damage_function_tipping_point_weitzmann(temperature_increase))
 
-            chart_name = "Tipping point damage model (Weitzman, 2009)"
+            chart_name = "Damages models"
             new_chart = TwoAxesInstanciatedChart('Temperature increase (°C)',
                                                  'Impact on GDP (%)',
                                                  chart_name=chart_name)
 
+            legend = "Tipping point damage model (Weitzman, 2009)" + ' (selected model)'* tipping_point_model
             new_series = InstanciatedSeries(list(temperature_increase), list(damage_frac),
-                'Climate damage on GDP', 'lines', True)
+                legend, 'lines', True)
 
             new_chart.add_series(new_series)
 
-            instanciated_charts.append(new_chart)
-
-        if True:
             damag_int = self.get_sosdisc_inputs("damag_int")
             damag_quad = self.get_sosdisc_inputs("damag_quad")
 
@@ -260,13 +255,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             damage_frac = damage_fraction(damage_function_tipping_point_nordhaus(temperature_increase))
 
-            chart_name = "Standard DICE damage model (Nordhaus, 2017)"
-            new_chart = TwoAxesInstanciatedChart('Temperature increase (°C)',
-                                                 'Impact on GDP (%)',
-                                                 chart_name=chart_name)
-
+            legend = "Standard DICE damage model (Nordhaus, 2017)" + " (selected model)" * (not tipping_point_model)
             new_series = InstanciatedSeries(list(temperature_increase), list(damage_frac),
-                'Climate damage on GDP', 'lines', True)
+                legend, 'lines', True)
 
             new_chart.add_series(new_series)
 

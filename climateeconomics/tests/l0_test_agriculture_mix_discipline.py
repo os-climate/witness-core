@@ -166,7 +166,7 @@ class AgricultureMixModelTestCase(unittest.TestCase):
         ns_dict = {'ns_agriculture': f'{test_name}',
                    'ns_energy_study': f'{test_name}',
                    'ns_public': f'{test_name}',
-                   'ns_witness': f'{test_name}',}
+                   GlossaryCore.NS_WITNESS: f'{test_name}',}
 
         ee.ns_manager.add_ns_def(ns_dict)
 

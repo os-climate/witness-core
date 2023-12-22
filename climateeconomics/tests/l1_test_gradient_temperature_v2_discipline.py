@@ -43,7 +43,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
     def test_02_temperature_discipline_analytic_grad_DICE(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -102,7 +102,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
     def test_03_temperature_discipline_analytic_grad_FUND_myhre(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -162,7 +162,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
     def test_03_1_temperature_discipline_analytic_grad_FUND_Meinshausen(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -222,7 +222,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
     def _test_04_temperature_discipline_analytic_grad_etminan(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -281,7 +281,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
     def _test_05_temperature_discipline_analytic_grad_meinshausen(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -339,7 +339,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
     def _test_06_temperature_discipline_analytic_grad_etminan_lower_atmo_conc(self):
 
         self.model_name = 'temperature'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 

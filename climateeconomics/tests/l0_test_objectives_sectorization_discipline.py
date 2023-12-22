@@ -85,8 +85,8 @@ class ObjectivesTestCase(unittest.TestCase):
         model_name = 'Objectives'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness':  f'{name}',
-                   'ns_macro': f'{name}.{model_name}',
+                   GlossaryCore.NS_WITNESS:  f'{name}',
+                   GlossaryCore.NS_MACRO: f'{name}.{model_name}',
                    'ns_obj': f'{name}.{model_name}',
                    GlossaryCore.NS_SECTORS: f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
@@ -131,8 +131,8 @@ class ObjectivesTestCase(unittest.TestCase):
         model_name = 'Objectives'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness':  f'{name}',
-                   'ns_macro': f'{name}.{model_name}',
+                   GlossaryCore.NS_WITNESS:  f'{name}',
+                   GlossaryCore.NS_MACRO: f'{name}.{model_name}',
                    'ns_obj': f'{name}.{model_name}',
                    GlossaryCore.NS_SECTORS: f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)
@@ -175,8 +175,8 @@ class ObjectivesTestCase(unittest.TestCase):
         model_name = 'Objectives'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness':  f'{name}',
-                   'ns_macro': f'{name}.{model_name}',
+                   GlossaryCore.NS_WITNESS:  f'{name}',
+                   GlossaryCore.NS_MACRO: f'{name}.{model_name}',
                    'ns_obj': f'{name}.{model_name}',
                    GlossaryCore.NS_SECTORS: f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)

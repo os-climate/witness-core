@@ -113,7 +113,7 @@ class DamageModel:
 
         self.co2_damage_price_df = pd.DataFrame(
             {GlossaryCore.Years: self.damage_fraction_df.index,
-             'CO2_damage_price': co2_damage_price})
+             GlossaryCore.CO2DamagePrice: co2_damage_price})
 
     def compute_gradient(self):
         """

@@ -260,7 +260,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     @return multilevel_df: Dataframe
     '''
 
-    ns_list = execution_engine.ns_manager.get_all_namespace_with_name('ns_energy_mix')
+    ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
 
     # get ns_object with longest 
     for ns in ns_list:
@@ -598,7 +598,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     @return multilevel_df: Dataframe
     '''
     
-    ns_list = execution_engine.ns_manager.get_all_namespace_with_name('ns_energy_mix')
+    ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
 
     # get ns_object with longest 
     for ns in ns_list:

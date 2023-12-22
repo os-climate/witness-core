@@ -78,7 +78,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                                                               'Total': ('float', None, True),},
                                      'dataframe_edition_locked': False, },
                GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                'namespace': 'ns_witness',
+                                'namespace': GlossaryCore.NS_WITNESS,
                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                          GlossaryCore.Capital: ('float', None, False),
                                                          GlossaryCore.UsableCapital: ('float', None, False),

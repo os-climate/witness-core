@@ -40,9 +40,9 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
     def test_damage_analytic_grad(self):
         self.model_name = 'Test'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_ref': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -90,7 +90,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                     f'{self.name}.{GlossaryCore.DamageDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                     f'{self.name}.CO2_damage_price'],
+                                     f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
                             derr_approx='complex_step')
 
     def test_damage_analytic_grad_wo_damage_on_climate(self):
@@ -99,9 +99,9 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         """
 
         self.model_name = 'Test'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_ref': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -158,5 +158,5 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                     f'{self.name}.{GlossaryCore.DamageDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                     f'{self.name}.CO2_damage_price'],
+                                     f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
                             derr_approx='complex_step')
