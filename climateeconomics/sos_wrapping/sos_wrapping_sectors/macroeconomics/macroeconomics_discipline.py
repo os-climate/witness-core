@@ -217,17 +217,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             new_chart.add_series(new_series)
 
             damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
-            damage_from_productivity_loss = damage_detailed_df[GlossaryCore.EstimatedDamagesFromProductivityLoss].values
-
-            legend = 'Optimist estimation of gross output if damage to productivity were applied'
-            gdp_hypothesis = gross_output - damage_from_productivity_loss
-            damage_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity)
-            if damage_to_productivity:
-                legend = 'Pessimist estimation of gross output if damage to productivity were not applied'
-                gdp_hypothesis = gross_output + damage_from_productivity_loss
-
-            new_series = InstanciatedSeries(years, list(gdp_hypothesis), legend, "lines")
-            new_chart.add_series(new_series)
 
             ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
             new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
