@@ -76,11 +76,12 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                                           GlossaryCore.InvestmentsValue: invest_serie})
 
         # damage
-        self.damage_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, GlossaryCore.Damages: np.zeros(self.nb_per), GlossaryCore.DamageFractionOutput: np.zeros(self.nb_per),
-             GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
-        self.damage_df.index = self.years
-        self.damage_df[GlossaryCore.DamageFractionOutput] = 1e-2
+        self.damage_fraction_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.DamageFractionOutput: 1e-2,
+            GlossaryCore.BaseCarbonPrice: 0.
+        })
+        self.damage_fraction_df.index = self.years
 
     def analytic_grad_entry(self):
         return [
@@ -90,13 +91,13 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
     def test_analytic_grad(self):
         self.model_name = SectorDiscipline.sector_name
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}',
-                   'ns_macro': f'{self.name}',
-                   'ns_sectors': f'{self.name}'}
+                   GlossaryCore.NS_MACRO: f'{self.name}',
+                   GlossaryCore.NS_SECTORS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -111,10 +112,10 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
-                       f'{self.name}.damage_to_productivity': True,
+                       f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.alpha': 0.5,
@@ -147,25 +148,26 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.check_jacobian(location=os.path.abspath(dirname(__file__)), filename=f'jacobian_sector_discipline.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageDfValue}',
+                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
                                     ],
                             outputs=[
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
                                 f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyWastedObjective}',
                                 ])
 
     def test_gradient_withotudamagetoproductivity(self):
         self.model_name = SectorDiscipline.sector_name
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}',
-                   'ns_macro': f'{self.name}',
-                   'ns_sectors': f'{self.name}'
+                   GlossaryCore.NS_MACRO: f'{self.name}',
+                   GlossaryCore.NS_SECTORS: f'{self.name}'
                    }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -182,10 +184,10 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
-                       f'{self.name}.damage_to_productivity': False,
+                       f'{self.name}.{GlossaryCore.DamageToProductivity}': False,
                        f'{self.name}.frac_damage_prod': 0.3,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.alpha': 0.5,
@@ -209,11 +211,13 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sector_discipline_withoutdamage.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
-                                    f'{self.name}.{GlossaryCore.DamageDfValue}',
+                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
                                     f'{self.name}.{GlossaryCore.WorkforceDfValue}',
                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
                                     ],
-                            outputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
-                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
-                                     f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyWastedObjective}',
-                                     ])
+                            outputs=[
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyWastedObjective}',
+                            ])

@@ -54,7 +54,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt',
+        'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'Gt',
                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                       GlossaryCore.TotalCO2Emissions: ('float', None, False),
                                                       'Total N2O emissions': ('float', None, False),
@@ -81,22 +81,22 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
                                            'unit': 'kgCO2eq/kg',
                                            'default': ClimateEcoDiscipline.GWP_20_default,
                                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                           'namespace': 'ns_witness', 'user_level': 3},
+                                           'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
         'GHG_global_warming_potential100': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'},
                                             'unit': 'kgCO2eq/kg',
                                             'default': ClimateEcoDiscipline.GWP_100_default,
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                            'namespace': 'ns_witness', 'user_level': 3},
+                                            'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
 
     }
 
     DESC_OUT = {
-        'ghg_cycle_df': {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'ghg_cycle_df_detailed': {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'gwp20_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
-        'gwp100_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
-        'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
-        'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'}
+        'ghg_cycle_df': {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        'ghg_cycle_df_detailed': {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        'gwp20_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
+        'gwp100_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
+        'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
+        'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'}
     }
 
     def init_execution(self):

@@ -1,4 +1,4 @@
-# ClimateEconomics
+# ClimateEconomics - witness-core
 
 
 ## Description
@@ -6,13 +6,13 @@ ClimateEconomics is the Python package to evaluate the effect of energy way of p
 
 ## Prerequisite
 In order to satisfy dependencies, following prerequisites need to be satisfied:
-* deployment of gemseo package and its requirements (see requirements.txt of gemseo package)
-* deployment of energy\_models package and its requirements (see requirements.in of energy\_models package)
-* deployment of sostrades\_core\_package and its requirements (see requirements.in of sostrades\_core\_package package)
-* libraries in requirements.in
+* deployment of gems package and its requirements (see requirements.txt of gems package)
+* deployment of energy\_models package and its requirements (see requirements.txt of energy\_models package)
+* deployment of sostrades\_core\_package and its requirements (see requirements.txt of sostrades\_core\_package package)
+* libraries in requirements.txt
 
-The following command can be used to install the package listed in requirements.in
-$$pip install -r requirements.in --trusted-host pypi.org --trusted-host files.pythonhosted.org$$
+The following command can be used to install the package listed in requirements.txt
+$$pip install -r requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org$$
 
 
 ## Overview

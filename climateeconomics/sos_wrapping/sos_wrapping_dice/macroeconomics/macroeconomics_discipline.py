@@ -63,7 +63,7 @@ class MacroeconomicsDiscipline(SoSWrapp):
         'lo_capital': {'type': 'float', 'unit': 'trillions $', 'default': 1},
         'lo_conso': {'type': 'float', 'unit': 'trillions $', 'default': 2},
         'lo_per_capita_conso': {'type': 'float', 'unit': 'trillions $', 'default': 0.01},
-        'damage_to_productivity': {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.DamageToProductivity: {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'saving_rate': {'type': 'float', 'unit': '%', 'default': 0.2},
     }

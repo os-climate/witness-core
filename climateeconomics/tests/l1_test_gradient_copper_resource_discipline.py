@@ -76,7 +76,7 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'copper_resource'
 
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}.{self.model_name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
                    'ns_copper_resource': f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}
@@ -124,7 +124,7 @@ class CopperResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'copper_resource'
 
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}.{self.model_name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
                    'ns_copper_resource': f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}

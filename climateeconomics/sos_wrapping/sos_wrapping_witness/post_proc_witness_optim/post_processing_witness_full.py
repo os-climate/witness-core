@@ -23,6 +23,7 @@ from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
+from energy_models.glossaryenergy import GlossaryEnergy
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -127,7 +128,7 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
         total_CO2, total_price, total_price_wotaxes = [], [], []
         EnergyMix = execution_engine.dm.get_disciplines_with_name(
             f'{namespace}.EnergyMix')[0]
-        CO2_taxes, CO2_taxes_array = EnergyMix.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsValue)[
+        CO2_taxes, CO2_taxes_array = EnergyMix.get_sosdisc_inputs(GlossaryEnergy.CO2Taxes['var_name'])[
             GlossaryCore.CO2Tax].values, []
         for i, energy in enumerate(energy_list):
             # energies level
@@ -181,7 +182,7 @@ def get_chart_green_energies(execution_engine, namespace, chart_name='Energies C
             total_CO2, total_price, total_price_wotaxes = [], [], []
             EnergyMix = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace}.EnergyMix')[0]
-            CO2_taxes, CO2_taxes_array = EnergyMix.get_sosdisc_inputs(GlossaryCore.EnergyInvestmentsValue)[
+            CO2_taxes, CO2_taxes_array = EnergyMix.get_sosdisc_inputs(GlossaryEnergy.CO2Taxes['var_name'])[
                 GlossaryCore.CO2Tax].values, []
             for i, energy in enumerate(energy_list):
                 # energies level
@@ -259,7 +260,7 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
     @return multilevel_df: Dataframe
     '''
 
-    ns_list = execution_engine.ns_manager.get_all_namespace_with_name('ns_energy_mix')
+    ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
 
     # get ns_object with longest 
     for ns in ns_list:
@@ -597,7 +598,7 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
     @return multilevel_df: Dataframe
     '''
     
-    ns_list = execution_engine.ns_manager.get_all_namespace_with_name('ns_energy_mix')
+    ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
 
     # get ns_object with longest 
     for ns in ns_list:

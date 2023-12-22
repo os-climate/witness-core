@@ -72,7 +72,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                                       'age': ('string', None, False),
                                                       GlossaryCore.PopulationValue: ('float', None, False),}
                              },
-        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                   GlossaryCore.GrossOutput: ('float', None, False),
                                                   GlossaryCore.OutputNetOfDamage: ('float', None, False),
@@ -126,7 +126,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'beta_birthrate_know': {'type': 'float', 'default': 8.01923418e-01, 'user_level': 3, 'unit': '-'},
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
         ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN['var_name']: ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
-        'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'kcal',
+        'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'kcal',
                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                     'kcal_pc': ('float', None, True),
                                                     }
@@ -139,7 +139,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
-                                      'namespace': 'ns_witness'},
+                                      'namespace': GlossaryCore.NS_WITNESS},
         'population_detail_df': {'type': 'dataframe', 'unit': 'people'},
         'birth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'death_rate_dict': {'type': 'dict', 'subtype_descriptor':{'dict':'dataframe'}, 'unit': '-'},

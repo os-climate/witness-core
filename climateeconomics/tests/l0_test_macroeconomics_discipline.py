@@ -40,9 +40,10 @@ class MacroDiscTest(unittest.TestCase):
 
     def test_execute(self):
         self.model_name = 'Macroeconomics'
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
+                   GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}',
                    'ns_energy_study': f'{self.name}',}
@@ -95,11 +96,10 @@ class MacroDiscTest(unittest.TestCase):
         energy_supply_df.index = self.years
         energy_supply_df.loc[2021, GlossaryCore.TotalProductionValue] = 116.1036348
 
-        self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years,
-                                       GlossaryCore.Damages: np.zeros(self.nb_per),
-                                       GlossaryCore.DamageFractionOutput: np.linspace(0.01, 0.05, nb_per),
-                                       GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
-        self.damage_df.index = self.years
+        self.damage_fraction_df = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                GlossaryCore.DamageFractionOutput: np.linspace(0.01, 0.05, nb_per),
+                                                GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
+        self.damage_fraction_df.index = self.years
 
         default_CO2_tax = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2Tax: 50.0}, index=years)
@@ -142,11 +142,11 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.TimeStep}': time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
-                       f'{self.name}.{self.model_name}.damage_to_productivity': True,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': False,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': share_non_energy_investment,
                        f'{self.name}.{GlossaryCore.EnergyProductionValue}': energy_supply_df,
-                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': default_CO2_tax,
                        f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': default_co2_efficiency,
@@ -155,7 +155,13 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.EnergyCapitalDfValue}': self.energy_capital_df,
                        f'{self.name}.{GlossaryCore.SectorListValue}': sectors_list,
                        f'{self.name}.{GlossaryCore.SectionList}': section_list,
-                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
+                       f'{self.name}.assumptions_dict': {
+                           'compute_gdp': True,
+                           'compute_climate_impact_on_gdp': False,
+                           'activate_climate_effect_population': True,
+                           'invest_co2_tax_in_renewables': True
+                           }
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

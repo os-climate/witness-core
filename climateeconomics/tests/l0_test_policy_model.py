@@ -34,7 +34,7 @@ class PolicyDiscTest(unittest.TestCase):
     def test_execute(self):
 
         self.model_name = 'policy'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -53,10 +53,10 @@ class PolicyDiscTest(unittest.TestCase):
         CCS_price = pd.DataFrame(
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
         CO2_damage = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(345.5, 433.2,  len(years))})
+            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(345.5, 433.2,  len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.CO2_damage_price': CO2_damage,
+                       f'{self.name}.{GlossaryCore.CO2DamagePrice}': CO2_damage,
                        f'{self.name}.ccs_price_percentage': 50.,
                        f'{self.name}.co2_damage_price_percentage': 50.}
 
@@ -65,7 +65,7 @@ class PolicyDiscTest(unittest.TestCase):
         self.ee.execute()
 
         max_CCS_CO2 = np.maximum(
-            CCS_price['ccs_price_per_tCO2'], CO2_damage['CO2_damage_price'])
+            CCS_price['ccs_price_per_tCO2'], CO2_damage[GlossaryCore.CO2DamagePrice])
         CO2_tax = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.CO2TaxesValue}')
 
 #         np.testing.assert_almost_equal(

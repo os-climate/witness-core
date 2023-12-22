@@ -35,9 +35,9 @@ class CarbonEmissionDiscTest(unittest.TestCase):
     def test_execute(self):
 
         self.model_name = 'carbonemission'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_ref': f'{self.name}',
                    'ns_ccs': f'{self.name}',
                    'ns_energy': f'{self.name}'}
@@ -123,9 +123,9 @@ class CarbonEmissionDiscTest(unittest.TestCase):
     def test_limit_co2_objective(self):
         # the limit is commented in th emodel we deaxctivate the test
         self.model_name = 'carbonemission'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_ref': f'{self.name}',
                    'ns_ccs': f'{self.name}',
                    'ns_energy': f'{self.name}'}

@@ -166,12 +166,12 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                         GlossaryCore.InvestmentsValue: ('float', [0, 1e9], True)},
                                'dataframe_edition_locked': False,
                                'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_forest'},
-        Forest.TRANSPORT_COST: {'type': 'dataframe', 'unit': '$/t', 'namespace': 'ns_witness',
+        Forest.TRANSPORT_COST: {'type': 'dataframe', 'unit': '$/t', 'namespace': GlossaryCore.NS_WITNESS,
                                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                 'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                          'transport': ('float', [0, 1e9], True)},
                                 'dataframe_edition_locked': False},
-        Forest.MARGIN: {'type': 'dataframe', 'unit': '%', 'namespace': 'ns_witness',
+        Forest.MARGIN: {'type': 'dataframe', 'unit': '%', 'namespace': GlossaryCore.NS_WITNESS,
                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                  'margin': ('float', [0, 1e9], True)},
@@ -195,13 +195,13 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'type': 'dataframe', 'unit': 'Gha'},
         Forest.FOREST_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_witness'},
+            'namespace': GlossaryCore.NS_WITNESS},
         'CO2_land_emission_df': {
             'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
             'namespace': 'ns_forest'},
         Forest.BIOMASS_DRY_DF: {
             'type': 'dataframe', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-            'namespace': 'ns_witness'},
+            'namespace': GlossaryCore.NS_WITNESS},
         Forest.MW_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'namespace': 'ns_forest'},
         Forest.BIOMASS_DRY_DETAIL_DF: {

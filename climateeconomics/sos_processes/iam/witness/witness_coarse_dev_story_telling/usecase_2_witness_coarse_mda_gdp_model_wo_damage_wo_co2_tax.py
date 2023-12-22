@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import numpy as np
 import pandas as pd
+from os.path import join, dirname
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
@@ -24,6 +24,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witne
 from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
+from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -54,55 +55,27 @@ class Study(ClimateEconomicsStudyManager):
                                                                },
                         f"{self.study_name}.ccs_price_percentage": 0.0,
                         f"{self.study_name}.co2_damage_price_percentage": 0.0,
+                        f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}": False
                         }
         data_witness.append(updated_data)
 
-        # update of the energy investment values from the template usecase and csv file of investment
-        study_v0 = witness_uc.dc_energy.study_v0
-        study_v0.invest_percentage_gdp = pd.DataFrame(data={GlossaryCore.Years: study_v0.years,
-                                                        GlossaryEnergy.EnergyInvestPercentageGDPName: np.linspace(
-                                                            2., 2., len(study_v0.years))})
+        # Inputs were optimized manually through the sostrades GUI and saved in csv files  => recover inputs
+        invest_percentage_gdp_df = pd.read_csv(join(dirname(__file__), 'uc2_percentage_of_gdp_energy_invest.csv'))
+        invest_percentage_per_techno_df = pd.read_csv(join(dirname(__file__), 'uc2_techno_invest_percentage.csv'))
 
-        # The energy_investment are split in FossilSimpleTechno, 'RenewableSimpleTechno' and 'CarbonCaptureAndStorageTechno'
-        # but CarbonCaptureAndStorageTechno must be split into
-        # 1) carbon capture 'direct_air_capture.DirectAirCaptureTechno', 'flue_gas_capture.FlueGasTechno' and
-        # 2) carbone storage 'CarbonStorageTechno'
-        percentage_CarbonStorageTechno = 50.
-        percentage_DirectAirCaptureTechno = 25.
+        # csv files are valid for years 2020 to 2100 => to be adapted if year range is smaller.
+        #TODO: implement if year range is larger than 2020-2100
+        invest_percentage_gdp_df = invest_percentage_gdp_df[
+            (invest_percentage_gdp_df[GlossaryCore.Years] >= self.year_start) &
+            (invest_percentage_gdp_df[GlossaryCore.Years] <= self.year_end)].reset_index(drop=True)
+        invest_percentage_per_techno_df = invest_percentage_per_techno_df[
+            (invest_percentage_per_techno_df[GlossaryCore.Years] >= self.year_start) &
+            (invest_percentage_per_techno_df[GlossaryCore.Years] <= self.year_end)].reset_index(drop=True)
 
-        dbwitness = DatabaseWitnessEnergy()
-        invest_percentage_per_techno_df = dbwitness.data_invest
-        # data_invest is defined between 2019 and 2100
-        invest_percentage_per_techno_df = invest_percentage_per_techno_df.loc[
-                (invest_percentage_per_techno_df[GlossaryCore.Years] >= self.year_start) &
-                (invest_percentage_per_techno_df[GlossaryCore.Years] <= self.year_end)].reset_index(drop=True)
-
-        invest_percentage_per_techno_df[GlossaryEnergy.CarbonStorageTechno] = \
-            invest_percentage_per_techno_df[GlossaryEnergy.CarbonCaptureAndStorageTechno] * \
-            percentage_CarbonStorageTechno / 100.
-
-        invest_percentage_per_techno_df[GlossaryEnergy.DirectAirCapture] = \
-            invest_percentage_per_techno_df[GlossaryEnergy.CarbonCaptureAndStorageTechno] * \
-            percentage_DirectAirCaptureTechno / 100.
-
-        invest_percentage_per_techno_df[GlossaryEnergy.FlueGasCapture] = \
-            invest_percentage_per_techno_df[GlossaryEnergy.CarbonCaptureAndStorageTechno] - \
-            invest_percentage_per_techno_df[GlossaryEnergy.CarbonStorageTechno] - \
-            invest_percentage_per_techno_df[GlossaryEnergy.DirectAirCapture]
-
-        # overwrite the techno list values in parent usecase to make sure they are consistent with dbwitness data
-        #study_v0.techno_list_fossil = [GlossaryEnergy.FossilSimpleTechno]
-        #study_v0.techno_list_renewable = [GlossaryEnergy.RenewableSimpleTechno]
-        #study_v0.techno_list_carbon_capture = [GlossaryEnergy.DirectAirCapture,
-        #                                   GlossaryEnergy.FlueGasCapture]
-        #study_v0.techno_list_carbon_storage = [GlossaryEnergy.CarbonStorageTechno]
-        study_v0.invest_percentage_per_techno = invest_percentage_per_techno_df.loc[:,
-                                                invest_percentage_per_techno_df.columns !=
-                                                GlossaryEnergy.CarbonCaptureAndStorageTechno]
         data_witness.append(
             {
-                f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': study_v0.invest_percentage_gdp,
-                f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.TechnoInvestPercentageName}': study_v0.invest_percentage_per_techno,
+                f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.EnergyInvestPercentageGDPName}': invest_percentage_gdp_df,
+                f'{self.study_name}.{INVEST_DISC_NAME}.{GlossaryEnergy.TechnoInvestPercentageName}': invest_percentage_per_techno_df,
                 }
         )
 
@@ -113,5 +86,9 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
-    #uc_cls.test()
+
+    ppf = PostProcessingFactory()
+    al = ppf.get_all_post_processings(uc_cls.ee, False)
+    b=1
+
 

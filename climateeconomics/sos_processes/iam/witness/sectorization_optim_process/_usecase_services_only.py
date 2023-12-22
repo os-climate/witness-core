@@ -108,16 +108,16 @@ class Study(StudyManager):
         industry = 'Industry.'
         design_var_descriptor = {
             'output_alpha_services_in': {'out_name': services + 'output_alpha', 'out_type': 'float', 'index': arange(1),
-                                         'namespace_in': 'ns_optim', 'namespace_out': 'ns_macro'},
+                                         'namespace_in': 'ns_optim', 'namespace_out': GlossaryCore.NS_MACRO},
             'prod_gr_start_services_in': {'out_name': services + 'productivity_gr_start', 'out_type': 'float',
                                           'index': arange(1),
-                                          'namespace_in': 'ns_optim', 'namespace_out': 'ns_macro'},
+                                          'namespace_in': 'ns_optim', 'namespace_out': GlossaryCore.NS_MACRO},
             'decl_rate_tfp_services_in': {'out_name': services + 'decline_rate_tfp', 'out_type': 'float',
                                           'index': arange(1),
-                                          'namespace_in': 'ns_optim', 'namespace_out': 'ns_macro'},
+                                          'namespace_in': 'ns_optim', 'namespace_out': GlossaryCore.NS_MACRO},
             'prod_start_services_in': {'out_name': services + 'productivity_start', 'out_type': 'float',
                                        'index': arange(1),
-                                       'namespace_in': 'ns_optim', 'namespace_out': 'ns_macro'},
+                                       'namespace_in': 'ns_optim', 'namespace_out': GlossaryCore.NS_MACRO},
         }
 
         disc_dict = {}

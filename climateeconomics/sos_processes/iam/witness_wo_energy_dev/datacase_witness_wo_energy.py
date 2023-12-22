@@ -71,7 +71,7 @@ class DataStudy():
         witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
         witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
-        witness_input[f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}"] = False
+        witness_input[f"{self.study_name}.{'Macroeconomics'}.{GlossaryCore.DamageToProductivity}"] = True
         witness_input[f"{self.study_name}.{GlossaryCore.FractionDamageToProductivityValue}"] = 0.30
         witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015
         witness_input[f"{self.study_name}.{'conso_elasticity'}"] = 1.45
@@ -90,7 +90,12 @@ class DataStudy():
         working_age_population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
         witness_input[f"{self.study_name}.{GlossaryCore.WorkingAgePopulationDfValue}"] = working_age_population_df
-
+        damage_fraction_initialisation = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.DamageFractionOutput: np.linspace(0.001, 0.1, len(years)),
+            GlossaryCore.BaseCarbonPrice: np.zeros_like(years),
+        })
+        witness_input[f'{self.study_name}.{GlossaryCore.DamageFractionDfValue}'] = damage_fraction_initialisation
         share_non_energy_investment = DataFrame(
             {GlossaryCore.Years: years,
              GlossaryCore.ShareNonEnergyInvestmentsValue: asarray([27. - 0.3] * nb_per)},

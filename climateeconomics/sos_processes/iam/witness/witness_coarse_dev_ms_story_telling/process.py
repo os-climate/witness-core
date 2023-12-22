@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2023/06/14-2023/11/03 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Coarse Dev Multi-Scenario Optimization Process',
+        'label': 'WITNESS Coarse Dev Multi-Scenario Story Telling mda Process',
         'description': '',
         'category': '',
         'version': '',
@@ -35,9 +36,9 @@ class ProcessBuilder(BaseProcessBuilder):
                         'output_name': 'scenario_name',
                         'scatter_ns': 'ns_scenario',
                         'gather_ns': 'ns_scatter_scenario',
-                        'ns_to_update': ['ns_witness',
+                        'ns_to_update': [GlossaryCore.NS_WITNESS,
                                          'ns_functions',
-                                         'ns_energy_mix',
+                                         GlossaryCore.NS_ENERGY_MIX,
                                          'ns_public',
                                          'ns_optim',
                                          'ns_flue_gas',
@@ -65,24 +66,24 @@ class ProcessBuilder(BaseProcessBuilder):
             'scenario_list', scenario_map)
         """
         builder_cdf_list = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_dev_optim_process')
+            'climateeconomics.sos_processes.iam.witness', 'witness_coarse_dev_story_telling')
 
-        scatter_scenario_name = 'optimization scenarios'
-        # modify namespaces defined in the child process
-        self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            scatter_scenario_name, after_name=self.ee.study_name)
+        scatter_scenario_name = 'mda_scenarios'
 
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
-                   'ns_post_processing': f'{self.ee.study_name}.Post-processing',
+                   'ns_post_processing': f'{self.ee.study_name}.mda_scenarios',
                    'ns_ref': f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences'}
 
+
         self.ee.ns_manager.add_ns_def(ns_dict)
+        self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': ['ns_ref', 'ns_post_processing',
+                                                                                  'ns_scatter_scenario']})
 
         multi_scenario = self.ee.factory.create_driver(
-            'optimization scenarios', builder_cdf_list, flatten_subprocess=False
+            'mda_scenarios', builder_cdf_list, flatten_subprocess=False, map_name='new_map'
         )
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
-                                                                                'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_ms.post_processing_witness_full')
+                                                                                'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_ms.post_processing_witness_coarse_mda')
 
         return multi_scenario

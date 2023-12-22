@@ -57,25 +57,25 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'GHG_global_warming_potential20':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_20_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
-        'GHG_global_warming_potential100':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_100_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 3},
-        'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+        'GHG_global_warming_potential20':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_20_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
+        'GHG_global_warming_potential100':  {'type': 'dict','subtype_descriptor': {'dict':'float'}, 'unit': 'kgCO2eq/kg', 'default': GWP_100_default, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
+        'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Forest': ('float', None, False),
                                                           'Crop': ('float', None, False)}},
-        'CH4_land_emissions': {'type': 'dataframe', 'unit': 'GtCH4', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+        'CH4_land_emissions': {'type': 'dataframe', 'unit': 'GtCH4', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Crop': ('float', None, False),
                                                           'Forest': ('float', None, False),}},
-        'N2O_land_emissions': {'type': 'dataframe', 'unit': 'GtN2O', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+        'N2O_land_emissions': {'type': 'dataframe', 'unit': 'GtN2O', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                           'Crop': ('float', None, False),
                                                           'Forest': ('float', None, False),}},
-        'CO2_indus_emissions_df':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+        'CO2_indus_emissions_df':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                     'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                              'indus_emissions': ('float', None, False),}
                                     },
-        'GHG_total_energy_emissions':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+        'GHG_total_energy_emissions':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                  GlossaryCore.TotalCO2Emissions: ('float', None, False),
                                                                  'Total N2O emissions': ('float', None, False),
@@ -84,7 +84,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
-        'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
+        'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'Gt'},
         'GHG_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
         'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'}
     }
@@ -148,7 +148,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['GHG emissions per sector', 'Global Warming Potential']
+        chart_list = ['GHG emissions per sector', 'Global Warming Potential', 'Total CO2 emissions']
         #chart_list = ['sectoral energy carbon emissions cumulated']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
@@ -178,6 +178,12 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 new_chart = self.get_chart_gwp(gwp_year)
                 if new_chart is not None:
                     instanciated_charts.append(new_chart)
+
+        if 'Total CO2 emissions' in charts:
+            new_chart = self.get_chart_total_CO2()
+            if new_chart is not None:
+                instanciated_charts.append(new_chart)
+
         return instanciated_charts
 
     def get_chart_gwp(self, gwp_year):
@@ -213,3 +219,20 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                 new_chart.series.append(new_serie)
 
         return new_chart
+
+    def get_chart_total_CO2(self):
+        """
+        Chart with total CO2 emissions per type
+        """
+        total_ghg_df = self.get_sosdisc_outputs('GHG_emissions_df')
+        chart_name = f'Total CO2 emissions'
+        new_chart = TwoAxesInstanciatedChart(
+            GlossaryCore.Years, f'Total CO2 emissions [Gt]', chart_name=chart_name)
+        new_serie = InstanciatedSeries(list(total_ghg_df[GlossaryCore.Years].values),
+                                       total_ghg_df[f'Total CO2 emissions'].to_list(),
+                                       f'CO2 emissions', 'lines')
+        new_chart.series.append(new_serie)
+        return new_chart
+
+
+
