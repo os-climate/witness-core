@@ -375,20 +375,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
                 new_chart.add_series(new_series)
 
-            damage_to_productivity = self.get_sosdisc_inputs(
-                GlossaryCore.DamageToProductivity)
-            damage_detailed_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}")
-            damage_from_productivity_loss = damage_detailed_df[GlossaryCore.DamagesFromProductivityLoss].values
-            legend = 'Optimist estimation of gross output if damage to productivity were applied'
-            gross_output = production_df[GlossaryCore.GrossOutput].values
-            gdp_hypothesis = gross_output - damage_from_productivity_loss
-            if damage_to_productivity:
-                legend = 'Pessimist estimation of gross output if damage to productivity were not applied'
-                gdp_hypothesis = gross_output + damage_from_productivity_loss
-
-            new_series = InstanciatedSeries(years, list(gdp_hypothesis), legend, "lines")
-            new_chart.add_series(new_series)
-
             damage_detailed_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}")
             ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate].values)
             new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
