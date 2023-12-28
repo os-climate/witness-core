@@ -1100,3 +1100,63 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     default_title=True, default_legend=False))
 
         return instanciated_charts
+
+def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impact_on_gdp, instanciated_charts):
+    to_plot_line = [GlossaryCore.OutputNetOfDamage]
+
+    to_plot_bar = [GlossaryCore.EnergyInvestmentsValue,
+                    GlossaryCore.NonEnergyInvestmentsValue,
+                   GlossaryCore.Consumption]
+
+    legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
+              GlossaryCore.InvestmentsValue: 'Total investments',
+              GlossaryCore.EnergyInvestmentsValue: 'Energy',
+              GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy sectors',
+              GlossaryCore.Consumption: 'Consumption',
+              }
+
+    years = list(economics_detail_df.index)
+
+    chart_name = 'Breakdown of output per year'
+
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
+                                         chart_name=chart_name, stacked_bar=True)
+
+    for key in to_plot_line:
+        visible_line = True
+
+        ordonate_data = list(economics_detail_df[key])
+
+        new_series = InstanciatedSeries(
+            years, ordonate_data, legend[key], 'lines', visible_line)
+
+        new_chart.series.append(new_series)
+
+    for key in to_plot_bar:
+        ordonate_data = list(economics_detail_df[key])
+
+        new_series = InstanciatedSeries(
+            years, ordonate_data, legend[key], 'bar', True)
+
+        new_chart.series.append(new_series)
+
+    new_series = InstanciatedSeries(
+        years, list(economics_detail_df[GlossaryCore.GrossOutput].values), 'Gross output', 'lines', True)
+
+    new_chart.series.append(new_series)
+
+    if compute_climate_impact_on_gdp:
+        ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
+        new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
+        new_chart.series.append(new_series)
+
+    new_series = InstanciatedSeries(
+        years, list(economics_detail_df[GlossaryCore.InvestmentsValue]),
+        legend[GlossaryCore.InvestmentsValue],
+        'lines', True)
+
+    new_chart.series.append(new_series)
+
+    instanciated_charts.append(new_chart)
+
+    return instanciated_charts
