@@ -42,7 +42,7 @@ def post_processing_filters(execution_engine, namespace):
     '''
     chart_filters = []
 
-    chart_list = ['temperature and ghg evolution', 'population and death', 'land use', 'energy mix', 'investment distribution']
+    chart_list = ['temperature and ghg evolution', 'population and death', 'gdp breakdown', 'land use', 'energy mix', 'investment distribution']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
         'Charts', chart_list, chart_list, 'Charts'))
@@ -105,10 +105,11 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         death_dict = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('death_dict')[0])
         instanciated_charts = Population.graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts)
 
-    # if 'gdp breakdown' in chart_list:
-    #     economics_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.EconomicsDetailDfValue)[0])
-    #     compute_climate_impact_on_gdp = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('assumptions_dict')[0])['compute_climate_impact_on_gdp']
-    #     instanciated_charts = MacroEconomics.breakdown_gdp(economics_df, compute_climate_impact_on_gdp, instanciated_charts)
+    if 'gdp breakdown' in chart_list:
+        economics_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.EconomicsDetailDfValue)[0])
+        damage_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.DamageDetailedDfValue)[0])
+        compute_climate_impact_on_gdp = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('assumptions_dict')[0])['compute_climate_impact_on_gdp']
+        instanciated_charts = MacroEconomics.breakdown_gdp(economics_df, damage_df, compute_climate_impact_on_gdp, instanciated_charts)
 
     if 'land use' in chart_list:
 

@@ -1112,7 +1112,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         return instanciated_charts
 
-def breakdown_gdp(economics_detail_df, compute_climate_impact_on_gdp, instanciated_charts):
+def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impact_on_gdp, instanciated_charts):
     to_plot_line = [GlossaryCore.OutputNetOfDamage]
 
     to_plot_bar = [GlossaryCore.EnergyInvestmentsValue,
@@ -1157,7 +1157,7 @@ def breakdown_gdp(economics_detail_df, compute_climate_impact_on_gdp, instanciat
     new_chart.series.append(new_series)
 
     if compute_climate_impact_on_gdp:
-        ordonate_data = list(-economics_detail_df[GlossaryCore.DamagesFromClimate])
+        ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
         new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
         new_chart.series.append(new_series)
 
