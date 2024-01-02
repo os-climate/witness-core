@@ -69,7 +69,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    'ns_functions': f'{self.ee.study_name}.EnergyMix',
-                   'ns_resource ': f'{self.ee.study_name}.EnergyMix',
+                   'ns_resource': f'{self.ee.study_name}.EnergyMix',
                    'ns_ref': f'{self.ee.study_name}.NormalizationReferences'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
