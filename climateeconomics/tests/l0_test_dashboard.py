@@ -60,7 +60,8 @@ class PostProcessEnergy(unittest.TestCase):
                                                               as_json=False)
 
             for graph in graph_list:
-                graph.to_plotly().show()
+                #graph.to_plotly().show()
+                pass
 
 
 if '__main__' == __name__:
