@@ -51,13 +51,13 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.energy_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                         'possible_values': EnergyMix.energy_list,
-                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
+                        'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 1,
                         'structuring': True, 'unit': '-'},
         GlossaryCore.ccs_list: {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'possible_values': EnergyMix.ccs_list,
-                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness', 'user_level': 1,
+                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 1,
                      'structuring': True, 'unit': '-'},
         'agri_capital_techno_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'}, 'default': [],
-                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                      'user_level': 1, 'structuring': True, 'unit': '-'},
         'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit': 'G$', 'user_level': 2,
                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
@@ -81,12 +81,12 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
 
     }
     DESC_OUT = {
-        'non_use_capital_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
+        'non_use_capital_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'G$'},
         'non_use_capital_df': {'type': 'dataframe', 'unit': 'G$'},
         'techno_capital_df': {'type': 'dataframe', 'unit': 'G$'},
-        GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'non_use_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
-        'forest_lost_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'G$'},
+        GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        'non_use_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'G$'},
+        'forest_lost_capital_cons': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'G$'},
     }
 
     def setup_sos_disciplines(self):

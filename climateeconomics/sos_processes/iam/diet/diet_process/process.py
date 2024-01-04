@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_emissions.agriculture_emissions.agriculture_emissions_discipline import \
     AgricultureEmissionsDiscipline
 # -*- coding: utf-8 -*-
@@ -35,8 +36,8 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_scatter = self.ee.study_name
 
-        ns_dict = {'ns_witness': ns_scatter,
-                   'ns_energy_mix': ns_scatter,
+        ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
+                   GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    'ns_ref': f'{ns_scatter}.NormalizationReferences',
                    'ns_agriculture': ns_scatter,
                    'ns_ccs': ns_scatter,
@@ -62,7 +63,7 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    'ns_functions': f'{self.ee.study_name}.EnergyMix',
-                   'ns_resource ': f'{self.ee.study_name}.EnergyMix',
+                   'ns_resource': f'{self.ee.study_name}.EnergyMix',
                    'ns_ref': f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 

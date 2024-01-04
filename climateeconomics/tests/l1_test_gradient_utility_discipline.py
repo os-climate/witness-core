@@ -37,9 +37,9 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
 
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_ref': f'{self.name}'}
         self.ee = ExecutionEngine(self.name)
         self.ee.ns_manager.add_ns_def(ns_dict)

@@ -33,7 +33,7 @@ class GHGCycleDiscTest(unittest.TestCase):
     def test_execute(self):
 
         self.model_name = 'GHGCycle'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 

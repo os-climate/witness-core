@@ -110,13 +110,13 @@ class LandUseV2Discipline(SoSWrapp):
                                                                    'Direct_air_capture.Amine_scrubbing (ha)': ('float', None, False),
                                                                    'Direct_air_capture.Calcium_Potassium_scrubbing (ha)': ('float', None, False),}
                                           },
-               LandUseV2.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+               LandUseV2.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                             'total surface (Gha)': ('float', None, False),
                                                                             }
                                                    },
                LandUseV2.FOREST_SURFACE_DF: {
-                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                             'forest_constraint_evolution': ('float', None, False),
                                             'global_forest_surface': ('float', None, False), }
@@ -129,7 +129,7 @@ class LandUseV2Discipline(SoSWrapp):
             'type': 'array', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
         LandUseV2.LAND_SURFACE_DETAIL_DF: {'type': 'dataframe', 'unit': 'Gha'},
         LandUseV2.LAND_SURFACE_FOR_FOOD_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS}
     }
 
     def init_execution(self):

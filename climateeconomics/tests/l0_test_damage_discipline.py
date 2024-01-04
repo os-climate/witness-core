@@ -18,6 +18,7 @@ import unittest
 from os.path import join, dirname
 
 import numpy as np
+import pandas as pd
 from pandas import read_csv
 
 from climateeconomics.glossarycore import GlossaryCore
@@ -34,9 +35,9 @@ class DamageDiscTest(unittest.TestCase):
     def test_execute(self):
 
         self.model_name = 'damage'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -57,19 +58,18 @@ class DamageDiscTest(unittest.TestCase):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        # remove energy wasted as not used for the test and breaks other l0 tests (CO2 emissions) if adds it to
-        # the csv file
-        economics_df_all = economics_df_all[[key for key in GlossaryCore.EconomicsDf['dataframe_descriptor'].keys() if key != GlossaryCore.EnergyWasted]]
-
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
         temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020]
 
+        damage_df = pd.DataFrame({
+            GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
+            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y))
+        })
+
         years = np.arange(2020, 2101, 1)
-        economics_df_y.index = years
         temperature_df_y.index = years
 
         values_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
-                       f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': damage_df,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
                        f'{self.name}.total_emissions_ref': 37.,
                        f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15))))

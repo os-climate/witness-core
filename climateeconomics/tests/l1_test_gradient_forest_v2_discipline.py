@@ -43,7 +43,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         # deforestation do not reach the limits
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_functions': f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
@@ -142,7 +142,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         # deforestation reaches the unmanaged limits
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_functions': f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
@@ -244,7 +244,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         # deforestation reaches the unmanaged and managed limits
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_functions': f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
@@ -344,7 +344,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         # (not progressive)
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_functions': f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',

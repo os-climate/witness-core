@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -31,13 +32,13 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_macro = self.ee.study_name + '.Macroeconomics'
         ns_scatter = self.ee.study_name 
 
-        ns_dict = {'ns_witness': ns_scatter,
-                   'ns_macro': ns_macro,
-                   'ns_energy_mix': ns_scatter,
+        ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
+                   GlossaryCore.NS_MACRO: ns_macro,
+                   GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    'ns_public': ns_scatter,
                    'ns_functions': ns_scatter,
                    'ns_ref': ns_scatter,
-                   'ns_sectors': ns_macro
+                   GlossaryCore.NS_SECTORS: ns_macro
                    }
 
         # economics sector process called here before create_builder_list to avoid process overwriting namespace

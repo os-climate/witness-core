@@ -45,14 +45,20 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.SectorListValue: GlossaryCore.SectorList,
         GlossaryCore.EnergyInvestmentsWoTaxValue: GlossaryCore.EnergyInvestmentsWoTax,
         GlossaryCore.ShareMaxInvestName: GlossaryCore.ShareMaxInvest,
-        GlossaryCore.MaxInvestConstraintRefName: GlossaryCore.MaxInvestConstraintRef
+        GlossaryCore.MaxInvestConstraintRefName: GlossaryCore.MaxInvestConstraintRef,
+        GlossaryCore.DamageToProductivity: {'type': 'bool', 'default': True,
+                                            'visibility': 'Shared',
+                                            'unit': '-', 'namespace': GlossaryCore.NS_WITNESS},
+        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
     }
 
     DESC_OUT = {
         GlossaryCore.EconomicsDfValue: GlossaryCore.SectorizedEconomicsDf,
         GlossaryCore.EconomicsDetailDfValue: GlossaryCore.SectorizedEconomicsDetailDf,
         GlossaryCore.MaxInvestConstraintName: GlossaryCore.MaxInvestConstraint,
-        GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf
+        GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
+        GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
+        GlossaryCore.DamageDetailedDfValue: GlossaryCore.DamageDetailedDf,
     }
 
     def init_execution(self):
@@ -68,11 +74,18 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             if sector_list is not None:
                 for sector in sector_list:
                     capital_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.CapitalDf)
-                    capital_df_disc[self.NAMESPACE] = GlossaryCore.NS_MACRO
+                    capital_df_disc[self.NAMESPACE] = GlossaryCore.NS_SECTORS
+
                     dynamic_inputs[f'{sector}.{GlossaryCore.CapitalDfValue}'] = capital_df_disc
                     dynamic_inputs[f'{sector}.{GlossaryCore.ProductionDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
-                    # add investment_df for each sector as input
                     dynamic_inputs[f'{sector}.{GlossaryCore.InvestmentDfValue}'] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
+
+                    damage_df = GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDf)
+                    damage_df.update({self.NAMESPACE: GlossaryCore.NS_SECTORS})
+                    dynamic_inputs[f'{sector}.{GlossaryCore.DamageDfValue}'] = damage_df
+                    damage_detailed_df = GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDetailedDf)
+                    damage_detailed_df.update({self.NAMESPACE: GlossaryCore.NS_SECTORS})
+                    dynamic_inputs[f'{sector}.{GlossaryCore.DamageDetailedDfValue}'] = damage_detailed_df
 
             self.add_inputs(dynamic_inputs)
 
@@ -85,7 +98,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.EconomicsDfValue: self.macro_model.economics_df,
             GlossaryCore.EconomicsDetailDfValue: self.macro_model.economics_detail_df,
             GlossaryCore.MaxInvestConstraintName: self.macro_model.max_invest_constraint,
-            GlossaryCore.InvestmentDfValue: self.macro_model.sum_invests_df
+            GlossaryCore.InvestmentDfValue: self.macro_model.sum_invests_df,
+            GlossaryCore.DamageDfValue: self.macro_model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
+            GlossaryCore.DamageDetailedDfValue: self.macro_model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
         }
         self.store_sos_outputs_values(outputs_dict)
 
@@ -103,51 +118,60 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         # Generic gradient wrt each sector : same for all sectors
         identity_mat = self.macro_model.get_derivative_sectors()
         for sector in sector_list:
-            self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
-                                                        (f'{sector}.{GlossaryCore.ProductionDfValue}',
-                                                         GlossaryCore.GrossOutput),
-                                                        identity_mat)
-            self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
-                                                        (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
-                                                        identity_mat)
-            self.set_partial_derivative_for_other_types((GlossaryCore.EconomicsDfValue, GlossaryCore.Capital),
-                                                        (f'{sector}.{GlossaryCore.CapitalDfValue}', GlossaryCore.Capital), identity_mat)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
+                (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.GrossOutput),
+                identity_mat)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+                (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
+                identity_mat)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.EconomicsDfValue, GlossaryCore.Capital),
+                (f'{sector}.{GlossaryCore.CapitalDfValue}', GlossaryCore.Capital),
+                identity_mat)
+            # wrt output net damage for each sector
 
-            # gradient of constraint wrt output net damage for each sector
-
-            self.set_partial_derivative_for_other_types((GlossaryCore.MaxInvestConstraintName, ),
-                                                        (f'{sector}.{GlossaryCore.ProductionDfValue}',
-                                                         GlossaryCore.OutputNetOfDamage),
-                                                        identity_mat/100 * share_max_invest / max_invest_ref)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.MaxInvestConstraintName, ),
+                (f'{sector}.{GlossaryCore.ProductionDfValue}', GlossaryCore.OutputNetOfDamage),
+                identity_mat/100 * share_max_invest / max_invest_ref)
 
             # gradient of constraint and invest_df wrt invest for each sector (except for energy)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.MaxInvestConstraintName,),
+                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
+                -1.0 * identity_mat / max_invest_ref)
 
-            self.set_partial_derivative_for_other_types((GlossaryCore.MaxInvestConstraintName,),
-                                                        (f'{sector}.{GlossaryCore.InvestmentDfValue}',
-                                                         GlossaryCore.InvestmentsValue),
-                                                        -1.0 * identity_mat / max_invest_ref)
-
-            self.set_partial_derivative_for_other_types((GlossaryCore.InvestmentDfValue,GlossaryCore.InvestmentsValue),
-                                                        (f'{sector}.{GlossaryCore.InvestmentDfValue}',
-                                                         GlossaryCore.InvestmentsValue), identity_mat)
-
-
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.InvestmentDfValue,GlossaryCore.InvestmentsValue),
+                (f'{sector}.{GlossaryCore.InvestmentDfValue}', GlossaryCore.InvestmentsValue),
+                identity_mat)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
+                (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.Damages),
+                identity_mat)
 
         # gradient of constraint and invest_df wrt output net damage for each
-        self.set_partial_derivative_for_other_types((GlossaryCore.MaxInvestConstraintName,),
-                                                    (f'{GlossaryCore.EnergyInvestmentsWoTaxValue}',
-                                                     GlossaryCore.EnergyInvestmentsWoTaxValue),
-                                                    -1.0 * identity_mat / max_invest_ref)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.MaxInvestConstraintName,),
+            (f'{GlossaryCore.EnergyInvestmentsWoTaxValue}', GlossaryCore.EnergyInvestmentsWoTaxValue),
+            -1.0 * identity_mat / max_invest_ref)
 
-        self.set_partial_derivative_for_other_types((GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
-                                                    (f'{GlossaryCore.EnergyInvestmentsWoTaxValue}',
-                                                     GlossaryCore.EnergyInvestmentsWoTaxValue), identity_mat)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.InvestmentDfValue, GlossaryCore.InvestmentsValue),
+            (f'{GlossaryCore.EnergyInvestmentsWoTaxValue}', GlossaryCore.EnergyInvestmentsWoTaxValue),
+            identity_mat)
+
     def get_chart_filter_list(self):
 
         chart_filters = []
 
         chart_list = [GlossaryCore.GrossOutput,
                       GlossaryCore.OutputNetOfDamage,
+                      GlossaryCore.Damages,
+                      GlossaryCore.DamagesFromClimate,
+                      GlossaryCore.DamagesFromProductivityLoss,
                       GlossaryCore.Capital,
                       'share capital',
                       'share output',
@@ -172,6 +196,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         economics_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.EconomicsDetailDfValue))
         inputs_dict = self.get_sosdisc_inputs()
         sector_list = inputs_dict[GlossaryCore.SectorListValue]
+        compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
+        damage_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity) and compute_climate_impact_on_gdp
         years = list(economics_df.index)
         # Overload default value with chart filter
         if chart_filters is not None:
@@ -181,22 +207,23 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.GrossOutput in chart_list:
 
-
             chart_name = 'Breakdown of gross output'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'world output [trillion $2020]',
-                                                 chart_name=chart_name, stacked_bar=True)
-
-
-            new_series = InstanciatedSeries(
-                years, list(economics_df[GlossaryCore.Damages]), 'Damages', 'bar', True)
-            new_chart.series.append(new_series)
+                                                 chart_name=chart_name, stacked_bar=True, y_min_zero=not compute_climate_impact_on_gdp)
 
             new_series = InstanciatedSeries(
-                years, list(economics_df[GlossaryCore.OutputNetOfDamage]), 'Gross output net of damage', 'bar', True)
-            new_chart.series.append(new_series)
-            new_series = InstanciatedSeries(
-                years, list(economics_df[GlossaryCore.GrossOutput]), 'Gross output', 'lines', True)
-            new_chart.series.append(new_series)
+                years, list(economics_df[GlossaryCore.OutputNetOfDamage]), 'Gross output net of damage', 'lines', True)
+            new_chart.add_series(new_series)
+
+            gross_output = economics_df[GlossaryCore.GrossOutput].values
+            new_series = InstanciatedSeries(years, list(gross_output), 'Gross output', 'lines', True)
+            new_chart.add_series(new_series)
+
+            if compute_climate_impact_on_gdp:
+                damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
+                ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
+                new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
+                new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
 
@@ -211,10 +238,128 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
                 new_series = InstanciatedSeries(years, sector_net_output,
                                                 sector, 'bar', True)
-                new_chart.series.append(new_series)
+                new_chart.add_series(new_series)
+
+            net_output = economics_df[GlossaryCore.OutputNetOfDamage].values
+            new_series = InstanciatedSeries(years, list(net_output), 'Total', 'lines', True)
+            new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
 
+        if GlossaryCore.Damages in chart_list:
+
+            damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
+            to_plot = {}
+            if compute_climate_impact_on_gdp:
+                to_plot.update({GlossaryCore.DamagesFromClimate: f'Immediate climate damage (applied to net output)',
+                                GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (
+                                    not damage_to_productivity) + 'applied to gross output)', })
+            else:
+                to_plot.update({
+                                   GlossaryCore.EstimatedDamagesFromClimate: f'Immediate climate damage (estimation not applied to net output)',
+                                   GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (
+                                       not damage_to_productivity) + 'applied to gross output)', })
+            applied_damages = damage_detailed_df[GlossaryCore.Damages].values
+            all_damages = damage_detailed_df[GlossaryCore.EstimatedDamagesFromClimate].values + damage_detailed_df[GlossaryCore.EstimatedDamagesFromProductivityLoss].values
+            years = list(damage_detailed_df[GlossaryCore.Years].values)
+            chart_name = f'Breakdown of damages' + ' (not applied)' * (not compute_climate_impact_on_gdp)
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
+                                                 chart_name=chart_name, stacked_bar=True)
+
+            for key, legend in to_plot.items():
+                ordonate_data = list(damage_detailed_df[key])
+
+                new_series = InstanciatedSeries(years, ordonate_data, legend, 'bar', True)
+
+                new_chart.add_series(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(all_damages), 'Total all damages', 'lines', True)
+
+            new_chart.add_series(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(applied_damages), 'Total applied', 'lines', True)
+
+            new_chart.add_series(new_series)
+
+            instanciated_charts.append(new_chart)
+
+        if GlossaryCore.Damages in chart_list:
+
+            damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
+            applied_damages = damage_detailed_df[GlossaryCore.Damages].values
+            years = list(damage_detailed_df[GlossaryCore.Years].values)
+            chart_name = f'Damages by sector' + ' (not applied to gross output)' * (not compute_climate_impact_on_gdp)
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
+                                                 chart_name=chart_name, stacked_bar=True)
+            for sector in sector_list:
+                damage_detailed_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.DamageDetailedDfValue}')
+                sector_damage = damage_detailed_df[GlossaryCore.Damages].values
+                #share = (sector_capital / capital) * 100
+                ordonate_data = list(sector_damage)
+                new_series = InstanciatedSeries(years, ordonate_data,
+                                                sector, 'bar', True)
+                new_chart.add_series(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(applied_damages), 'Total', 'lines', True)
+
+            new_chart.add_series(new_series)
+
+            instanciated_charts.append(new_chart)
+
+        if GlossaryCore.DamagesFromClimate in chart_list:
+
+            damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
+            damages_from_climate = damage_detailed_df[GlossaryCore.DamagesFromClimate].values
+            years = list(damage_detailed_df[GlossaryCore.Years].values)
+            chart_name = f'Damages from climate by sector' + ' (not applied to net output)' * (not compute_climate_impact_on_gdp)
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
+                                                 chart_name=chart_name, stacked_bar=True)
+            for sector in sector_list:
+                damage_detailed_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.DamageDetailedDfValue}')
+                sector_damage = damage_detailed_df[GlossaryCore.DamagesFromClimate].values
+                #share = (sector_capital / capital) * 100
+                ordonate_data = list(sector_damage)
+                new_series = InstanciatedSeries(years, ordonate_data,
+                                                sector, 'bar', True)
+                new_chart.add_series(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(damages_from_climate), 'Total', 'lines', True)
+
+            new_chart.add_series(new_series)
+
+            instanciated_charts.append(new_chart)
+
+        if GlossaryCore.DamagesFromProductivityLoss in chart_list:
+
+            damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
+            damages_from_productivity_loss = damage_detailed_df[GlossaryCore.DamagesFromProductivityLoss].values
+            years = list(damage_detailed_df[GlossaryCore.Years].values)
+            chart_name = f'Damages from productivity loss by sector' + ' (not applied to gross output)' * (not damage_to_productivity)
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
+                                                 chart_name=chart_name, stacked_bar=True)
+            for sector in sector_list:
+                damage_detailed_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.DamageDetailedDfValue}')
+                sector_damage = damage_detailed_df[GlossaryCore.DamagesFromProductivityLoss].values
+                #share = (sector_capital / capital) * 100
+                ordonate_data = list(sector_damage)
+                new_series = InstanciatedSeries(years, ordonate_data,
+                                                sector, 'bar', True)
+                new_chart.add_series(new_series)
+
+            new_series = InstanciatedSeries(
+                years, list(damages_from_productivity_loss), 'Total', 'lines', True)
+
+            new_chart.add_series(new_series)
+
+            instanciated_charts.append(new_chart)
 
         if GlossaryCore.Capital in chart_list:
 
@@ -225,13 +370,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             chart_name = 'Total capital stock and usable capital'
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'capital stock [T$]',
-                                                 chart_name=chart_name)
+                                                 chart_name=chart_name, y_min_zero=True)
 
             for key in to_plot:
                 ordonate_data = list(economics_df[key])
                 new_series = InstanciatedSeries(
                     years, ordonate_data, legend[key], 'lines', True)
-                new_chart.series.append(new_series)
+                new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
 
@@ -248,7 +393,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 ordonate_data = list(share)
                 new_series = InstanciatedSeries(years, ordonate_data,
                                                 sector, 'bar', True)
-                new_chart.series.append(new_series)
+                new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
 
@@ -265,7 +410,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 ordonate_data = list(share)
                 new_series = InstanciatedSeries(years, ordonate_data,
                                                 sector, 'bar', True)
-                new_chart.series.append(new_series)
+                new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
 
@@ -280,7 +425,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 ordonate_data = list(economics_df[key])
                 new_series = InstanciatedSeries(
                     years, ordonate_data, key, 'lines', True)
-                new_chart.series.append(new_series)
+                new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
 
@@ -296,21 +441,21 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 ordonate_data = list(invest_sector[GlossaryCore.InvestmentsValue])
                 new_series = InstanciatedSeries(
                     years, ordonate_data, f'{sector} investments', 'bar')
-                new_chart.series.append(new_series)
+                new_chart.add_series(new_series)
 
             # add investments in energy to the chart as well
             invest_energy = inputs_dict[GlossaryCore.EnergyInvestmentsWoTaxValue]
             ordonate_data = list(invest_energy[GlossaryCore.EnergyInvestmentsWoTaxValue])
             new_series = InstanciatedSeries(
                 years, ordonate_data, f'energy investments', 'bar')
-            new_chart.series.append(new_series)
+            new_chart.add_series(new_series)
 
             #add total investments
             total_invest = self.get_sosdisc_outputs(GlossaryCore.InvestmentDfValue)
             ordonate_data = list(total_invest[GlossaryCore.InvestmentsValue])
             new_series = InstanciatedSeries(
                 years, ordonate_data, f'total investments', 'lines')
-            new_chart.series.append(new_series)
+            new_chart.add_series(new_series)
 
             # add chart to instanciated charts
             instanciated_charts.append(new_chart)

@@ -39,13 +39,13 @@ class ServicesDiscTest(unittest.TestCase):
         self.ee = ExecutionEngine(self.name)
         
         self.model_name = SectorDiscipline.sector_name
-        ns_dict = {'ns_witness': f'{self.name}',
-                   'ns_macro': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_MACRO: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_ref': f'{self.name}',
-                   'ns_sectors': f'{self.name}'}
+                   GlossaryCore.NS_SECTORS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -103,11 +103,10 @@ class ServicesDiscTest(unittest.TestCase):
                                           GlossaryCore.InvestmentsValue: invest_serie})
         
         #damage
-        self.damage_df = pd.DataFrame({GlossaryCore.Years: self.years,
-                                       GlossaryCore.Damages: np.zeros(self.nb_per),
-                                       GlossaryCore.DamageFractionOutput: np.linspace(0.02, 0.05, len(self.years)),
-                                       GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
-        self.damage_df.index = self.years
+        self.damage_fraction_df = pd.DataFrame({GlossaryCore.Years: self.years,
+                                                GlossaryCore.DamageFractionOutput: np.linspace(0.02, 0.05, len(self.years)),
+                                                GlossaryCore.BaseCarbonPrice: np.zeros(self.nb_per)})
+        self.damage_fraction_df.index = self.years
 
     def test_execute(self):
 
@@ -119,7 +118,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
                        f'{self.name}.prod_function_fitting': False,
@@ -133,6 +132,12 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
+                       f'{self.name}.assumptions_dict': {
+                           'compute_gdp': True,
+                           'compute_climate_impact_on_gdp': True,
+                           'activate_climate_effect_population': True,
+                           'invest_co2_tax_in_renewables': True
+                       }
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -156,7 +161,7 @@ class ServicesDiscTest(unittest.TestCase):
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest, #To check if not used
                        f'{self.name}.{SectorDiscipline.sector_name}.hist_sector_investment': self.total_invest,
                        f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
-                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
                        f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df, 
                        f'{self.name}.{SectorDiscipline.sector_name}.capital_start': 273.1805902, #2019 value for test
                        f'{self.name}.prod_function_fitting': True,
@@ -171,6 +176,12 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
+                       f'{self.name}.assumptions_dict': {
+                           'compute_gdp': True,
+                           'compute_climate_impact_on_gdp': False,
+                           'activate_climate_effect_population': True,
+                           'invest_co2_tax_in_renewables': True
+                       }
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

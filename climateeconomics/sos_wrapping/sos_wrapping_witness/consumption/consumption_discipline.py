@@ -48,19 +48,19 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
-        'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 1},
-        'welfare_obj_option': {'type': 'string', 'default': GlossaryCore.Welfare, 'possible_values': ['last_utility', GlossaryCore.Welfare], 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
-        'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 1},
+        'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 1},
+        'welfare_obj_option': {'type': 'string', 'default': GlossaryCore.Welfare, 'possible_values': ['last_utility', GlossaryCore.Welfare], 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        'conso_elasticity': {'type': 'float', 'default': 1.45, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
+        'init_rate_time_pref': {'type': 'float', 'default': 0.015, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.EconomicsDfValue: GlossaryCore.EconomicsDf,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
-        GlossaryCore.EnergyMeanPriceValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_energy_mix', 'unit': '$/MWh',
+        GlossaryCore.EnergyMeanPriceValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_ENERGY_MIX, 'unit': '$/MWh',
                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                        GlossaryCore.EnergyPriceValue: ('float', None, True)}},
-        'initial_raw_energy_price': {'type': 'float', 'unit': '$/MWh', 'default': 110, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
+        'initial_raw_energy_price': {'type': 'float', 'unit': '$/MWh', 'default': 110, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'init_discounted_utility': {'type': 'float', 'unit': '-', 'default': 3400, 'visibility': 'Shared', 'namespace': 'ns_ref', 'user_level': 2},
-        'init_period_utility_pc': {'type': 'float', 'unit': '-', 'default': 0.5, 'visibility': 'Shared', 'namespace': 'ns_witness', 'user_level': 2},
+        'init_period_utility_pc': {'type': 'float', 'unit': '-', 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'discounted_utility_ref': {'type': 'float', 'unit': '-', 'default': 1700, 'visibility': 'Shared', 'namespace': 'ns_ref', 'user_level': 2},
         'lo_conso': {'type': 'float', 'unit': 'T$', 'default': 2.0, 'user_level': 3},
         'lo_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 0.01, 'user_level': 3},
@@ -71,9 +71,9 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         'utility_detail_df': {'type': 'dataframe', 'unit': '-'},
         GlossaryCore.UtilityDfValue: GlossaryCore.UtilityDf,
-        GlossaryCore.WelfareObjective: {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        GlossaryCore.NegativeWelfareObjective: {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'min_utility_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}
+        GlossaryCore.WelfareObjective: {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        GlossaryCore.NegativeWelfareObjective: {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        'min_utility_objective': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS}
     }
 
     def init_execution(self):

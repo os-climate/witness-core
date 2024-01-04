@@ -42,7 +42,7 @@ class LandUseV2JacobianDiscTest(AbstractJacobianUnittest):
     def test_land_use_v2_discipline_analytic_grad(self):
 
         self.model_name = 'land_use_v2'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_land_use': f'{self.name}',
