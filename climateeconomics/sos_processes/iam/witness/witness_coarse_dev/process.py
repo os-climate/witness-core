@@ -57,8 +57,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         # Update namespace regarding land use and energy mix coupling
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
                    'ns_functions': f'{self.ee.study_name}.EnergyMix',
-                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences', }
+                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences',
+                   'ns_dashboard': f'{self.ee.study_name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
+
+        self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_dashboard',
+                                                                                'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_dashboard.post_processing_dashboard')
 
         return chain_builders
