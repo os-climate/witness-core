@@ -669,7 +669,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             chart_name = 'Gross and net of damage output per year'
             compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
-                                                 chart_name=chart_name, stacked_bar=True, y_min_zero=True and not compute_climate_impact_on_gdp)
+                                                 chart_name=chart_name, stacked_bar=True, y_min_zero=not compute_climate_impact_on_gdp)
 
             for key in to_plot:
                 visible_line = True
@@ -1110,8 +1110,8 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
 
     legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
               GlossaryCore.InvestmentsValue: 'Total investments',
-              GlossaryCore.EnergyInvestmentsValue: 'Energy',
-              GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy sectors',
+              GlossaryCore.EnergyInvestmentsValue: 'Energy investments',
+              GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy investments',
               GlossaryCore.Consumption: 'Consumption',
               }
 
