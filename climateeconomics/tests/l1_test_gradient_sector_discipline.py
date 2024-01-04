@@ -130,6 +130,12 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
+                       f'{self.name}.assumptions_dict': {
+                           'compute_gdp': True,
+                           'compute_climate_impact_on_gdp': True,
+                           'activate_climate_effect_population': True,
+                           'invest_co2_tax_in_renewables': True
+                       }
                        }
 
         self.ee.load_study_from_input_dict(inputs_dict)
@@ -209,6 +215,75 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sector_discipline_withoutdamage.pkl',
+                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
+                            inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
+                                    f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
+                                    f'{self.name}.{GlossaryCore.WorkforceDfValue}',
+                                    f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}'
+                                    ],
+                            outputs=[
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.ProductionDfValue}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.DamageDfValue}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.CapitalDfValue}',
+                                f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyWastedObjective}',
+                            ])
+
+    def test_gradient_without_climate_impact_on_gdp(self):
+        self.model_name = SectorDiscipline.sector_name
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
+                   'ns_public': f'{self.name}',
+                   'ns_functions': f'{self.name}',
+                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_MACRO: f'{self.name}',
+                   GlossaryCore.NS_SECTORS: f'{self.name}'
+                   }
+
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
+                       f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
+                       f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
+                       f'{self.name}.{GlossaryCore.DamageToProductivity}': False,
+                       f'{self.name}.frac_damage_prod': 0.3,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}': self.energy_supply_df,
+                       f'{self.name}.{GlossaryCore.DamageFractionDfValue}': self.damage_fraction_df,
+                       f'{self.name}.{GlossaryCore.WorkforceDfValue}': self.workforce_df,
+                       f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.InvestmentDfValue}': self.total_invest,
+                       f'{self.name}.alpha': 0.5,
+                       f'{self.name}.prod_function_fitting': False,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_start'}": 1.31162,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'capital_start'}": 6.92448579,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'productivity_gr_start'}": 0.0027844,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'decline_rate_tfp'}": 0.098585,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_k'}": 0.1,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_cst'}": 0.490463,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_xzero'}": 1993,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
+                       f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
+                       f'{self.name}.assumptions_dict': {
+                           'compute_gdp': True,
+                           'compute_climate_impact_on_gdp': False,
+                           'activate_climate_effect_population': True,
+                           'invest_co2_tax_in_renewables': True
+                       }
+                       }
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_sector_discipline_withoutdamage_on_gdp.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data=disc_techno.local_data,
                             inputs=[f'{self.name}.{SectorDiscipline.sector_name}.{GlossaryCore.EnergyProductionValue}',
                                     f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
