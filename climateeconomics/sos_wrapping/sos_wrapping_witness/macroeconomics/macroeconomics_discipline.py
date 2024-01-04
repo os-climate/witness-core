@@ -1110,8 +1110,8 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
 
     legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
               GlossaryCore.InvestmentsValue: 'Total investments',
-              GlossaryCore.EnergyInvestmentsValue: 'Energy',
-              GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy sectors',
+              GlossaryCore.EnergyInvestmentsValue: 'Energy investments',
+              GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy investments',
               GlossaryCore.Consumption: 'Consumption',
               }
 
