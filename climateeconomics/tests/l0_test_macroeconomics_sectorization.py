@@ -137,6 +137,12 @@ class MacroeconomicsTestCase(unittest.TestCase):
             f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.DamageDetailedDfValue}': self.damage_indus[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.DamageDetailedDfValue}': self.damage_agri[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
             f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.DamageDetailedDfValue}': self.damage_service[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
+            f'{name}.assumptions_dict': {
+                'compute_gdp': True,
+                'compute_climate_impact_on_gdp': True,
+                'activate_climate_effect_population': True,
+                'invest_co2_tax_in_renewables': True
+            }
         }
 
         ee.load_study_from_input_dict(inputs_dict)
