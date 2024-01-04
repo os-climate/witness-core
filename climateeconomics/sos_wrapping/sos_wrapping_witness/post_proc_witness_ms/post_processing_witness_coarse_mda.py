@@ -508,15 +508,21 @@ def post_processings(execution_engine, namespace, filters):
 def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
     '''
     Determines for each scenario if the damage and the taxes are activated
+    assumes that tax is activated when ccs_price_percentage and co2_damage_price_percentage > 0
+    assumes that damage are activated when
     '''
     df_paths = ['assumptions_dict']
     (assumption_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+    df_paths = ['ccs_price_percentage', ]
+    (ccs_price_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+    df_paths = ['co2_damage_price_percentage', ]
+    (co2_damage_price_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
     df_paths = ['Macroeconomics.damage_to_productivity', ]
     (damage_to_productivity_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
     status_dict = {}
     for scenario in scenario_list:
         status_dict[scenario] = {}
-        status_dict[scenario][TAX_NAME] = assumption_dict[scenario]['invest_co2_tax_in_renewables']
+        status_dict[scenario][TAX_NAME] = (ccs_price_dict[scenario] > 0 and co2_damage_price_dict[scenario] > 0)
         status_dict[scenario][DAMAGE_NAME] = damage_to_productivity_dict[scenario] and \
                                           assumption_dict[scenario]['compute_climate_impact_on_gdp'] and \
                                           assumption_dict[scenario]['activate_climate_effect_population']
