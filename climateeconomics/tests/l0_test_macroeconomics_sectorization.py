@@ -117,7 +117,7 @@ class MacroeconomicsTestCase(unittest.TestCase):
         ee.configure()
         ee.display_treeview_nodes()
         inputs_dict = {
-            f'{name}.{GlossaryCore.DamageToProductivity}': False,
+            f'{name}.{GlossaryCore.DamageToProductivity}': True,
             f'{name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.InvestmentDfValue}': self.invests,
             f'{name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.InvestmentDfValue}': self.invests,
             f'{name}.{GlossaryCore.SectorServices}.{GlossaryCore.InvestmentDfValue}': self.invests,

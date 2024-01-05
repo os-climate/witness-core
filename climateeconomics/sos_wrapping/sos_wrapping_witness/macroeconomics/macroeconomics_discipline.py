@@ -25,6 +25,7 @@ import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.macroeconomics_model_v1 import MacroEconomics
 from climateeconomics.glossarycore import GlossaryCore
+from climateeconomics.charts_tools import graph_gross_and_net_output
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -662,68 +663,15 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         years = list(economics_detail_df[GlossaryCore.Years].values)
         compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
         damages_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity) and compute_climate_impact_on_gdp
+        damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
 
         if GlossaryCore.GrossOutput in chart_list:
-            to_plot = [GlossaryCore.OutputNetOfDamage]
-
-            legend = {GlossaryCore.OutputNetOfDamage: 'Net output'}
-
             chart_name = 'Gross and net of damage output per year'
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
-                                                 chart_name=chart_name, stacked_bar=True,
-                                                 y_min_zero=not compute_climate_impact_on_gdp)
-
-            for key in to_plot:
-                visible_line = True
-
-                ordonate_data = list(economics_detail_df[key])
-
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'lines', visible_line)
-
-                new_chart.add_series(new_series)
-
-            gross_output = economics_detail_df[GlossaryCore.GrossOutput].values
-            new_series = InstanciatedSeries(
-                years, list(gross_output), 'Gross output', 'lines', True)
-
-            new_chart.add_series(new_series)
-            damage_detailed_df = self.get_sosdisc_outputs(GlossaryCore.DamageDetailedDfValue)
-            if compute_climate_impact_on_gdp:
-                ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
-                new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
-                new_chart.add_series(new_series)
-                if damages_to_productivity:
-                    gdp_without_damage_to_prod = gross_output + damage_detailed_df[
-                        GlossaryCore.EstimatedDamagesFromProductivityLoss].values
-                    ordonate_data = list(gdp_without_damage_to_prod)
-                    new_series = InstanciatedSeries(years, ordonate_data,
-                                                    'Pessimist estimation of gross output without damage to productivity',
-                                                    'dash_lines')
-                    new_chart.add_series(new_series)
-
-                    new_chart.series.pop(-1)
-                    new_chart.series.pop(1)
-                    new_chart = new_chart.to_plotly()
-                    import plotly.graph_objects as go
-
-                    new_chart.add_trace(go.Scatter(x=years, y=list(gross_output),
-                                                   mode='lines',
-                                                   name="Gross output"
-                                                   ))
-
-                    new_chart.add_trace(go.Scatter(
-                        x=years,
-                        y=list(gdp_without_damage_to_prod),
-                        fill='tonexty',  # fill area between trace0 and trace1
-                        mode='lines',
-                        fillcolor='rgba(200, 200, 200, 0.3)',
-                        line={'dash': 'dash', 'color': 'rgb(200, 200, 200)'},
-                        opacity=0.2,
-                        name='Pessimist estimation of gross output without damage to productivity', ))
-
-                    new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
-
+            new_chart = graph_gross_and_net_output(chart_name=chart_name,
+                                                   compute_climate_impact_on_gdp=compute_climate_impact_on_gdp,
+                                                   damages_to_productivity=damages_to_productivity,
+                                                   economics_detail_df=economics_detail_df,
+                                                   damage_detailed_df=damage_detailed_df)
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.OutputNetOfDamage in chart_list:
@@ -1033,7 +981,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-
         if GlossaryCore.OutputGrowth in chart_list:
             to_plot = [GlossaryCore.OutputGrowth]
             legend = {GlossaryCore.OutputGrowth: 'output growth rate from WITNESS'}
@@ -1131,63 +1078,3 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     default_title=True, default_legend=False))
 
         return instanciated_charts
-
-def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impact_on_gdp, instanciated_charts):
-    to_plot_line = [GlossaryCore.OutputNetOfDamage]
-
-    to_plot_bar = [GlossaryCore.EnergyInvestmentsValue,
-                    GlossaryCore.NonEnergyInvestmentsValue,
-                   GlossaryCore.Consumption]
-
-    legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
-              GlossaryCore.InvestmentsValue: 'Total investments',
-              GlossaryCore.EnergyInvestmentsValue: 'Energy investments',
-              GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy investments',
-              GlossaryCore.Consumption: 'Consumption',
-              }
-
-    years = list(economics_detail_df.index)
-
-    chart_name = 'Breakdown of output per year'
-
-    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
-                                         chart_name=chart_name, stacked_bar=True)
-
-    for key in to_plot_line:
-        visible_line = True
-
-        ordonate_data = list(economics_detail_df[key])
-
-        new_series = InstanciatedSeries(
-            years, ordonate_data, legend[key], 'lines', visible_line)
-
-        new_chart.series.append(new_series)
-
-    for key in to_plot_bar:
-        ordonate_data = list(economics_detail_df[key])
-
-        new_series = InstanciatedSeries(
-            years, ordonate_data, legend[key], 'bar', True)
-
-        new_chart.series.append(new_series)
-
-    new_series = InstanciatedSeries(
-        years, list(economics_detail_df[GlossaryCore.GrossOutput].values), 'Gross output', 'lines', True)
-
-    new_chart.series.append(new_series)
-
-    if compute_climate_impact_on_gdp:
-        ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
-        new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
-        new_chart.series.append(new_series)
-
-    new_series = InstanciatedSeries(
-        years, list(economics_detail_df[GlossaryCore.InvestmentsValue]),
-        legend[GlossaryCore.InvestmentsValue],
-        'lines', True)
-
-    new_chart.series.append(new_series)
-
-    instanciated_charts.append(new_chart)
-
-    return instanciated_charts
