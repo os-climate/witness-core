@@ -322,7 +322,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                  chart_name=chart_name, stacked_bar=True)
             for sector in sector_list:
                 damage_detailed_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.DamageDetailedDfValue}')
-                sector_damage = damage_detailed_df[GlossaryCore.DamagesFromClimate].values
+                sector_damage = damage_detailed_df[GlossaryCore.EstimatedDamagesFromClimate].values
                 #share = (sector_capital / capital) * 100
                 ordonate_data = list(sector_damage)
                 new_series = InstanciatedSeries(years, ordonate_data,
@@ -347,7 +347,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                                  chart_name=chart_name, stacked_bar=True)
             for sector in sector_list:
                 damage_detailed_df = self.get_sosdisc_inputs(f'{sector}.{GlossaryCore.DamageDetailedDfValue}')
-                sector_damage = damage_detailed_df[GlossaryCore.DamagesFromProductivityLoss].values
+                sector_damage = damage_detailed_df[GlossaryCore.EstimatedDamagesFromProductivityLoss].values
                 #share = (sector_capital / capital) * 100
                 ordonate_data = list(sector_damage)
                 new_series = InstanciatedSeries(years, ordonate_data,
