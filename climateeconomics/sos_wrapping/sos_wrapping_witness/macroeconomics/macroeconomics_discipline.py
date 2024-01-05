@@ -722,6 +722,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                         opacity=0.2,
                         name='Pessimist estimation of gross output without damage to productivity', ))
 
+                    new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+
             instanciated_charts.append(new_chart)
 
         if GlossaryCore.OutputNetOfDamage in chart_list:

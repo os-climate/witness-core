@@ -142,7 +142,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.TimeStep}': time_step,
                        f'{self.name}.init_rate_time_pref': 0.015,
                        f'{self.name}.conso_elasticity': 1.45,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': False,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.DamageToProductivity}': True,
                        f'{self.name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}': energy_investment_wo_tax,
                        f'{self.name}.{GlossaryCore.ShareNonEnergyInvestmentsValue}': share_non_energy_investment,
                        f'{self.name}.{GlossaryCore.EnergyProductionValue}': energy_supply_df,
@@ -158,7 +158,7 @@ class MacroDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
-                           'compute_climate_impact_on_gdp': False,
+                           'compute_climate_impact_on_gdp': True,
                            'activate_climate_effect_population': True,
                            'invest_co2_tax_in_renewables': True
                            }
@@ -172,9 +172,6 @@ class MacroDiscTest(unittest.TestCase):
         filterr = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filterr)
         for i,graph in enumerate(graph_list):
-            try:
-                graph.to_plotly().show()
-            except:
-                graph.show()
+            #graph.to_plotly().show()
             pass
 
