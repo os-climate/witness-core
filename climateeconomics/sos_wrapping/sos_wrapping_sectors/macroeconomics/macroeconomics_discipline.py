@@ -59,6 +59,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.DamageDetailedDfValue: GlossaryCore.DamageDetailedDf,
+        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict
     }
 
     def init_execution(self):
@@ -95,6 +96,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.macro_model.compute(inputs_dict)
 
         outputs_dict = {
+
             GlossaryCore.EconomicsDfValue: self.macro_model.economics_df,
             GlossaryCore.EconomicsDetailDfValue: self.macro_model.economics_detail_df,
             GlossaryCore.MaxInvestConstraintName: self.macro_model.max_invest_constraint,
