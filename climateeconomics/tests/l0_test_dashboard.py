@@ -13,12 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-
+import os
 import unittest
 
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import Study as Study
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+from sostrades_core.study_manager.base_study_manager import BaseStudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from sostrades_core.tools.rw.load_dump_dm_data import DirectLoadDump
 
 
 class PostProcessEnergy(unittest.TestCase):
@@ -50,7 +52,16 @@ class PostProcessEnergy(unittest.TestCase):
         Test to compare WITNESS energy capex, opex, CO2 tax prices
         tables for each energy / each techno per energy
         """
-        self.ee.execute()
+        from os.path import join, dirname, exists
+
+        dump_dir = join(dirname(__file__), 'data', self.ee.study_name)
+        if exists(dump_dir):
+            BaseStudyManager.static_load_data(
+                dump_dir, self.ee, DirectLoadDump())
+        else:
+            self.ee.execute()
+            BaseStudyManager.static_dump_data(
+                dump_dir, self.ee, DirectLoadDump())
 
         ppf = PostProcessingFactory()
 
