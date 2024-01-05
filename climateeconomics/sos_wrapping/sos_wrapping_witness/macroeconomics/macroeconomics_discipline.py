@@ -660,16 +660,18 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         sectors_list = deepcopy(
             self.get_sosdisc_inputs(GlossaryCore.SectorListValue))
         years = list(economics_detail_df[GlossaryCore.Years].values)
-        if GlossaryCore.GrossOutput in chart_list:
+        compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
+        damages_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity) and compute_climate_impact_on_gdp
 
+        if GlossaryCore.GrossOutput in chart_list:
             to_plot = [GlossaryCore.OutputNetOfDamage]
 
             legend = {GlossaryCore.OutputNetOfDamage: 'Net output'}
 
             chart_name = 'Gross and net of damage output per year'
-            compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
-                                                 chart_name=chart_name, stacked_bar=True, y_min_zero=not compute_climate_impact_on_gdp)
+                                                 chart_name=chart_name, stacked_bar=True,
+                                                 y_min_zero=not compute_climate_impact_on_gdp)
 
             for key in to_plot:
                 visible_line = True
@@ -691,6 +693,34 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
                 new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
                 new_chart.add_series(new_series)
+                if damages_to_productivity:
+                    gdp_without_damage_to_prod = gross_output + damage_detailed_df[
+                        GlossaryCore.EstimatedDamagesFromProductivityLoss].values
+                    ordonate_data = list(gdp_without_damage_to_prod)
+                    new_series = InstanciatedSeries(years, ordonate_data,
+                                                    'Pessimist estimation of gross output without damage to productivity',
+                                                    'dash_lines')
+                    new_chart.add_series(new_series)
+
+                    new_chart.series.pop(-1)
+                    new_chart.series.pop(1)
+                    new_chart = new_chart.to_plotly()
+                    import plotly.graph_objects as go
+
+                    new_chart.add_trace(go.Scatter(x=years, y=list(gross_output),
+                                                   mode='lines',
+                                                   name="Gross output"
+                                                   ))
+
+                    new_chart.add_trace(go.Scatter(
+                        x=years,
+                        y=list(gdp_without_damage_to_prod),
+                        fill='tonexty',  # fill area between trace0 and trace1
+                        mode='lines',
+                        fillcolor='rgba(200, 200, 200, 0.3)',
+                        line={'dash': 'dash', 'color': 'rgb(200, 200, 200)'},
+                        opacity=0.2,
+                        name='Pessimist estimation of gross output without damage to productivity', ))
 
             instanciated_charts.append(new_chart)
 
@@ -959,7 +989,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 GlossaryCore.ProductivityWithoutDamage: 'Without damages',
                 GlossaryCore.ProductivityWithDamage: 'With damages'}
             compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
-            damages_to_productivity = self.get_sosdisc_inputs(GlossaryCore.DamageToProductivity) and compute_climate_impact_on_gdp
             years = list(economics_detail_df.index)
             extra_name = 'damages applied' if damages_to_productivity else 'damages not applied'
             chart_name = f'Total Factor Productivity ({extra_name})'
