@@ -59,7 +59,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.DamageDetailedDfValue: GlossaryCore.DamageDetailedDf,
-        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict
     }
 
     def init_execution(self):
@@ -96,7 +95,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.macro_model.compute(inputs_dict)
 
         outputs_dict = {
-
             GlossaryCore.EconomicsDfValue: self.macro_model.economics_df,
             GlossaryCore.EconomicsDetailDfValue: self.macro_model.economics_detail_df,
             GlossaryCore.MaxInvestConstraintName: self.macro_model.max_invest_constraint,
@@ -110,7 +108,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         """
         Compute jacobian for each coupling variable
         gradient of coupling variable to compute:
-        net_output and invest wrt sector net_output 
+        net_output and invest wrt sector net_output
         """
         inputs_dict = self.get_sosdisc_inputs()
         sector_list = inputs_dict[GlossaryCore.SectorListValue]

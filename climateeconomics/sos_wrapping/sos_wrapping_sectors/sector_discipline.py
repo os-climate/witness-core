@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import copy
 from copy import deepcopy
-
 import pandas as pd
 
 from climateeconomics.core.core_sectorization.sector_model import SectorModel
@@ -31,6 +31,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$' # to overwrite if necessary
     NS_SECTORS = GlossaryCore.NS_SECTORS
     DESC_IN = {
+        GlossaryCore.SectionGdpPercentageDfValue: GlossaryCore.SectionGdpPercentageDf,
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -73,6 +74,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                   'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True}
     }
     DESC_OUT = {
+        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict,
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
@@ -84,6 +86,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         """setup sos disciplines"""
         dynamic_outputs = {}
         dynamic_inputs = {}
+        sectionlist = None
         if GlossaryCore.WorkforceDfValue in self.get_sosdisc_inputs():
             workforce_df: pd.DataFrame = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
             if workforce_df is not None and self.sector_name not in workforce_df.columns:
@@ -99,7 +102,15 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 dynamic_outputs['range_energy_eff_constraint'] = {'type': 'array', 'unit': '-',
                                                                   'dataframe_descriptor': {},
                                                                   'dynamic_dataframe_columns': True}
-
+        if GlossaryCore.SectionListValue in self.get_data_in():
+            sectionlist = self.get_sosdisc_inputs(GlossaryCore.SectionListValue)
+                # add section gdp percentage variable
+        if sectionlist is not None:
+            section_gdp_percentage = copy.deepcopy(GlossaryCore.SectionGdpPercentageDf)
+                    # update dataframe descriptor
+            for section in sectionlist:
+                section_gdp_percentage['dataframe_descriptor'].update({section: ('float', [1.e-8, 1e30], True)})
+                dynamic_inputs.update({GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage})
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
         capital_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.CapitalDf)
@@ -134,8 +145,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
         sector_investment = param[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"]
         workforce_df = param[GlossaryCore.WorkforceDfValue]
         prod_function_fitting = param['prod_function_fitting']
+        section_gdp_percentage_df = param[GlossaryCore.SectionGdpPercentageDfValue]
 
         model_inputs = {
+            GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df,
             GlossaryCore.DamageFractionDfValue: damage_fraction_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
             GlossaryCore.EnergyProductionValue: energy_production,
             GlossaryCore.InvestmentDfValue: sector_investment,

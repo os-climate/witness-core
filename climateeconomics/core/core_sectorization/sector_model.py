@@ -43,6 +43,7 @@ class SectorModel():
         self.lt_energy_eff = None
         self.emax_enet_constraint = None
         self.gdp_percentage_per_section_df = None
+        self.dict_sectors_detailed = None
         self.section_gdp_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint =  None
@@ -64,7 +65,7 @@ class SectorModel():
         self.nb_years = len(self.years_range)
         self.sector_name = sector_name
         self.retrieve_sections_list()
-        #self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
+        self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']
@@ -129,6 +130,16 @@ class SectorModel():
                 drop=True)
             self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
                 end_year_csv, self.year_end)
+
+    def compute_section_gdp(self):
+        """
+        Computes the GDP net of damage per section
+        """
+        # get gdp percentage per section, and compute gdp per section using Net output of damage
+        self.get_gdp_percentage_per_section()
+        self.section_gdp_df = self.gdp_percentage_per_section_df.copy()
+        self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(
+            self.economics_df.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
 
     def init_dataframes(self):
         '''
