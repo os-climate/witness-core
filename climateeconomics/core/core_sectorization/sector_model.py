@@ -42,10 +42,10 @@ class SectorModel():
         self.growth_rate_df = None
         self.lt_energy_eff = None
         self.emax_enet_constraint = None
-        
+        self.gdp_percentage_per_section_df = None
+        self.section_gdp_df = None
         self.range_energy_eff_cstrt = None
-        self.energy_eff_xzero_constraint =  None 
-        
+        self.energy_eff_xzero_constraint =  None
     def configure_parameters(self, inputs_dict, sector_name):
         '''
         Configure with inputs_dict from the discipline
@@ -62,7 +62,9 @@ class SectorModel():
         self.time_step = inputs_dict[GlossaryCore.TimeStep]
         self.years_range = np.arange(self.year_start,self.year_end + 1,self.time_step)
         self.nb_years = len(self.years_range)
-
+        self.sector_name = sector_name
+        self.retrieve_sections_list()
+        #self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']
@@ -82,10 +84,51 @@ class SectorModel():
         self.max_capital_utilisation_ratio = inputs_dict['max_capital_utilisation_ratio']
         self.scaling_factor_energy_production = inputs_dict['scaling_factor_energy_production']
         self.ref_emax_enet_constraint = inputs_dict['ref_emax_enet_constraint']
+        self.compute_climate_impact_on_gdp = inputs_dict['assumptions_dict']['compute_climate_impact_on_gdp']
+        if not self.compute_climate_impact_on_gdp:
+            self.damage_to_productivity = False
         
         self.sector_name = sector_name
         
         self.init_dataframes()
+
+
+    def retrieve_sections_list(self):
+        if self.sector_name == GlossaryCore.SectorIndustry:
+            self.section_list = GlossaryCore.SectionsIndustry
+        if self.sector_name == GlossaryCore.SectorServices:
+            self.section_list = GlossaryCore.SectionsServices
+        if self.sector_name == GlossaryCore.SectorAgriculture:
+            self.section_list = GlossaryCore.SectionsAgriculture
+
+    def get_gdp_percentage_per_section(self):
+        '''
+        Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
+        '''
+        # the year range for the study can differ from that stated in the csv file
+        start_year_csv = self.gdp_percentage_per_section_df.iloc[0][GlossaryCore.Years]
+        if start_year_csv > self.year_start:
+            self.gdp_percentage_per_section_df = pd.concat(
+                [[self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start),
+                 self.gdp_percentage_per_section_df]).reset_index(drop=True)
+            self.gdp_percentage_per_section_df.iloc[0:(start_year_csv - self.year_start)][
+                GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
+
+        elif start_year_csv < self.year_start:
+            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
+                self.gdp_percentage_per_section_df[GlossaryCore.Years] > self.year_start - 1]
+
+        end_year_csv = self.gdp_percentage_per_section_df.iloc[-1][GlossaryCore.Years]
+        if end_year_csv > self.year_end:
+            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
+                self.gdp_percentage_per_section_df[GlossaryCore.Years] < self.year_end + 1]
+        elif end_year_csv < self.year_end:
+            self.gdp_percentage_per_section_df = pd.concat([self.gdp_percentage_per_section_df,
+                                                            [self.gdp_percentage_per_section_df.iloc[-1:]] * (
+                                                                        start_year_csv - self.year_start)]).reset_index(
+                drop=True)
+            self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
+                end_year_csv, self.year_end)
 
     def init_dataframes(self):
         '''
@@ -229,11 +272,14 @@ class SectorModel():
         damefrac = self.damage_fraction_df.at[year, GlossaryCore.DamageFractionOutput]
         gross_output = self.production_df.at[year,GlossaryCore.GrossOutput]
 
-        if damage_to_productivity:
-            damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
-            output_net_of_d = (1 - damage) * gross_output
+        if not self.compute_climate_impact_on_gdp:
+            output_net_of_d = gross_output
         else:
-            output_net_of_d = gross_output * (1 - damefrac)
+            if damage_to_productivity:
+                damage = 1 - ((1 - damefrac) / (1 - self.frac_damage_prod * damefrac))
+                output_net_of_d = (1 - damage) * gross_output
+            else:
+                output_net_of_d = gross_output * (1 - damefrac)
         self.production_df.loc[year, GlossaryCore.OutputNetOfDamage] = output_net_of_d
         return output_net_of_d
     
@@ -350,15 +396,18 @@ class SectorModel():
         net_output = self.production_df[GlossaryCore.OutputNetOfDamage].values
 
         damage_from_climate = gross_output - net_output
-        if self.damage_to_productivity:
-            estimated_damage_from_climate = gross_output * damefrac * (1 - self.frac_damage_prod) / (1 - self.frac_damage_prod * damefrac)
+        if self.compute_climate_impact_on_gdp:
+            damage_from_climate = gross_output - net_output
+            estimated_damage_from_climate = damage_from_climate
         else:
-            estimated_damage_from_climate = gross_output * damefrac
+            if self.damage_to_productivity:
+                estimated_damage_from_climate = gross_output * damefrac * (1 - self.frac_damage_prod) / (1 - self.frac_damage_prod * damefrac)
+            else:
+                estimated_damage_from_climate = gross_output * damefrac
 
         self.damage_df[GlossaryCore.DamagesFromClimate] = damage_from_climate
         self.damage_df[GlossaryCore.EstimatedDamagesFromClimate] = estimated_damage_from_climate
-        self.damage_df[GlossaryCore.Damages] = self.damage_df[GlossaryCore.DamagesFromClimate] + self.damage_df[
-            GlossaryCore.DamagesFromProductivityLoss]
+        self.damage_df[GlossaryCore.Damages] = self.damage_df[GlossaryCore.DamagesFromClimate] + self.damage_df[GlossaryCore.DamagesFromProductivityLoss]
 
     # RUN
     def compute(self, inputs):
@@ -523,6 +572,8 @@ class SectorModel():
         else:
             output_net_of_d = gross_output * (1 - damefrac)
         """
+        if not self.compute_climate_impact_on_gdp:
+            return doutput
         damefrac = self.damage_fraction_df[GlossaryCore.DamageFractionOutput].values
         if self.damage_to_productivity:
             dnet_output =(1 - damefrac) / (1 - self.frac_damage_prod * damefrac) * doutput
@@ -542,21 +593,22 @@ class SectorModel():
         years = self.years_range
         nb_years = len(years)
         dnet_output = np.zeros((nb_years, nb_years))
-        for i in range(0, nb_years):
-            output = self.production_df.at[years[i], GlossaryCore.GrossOutput]
-            damefrac = self.damage_fraction_df.at[years[i], GlossaryCore.DamageFractionOutput]
-            for j in range(0, i + 1):
-                if i == j:
-                    if self.damage_to_productivity:
-                        dnet_output[i, j] = (frac - 1) / ((frac * damefrac - 1)**2) * output + \
-                            (1 - damefrac) / (1 - frac *damefrac) * doutput[i, j]
+        if self.compute_climate_impact_on_gdp:
+            for i in range(0, nb_years):
+                output = self.production_df.at[years[i], GlossaryCore.GrossOutput]
+                damefrac = self.damage_fraction_df.at[years[i], GlossaryCore.DamageFractionOutput]
+                for j in range(0, i + 1):
+                    if i == j:
+                        if self.damage_to_productivity:
+                            dnet_output[i, j] = (frac - 1) / ((frac * damefrac - 1)**2) * output + \
+                                (1 - damefrac) / (1 - frac *damefrac) * doutput[i, j]
+                        else:
+                            dnet_output[i, j] = - output + (1 - damefrac) * doutput[i, j]
                     else:
-                        dnet_output[i, j] = - output + (1 - damefrac) * doutput[i, j]
-                else:
-                    if self.damage_to_productivity:
-                        dnet_output[i, j] = (1 - damefrac) / (1 - frac * damefrac) * doutput[i, j]
-                    else:
-                        dnet_output[i, j] = (1 - damefrac) * doutput[i, j]
+                        if self.damage_to_productivity:
+                            dnet_output[i, j] = (1 - damefrac) / (1 - frac * damefrac) * doutput[i, j]
+                        else:
+                            dnet_output[i, j] = (1 - damefrac) * doutput[i, j]
         return dnet_output
 
     def d_Y_Ku_Ew_Constraint_d_energy(self):
@@ -668,7 +720,7 @@ class SectorModel():
         d_productivity_w_damage_d_damage_frac_output = self.d_productivity_w_damage_d_damage_frac_output()
         nb_years = len(self.years_range)
         d_damages_from_productivity_loss_d_damage_fraction_output = self._null_derivative()
-        if self.damage_to_productivity:
+        if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
             for i in range(nb_years):
                 for j in range(nb_years):
                     d_damages_from_productivity_loss_d_damage_fraction_output[i,j] = d_gross_output_d_damage_fraction_output[i,j] * (productivity_wo_damage[i]/productivity_w_damage[i] - 1) +\
@@ -681,7 +733,7 @@ class SectorModel():
         productivity_w_damage = self.productivity_df[GlossaryCore.ProductivityWithDamage].values
 
         d_damages_from_productivity_loss_d_user_input = self._null_derivative()
-        if self.damage_to_productivity:
+        if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
             d_damages_from_productivity_loss_d_user_input = np.diag((productivity_wo_damage - productivity_w_damage) / (
                 productivity_w_damage)) @  d_gross_output_d_user_input
         return d_damages_from_productivity_loss_d_user_input

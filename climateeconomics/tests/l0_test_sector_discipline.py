@@ -37,7 +37,8 @@ class ServicesDiscTest(unittest.TestCase):
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        
+
+        SectorDiscipline.sector_name = GlossaryCore.SectorIndustry
         self.model_name = SectorDiscipline.sector_name
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
@@ -132,6 +133,12 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
+                       f'{self.name}.assumptions_dict': {
+                           'compute_gdp': True,
+                           'compute_climate_impact_on_gdp': True,
+                           'activate_climate_effect_population': True,
+                           'invest_co2_tax_in_renewables': True
+                       }
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -170,6 +177,12 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
+                       f'{self.name}.assumptions_dict': {
+                           'compute_gdp': True,
+                           'compute_climate_impact_on_gdp': False,
+                           'activate_climate_effect_population': True,
+                           'invest_co2_tax_in_renewables': True
+                       }
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
