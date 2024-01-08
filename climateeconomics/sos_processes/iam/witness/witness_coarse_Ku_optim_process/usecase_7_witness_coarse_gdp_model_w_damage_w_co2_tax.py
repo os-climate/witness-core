@@ -61,8 +61,7 @@ class Study(ClimateEconomicsStudyManager):
             values_dict.update(dict_data)
 
         # design space WITNESS
-        dspace_df = self.witness_uc.dspace
-
+        dspace = self.witness_uc.dspace
         dspace_size = self.witness_uc.dspace_size
         # optimization functions:
         optim_values_dict = {f'{ns}.epsilon0': 1,
@@ -111,7 +110,6 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.propagate_cache_to_children': True,
                              f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False}
 
-        dspace = self.witness_uc.dspace
         list_design_var_to_clean = ['red_meat_calories_per_day_ctrl', 'white_meat_calories_per_day_ctrl', 'vegetables_and_carbs_calories_per_day_ctrl', 'milk_and_eggs_calories_per_day_ctrl', 'forest_investment_array_mix', 'deforestation_investment_ctrl']
 
         # clean dspace
@@ -121,6 +119,8 @@ class Study(ClimateEconomicsStudyManager):
         dvar_descriptor = self.witness_uc.design_var_descriptor
         data_witness = []
         updated_dvar_descriptor = {k:v for k,v in dvar_descriptor.items() if k not in list_design_var_to_clean}
+        # update assumptions dict and specific values for optimization
+
         updated_data = {f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.assumptions_dict': {'compute_gdp': True,
                                                                 'compute_climate_impact_on_gdp': True,
                                                                 'activate_climate_effect_population': True,

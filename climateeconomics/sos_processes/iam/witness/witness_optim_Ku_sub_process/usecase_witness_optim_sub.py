@@ -89,6 +89,7 @@ class Study(ClimateEconomicsStudyManager):
         design_var_descriptor = {}
         years = np.arange(self.year_start, self.year_end + 1, self.time_step)
 
+        # create design variables and design space descriptor
         for energy in self.witness_uc.energy_list:
             energy_wo_dot = energy.replace('.', '_')
             for technology in self.witness_uc.dict_technos[energy]:
@@ -250,20 +251,7 @@ class Study(ClimateEconomicsStudyManager):
             'namespace_out': 'ns_crop'
             }
 
-        func_df = self.witness_uc.func_df
-        func_df = func_df[~func_df['variable'].isin(['non_use_capital_cons', 'forest_lost_capital_cons'])]
-        func_df.loc[func_df['variable'] == 'land_demand_constraint', 'weight'] = 0.
-        func_df.loc[func_df['variable'] == 'calories_per_day_constraint', 'weight'] = 0.
-        func_df.loc[func_df['variable'] == 'total_prod_minus_min_prod_constraint_df', 'weight'] = 0.
-
-
-
-        # Display func_df after dropping rows
-
-        self.func_df = func_df
         self.design_var_descriptor = design_var_descriptor
-        values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = func_df
-
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
@@ -286,15 +274,7 @@ class Study(ClimateEconomicsStudyManager):
             dspace_df = dspace_df.append(dict_var, ignore_index=True)
 
         self.dspace = dspace_df
-        """
 
-        keys_to_update = ['carbon_storage.CarbonStorageTechno.carbon_storage_CarbonStorageTechno_array_mix',
-                          'carbon_capture.flue_gas_capture.FlueGasTechno.carbon_capture_flue_gas_capture_FlueGasTechno_array_mix',
-                          'carbon_capture.direct_air_capture.DirectAirCaptureTechno.carbon_capture_direct_air_capture_DirectAirCaptureTechno_array_mix']
-        for key in keys_to_update:
-            self.dspace.loc[self.dspace['variable'] == key, 'value'] = \
-                np.array(self.dspace.loc[self.dspace['variable'] == key, 'lower_bnd'])
-        """
         values_dict[f'{self.witness_uc.study_name}.{self.coupling_name}.{GlossaryCore.energy_list}'] = self.witness_uc.energy_list
         values_dict[f'{self.study_name}.design_space'] = self.dspace
         setup_data_list.append(values_dict)
