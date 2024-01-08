@@ -105,12 +105,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
         if GlossaryCore.SectionListValue in self.get_data_in():
             sectionlist = self.get_sosdisc_inputs(GlossaryCore.SectionListValue)
                 # add section gdp percentage variable
-        if sectionlist is not None:
-            section_gdp_percentage = copy.deepcopy(GlossaryCore.SectionGdpPercentageDf)
-                    # update dataframe descriptor
-            for section in sectionlist:
-                section_gdp_percentage['dataframe_descriptor'].update({section: ('float', [1.e-8, 1e30], True)})
-                dynamic_inputs.update({GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage})
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
         capital_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.CapitalDf)

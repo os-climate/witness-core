@@ -142,15 +142,14 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
-
+    df_descriptor_section_df = {section: ('float', [0., 100.], True) for section in SectionsPossibleValues}
+    df_descriptor_section_df.update({Years: ("int", [1900, 2100], False)})
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "dataframe_descriptor": {
-            Years: ("int", [1900, 2100], False),
-        },
+        "dataframe_descriptor": df_descriptor_section_df,
     }
 
     SectorsPossibleValues = [
