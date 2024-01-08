@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/03/30-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/03/30-2024/01/08 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ class MacroEconomics:
         self.section_gdp_df = None
         self.dict_sectors_detailed = None
         self.usable_capital_objective = None
+        self.usable_capital_objective_ref = None
         self.set_data()
         self.create_dataframe()
 
@@ -101,6 +102,8 @@ class MacroEconomics:
             self.damage_to_productivity = False
         self.sector_list = self.param[GlossaryCore.SectorListValue]
         self.section_list = self.param[GlossaryCore.SectionListValue]
+        self.usable_capital_objective_ref = self.param[GlossaryCore.UsableCapitalObjectiveRefName]
+
 
     def create_dataframe(self):
         """Create the dataframe and fill it with values at year_start"""
@@ -568,7 +571,7 @@ class MacroEconomics:
         ne_capital = self.capital_df[GlossaryCore.NonEnergyCapital].values
         usable_capital_unbouded = self.capital_df[GlossaryCore.UsableCapitalUnbounded].values
         self.usable_cap_sqrt = (usable_capital_unbouded - self.capital_utilisation_ratio * ne_capital)
-        self.usable_capital_objective = np.power(self.usable_cap_sqrt,2)
+        self.usable_capital_objective = np.array([np.sum(np.power(self.usable_cap_sqrt,2))/ (self.nb_years * self.usable_capital_objective_ref)])
 
 
     def prepare_outputs(self):
@@ -776,7 +779,8 @@ class MacroEconomics:
 
         d_lower_bound_constraint_dE = (d_Ku_d_E - self.capital_utilisation_ratio * d_Kne_dE) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
         dKunbouded_d_E = np.diag(self.capital_utilisation_ratio * energy_efficiency)
-        d_Ku_obj_d_E = 2 * (dKunbouded_d_E - self.capital_utilisation_ratio * d_Kne_dE) * self.usable_cap_sqrt.reshape(-1, 1)
+        d_Ku_obj_d_E = np.sum(2 * (dKunbouded_d_E - self.capital_utilisation_ratio * d_Kne_dE) *
+                              self.usable_cap_sqrt.reshape(-1, 1) / (self.usable_capital_objective_ref * self.nb_years), axis=0)
         # TODO use d_Ku_d_E
         # Energy_wasted Ew = E - KNE * k where k = max_capital_utilisation_ratio/capital_utilisation_ratio/energy_efficiency*1.e3
         # energy_efficiency is function of the years. Eoptimal in TWh
@@ -841,7 +845,8 @@ class MacroEconomics:
 
         d_lower_bound_constraint_d_wap = (d_Ku_d_wap - self.capital_utilisation_ratio * d_Kne_d_wap) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
         d_Ku_unbouded_d_wap = self._null_derivative()
-        d_Ku_obj_d_wap = 2 * (d_Ku_unbouded_d_wap - self.capital_utilisation_ratio * d_Kne_d_wap) * self.usable_cap_sqrt.reshape(-1, 1)
+        d_Ku_obj_d_wap = np.sum(2 * (d_Ku_unbouded_d_wap - self.capital_utilisation_ratio * d_Kne_d_wap)
+                                * self.usable_cap_sqrt.reshape(-1, 1)/ (self.usable_capital_objective_ref * self.nb_years), axis=0)
         # Energy_wasted Ew = E - KNE * k where k = max_capital_utilisation_ratio/capital_utilisation_ratio/energy_efficiency * 1e3
         # energy_efficiency is function of the years. Eoptimal in TWh
         energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
@@ -1058,7 +1063,8 @@ class MacroEconomics:
         Y = self.economics_df[GlossaryCore.GrossOutput].values
         dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
 
-        d_dQ_dY_d_dfo = damefrac * 0 - 1. if not self.damage_to_productivity else (self.frac_damage_prod - 1) / ((1 - self.frac_damage_prod * damefrac) ** 2)
+        d_dQ_dY_d_dfo = damefrac * 0 - 1. if not self.damage_to_productivity else ((self.frac_damage_prod - 1)
+                                                                                   / ((1 - self.frac_damage_prod * damefrac) ** 2))
         d_Kne_d_dfo = self._null_derivative()
         d_Ku_d_dfo = self._null_derivative()
         for i in range(1, self.nb_per):
@@ -1073,7 +1079,9 @@ class MacroEconomics:
 
         d_lower_bound_constraint_d_dfo = (d_Ku_d_dfo - self.capital_utilisation_ratio * d_Kne_d_dfo) / self.usable_capital_ref if not self.compute_gdp else self._null_derivative()
         dKunbouded_d_E = self._null_derivative()
-        d_Ku_obj_d_dfo = 2 * (dKunbouded_d_E - self.capital_utilisation_ratio * d_Kne_d_dfo) * self.usable_cap_sqrt.reshape(-1, 1)
+        d_Ku_obj_d_dfo = np.sum(2 * (dKunbouded_d_E - self.capital_utilisation_ratio * d_Kne_d_dfo)
+                                * self.usable_cap_sqrt.reshape(-1, 1) / (self.usable_capital_objective_ref * self.nb_years), axis=0)
+
         # Energy_wasted Ew = E - KNE * k where k = max_capital_utilisation_ratio/capital_utilisation_ratio/energy_efficiency*1e3
         # energy_efficiency is function of the years. Eoptimal in TWh
         energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency].values
