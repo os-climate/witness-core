@@ -133,6 +133,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         param = self.get_sosdisc_inputs(in_dict=True)
         self.model = SectorModel()
         self.model.configure_parameters(param, self.sector_name)
+        self.macro_model = SectorModel()
 
     def run(self):
         # Get inputs
@@ -166,6 +167,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                        f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
                        GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
+                       GlossaryCore.SectionGdpDictValue: self.macro_model.dict_sectors_detailed,
                        }
 
         if prod_function_fitting:
@@ -334,7 +336,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.Workforce,
                       GlossaryCore.Productivity,
                       GlossaryCore.EnergyEfficiency,
-                      GlossaryCore.EnergyUsage,]
+                      GlossaryCore.EnergyUsage,
+                      GlossaryCore.SectorGdpPart,
+                      GlossaryCore.SectionGdpPart,
+                      ]
 
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         if prod_func_fit:
