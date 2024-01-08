@@ -255,6 +255,16 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
+        func_dict = {FunctionManagerDisc.VARIABLE: [GlossaryCore.NegativeWelfareObjective, GlossaryCore.UsableCapitalObjectiveName],
+                     FunctionManagerDisc.PARENT: 'objectives',
+                     FunctionManagerDisc.FTYPE: 'objective',
+                     FunctionManagerDisc.WEIGHT: 1.0,
+                     FunctionManagerDisc.AGGR_TYPE: 'sum',
+                     FunctionManagerDisc.NAMESPACE_VARIABLE: 'ns_functions'}
+        func_df = pd.DataFrame(data=func_dict)
+        values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = func_df
+
+
         values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSPureNewtonMDA'
         # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True
         values_dict[f'{self.study_name}.{self.coupling_name}.max_mda_iter'] = 50
@@ -284,4 +294,5 @@ class Study(ClimateEconomicsStudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.test()
+    uc_cls.load_data()
+    uc_cls.run()

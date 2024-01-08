@@ -56,6 +56,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             f'{designvariable_name}', design_var_path)
         chain_builders.append(design_var_builder)
 
+        # function manager builder
+        fmanager_path = 'sostrades_core.execution_engine.func_manager.func_manager_disc.FunctionManagerDisc'
+        fmanager_builder = self.ee.factory.get_builder_from_module(
+            f'{func_manager_name}', fmanager_path)
+        chain_builders.append(fmanager_builder)
+
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(

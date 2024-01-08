@@ -23,6 +23,7 @@ from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.glossarycore import GlossaryCore
+from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 
 class Study(ClimateEconomicsStudyManager):
 
@@ -66,7 +67,7 @@ class Study(ClimateEconomicsStudyManager):
         # optimization functions:
         optim_values_dict = {f'{ns}.epsilon0': 1,
                              f'{ns}.cache_type': 'SimpleCache',
-                             f'{ns}.{self.optim_name}.objective_name': GlossaryCore.UsableCapitalObjectiveName,
+                             f'{ns}.{self.optim_name}.objective_name': FunctionManagerDisc.OBJECTIVE_LAGR,
                              f'{ns}.{self.optim_name}.eq_constraints': [],
                              f'{ns}.{self.optim_name}.ineq_constraints': [],
 
