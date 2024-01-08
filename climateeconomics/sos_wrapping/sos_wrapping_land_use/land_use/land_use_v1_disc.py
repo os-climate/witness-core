@@ -109,11 +109,11 @@ class LandUseV1Discipline(SoSWrapp):
                                                                    'float', None, False),
                                                                    }
                                           },
-               LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+               LandUseV1.TOTAL_FOOD_LAND_SURFACE: {'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                                    'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                             'total surface (Gha)': ('float', None, False),}},
                LandUseV1.DEFORESTED_SURFACE_DF: {
-                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness',
+                   'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                         'forest_surface_evol': ('float', None, False),}},
                LandUseV1.LAND_USE_CONSTRAINT_REF: {
@@ -125,10 +125,10 @@ class LandUseV1Discipline(SoSWrapp):
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions',
                                      },
         LandUseV1.LAND_SURFACE_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         LandUseV1.LAND_SURFACE_DETAIL_DF: {'type': 'dataframe', 'unit': 'Gha'},
         LandUseV1.LAND_SURFACE_FOR_FOOD_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_witness'}
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS}
     }
 
     AGRICULTURE_CHARTS = 'Agriculture surface usage (Giga ha)'

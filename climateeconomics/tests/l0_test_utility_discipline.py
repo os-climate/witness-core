@@ -35,9 +35,9 @@ class UtilityDiscTest(unittest.TestCase):
     def test_execute(self):
 
         self.model_name = 'utility'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

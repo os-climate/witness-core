@@ -43,15 +43,15 @@ class InvestDiscipline(ClimateEcoDiscipline):
     _maturity = 'Research'
     years = np.arange(2020, 2101)
     DESC_IN = {
-        'energy_investment_macro': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        GlossaryCore.EnergyInvestmentsValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_energy_mix'},
+        'energy_investment_macro': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        GlossaryCore.EnergyInvestmentsValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_ENERGY_MIX},
         'invest_norm': {'type': 'float', 'default': 10.0},
         'formulation': {'type': 'string', 'default': 'objective', 'possile_values': ['objective', 'constraint']},
         'max_difference': {'type': 'float', 'default': 1.0e-1},
     }
 
     DESC_OUT = {
-        'invest_objective': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        'invest_objective': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         'diff_norm': {'type': 'array'}
     }
 

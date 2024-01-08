@@ -55,7 +55,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         'init_indus_emissions': {'type': 'float', 'default': 34, 'unit': 'GtCO2 per year', 'user_level': 2},
         GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,
         'init_cum_indus_emissions': {'type': 'float', 'default': 577.31, 'unit': 'GtCO2', 'user_level': 2},
-        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-',
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                   GlossaryCore.GrossOutput: ('float', None, False),
                                                   GlossaryCore.OutputNetOfDamage: ('float', None, False),
@@ -77,7 +77,7 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'}
     }
     DESC_OUT = {
-        'CO2_indus_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'Gt'},
+        'CO2_indus_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'Gt'},
         'CO2_indus_emissions_df_detailed': {'type': 'dataframe', 'unit': 'Gt or -'},
     }
 

@@ -75,7 +75,7 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'platinum_resource'
 
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}.{self.model_name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
                    'ns_platinum_resource': f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}
@@ -122,7 +122,7 @@ class PlatinumResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'platinum_resource'
 
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}.{self.model_name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
                    'ns_platinum_resource': f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}

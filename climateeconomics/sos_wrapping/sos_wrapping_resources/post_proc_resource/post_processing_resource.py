@@ -78,7 +78,7 @@ def get_chart_resource_consumption(execution_engine, namespace, chart_name='Reso
     first_part_ns = namespace.split('Resources.')[0]
 
     # TODO quick fix but need to do a cleaner way but needs deeper reflexion 
-    ns_list = execution_engine.ns_manager.get_all_namespace_with_name(f'ns_energy_mix')
+    ns_list = execution_engine.ns_manager.get_all_namespace_with_name(GlossaryCore.NS_ENERGY_MIX)
     max_length = 0
     longest_object = None
 

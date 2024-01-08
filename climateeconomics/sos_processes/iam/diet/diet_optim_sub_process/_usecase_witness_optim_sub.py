@@ -88,7 +88,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                 'key': 'forest_investment',
                                                                 'index': years,
                                                                 'index_name': GlossaryCore.Years,
-                                                                'namespace_in': 'ns_witness',
+                                                                'namespace_in': GlossaryCore.NS_WITNESS,
                                                                 'namespace_out': 'ns_invest'
                                                                 }
         if 'CropEnergy' in self.agri_techno_list:
@@ -99,7 +99,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                   'key': GlossaryCore.InvestmentsValue,
                                                                   'index': years,
                                                                   'index_name': GlossaryCore.Years,
-                                                                  'namespace_in': 'ns_witness',
+                                                                  'namespace_in': GlossaryCore.NS_WITNESS,
                                                                   'namespace_out': 'ns_crop'
                                                                   }
         if 'ManagedWood' in self.agri_techno_list:
@@ -110,7 +110,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           'key': GlossaryCore.InvestmentsValue,
                                                                           'index': years,
                                                                           'index_name': GlossaryCore.Years,
-                                                                          'namespace_in': 'ns_witness',
+                                                                          'namespace_in': GlossaryCore.NS_WITNESS,
                                                                           'namespace_out': 'ns_forest'
                                                                           }
         dv_arrays_dict[f'{self.witness_uc.study_name}.deforestation_investment_ctrl'] = \
@@ -120,7 +120,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                   'key': GlossaryCore.InvestmentsValue,
                                                                   'index': years,
                                                                   'index_name': GlossaryCore.Years,
-                                                                  'namespace_in': 'ns_witness',
+                                                                  'namespace_in': GlossaryCore.NS_WITNESS,
                                                                   'namespace_out': 'ns_forest'
                                                                   }
         dv_arrays_dict[f'{self.witness_uc.study_name}.red_meat_percentage_ctrl'] = \
@@ -130,7 +130,7 @@ class Study(ClimateEconomicsStudyManager):
                                                              'key': 'red_meat_percentage',
                                                              'index': years,
                                                              'index_name': GlossaryCore.Years,
-                                                             'namespace_in': 'ns_witness',
+                                                             'namespace_in': GlossaryCore.NS_WITNESS,
                                                              'namespace_out': 'ns_crop'
                                                              }
         dv_arrays_dict[f'{self.witness_uc.study_name}.white_meat_percentage_ctrl'] = \
@@ -140,7 +140,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                'key': 'white_meat_percentage',
                                                                'index': years,
                                                                'index_name': GlossaryCore.Years,
-                                                               'namespace_in': 'ns_witness',
+                                                               'namespace_in': GlossaryCore.NS_WITNESS,
                                                                'namespace_out': 'ns_crop'
                                                                }
 

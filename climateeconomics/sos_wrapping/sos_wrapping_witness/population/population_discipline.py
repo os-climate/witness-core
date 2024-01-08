@@ -25,6 +25,7 @@ import pandas as pd
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.population_model import Population
 from climateeconomics.glossarycore import GlossaryCore
+import sostrades_core.tools.post_processing.post_processing_tools as ppt
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -72,7 +73,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                                                       'age': ('string', None, False),
                                                       GlossaryCore.PopulationValue: ('float', None, False),}
                              },
-        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_witness',
+        GlossaryCore.EconomicsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                   GlossaryCore.GrossOutput: ('float', None, False),
                                                   GlossaryCore.OutputNetOfDamage: ('float', None, False),
@@ -126,7 +127,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'beta_birthrate_know': {'type': 'float', 'default': 8.01923418e-01, 'user_level': 3, 'unit': '-'},
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
         ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN['var_name']: ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
-        'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': 'kcal',
+        'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'kcal',
                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
                                                     'kcal_pc': ('float', None, True),
                                                     }
@@ -139,7 +140,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared',
-                                      'namespace': 'ns_witness'},
+                                      'namespace': GlossaryCore.NS_WITNESS},
         'population_detail_df': {'type': 'dataframe', 'unit': 'people'},
         'birth_rate_df': {'type': 'dataframe', 'unit': '-'},
         'death_rate_dict': {'type': 'dict', 'subtype_descriptor':{'dict':'dataframe'}, 'unit': '-'},
@@ -511,38 +512,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         if 'Cumulative climate deaths' in chart_list:
-            years = list(death_dict['climate']['cum_total'].index)
-            headers = list(death_dict['climate'].columns.values)
-            to_plot = headers[:]
 
-            year_start = years[0]
-            year_end = years[len(years) - 1]
+            instanciated_charts = graph_model_cumulative_climate_deaths(death_dict, instanciated_charts)
 
-            min_values = {}
-            max_values = {}
-            for key in to_plot:
-                min_values[key], max_values[key] = self.get_greataxisrange(
-                    death_dict['climate'][key])
-
-            min_value = min(min_values.values())
-            max_value = max(max_values.values())
-
-            chart_name = 'Cumulative climate deaths'
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' cumulative climatic deaths',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value],
-                                                 chart_name)
-
-            visible_line = True
-            ordonate_data = list(death_dict['climate']['cum_total'])
-
-            new_series = InstanciatedSeries(
-                years, ordonate_data, f'cumulative climatic deaths', 'bar')
-
-            new_chart.series.append(new_series)
-
-            instanciated_charts.append(new_chart)
             
         if 'Number of malnutrition death per year' in chart_list:
 
@@ -706,3 +678,111 @@ class PopulationDiscipline(ClimateEcoDiscipline):
             instanciated_charts.append(new_chart)
 
         return instanciated_charts
+
+# externalize graph methods out of the class so that they can be reused in an external dashboard for instance
+def graph_model_cumulative_climate_deaths(death_dict, instanciated_charts):
+    years = list(death_dict['climate']['cum_total'].index)
+    headers = list(death_dict['climate'].columns.values)
+    to_plot = headers[:]
+
+    year_start = years[0]
+    year_end = years[len(years) - 1]
+
+    min_values = {}
+    max_values = {}
+    for key in to_plot:
+        min_values[key], max_values[key] = ppt.get_greataxisrange(
+            death_dict['climate'][key])
+
+    min_value = min(min_values.values())
+    max_value = max(max_values.values())
+
+    chart_name = 'Cumulative climate deaths'
+
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' cumulative climatic deaths',
+                                            [year_start - 5, year_end + 5],
+                                            [min_value, max_value],
+                                            chart_name)
+
+    visible_line = True
+    ordonate_data = list(death_dict['climate']['cum_total'])
+
+    new_series = InstanciatedSeries(
+        years, ordonate_data, f'cumulative climatic deaths', 'bar')
+
+    new_chart.series.append(new_series)
+
+    instanciated_charts.append(new_chart)
+
+    return instanciated_charts
+
+def graph_model_world_population(pop_df, instanciated_charts):
+
+    years = list(pop_df.index)
+
+    year_start = years[0]
+    year_end = years[len(years) - 1]
+
+    min_value, max_value = ppt.get_greataxisrange(
+        pop_df['total'])
+
+    chart_name = 'World population over years'
+
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.PopulationValue,
+                                            [year_start - 5, year_end + 5],
+                                            [min_value, max_value],
+                                            chart_name)
+
+    visible_line = True
+
+    ordonate_data = list(pop_df['total'])
+
+    new_series = InstanciatedSeries(
+        years, ordonate_data, GlossaryCore.PopulationValue, 'lines', visible_line)
+
+    new_chart.series.append(new_series)
+
+    instanciated_charts.append(new_chart)
+
+    return instanciated_charts
+
+def graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts):
+    years = list(death_dict['climate']['cum_total'].index)
+    headers = list(death_dict['climate'].columns.values)
+    to_plot = headers[:]
+
+    year_start = years[0]
+    year_end = years[len(years) - 1]
+
+    # find min and max values for axis from pop and death data
+    min_values = {}
+    max_values = {}
+    for key in to_plot:
+        min_values[key], max_values[key] = ppt.get_greataxisrange(
+            death_dict['climate'][key])
+
+    min_value_pop, max_value_pop = ppt.get_greataxisrange(pop_df['total'])
+    min_value = min(min(min_values.values()), min_value_pop)
+    max_value = max(max(max_values.values()), max_value_pop)
+
+    chart_name = 'World population and Cumulative climate deaths vs years'
+
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' world pop and cumulative climatic deaths',
+                                            [year_start - 5, year_end + 5],
+                                            [min_value, max_value],
+                                            chart_name)
+
+    visible_line = True
+    ordonate_data = list(death_dict['climate']['cum_total'])
+    new_series = InstanciatedSeries(
+        years, ordonate_data, f'cumulative climatic deaths', 'bar')
+    new_chart.series.append(new_series)
+
+    ordonate_data = list(pop_df['total'])
+    new_series = InstanciatedSeries(
+        years, ordonate_data, GlossaryCore.PopulationValue, 'lines', visible_line)
+    new_chart.series.append(new_series)
+
+    instanciated_charts.append(new_chart)
+
+    return instanciated_charts

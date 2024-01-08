@@ -72,7 +72,7 @@ class Study(StudyManager):
         dice_input[f"{self.study_name}.{'Damage'}.{'tp_a2'}"] = 2.0
         dice_input[f"{self.study_name}.{'Damage'}.{'tp_a3'}"] = 6.081
         dice_input[f"{self.study_name}.{'Damage'}.{'tp_a4'}"] = 6.754
-        dice_input[f"{self.study_name}.{'damage_to_productivity'}"] = False
+        dice_input[f"{self.study_name}.{GlossaryCore.DamageToProductivity}"] = False
         dice_input[f"{self.study_name}.{GlossaryCore.FractionDamageToProductivityValue}"] = 0.30
 
         dice_input[f"{self.study_name}.{'Macroeconomics'}.{'productivity_start'}"] = 5.115
@@ -147,5 +147,4 @@ class Study(StudyManager):
 
 if '__main__' == __name__:
     uc_cls = Study()
-    uc_cls.load_data()
-    uc_cls.run()
+    uc_cls.test()

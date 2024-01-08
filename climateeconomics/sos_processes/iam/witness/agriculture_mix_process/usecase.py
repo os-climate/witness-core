@@ -196,7 +196,7 @@ class Study(StudyManager):
                            39.013549038348]
 
         deforest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest})
+            {GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: deforest_invest[:len(years)]})
 
         co2_taxes_year = [2018, 2020, 2025, 2030, 2035, 2040, 2045, 2050]
         co2_taxes = [14.86, 17.22, 20.27,

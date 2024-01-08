@@ -41,12 +41,12 @@ class PolicyModel():
         """
         Compute CO2 tax based on ccs_price and co2_damage_price
         """
-        self.CO2_damage_price = param['CO2_damage_price']
+        self.CO2_damage_price = param[GlossaryCore.CO2DamagePrice]
         self.CCS_price = param['CCS_price']
         self.ccs_price_percentage = param['ccs_price_percentage'] / 100.
         self.co2_damage_price_percentage = param['co2_damage_price_percentage'] / 100.
         self.CO2_tax[GlossaryCore.Years] = self.CO2_damage_price[GlossaryCore.Years].values
-        CO2_damage_price_array = self.co2_damage_price_percentage * self.CO2_damage_price['CO2_damage_price'].values
+        CO2_damage_price_array = self.co2_damage_price_percentage * self.CO2_damage_price[GlossaryCore.CO2DamagePrice].values
         CCS_price_array = self.ccs_price_percentage * self.CCS_price['ccs_price_per_tCO2'].values
         self.CO2_tax[GlossaryCore.CO2Tax] = smooth_maximum_vect(
             np.array([CO2_damage_price_array, CCS_price_array, 0.0 * CCS_price_array]).T)
@@ -57,7 +57,7 @@ class PolicyModel():
         compute dCO2_tax/dCO2_damage and dCO2_tax/dCCS_price
         """
 
-        CO2_damage_price_array = self.co2_damage_price_percentage * self.CO2_damage_price['CO2_damage_price'].values
+        CO2_damage_price_array = self.co2_damage_price_percentage * self.CO2_damage_price[GlossaryCore.CO2DamagePrice].values
         CCS_price_array = self.ccs_price_percentage * self.CCS_price['ccs_price_per_tCO2'].values
         dsmooth = get_dsmooth_dvariable_vect(
             np.array([CO2_damage_price_array, CCS_price_array, 0.0 * CCS_price_array]).T)

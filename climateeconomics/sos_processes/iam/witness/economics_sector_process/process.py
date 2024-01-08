@@ -1,5 +1,6 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2022 Airbus SAS
+Modifications on 27/11/2023 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,15 +29,15 @@ class ProcessBuilder(BaseProcessBuilder):
     }
     def get_builders(self):
 
-        ns_macro = self.ee.study_name
-        ns_scatter = self.ee.study_name 
+        ns_macro = f"{self.ee.study_name}.{'Macroeconomics'}"
+        ns_scatter = self.ee.study_name
 
-        ns_dict = {'ns_witness': ns_scatter,
-                   'ns_macro': ns_macro,
+        ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
+                   GlossaryCore.NS_MACRO: ns_macro,
                    'ns_public': ns_scatter,
                    'ns_functions': ns_scatter,
                    'ns_ref': ns_scatter,
-                   'ns_sectors': ns_macro
+                   GlossaryCore.NS_SECTORS: ns_macro
                    }
 
         mods_dict = {'Macroeconomics': 'climateeconomics.sos_wrapping.sos_wrapping_sectors.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline',

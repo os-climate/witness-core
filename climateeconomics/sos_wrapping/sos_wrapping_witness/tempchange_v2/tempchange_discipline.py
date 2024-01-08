@@ -22,6 +22,7 @@ import numpy as np
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model_v2 import TempChange
 from climateeconomics.glossarycore import GlossaryCore
+import sostrades_core.tools.post_processing.post_processing_tools as ppt
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -69,22 +70,22 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                                          'ch4_ppm': ('float', None, True),
                                          'n2o_ppm': ('float', None, True),
                                       },
-                         'visibility': 'Shared', 'namespace': 'ns_witness'},
+                         'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
-                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'temperature_obj_option': {'type': 'string',
                                    'possible_values': [TempChange.LAST_TEMPERATURE_OBJECTIVE,
                                                        TempChange.INTEGRAL_OBJECTIVE],
                                    'default': TempChange.INTEGRAL_OBJECTIVE,
-                                   'visibility': 'Shared', 'namespace': 'ns_witness'},
+                                   'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         'temperature_change_ref': {'type': 'float', 'default': 0.2, 'unit': '°C',
                                    'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                    'namespace': 'ns_ref', 'user_level': 2},
 
         'scale_factor_atmo_conc': {'type': 'float', 'default': 1e-2, 'unit': '-', 'user_level': 2,
                                    'visibility': 'Shared',
-                                   'namespace': 'ns_witness'},
+                                   'namespace': GlossaryCore.NS_WITNESS},
         'temperature_end_constraint_limit': {'type': 'float', 'default': 1.5, 'unit': '°C', 'user_level': 2},
         'temperature_end_constraint_ref': {'type': 'float', 'default': 3., 'unit': '°C', 'user_level': 2},
     }
@@ -93,7 +94,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
         'temperature_detail_df': {'type': 'dataframe', 'unit': '°C'},
         'forcing_detail_df': {'type': 'dataframe', 'unit': 'W.m-2'},
-        'temperature_constraint': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': 'ns_witness'}}
+        'temperature_constraint': {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS}}
 
     _maturity = 'Research'
 
@@ -314,84 +315,97 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             temperature_df = deepcopy(
                 self.get_sosdisc_outputs('temperature_detail_df'))
 
-            if model == 'DICE':
-                to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
-                legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
-                          GlossaryCore.TempOcean: 'ocean temperature'}
-
-            elif model == 'FUND':
-                to_plot = [GlossaryCore.TempAtmo]
-                legend = {GlossaryCore.TempAtmo: 'atmosphere temperature'}
-
-            elif model == 'FAIR':
-                raise NotImplementedError('Model not implemented yet')
-
-            years = list(temperature_df.index)
-
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-
-            max_values = {}
-            min_values = {}
-            for key in to_plot:
-                min_values[key], max_values[key] = self.get_greataxisrange(
-                    temperature_df[to_plot])
-
-            min_value = min(min_values.values())
-            max_value = max(max_values.values())
-
-            chart_name = 'Temperature evolution over the years'
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'temperature evolution (degrees Celsius above preindustrial)',
-                                                 [year_start - 5, year_end + 5], [
-                                                     min_value, max_value],
-                                                 chart_name)
-
-            for key in to_plot:
-                visible_line = True
-
-                ordonate_data = list(temperature_df[key])
-
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, legend[key], 'lines', visible_line)
-
-                new_chart.series.append(new_series)
-
-            instanciated_charts.append(new_chart)
-
-            # Seal level chart for FUND pyworld3
-            if model == 'FUND':
-                chart_name = 'Sea level evolution over the years'
-                min_value, max_value = self.get_greataxisrange(temperature_df['sea_level'])
-                new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
-                                                     'Seal level evolution',
-                                                     [year_start - 5, year_end + 5], [min_value, max_value],
-                                                     chart_name)
-                visible_line = True
-                ordonate_data = list(temperature_df['sea_level'])
-                new_series = InstanciatedSeries(
-                    years, ordonate_data, 'Seal level evolution [m]', 'lines', visible_line)
-                new_chart.series.append(new_series)
-
-                instanciated_charts.append(new_chart)
+            instanciated_charts = temperature_evolution(model, temperature_df, instanciated_charts)
 
         if 'Radiative forcing' in chart_list:
 
             forcing_df = self.get_sosdisc_outputs('forcing_detail_df')
 
-            years = forcing_df[GlossaryCore.Years].values.tolist()
+            instanciated_charts = radiative_forcing(forcing_df, instanciated_charts)
 
-            chart_name = 'Gas Radiative forcing evolution over the years'
-
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Radiative forcing (W.m-2)',
-                                                 chart_name=chart_name)
-
-            for forcing in forcing_df.columns:
-                if forcing != GlossaryCore.Years:
-                    new_series = InstanciatedSeries(
-                        years, forcing_df[forcing].values.tolist(), forcing, 'lines')
-
-                    new_chart.series.append(new_series)
-
-            instanciated_charts.append(new_chart)
         return instanciated_charts
+
+def temperature_evolution(model, temperature_df, instanciated_charts):
+    if model == 'DICE':
+        to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
+        legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
+                      GlossaryCore.TempOcean: 'ocean temperature'}
+
+    elif model == 'FUND':
+        to_plot = [GlossaryCore.TempAtmo]
+        legend = {GlossaryCore.TempAtmo: 'atmosphere temperature'}
+
+    elif model == 'FAIR':
+        raise NotImplementedError('Model not implemented yet')
+
+    years = list(temperature_df.index)
+
+    year_start = years[0]
+    year_end = years[len(years) - 1]
+
+    max_values = {}
+    min_values = {}
+    for key in to_plot:
+        min_values[key], max_values[key] = ppt.get_greataxisrange(
+            temperature_df[to_plot])
+
+    min_value = min(min_values.values())
+    max_value = max(max_values.values())
+
+    chart_name = 'Temperature evolution over the years'
+
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
+                                             'temperature evolution (degrees Celsius above preindustrial)',
+                                             [year_start - 5, year_end + 5], [
+                                                 min_value, max_value],
+                                             chart_name)
+
+    for key in to_plot:
+        visible_line = True
+
+        ordonate_data = list(temperature_df[key])
+
+        new_series = InstanciatedSeries(
+            years, ordonate_data, legend[key], 'lines', visible_line)
+
+        new_chart.series.append(new_series)
+
+    instanciated_charts.append(new_chart)
+
+    # Seal level chart for FUND pyworld3
+    if model == 'FUND':
+        chart_name = 'Sea level evolution over the years'
+        min_value, max_value = ppt.get_greataxisrange(temperature_df['sea_level'])
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
+                                                 'Seal level evolution',
+                                                 [year_start - 5, year_end + 5], [min_value, max_value],
+                                                 chart_name)
+        visible_line = True
+        ordonate_data = list(temperature_df['sea_level'])
+        new_series = InstanciatedSeries(
+                years, ordonate_data, 'Seal level evolution [m]', 'lines', visible_line)
+        new_chart.series.append(new_series)
+
+        instanciated_charts.append(new_chart)
+
+    return instanciated_charts
+
+def radiative_forcing(forcing_df, instanciated_charts):
+    years = forcing_df[GlossaryCore.Years].values.tolist()
+
+    chart_name = 'Gas Radiative forcing evolution over the years'
+
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Radiative forcing (W.m-2)',
+                                             chart_name=chart_name)
+
+    for forcing in forcing_df.columns:
+        if forcing != GlossaryCore.Years:
+            new_series = InstanciatedSeries(
+                years, forcing_df[forcing].values.tolist(), forcing, 'lines')
+
+            new_chart.series.append(new_series)
+
+    instanciated_charts.append(new_chart)
+
+    return instanciated_charts
+

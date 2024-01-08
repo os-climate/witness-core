@@ -57,7 +57,7 @@ class CoalModelTestCase(unittest.TestCase):
         model_name = 'all_resource.coal_resource'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_witness': f'{name}.{model_name}',
+                   GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
                    'ns_functions': f'{name}.{model_name}',
                    'ns_coal_resource':f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}'}

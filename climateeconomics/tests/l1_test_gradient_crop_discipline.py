@@ -152,7 +152,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
 
         self.model_name = 'crop'
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_functions': f'{self.name}',
                    'ns_biomass_dry': f'{self.name}',
                    'ns_land_use':f'{self.name}',

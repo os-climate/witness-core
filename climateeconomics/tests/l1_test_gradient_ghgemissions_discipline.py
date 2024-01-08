@@ -42,9 +42,9 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
     def test_carbon_emissions_analytic_grad(self):
 
         self.model_name = 'ghgemission'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_energy_mix': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_agriculture': f'{self.name}',
                    'ns_ref': f'{self.name}',
                    'ns_ccs': f'{self.name}',

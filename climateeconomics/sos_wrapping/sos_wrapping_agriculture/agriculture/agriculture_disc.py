@@ -86,7 +86,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
                GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-               GlossaryCore.PopulationDf['var_name']: GlossaryCore.PopulationDf,
+               GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
                'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
                                    'dataframe_descriptor': {'red meat': ('float', [0, 1e9], True),
                                                             'cereals': ('float', [0, 1e9], True),
@@ -114,7 +114,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
 
     DESC_OUT = {
         'total_food_land_surface': {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'food_land_surface_df': {
             'type': 'dataframe', 'unit': 'Gha'},
         'food_land_surface_percentage_df': {'type': 'dataframe', 'unit': '%'},

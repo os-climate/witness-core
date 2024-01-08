@@ -71,13 +71,13 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2',
-                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'CH4_land_emissions': {'type': 'dataframe', 'unit': 'GtCH4',
-                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'N2O_land_emissions': {'type': 'dataframe', 'unit': 'GtN2O',
-                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
-        'co2_eq_20': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
-        'co2_eq_100': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
+        'co2_eq_20': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        'co2_eq_100': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
     }
 
     def setup_sos_disciplines(self):

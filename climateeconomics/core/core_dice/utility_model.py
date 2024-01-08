@@ -104,7 +104,7 @@ class UtilityModel():
         tstep * scale1 * sum(t,  CEMUTOTPER(t)) + scale2
         """
         sum_u = sum(self.utility_df[GlossaryCore.DiscountedUtility])
-#         if rescale == True:
+#         if rescale:
 #             welfare = self.time_step * self.scaleone * sum_u + self.scaletwo
 #         else:
 #             welfare = self.time_step * self.scaleone * sum_u

@@ -32,7 +32,7 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
 
     def test_execute(self):
         self.model_name = 'non_use_capital_dev'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_energy': f'{self.name}.EnergyMix',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}',

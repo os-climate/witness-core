@@ -40,7 +40,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
     def test_policy_analytic_grad(self):
 
         self.model_name = 'policy'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -59,10 +59,10 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         CCS_price = pd.DataFrame(
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(100, 900, len(years))})
         CO2_damage = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
+            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(300, 700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.CO2_damage_price': CO2_damage,
+                       f'{self.name}.{GlossaryCore.CO2DamagePrice}': CO2_damage,
                        f'{self.name}.ccs_price_percentage': 50.,
                        f'{self.name}.co2_damage_price_percentage': 70.
                        }
@@ -73,13 +73,13 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline.pkl',
-                            local_data = disc.local_data,discipline=disc, inputs=[f'{self.name}.CCS_price', f'{self.name}.CO2_damage_price'],
+                            local_data = disc.local_data,discipline=disc, inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_policy_analytic_grad_2(self):
 
         self.model_name = 'policy'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -98,10 +98,10 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         CCS_price = pd.DataFrame(
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(900, 900, len(years))})
         CO2_damage = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(300, 700, len(years))})
+            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(300, 700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.CO2_damage_price': CO2_damage,
+                       f'{self.name}.{GlossaryCore.CO2DamagePrice}': CO2_damage,
                        f'{self.name}.ccs_price_percentage': 50.,
                        f'{self.name}.co2_damage_price_percentage': 70.
                        }
@@ -110,13 +110,13 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.CO2_damage_price'],
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline2.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')
 
     def test_policy_analytic_grad_3(self):
 
         self.model_name = 'policy'
-        ns_dict = {'ns_witness': f'{self.name}',
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_ref': f'{self.name}'}
 
@@ -135,10 +135,10 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         CCS_price = pd.DataFrame(
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(-100, -900, len(years))})
         CO2_damage = pd.DataFrame(
-            {GlossaryCore.Years: years, 'CO2_damage_price': np.linspace(-300, -700, len(years))})
+            {GlossaryCore.Years: years, GlossaryCore.CO2DamagePrice: np.linspace(-300, -700, len(years))})
 
         values_dict = {f'{self.name}.CCS_price': CCS_price,
-                       f'{self.name}.CO2_damage_price': CO2_damage,
+                       f'{self.name}.{GlossaryCore.CO2DamagePrice}': CO2_damage,
                        f'{self.name}.ccs_price_percentage': 50.,
                        f'{self.name}.co2_damage_price_percentage': 60.
                        }
@@ -147,5 +147,5 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.execute()
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0].mdo_discipline_wrapp.mdo_discipline
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.CO2_damage_price'],
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_policy_discipline3.pkl', discipline=disc, local_data = disc.local_data,inputs=[f'{self.name}.CCS_price', f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2TaxesValue}'], step=1e-15, derr_approx='complex_step')

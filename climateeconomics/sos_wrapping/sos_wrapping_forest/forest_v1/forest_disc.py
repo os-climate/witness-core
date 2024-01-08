@@ -51,7 +51,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                Forest.DEFORESTATION_SURFACE: {'type': 'dataframe', 'unit': 'Mha',
                                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                                'deforested_surface': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
-                                                      'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                                                      'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
                Forest.LIMIT_DEFORESTATION_SURFACE: {'type': 'float', 'unit': 'Mha', 'default': deforestation_limit,
                                                             'namespace': 'ns_forest', },
                Forest.INITIAL_CO2_EMISSIONS: {'type': 'float', 'unit': 'GtCO2', 'default': initial_emissions,
@@ -68,11 +68,11 @@ class ForestDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CO2EmissionsDetailDfValue: {
             'type': 'dataframe', 'unit': 'GtCO2', 'namespace': 'ns_forest'},
         Forest.FOREST_SURFACE_DF: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         Forest.FOREST_DETAIL_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha'},
         Forest.CO2_EMITTED_FOREST_DF: {
-            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+            'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
     }
 
     FOREST_CHARTS = 'Forest chart'

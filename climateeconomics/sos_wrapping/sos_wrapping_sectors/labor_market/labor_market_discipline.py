@@ -50,7 +50,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                'employment_a_param': {'type': 'float', 'default': 0.6335, 'user_level': 3, 'unit': '-'},
                'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
                'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
-               GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': 'ns_witness',
+               GlossaryCore.WorkingAgePopulationDfValue: {'type': 'dataframe', 'unit': 'millions of people', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                       GlossaryCore.Population1570: ('float', None, False),}
                                              },
@@ -58,7 +58,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
     DESC_OUT = {
         GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'],
                                         'unit': GlossaryCore.WorkforceDf['unit'], 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                         'namespace': 'ns_witness'},
+                         'namespace': GlossaryCore.NS_WITNESS},
         'employment_df': {'type': 'dataframe', 'unit': '-'}
     }
 

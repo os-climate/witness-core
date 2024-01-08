@@ -42,6 +42,7 @@ class MacroeconomicsModel():
         self.years_range = None
         self.sectors_list = None
         self.sum_invests_df = None
+        self.damage_df = None
         self.invests_energy_wo_tax = None
         self.max_invest_constraint = None
         self.share_max_invest = None
@@ -105,12 +106,32 @@ class MacroeconomicsModel():
         # add invests in energy to sum of invests (use .values to avoid index issues)
         self.sum_invests_df[GlossaryCore.InvestmentsValue] += self.invests_energy_wo_tax[GlossaryCore.EnergyInvestmentsWoTaxValue].values
 
+    def compute_total_damages(self):
+        self.damage_df = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+        })
+
+        column_to_sum = list(GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
+        column_to_sum.remove(GlossaryCore.Years)
+        for col in column_to_sum:
+            damage_to_sum = []
+            for sector in self.sectors_list:
+                damages_detailed_sector = self.inputs[f'{sector}.{GlossaryCore.DamageDetailedDfValue}']
+                damages_sector = self.inputs[f'{sector}.{GlossaryCore.DamageDfValue}']
+                if col in damages_sector.columns:
+                    damage_to_sum.append(damages_sector[col].values)
+                else:
+                    damage_to_sum.append(damages_detailed_sector[col].values)
+
+            self.damage_df[col] = np.sum(damage_to_sum, axis=0)
+
     def compute(self, inputs):
         """Compute all models for year range"""
         self.inputs = inputs
         self.configure_parameters(inputs)
         self.compute_economics()
         self.compute_max_invest_constraint()
+        self.compute_total_damages()
 
     def compute_max_invest_constraint(self):
         """

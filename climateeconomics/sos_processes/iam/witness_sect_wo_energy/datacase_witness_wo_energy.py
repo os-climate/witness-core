@@ -70,7 +70,7 @@ class DataStudy():
         witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
         witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
-        witness_input[f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}"] = False
+        witness_input[f"{self.study_name}.{'Macroeconomics'}.{GlossaryCore.DamageToProductivity}"] = True
         witness_input[f"{self.study_name}.{GlossaryCore.FractionDamageToProductivityValue}"] = 0.30
         witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015
         witness_input[f"{self.study_name}.{'conso_elasticity'}"] = 1.45
@@ -238,7 +238,7 @@ class DataStudy():
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
             'weight': [1.0, 1.0, 0.0, 0.0],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', 'ns_witness']
+            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', GlossaryCore.NS_WITNESS]
         }
 
         func_df = DataFrame(data)

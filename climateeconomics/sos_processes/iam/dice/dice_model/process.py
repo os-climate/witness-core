@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -29,7 +30,7 @@ class ProcessBuilder(BaseProcessBuilder):
     def get_builders(self):
         ns_scatter = self.ee.study_name
 
-        ns_dict = {'ns_dice': ns_scatter, 'ns_witness': ns_scatter, 'ns_scenario': ns_scatter}
+        ns_dict = {'ns_dice': ns_scatter, GlossaryCore.NS_WITNESS: ns_scatter, 'ns_scenario': ns_scatter}
 
         mods_dict = {
             'Carboncycle': 'climateeconomics.sos_wrapping.sos_wrapping_dice.carboncycle.carboncycle_discipline.CarbonCycleDiscipline',

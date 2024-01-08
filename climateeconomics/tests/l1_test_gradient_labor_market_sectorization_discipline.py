@@ -65,7 +65,7 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
         
         model_name = 'LaborMarket'
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness':  f'{self.name}'}
+                   GlossaryCore.NS_WITNESS:  f'{self.name}'}
         
         self.ee.ns_manager.add_ns_def(ns_dict)
 

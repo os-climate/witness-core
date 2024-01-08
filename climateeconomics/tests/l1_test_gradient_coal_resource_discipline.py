@@ -66,7 +66,7 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'coal_resource'
 
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}.{self.model_name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
                    'ns_coal_resource': f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}
@@ -110,7 +110,7 @@ class CoalResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'coal_resource'
 
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}.{self.model_name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
                    'ns_coal_resource':f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}

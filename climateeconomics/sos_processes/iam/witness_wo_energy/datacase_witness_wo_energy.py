@@ -70,7 +70,7 @@ class DataStudy():
         witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
         witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
-        witness_input[f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}"] = False
+        witness_input[f"{self.study_name}.{'Macroeconomics'}.{GlossaryCore.DamageToProductivity}"] = True
         witness_input[f"{self.study_name}.{GlossaryCore.FractionDamageToProductivityValue}"] = 0.30
         witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015
         witness_input[f"{self.study_name}.{'conso_elasticity'}"] = 1.45
@@ -83,6 +83,12 @@ class DataStudy():
         # get population from csv file
         # get file from the data folder 3 folder up.
         global_data_dir = join(Path(__file__).parents[3], 'data')
+        damage_fraction_initialisation = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.DamageFractionOutput: np.linspace(0.001, 0.1, len(years)),
+            GlossaryCore.BaseCarbonPrice: np.zeros_like(years),
+        })
+        witness_input[f'{self.study_name}.{GlossaryCore.DamageFractionDfValue}'] = damage_fraction_initialisation
         population_df = pd.read_csv(
             join(global_data_dir, 'population_df.csv'))
         population_df.index = years
@@ -235,7 +241,7 @@ class DataStudy():
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE],
             'weight': [1.0, 1.0, 0.0],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, ],
-            'namespace': ['ns_functions', 'ns_functions', 'ns_witness']
+            'namespace': ['ns_functions', 'ns_functions', GlossaryCore.NS_WITNESS]
         }
 
         func_df = DataFrame(data)

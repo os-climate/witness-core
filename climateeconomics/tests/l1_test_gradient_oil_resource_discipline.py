@@ -66,7 +66,7 @@ class OilResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'oil_resource'
 
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}.{self.model_name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
                    'ns_oil_resource':f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}
@@ -105,7 +105,7 @@ class OilResourceJacobianDiscTest(AbstractJacobianUnittest):
         self.model_name = 'oil_resource'
 
         ns_dict = {'ns_public': f'{self.name}',
-                   'ns_witness': f'{self.name}.{self.model_name}',
+                   GlossaryCore.NS_WITNESS: f'{self.name}.{self.model_name}',
                    'ns_functions': f'{self.name}.{self.model_name}',
                    'ns_oil_resource':f'{self.name}.{self.model_name}',
                    'ns_resource': f'{self.name}.{self.model_name}'}

@@ -65,20 +65,20 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         'rockstrom_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
-                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_witness'},
+                 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'scale_factor_atmo_conc': {'type': 'float', 'default': 0.01, 'unit': '-', 'user_level': 2, 'visibility': 'Shared',
-                                   'namespace': 'ns_witness'},
+                                   'namespace': GlossaryCore.NS_WITNESS},
         'minimum_ppm_limit': {'type': 'float', 'unit': 'ppm', 'default': 250, 'user_level': 2},
         'minimum_ppm_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 10, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
 
     }
 
     DESC_OUT = {
-        GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': 'ns_witness'},
+        GlossaryCore.CarbonCycleDfValue: {'type': 'dataframe', 'unit': 'ppm', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         'carboncycle_detail_df': {'type': 'dataframe', 'unit': 'ppm'},
-        'ppm_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
-        'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'},
-        'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': 'ns_witness', 'unit': '-'}
+        'ppm_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
+        'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
+        'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'}
     }
 
     def init_execution(self):

@@ -59,7 +59,27 @@ $$A^*_t=(1-f\Omega_t) \cdot \frac{A^*_{t-1}}{1-A_{gt-1}}$$ with $A_0 =A^*_0$.
 and then damage to output $\Omega_{yt}$ becomes: 
 $$\Omega_{yt} = 1- \frac{1- \Omega_t}{1-f\Omega_t}$$
 such that the output net of climate damage is 
-$$Q^*_t = (1-\Omega_{yt}) \cdot Y_t \cdot (Ku_t, L_t)$$
+$$Q^*_t = (1-\Omega_{yt}) \cdot Y_t (Ku_t, L_t)$$
+
+## Damages
+Damages are computed as the sum of immediate climate damages + damage from loss of productivity
+
+#### Immediate climate damages
+
+Coming from Damage Discipline, the input $\Omega$ represents the fraction of the gross output that is wasted as damages from climate,
+
+Therefore, when applied, the damage from climate are computed as :
+
+$$ D^{climate}_t = \Omega_t Y_t$$
+
+#### Damages from productivity loss
+
+When damage to productivity is on,
+
+$$ D^{productivity\ loss}_t = Y_t$ \times  \frac{A_t - A^{\star}_t}{A_t} $$
+
+where $A$ is the productivity without damage and $A^{\star}$ is productivity with damage (see above section on productivity computation).
+
 
 ### Labor force 
 To obtain the labor force we use the population in working age and the employment rate. We defined the population in working age as the population in the 15-70 age range. 

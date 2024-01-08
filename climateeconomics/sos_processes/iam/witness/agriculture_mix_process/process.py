@@ -17,6 +17,7 @@ limitations under the License.
 
 import re
 
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import AGRI_MIX_MODEL_LIST
 from energy_models.core.energy_process_builder import EnergyProcessBuilder
 
@@ -45,7 +46,7 @@ class ProcessBuilder(EnergyProcessBuilder):
                    'ns_energy': f'{ns_study}.{ns_agriculture_mix}',
                    'ns_energy_study': f'{ns_study}',
                    'ns_public': f'{ns_study}',
-                   'ns_witness': f'{ns_study}',
+                   GlossaryCore.NS_WITNESS: f'{ns_study}',
                     'ns_ref': f'{ns_study}',
                    'ns_functions': f'{ns_study}',
                    'ns_biomass_dry': f'{ns_study}',
