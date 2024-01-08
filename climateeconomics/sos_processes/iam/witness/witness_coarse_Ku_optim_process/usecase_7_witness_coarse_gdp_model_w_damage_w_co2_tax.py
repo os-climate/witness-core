@@ -15,7 +15,7 @@ limitations under the License.
 '''
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
+from climateeconomics.sos_processes.iam.witness.witness_optim_Ku_sub_process.usecase_witness_optim_sub import \
     Study as witness_optim_sub_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, COUPLING_NAME, EXTRA_NAME
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -140,6 +140,6 @@ class Study(ClimateEconomicsStudyManager):
 
 
 if '__main__' == __name__:
-    uc_cls = Study()
+    uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
