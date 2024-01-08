@@ -26,8 +26,7 @@ from energy_models.core.ccus.ccus import CCUS
 
 TAX_NAME = 'with tax'
 DAMAGE_NAME = 'with damage'
-ALL_NAME = 'all scenarios'
-effects_list = [TAX_NAME, DAMAGE_NAME, ALL_NAME]
+effects_list = [TAX_NAME, DAMAGE_NAME]
 EFFECT_NAME = 'Effects'
 CHART_NAME = 'Charts'
 YEARS_NAME = 'YEARS'
@@ -93,19 +92,14 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == YEARS_NAME:
                 years = chart_filter.selected_values
             if chart_filter.filter_key == EFFECT_NAME:
+                # performs a "OR" operation on the filter criteria. If no effect is selected for filtering, all scenarios
+                # are shown. Then, restricts the scenarios shown to those respecting at least one of the filtered condition(s)
                 effects_list_filtered = chart_filter.selected_values
-                if ALL_NAME in effects_list_filtered: #disregards the filters on damage and tax
-                    selected_scenarios = scenario_list
-                else:
+                if len(effects_list_filtered) > 0:
                     selected_scenarios = []
-                    for scenario in scenario_list:
-                        # convert list into dictionnary to compare effects in an easier way
-                        effects_filtered_dict = dict.fromkeys(damage_tax_activation_status_dict[scenario].keys(), False)
-                        for key in effects_list_filtered:
-                            if key != ALL_NAME:
-                                effects_filtered_dict[key] = True
-                        if effects_filtered_dict == damage_tax_activation_status_dict[scenario]:
-                            selected_scenarios.append(scenario)
+                    for effect in effects_list_filtered:
+                        selected_scenarios.extend([scenario for scenario in scenario_list
+                                                   if damage_tax_activation_status_dict[scenario][effect]])
 
     """
         -------------
