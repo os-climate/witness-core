@@ -88,24 +88,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     damage_detailed_df = GlossaryCore.get_dynamic_variable(GlossaryCore.DamageDetailedDf)
                     damage_detailed_df.update({self.NAMESPACE: GlossaryCore.NS_SECTORS})
                     dynamic_inputs[f'{sector}.{GlossaryCore.DamageDetailedDfValue}'] = damage_detailed_df
-            if GlossaryCore.SectorListValue in self.get_data_in():
-                sectorlist = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
 
-            if GlossaryCore.SectionListValue in self.get_data_in():
-                sectionlist = self.get_sosdisc_inputs(GlossaryCore.SectionListValue)
-            if sectionlist is not None:
-                section_gdp_percentage = copy.deepcopy(GlossaryCore.SectionGdpPercentageDf)
-                # update dataframe descriptor
-                for section in sectionlist:
-                    section_gdp_percentage['dataframe_descriptor'].update({section: ('float', [1.e-8, 1e30], True)})
-                dynamic_inputs.update({GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage})
             self.add_inputs(dynamic_inputs)
 
     def run(self):
         """run method"""
         inputs_dict = self.get_sosdisc_inputs()
         self.macro_model.compute(inputs_dict)
-        section_gdp_percentage_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
 
         outputs_dict = {
             GlossaryCore.EconomicsDfValue: self.macro_model.economics_df,

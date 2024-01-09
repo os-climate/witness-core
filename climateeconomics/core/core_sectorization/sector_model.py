@@ -132,11 +132,16 @@ class SectorModel():
             self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
                 end_year_csv, self.year_end)
 
-        self.section_gdp_df[GlossaryCore.Years] = self.gdp_percentage_per_section_df[GlossaryCore.Years]
+        section_gdp_percentage_df = pd.DataFrame()
+        section_gdp_percentage_df[GlossaryCore.Years] = self.gdp_percentage_per_section_df[GlossaryCore.Years]
+        sum_sections = 0
         for section in self.gdp_percentage_per_section_df.columns:
             if section in self.section_list:
-                self.section_gdp_df[section] = self.gdp_percentage_per_section_df[section]
-
+                section_gdp_percentage_df[section] = self.gdp_percentage_per_section_df[section]
+                sum_sections += section_gdp_percentage_df[section].iloc[0]
+        for section in section_gdp_percentage_df.columns:
+            section_gdp_percentage_df[section] = (section_gdp_percentage_df[section] * 100) / sum_sections
+        return section_gdp_percentage_df
 
     def init_dataframes(self):
         '''
@@ -291,10 +296,13 @@ class SectorModel():
         self.production_df.loc[year, GlossaryCore.OutputNetOfDamage] = output_net_of_d
         return output_net_of_d
 
-    def compute_output_net_of_damage_per_section(self, year):
-        output_net_of_d = self.compute_output_net_of_damage(self, year)
-        self.get_gdp_percentage_per_section()
-        self.section_gdp_df = self.gdp_percentage_per_section_df.copy()
+    def compute_output_net_of_damage_per_section(self):
+        section_gdp_percentage_df = self.get_gdp_percentage_per_section()
+        self.section_gdp_df = section_gdp_percentage_df.copy()
+        self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(
+            self.production_df.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
+
+
     
     def compute_output_growth_rate(self, year):
         """ Compute output growth rate for every year for the year before: 
@@ -449,6 +457,8 @@ class SectorModel():
         if self.prod_function_fitting:
             self.compute_long_term_energy_efficiency()
             self.compute_energy_eff_constraints()
+
+        self.compute_output_net_of_damage_per_section()
 
         self.compute_energy_usage()
         self.compute_energy_wasted_objective()

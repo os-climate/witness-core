@@ -23,6 +23,8 @@ from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 
 
 class SectorDiscipline(ClimateEcoDiscipline):
@@ -74,7 +76,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                   'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True}
     }
     DESC_OUT = {
-        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict,
+        GlossaryCore.SectionGdpDfValue: GlossaryCore.SectionGdpDf,
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
@@ -127,7 +129,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
         param = self.get_sosdisc_inputs(in_dict=True)
         self.model = SectorModel()
         self.model.configure_parameters(param, self.sector_name)
-        self.macro_model = SectorModel()
 
     def run(self):
         # Get inputs
@@ -161,7 +162,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                        f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
                        GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
-                       GlossaryCore.SectionGdpDictValue: self.macro_model.dict_sectors_detailed,
+                       GlossaryCore.SectionGdpDfValue: self.model.section_gdp_df,
                        }
 
         if prod_function_fitting:
@@ -331,7 +332,6 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.Productivity,
                       GlossaryCore.EnergyEfficiency,
                       GlossaryCore.EnergyUsage,
-                      GlossaryCore.SectorGdpPart,
                       GlossaryCore.SectionGdpPart,
                       ]
 
@@ -360,6 +360,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         production_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.ProductionDfValue}")
         detailed_capital_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}")
         productivity_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
+        section_gdp_df = self.get_sosdisc_outputs(GlossaryCore.SectionGdpDfValue)
         workforce_df = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
         capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
@@ -643,5 +644,31 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
+
+        if GlossaryCore.SectionGdpPart in chart_list:
+            sections_gdp = self.get_sosdisc_outputs(GlossaryCore.SectionGdpDfValue)
+
+            chart_name = f'Breakdown of GDP per section for {self.sector_name} sector [T$]'
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionGdpPart,
+                                                     chart_name=chart_name, stacked_bar=True)
+
+            # loop on all sections of the sector
+            for section, section_value in sections_gdp.items():
+                new_series = InstanciatedSeries(
+                    years, list(section_value),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
+                new_chart.add_series(new_series)
+
+            # have a full label on chart (for long names)
+            fig = new_chart.to_plotly()
+            fig.update_traces(hoverlabel=dict(namelength=-1))
+            # if dictionaries has big size, do not show legend, otherwise show it
+            if len(list(sections_gdp.keys())) > 5:
+                fig.update_layout(showlegend=False)
+            else:
+                fig.update_layout(showlegend=True)
+            instanciated_charts.append(InstantiatedPlotlyNativeChart(
+                fig, chart_name=chart_name,
+                default_title=True, default_legend=False))
 
         return instanciated_charts
