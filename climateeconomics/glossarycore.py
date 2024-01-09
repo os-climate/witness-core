@@ -82,6 +82,8 @@ class GlossaryCore:
     NS_SECTORS = "ns_sectors"
     NS_WITNESS = "ns_witness"
     NS_ENERGY_MIX = "ns_energy_mix"
+    NS_REFERENCE = "ns_ref"
+    NS_FUNCTIONS = "ns_functions"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -617,6 +619,27 @@ class GlossaryCore:
         "unit": "-",
     }
 
+    PerCapitaConsumptionUtilityRefName = "per_capita_consumption_utility_ref"
+    PerCapitaConsumptionUtilityRef = {
+        "var_name": PerCapitaConsumptionUtilityRefName,
+        "type": "float",
+        "visibility": "Shared",
+        "namespace": NS_REFERENCE,
+        "unit": "k$/capita",
+        "default": 0.5,
+        "user_level": 3
+    }
+
+    PerCapitaConsumptionUtilityObjectiveName = "per_capita_consumption_utility_objective"
+    PerCapitaConsumptionUtilityObjective = {
+        "var_name": PerCapitaConsumptionUtilityObjectiveName,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "unit": "-",
+    }
+
+
     ProductionDfValue = "production_df"
     ProductionDf = {
         "var_name": ProductionDfValue,
@@ -960,7 +983,7 @@ class GlossaryCore:
         "type": "array",
         "unit": "-",
         "visibility": "Shared",
-        "namespace": "ns_functions",
+        "namespace": NS_FUNCTIONS,
         "description": "Usable capital objective"
     }
 
@@ -971,7 +994,7 @@ class GlossaryCore:
         "default": 100.,
         "user_level": 3,
         "visibility": "Shared",
-        "namespace": "ns_ref",
+        "namespace": NS_REFERENCE,
         "description": "reference to normalize usable capital objective"
     }
 
