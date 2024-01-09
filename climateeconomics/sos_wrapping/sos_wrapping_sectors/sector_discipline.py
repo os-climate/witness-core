@@ -86,7 +86,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         """setup sos disciplines"""
         dynamic_outputs = {}
         dynamic_inputs = {}
-        sectionlist = None
+
         if GlossaryCore.WorkforceDfValue in self.get_sosdisc_inputs():
             workforce_df: pd.DataFrame = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
             if workforce_df is not None and self.sector_name not in workforce_df.columns:
@@ -104,7 +104,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                                                   'dynamic_dataframe_columns': True}
         if GlossaryCore.SectionListValue in self.get_data_in():
             sectionlist = self.get_sosdisc_inputs(GlossaryCore.SectionListValue)
-                # add section gdp percentage variable
+
         dynamic_inputs[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.InvestmentDf)
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.ProductionDfValue}"] = GlossaryCore.get_dynamic_variable(GlossaryCore.ProductionDf)
         capital_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.CapitalDf)

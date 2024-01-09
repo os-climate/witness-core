@@ -158,7 +158,9 @@ class ServicesDiscTest(unittest.TestCase):
             pass
 
     def test_execute_forfitting(self):
-
+        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        section_list = GlossaryCore.SectionsIndustry
         # out dict definition
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -181,6 +183,8 @@ class ServicesDiscTest(unittest.TestCase):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_xzero'}": 1993,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
+                       f'{self.name}.{GlossaryCore.SectionList}': section_list,
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,

@@ -17,6 +17,7 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+import copy
 
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -131,15 +132,11 @@ class SectorModel():
             self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
                 end_year_csv, self.year_end)
 
-    def compute_section_gdp(self):
-        """
-        Computes the GDP net of damage per section
-        """
-        # get gdp percentage per section, and compute gdp per section using Net output of damage
-        self.get_gdp_percentage_per_section()
-        self.section_gdp_df = self.gdp_percentage_per_section_df.copy()
-        self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(
-            self.economics_df.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
+        self.section_gdp_df[GlossaryCore.Years] = self.gdp_percentage_per_section_df[GlossaryCore.Years]
+        for section in self.gdp_percentage_per_section_df.columns:
+            if section in self.section_list:
+                self.section_gdp_df[section] = self.gdp_percentage_per_section_df[section]
+
 
     def init_dataframes(self):
         '''
@@ -293,6 +290,11 @@ class SectorModel():
                 output_net_of_d = gross_output * (1 - damefrac)
         self.production_df.loc[year, GlossaryCore.OutputNetOfDamage] = output_net_of_d
         return output_net_of_d
+
+    def compute_output_net_of_damage_per_section(self, year):
+        output_net_of_d = self.compute_output_net_of_damage(self, year)
+        self.get_gdp_percentage_per_section()
+        self.section_gdp_df = self.gdp_percentage_per_section_df.copy()
     
     def compute_output_growth_rate(self, year):
         """ Compute output growth rate for every year for the year before: 
