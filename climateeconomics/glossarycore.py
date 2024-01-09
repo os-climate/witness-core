@@ -59,7 +59,8 @@ class GlossaryCore:
     energy_list = "energy_list"
     techno_list = "technologies_list"
     ccs_list = "ccs_list"
-
+    UsableCapitalObjectiveName = "usable_capital_objective"
+    UsableCapitalObjectiveRefName = "usable_capital_objective_ref"
     invest_mix = "invest_mix"
     SectorServices = "Services"
     SectorAgriculture = "Agriculture"
@@ -952,6 +953,26 @@ class GlossaryCore:
         "default": 100.,
         "user_level": 3,
         "description": "Max investment reference to normalize associated constraint"
+    }
+
+    UsableCapitalObjective = {
+        "var_name": UsableCapitalObjectiveName,
+        "type": "array",
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": "ns_functions",
+        "description": "Usable capital objective"
+    }
+
+    UsableCapitalObjectiveRef = {
+        "var_name": UsableCapitalObjectiveRefName,
+        "type": "float",
+        "unit": "T$",
+        "default": 100.,
+        "user_level": 3,
+        "visibility": "Shared",
+        "namespace": "ns_ref",
+        "description": "reference to normalize usable capital objective"
     }
 
     @staticmethod

@@ -42,10 +42,10 @@ class SectorModel():
         self.growth_rate_df = None
         self.lt_energy_eff = None
         self.emax_enet_constraint = None
-        
+        self.gdp_percentage_per_section_df = None
+        self.section_gdp_df = None
         self.range_energy_eff_cstrt = None
-        self.energy_eff_xzero_constraint =  None 
-        
+        self.energy_eff_xzero_constraint =  None
     def configure_parameters(self, inputs_dict, sector_name):
         '''
         Configure with inputs_dict from the discipline
@@ -62,7 +62,9 @@ class SectorModel():
         self.time_step = inputs_dict[GlossaryCore.TimeStep]
         self.years_range = np.arange(self.year_start,self.year_end + 1,self.time_step)
         self.nb_years = len(self.years_range)
-
+        self.sector_name = sector_name
+        self.retrieve_sections_list()
+        #self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']
@@ -89,6 +91,44 @@ class SectorModel():
         self.sector_name = sector_name
         
         self.init_dataframes()
+
+
+    def retrieve_sections_list(self):
+        if self.sector_name == GlossaryCore.SectorIndustry:
+            self.section_list = GlossaryCore.SectionsIndustry
+        if self.sector_name == GlossaryCore.SectorServices:
+            self.section_list = GlossaryCore.SectionsServices
+        if self.sector_name == GlossaryCore.SectorAgriculture:
+            self.section_list = GlossaryCore.SectionsAgriculture
+
+    def get_gdp_percentage_per_section(self):
+        '''
+        Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
+        '''
+        # the year range for the study can differ from that stated in the csv file
+        start_year_csv = self.gdp_percentage_per_section_df.iloc[0][GlossaryCore.Years]
+        if start_year_csv > self.year_start:
+            self.gdp_percentage_per_section_df = pd.concat(
+                [[self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start),
+                 self.gdp_percentage_per_section_df]).reset_index(drop=True)
+            self.gdp_percentage_per_section_df.iloc[0:(start_year_csv - self.year_start)][
+                GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
+
+        elif start_year_csv < self.year_start:
+            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
+                self.gdp_percentage_per_section_df[GlossaryCore.Years] > self.year_start - 1]
+
+        end_year_csv = self.gdp_percentage_per_section_df.iloc[-1][GlossaryCore.Years]
+        if end_year_csv > self.year_end:
+            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
+                self.gdp_percentage_per_section_df[GlossaryCore.Years] < self.year_end + 1]
+        elif end_year_csv < self.year_end:
+            self.gdp_percentage_per_section_df = pd.concat([self.gdp_percentage_per_section_df,
+                                                            [self.gdp_percentage_per_section_df.iloc[-1:]] * (
+                                                                        start_year_csv - self.year_start)]).reset_index(
+                drop=True)
+            self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
+                end_year_csv, self.year_end)
 
     def init_dataframes(self):
         '''

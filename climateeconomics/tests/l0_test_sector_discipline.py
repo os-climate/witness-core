@@ -37,7 +37,8 @@ class ServicesDiscTest(unittest.TestCase):
         '''
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        
+
+        SectorDiscipline.sector_name = GlossaryCore.SectorIndustry
         self.model_name = SectorDiscipline.sector_name
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',

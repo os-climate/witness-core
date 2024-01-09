@@ -23,6 +23,7 @@ import logging
 import climateeconomics.sos_wrapping.sos_wrapping_witness.population.population_discipline as Population
 from climateeconomics.core.core_land_use.land_use_v2 import LandUseV2
 import climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline as MacroEconomics
+from climateeconomics.charts_tools import graph_gross_and_net_output
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.glossaryenergy import GlossaryEnergy
@@ -106,10 +107,17 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts = Population.graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts)
 
     if 'gdp breakdown' in chart_list:
-        economics_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.EconomicsDetailDfValue)[0])
-        damage_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.DamageDetailedDfValue)[0])
+        economics_detail_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.EconomicsDetailDfValue)[0])
+        damage_detailed_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.DamageDetailedDfValue)[0])
         compute_climate_impact_on_gdp = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('assumptions_dict')[0])['compute_climate_impact_on_gdp']
-        instanciated_charts = MacroEconomics.breakdown_gdp(economics_df, damage_df, compute_climate_impact_on_gdp, instanciated_charts)
+        damages_to_productivity = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.DamageToProductivity)[0]) and compute_climate_impact_on_gdp
+        chart_name = 'Gross and net of damage output per year'
+        new_chart = graph_gross_and_net_output(chart_name=chart_name,
+                                               compute_climate_impact_on_gdp=compute_climate_impact_on_gdp,
+                                               damages_to_productivity=damages_to_productivity,
+                                               economics_detail_df=economics_detail_df,
+                                               damage_detailed_df=damage_detailed_df)
+        instanciated_charts.append(new_chart)
 
     if 'land use' in chart_list:
 
