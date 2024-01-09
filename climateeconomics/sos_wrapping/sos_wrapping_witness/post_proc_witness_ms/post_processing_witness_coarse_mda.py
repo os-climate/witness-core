@@ -94,6 +94,7 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == EFFECT_NAME:
                 # performs a "OR" operation on the filter criteria. If no effect is selected for filtering, all scenarios
                 # are shown. Then, restricts the scenarios shown to those respecting at least one of the filtered condition(s)
+                # at start, the graph without damage without tax are not shown
                 effects_list_filtered = chart_filter.selected_values
                 if len(effects_list_filtered) > 0:
                     selected_scenarios = []
@@ -543,20 +544,26 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
     for scenario, y_values in y_dict.items():
         '''
         For ease of understanding of the plots, scenarios without damage are in dashed line(solid otherwise) and scenarios
-        with tax have circles on the line. wether or not damage and taxes are activated is provided in status_dict
+        with tax have circles on the line. whether or not damage and taxes are activated is provided in status_dict
         '''
-        lines = SeriesTemplate.LINES_DISPLAY
-        marker = 'circle'
+        marker_symbol = 'circle'
         if status_dict is not None:
             if status_dict[scenario][TAX_NAME] == False:
-                marker = ''
+                add_markers = ''
+            else:
+                add_markers = SeriesTemplate.ADD_MARKERS
+                marker_symbol = 'line-ns-open' #if circles are used, the dashed line cannot be seen
 
             if status_dict[scenario][DAMAGE_NAME] == False:
-                lines = SeriesTemplate.DASH_LINES_DISPLAY
+                lines = SeriesTemplate.DASH_LINES_DISPLAY + add_markers
+            else:
+                lines = SeriesTemplate.LINES_DISPLAY + add_markers
+        else:
+            lines = SeriesTemplate.LINES_DISPLAY
 
         if scenario in selected_scenarios:
             new_series = InstanciatedSeries(
-                x_list, y_values, scenario, lines, True, marker_symbol=marker)
+                x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol)
 
             new_chart.series.append(new_series)
 
