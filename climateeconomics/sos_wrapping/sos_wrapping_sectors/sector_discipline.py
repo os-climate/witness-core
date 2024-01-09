@@ -150,7 +150,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             GlossaryCore.InvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
-        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.model.compute(
+        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df = self.model.compute(
             model_inputs)
 
         # Store output data
@@ -647,6 +647,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
 
         if GlossaryCore.SectionGdpPart in chart_list:
             sections_gdp = self.get_sosdisc_outputs(GlossaryCore.SectionGdpDfValue)
+            years = list(section_gdp_df.index)
 
             chart_name = f'Breakdown of GDP per section for {self.sector_name} sector [T$]'
 

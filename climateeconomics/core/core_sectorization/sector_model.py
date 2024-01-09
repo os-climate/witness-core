@@ -464,7 +464,7 @@ class SectorModel():
         self.compute_energy_wasted_objective()
         self.compute_damage_from_productivity_loss()
         self.compute_total_damages()
-        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt
+        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df
     
     ### GRADIENTS ###
 
