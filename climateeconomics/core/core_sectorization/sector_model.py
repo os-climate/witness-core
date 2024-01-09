@@ -44,7 +44,6 @@ class SectorModel():
         self.lt_energy_eff = None
         self.emax_enet_constraint = None
         self.gdp_percentage_per_section_df = None
-        self.dict_sectors_detailed = None
         self.section_gdp_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint =  None
@@ -140,7 +139,8 @@ class SectorModel():
                 section_gdp_percentage_df[section] = self.gdp_percentage_per_section_df[section]
                 sum_sections += section_gdp_percentage_df[section].iloc[0]
         for section in section_gdp_percentage_df.columns:
-            section_gdp_percentage_df[section] = (section_gdp_percentage_df[section] * 100) / sum_sections
+            if section != 'years':
+                section_gdp_percentage_df[section] = (section_gdp_percentage_df[section] * 100) / sum_sections
         return section_gdp_percentage_df
 
     def init_dataframes(self):
