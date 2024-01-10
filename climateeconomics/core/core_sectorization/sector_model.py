@@ -151,10 +151,12 @@ class SectorModel():
         default_index = self.years
         self.capital_df = pd.DataFrame(index=default_index, columns=GlossaryCore.CapitalDf['dataframe_descriptor'].keys())
         self.production_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductionDf['dataframe_descriptor'].keys())
+        self.section_gdp_df = pd.DataFrame(index=default_index,columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys())
         self.damage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
         self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductivityDf['dataframe_descriptor'].keys())
         self.growth_rate_df = pd.DataFrame(index=default_index, columns=[GlossaryCore.Years, 'net_output_growth_rate'])
         self.production_df[GlossaryCore.Years] = self.years
+        self.section_gdp_df[GlossaryCore.Years] = self.years
         self.damage_df[GlossaryCore.Years] = self.years
         self.capital_df[GlossaryCore.Years] = self.years
         self.productivity_df[GlossaryCore.Years] = self.years
