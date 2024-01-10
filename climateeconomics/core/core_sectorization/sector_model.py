@@ -132,6 +132,9 @@ class SectorModel():
                 end_year_csv, self.year_end)
 
         section_gdp_percentage_df = pd.DataFrame()
+        # self.years = np.arange(self.year_start, self.year_end + 1)
+        # default_index = self.years
+        # section_gdp_percentage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys())
         section_gdp_percentage_df[GlossaryCore.Years] = self.gdp_percentage_per_section_df[GlossaryCore.Years]
         sum_sections = 0
         for section in self.gdp_percentage_per_section_df.columns:
@@ -151,7 +154,7 @@ class SectorModel():
         default_index = self.years
         self.capital_df = pd.DataFrame(index=default_index, columns=GlossaryCore.CapitalDf['dataframe_descriptor'].keys())
         self.production_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductionDf['dataframe_descriptor'].keys())
-        self.section_gdp_df = pd.DataFrame(index=default_index,columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys())
+        self.section_gdp_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys())
         self.damage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
         self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductivityDf['dataframe_descriptor'].keys())
         self.growth_rate_df = pd.DataFrame(index=default_index, columns=[GlossaryCore.Years, 'net_output_growth_rate'])
@@ -454,6 +457,7 @@ class SectorModel():
             # capital t+1 :
             self.compute_capital(year+1)
         self.production_df = self.production_df.fillna(0.0)
+        self.section_gdp_df = self.section_gdp_df.fillna(0.0)
         self.capital_df = self.capital_df.fillna(0.0)
         self.productivity_df = self.productivity_df.fillna(0.0)
         if self.prod_function_fitting:
