@@ -31,7 +31,7 @@ ALL_SCENARIOS = 'all scenarios'
 effects_list = [ALL_SCENARIOS, TAX_NAME, DAMAGE_NAME, DAMAGE_AND_TAX_NAME]
 EFFECT_NAME = 'Effects'
 CHART_NAME = 'Charts'
-YEARS_NAME = 'YEAR END'
+END_YEAR_NAME = 'Ending year'
 SCATTER_SCENARIO = 'mda_scenarios'
 # list of graphs to be plotted and filtered
 graphs_list = ['Temperature per scenario',
@@ -61,7 +61,7 @@ def post_processing_filters(execution_engine, namespace):
     years_list = np.arange(year_start, year_end + 1).tolist()
 
     filters.append(ChartFilter(CHART_NAME, graphs_list, graphs_list, CHART_NAME))
-    filters.append(ChartFilter(YEARS_NAME, years_list, year_end, YEARS_NAME, multiple_selection=False)) # by default shows all years
+    filters.append(ChartFilter(END_YEAR_NAME, years_list, year_end, END_YEAR_NAME, multiple_selection=False)) # by default shows all years
     filters.append(ChartFilter(EFFECT_NAME, effects_list,
                                ALL_SCENARIOS, EFFECT_NAME, multiple_selection=False)) # by default shows all studies, ie does not apply any filter
 
@@ -90,7 +90,7 @@ def post_processings(execution_engine, namespace, filters):
         for chart_filter in filters:
             if chart_filter.filter_key == CHART_NAME:
                 graphs_list = chart_filter.selected_values
-            if chart_filter.filter_key == YEARS_NAME:
+            if chart_filter.filter_key == END_YEAR_NAME:
                 year_end = chart_filter.selected_values
             if chart_filter.filter_key == EFFECT_NAME:
                 # performs a "OR" operation on the filter criteria. If no effect is selected for filtering, all scenarios
@@ -113,6 +113,11 @@ def post_processings(execution_engine, namespace, filters):
         -------------
         -------------
     """
+    # put in a box the symbols used for tax and damage filtering
+    note = {'__ __ ': 'no damage  ',
+            '_____': 'with damage',
+            '| | | | |': 'with tax   ',
+            }
 
     if 'Temperature per scenario' in graphs_list:
 
@@ -134,6 +139,9 @@ def post_processings(execution_engine, namespace, filters):
                                                   x_axis_name=x_axis_name, y_axis_name=y_axis_name,
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
+
+
+        new_chart.annotation_upper_left = note
 
         instanciated_charts.append(new_chart)
 
@@ -157,6 +165,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
     if 'CO2 emissions per scenario' in graphs_list:
@@ -181,6 +190,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
 
@@ -204,6 +214,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
     if 'Cumulative climate deaths per scenario' in graphs_list:
@@ -225,6 +236,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
     if 'invest per scenario' in graphs_list:
@@ -250,6 +262,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
 
@@ -274,6 +287,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
     if 'invest in energy and ccus per scenario' in graphs_list:
@@ -314,6 +328,7 @@ def post_processings(execution_engine, namespace, filters):
                                                       selected_scenarios=selected_scenarios,
                                                       status_dict=damage_tax_activation_status_dict)
 
+            new_chart.annotation_upper_left = note
             instanciated_charts.append(new_chart)
 
 
@@ -337,6 +352,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
     if 'Welfare per scenario' in graphs_list:
@@ -368,6 +384,7 @@ def post_processings(execution_engine, namespace, filters):
 
                 new_chart.series.append(serie)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
     if 'Utility per scenario' in graphs_list:
@@ -390,6 +407,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
 
@@ -452,6 +470,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
 
@@ -476,6 +495,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
     if 'Renewable production per scenario' in graphs_list:
@@ -498,6 +518,7 @@ def post_processings(execution_engine, namespace, filters):
                                                   selected_scenarios=selected_scenarios,
                                                   status_dict=damage_tax_activation_status_dict)
 
+        new_chart.annotation_upper_left = note
         instanciated_charts.append(new_chart)
 
 
