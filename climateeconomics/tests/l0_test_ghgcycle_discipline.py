@@ -55,16 +55,14 @@ class GHGCycleDiscTest(unittest.TestCase):
         emissions_df[GlossaryCore.TotalCO2Emissions] = emissions_df['total_emissions']
 
         emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= 2020]
-        emissions_df['Total CH4 emissions'] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.3/40
-        emissions_df['Total N2O emissions'] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.008/40
+        emissions_df[GlossaryCore.TotalCH4Emissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.3/40
+        emissions_df[GlossaryCore.TotalN2OEmissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.008/40
 
-        values_dict = {f'{self.name}.GHG_emissions_df': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, 'Total CH4 emissions', 'Total N2O emissions']]}
+        values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, GlossaryCore.TotalCH4Emissions, GlossaryCore.TotalN2OEmissions]]}
 
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
-
-        ghg_cycle_df = self.ee.dm.get_value(f'{self.name}.ghg_cycle_df')
 
         # disc = self.ee.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[0]
         # filter = disc.get_chart_filter_list()

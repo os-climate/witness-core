@@ -84,11 +84,11 @@ class GHGCycle():
         self.pred_indus_gwp20 = self.total_co2_equivalent(co2_conc=self.pre_indus_conc_co2,
                                                           ch4_conc=self.pre_indus_conc_ch4,
                                                           n2o_conc=self.pre_indus_conc_n2o,
-                                                          gwp=self.gwp_100)
+                                                          gwp=self.gwp_20)
         self.pred_indus_gwp100 = self.total_co2_equivalent(co2_conc=self.pre_indus_conc_co2,
                                                            ch4_conc=self.pre_indus_conc_ch4,
                                                            n2o_conc=self.pre_indus_conc_n2o,
-                                                           gwp=self.gwp_20)
+                                                           gwp=self.gwp_100)
 
     def create_dataframe(self):
         """
@@ -123,7 +123,7 @@ class GHGCycle():
         computes CH4 concentrations in atmosphere in ppm at t following FUND pyworld3
         """
 
-        conc_ch4 += self.GHG_emissions_df.loc[self.GHG_emissions_df[GlossaryCore.Years] == year, 'Total CH4 emissions'].values[0] * 1e3 * self.em_to_conc_ch4 - \
+        conc_ch4 += self.GHG_emissions_df.loc[self.GHG_emissions_df[GlossaryCore.Years] == year, GlossaryCore.TotalCH4Emissions].values[0] * 1e3 * self.em_to_conc_ch4 - \
                     self.decay_ch4 * (conc_ch4 - self.pre_indus_conc_ch4)
 
         self.ghg_cycle_df.loc[self.ghg_cycle_df[GlossaryCore.Years] == year, f'ch4_ppm'] = conc_ch4
@@ -135,7 +135,7 @@ class GHGCycle():
         computes N2O concentrations in atmosphere in ppm at t following FUND pyworld3
         """
 
-        conc_n2o += self.GHG_emissions_df.loc[self.GHG_emissions_df[GlossaryCore.Years] == year, 'Total N2O emissions'].values[0] * 1e3 * self.em_to_conc_n2o - \
+        conc_n2o += self.GHG_emissions_df.loc[self.GHG_emissions_df[GlossaryCore.Years] == year, GlossaryCore.TotalN2OEmissions].values[0] * 1e3 * self.em_to_conc_n2o - \
                     self.decay_n2o * (conc_n2o - self.pre_indus_conc_n2o)
 
         self.ghg_cycle_df.loc[self.ghg_cycle_df[GlossaryCore.Years] == year, f'n2o_ppm'] = conc_n2o
@@ -248,7 +248,7 @@ class GHGCycle():
         """
         self.create_dataframe()
         self.inputs_models = inputs_models
-        self.GHG_emissions_df = self.inputs_models['GHG_emissions_df']
+        self.GHG_emissions_df = self.inputs_models[GlossaryCore.GHGEmissionsDfValue]
 
         conc_boxes = self.boxes_conc
         conc_ch4 = self.conc_ch4
@@ -264,6 +264,7 @@ class GHGCycle():
         self.compute_objectives()
         self.compute_rockstrom_limit_constraint()
         self.compute_minimum_ppm_limit_constraint()
+        self.compute_extra_CO2_eq_Gt()
 
     def total_co2_equivalent(self,
                              co2_conc: Union[float, pd.Series],
@@ -272,6 +273,8 @@ class GHGCycle():
         """
         Compute the global warming potential (CO2 equivalent) (over 100 years) given the concentrations of
         CO2 (in ppm), CH4 (in ppm), and N20 (in ppm)
+
+        Outputs CO2GtEquivalent
         """
         ch4_total_mass = ch4_conc * self.ppm_to_gt["CH4"]
         n2o_total_mass = n2o_conc * self.ppm_to_gt["N2O"]
@@ -286,3 +289,32 @@ class GHGCycle():
         CO2, CH4 or N2O
         """
         return d_conc * self.ppm_to_gt[specie] * gwp[specie]
+
+    def compute_extra_CO2_eq_Gt(self):
+        """Computes extra Gt of CO2Equivalent in atmosphere since pre-industrial levels"""
+        CO2_eq_20y = self.total_co2_equivalent(co2_conc=self.ghg_cycle_df['co2_ppm'],
+                                               ch4_conc=self.ghg_cycle_df['ch4_ppm'],
+                                               n2o_conc=self.ghg_cycle_df['n2o_ppm'],
+                                               gwp=self.gwp_20)
+
+        CO2_eq_pre_industrial_20y = self.pred_indus_gwp20
+        Extra_CO2_eq_Gt_since_pre_industrial_20y = CO2_eq_20y - CO2_eq_pre_industrial_20y
+
+        CO2_eq_100y = self.total_co2_equivalent(co2_conc=self.ghg_cycle_df['co2_ppm'],
+                                                ch4_conc=self.ghg_cycle_df['ch4_ppm'],
+                                                n2o_conc=self.ghg_cycle_df['n2o_ppm'],
+                                                gwp=self.gwp_100)
+
+        CO2_eq_pre_industrial_100y = self.pred_indus_gwp100
+        Extra_CO2_eq_Gt_since_pre_industrial_100y = CO2_eq_100y - CO2_eq_pre_industrial_100y
+
+        self.extra_co2_eq_detailed = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.ExtraCO2EqSincePreIndustrial2OYbasisValue: Extra_CO2_eq_Gt_since_pre_industrial_20y,
+            GlossaryCore.ExtraCO2EqSincePreIndustrial10OYbasisValue: Extra_CO2_eq_Gt_since_pre_industrial_100y
+        })
+
+        self.extra_co2_eq = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.ExtraCO2EqSincePreIndustrialValue: Extra_CO2_eq_Gt_since_pre_industrial_20y,
+        })
