@@ -1,4 +1,4 @@
-"""
+'''
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-"""
+'''
 from copy import deepcopy, copy
 
 
@@ -220,10 +220,31 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "$/tCO2",
+        "unit": "$/tCO2Eq",
         "dataframe_descriptor": {
             Years: ("float", None, False),
             CO2DamagePrice: ("float", None, False),
+        },
+    }
+    CO2DamagePriceInitValue = "init_CO2_damage_price"
+    CO2DamagePriceInitVar = {
+        "varname": CO2DamagePriceInitValue,
+        "type": "float",
+        "default": 25.0,
+        "unit": "$/tCO2Eq",
+        "user_level": 2,
+    }
+
+    ExtraCO2tDamagePrice = "Extra tCO2Eq damage price"
+    ExtraCO2tDamagePriceDf = {
+        "var_name": ExtraCO2tDamagePrice,
+        "type": "dataframe",
+        "unit": "$/tCO2Eq",
+        "description": "Damage of an extra (wrt pre-industria levels) ton of CO2 equivalent"
+        " in the atmosphere on the economy",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            ExtraCO2tDamagePrice: ("float", None, False),
         },
     }
 

@@ -224,10 +224,9 @@ class DataStudy():
         witness_input[f'{self.study_name}.init_discounted_utility'] = 4000.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
-        witness_input[f'{self.study_name}.total_emissions_ref'] = 7.2
-        witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
+        
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
-        witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
+        
         # 
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
