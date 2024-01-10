@@ -175,7 +175,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Carbon emissions (Gtc)'
 
         df_paths = [
-            'GHG_emissions_df']
+            GlossaryCore.GHGEmissionsDfValue]
         (co2_emissions_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 

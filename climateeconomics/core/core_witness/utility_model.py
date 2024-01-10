@@ -30,6 +30,8 @@ class UtilityModel():
         Constructor
         '''
         self.param = param
+        self.per_capita_consumption_ref = None
+
         self.set_data()
 
         self.n_years = None
@@ -48,6 +50,7 @@ class UtilityModel():
         self.init_rate_time_pref = self.param['init_rate_time_pref']  # prstp
         self.initial_raw_energy_price = self.param['initial_raw_energy_price']
         self.init_discounted_utility = self.param['init_discounted_utility']
+        self.per_capita_consumption_ref = self.param[GlossaryCore.PerCapitaConsumptionUtilityRefName]
         #self.min_period_utility = 0.01²
 
     def create_dataframe(self):
@@ -133,6 +136,13 @@ class UtilityModel():
         last_year_discounted_utility = self.utility_df[GlossaryCore.DiscountedUtility][self.year_end]
         self.last_year_utility_objective = np.asarray([- last_year_discounted_utility / self.init_discounted_utility])
 
+    def compute_per_capita_consumption_utility_objective(self):
+        """
+        Objective for capita consumption (without energy price effect)
+        """
+        self.per_capita_consumption_objective = -1.0 * (np.asarray([self.utility_df[GlossaryCore.PerCapitaConsumptionUtility].sum()])
+                                                 / (self.n_years * self.per_capita_consumption_ref))
+
     ######### GRADIENTS ########
 
     def d_energy_price_ratio_d_energy_price(self):
@@ -196,6 +206,16 @@ class UtilityModel():
         d_last_utility_objective_d_user_input = d_last_utility_d_discounted_utility @ d_discounted_utility_d_user_input
         return d_last_utility_objective_d_user_input
 
+    def d_pc_consumption_utility_objective_d_per_capita_consumption(self):
+        """derivative of consumption utility per capita objective wrt per capita consumption"""
+        pc_consumption = self.economics_df[GlossaryCore.PerCapitaConsumption].values
+        d_pc_consumption_utility_d_pc_consumption = pc_consumption ** (-self.conso_elasticity)
+        d_pc_consumption_utility_d_pc_consumption_diag = np.diag(d_pc_consumption_utility_d_pc_consumption)
+        d_pc_consumption_utility_objective_d_pc_consumption = -1.0 * np.sum(d_pc_consumption_utility_d_pc_consumption_diag,
+                                                                     axis=0) / (self.n_years * self.per_capita_consumption_ref)
+        return d_pc_consumption_utility_objective_d_pc_consumption
+
+
     def compute(self, economics_df, energy_mean_price, population_df):
         """compute"""
         self.economics_df = economics_df
@@ -212,6 +232,7 @@ class UtilityModel():
         self.compute_negative_welfare_objective()
         self.compute_inverse_welfare_objective()
         self.compute_negative_last_year_utility_objective()
+        self.compute_per_capita_consumption_utility_objective()
 
         return self.utility_df
 

@@ -82,6 +82,8 @@ class GlossaryCore:
     NS_SECTORS = "ns_sectors"
     NS_WITNESS = "ns_witness"
     NS_ENERGY_MIX = "ns_energy_mix"
+    NS_REFERENCE = "ns_ref"
+    NS_FUNCTIONS = "ns_functions"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"
@@ -106,7 +108,22 @@ class GlossaryCore:
 
     SectionsAgriculture = [SectionA]
     SectionsIndustry = [SectionB, SectionC, SectionD, SectionE, SectionF]
-    SectionsServices = [SectionG, SectionH, SectionI, SectionJ, SectionK, SectionL, SectionM, SectionN, SectionO, SectionP, SectionQ, SectionR, SectionS, SectionT]
+    SectionsServices = [
+        SectionG,
+        SectionH,
+        SectionI,
+        SectionJ,
+        SectionK,
+        SectionL,
+        SectionM,
+        SectionN,
+        SectionO,
+        SectionP,
+        SectionQ,
+        SectionR,
+        SectionS,
+        SectionT,
+    ]
 
     SectionsPossibleValues = [
         SectionA,
@@ -129,7 +146,6 @@ class GlossaryCore:
         SectionR,
         SectionS,
         SectionT,
-
     ]
     SectionListValue = "section_list"
 
@@ -204,10 +220,31 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "$/tCO2",
+        "unit": "$/tCO2Eq",
         "dataframe_descriptor": {
             Years: ("float", None, False),
             CO2DamagePrice: ("float", None, False),
+        },
+    }
+    CO2DamagePriceInitValue = "init_CO2_damage_price"
+    CO2DamagePriceInitVar = {
+        "varname": CO2DamagePriceInitValue,
+        "type": "float",
+        "default": 25.0,
+        "unit": "$/tCO2Eq",
+        "user_level": 2,
+    }
+
+    ExtraCO2tDamagePrice = "Extra tCO2Eq damage price"
+    ExtraCO2tDamagePriceDf = {
+        "var_name": ExtraCO2tDamagePrice,
+        "type": "dataframe",
+        "unit": "$/tCO2Eq",
+        "description": "Damage of an extra (wrt pre-industria levels) ton of CO2 equivalent"
+        " in the atmosphere on the economy",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            ExtraCO2tDamagePrice: ("float", None, False),
         },
     }
 
@@ -281,6 +318,43 @@ class GlossaryCore:
         "dataframe_edition_locked": False,
     }
 
+    ExtraCO2EqSincePreIndustrialValue = "Extra CO2Eq since pre-industrial era"
+    ExtraCO2EqSincePreIndustrialDf = {
+        "var_name": ExtraCO2EqSincePreIndustrialValue,
+        "type": "dataframe",
+        "description": "Extra gigatons of CO2 Equivalent in the atmosphere with respect to pre-industrial level. "
+        "For GHG other than CO2, the conversion is done on a 20 year basis.",
+        "namespace": NS_WITNESS,
+        "visibility": "Shared",
+        "unit": "GtCO2Eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            ExtraCO2EqSincePreIndustrialValue: ("float", None, False),
+        },
+    }
+    ExtraCO2EqSincePreIndustrialDetailedValue = (
+        f"{ExtraCO2EqSincePreIndustrialValue} (detailed)"
+    )
+    ExtraCO2EqSincePreIndustrial2OYbasisValue = (
+        f"{ExtraCO2EqSincePreIndustrialValue} (20-year basis)"
+    )
+    ExtraCO2EqSincePreIndustrial10OYbasisValue = (
+        f"{ExtraCO2EqSincePreIndustrialValue} (100-year basis)"
+    )
+    ExtraCO2EqSincePreIndustrialDetailedDf = {
+        "var_name": ExtraCO2EqSincePreIndustrialDetailedValue,
+        "type": "dataframe",
+        "description": "Extra gigatons of CO2 Equivalent in the atmosphere with respect to pre-industrial level.",
+        "namespace": NS_WITNESS,
+        "visibility": "Shared",
+        "unit": "GtCO2Eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            ExtraCO2EqSincePreIndustrial2OYbasisValue: ("float", None, False),
+            ExtraCO2EqSincePreIndustrial10OYbasisValue: ("float", None, False),
+        },
+    }
+
     DietMortalityParamDf = {
         "var_name": "diet_mortality_param_df",
         "type": "dataframe",
@@ -306,7 +380,7 @@ class GlossaryCore:
         "unit": "-",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
-            DamageFractionOutput: ("float", [0., 1.], False),
+            DamageFractionOutput: ("float", [0.0, 1.0], False),
             BaseCarbonPrice: ("float", None, False),
         },
     }
@@ -326,7 +400,9 @@ class GlossaryCore:
         },
     }
 
-    EstimatedDamagesFromProductivityLoss = "Estimated damages from productivity loss (not applied) [G$]"
+    EstimatedDamagesFromProductivityLoss = (
+        "Estimated damages from productivity loss (not applied) [G$]"
+    )
     EstimatedDamagesFromClimate = "Estimated damages from climate (not applied) [G$]"
     DamageDetailedDfValue = "damage_detailed_df"
     DamageDetailedDf = {
@@ -540,6 +616,25 @@ class GlossaryCore:
             "namespace": NS_WITNESS,
         }
     )
+    CO2 = "CO2"
+    CH4 = "CH4"
+    N20 = "N2O"
+
+    GHGEmissionsDfValue = "GHG_emissions_df"
+    TotalN2OEmissions = f"Total {N20} emissions"
+    TotalCH4Emissions = f"Total {CH4} emissions"
+    GHGEmissionsDf = {
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "unit": "Gt",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            TotalCO2Emissions: ("float", None, False),
+            TotalN2OEmissions: ("float", None, False),
+            TotalCH4Emissions: ("float", None, False),
+        },
+    }
 
     RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"
     RenewablesEnergyInvestments = {
@@ -614,6 +709,28 @@ class GlossaryCore:
             EnergyPriceRatio: ("float", None, False),
             PerCapitaConsumptionUtility: ("float", None, False),
         },
+        "unit": "-",
+    }
+
+    PerCapitaConsumptionUtilityRefName = "per_capita_consumption_utility_ref"
+    PerCapitaConsumptionUtilityRef = {
+        "var_name": PerCapitaConsumptionUtilityRefName,
+        "type": "float",
+        "visibility": "Shared",
+        "namespace": NS_REFERENCE,
+        "unit": "k$/capita",
+        "default": 0.5,
+        "user_level": 3,
+    }
+
+    PerCapitaConsumptionUtilityObjectiveName = (
+        "per_capita_consumption_utility_objective"
+    )
+    PerCapitaConsumptionUtilityObjective = {
+        "var_name": PerCapitaConsumptionUtilityObjectiveName,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
         "unit": "-",
     }
 
@@ -726,7 +843,7 @@ class GlossaryCore:
             OptimalEnergyProduction: ("float", None, False),
             UsedEnergy: ("float", None, False),
             UnusedEnergy: ("float", None, False),
-            EnergyWasted: ("float", None, False)
+            EnergyWasted: ("float", None, False),
         },
     }
 
@@ -931,8 +1048,8 @@ class GlossaryCore:
         "var_name": ShareMaxInvestName,
         "type": "float",
         "unit": "%",
-        "default": 10. ,
-        "description": "float to set maximum percentage of GDP to allow to investments in sectors and energy"
+        "default": 10.0,
+        "description": "float to set maximum percentage of GDP to allow to investments in sectors and energy",
     }
 
     UtilisationRatioValue = "Utilisation Ratio [%]"
@@ -942,7 +1059,7 @@ class GlossaryCore:
         "var_name": MaxInvestConstraintName,
         "type": "array",
         "unit": "[]",
-        "description": "Max investment in sectors constraint using share_max_invest percentage"
+        "description": "Max investment in sectors constraint using share_max_invest percentage",
     }
 
     MaxInvestConstraintRefName = "max_invest_constraint_ref"
@@ -950,9 +1067,9 @@ class GlossaryCore:
         "var_name": MaxInvestConstraintRefName,
         "type": "float",
         "unit": "G$",
-        "default": 100.,
+        "default": 100.0,
         "user_level": 3,
-        "description": "Max investment reference to normalize associated constraint"
+        "description": "Max investment reference to normalize associated constraint",
     }
 
     UsableCapitalObjective = {
@@ -960,19 +1077,19 @@ class GlossaryCore:
         "type": "array",
         "unit": "-",
         "visibility": "Shared",
-        "namespace": "ns_functions",
-        "description": "Usable capital objective"
+        "namespace": NS_FUNCTIONS,
+        "description": "Usable capital objective",
     }
 
     UsableCapitalObjectiveRef = {
         "var_name": UsableCapitalObjectiveRefName,
         "type": "float",
         "unit": "T$",
-        "default": 100.,
+        "default": 100.0,
         "user_level": 3,
         "visibility": "Shared",
-        "namespace": "ns_ref",
-        "description": "reference to normalize usable capital objective"
+        "namespace": NS_REFERENCE,
+        "description": "reference to normalize usable capital objective",
     }
 
     @staticmethod

@@ -121,7 +121,7 @@ _co2_emissions = {FILE_NAME: 'CO2_emissions_global.csv',
 CH4_EMISSIONS = 'CH4_emissions'
 _ch4_emissions = {FILE_NAME: 'CH4_emissions_global.csv',
                   VAR_NAME: 'GHGEmissions.GHG_emissions_detail_df',
-                  COLUMN: 'Total CH4 emissions',
+                  COLUMN: GlossaryCore.TotalCH4Emissions,
                   CHART_TITLE: 'Total CH4 Emissions: WITNESS vs. SSP scenarios (IPCC)',
                   UNIT_CONV_FACTOR: 1e-3,
                   Y_AXIS: 'Total CH4 Emissions [GtCH4]'}
@@ -129,7 +129,7 @@ _ch4_emissions = {FILE_NAME: 'CH4_emissions_global.csv',
 N2O_EMISSIONS = 'N2O_emissions'
 _n2o_emissions = {FILE_NAME: 'N2O_emissions_global.csv',
                   VAR_NAME: 'GHGEmissions.GHG_emissions_detail_df',
-                  COLUMN: 'Total N2O emissions',
+                  COLUMN: GlossaryCore.TotalN2OEmissions,
                   CHART_TITLE: 'Total N2O Emissions: WITNESS vs. SSP scenarios (IPCC)',
                   UNIT_CONV_FACTOR: 1e-6,
                   Y_AXIS: 'Total N2O Emissions [GtN2O]'}

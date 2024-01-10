@@ -78,8 +78,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
     if 'temperature and ghg evolution' in chart_list:
         temperature_df = execution_engine.dm.get_value(f'{namespace}.{TEMPCHANGE_DISC}.temperature_detail_df')
-
-        total_ghg_df = execution_engine.dm.get_value(f'{namespace}.GHG_emissions_df')
+        total_ghg_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.GHGEmissionsDfValue}')
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Temperature and GHG evolution over the years'

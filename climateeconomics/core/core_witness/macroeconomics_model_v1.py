@@ -310,9 +310,9 @@ class MacroEconomics:
     def compute_energy_usage(self):
         """Wasted energy is the overshoot of energy production not used by usable capital"""
         non_energy_capital = self.capital_df[GlossaryCore.NonEnergyCapital]
-        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue] #PWh
+        net_energy_production = self.energy_production[GlossaryCore.TotalProductionValue]  # PWh
         energy_efficiency = self.capital_df[GlossaryCore.EnergyEfficiency]
-        optimal_energy_production = self.max_capital_utilisation_ratio * non_energy_capital / self.capital_utilisation_ratio / energy_efficiency
+        optimal_energy_production = self.max_capital_utilisation_ratio * non_energy_capital / self.capital_utilisation_ratio / energy_efficiency  # Pwh
         self.economics_df[GlossaryCore.OptimalEnergyProduction] = optimal_energy_production * 1e3
         self.economics_df[GlossaryCore.UsedEnergy] = np.minimum(net_energy_production, optimal_energy_production) * 1e3
         self.economics_df[GlossaryCore.UnusedEnergy] = np.maximum(net_energy_production - optimal_energy_production, 0.) * 1e3
@@ -326,8 +326,8 @@ class MacroEconomics:
         which can be compared to the negative welfare objective (same order of magnitude)
         """
         # total energy is supposed to be > 0.
-        energy_wasted_objective = self.economics_df[GlossaryCore.EnergyWasted].values.sum() / \
-                                  self.energy_production[GlossaryCore.TotalProductionValue].values.sum()
+        energy_wasted_objective = self.economics_df[GlossaryCore.EnergyWasted].values.sum() * 1e-3 / \
+                                  self.energy_production[GlossaryCore.TotalProductionValue].values.sum()  # PWh / PWh
 
         self.energy_wasted_objective = np.array([energy_wasted_objective])
 
@@ -1180,7 +1180,7 @@ class MacroEconomics:
         grad_energy_wasted_obj = (sum_etotal * grad_sum_energy_wasted - sum_ewasted * grad_sum_energy_total) / \
                                  sum_etotal ** 2
 
-        return grad_energy_wasted_obj
+        return grad_energy_wasted_obj * 1e-3
 
     def d_damages_from_climate_d_user_input(self, d_gross_output_d_user_input, d_net_output_d_user_input):
         """

@@ -54,12 +54,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
-        'GHG_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'Gt',
-                             'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
-                                                      GlossaryCore.TotalCO2Emissions: ('float', None, False),
-                                                      'Total N2O emissions': ('float', None, False),
-                                                      'Total CH4 emissions': ('float', None, False),
-                                                      }},
+        GlossaryCore.GHGEmissionsDfValue: GlossaryCore.GHGEmissionsDf,
         'co2_emissions_fractions': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': '-', 'default': [0.13, 0.20, 0.32, 0.25, 0.10], 'user_level': 2},
         'co2_boxes_decays': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': GlossaryCore.Years,
                              'default': [1.0, 0.9972489701005488, 0.9865773841008381, 0.942873143854875, 0.6065306597126334],
@@ -96,7 +91,9 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         'gwp20_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
         'gwp100_objective': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
         'rockstrom_limit_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
-        'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'}
+        'minimum_ppm_constraint': {'type': 'array', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': '-'},
+        GlossaryCore.ExtraCO2EqSincePreIndustrialValue: GlossaryCore.ExtraCO2EqSincePreIndustrialDf,
+        GlossaryCore.ExtraCO2EqSincePreIndustrialDetailedValue: GlossaryCore.ExtraCO2EqSincePreIndustrialDetailedDf
     }
 
     def init_execution(self):
@@ -116,7 +113,10 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             'gwp20_objective': self.ghg_cycle.gwp20_obj,
             'gwp100_objective': self.ghg_cycle.gwp100_obj,
             'rockstrom_limit_constraint': self.ghg_cycle.rockstrom_limit_constraint,
-            'minimum_ppm_constraint': self.ghg_cycle.minimum_ppm_constraint}
+            'minimum_ppm_constraint': self.ghg_cycle.minimum_ppm_constraint,
+            GlossaryCore.ExtraCO2EqSincePreIndustrialValue: self.ghg_cycle.extra_co2_eq,
+            GlossaryCore.ExtraCO2EqSincePreIndustrialDetailedValue: self.ghg_cycle.extra_co2_eq_detailed
+        }
 
         # store data
         self.store_sos_outputs_values(dict_values)
@@ -129,11 +129,17 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
         d_ghg_ppm_d_emissions = self.ghg_cycle.d_ppm_d_ghg()
 
         self.set_partial_derivative_for_other_types(
-            ('ghg_cycle_df', 'co2_ppm'), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions), d_ghg_ppm_d_emissions['CO2'])
+            ('ghg_cycle_df', 'co2_ppm'),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
+            d_ghg_ppm_d_emissions['CO2'])
         self.set_partial_derivative_for_other_types(
-            ('ghg_cycle_df', 'ch4_ppm'), ('GHG_emissions_df', 'Total CH4 emissions'), d_ghg_ppm_d_emissions['CH4'])
+            ('ghg_cycle_df', 'ch4_ppm'),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCH4Emissions),
+            d_ghg_ppm_d_emissions['CH4'])
         self.set_partial_derivative_for_other_types(
-            ('ghg_cycle_df', 'n2o_ppm'), ('GHG_emissions_df', 'Total N2O emissions'), d_ghg_ppm_d_emissions['N2O'])
+            ('ghg_cycle_df', 'n2o_ppm'),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalN2OEmissions),
+            d_ghg_ppm_d_emissions['N2O'])
 
         # derivative gwp20 objective
         d_gwp20_objective_d_total_co2_emissions = self.ghg_cycle.d_gwp20_objective_d_ppm(
@@ -147,11 +153,11 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             specie='N2O')
 
         self.set_partial_derivative_for_other_types(
-            ('gwp20_objective',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions), d_gwp20_objective_d_total_co2_emissions)
+            ('gwp20_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions), d_gwp20_objective_d_total_co2_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp20_objective',), ('GHG_emissions_df', 'Total CH4 emissions'), d_gwp20_objective_d_total_ch4_emissions)
+            ('gwp20_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCH4Emissions), d_gwp20_objective_d_total_ch4_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp20_objective',), ('GHG_emissions_df', 'Total N2O emissions'), d_gwp20_objective_d_total_n2o_emissions)
+            ('gwp20_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalN2OEmissions), d_gwp20_objective_d_total_n2o_emissions)
 
         # derivative gwp100 objective
         d_gwp100_objective_d_total_co2_emissions = self.ghg_cycle.d_gwp100_objective_d_ppm(
@@ -165,21 +171,39 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             specie='N2O')
 
         self.set_partial_derivative_for_other_types(
-            ('gwp100_objective',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions),
+            ('gwp100_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
             d_gwp100_objective_d_total_co2_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp100_objective',), ('GHG_emissions_df', 'Total CH4 emissions'),
+            ('gwp100_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCH4Emissions),
             d_gwp100_objective_d_total_ch4_emissions)
         self.set_partial_derivative_for_other_types(
-            ('gwp100_objective',), ('GHG_emissions_df', 'Total N2O emissions'),
+            ('gwp100_objective',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalN2OEmissions),
             d_gwp100_objective_d_total_n2o_emissions)
 
         self.set_partial_derivative_for_other_types(
-            ('rockstrom_limit_constraint',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions),
+            ('rockstrom_limit_constraint',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
             -d_ghg_ppm_d_emissions['CO2'] / self.ghg_cycle.rockstrom_constraint_ref)
         self.set_partial_derivative_for_other_types(
-            ('minimum_ppm_constraint',), ('GHG_emissions_df', GlossaryCore.TotalCO2Emissions),
+            ('minimum_ppm_constraint',), (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
             d_ghg_ppm_d_emissions['CO2'] / self.ghg_cycle.minimum_ppm_constraint_ref)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue,),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions),
+            self.ghg_cycle.d_total_co2_equivalent_d_conc(d_conc=d_ghg_ppm_d_emissions['CO2'], specie="CO2", gwp=self.ghg_cycle.gwp_20)
+        )
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue,),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCH4Emissions),
+            self.ghg_cycle.d_total_co2_equivalent_d_conc(d_conc=d_ghg_ppm_d_emissions['CH4'], specie="CH4", gwp=self.ghg_cycle.gwp_20)
+        )
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue,),
+            (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalN2OEmissions),
+            self.ghg_cycle.d_total_co2_equivalent_d_conc(d_conc=d_ghg_ppm_d_emissions['N2O'], specie="N2O", gwp=self.ghg_cycle.gwp_20)
+        )
 
     def get_chart_filter_list(self):
 
@@ -188,7 +212,8 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = ['Atmospheric concentrations parts per million']
+        chart_list = ['Atmospheric concentrations',
+                      GlossaryCore.ExtraCO2EqSincePreIndustrialValue]
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -209,23 +234,26 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
         ghg_cycle_df = deepcopy(self.get_sosdisc_outputs('ghg_cycle_df_detailed'))
 
-        if 'Atmospheric concentrations parts per million' in chart_list:
+        if 'Atmospheric concentrations' in chart_list:
 
             ppm = ghg_cycle_df['co2_ppm']
             years = list(ppm.index)
-            chart_name = 'CO2 Atmospheric concentrations parts per million'
+            chart_name = 'CO2 atmospheric concentrations'
             year_start = years[0]
             year_end = years[len(years) - 1]
-            min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 Atmospheric concentrations parts per million',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value], chart_name)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'parts per million', chart_name=chart_name)
 
             visible_line = True
             ordonate_data = list(ppm)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'ppm', 'lines', visible_line)
-            new_chart.series.append(new_series)
+            new_chart.add_series(new_series)
+
+            pre_industrial_level = self.get_sosdisc_inputs('co2_pre_indus_conc')
+            ordonate_data = [pre_industrial_level] * len(years)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Pre-industrial level', 'dash_lines', True)
+            new_chart.add_series(new_series)
 
             # Rockstrom Limit
 
@@ -235,7 +263,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
 
             note = {'Rockstrom limit': 'Scientifical limit of the Earth'}
 
-            new_chart.series.append(new_series)
+            new_chart.add_series(new_series)
 
             # Minimum PPM constraint
             ordonate_data = [self.get_sosdisc_inputs('minimum_ppm_limit')] * int(len(years) / 5)
@@ -244,43 +272,69 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
             note['Minimum ppm limit'] = 'used in constraint calculation'
             new_chart.annotation_upper_left = note
 
-            new_chart.series.append(new_series)
+            new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
 
             ppm = ghg_cycle_df['ch4_ppm']
             years = list(ppm.index)
-            chart_name = 'CH4 Atmospheric concentrations parts per million'
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-            min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CH4 Atmospheric concentrations parts per million',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value], chart_name)
+            chart_name = 'CH4 atmospheric concentrations'
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'parts per million',
+                                                 chart_name=chart_name)
 
             visible_line = True
             ordonate_data = list(ppm)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'ppm', 'lines', visible_line)
-            new_chart.series.append(new_series)
+            new_chart.add_series(new_series)
+
+            pre_industrial_level = self.get_sosdisc_inputs('ch4_pre_indus_conc')
+            ordonate_data = [pre_industrial_level] * len(years)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Pre-industrial level', 'dash_lines', True)
+            new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
 
             ppm = ghg_cycle_df['n2o_ppm']
             years = list(ppm.index)
-            chart_name = 'N2O Atmospheric concentrations parts per million'
-            year_start = years[0]
-            year_end = years[len(years) - 1]
-            min_value, max_value = self.get_greataxisrange(ppm)
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'N2O Atmospheric concentrations parts per million',
-                                                 [year_start - 5, year_end + 5],
-                                                 [min_value, max_value], chart_name)
+            chart_name = 'N2O atmospheric concentrations'
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'parts per million',
+                                                 chart_name=chart_name)
 
             visible_line = True
             ordonate_data = list(ppm)
             new_series = InstanciatedSeries(
                 years, ordonate_data, 'ppm', 'lines', visible_line)
-            new_chart.series.append(new_series)
+            new_chart.add_series(new_series)
+
+            pre_industrial_level = self.get_sosdisc_inputs('n2o_pre_indus_conc')
+            ordonate_data = [pre_industrial_level] * len(years)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Pre-industrial level', 'dash_lines', True)
+            new_chart.add_series(new_series)
+
+            instanciated_charts.append(new_chart)
+
+        if GlossaryCore.ExtraCO2EqSincePreIndustrialValue in chart_list:
+            years = list(ghg_cycle_df[GlossaryCore.Years].values)
+            chart_name = GlossaryCore.ExtraCO2EqSincePreIndustrialValue
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.ExtraCO2EqSincePreIndustrialDf['unit'],
+                                                 chart_name=chart_name, y_min_zero=True)
+
+            visible_line = True
+            extra_co2_eq_df = self.get_sosdisc_outputs(GlossaryCore.ExtraCO2EqSincePreIndustrialDetailedValue)
+
+            ordonate_data = list(extra_co2_eq_df[GlossaryCore.ExtraCO2EqSincePreIndustrial2OYbasisValue])
+            new_series = InstanciatedSeries(
+                years, ordonate_data, "20-year basis (applied)", 'lines', visible_line)
+            new_chart.add_series(new_series)
+
+            ordonate_data = list(extra_co2_eq_df[GlossaryCore.ExtraCO2EqSincePreIndustrial10OYbasisValue])
+            new_series = InstanciatedSeries(
+                years, ordonate_data, "100-year basis", 'lines', visible_line)
+            new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
 
