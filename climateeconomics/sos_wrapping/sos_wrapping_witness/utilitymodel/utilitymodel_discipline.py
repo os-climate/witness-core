@@ -73,7 +73,9 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False), GlossaryCore.EnergyPriceValue: ('float', None, True)}},
         'initial_raw_energy_price': {'type': 'float', 'unit': '$/MWh', 'default': 110, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'init_discounted_utility': {'type': 'float', 'unit': '-', 'default': 3400, 'visibility': 'Shared', 'namespace': 'ns_ref', 'user_level': 2},
+        GlossaryCore.PerCapitaConsumptionUtilityRefName: GlossaryCore.PerCapitaConsumptionUtilityRef
     }
+
     DESC_OUT = {
         GlossaryCore.UtilityDfValue: GlossaryCore.UtilityDf,
         GlossaryCore.NormalizedWelfare: {'type': 'array', 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
@@ -83,6 +85,7 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         GlossaryCore.LastYearDiscountedUtilityObjective: {'type': 'array', 'unit': '-', 'visibility': 'Shared',
                                                           'namespace': GlossaryCore.NS_WITNESS,
                                                           'description': "- discounted utility at year end / discounted utility at year start"},
+        GlossaryCore.PerCapitaConsumptionUtilityObjectiveName: GlossaryCore.PerCapitaConsumptionUtilityObjective
     }
 
     def init_execution(self):
@@ -105,7 +108,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             GlossaryCore.NormalizedWelfare: self.utility_m.normalized_welfare,
             GlossaryCore.WelfareObjective: self.utility_m.inverse_welfare_objective,
             GlossaryCore.NegativeWelfareObjective: self.utility_m.negative_welfare_objective,
-            GlossaryCore.LastYearDiscountedUtilityObjective: self.utility_m.last_year_utility_objective
+            GlossaryCore.LastYearDiscountedUtilityObjective: self.utility_m.last_year_utility_objective,
+            GlossaryCore.PerCapitaConsumptionUtilityObjectiveName: self.utility_m.per_capita_consumption_objective
         }
         self.store_sos_outputs_values(dict_values)
 
@@ -126,12 +130,18 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
         """
         
         d_pc_consumption_utility_d_per_capita_consumption = self.utility_m.d_pc_consumption_utility_d_per_capita_consumption()
+        d_pc_consumption_utility_obj_d_per_capita_consumption = self.utility_m.d_pc_consumption_utility_objective_d_per_capita_consumption()
         d_energy_price_ratio_d_energy_price = self.utility_m.d_energy_price_ratio_d_energy_price()
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.PerCapitaConsumptionUtility),
             (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
             d_pc_consumption_utility_d_per_capita_consumption)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.PerCapitaConsumptionUtilityObjectiveName, ),
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.PerCapitaConsumption),
+            d_pc_consumption_utility_obj_d_per_capita_consumption)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.UtilityDfValue, GlossaryCore.EnergyPriceRatio),

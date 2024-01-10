@@ -64,10 +64,10 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
         emissions_df[GlossaryCore.TotalCO2Emissions] = emissions_df['total_emissions']
 
         emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= 2020]
-        emissions_df['Total CH4 emissions'] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.01
-        emissions_df['Total N2O emissions'] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.001
+        emissions_df[GlossaryCore.TotalCH4Emissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.01
+        emissions_df[GlossaryCore.TotalN2OEmissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.001
 
-        values_dict = {f'{self.name}.GHG_emissions_df': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, 'Total CH4 emissions', 'Total N2O emissions']]}
+        values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, GlossaryCore.TotalCH4Emissions, GlossaryCore.TotalN2OEmissions]]}
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -77,9 +77,10 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ghg_cycle_discipline1.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.GHG_emissions_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}'],
                             outputs=[f'{self.name}.ghg_cycle_df',
                                      f'{self.name}.gwp20_objective',
                                      f'{self.name}.gwp100_objective',
                                      f'{self.name}.rockstrom_limit_constraint',
-                                     f'{self.name}.minimum_ppm_constraint'])
+                                     f'{self.name}.minimum_ppm_constraint',
+                                     f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}',])
