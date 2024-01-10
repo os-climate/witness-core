@@ -26,10 +26,11 @@ from energy_models.core.ccus.ccus import CCUS
 
 TAX_NAME = 'with tax'
 DAMAGE_NAME = 'with damage'
-effects_list = [TAX_NAME, DAMAGE_NAME]
+DAMAGE_AND_TAX_NAME = 'with damage and tax'
+effects_list = [TAX_NAME, DAMAGE_NAME, DAMAGE_AND_TAX_NAME]
 EFFECT_NAME = 'Effects'
 CHART_NAME = 'Charts'
-YEARS_NAME = 'YEARS'
+YEARS_NAME = 'YEAR END'
 SCATTER_SCENARIO = 'mda_scenarios'
 # list of graphs to be plotted and filtered
 graphs_list = ['Temperature per scenario',
@@ -59,9 +60,9 @@ def post_processing_filters(execution_engine, namespace):
     years_list = np.arange(year_start, year_end + 1).tolist()
 
     filters.append(ChartFilter(CHART_NAME, graphs_list, graphs_list, CHART_NAME))
-    filters.append(ChartFilter(YEARS_NAME, years_list, years_list, YEARS_NAME))
+    filters.append(ChartFilter(YEARS_NAME, years_list, year_end, YEARS_NAME, multiple_selection=False)) # by default shows all years
     filters.append(ChartFilter(EFFECT_NAME, effects_list,
-                               effects_list, EFFECT_NAME))
+                               [], EFFECT_NAME)) # by default shows all studies, ie does not apply any filter
 
     return filters
 
@@ -81,7 +82,6 @@ def post_processings(execution_engine, namespace, filters):
         execution_engine, df_paths, scenario_list)
     year_start, year_end = year_start_dict[scenario_list[0]
                                            ], year_end_dict[scenario_list[0]]
-    years = np.arange(year_start, year_end + 1).tolist()
 
     damage_tax_activation_status_dict = get_scenario_damage_tax_activation_status(execution_engine, scenario_list)
 
@@ -90,18 +90,23 @@ def post_processings(execution_engine, namespace, filters):
             if chart_filter.filter_key == CHART_NAME:
                 graphs_list = chart_filter.selected_values
             if chart_filter.filter_key == YEARS_NAME:
-                years = chart_filter.selected_values
+                year_end = chart_filter.selected_values
             if chart_filter.filter_key == EFFECT_NAME:
                 # performs a "OR" operation on the filter criteria. If no effect is selected for filtering, all scenarios
                 # are shown. Then, restricts the scenarios shown to those respecting at least one of the filtered condition(s)
-                # at start, the graph without damage without tax are not shown
                 effects_list_filtered = chart_filter.selected_values
                 if len(effects_list_filtered) > 0:
                     selected_scenarios = []
-                    for effect in effects_list_filtered:
+                    if DAMAGE_AND_TAX_NAME in effects_list_filtered:
                         selected_scenarios.extend([scenario for scenario in scenario_list
-                                                   if damage_tax_activation_status_dict[scenario][effect]])
+                                                   if (damage_tax_activation_status_dict[scenario][TAX_NAME] and \
+                                                       damage_tax_activation_status_dict[scenario][DAMAGE_NAME])])
+                    else:
+                        for effect in [effect for effect in effects_list_filtered if effect != DAMAGE_AND_TAX_NAME]:
+                            selected_scenarios.extend([scenario for scenario in scenario_list
+                                                       if damage_tax_activation_status_dict[scenario][effect]])
 
+    years = np.arange(year_start, year_end + 1).tolist()
     """
         -------------
         -------------
