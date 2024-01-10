@@ -70,7 +70,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         temperature_df = execution_engine.dm.get_value(
                     execution_engine.dm.get_all_namespaces_from_var_name('temperature_detail_df')[0])
         total_ghg_df = execution_engine.dm.get_value(
-                    execution_engine.dm.get_all_namespaces_from_var_name('GHG_emissions_df')[0])
+                    execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.GHGEmissionsDfValue)[0])
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Temperature and GHG evolution over the years'

@@ -214,8 +214,8 @@ class DataStudy():
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
-                                                   'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
+                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
+                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
 
         data_dir = join(dirname(dirname(dirname(dirname(__file__)))), 'data')
