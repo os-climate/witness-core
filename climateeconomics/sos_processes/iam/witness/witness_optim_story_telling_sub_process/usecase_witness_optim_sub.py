@@ -87,7 +87,6 @@ class Study(ClimateEconomicsStudyManager):
 
         # create design variables and design space descriptor for variable percentage_of_gdp_energy_invest
 
-
         design_var_descriptor['percentage_gdp_invest_in_energy_array'] = {
             'out_name': GlossaryEnergy.EnergyInvestPercentageGDPName,
             'out_type': 'dataframe',
@@ -113,7 +112,7 @@ class Study(ClimateEconomicsStudyManager):
         func_df = pd.DataFrame(data=func_dict)
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = func_df
 
-        len_var = len(years)
+        len_var = 10
 
         values_dict[f'{self.study_name}.{self.coupling_name}.sub_mda_class'] = 'GSPureNewtonMDA'
         # values_dict[f'{self.study_name}.{self.coupling_name}.warm_start'] = True

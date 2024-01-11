@@ -39,7 +39,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         techno_dict = DEFAULT_COARSE_TECHNO_DICT
 
         coupling_builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_optim_Ku_sub_process',
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_story_telling_sub_process',
             techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], process_level='dev')
 
         # modify namespaces defined in the child process
