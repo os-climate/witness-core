@@ -18,8 +18,6 @@ from os.path import join, dirname
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_1_witness_coarse_mda_fixed_gdp_wo_damage_wo_co2_tax import \
-    Study as usecase1
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as usecase2
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_3_witness_coarse_mda_gdp_model_wo_damage_w_co2_tax import \
@@ -46,13 +44,12 @@ class Study(ClimateEconomicsStudyManager):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {'usecase_1': usecase1(execution_engine=self.execution_engine),
-                         'usecase_2': usecase2(execution_engine=self.execution_engine),
-                         'usecase_3': usecase3(execution_engine=self.execution_engine),
-                         'usecase_4': usecase4(execution_engine=self.execution_engine),
-                         'usecase_5': usecase5(execution_engine=self.execution_engine),
-                         'usecase_6': usecase6(execution_engine=self.execution_engine),
-                         'usecase_7': usecase7(execution_engine=self.execution_engine),
+        scenario_dict = {'Full fossil, no damage no tax': usecase2(execution_engine=self.execution_engine),
+                         'IEA energy mix, no damage with tax': usecase3(execution_engine=self.execution_engine),
+                         'Fossil + 2020 invest renewable & CCS, with damage no tax': usecase4(execution_engine=self.execution_engine),
+                         'Fossil + renewable (step) & 2020 CCS invest, with damage no tax': usecase5(execution_engine=self.execution_engine),
+                         'NZE for energy sector, with damage no tax': usecase6(execution_engine=self.execution_engine),
+                         'NZE all sectors, with damage with tax': usecase7(execution_engine=self.execution_engine),
                          }
 
         scenario_list = list(scenario_dict.keys())

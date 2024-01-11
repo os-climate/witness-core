@@ -40,7 +40,8 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
         self.ee = ExecutionEngine(self.name)
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -96,5 +97,6 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.UtilityDfValue}',
                                      f'{self.name}.{GlossaryCore.NegativeWelfareObjective}',
                                      f'{self.name}.{GlossaryCore.LastYearDiscountedUtilityObjective}',
+                                     f'{self.name}.{GlossaryCore.PerCapitaConsumptionUtilityObjectiveName}'
                             ],
                             derr_approx='complex_step')

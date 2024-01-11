@@ -66,8 +66,8 @@ class DamageDiscipline(SoSWrapp):
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                   GlossaryCore.TotalCO2Emissions: ('float', None, False),
-                                                  'Total N2O emissions': ('float', None, False),
-                                                  'Total CH4 emissions': ('float', None, False),
+                                                  GlossaryCore.TotalN2OEmissions: ('float', None, False),
+                                                  GlossaryCore.TotalCH4Emissions: ('float', None, False),
                                                   }
                          },
         GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),

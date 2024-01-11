@@ -70,8 +70,14 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         })
         temperature_df_y.index = years
 
+        extra_co2_t_since_preindustrial = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.ExtraCO2EqSincePreIndustrialValue: np.linspace(100, 300, len(years))
+        })
+
         inputs_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
                        f'{self.name}.{GlossaryCore.DamageDfValue}': damage_df,
+                       f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': extra_co2_t_since_preindustrial,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': pd.DataFrame(
                            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: np.linspace(50, 500, len(years))}),
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
@@ -88,9 +94,11 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
+                                    f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}',
                                     f'{self.name}.{GlossaryCore.DamageDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                     f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
+                                     f'{self.name}.{GlossaryCore.CO2DamagePrice}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.ExtraCO2tDamagePrice}'],
                             derr_approx='complex_step')
 
     def test_damage_analytic_grad_wo_damage_on_climate(self):
@@ -131,8 +139,14 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         damage_df.index = years
         temperature_df_y.index = years
 
+        extra_co2_t_since_preindustrial = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.ExtraCO2EqSincePreIndustrialValue: np.linspace(100, 300, len(years))
+        })
+
         inputs_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
                        f'{self.name}.{GlossaryCore.DamageDfValue}': damage_df,
+                       f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': extra_co2_t_since_preindustrial,
                        f'{self.name}.{GlossaryCore.CO2TaxesValue}': pd.DataFrame(
                            {GlossaryCore.Years: years, GlossaryCore.CO2Tax: np.linspace(50, 500, len(years))}),
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
@@ -156,7 +170,9 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
+                                    f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}',
                                     f'{self.name}.{GlossaryCore.DamageDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
-                                     f'{self.name}.{GlossaryCore.CO2DamagePrice}'],
+                                     f'{self.name}.{GlossaryCore.CO2DamagePrice}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.ExtraCO2tDamagePrice}'],
                             derr_approx='complex_step')
