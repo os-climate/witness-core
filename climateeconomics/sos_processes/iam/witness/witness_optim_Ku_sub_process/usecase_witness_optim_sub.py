@@ -255,10 +255,11 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
 
-        func_dict = {FunctionManagerDisc.VARIABLE: [GlossaryCore.NegativeWelfareObjective, GlossaryCore.UsableCapitalObjectiveName],
+        func_dict = {FunctionManagerDisc.VARIABLE: [GlossaryCore.NegativeWelfareObjective,
+                                                    GlossaryCore.UsableCapitalObjectiveName, GlossaryCore.PerCapitaConsumptionUtilityObjectiveName],
                      FunctionManagerDisc.PARENT: 'objectives',
                      FunctionManagerDisc.FTYPE: 'objective',
-                     FunctionManagerDisc.WEIGHT: 1.0,
+                     FunctionManagerDisc.WEIGHT: [0.0, 1.0, 1.0],
                      FunctionManagerDisc.AGGR_TYPE: 'sum',
                      FunctionManagerDisc.NAMESPACE_VARIABLE: 'ns_functions'}
         func_df = pd.DataFrame(data=func_dict)
