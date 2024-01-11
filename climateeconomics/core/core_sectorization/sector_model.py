@@ -44,6 +44,7 @@ class SectorModel():
         self.lt_energy_eff = None
         self.emax_enet_constraint = None
         self.gdp_percentage_per_section_df = None
+        self.section_list = None
         self.section_gdp_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint =  None
