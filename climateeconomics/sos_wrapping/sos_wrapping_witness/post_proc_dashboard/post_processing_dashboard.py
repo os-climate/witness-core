@@ -175,7 +175,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if 'energy mix' in chart_list:
-        energy_production_detailed = execution_engine.dm.get_value(f'{namespace}.{AGRICULTUREMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}')
+        energy_production_detailed = execution_engine.dm.get_value(f'{namespace}.{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}')
         energy_mean_price = execution_engine.dm.get_value(f'{namespace}.{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyMeanPriceValue}')
 
         years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
