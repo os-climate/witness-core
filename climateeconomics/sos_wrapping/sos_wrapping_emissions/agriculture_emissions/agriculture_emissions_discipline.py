@@ -43,14 +43,14 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     years = np.arange(2020, 2101)
-    GHG_TYPE_LIST = ['CO2', 'CH4', 'N20']
-    GWP_100_default = {'CO2': 1.0,
-                       'CH4': 28.,
-                       'N2O': 265.}
+    GHG_TYPE_LIST = [GlossaryCore.CO2, GlossaryCore.CH4, 'N20']
+    GWP_100_default = {GlossaryCore.CO2: 1.0,
+                       GlossaryCore.CH4: 28.,
+                       GlossaryCore.N2O: 265.}
 
-    GWP_20_default = {'CO2': 1.0,
-                      'CH4': 85.,
-                      'N2O': 265.}
+    GWP_20_default = {GlossaryCore.CO2: 1.0,
+                      GlossaryCore.CH4: 85.,
+                      GlossaryCore.N2O: 265.}
 
     name = f'{GHGemissionsDiscipline.name}.Agriculture'
     _maturity = 'Research'
@@ -140,12 +140,12 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         l_years = len(N2O_emitted_crop_df[GlossaryCore.Years])
 
         co2_eq_20 = (CO2_emissions_land_use_df['Forest'].sum() + CO2_emissions_land_use_df['Crop'].sum() +
-                        CH4_emissions_land_use_df['Crop'].sum() * self.GWP_20_default['CH4'] +
-                        N2O_emissions_land_use_df['Crop'].sum() * self.GWP_20_default['N2O']) / (co2_eq_20_ref * l_years)
+                        CH4_emissions_land_use_df['Crop'].sum() * self.GWP_20_default[GlossaryCore.CH4] +
+                        N2O_emissions_land_use_df['Crop'].sum() * self.GWP_20_default[GlossaryCore.N2O]) / (co2_eq_20_ref * l_years)
 
         co2_eq_100 = (CO2_emissions_land_use_df['Forest'].sum() + CO2_emissions_land_use_df['Crop'].sum() + \
-                        CH4_emissions_land_use_df['Crop'].sum() * self.GWP_100_default['CH4'] + \
-                        N2O_emissions_land_use_df['Crop'].sum() * self.GWP_100_default['N2O']) / (co2_eq_100_ref * l_years)
+                        CH4_emissions_land_use_df['Crop'].sum() * self.GWP_100_default[GlossaryCore.CH4] + \
+                        N2O_emissions_land_use_df['Crop'].sum() * self.GWP_100_default[GlossaryCore.N2O]) / (co2_eq_100_ref * l_years)
 
         # write outputs
         outputs_dict = {
@@ -182,7 +182,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('co2_eq_20',), (
                 'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
-            np.ones(np_years) * self.GWP_20_default['CH4'] / (co2_eq_20_ref * np_years))
+            np.ones(np_years) * self.GWP_20_default[GlossaryCore.CH4] / (co2_eq_20_ref * np_years))
         self.set_partial_derivative_for_other_types(
             ('co2_eq_20',), (
                 'Forest.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
@@ -190,22 +190,22 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('co2_eq_20',), (
                 'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
-            np.ones(np_years) * self.GWP_20_default['CH4'] / (co2_eq_20_ref * np_years))
+            np.ones(np_years) * self.GWP_20_default[GlossaryCore.CH4] / (co2_eq_20_ref * np_years))
         self.set_partial_derivative_for_other_types(
             ('co2_eq_20',), (
                 'Crop.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'),
-            np.ones(np_years) * self.GWP_20_default['N2O'] / (co2_eq_20_ref * np_years))
+            np.ones(np_years) * self.GWP_20_default[GlossaryCore.N2O] / (co2_eq_20_ref * np_years))
         self.set_partial_derivative_for_other_types(
             ('co2_eq_20',), (
                 'Crop.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
-            np.ones(np_years) * self.GWP_20_default['CO2'] / (co2_eq_20_ref * np_years))
+            np.ones(np_years) * self.GWP_20_default[GlossaryCore.CO2] / (co2_eq_20_ref * np_years))
 
         ############################################# co2_eq_100_objective gradient ###############################
 
         self.set_partial_derivative_for_other_types(
             ('co2_eq_100',), (
                 'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
-            np.ones(np_years) * self.GWP_100_default['CH4'] / (co2_eq_100_ref * np_years))
+            np.ones(np_years) * self.GWP_100_default[GlossaryCore.CH4] / (co2_eq_100_ref * np_years))
 
         self.set_partial_derivative_for_other_types(
             ('co2_eq_100',), (
@@ -215,17 +215,17 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('co2_eq_100',), (
                 'Crop.CH4_land_emission_df', 'emitted_CH4_evol_cumulative'),
-            np.ones(np_years) * self.GWP_100_default['CH4'] / (co2_eq_100_ref * np_years))
+            np.ones(np_years) * self.GWP_100_default[GlossaryCore.CH4] / (co2_eq_100_ref * np_years))
 
         self.set_partial_derivative_for_other_types(
             ('co2_eq_100',), (
                 'Crop.N2O_land_emission_df', 'emitted_N2O_evol_cumulative'),
-            np.ones(np_years) * self.GWP_100_default['N2O'] / (co2_eq_100_ref * np_years))
+            np.ones(np_years) * self.GWP_100_default[GlossaryCore.N2O] / (co2_eq_100_ref * np_years))
 
         self.set_partial_derivative_for_other_types(
             ('co2_eq_100',), (
                 'Crop.CO2_land_emission_df', 'emitted_CO2_evol_cumulative'),
-            np.ones(np_years) * self.GWP_100_default['CO2'] / (co2_eq_100_ref * np_years))
+            np.ones(np_years) * self.GWP_100_default[GlossaryCore.CO2] / (co2_eq_100_ref * np_years))
 
 
 

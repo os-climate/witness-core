@@ -37,13 +37,13 @@ class ClimateEcoDiscipline(SoSWrapp):
                         'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}
     ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                      'user_level': 1, 'unit': '-'}
-    GWP_100_default = {'CO2': 1.0,
-                       'CH4': 28.,
-                       'N2O': 265.}
+    GWP_100_default = {GlossaryCore.CO2: 1.0,
+                       GlossaryCore.CH4: 28.,
+                       GlossaryCore.N2O: 265.}
 
-    GWP_20_default = {'CO2': 1.0,
-                      'CH4': 85.,
-                      'N2O': 265.}
+    GWP_20_default = {GlossaryCore.CO2: 1.0,
+                      GlossaryCore.CH4: 85.,
+                      GlossaryCore.N2O: 265.}
     ASSUMPTIONS_DESC_IN = {
         'var_name': 'assumptions_dict', 'type': 'dict', 'default': assumptions_dict_default , 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'structuring': True, 'unit': '-'}
 

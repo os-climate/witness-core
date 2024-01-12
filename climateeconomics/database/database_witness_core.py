@@ -141,3 +141,57 @@ class DatabaseWitnessCore:
         source="",
         last_update_date=date(2023, 12, 1),
     )  # todo : complete information
+
+    CO2PreIndustrialConcentration = ColectedData(
+        value=280,
+        unit="ppm",
+        description="Concentration of CO2 in atmosphere for pre-industrial era",
+        link="https://archive.ipcc.ch/ipccreports/tar/wg1/016.htm",
+        source="IPCC",
+        last_update_date=date(2024, 1, 12),
+    )
+
+    CH4PreIndustrialConcentration = ColectedData(
+        value=700,
+        unit="ppb",
+        description="Concentration of CH4 in atmosphere for pre-industrial era",
+        link="https://archive.ipcc.ch/ipccreports/tar/wg1/016.htm",
+        source="IPCC",
+        last_update_date=date(2024, 1, 12),
+    )
+
+    N2OPreIndustrialConcentration = ColectedData(
+        value=270,
+        unit="ppb",
+        description="Concentration of N2O in atmosphere for pre-industrial era",
+        link="https://archive.ipcc.ch/ipccreports/tar/wg1/016.htm",
+        source="IPCC",
+        last_update_date=date(2023, 12, 1),
+    )
+
+    C02YearStartConcentration = ColectedData(
+        value=414,
+        unit="ppm",
+        description="Concentration of CO2 in atmosphere for year start (2020)",
+        link="https://gml.noaa.gov/ccgg/trends/",
+        source="US Department of Commerce",
+        last_update_date=date(2024, 1, 12),
+    )
+
+    CH4YearStartConcentration = ColectedData(
+        value=1872,
+        unit="ppb",
+        description="Concentration of CH4 in atmosphere for year start (2020)",
+        link="https://gml.noaa.gov/ccgg/trends_ch4/",
+        source="US Department of Commerce",
+        last_update_date=date(2024, 1, 12),
+    )
+
+    N2OYearStartConcentration = ColectedData(
+        value=333,
+        unit="ppb",
+        description="Concentration of N2O in atmosphere for year start (2020)",
+        link="https://gml.noaa.gov/ccgg/trends_n2o/",
+        source="US Department of Commerce",
+        last_update_date=date(2024, 1, 12),
+    )

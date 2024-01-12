@@ -835,7 +835,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         dghg_fish_dkcal = model.d_ghg_fish_emission_d_fish_kcal()
 
         # gradient for land emissions
-        for ghg in ['CO2', 'CH4', 'N2O']:
+        for ghg in [GlossaryCore.CO2, GlossaryCore.CH4, GlossaryCore.N2O]:
             dco2_dpop = 0.0
             dco2_dtemp = 0.0
             dco2_dred_meat = 0.0
