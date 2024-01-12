@@ -55,6 +55,16 @@ def post_processings(execution_engine, namespace, chart_filters=None):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
+    # Name of the disciplines called
+    CROP_DISC = 'Crop'
+    FOREST_DISC = 'Forest'
+    AGRICULTUREMIX_DISC = 'AgricultureMix'
+    MACROECO_DISC = 'Macroeconomics'
+    TEMPCHANGE_DISC = 'Temperature_change'
+    POPULATION_DISC = 'Population'
+    LANDUSE_DISC = 'Land_Use'
+    ENERGYMIX_DISC = 'EnergyMix'
+    INVESTDISTRIB_DISC = 'InvestmentDistribution'
 
     # execution_engine.dm.get_all_namespaces_from_var_name('temperature_df')[0]
 
@@ -67,10 +77,8 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 chart_list = chart_filter.selected_values
 
     if 'temperature and ghg evolution' in chart_list:
-        temperature_df = execution_engine.dm.get_value(
-                    execution_engine.dm.get_all_namespaces_from_var_name('temperature_detail_df')[0])
-        total_ghg_df = execution_engine.dm.get_value(
-                    execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.GHGEmissionsDfValue)[0])
+        temperature_df = execution_engine.dm.get_value(f'{namespace}.{TEMPCHANGE_DISC}.temperature_detail_df')
+        total_ghg_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.GHGEmissionsDfValue}')
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Temperature and GHG evolution over the years'
@@ -102,15 +110,15 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
     if 'population and death' in chart_list:
 
-        pop_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('population_detail_df')[0])
-        death_dict = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('death_dict')[0])
+        pop_df = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.population_detail_df')
+        death_dict = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.death_dict')
         instanciated_charts = Population.graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts)
 
     if 'gdp breakdown' in chart_list:
-        economics_detail_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.EconomicsDetailDfValue)[0])
-        damage_detailed_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.DamageDetailedDfValue)[0])
-        compute_climate_impact_on_gdp = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('assumptions_dict')[0])['compute_climate_impact_on_gdp']
-        damages_to_productivity = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(GlossaryCore.DamageToProductivity)[0]) and compute_climate_impact_on_gdp
+        economics_detail_df = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.EconomicsDetailDfValue}')
+        damage_detailed_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.DamageDetailedDfValue}')
+        compute_climate_impact_on_gdp = execution_engine.dm.get_value(f'{namespace}.assumptions_dict')['compute_climate_impact_on_gdp']
+        damages_to_productivity = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.DamageToProductivity}') and compute_climate_impact_on_gdp
         chart_name = 'Gross and net of damage output per year'
         new_chart = graph_gross_and_net_output(chart_name=chart_name,
                                                compute_climate_impact_on_gdp=compute_climate_impact_on_gdp,
@@ -125,7 +133,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                                              chart_name='Surface for forest and food production vs available land over time', stacked_bar=True)
 
         # total crop surface
-        surface_df = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name('food_land_surface_df')[0])
+        surface_df = execution_engine.dm.get_value(f'{namespace}.{AGRICULTUREMIX_DISC}.{CROP_DISC}.food_land_surface_df')
         years = surface_df[GlossaryCore.Years].values.tolist()
         for key in surface_df.keys():
             if key == GlossaryCore.Years:
@@ -139,7 +147,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 new_chart.add_series(new_series)
 
         # total food and forest surface, food should be at the bottom to be compared with crop surface
-        land_surface_detailed = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(LandUseV2.LAND_SURFACE_DETAIL_DF)[0])
+        land_surface_detailed = execution_engine.dm.get_value(f'{namespace}.{LANDUSE_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}')
         column = 'Forest Surface (Gha)'
         legend = column.replace(' (Gha)', '')
         new_series = InstanciatedSeries(
@@ -167,10 +175,8 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if 'energy mix' in chart_list:
-        energy_production_detailed = execution_engine.dm.get_value(
-            execution_engine.dm.get_all_namespaces_from_var_name(GlossaryEnergy.EnergyProductionDetailedValue)[0])
-        energy_mean_price = execution_engine.dm.get_value(
-            execution_engine.dm.get_all_namespaces_from_var_name(GlossaryEnergy.EnergyMeanPriceValue)[0])
+        energy_production_detailed = execution_engine.dm.get_value(f'{namespace}.{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyProductionDetailedValue}')
+        energy_mean_price = execution_engine.dm.get_value(f'{namespace}.{ENERGYMIX_DISC}.{GlossaryEnergy.EnergyMeanPriceValue}')
 
         years = energy_production_detailed[GlossaryEnergy.Years].values.tolist()
 
@@ -214,18 +220,15 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
     if 'investment distribution' in chart_list:
 
-        forest_investment = execution_engine.dm.get_value(
-            execution_engine.dm.get_all_namespaces_from_var_name(GlossaryEnergy.ForestInvestmentValue)[0])
+        forest_investment = execution_engine.dm.get_value(f'{namespace}.{INVESTDISTRIB_DISC}.{GlossaryEnergy.ForestInvestmentValue}')
         years = forest_investment[GlossaryEnergy.Years]
 
         chart_name = f'Distribution of investments on each energy vs years'
 
         new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                     chart_name=chart_name, stacked_bar=True)
-        energy_list = execution_engine.dm.get_value(
-            execution_engine.dm.get_all_namespaces_from_var_name(GlossaryEnergy.energy_list)[0])
-        ccs_list = execution_engine.dm.get_value(
-            execution_engine.dm.get_all_namespaces_from_var_name(GlossaryEnergy.ccs_list)[0])
+        energy_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryEnergy.energy_list}')
+        ccs_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryEnergy.ccs_list}')
 
         # add a chart per energy with breakdown of investments in every technology of the energy
         for energy in energy_list + ccs_list:
@@ -235,11 +238,14 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                             chart_name=chart_name, stacked_bar=True)
                 techno_list_name = f'{energy}.{GlossaryEnergy.TechnoListName}'
-                techno_list = execution_engine.dm.get_value(
-                    execution_engine.dm.get_all_namespaces_from_var_name(techno_list_name)[0])
+                var = [var for var in execution_engine.dm.get_all_namespaces_from_var_name(techno_list_name) if
+                       namespace in var][0]
+                techno_list = execution_engine.dm.get_value(var)
+
                 for techno in techno_list:
-                    invest_level = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(
-                        f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}')[0])
+                    investval = [var for var in execution_engine.dm.get_all_namespaces_from_var_name(
+                        f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}') if namespace in var][0]
+                    invest_level = execution_engine.dm.get_value(investval)
                     serie = InstanciatedSeries(
                         years.tolist(),
                         invest_level[f'{GlossaryEnergy.InvestValue}'].values.tolist(), techno, 'bar')
@@ -270,7 +276,10 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                                                          chart_name=chart_name, stacked_bar=True)
 
             for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                invest = execution_engine.dm.get_value(execution_engine.dm.get_all_namespaces_from_var_name(techno)[0])
+                if techno == 'crop_investment':
+                    invest = execution_engine.dm.get_value(f'{namespace}.{CROP_DISC}.{techno}')
+                else:
+                    invest = execution_engine.dm.get_value(f'{namespace}.{FOREST_DISC}.{techno}')
                 serie_agriculture = InstanciatedSeries(
                     invest[GlossaryEnergy.Years].values.tolist(),
                     invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""), 'bar')
