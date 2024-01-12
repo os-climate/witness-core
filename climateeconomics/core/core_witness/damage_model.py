@@ -137,11 +137,9 @@ class DamageModel:
         Compute gradient CO2 damage price wrt user input.
         User has to give derivative of CO2 extra ton damage price wrt to whatever he wants.
         '''
-        if self.compute_climate_impact_on_gdp:
-            d_co2_damage_price_d_co2_extra_ton_damage_price = np.tril(np.ones(len(d_co2_extra_ton_damage_price_d_user_input)))
-            return d_co2_damage_price_d_co2_extra_ton_damage_price @ d_co2_extra_ton_damage_price_d_user_input
-        else:
-            return np.zeros_like(d_co2_extra_ton_damage_price_d_user_input)
+        d_co2_damage_price_d_co2_extra_ton_damage_price = np.tril(np.ones(len(d_co2_extra_ton_damage_price_d_user_input)))
+        return d_co2_damage_price_d_co2_extra_ton_damage_price @ d_co2_extra_ton_damage_price_d_user_input
+
 
     def d_extra_co2_t_damage_price_d_extra_co2_ton(self):
         damages = self.damage_df[GlossaryCore.Damages].values
@@ -156,7 +154,7 @@ class DamageModel:
         extra_CO2eq = self.extra_gigatons_co2eq_since_pre_indus_df[GlossaryCore.ExtraCO2EqSincePreIndustrialValue].values  # Gt
         damages_on_economy = self.damage_df[GlossaryCore.Damages].values  # T$
 
-        extra_CO2t_eq_cost = 1e12 * 1e-9 * damages_on_economy / extra_CO2eq  #$/tCO2Eq
+        extra_CO2t_eq_cost = 1e12 * 1e-9 * damages_on_economy / extra_CO2eq * int(self.compute_climate_impact_on_gdp)  #$/tCO2Eq
 
         self.extra_co2_eq_damage_price_df = pd.DataFrame({
             GlossaryCore.Years: self.years_range,
