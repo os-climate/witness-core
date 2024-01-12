@@ -24,7 +24,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Coarse Ku Dev Optimization Process',
+        'label': 'WITNESS Coarse story telling Optimization Process',
         'description': '',
         'category': '',
         'version': '',
