@@ -419,13 +419,13 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Atmospheric concentrations parts per million'
 
         df_paths = [
-            'ghg_cycle_df']
+            GlossaryCore.GHGCycleDfValue]
         (carboncycle_detail_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
         co2_ppm_dict, welfare_dict = {}, {}
         for scenario in scenario_list:
-            co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario]['co2_ppm'].values.tolist(
+            co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario][GlossaryCore.CO2Concentration].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, co2_ppm_dict,

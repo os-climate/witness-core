@@ -64,10 +64,10 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         # Take only from year start value
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= 2020]
 
-        ghg_cycle_df['co2_ppm'] = ghg_cycle_df['ppm']
-        ghg_cycle_df['ch4_ppm'] = ghg_cycle_df['ppm'] * 1222/296
-        ghg_cycle_df['n2o_ppm'] = ghg_cycle_df['ppm'] * 296/296
-        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, 'co2_ppm', 'ch4_ppm', 'n2o_ppm']]
+        ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
+        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
         years = np.arange(2020, 2101, 1)
@@ -76,7 +76,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
                        f'{self.name}.{GlossaryCore.YearEnd}': 2100,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
-                       f'{self.name}.ghg_cycle_df': ghg_cycle_df,
+                       f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
                        }
@@ -92,7 +92,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
                             filename=f'jacobian_temperature_v2_discipline_DICE.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
-                            inputs=[f'{self.name}.ghg_cycle_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                      f'{self.name}.temperature_constraint',
                                      f'{self.name}.{self.model_name}.forcing_detail_df',
@@ -123,10 +123,10 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         # Take only from year start value
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= 2020]
 
-        ghg_cycle_df['co2_ppm'] = ghg_cycle_df['ppm']
-        ghg_cycle_df['ch4_ppm'] = ghg_cycle_df['ppm'] * 1222/296
-        ghg_cycle_df['n2o_ppm'] = ghg_cycle_df['ppm'] * 296/296
-        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, 'co2_ppm', 'ch4_ppm', 'n2o_ppm']]
+        ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
+        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
         years = np.arange(2020, 2101, 1)
@@ -135,7 +135,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
                        f'{self.name}.{GlossaryCore.YearEnd}': 2100,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
-                       f'{self.name}.ghg_cycle_df': ghg_cycle_df,
+                       f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'FUND',
                        f'{self.name}.{self.model_name}.forcing_model': 'Myhre',
@@ -152,7 +152,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
                             filename=f'jacobian_temperature_v2_discipline_Myhre.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
-                            inputs=[f'{self.name}.ghg_cycle_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                      f'{self.name}.temperature_constraint',
                                      f'{self.name}.{self.model_name}.forcing_detail_df',
@@ -183,10 +183,10 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         # Take only from year start value
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= 2020]
 
-        ghg_cycle_df['co2_ppm'] = ghg_cycle_df['ppm']
-        ghg_cycle_df['ch4_ppm'] = ghg_cycle_df['ppm'] * 1222/296
-        ghg_cycle_df['n2o_ppm'] = ghg_cycle_df['ppm'] * 296/296
-        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, 'co2_ppm', 'ch4_ppm', 'n2o_ppm']]
+        ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
+        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
         years = np.arange(2020, 2101, 1)
@@ -195,7 +195,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
                        f'{self.name}.{GlossaryCore.YearEnd}': 2100,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
-                       f'{self.name}.ghg_cycle_df': ghg_cycle_df,
+                       f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'FUND',
                        f'{self.name}.{self.model_name}.forcing_model': 'Meinshausen',
@@ -212,7 +212,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
                             filename=f'jacobian_temperature_v2_discipline_Meinshausen.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
-                            inputs=[f'{self.name}.ghg_cycle_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                      f'{self.name}.temperature_constraint',
                                      f'{self.name}.{self.model_name}.forcing_detail_df',
@@ -243,10 +243,10 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         # Take only from year start value
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= 2020]
 
-        ghg_cycle_df['co2_ppm'] = ghg_cycle_df['ppm']
-        ghg_cycle_df['ch4_ppm'] = ghg_cycle_df['ppm'] * 1222/296
-        ghg_cycle_df['n2o_ppm'] = ghg_cycle_df['ppm'] * 296/296
-        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, 'co2_ppm', 'ch4_ppm', 'n2o_ppm']]
+        ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
+        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
         years = np.arange(2020, 2101, 1)
@@ -255,7 +255,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
                        f'{self.name}.{GlossaryCore.YearEnd}': 2100,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
-                       f'{self.name}.ghg_cycle_df': ghg_cycle_df,
+                       f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
                        f'{self.name}.{self.model_name}.forcing_model': 'Etminan',
@@ -272,7 +272,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
                             filename=f'jacobian_temperature_v2_discipline_etminan.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
-                            inputs=[f'{self.name}.ghg_cycle_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.forcing_detail_df',
                                      f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                      f'{self.name}.temperature_constraint'],
@@ -302,10 +302,10 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         # Take only from year start value
         ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= 2020]
 
-        ghg_cycle_df['co2_ppm'] = ghg_cycle_df['ppm']
-        ghg_cycle_df['ch4_ppm'] = ghg_cycle_df['ppm'] * 1222/296
-        ghg_cycle_df['n2o_ppm'] = ghg_cycle_df['ppm'] * 296/296
-        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, 'co2_ppm', 'ch4_ppm', 'n2o_ppm']]
+        ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
+        ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
+        ghg_cycle_df[GlossaryCore.N2OConcentration] = ghg_cycle_df['ppm'] * 296/296
+        ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
         years = np.arange(2020, 2101, 1)
@@ -314,7 +314,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
                        f'{self.name}.{GlossaryCore.YearEnd}': 2100,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
-                       f'{self.name}.ghg_cycle_df': ghg_cycle_df,
+                       f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
                        f'{self.name}.{self.model_name}.temperature_model': 'DICE',
                        f'{self.name}.{self.model_name}.forcing_model': 'Meinshausen', }
@@ -330,7 +330,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
                             filename=f'jacobian_temperature_v2_discipline_Meinshausen.pkl',
                             discipline=disc_techno,local_data = disc_techno.local_data,
                             step=1e-15,
-                            inputs=[f'{self.name}.ghg_cycle_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}'],
                             outputs=[f'{self.name}.{self.model_name}.forcing_detail_df',
                                      f'{self.name}.{GlossaryCore.TemperatureDfValue}',
                                      f'{self.name}.temperature_constraint'],
