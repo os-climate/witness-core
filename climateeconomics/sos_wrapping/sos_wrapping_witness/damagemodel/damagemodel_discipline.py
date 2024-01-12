@@ -203,8 +203,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             damage_fraction_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.DamageFractionDfValue))
             years = list(damage_fraction_df[GlossaryCore.Years].values)
-
-            chart_name = 'Lost GDP due to climate damages [%]'
+            compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
+            chart_name = 'Lost GDP due to climate damages [%]' + ' (not applied)' * (not compute_climate_impact_on_gdp)
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '%', chart_name=chart_name, y_min_zero=True)
 
             new_series = InstanciatedSeries(

@@ -73,6 +73,11 @@ class DamageDiscTest(unittest.TestCase):
         temperature_df_y.index = years
 
         values_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
+                       f'{self.name}.assumptions_dict': {'compute_gdp': True,
+                                'compute_climate_impact_on_gdp': False,
+                                'activate_climate_effect_population': True,
+                                'invest_co2_tax_in_renewables': True,
+                                },
                        f'{self.name}.{GlossaryCore.DamageDfValue}': damage_df,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
                        f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': extra_co2_t_since_preindustrial,
@@ -89,5 +94,5 @@ class DamageDiscTest(unittest.TestCase):
         graph_list = disc.get_post_processing_list(filter)
 
         for graph in graph_list:
-           #graph.to_plotly().show()
+           graph.to_plotly().show()
            pass
