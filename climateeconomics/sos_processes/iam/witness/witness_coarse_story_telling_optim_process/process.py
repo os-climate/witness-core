@@ -43,8 +43,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
             techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], process_level='dev')
 
         # modify namespaces defined in the child process
-        self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            optim_name, after_name=self.ee.study_name, clean_namespaces=True)  # optim_name
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(optim_name)  # optim_name
 
         #-- set optim builder
         opt_builder = self.ee.factory.create_optim_builder(
