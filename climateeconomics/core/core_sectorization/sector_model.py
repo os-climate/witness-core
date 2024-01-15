@@ -44,7 +44,7 @@ class SectorModel():
         self.lt_energy_eff = None
         self.emax_enet_constraint = None
         self.gdp_percentage_per_section_df = None
-        self.section_list = None
+        self.section_list = []
         self.section_gdp_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint =  None
@@ -305,8 +305,9 @@ class SectorModel():
     def compute_output_net_of_damage_per_section(self):
         section_gdp_percentage_df = self.get_gdp_percentage_per_section()
         self.section_gdp_df = section_gdp_percentage_df.copy()
+        production_df_copy = self.production_df.copy(deep=True)
         self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(
-            self.production_df.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
+            production_df_copy.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
 
 
     
