@@ -64,15 +64,17 @@ class DamageDiscipline(ClimateEcoDiscipline):
         GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
-        'total_emissions_damage_ref': {'type': 'float', 'default': 18.0, 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                       'namespace': 'ns_ref', 'user_level': 2},
+        GlossaryCore.ExtraCO2EqSincePreIndustrialValue: GlossaryCore.ExtraCO2EqSincePreIndustrialDf,
         'damage_constraint_factor': {'type': 'array', 'unit': '-', 'user_level': 2},
-        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN
+        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
+        GlossaryCore.CO2DamagePriceInitValue: GlossaryCore.CO2DamagePriceInitVar
+
     }
 
     DESC_OUT = {
         GlossaryCore.CO2DamagePrice: GlossaryCore.CO2DamagePriceDf,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
+        GlossaryCore.ExtraCO2tDamagePrice: GlossaryCore.ExtraCO2tDamagePriceDf
     }
 
     _maturity = 'Research'
@@ -112,14 +114,16 @@ class DamageDiscipline(ClimateEcoDiscipline):
         in_dict = self.get_sosdisc_inputs()
         damage_df = in_dict.pop(GlossaryCore.DamageDfValue)
         temperature_df = in_dict.pop(GlossaryCore.TemperatureDfValue)
+        extra_gigatons_co2_eq_df = in_dict.pop(GlossaryCore.ExtraCO2EqSincePreIndustrialValue)
 
         # pyworld3 execution
-        damage_fraction_df, co2_damage_price_df = self.model.compute(
-            damage_df, temperature_df)
+        damage_fraction_df, co2_damage_price_df, extra_co2_damage_price = self.model.compute(
+            damage_df, temperature_df, extra_gigatons_co2_eq_df)
 
         # store output data
         out_dict = {GlossaryCore.DamageFractionDfValue: damage_fraction_df[GlossaryCore.DamageFractionDf['dataframe_descriptor'].keys()],
-                    GlossaryCore.CO2DamagePrice: co2_damage_price_df}
+                    GlossaryCore.CO2DamagePrice: co2_damage_price_df,
+                    GlossaryCore.ExtraCO2tDamagePrice: extra_co2_damage_price}
 
         self.store_sos_outputs_values(out_dict)
 
@@ -135,17 +139,36 @@ class DamageDiscipline(ClimateEcoDiscipline):
                 - temperature_df, GlossaryCore.TempAtmo
         """
         ddamage_frac_output_temp_atmo = self.model.compute_gradient()
-        d_co2_damage_price_d_damages = self.model.d_co2_damage_price_d_damages()
+        d_extra_co2_t_damage_price_d_damages = self.model.d_extra_co2_t_damage_price_d_damages()
+        d_extra_co2_t_damage_price_d_extra_co2_ton = self.model.d_extra_co2_t_damage_price_d_extra_co2_ton()
+
+        d_co2_damage_price_d_damages = self.model.d_co2_damage_price_d_user_input(d_extra_co2_t_damage_price_d_damages)
+        d_co2_damage_price_d_extra_co2_ton = self.model.d_co2_damage_price_d_user_input(d_extra_co2_t_damage_price_d_extra_co2_ton)
         # fill jacobians
+
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             ddamage_frac_output_temp_atmo)
+
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
             (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
             d_co2_damage_price_d_damages)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
+            (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue),
+            d_co2_damage_price_d_extra_co2_ton)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
+            (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
+            self.model.d_extra_co2_t_damage_price_d_damages())
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
+            (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue),
+            self.model.d_extra_co2_t_damage_price_d_extra_co2_ton())
 
     def get_chart_filter_list(self):
 
@@ -154,7 +177,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         chart_filters = []
 
-        chart_list = [GlossaryCore.Damages, 'CO2 damage price']  # , 'Abatement cost']
+        chart_list = [GlossaryCore.Damages,
+                      'CO2 damage price',
+                      GlossaryCore.ExtraCO2tDamagePrice]  # , 'Abatement cost']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -188,7 +213,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             new_chart.add_series(new_series)
 
-            note = {'Note': 'Damages due to loss of productivity do not appear here'}
+            note = {'Note': 'This does not include damage due to loss of productivity'}
             new_chart.annotation_upper_left = note
 
             instanciated_charts.append(new_chart)
@@ -202,15 +227,38 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             years = list(co2_damage_price_df[GlossaryCore.Years].values.tolist())
 
-            chart_name = 'CO2 damage price'
+            chart_name = 'CO2eq damage price'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Price ($/tCO2)', chart_name=chart_name, y_min_zero=True)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Price ({GlossaryCore.CO2DamagePriceDf["unit"]})', chart_name=chart_name, y_min_zero=True)
 
             visible_line = True
 
             # add CO2 damage price serie
             new_series = InstanciatedSeries(
                 years, np.round(co2_damage_price.values, 2).tolist(), 'CO2 damage price', 'lines', visible_line)
+            new_chart.add_series(new_series)
+
+            # add chart
+            instanciated_charts.append(new_chart)
+
+        if GlossaryCore.ExtraCO2tDamagePrice in chart_list:
+            extra_co2_damage_price_df = deepcopy(
+                self.get_sosdisc_outputs(GlossaryCore.ExtraCO2tDamagePrice))
+
+            extra_co2_damage_price = extra_co2_damage_price_df[GlossaryCore.ExtraCO2tDamagePrice].values
+
+            years = list(extra_co2_damage_price_df[GlossaryCore.Years].values.tolist())
+
+            chart_name = GlossaryCore.ExtraCO2tDamagePrice
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'Price ({GlossaryCore.ExtraCO2tDamagePriceDf["unit"]})', chart_name=chart_name,
+                                                 y_min_zero=True)
+
+            visible_line = True
+
+            # add CO2 damage price serie
+            new_series = InstanciatedSeries(
+                years, extra_co2_damage_price.tolist(), 'CO2 damage price', 'lines', visible_line)
             new_chart.add_series(new_series)
 
             # add chart

@@ -19,36 +19,49 @@ from energy_models.glossaryenergy import GlossaryEnergy
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.charts.two_axes_chart_template import SeriesTemplate
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.ccus.ccus import CCUS
 
+TAX_NAME = 'with tax'
+DAMAGE_NAME = 'with damage'
+effects_list = [TAX_NAME, DAMAGE_NAME]
+EFFECT_NAME = 'Effects'
+CHART_NAME = 'Charts'
+YEARS_NAME = 'YEARS'
+SCATTER_SCENARIO = 'mda_scenarios'
+# list of graphs to be plotted and filtered
+graphs_list = ['Temperature per scenario',
+               'CO2 emissions per scenario',
+               'Population per scenario',
+               'Cumulative climate deaths per scenario',
+               'GDP per scenario',
+               # 'invest per scenario',
+               'invest in energy per scenario',
+               'invest in energy and ccus per scenario',
+               'CO2 tax per scenario',
+               'Utility per scenario',
+               'Total production per scenario',
+               'Fossil production per scenario',
+               'Renewable production per scenario'
+               ]
 def post_processing_filters(execution_engine, namespace):
 
     filters = []
 
-    chart_list = ['Temperature per scenario',
-                  'CO2 emissions per scenario',
-                  'Population per scenario',
-                  'Cumulative climate deaths per scenario',
-                  'GDP per scenario',
-                  #'invest per scenario',
-                  'invest in energy per scenario',
-                  'invest in energy and ccus per scenario',
-                  'CO2 tax per scenario',
-                  'Utility per scenario',
-                  'Total production per scenario',
-                  'Fossil production per scenario',
-                  'Renewable production per scenario'
-                  ]
-
-    scatter_scenario = 'mda_scenarios'
-    namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
+    namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
     scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
 
-    filters.append(ChartFilter('Charts', chart_list, chart_list, 'Charts'))
-    filters.append(ChartFilter('Scenarios', scenario_list,
-                               scenario_list, 'Scenarios'))
+    # recover year start and year end arbitrarily from the first scenario
+    year_start = execution_engine.dm.get_value(f'{namespace_w}.{scenario_list[0]}.{GlossaryCore.YearStart}')
+    year_end = execution_engine.dm.get_value(f'{namespace_w}.{scenario_list[0]}.{GlossaryCore.YearEnd}')
+    years_list = np.arange(year_start, year_end + 1).tolist()
+
+    filters.append(ChartFilter(CHART_NAME, graphs_list, graphs_list, CHART_NAME))
+    filters.append(ChartFilter(YEARS_NAME, years_list, years_list, YEARS_NAME))
+    filters.append(ChartFilter(EFFECT_NAME, effects_list,
+                               effects_list, EFFECT_NAME))
 
     return filters
 
@@ -57,34 +70,10 @@ def post_processings(execution_engine, namespace, filters):
 
     instanciated_charts = []
 
-    scatter_scenario = 'mda_scenarios'
-    namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
+    namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
     scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
 
-    # Overload default value with chart filter
-    graphs_list = ['Temperature per scenario',
-                  'CO2 emissions per scenario',
-                  'Population per scenario',
-                  'Cumulative climate deaths per scenario',
-                  'GDP per scenario',
-                  #'invest per scenario',
-                  'invest in energy per scenario',
-                  'invest in energy and ccus per scenario',
-                  'CO2 tax per scenario',
-                  'Utility per scenario',
-                  'Total production per scenario',
-                  'Fossil production per scenario',
-                  'Renewable production per scenario'
-                  ]
-
-    if filters is not None:
-        for chart_filter in filters:
-            if chart_filter.filter_key == 'Charts':
-                graphs_list = chart_filter.selected_values
-            if chart_filter.filter_key == 'Scenarios':
-                selected_scenarios = chart_filter.selected_values
-
-        selected_scenarios = scenario_list
+    selected_scenarios = scenario_list
 
     df_paths = [f'{GlossaryCore.YearStart}',
                 f'{GlossaryCore.YearEnd}', ]
@@ -93,6 +82,25 @@ def post_processings(execution_engine, namespace, filters):
     year_start, year_end = year_start_dict[scenario_list[0]
                                            ], year_end_dict[scenario_list[0]]
     years = np.arange(year_start, year_end + 1).tolist()
+
+    damage_tax_activation_status_dict = get_scenario_damage_tax_activation_status(execution_engine, scenario_list)
+
+    if filters is not None:
+        for chart_filter in filters:
+            if chart_filter.filter_key == CHART_NAME:
+                graphs_list = chart_filter.selected_values
+            if chart_filter.filter_key == YEARS_NAME:
+                years = chart_filter.selected_values
+            if chart_filter.filter_key == EFFECT_NAME:
+                # performs a "OR" operation on the filter criteria. If no effect is selected for filtering, all scenarios
+                # are shown. Then, restricts the scenarios shown to those respecting at least one of the filtered condition(s)
+                # at start, the graph without damage without tax are not shown
+                effects_list_filtered = chart_filter.selected_values
+                if len(effects_list_filtered) > 0:
+                    selected_scenarios = []
+                    for effect in effects_list_filtered:
+                        selected_scenarios.extend([scenario for scenario in scenario_list
+                                                   if damage_tax_activation_status_dict[scenario][effect]])
 
     """
         -------------
@@ -119,7 +127,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, temperature_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -139,7 +149,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, gdp_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -150,7 +162,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Carbon emissions (Gtc)'
 
         df_paths = [
-            'GHG_emissions_df']
+            GlossaryCore.GHGEmissionsDfValue]
         (co2_emissions_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
@@ -161,7 +173,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, co2_emissions_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -182,7 +196,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, pop_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -201,7 +217,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, death_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -224,7 +242,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, energy_investment_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -246,13 +266,15 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, invest_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
     if 'invest in energy and ccus per scenario' in graphs_list:
 
-        namespace_w = f'{execution_engine.study_name}.{scatter_scenario}.{scenario_list[0]}'
+        namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}.{scenario_list[0]}'
         energy_list = execution_engine.dm.get_value(f'{namespace_w}.{GlossaryEnergy.energy_list}')
         ccs_list = execution_engine.dm.get_value(f'{namespace_w}.{GlossaryEnergy.ccs_list}')
 
@@ -284,7 +306,9 @@ def post_processings(execution_engine, namespace, filters):
 
             new_chart = get_scenario_comparison_chart(years, invest_per_energy,
                                                       chart_name=chart_name,
-                                                      x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                      x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                      selected_scenarios=selected_scenarios,
+                                                      status_dict=damage_tax_activation_status_dict)
 
             instanciated_charts.append(new_chart)
 
@@ -305,7 +329,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, co2_tax_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -356,7 +382,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, utility_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -380,7 +408,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, co2_ppm_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         # Rockstrom Limit
         ordonate_data = [450] * int(len(years) / 5)
@@ -414,7 +444,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, energy_production_detailed_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -436,7 +468,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, energy_production_brut_detailed_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -456,7 +490,9 @@ def post_processings(execution_engine, namespace, filters):
 
         new_chart = get_scenario_comparison_chart(years, energy_production_brut_detailed_dict,
                                                   chart_name=chart_name,
-                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name, selected_scenarios=selected_scenarios)
+                                                  x_axis_name=x_axis_name, y_axis_name=y_axis_name,
+                                                  selected_scenarios=selected_scenarios,
+                                                  status_dict=damage_tax_activation_status_dict)
 
         instanciated_charts.append(new_chart)
 
@@ -464,8 +500,36 @@ def post_processings(execution_engine, namespace, filters):
     return instanciated_charts
 
 
+def get_scenario_damage_tax_activation_status(execution_engine, scenario_list):
+    '''
+    Determines for each scenario if the damage and the taxes are activated
+    assumes that tax is activated when ccs_price_percentage > 0 and co2_damage_price_percentage > 0 in case of damage
+        NB: if damage are deactivated, co2_damage_price_percentage can be set to 0 as it has no effect
+    assumes that damage are activated when damage_to_productivity and compute_climate_impact_on_gdp and
+                                          activate_climate_effect_population are true
+    '''
+    df_paths = ['assumptions_dict']
+    (assumption_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+    df_paths = ['ccs_price_percentage', ]
+    (ccs_price_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+    df_paths = ['co2_damage_price_percentage', ]
+    (co2_damage_price_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+    df_paths = ['Macroeconomics.damage_to_productivity', ]
+    (damage_to_productivity_dict,) = get_df_per_scenario_dict(execution_engine, df_paths)
+    status_dict = {}
+    for scenario in scenario_list:
+        status_dict[scenario] = {}
+        status_dict[scenario][DAMAGE_NAME] = damage_to_productivity_dict[scenario] and \
+                                          assumption_dict[scenario]['compute_climate_impact_on_gdp'] and \
+                                          assumption_dict[scenario]['activate_climate_effect_population']
+        status_dict[scenario][TAX_NAME] = (ccs_price_dict[scenario] > 0. and (co2_damage_price_dict[scenario] > 0. or \
+                                                                             (co2_damage_price_dict[scenario] <= 0. and \
+                                                                              not status_dict[scenario][DAMAGE_NAME])))
 
-def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios):
+    return status_dict
+
+
+def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axis_name, selected_scenarios, status_dict=None):
     min_x = min(x_list)
     max_x = max(x_list)
     # graphs ordinate should start at 0, except for CO2 emissions that could go <0
@@ -478,9 +542,28 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
                                          chart_name)
 
     for scenario, y_values in y_dict.items():
+        '''
+        For ease of understanding of the plots, scenarios without damage are in dashed line(solid otherwise) and scenarios
+        with tax have circles on the line. whether or not damage and taxes are activated is provided in status_dict
+        '''
+        marker_symbol = 'circle'
+        if status_dict is not None:
+            if status_dict[scenario][TAX_NAME] == False:
+                add_markers = ''
+            else:
+                add_markers = SeriesTemplate.ADD_MARKERS
+                marker_symbol = 'line-ns-open' #if circles are used, the dashed line cannot be seen
+
+            if status_dict[scenario][DAMAGE_NAME] == False:
+                lines = SeriesTemplate.DASH_LINES_DISPLAY + add_markers
+            else:
+                lines = SeriesTemplate.LINES_DISPLAY + add_markers
+        else:
+            lines = SeriesTemplate.LINES_DISPLAY
+
         if scenario in selected_scenarios:
             new_series = InstanciatedSeries(
-                x_list, y_values, scenario, 'lines', True)
+                x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol)
 
             new_chart.series.append(new_series)
 
@@ -495,8 +578,7 @@ def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
     @return df_per_scenario_dict: list of dict, with {key = scenario_name: value= requested_dataframe} 
     '''
     df_per_scenario_dicts = [{} for _ in df_paths]
-    scatter_scenario = 'mda_scenarios'
-    namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
+    namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
     if not scenario_list:
         scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
 
