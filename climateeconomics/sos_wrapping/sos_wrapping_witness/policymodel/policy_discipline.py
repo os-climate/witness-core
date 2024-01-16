@@ -63,6 +63,7 @@ class PolicyDiscipline(SoSWrapp):
         'co2_damage_price_percentage': {'type': 'float', 'default': 100., 'unit': '%',
                                    'visibility': SoSWrapp.SHARED_VISIBILITY,
                                    'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
+        'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
     }
 
     DESC_OUT = {
@@ -108,7 +109,7 @@ class PolicyDiscipline(SoSWrapp):
 
         chart_filters = []
 
-        chart_list = ['CO2 tax']
+        chart_list = ['CO2eq tax']
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))
@@ -127,15 +128,16 @@ class PolicyDiscipline(SoSWrapp):
             for chart_filter in chart_filters:
                 if chart_filter.filter_key == 'charts':
                     chart_list = chart_filter.selected_values
-        if 'CO2 tax' in chart_list:
+        if 'CO2eq tax' in chart_list:
             CCS_price = self.get_sosdisc_inputs('CCS_price')
             CO2_damage_price = self.get_sosdisc_inputs(GlossaryCore.CO2DamagePrice)
             CO2_tax = self.get_sosdisc_outputs(GlossaryCore.CO2TaxesValue)
             years = list(CCS_price[GlossaryCore.Years].values)
 
-            chart_name = 'CO2 tax chart'
+            compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
+            chart_name = 'CO2eq tax' + " (only informative)" * (not compute_climate_impact_on_gdp)
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 tax ($/tCO2)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '$/tCO2eq',
 
                                                  chart_name=chart_name)
 
@@ -143,10 +145,10 @@ class PolicyDiscipline(SoSWrapp):
                 years, list(CCS_price['ccs_price_per_tCO2'].values), 'CCS price', 'lines')
 
             new_series2 = InstanciatedSeries(
-                years, list(CO2_damage_price[GlossaryCore.CO2DamagePrice].values), 'CO2 damage', 'lines')
+                years, list(CO2_damage_price[GlossaryCore.CO2DamagePrice].values), 'CO2eq damage', 'lines')
 
             new_series3 = InstanciatedSeries(
-                years, list(CO2_tax[GlossaryCore.CO2Tax].values), 'CO2 tax', 'lines')
+                years, list(CO2_tax[GlossaryCore.CO2Tax].values), 'CO2eq tax', 'lines')
 
             new_chart.series.append(new_series)
             new_chart.series.append(new_series2)
