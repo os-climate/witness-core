@@ -39,7 +39,7 @@ def post_processing_filters(execution_engine, namespace):
 
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
+    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
     filters.append(ChartFilter('Charts', chart_list, chart_list, 'Charts'))
     filters.append(ChartFilter('Scenarios', scenario_list,
@@ -54,7 +54,7 @@ def post_processings(execution_engine, namespace, filters):
 
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
+    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
     # Overload default value with chart filter
     graphs_list = ['Temperature vs Utility',
@@ -494,7 +494,7 @@ def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     if not scenario_list:
-        scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
+        scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
     for scenario in scenario_list:
         for i, df_path in enumerate(df_paths):

@@ -53,8 +53,8 @@ class ProcessBuilder(BaseProcessBuilder):
                    'ns_post_processing': f'{self.ee.study_name}.Post-processing'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
-        multi_scenario = self.ee.factory.create_driver(
-            'Control rate scenarios', builder_cdf_list, flatten_subprocess=False
+        multi_scenario = self.ee.factory.create_multi_instance_driver(
+            'Control rate scenarios', builder_cdf_list
         )
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
                                                                                 'climateeconomics.sos_wrapping.sos_wrapping_dice.post_proc_dice_ms.post_processing')
