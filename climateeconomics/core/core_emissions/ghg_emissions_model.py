@@ -25,7 +25,7 @@ class GHGEmissions():
     """
     Used to compute ghg emissions from different sectors
     """
-    GHG_TYPE_LIST = [N2O.name, 'CO2', 'CH4']
+    GHG_TYPE_LIST = [N2O.name, GlossaryCore.CO2, GlossaryCore.CH4]
 
     def __init__(self, param):
         """

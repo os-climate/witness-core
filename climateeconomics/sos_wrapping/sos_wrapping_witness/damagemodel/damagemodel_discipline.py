@@ -152,23 +152,25 @@ class DamageDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             ddamage_frac_output_temp_atmo)
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
-            (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
-            d_co2_damage_price_d_damages)
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
-            (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue),
-            d_co2_damage_price_d_extra_co2_ton)
+        compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
+        if compute_climate_impact_on_gdp:
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
+                (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
+                d_co2_damage_price_d_damages)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
+                (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue),
+                d_co2_damage_price_d_extra_co2_ton)
 
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
-            (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
-            self.model.d_extra_co2_t_damage_price_d_damages())
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
-            (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue),
-            self.model.d_extra_co2_t_damage_price_d_extra_co2_ton())
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
+                (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
+                self.model.d_extra_co2_t_damage_price_d_damages())
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
+                (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue),
+                self.model.d_extra_co2_t_damage_price_d_extra_co2_ton())
 
     def get_chart_filter_list(self):
 
@@ -203,8 +205,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
             damage_fraction_df = deepcopy(self.get_sosdisc_outputs(GlossaryCore.DamageFractionDfValue))
             years = list(damage_fraction_df[GlossaryCore.Years].values)
-
-            chart_name = 'Lost GDP due to climate damages [%]'
+            compute_climate_impact_on_gdp = self.get_sosdisc_inputs('assumptions_dict')['compute_climate_impact_on_gdp']
+            chart_name = 'Lost GDP due to climate damages [%]' + ' (not applied)' * (not compute_climate_impact_on_gdp)
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '%', chart_name=chart_name, y_min_zero=True)
 
             new_series = InstanciatedSeries(

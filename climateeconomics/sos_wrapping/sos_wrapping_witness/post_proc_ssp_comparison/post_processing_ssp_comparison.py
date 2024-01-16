@@ -88,24 +88,24 @@ _forcing = {FILE_NAME: 'forcing_global.csv',
 
 CO2_CONCENTRATION = 'CO2_concentration'
 _co2_concentration = {FILE_NAME: 'CO2_concentration_global.csv',
-                      VAR_NAME: 'ghg_cycle_df',
-                      COLUMN: 'co2_ppm',
+                      VAR_NAME: GlossaryCore.GHGCycleDfValue,
+                      COLUMN: GlossaryCore.CO2Concentration,
                       CHART_TITLE: 'Atmospheric CO2 concentration: WITNESS vs. SSP scenarios (IPCC)',
                       UNIT_CONV_FACTOR: 1.0,
                       Y_AXIS: 'CO2 concentration [ppm]'}
 
 CH4_CONCENTRATION = 'CH4_concentration'
 _ch4_concentration = {FILE_NAME: 'CH4_concentration_global.csv',
-                      VAR_NAME: 'ghg_cycle_df',
-                      COLUMN: 'ch4_ppm',
+                      VAR_NAME: GlossaryCore.GHGCycleDfValue,
+                      COLUMN: GlossaryCore.CH4Concentration,
                       CHART_TITLE: 'Atmospheric CH4 concentration: WITNESS vs. SSP scenarios (IPCC)',
                       UNIT_CONV_FACTOR: 1.0,
                       Y_AXIS: 'CH4 concentration [ppm]'}
 
 N2O_CONCENTRATION = 'N2O_concentration'
 _n2o_concentration = {FILE_NAME: 'N2O_concentration_global.csv',
-                      VAR_NAME: 'ghg_cycle_df',
-                      COLUMN: 'n2o_ppm',
+                      VAR_NAME: GlossaryCore.GHGCycleDfValue,
+                      COLUMN: GlossaryCore.N2OConcentration,
                       CHART_TITLE: 'Atmospheric N2O concentration: WITNESS vs. SSP scenarios (IPCC)',
                       UNIT_CONV_FACTOR: 1.0,
                       Y_AXIS: 'N2O concentration [ppm]'}

@@ -21,6 +21,7 @@ import numpy as np
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model_v2 import TempChange
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 import sostrades_core.tools.post_processing.post_processing_tools as ppt
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -58,19 +59,11 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'transfer_upper': {'type': 'float', 'default': 0.088, 'user_level': 3, 'unit': '-'},
         'transfer_lower': {'type': 'float', 'default': 0.025, 'user_level': 3, 'unit': '-'},
         'forcing_eq_co2': {'type': 'float', 'default': 3.74, 'user_level': 3, 'unit': '-'},
-        'pre_indus_co2_concentration_ppm': {'type': 'float', 'default': 278., 'unit': 'ppm', 'user_level': 3},
+        'pre_indus_co2_concentration_ppm': {'type': 'float', 'default': DatabaseWitnessCore.CO2PreIndustrialConcentration.value, 'unit': 'ppm', 'user_level': 3},
         'lo_tocean': {'type': 'float', 'default': -1.0, 'user_level': 3, 'unit': '°C'},
         'up_tatmo': {'type': 'float', 'default': 12.0, 'user_level': 3, 'unit': '°C'},
         'up_tocean': {'type': 'float', 'default': 20.0, 'user_level': 3, 'unit': '°C'},
-        'ghg_cycle_df': {'type': 'dataframe',
-                         'dataframe_descriptor':
-                                     {
-                                         GlossaryCore.Years: ('float', None, False),
-                                         'co2_ppm': ('float', None, True),
-                                         'ch4_ppm': ('float', None, True),
-                                         'n2o_ppm': ('float', None, True),
-                                      },
-                         'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
+        GlossaryCore.GHGCycleDfValue: GlossaryCore.GHGCycleDf,
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
@@ -184,41 +177,41 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
         if forcing_model == 'DICE':
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'CO2 forcing'), ('ghg_cycle_df', 'co2_ppm'),
+                ('forcing_detail_df', 'CO2 forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration),
                 identity * d_forcing_datmo_conc['CO2 forcing'], )
 
         elif forcing_model == 'Myhre':
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'CO2 forcing'), ('ghg_cycle_df', 'co2_ppm'),
+                ('forcing_detail_df', 'CO2 forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration),
                 identity * d_forcing_datmo_conc['CO2 forcing'], )
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'CH4 and N2O forcing'), ('ghg_cycle_df', 'ch4_ppm'),
+                ('forcing_detail_df', 'CH4 and N2O forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CH4Concentration),
                 identity * d_forcing_datmo_conc['CH4 forcing'], )
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'CH4 and N2O forcing'), ('ghg_cycle_df', 'n2o_ppm'),
+                ('forcing_detail_df', 'CH4 and N2O forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.N2OConcentration),
                 identity * d_forcing_datmo_conc['N2O forcing'], )
 
         elif forcing_model == 'Etminan' or forcing_model == 'Meinshausen':
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'CO2 forcing'), ('ghg_cycle_df', 'co2_ppm'),
+                ('forcing_detail_df', 'CO2 forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration),
                 identity * d_forcing_datmo_conc['CO2 forcing CO2 ppm'], )
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'CO2 forcing'), ('ghg_cycle_df', 'n2o_ppm'),
+                ('forcing_detail_df', 'CO2 forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.N2OConcentration),
                 identity * d_forcing_datmo_conc['CO2 forcing N2O ppm'], )
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'CH4 forcing'), ('ghg_cycle_df', 'ch4_ppm'),
+                ('forcing_detail_df', 'CH4 forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CH4Concentration),
                 identity * d_forcing_datmo_conc['CH4 forcing CH4 ppm'], )
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'CH4 forcing'), ('ghg_cycle_df', 'n2o_ppm'),
+                ('forcing_detail_df', 'CH4 forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.N2OConcentration),
                 identity * d_forcing_datmo_conc['CH4 forcing N2O ppm'], )
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'N2O forcing'), ('ghg_cycle_df', 'co2_ppm'),
+                ('forcing_detail_df', 'N2O forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration),
                 identity * d_forcing_datmo_conc['N2O forcing CO2 ppm'], )
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'N2O forcing'), ('ghg_cycle_df', 'ch4_ppm'),
+                ('forcing_detail_df', 'N2O forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CH4Concentration),
                 identity * d_forcing_datmo_conc['N2O forcing CH4 ppm'], )
             self.set_partial_derivative_for_other_types(
-                ('forcing_detail_df', 'N2O forcing'), ('ghg_cycle_df', 'n2o_ppm'),
+                ('forcing_detail_df', 'N2O forcing'), (GlossaryCore.GHGCycleDfValue, GlossaryCore.N2OConcentration),
                 identity * d_forcing_datmo_conc['N2O forcing N2O ppm'], )
 
         if temperature_model == 'DICE':
@@ -226,12 +219,12 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             # temperature_df
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), ('ghg_cycle_df', 'co2_ppm'), d_tempatmo_d_atmoconc, )
+                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration), d_tempatmo_d_atmoconc, )
 
             # temperature_constraint
             d_tempatmo_d_atmoconc, _ = self.model.compute_d_temp_atmo()
             self.set_partial_derivative_for_other_types(
-                ('temperature_constraint',), ('ghg_cycle_df', 'co2_ppm'),
+                ('temperature_constraint',), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration),
                 -d_tempatmo_d_atmoconc[-1] / temperature_constraint_ref, )
 
         elif temperature_model == 'FUND':
@@ -255,21 +248,21 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                             d_forcing_datmo_conc['N2O forcing N2O ppm']))
 
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), ('ghg_cycle_df', 'co2_ppm'), d_temp_d_co2_ppm, )
+                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration), d_temp_d_co2_ppm, )
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), ('ghg_cycle_df', 'ch4_ppm'), d_temp_d_ch4_ppm, )
+                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CH4Concentration), d_temp_d_ch4_ppm, )
             self.set_partial_derivative_for_other_types(
-                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), ('ghg_cycle_df', 'n2o_ppm'), d_temp_d_n2o_ppm, )
+                (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), (GlossaryCore.GHGCycleDfValue, GlossaryCore.N2OConcentration), d_temp_d_n2o_ppm, )
 
             # temperature_constraint
             self.set_partial_derivative_for_other_types(
-                ('temperature_constraint',), ('ghg_cycle_df', 'co2_ppm'),
+                ('temperature_constraint',), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration),
                 -d_temp_d_co2_ppm[-1] / temperature_constraint_ref, )
             self.set_partial_derivative_for_other_types(
-                ('temperature_constraint',), ('ghg_cycle_df', 'ch4_ppm'),
+                ('temperature_constraint',), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CH4Concentration),
                 -d_temp_d_ch4_ppm[-1] / temperature_constraint_ref, )
             self.set_partial_derivative_for_other_types(
-                ('temperature_constraint',), ('ghg_cycle_df', 'n2o_ppm'),
+                ('temperature_constraint',), (GlossaryCore.GHGCycleDfValue, GlossaryCore.N2OConcentration),
                 -d_temp_d_n2o_ppm[-1] / temperature_constraint_ref, )
 
         elif temperature_model == 'FAIR':
@@ -279,7 +272,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
             d_tempatmo_d_atmoconc, _ = self.model.compute_d_temp_atmo()
             d_tempatmoobj_d_temp_atmo = self.model.compute_d_temp_atmo_objective()
             self.set_partial_derivative_for_other_types(
-                ('temperature_constraint',), ('ghg_cycle_df', 'co2_ppm'),
+                ('temperature_constraint',), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration),
                 -d_tempatmo_d_atmoconc[-1] / temperature_constraint_ref, )
 
     def get_chart_filter_list(self):

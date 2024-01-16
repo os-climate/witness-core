@@ -22,6 +22,7 @@ import numpy as np
 
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.tempchange_model import TempChange
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
@@ -57,7 +58,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'transfer_upper': {'type': 'float', 'default': 0.088, 'user_level': 3, 'unit': '-'},
         'transfer_lower': {'type': 'float', 'default': 0.025, 'user_level': 3, 'unit': '-'},
         'forcing_eq_co2': {'type': 'float', 'default': 3.74, 'user_level': 3, 'unit': '-'},
-        'pre_indus_co2_concentration_ppm': {'type': 'float', 'default': 278., 'unit': 'ppm', 'user_level': 3},
+        'pre_indus_co2_concentration_ppm': {'type': 'float', 'default': DatabaseWitnessCore.CO2PreIndustrialConcentration.value, 'unit': 'ppm', 'user_level': 3},
         'lo_tocean': {'type': 'float', 'default': -1.0, 'user_level': 3, 'unit': '°C'},
         'up_tatmo': {'type': 'float', 'default': 12.0, 'user_level': 3, 'unit': '°C'},
         'up_tocean': {'type': 'float', 'default': 20.0, 'user_level': 3, 'unit': '°C'},

@@ -1,6 +1,5 @@
 '''
-Copyright 2022 Airbus SAS
-Modifications on 2023/07/13-2023/11/03 Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,7 +24,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
     # ontology information
     _ontology_data = {
-        'label': 'WITNESS Coarse Dev Optimization Process',
+        'label': 'WITNESS Coarse story telling Optimization Process',
         'description': '',
         'category': '',
         'version': '',
@@ -40,12 +39,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
         techno_dict = DEFAULT_COARSE_TECHNO_DICT
 
         coupling_builder = self.ee.factory.get_builder_from_process(
-            'climateeconomics.sos_processes.iam.witness', 'witness_optim_sub_process',
+            'climateeconomics.sos_processes.iam.witness', 'witness_optim_story_telling_sub_process',
             techno_dict=techno_dict, invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], process_level='dev')
 
         # modify namespaces defined in the child process
-        self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            optim_name, after_name=self.ee.study_name, clean_existing=True)  # optim_name
+        self.ee.ns_manager.update_namespace_list_with_extra_ns(optim_name, after_name=self.ee.study_name)  # optim_name
 
         #-- set optim builder
         opt_builder = self.ee.factory.create_optim_builder(

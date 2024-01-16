@@ -355,6 +355,29 @@ class GlossaryCore:
         },
     }
 
+    CO2 = "CO2"
+    CH4 = "CH4"
+    N2O = "N2O"
+    GreenHouseGases = [CO2, CH4, N2O]
+    YearBasis20 = "(20-year basis)"
+    YearBasis100 = "(100-year basis)"
+    GlobalWarmingPotentialdDfValue = "Global warming potential"
+    GlobalWarmingPotentialdDf = {
+        "var_name": GlobalWarmingPotentialdDfValue,
+        "type": "dataframe",
+        "description": "Global warming potential in gigatons of  CO2 Eq",
+        "unit": "GtCO2Eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            f"{CO2} {YearBasis20}": ("float", None, False),
+            f"{CH4} {YearBasis20}": ("float", None, False),
+            f"{N2O} {YearBasis20}": ("float", None, False),
+            f"{CO2} {YearBasis100}": ("float", None, False),
+            f"{CH4} {YearBasis100}": ("float", None, False),
+            f"{N2O} {YearBasis100}": ("float", None, False),
+        },
+    }
+
     DietMortalityParamDf = {
         "var_name": "diet_mortality_param_df",
         "type": "dataframe",
@@ -628,12 +651,9 @@ class GlossaryCore:
             "namespace": NS_WITNESS,
         }
     )
-    CO2 = "CO2"
-    CH4 = "CH4"
-    N20 = "N2O"
 
     GHGEmissionsDfValue = "GHG_emissions_df"
-    TotalN2OEmissions = f"Total {N20} emissions"
+    TotalN2OEmissions = f"Total {N2O} emissions"
     TotalCH4Emissions = f"Total {CH4} emissions"
     GHGEmissionsDf = {
         "type": "dataframe",
@@ -646,6 +666,25 @@ class GlossaryCore:
             TotalN2OEmissions: ("float", None, False),
             TotalCH4Emissions: ("float", None, False),
         },
+    }
+
+    GHGCycleDfValue = "ghg_cycle_df"
+    CO2Concentration = f"{CO2} (ppm)"
+    CH4Concentration = f"{CH4} (ppb)"
+    N2OConcentration = f"{N2O} (ppb)"
+    GHGCycleDf = {
+        "varname": GHGCycleDfValue,
+        "type": "dataframe",
+        "description": f"Concentrations forecasts of the three main green house gases : {GreenHouseGases}",
+        "unit": "ppm",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            CO2Concentration: ("float", [0., 1e6], True),
+            CH4Concentration: ("float", [0., 1e6], True),
+            N2OConcentration: ("float", [0., 1e6], True),
+        },
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
     }
 
     RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"

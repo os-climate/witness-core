@@ -51,7 +51,7 @@ class TempChange(object):
         self.eq_temp_impact = inputs['eq_temp_impact']
         self.temperature_model = inputs['temperature_model']
         self.forcing_model = inputs['forcing_model']
-        self.ghg_cycle_df = inputs['ghg_cycle_df']
+        self.ghg_cycle_df = inputs[GlossaryCore.GHGCycleDfValue]
 
         if self.forcing_model == 'DICE':
             self.init_forcing_nonco = inputs['init_forcing_nonco']
@@ -228,9 +228,9 @@ class TempChange(object):
         Compute increase in radiative forcing for t using values at t-1
         (watts per m2 from 1900)
         """
-        co2_ppm = self.ghg_cycle_df['co2_ppm'].values
-        ch4_ppm = self.ghg_cycle_df['ch4_ppm'].values
-        n2o_ppm = self.ghg_cycle_df['n2o_ppm'].values
+        co2_ppm = self.ghg_cycle_df[GlossaryCore.CO2Concentration].values
+        ch4_ppm = self.ghg_cycle_df[GlossaryCore.CH4Concentration].values
+        n2o_ppm = self.ghg_cycle_df[GlossaryCore.N2OConcentration].values
 
         if self.forcing_model == 'DICE':
 
@@ -334,9 +334,9 @@ class TempChange(object):
         Compute gradient for radiative forcing 
         """
 
-        co2_ppm = self.ghg_cycle_df['co2_ppm'].values
-        ch4_ppm = self.ghg_cycle_df['ch4_ppm'].values
-        n2o_ppm = self.ghg_cycle_df['n2o_ppm'].values
+        co2_ppm = self.ghg_cycle_df[GlossaryCore.CO2Concentration].values
+        ch4_ppm = self.ghg_cycle_df[GlossaryCore.CH4Concentration].values
+        n2o_ppm = self.ghg_cycle_df[GlossaryCore.N2OConcentration].values
 
         if self.forcing_model == 'DICE':
             dco2_forcing = self.compute_dlog_co2_forcing(co2_ppm)
@@ -577,7 +577,7 @@ class TempChange(object):
         """
         Compute all
         """
-        self.ghg_cycle_df = in_dict['ghg_cycle_df']
+        self.ghg_cycle_df = in_dict[GlossaryCore.GHGCycleDfValue]
 
         self.compute_forcing()
         temperature = self.init_temp_atmo

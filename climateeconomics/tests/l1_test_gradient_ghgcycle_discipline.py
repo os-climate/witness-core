@@ -78,7 +78,7 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_ghg_cycle_discipline1.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}'],
-                            outputs=[f'{self.name}.ghg_cycle_df',
+                            outputs=[f'{self.name}.{GlossaryCore.GHGCycleDfValue}',
                                      f'{self.name}.gwp20_objective',
                                      f'{self.name}.gwp100_objective',
                                      f'{self.name}.rockstrom_limit_constraint',
