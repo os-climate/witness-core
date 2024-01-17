@@ -99,7 +99,9 @@ class Study(StudyManager):
         for scenario in scenario_list:
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario}.{GlossaryCore.EconomicsDfValue}'] = economics_df
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = pd.DataFrame({
+            'selected_scenario': [True for _ in scenario_list],
+            'scenario_name': scenario_list})
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_A}.emissions_control_rate'] = control_rate_A
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_B}.emissions_control_rate'] = control_rate_B
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_C}.emissions_control_rate'] = control_rate_C

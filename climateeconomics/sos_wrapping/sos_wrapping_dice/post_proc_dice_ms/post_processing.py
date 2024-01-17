@@ -176,8 +176,8 @@ def get_df(execution_engine, namespace):
     scatter_scenario = 'Control rate scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
 
-    scenario_key = execution_engine.dm.get_data_id(f'{namespace_w}.scenario_list')
-    scenario_list = execution_engine.dm.data_dict[scenario_key][DataManager.VALUE]
+    scenario_key = execution_engine.dm.get_data_id(f'{namespace_w}.samples_df')
+    scenario_list = execution_engine.dm.data_dict[scenario_key][DataManager.VALUE]['scenario_name'].values.tolist()
 
     for scenario in scenario_list:
         temperature_df_namespace = f'{namespace_w}.{scenario}.{GlossaryCore.TemperatureDfValue}'
