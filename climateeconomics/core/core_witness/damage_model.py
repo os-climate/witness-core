@@ -139,7 +139,6 @@ class DamageModel:
         d_co2_damage_price_d_co2_extra_ton_damage_price = np.tril(np.ones(len(d_co2_extra_ton_damage_price_d_user_input)))
         return d_co2_damage_price_d_co2_extra_ton_damage_price @ d_co2_extra_ton_damage_price_d_user_input
 
-
     def d_extra_co2_t_damage_price_d_extra_co2_ton(self):
         damages = self.damage_df[GlossaryCore.Damages].values
         extra_co2t_since_pre_indus = self.extra_gigatons_co2eq_since_pre_indus_df[GlossaryCore.ExtraCO2EqSincePreIndustrialValue].values
@@ -148,10 +147,15 @@ class DamageModel:
     def d_extra_co2_t_damage_price_d_damages(self):
         extra_co2t_since_pre_indus = self.extra_gigatons_co2eq_since_pre_indus_df[GlossaryCore.ExtraCO2EqSincePreIndustrialValue].values
         return np.diag(1e3/extra_co2t_since_pre_indus)
-    def compute_extra_ton_damage_price(self):
 
+    def compute_extra_ton_damage_price(self):
+        """
+        An extra ton is a ton of CO2eq that is in excess compared to pre-industrial levels.
+        Its damage price for year is defined as
+        extra ton damage price (year) = number of extra ton (year) / damages on economy (year)
+        """
         extra_CO2eq = self.extra_gigatons_co2eq_since_pre_indus_df[GlossaryCore.ExtraCO2EqSincePreIndustrialValue].values  # Gt
-        damages_on_economy = self.damage_df[GlossaryCore.Damages].values  # T$
+        damages_on_economy = self.damage_df[GlossaryCore.EstimatedDamages].values  # T$
 
         extra_CO2t_eq_cost = 1e12 * 1e-9 * damages_on_economy / extra_CO2eq  #$/tCO2Eq
 
@@ -161,9 +165,7 @@ class DamageModel:
         })
 
     def compute(self, damage_df, temperature_df, extra_gigatons_co2_eq_df):
-        """
-        Compute the outputs of the pyworld3
-        """
+        """Compute the outputs of the pyworld3"""
         self.damage_df = damage_df
         self.temperature_df = temperature_df
         self.extra_gigatons_co2eq_since_pre_indus_df = extra_gigatons_co2_eq_df

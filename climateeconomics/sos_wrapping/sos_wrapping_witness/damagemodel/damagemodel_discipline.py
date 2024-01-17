@@ -154,7 +154,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
-            (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
+            (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
             d_co2_damage_price_d_damages)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
@@ -163,7 +163,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
-            (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
+            (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
             self.model.d_extra_co2_t_damage_price_d_damages())
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
