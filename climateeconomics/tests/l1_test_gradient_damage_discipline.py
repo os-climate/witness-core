@@ -66,7 +66,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101, 1)
         damage_df = pd.DataFrame({
             GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
-            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y))
+            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
+            GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y))
         })
         temperature_df_y.index = years
 
@@ -132,7 +133,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         damage_df = pd.DataFrame({
             GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
-            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y))
+            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
+            GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y)),
         })
 
         years = np.arange(2020, 2101, 1)

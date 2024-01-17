@@ -411,6 +411,7 @@ class GlossaryCore:
     DamageDfValue = "damage_df"
     DamagesFromClimate = "Damages from climate [G$]"
     DamagesFromProductivityLoss = "Damages from productivity loss [G$]"
+    EstimatedDamages = "Estimated damages [G$]"
     DamageDf = {
         "var_name": DamageDfValue,
         "type": "dataframe",
@@ -420,6 +421,7 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Damages: ("float", None, False),
+            EstimatedDamages: ("float", None, False),
         },
     }
 
@@ -439,6 +441,7 @@ class GlossaryCore:
             Damages: ("float", None, False),  # G$
             DamagesFromClimate: ("float", None, False),  # G$
             DamagesFromProductivityLoss: ("float", None, False),  # G$
+            EstimatedDamages: ("float", None, False),  # G$
             EstimatedDamagesFromClimate: ("float", None, False),  # G$
             EstimatedDamagesFromProductivityLoss: ("float", None, False),  # G$
         },

@@ -82,19 +82,23 @@ class MacroeconomicsTestCase(unittest.TestCase):
                                       GlossaryCore.DamagesFromClimate: np.linspace(10, 24, self.nb_per),
                                       GlossaryCore.DamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
                                       GlossaryCore.EstimatedDamagesFromClimate: np.linspace(10, 24, self.nb_per),
-                                      GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),})
+                                      GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
+                                      GlossaryCore.EstimatedDamages: np.linspace(20, 48, self.nb_per),})
         self.damage_indus = DataFrame({GlossaryCore.Years: self.years,
                                        GlossaryCore.Damages: np.linspace(15, 34, self.nb_per),
                                        GlossaryCore.DamagesFromClimate: np.linspace(5, 10, self.nb_per),
                                        GlossaryCore.DamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
                                        GlossaryCore.EstimatedDamagesFromClimate: np.linspace(5, 10, self.nb_per),
-                                       GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),})
+                                       GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
+                                       GlossaryCore.EstimatedDamages: np.linspace(15, 34, self.nb_per),})
         self.damage_service = DataFrame({GlossaryCore.Years: self.years,
                                          GlossaryCore.Damages: np.linspace(4, 15, self.nb_per),
                                          GlossaryCore.DamagesFromClimate: np.linspace(1, 6, self.nb_per),
                                          GlossaryCore.DamagesFromProductivityLoss: np.linspace(3, 9, self.nb_per),
                                          GlossaryCore.EstimatedDamagesFromClimate: np.linspace(1, 6, self.nb_per),
-                                         GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(3, 9, self.nb_per),})
+                                         GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(3, 9, self.nb_per),
+                                         GlossaryCore.EstimatedDamages: np.linspace(4, 15, self.nb_per),
+                                         })
 
     def test_macroeconomics_discipline(self):
         '''

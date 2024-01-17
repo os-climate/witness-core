@@ -61,7 +61,8 @@ class DamageDiscTest(unittest.TestCase):
         years = temperature_df_y[GlossaryCore.Years]
         damage_df = pd.DataFrame({
             GlossaryCore.Years: years,
-            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y))
+            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
+            GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y))
         })
 
         extra_co2_t_since_preindustrial = pd.DataFrame({
