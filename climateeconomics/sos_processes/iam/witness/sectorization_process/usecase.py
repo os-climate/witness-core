@@ -14,6 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from os.path import join, dirname
+
 import numpy as np
 import pandas as pd
 from scipy.interpolate import interp1d
@@ -177,6 +179,9 @@ class Study(StudyManager):
         demand_per_capita_services = pd.DataFrame({GlossaryCore.Years: years,
                                                         GlossaryCore.SectorDemandPerCapitaDfValue: demand_services_per_person_population_2021})
 
+        global_data_dir = join(dirname(dirname(dirname(dirname(dirname(__file__))))), 'data')
+        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+
         cons_input = {
             f"{self.study_name}.{GlossaryCore.YearStart}": self.year_start,
             f"{self.study_name}.{GlossaryCore.YearEnd}": self.year_end,
@@ -198,6 +203,10 @@ class Study(StudyManager):
             f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_agriculture,
             f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_industry,
             f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectorDemandPerCapitaDfValue}': demand_per_capita_services,
+            f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.SectionList}': GlossaryCore.SectionsAgriculture,
+            f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.SectionList}': GlossaryCore.SectionsIndustry,
+            f'{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.SectionList}': GlossaryCore.SectionsServices,
+            f'{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
         }
 
         setup_data_list.append(cons_input)

@@ -479,8 +479,6 @@ class GlossaryCore:
     SectionGdpDf = {
         "var_name": SectionGdpDfValue,
         "type": "dataframe",
-        "visibility": "Shared",
-        "namespace": NS_WITNESS,
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
