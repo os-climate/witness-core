@@ -195,3 +195,30 @@ class DatabaseWitnessCore:
         source="US Department of Commerce",
         last_update_date=date(2024, 1, 12),
     )
+
+    HistoricCO2Concentration = HeavyCollectedData(
+        value=join(data_folder, "co2_annmean_mlo.csv"),
+        unit="PPM",
+        description="Concentration of CO2 in atmosphere from 1961 to 2023",
+        link="https://gml.noaa.gov/ccgg/trends/data.html",
+        source="Earth System Research Laboratorie; Global Monitoring Laboratory",
+        last_update_date=date(2023, 1, 18),
+    )
+
+    HistoricCH4Concentration = HeavyCollectedData(
+        value=join(data_folder, "ch4_annmean_gl.csv"),
+        unit="PPB",
+        description="Concentration of CH4 in atmosphere from 1984 to 2022",
+        link="https://gml.noaa.gov/ccgg/trends/data.html",
+        source="Earth System Research Laboratorie; Global Monitoring Laboratory",
+        last_update_date=date(2023, 1, 18),
+    )
+
+    HistoricN2OConcentration = HeavyCollectedData(
+        value=join(data_folder, "n2o_annmean_gl.csv"),
+        unit="PPB",
+        description="Concentration of N2O in atmosphere from 1984 to 2022",
+        link="https://gml.noaa.gov/ccgg/trends/data.html",
+        source="Earth System Research Laboratorie; Global Monitoring Laboratory",
+        last_update_date=date(2023, 1, 18),
+    )
