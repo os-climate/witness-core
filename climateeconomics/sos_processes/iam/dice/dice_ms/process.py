@@ -44,13 +44,9 @@ class ProcessBuilder(BaseProcessBuilder):
             'climateeconomics.sos_processes.iam.dice', 'dice_model')
 
         scatter_scenario_name = 'Control rate scenarios'
-        # FIXME [discuss]: this is quickfix for 'ns_witness', 'ns_dice' because if updating with extra name then we have
-        #  f'{study_name}.{scatter_scenario_name}.scenario_1.{scatter_scenario_name}' which is wrong
-        # # modify namespaces defined in the child process
-        # self.ee.ns_manager.update_namespace_list_with_extra_ns(
-        #     scatter_scenario_name, after_name=self.ee.study_name)
 
         # Add new namespaces needed for the scatter multiscenario
+        # redefining namespaces that need not be scattered
         ns_dict = {
             'ns_witness': f'{self.ee.study_name}.{scatter_scenario_name}',
             'ns_dice': f'{self.ee.study_name}.{scatter_scenario_name}',
