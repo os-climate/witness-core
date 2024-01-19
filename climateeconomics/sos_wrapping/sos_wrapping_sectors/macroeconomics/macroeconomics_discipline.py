@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import copy
 from copy import deepcopy
 
 from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model import MacroeconomicsModel
@@ -97,7 +98,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         self.macro_model.compute(inputs_dict)
 
         outputs_dict = {
-
             GlossaryCore.EconomicsDfValue: self.macro_model.economics_df,
             GlossaryCore.EconomicsDetailDfValue: self.macro_model.economics_detail_df,
             GlossaryCore.MaxInvestConstraintName: self.macro_model.max_invest_constraint,
@@ -111,7 +111,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         """
         Compute jacobian for each coupling variable
         gradient of coupling variable to compute:
-        net_output and invest wrt sector net_output 
+        net_output and invest wrt sector net_output
         """
         inputs_dict = self.get_sosdisc_inputs()
         sector_list = inputs_dict[GlossaryCore.SectorListValue]
