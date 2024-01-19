@@ -66,8 +66,8 @@ class Study(ClimateEconomicsStudyManager):
 
                              # optimization parameters:
                              f'{ns}.{self.optim_name}.max_iter': 500,
-                             f'{ns}.warm_start': True,
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
+                             f'{ns}.warm_start': False,
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': False,
                              # SLSQP, NLOPT_SLSQP
                              f'{ns}.{self.optim_name}.algo': "L-BFGS-B",
                              f'{ns}.{self.optim_name}.formulation': 'DisciplinaryOpt',
@@ -100,7 +100,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "wait_time_between_fork": 0},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': 'SimpleCache',
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': None,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.propagate_cache_to_children': True,
                              f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False}
 

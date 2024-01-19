@@ -98,7 +98,7 @@ class Study(ClimateEconomicsStudyManager):
         dspace_dict = {'variable': 'percentage_gdp_invest_in_energy_array',
                        'value': [1.] * len_var,
                        'lower_bnd': [1e-6] * len_var,
-                       'upper_bnd': [100.] * len_var,
+                       'upper_bnd': [5.] * len_var,
                        'enable_variable': True,
                        'activated_elem': [True] * len_var
                        }
