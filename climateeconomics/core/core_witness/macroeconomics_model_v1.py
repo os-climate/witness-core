@@ -453,23 +453,37 @@ class MacroEconomics:
         Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
         '''
         # the year range for the study can differ from that stated in the csv file
-        start_year_csv = self.gdp_percentage_per_section_df.iloc[0][GlossaryCore.Years]
+        start_year_csv = self.gdp_percentage_per_section_df.loc[0, GlossaryCore.Years]
         if start_year_csv > self.year_start:
-            self.gdp_percentage_per_section_df = pd.concat([[self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start),
-                                                           self.gdp_percentage_per_section_df]).reset_index(drop=True)
-            self.gdp_percentage_per_section_df.iloc[0:(start_year_csv - self.year_start)][GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
+            # duplicate first row (start_year_csv - year_start) time
+            list_df_to_concat = [self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start)
+            # add input dataframe to the list
+            list_df_to_concat.append(self.gdp_percentage_per_section_df)
+            # concatenate the dataframes using the created list to fill the missing rows
+            self.gdp_percentage_per_section_df = pd.concat(list_df_to_concat).reset_index(drop=True)
+            # set years of the updated dataframe
+            self.gdp_percentage_per_section_df.iloc[0:(start_year_csv - self.year_start)][
+                GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
 
         elif start_year_csv < self.year_start:
-            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[self.gdp_percentage_per_section_df[GlossaryCore.Years] > self.year_start - 1]
+            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
+                self.gdp_percentage_per_section_df[GlossaryCore.Years] > self.year_start - 1]
 
-        end_year_csv = self.gdp_percentage_per_section_df.iloc[-1][GlossaryCore.Years]
+        end_year_csv = self.gdp_percentage_per_section_df.loc[
+            self.gdp_percentage_per_section_df.index[-1], GlossaryCore.Years]
+
         if end_year_csv > self.year_end:
-            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[self.gdp_percentage_per_section_df[GlossaryCore.Years] < self.year_end + 1]
-        elif end_year_csv < self.year_end:
-            self.gdp_percentage_per_section_df = pd.concat([self.gdp_percentage_per_section_df,
-                                                           [self.gdp_percentage_per_section_df.iloc[-1:]] * (start_year_csv - self.year_start)]).reset_index(drop=True)
-            self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(end_year_csv, self.year_end)
+            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
+                self.gdp_percentage_per_section_df[GlossaryCore.Years] < self.year_end + 1]
 
+        elif end_year_csv < self.year_end:
+            list_df_to_concat = [self.gdp_percentage_per_section_df]
+            list_df_to_concat.extend([self.gdp_percentage_per_section_df.iloc[-1:]] * (
+                    self.year_end - end_year_csv))
+            self.gdp_percentage_per_section_df = pd.concat(list_df_to_concat).reset_index(drop=True)
+            # fill years with mising years (start at end_year_csv+1, and last element should be year_end)
+            self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
+                end_year_csv + 1, self.year_end + 1)
 
     def compute_section_gdp(self):
         """
