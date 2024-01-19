@@ -37,6 +37,7 @@ class GHGCycle():
         self.create_dataframe()
         self.global_warming_potential_df = None
         self.ghg_emissions_df = None
+        self.ppm_co2_negative_indexes = None
 
     def set_data(self):
         self.year_start = self.param[GlossaryCore.YearStart]
@@ -135,7 +136,8 @@ class GHGCycle():
 
         # first year is from initial data and is fixed ==> grad is zero
         mat[:, 0] = 0.0
-
+        # gradient is null where the clip to 1e-10 was used on ppm co2
+        mat[self.ppm_co2_negative_indexes, :] = 0.0
         return mat
 
     def d_gwp100_objective_d_ppm(self, d_ppm: pd.Series, specie: str) -> float:
@@ -284,6 +286,9 @@ class GHGCycle():
         conc_boxes = self.boxes_conc
         for year in self.years_range[1:]:
             conc_boxes = self.compute_co2_atm_conc(year, conc_boxes)
+        # clip value to 0 if negative
+        self.ppm_co2_negative_indexes = self.ghg_cycle_df.index[self.ghg_cycle_df['co2_ppm_b1'] < 0].tolist()
+        self.ghg_cycle_df.loc[self.ppm_co2_negative_indexes, f'co2_ppm_b1'] = 1e-10
         self.ghg_cycle_df[GlossaryCore.CO2Concentration] = self.ghg_cycle_df[f'co2_ppm_b1']
 
     def compute_concentration_ch4(self):
