@@ -86,7 +86,7 @@ class Study(ClimateEconomicsStudyManager):
                              # 'GMRES',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {
                                  'tol': 1.0e-10,
-                                 'max_iter': 10000},
+                                 'max_iter': 100},
                              # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA':
                              # 'GMRES',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {
