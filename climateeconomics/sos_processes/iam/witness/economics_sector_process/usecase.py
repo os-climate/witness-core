@@ -143,8 +143,7 @@ class Study(StudyManager):
         # for i in range(len(section_gdp_df)):
         #     section_gdp_df.replace(section_gdp_df.iloc[i]['years'], int(section_gdp_df.iloc[i]['years']))
 
-        section_gdp_df.astype({'years': int})
-        print(type(section_gdp_df.iloc[0]['years']))
+        section_gdp_df = section_gdp_df.astype({'years': int})
 
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
