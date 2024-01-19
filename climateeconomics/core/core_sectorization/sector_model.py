@@ -108,7 +108,7 @@ class SectorModel():
         Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
         '''
         # the year range for the study can differ from that stated in the csv file
-        start_year_csv = self.gdp_percentage_per_section_df[GlossaryCore.Years].loc[0]
+        start_year_csv = self.gdp_percentage_per_section_df.iloc[0][GlossaryCore.Years]
         if start_year_csv > self.year_start:
             self.gdp_percentage_per_section_df = pd.concat(
                 [[self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start),

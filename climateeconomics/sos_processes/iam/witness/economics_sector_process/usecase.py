@@ -140,6 +140,11 @@ class Study(StudyManager):
 
         global_data_dir = join(dirname(dirname(dirname(dirname(dirname(__file__))))), 'data')
         section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        # for i in range(len(section_gdp_df)):
+        #     section_gdp_df.replace(section_gdp_df.iloc[i]['years'], int(section_gdp_df.iloc[i]['years']))
+
+        section_gdp_df.astype({'years': int})
+        print(type(section_gdp_df.iloc[0]['years']))
 
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
