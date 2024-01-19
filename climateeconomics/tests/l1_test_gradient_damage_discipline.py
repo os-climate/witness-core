@@ -66,7 +66,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         years = np.arange(2020, 2101, 1)
         damage_df = pd.DataFrame({
             GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
-            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y))
+            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
+            GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y))
         })
         temperature_df_y.index = years
 
@@ -132,7 +133,8 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         damage_df = pd.DataFrame({
             GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
-            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y))
+            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
+            GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y)),
         })
 
         years = np.arange(2020, 2101, 1)
@@ -167,6 +169,71 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
 
         # AbstractJacobianUnittest.DUMP_JACOBIAN = True
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline_wo_damage_on_climate.pkl',
+                            discipline=disc_techno, local_data=disc_techno.local_data,
+                            step=1e-15,
+                            inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',
+                                    f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}',
+                                    f'{self.name}.{GlossaryCore.DamageDfValue}'],
+                            outputs=[f'{self.name}.{GlossaryCore.DamageFractionDfValue}',
+                                     f'{self.name}.{GlossaryCore.CO2DamagePrice}',
+                                     f'{self.name}.{self.model_name}.{GlossaryCore.ExtraCO2tDamagePrice}'],
+                            derr_approx='complex_step')
+
+    def test_damage_analytic_grad_dev_formula(self):
+        self.model_name = 'Test'
+        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
+                   'ns_public': f'{self.name}',
+                   GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
+                   'ns_ref': f'{self.name}'}
+        self.ee.ns_manager.add_ns_def(ns_dict)
+
+        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.damagemodel.damagemodel_discipline.DamageDiscipline'
+        builder = self.ee.factory.get_builder_from_module(
+            self.model_name, mod_path)
+
+        self.ee.factory.set_builders_to_coupling_builder(builder)
+
+        self.ee.configure()
+        self.ee.display_treeview_nodes()
+
+        data_dir = join(dirname(__file__), 'data')
+
+        temperature_df_all = read_csv(
+            join(data_dir, 'temperature_data_onestep.csv'))
+
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020][[
+            GlossaryCore.Years, GlossaryCore.TempAtmo]]
+
+        years = np.arange(2020, 2101, 1)
+        damage_df = pd.DataFrame({
+            GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
+            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
+            GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y))
+        })
+        temperature_df_y.index = years
+
+        extra_co2_t_since_preindustrial = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.ExtraCO2EqSincePreIndustrialValue: np.linspace(100, 300, len(years))
+        })
+
+        inputs_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
+                       f'{self.name}.co2_damage_price_dev_formula': True,
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': damage_df,
+                       f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': extra_co2_t_since_preindustrial,
+                       f'{self.name}.{GlossaryCore.CO2TaxesValue}': pd.DataFrame(
+                           {GlossaryCore.Years: years, GlossaryCore.CO2Tax: np.linspace(50, 500, len(years))}),
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
+                       f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate(
+                           (np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15))))}
+
+        self.ee.load_study_from_input_dict(inputs_dict)
+
+        self.ee.execute()
+
+        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
+
+        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_damage_discipline_dev_formula.pkl',
                             discipline=disc_techno, local_data=disc_techno.local_data,
                             step=1e-15,
                             inputs=[f'{self.name}.{GlossaryCore.TemperatureDfValue}',

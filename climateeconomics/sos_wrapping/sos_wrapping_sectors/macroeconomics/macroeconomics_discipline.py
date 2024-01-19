@@ -154,6 +154,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                 (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
                 (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.Damages),
                 identity_mat)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+                (f'{sector}.{GlossaryCore.DamageDfValue}', GlossaryCore.EstimatedDamages),
+                identity_mat)
 
         # gradient of constraint and invest_df wrt output net damage for each
         self.set_partial_derivative_for_other_types(
@@ -253,7 +257,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                    GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (
                                        not damages_to_productivity) + 'applied to gross output)', })
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
-            all_damages = damage_detailed_df[GlossaryCore.EstimatedDamagesFromClimate].values + damage_detailed_df[GlossaryCore.EstimatedDamagesFromProductivityLoss].values
+            all_damages = damage_detailed_df[GlossaryCore.EstimatedDamages].values
             years = list(damage_detailed_df[GlossaryCore.Years].values)
             chart_name = f'Breakdown of damages' + ' (not applied)' * (not compute_climate_impact_on_gdp)
 

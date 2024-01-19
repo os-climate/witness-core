@@ -421,25 +421,29 @@ class SectorModel():
         self.damage_df[GlossaryCore.DamagesFromProductivityLoss] = damage_from_productivity_loss
         self.damage_df[GlossaryCore.EstimatedDamagesFromProductivityLoss] = estimated_damage_from_productivity_loss
 
-    def compute_total_damages(self):
-        """Damages are the sum of damages from climate + damges from loss of productivity"""
-
+    def compute_damage_from_climate(self):
         damefrac = self.damage_fraction_df[GlossaryCore.DamageFractionOutput]
         gross_output = self.production_df[GlossaryCore.GrossOutput].values
         net_output = self.production_df[GlossaryCore.OutputNetOfDamage].values
 
-        damage_from_climate = gross_output - net_output
+        damage_from_climate = np.zeros_like(gross_output)
         if self.compute_climate_impact_on_gdp:
             damage_from_climate = gross_output - net_output
             estimated_damage_from_climate = damage_from_climate
         else:
             if self.damage_to_productivity:
-                estimated_damage_from_climate = gross_output * damefrac * (1 - self.frac_damage_prod) / (1 - self.frac_damage_prod * damefrac)
+                estimated_damage_from_climate = gross_output * damefrac * (1 - self.frac_damage_prod) / (
+                        1 - self.frac_damage_prod * damefrac)
             else:
                 estimated_damage_from_climate = gross_output * damefrac
 
         self.damage_df[GlossaryCore.DamagesFromClimate] = damage_from_climate
         self.damage_df[GlossaryCore.EstimatedDamagesFromClimate] = estimated_damage_from_climate
+
+    def compute_total_damages(self):
+        """Damages are the sum of damages from climate + damges from loss of productivity"""
+
+        self.damage_df[GlossaryCore.EstimatedDamages] = self.damage_df[GlossaryCore.EstimatedDamagesFromClimate] + self.damage_df[GlossaryCore.EstimatedDamagesFromProductivityLoss]
         self.damage_df[GlossaryCore.Damages] = self.damage_df[GlossaryCore.DamagesFromClimate] + self.damage_df[GlossaryCore.DamagesFromProductivityLoss]
 
     # RUN
@@ -476,6 +480,7 @@ class SectorModel():
         self.compute_energy_usage()
         self.compute_energy_wasted_objective()
         self.compute_damage_from_productivity_loss()
+        self.compute_damage_from_climate()
         self.compute_total_damages()
         return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df
     
@@ -713,7 +718,7 @@ class SectorModel():
         years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         nb_years = len(years)
         p_productivity_gr = self.productivity_df[GlossaryCore.ProductivityGrowthRate].values
-        p_productivity = self.productivity_df[GlossaryCore.Productivity].values
+        p_productivity = self.productivity_df[GlossaryCore.ProductivityWithDamage].values
 
         # derivative matrix initialization
         d_productivity_w_damage_d_damage_frac_output = np.zeros((nb_years, nb_years))
@@ -748,6 +753,43 @@ class SectorModel():
         derivative = d_gross_output_d_user_input - d_net_output_d_user_input
         return derivative
 
+    def d_estimated_damages_from_climate_d_user_input(self, d_gross_output_d_user_input, d_net_output_d_user_input):
+        """
+        damages_from_climate = gross output - net output
+        """
+        damefrac = self.damage_fraction_df[GlossaryCore.DamageFractionOutput]
+
+        if self.compute_climate_impact_on_gdp:
+            derivative = d_gross_output_d_user_input - d_net_output_d_user_input
+        else:
+            if self.damage_to_productivity:
+                derivative = np.diag(damefrac * (1 - self.frac_damage_prod) /
+                                     (1 - self.frac_damage_prod * damefrac)) @ d_gross_output_d_user_input
+            else:
+                derivative = np.diag(damefrac) @ d_gross_output_d_user_input
+
+        return derivative
+
+    def d_estimated_damages_from_climate_d_damage_frac_output(self, d_gross_output_d_user_input, d_net_output_d_user_input):
+        """
+        damages_from_climate = gross output - net output
+        """
+        damefrac = self.damage_fraction_df[GlossaryCore.DamageFractionOutput]
+        gross_output = self.production_df[GlossaryCore.GrossOutput].values
+
+        if self.compute_climate_impact_on_gdp:
+            derivative = d_gross_output_d_user_input - d_net_output_d_user_input
+        else:
+            if self.damage_to_productivity:
+                derivative = d_gross_output_d_user_input @ np.diag(damefrac * (1 - self.frac_damage_prod) /
+                                     (1 - self.frac_damage_prod * damefrac)) + np.diag(gross_output) * \
+                             np.diag((1 - self.frac_damage_prod) / (1 - self.frac_damage_prod * damefrac) ** 2)
+
+            else:
+                derivative = d_gross_output_d_user_input @ np.diag(damefrac) + np.diag(gross_output)
+
+        return derivative
+
     def d_damages_from_productivity_loss_d_damage_fraction_output(self, d_gross_output_d_damage_fraction_output):
         gross_output = self.production_df[GlossaryCore.GrossOutput].values
         productivity_wo_damage = self.productivity_df[GlossaryCore.ProductivityWithoutDamage].values
@@ -756,23 +798,33 @@ class SectorModel():
         d_productivity_w_damage_d_damage_frac_output = self.d_productivity_w_damage_d_damage_frac_output()
         nb_years = len(self.years_range)
         d_damages_from_productivity_loss_d_damage_fraction_output = self._null_derivative()
-        if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
+        d_estimated_damages_from_productivity_loss_d_damage_fraction_output = self._null_derivative()
+        if self.damage_to_productivity:
             for i in range(nb_years):
-                for j in range(nb_years):
-                    d_damages_from_productivity_loss_d_damage_fraction_output[i,j] = d_gross_output_d_damage_fraction_output[i,j] * (productivity_wo_damage[i]/productivity_w_damage[i] - 1) +\
-                        - gross_output[i] * productivity_wo_damage[i] / productivity_w_damage[i] ** 2 * d_productivity_w_damage_d_damage_frac_output[i, j]
+                d_estimated_damages_from_productivity_loss_d_damage_fraction_output[i] = d_gross_output_d_damage_fraction_output[i] * (productivity_wo_damage[i]/productivity_w_damage[i] - 1) +\
+                    - gross_output[i] * productivity_wo_damage[i] / productivity_w_damage[i] ** 2 * d_productivity_w_damage_d_damage_frac_output[i]
+        else:
+            d_estimated_damages_from_productivity_loss_d_damage_fraction_output = np.diag((productivity_wo_damage - productivity_w_damage)/productivity_wo_damage) @ d_gross_output_d_damage_fraction_output - np.diag(gross_output / productivity_wo_damage) @ d_productivity_w_damage_d_damage_frac_output
+        if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
+            d_damages_from_productivity_loss_d_damage_fraction_output = d_estimated_damages_from_productivity_loss_d_damage_fraction_output
 
-        return d_damages_from_productivity_loss_d_damage_fraction_output
+        return d_damages_from_productivity_loss_d_damage_fraction_output, d_estimated_damages_from_productivity_loss_d_damage_fraction_output
 
     def d_damages_from_productivity_loss_d_user_input(self, d_gross_output_d_user_input):
         productivity_wo_damage = self.productivity_df[GlossaryCore.ProductivityWithoutDamage].values
         productivity_w_damage = self.productivity_df[GlossaryCore.ProductivityWithDamage].values
 
         d_damages_from_productivity_loss_d_user_input = self._null_derivative()
+        applied_productivity = self.productivity_df[GlossaryCore.Productivity].values
+        d_estimated_damages_from_prod_loss_d_user_input = np.diag((productivity_wo_damage - productivity_w_damage) / (
+                applied_productivity)) @  d_gross_output_d_user_input
+
         if self.compute_climate_impact_on_gdp and self.damage_to_productivity:
-            d_damages_from_productivity_loss_d_user_input = np.diag((productivity_wo_damage - productivity_w_damage) / (
-                productivity_w_damage)) @  d_gross_output_d_user_input
-        return d_damages_from_productivity_loss_d_user_input
+            d_damages_from_productivity_loss_d_user_input = d_estimated_damages_from_prod_loss_d_user_input
+
+        return d_damages_from_productivity_loss_d_user_input, d_estimated_damages_from_prod_loss_d_user_input
 
     def d_damages_d_user_input(self, d_damages_from_climate_d_user_input, d_damages_from_productivity_loss_d_user_input):
         return d_damages_from_climate_d_user_input + d_damages_from_productivity_loss_d_user_input
+    def d_estimated_damages_d_user_input(self, d_estimated_damages_from_climate_d_user_input, d_estimated_damages_from_productivity_loss_d_user_input):
+        return d_estimated_damages_from_climate_d_user_input + d_estimated_damages_from_productivity_loss_d_user_input

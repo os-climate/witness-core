@@ -187,12 +187,13 @@ class SectorDiscipline(ClimateEcoDiscipline):
         # gradients wrt workforce
         d_gross_output_d_workforce = self.model.compute_doutput_dworkforce()
         d_net_output_d_workforce = self.model.dnetoutput(d_gross_output_d_workforce)
-        d_damage_from_climate_d_workforce = self.model.d_damages_from_climate_d_user_input(
-            d_gross_output_d_workforce, d_net_output_d_workforce)
-        d_damage_from_productivity_loss_d_workforce = self.model.d_damages_from_productivity_loss_d_user_input(
+        d_damage_from_climate_d_workforce = self.model.d_damages_from_climate_d_user_input(d_gross_output_d_workforce, d_net_output_d_workforce)
+        d_estimated_damage_from_climate_d_workforce = self.model.d_estimated_damages_from_climate_d_user_input(d_gross_output_d_workforce, d_net_output_d_workforce)
+        d_damage_from_productivity_loss_d_workforce, d_estimated_damage_from_productivity_loss_d_workforce = self.model.d_damages_from_productivity_loss_d_user_input(
             d_gross_output_d_workforce)
-        d_damages_d_workforce = self.model.d_damages_d_user_input(
-            d_damage_from_productivity_loss_d_workforce, d_damage_from_climate_d_workforce)
+        d_damages_d_workforce = self.model.d_damages_d_user_input(d_damage_from_productivity_loss_d_workforce, d_damage_from_climate_d_workforce)
+        d_estimated_damages_d_workforce = self.model.d_estimated_damages_d_user_input(d_estimated_damage_from_productivity_loss_d_workforce, d_estimated_damage_from_climate_d_workforce)
+
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
             (GlossaryCore.WorkforceDfValue, self.sector_name),
@@ -205,6 +206,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
             (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
             (GlossaryCore.WorkforceDfValue, self.sector_name),
             d_damages_d_workforce)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
+            (GlossaryCore.WorkforceDfValue, self.sector_name),
+            d_estimated_damages_d_workforce)
 
         # gradients wrt damage:
         dproductivity_ddamage = self.model.d_productivity_d_damage_frac_output()
@@ -213,12 +218,13 @@ class SectorDiscipline(ClimateEcoDiscipline):
         d_net_output_d_damage_frac_output = self.model.dnetoutput_ddamage(
             d_gross_output_d_damage_frac_output)
 
-        d_damages_from_climate_d_damage_frac_output = self.model.d_damages_from_climate_d_user_input(
-            d_gross_output_d_damage_frac_output, d_net_output_d_damage_frac_output)
-        d_damages_from_productivity_loss_d_damage_frac_output = self.model.d_damages_from_productivity_loss_d_damage_fraction_output(
+        d_damages_from_climate_d_damage_frac_output = self.model.d_damages_from_climate_d_user_input(d_gross_output_d_damage_frac_output, d_net_output_d_damage_frac_output)
+        d_estimated_damages_from_climate_d_damage_frac_output = self.model.d_estimated_damages_from_climate_d_damage_frac_output(d_gross_output_d_damage_frac_output, d_net_output_d_damage_frac_output)
+        d_damages_from_productivity_loss_d_damage_frac_output, d_estimated_damages_from_productivity_loss_d_damage_frac_output = self.model.d_damages_from_productivity_loss_d_damage_fraction_output(
             d_gross_output_d_damage_frac_output)
-        d_damages_d_damage_frac_output = self.model.d_damages_d_user_input(
-            d_damages_from_climate_d_damage_frac_output, d_damages_from_productivity_loss_d_damage_frac_output)
+        d_damages_d_damage_frac_output = self.model.d_damages_d_user_input(d_damages_from_climate_d_damage_frac_output, d_damages_from_productivity_loss_d_damage_frac_output)
+        d_estimated_damages_d_damage_frac_output = self.model.d_damages_d_user_input(d_estimated_damages_from_climate_d_damage_frac_output, d_estimated_damages_from_productivity_loss_d_damage_frac_output)
+
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.ProductionDfValue}", GlossaryCore.GrossOutput),
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
@@ -231,6 +237,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
             (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
             d_damages_d_damage_frac_output)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
+            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            d_estimated_damages_d_damage_frac_output)
 
 
         # gradients wrt invest
@@ -245,10 +255,11 @@ class SectorDiscipline(ClimateEcoDiscipline):
         d_net_output_d_invests = self.model.dnetoutput(d_gross_output_d_invests)
         d_enegy_wasted_obj_d_invest, d_EWO_d_invests = self.model.d_enegy_wasted_obj_d_invest(dcapital_dinvest)
         d_damage_from_climate_d_invests = self.model.d_damages_from_climate_d_user_input(d_gross_output_d_invests, d_net_output_d_invests)
-        d_damage_from_productivity_loss_d_invests = self.model.d_damages_from_productivity_loss_d_user_input(
+        d_estimated_damage_from_climate_d_invests = self.model.d_estimated_damages_from_climate_d_user_input(d_gross_output_d_invests, d_net_output_d_invests)
+        d_damage_from_productivity_loss_d_invests, d_estimated_damage_from_productivity_loss_d_invests = self.model.d_damages_from_productivity_loss_d_user_input(
             d_gross_output_d_invests)
-        d_damages_d_invests = self.model.d_damages_d_user_input(
-            d_damage_from_productivity_loss_d_invests, d_damage_from_climate_d_invests)
+        d_damages_d_invests = self.model.d_damages_d_user_input(d_damage_from_productivity_loss_d_invests, d_damage_from_climate_d_invests)
+        d_estimated_damages_d_invests = self.model.d_estimated_damages_d_user_input(d_estimated_damage_from_productivity_loss_d_invests, d_estimated_damage_from_climate_d_invests)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EnergyWastedObjective,),
@@ -275,16 +286,20 @@ class SectorDiscipline(ClimateEcoDiscipline):
             (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
             (invest_df, GlossaryCore.InvestmentsValue),
             d_damages_d_invests)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
+            (invest_df, GlossaryCore.InvestmentsValue),
+            d_estimated_damages_d_invests)
 
         # gradients wrt energy production
         d_gross_output_d_energy_production, d_UKu_d_E, d_Ku_d_E, d_Ew_dE = self.model.d_Y_Ku_Ew_Constraint_d_energy()
         d_net_output_d_energy_production = self.model.dnetoutput(d_gross_output_d_energy_production)
-        d_damage_from_climate_d_energy_production = self.model.d_damages_from_climate_d_user_input(
-            d_gross_output_d_energy_production, d_net_output_d_energy_production)
-        d_damage_from_productivity_loss_d_energy_production = self.model.d_damages_from_productivity_loss_d_user_input(
+        d_damage_from_climate_d_energy_production = self.model.d_damages_from_climate_d_user_input(d_gross_output_d_energy_production, d_net_output_d_energy_production)
+        d_estimated_damage_from_climate_d_energy_production = self.model.d_estimated_damages_from_climate_d_user_input(d_gross_output_d_energy_production, d_net_output_d_energy_production)
+        d_damage_from_productivity_loss_d_energy_production, d_estimated_damage_from_productivity_loss_d_energy_production = self.model.d_damages_from_productivity_loss_d_user_input(
             d_gross_output_d_energy_production)
-        d_damages_d_energy_production = self.model.d_damages_d_user_input(
-            d_damage_from_productivity_loss_d_energy_production, d_damage_from_climate_d_energy_production)
+        d_damages_d_energy_production = self.model.d_damages_d_user_input(d_damage_from_productivity_loss_d_energy_production, d_damage_from_climate_d_energy_production)
+        d_estimated_damages_d_energy_production = self.model.d_estimated_damages_d_user_input(d_estimated_damage_from_productivity_loss_d_energy_production, d_estimated_damage_from_climate_d_energy_production)
 
         self.set_partial_derivative_for_other_types(
             (f"{self.sector_name}.{GlossaryCore.CapitalDfValue}", GlossaryCore.UsableCapital),
@@ -315,6 +330,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
             (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.Damages),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_damages_d_energy_production)
+        self.set_partial_derivative_for_other_types(
+            (f"{self.sector_name}.{GlossaryCore.DamageDfValue}", GlossaryCore.EstimatedDamages),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            d_estimated_damages_d_energy_production)
 
     def get_chart_filter_list(self):
 
@@ -428,7 +447,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 to_plot.update({GlossaryCore.EstimatedDamagesFromClimate: f'Immediate climate damage (estimation not applied to net output)',
                                 GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damages_to_productivity) +'applied to gross output)',})
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
-            all_damages = damage_detailed_df[GlossaryCore.EstimatedDamagesFromClimate].values + damage_detailed_df[GlossaryCore.EstimatedDamagesFromProductivityLoss].values
+            all_damages = damage_detailed_df[GlossaryCore.EstimatedDamages].values
 
             years = list(damage_detailed_df.index)
             chart_name = f'Breakdown of damages' + ' (not applied)' * (not compute_climate_impact_on_gdp)
