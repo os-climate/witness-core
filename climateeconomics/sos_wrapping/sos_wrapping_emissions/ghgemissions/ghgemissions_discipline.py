@@ -46,13 +46,13 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
 
     # https://ghgprotocol.org/sites/default/files/ghgp/Global-Warming-Potential-Values%20%28Feb%2016%202016%29_1.pdf
     # From IPCC AR5
-    GWP_100_default = {'CO2': 1.0,
-                       'CH4': 28.,
-                       'N2O': 265.}
+    GWP_100_default = {GlossaryCore.CO2: 1.0,
+                       GlossaryCore.CH4: 28.,
+                       GlossaryCore.N2O: 265.}
 
-    GWP_20_default = {'CO2': 1.0,
-                      'CH4': 85.,
-                      'N2O': 265.}
+    GWP_20_default = {GlossaryCore.CO2: 1.0,
+                      GlossaryCore.CH4: 85.,
+                      GlossaryCore.N2O: 265.}
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,

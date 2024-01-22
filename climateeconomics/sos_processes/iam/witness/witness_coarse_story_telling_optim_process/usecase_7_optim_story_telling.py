@@ -30,12 +30,8 @@ from sostrades_core.execution_engine.func_manager.func_manager_disc import Funct
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False,
-                 execution_engine=None,
-                 invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT,
-                 agri_techno_list=COARSE_AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
-                 process_level='dev'):
-
+    def __init__(self, year_start=2020, year_end=2100, time_step=1, run_usecase=False,
+                 execution_engine=None):
         # initialize usecase and set default values
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -44,14 +40,8 @@ class Study(ClimateEconomicsStudyManager):
         self.optim_name = OPTIM_NAME
         self.coupling_name = COUPLING_NAME
         self.extra_name = EXTRA_NAME
-        self.bspline = bspline
-        self.invest_discipline = invest_discipline
-        self.techno_dict = techno_dict
-        self.process_level = process_level
         self.witness_uc = witness_optim_sub_usecase(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level,
-            agri_techno_list=agri_techno_list)
+            self.year_start, self.year_end, self.time_step, execution_engine=execution_engine, sub_usecase='uc7')
 
     def setup_usecase(self):
 
@@ -76,8 +66,8 @@ class Study(ClimateEconomicsStudyManager):
 
                              # optimization parameters:
                              f'{ns}.{self.optim_name}.max_iter': 500,
-                             f'{ns}.warm_start': True,
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
+                             f'{ns}.warm_start': False,
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': False,
                              # SLSQP, NLOPT_SLSQP
                              f'{ns}.{self.optim_name}.algo': "L-BFGS-B",
                              f'{ns}.{self.optim_name}.formulation': 'DisciplinaryOpt',
@@ -96,7 +86,7 @@ class Study(ClimateEconomicsStudyManager):
                              # 'GMRES',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDO_options': {
                                  'tol': 1.0e-10,
-                                 'max_iter': 10000},
+                                 'max_iter': 100},
                              # f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA':
                              # 'GMRES',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.linear_solver_MDA_options': {
@@ -110,26 +100,13 @@ class Study(ClimateEconomicsStudyManager):
                                                                           "wait_time_between_fork": 0},
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.sub_mda_class': 'GSPureNewtonMDA',
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.max_mda_iter': 50,
-                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': 'SimpleCache',
+                             f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.cache_type': None,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.propagate_cache_to_children': True,
                              f'{self.witness_uc.witness_uc.study_name}.DesignVariables.is_val_level': False}
 
-        data_witness = []
 
-        # update assumptions dict and specific values for optimization
-        updated_data = {f'{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.assumptions_dict': {'compute_gdp': True,
-                                                                'compute_climate_impact_on_gdp': False,
-                                                                'activate_climate_effect_population': False,
-                                                                'invest_co2_tax_in_renewables': False
-                                                               }}
-        data_witness.append(updated_data)
 
-        data_witness.append({
-            f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.ccs_price_percentage": 0.0,
-            f"{self.study_name}.{self.optim_name}.{self.coupling_name}.{self.extra_name}.co2_damage_price_percentage": 0.0,
-        })
-
-        return [values_dict] + [optim_values_dict] + data_witness
+        return [values_dict] + [optim_values_dict]
 
 
 if '__main__' == __name__:

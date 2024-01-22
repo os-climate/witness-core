@@ -327,7 +327,7 @@ def post_processings(execution_engine, namespace, filters):
 
         co2_ppm_dict, welfare_dict = {}, {}
         for scenario in scenario_list:
-            co2_ppm_dict[scenario] = ghgcycle_detail_df_dict[scenario]['co2_ppm'].values.tolist(
+            co2_ppm_dict[scenario] = ghgcycle_detail_df_dict[scenario][GlossaryCore.CO2Concentration].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, co2_ppm_dict,

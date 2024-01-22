@@ -48,9 +48,16 @@ class Study(ClimateEconomicsStudyManager):
                          'IEA energy mix, no damage with tax': usecase3(execution_engine=self.execution_engine),
                          'Fossil + 2020 invest renewable & CCS, with damage no tax': usecase4(execution_engine=self.execution_engine),
                          'Fossil + renewable (step) & 2020 CCS invest, with damage no tax': usecase5(execution_engine=self.execution_engine),
-                         'NZE for energy sector, with damage no tax': usecase6(execution_engine=self.execution_engine),
-                         'NZE all sectors, with damage with tax': usecase7(execution_engine=self.execution_engine),
+                         'NZE inspired, with damage no tax': usecase6(execution_engine=self.execution_engine),
+                         'NZE, with damage with tax': usecase7(execution_engine=self.execution_engine),
                          }
+
+        '''
+        NZE inspired: Net Zero Emissions just for the energy sector, ie CO2 emissions = 0 for the energy sector
+            for the other sectors, it is non-zero
+        NZE:  Net Zero Emissions for all sectors, therefore the energy sector captures and stores CO2 (therefore 
+            the energy sector has a negative CO2 emission balance to compensate the non zero emissions of the other sectors
+        '''
 
         scenario_list = list(scenario_dict.keys())
         values_dict = {}

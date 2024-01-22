@@ -171,7 +171,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = f'Mean ppm'
         y_axis_name = f'Utility in {year_end}'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.ghg_cycle_df',
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGCycleDfValue}',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
         (carboncycle_detail_df_dict, utility_df_dict) = get_df_per_scenario_dict(
@@ -179,7 +179,7 @@ def post_processings(execution_engine, namespace, filters):
 
         mean_co2_ppm_dict, welfare_dict = {}, {}
         for scenario in scenario_list:
-            mean_co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario]['co2_ppm'].mean(
+            mean_co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario][GlossaryCore.CO2Concentration].mean(
             )
             welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtility][year_end]
         namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
@@ -319,13 +319,13 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Atmospheric concentrations parts per million'
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.ghg_cycle_df']
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGCycleDfValue}']
         (carboncycle_detail_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
         co2_ppm_dict, welfare_dict = {}, {}
         for scenario in scenario_list:
-            co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario]['co2_ppm'].values.tolist(
+            co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario][GlossaryCore.CO2Concentration].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, co2_ppm_dict,

@@ -96,7 +96,7 @@ class ResourceMixDiscipline(SoSWrapp):
                ResourceMixModel.NON_MODELED_RESOURCE_PRICE: {'type': 'dataframe', 'unit': '$/t',
                                                              'namespace': 'ns_resource',
                                                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                                                      'CO2': ('float', None, True),
+                                                                                      GlossaryCore.CO2: ('float', None, True),
                                                                                       'uranium_resource': ('float', None, True),
                                                                                       'biomass_dry': ('float', None, True),
                                                                                       'biomass_dry_resource': ('float', None, True),

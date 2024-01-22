@@ -44,6 +44,8 @@ class MacroeconomicsModel():
         self.sum_invests_df = None
         self.damage_df = None
         self.invests_energy_wo_tax = None
+        self.gdp_percentage_per_section_df = None
+        self.dict_sectors_detailed = None
         self.max_invest_constraint = None
         self.share_max_invest = None
         self.max_invest_constraint_ref = None

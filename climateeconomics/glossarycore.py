@@ -42,6 +42,7 @@ class GlossaryCore:
     DamageFractionDfValue = "damage_fraction_df"
     EconomicsDfValue = "economics_df"
     SectorGdpDfValue = "sector_gdp_df"
+    SectionGdpDfValue = "section_gdp_df"
     SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     PopulationDfValue = "population_df"
@@ -159,15 +160,14 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
-
+    df_descriptor_section_df = {section: ('float', [0., 100.], True) for section in SectionsPossibleValues}
+    df_descriptor_section_df.update({Years: ("int", [1900, 2100], False)})
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "dataframe_descriptor": {
-            Years: ("int", [1900, 2100], False),
-        },
+        "dataframe_descriptor": df_descriptor_section_df,
     }
 
     SectorsPossibleValues = [
@@ -355,6 +355,29 @@ class GlossaryCore:
         },
     }
 
+    CO2 = "CO2"
+    CH4 = "CH4"
+    N2O = "N2O"
+    GreenHouseGases = [CO2, CH4, N2O]
+    YearBasis20 = "(20-year basis)"
+    YearBasis100 = "(100-year basis)"
+    GlobalWarmingPotentialdDfValue = "Global warming potential"
+    GlobalWarmingPotentialdDf = {
+        "var_name": GlobalWarmingPotentialdDfValue,
+        "type": "dataframe",
+        "description": "Global warming potential in gigatons of  CO2 Eq",
+        "unit": "GtCO2Eq",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+            f"{CO2} {YearBasis20}": ("float", None, False),
+            f"{CH4} {YearBasis20}": ("float", None, False),
+            f"{N2O} {YearBasis20}": ("float", None, False),
+            f"{CO2} {YearBasis100}": ("float", None, False),
+            f"{CH4} {YearBasis100}": ("float", None, False),
+            f"{N2O} {YearBasis100}": ("float", None, False),
+        },
+    }
+
     DietMortalityParamDf = {
         "var_name": "diet_mortality_param_df",
         "type": "dataframe",
@@ -388,6 +411,7 @@ class GlossaryCore:
     DamageDfValue = "damage_df"
     DamagesFromClimate = "Damages from climate [G$]"
     DamagesFromProductivityLoss = "Damages from productivity loss [G$]"
+    EstimatedDamages = "Estimated damages [G$]"
     DamageDf = {
         "var_name": DamageDfValue,
         "type": "dataframe",
@@ -397,6 +421,7 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
             Damages: ("float", None, False),
+            EstimatedDamages: ("float", None, False),
         },
     }
 
@@ -416,6 +441,7 @@ class GlossaryCore:
             Damages: ("float", None, False),  # G$
             DamagesFromClimate: ("float", None, False),  # G$
             DamagesFromProductivityLoss: ("float", None, False),  # G$
+            EstimatedDamages: ("float", None, False),  # G$
             EstimatedDamagesFromClimate: ("float", None, False),  # G$
             EstimatedDamagesFromProductivityLoss: ("float", None, False),  # G$
         },
@@ -446,6 +472,16 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
+        "unit": "G$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+        },
+    }
+
+    # The number of columns depends dynamically on SectionsList
+    SectionGdpDf = {
+        "var_name": SectionGdpDfValue,
+        "type": "dataframe",
         "unit": "G$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
@@ -616,12 +652,9 @@ class GlossaryCore:
             "namespace": NS_WITNESS,
         }
     )
-    CO2 = "CO2"
-    CH4 = "CH4"
-    N20 = "N2O"
 
     GHGEmissionsDfValue = "GHG_emissions_df"
-    TotalN2OEmissions = f"Total {N20} emissions"
+    TotalN2OEmissions = f"Total {N2O} emissions"
     TotalCH4Emissions = f"Total {CH4} emissions"
     GHGEmissionsDf = {
         "type": "dataframe",
@@ -634,6 +667,25 @@ class GlossaryCore:
             TotalN2OEmissions: ("float", None, False),
             TotalCH4Emissions: ("float", None, False),
         },
+    }
+
+    GHGCycleDfValue = "ghg_cycle_df"
+    CO2Concentration = f"{CO2} (ppm)"
+    CH4Concentration = f"{CH4} (ppb)"
+    N2OConcentration = f"{N2O} (ppb)"
+    GHGCycleDf = {
+        "varname": GHGCycleDfValue,
+        "type": "dataframe",
+        "description": f"Concentrations forecasts of the three main green house gases : {GreenHouseGases}",
+        "unit": "ppm",
+        "dataframe_descriptor": {
+            Years: ("float", None, False),
+            CO2Concentration: ("float", [0., 1e6], True),
+            CH4Concentration: ("float", [0., 1e6], True),
+            N2OConcentration: ("float", [0., 1e6], True),
+        },
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
     }
 
     RenewablesEnergyInvestmentsValue = "Renewables energy investments [100G$]"
