@@ -17,6 +17,7 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+import copy
 
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -43,6 +44,7 @@ class SectorModel():
         self.lt_energy_eff = None
         self.emax_enet_constraint = None
         self.gdp_percentage_per_section_df = None
+        self.section_list = []
         self.section_gdp_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint =  None
@@ -64,7 +66,7 @@ class SectorModel():
         self.nb_years = len(self.years_range)
         self.sector_name = sector_name
         self.retrieve_sections_list()
-        #self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
+        self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']
@@ -106,11 +108,15 @@ class SectorModel():
         Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
         '''
         # the year range for the study can differ from that stated in the csv file
-        start_year_csv = self.gdp_percentage_per_section_df.iloc[0][GlossaryCore.Years]
+        start_year_csv = self.gdp_percentage_per_section_df.loc[0, GlossaryCore.Years]
         if start_year_csv > self.year_start:
-            self.gdp_percentage_per_section_df = pd.concat(
-                [[self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start),
-                 self.gdp_percentage_per_section_df]).reset_index(drop=True)
+            # duplicate first row (start_year_csv - year_start) time
+            list_df_to_concat = [self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start)
+            # add input dataframe to the list
+            list_df_to_concat.append(self.gdp_percentage_per_section_df)
+            # concatenate the dataframes using the created list to fill the missing rows
+            self.gdp_percentage_per_section_df = pd.concat(list_df_to_concat).reset_index(drop=True)
+            # set years of the updated dataframe
             self.gdp_percentage_per_section_df.iloc[0:(start_year_csv - self.year_start)][
                 GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
 
@@ -118,17 +124,33 @@ class SectorModel():
             self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
                 self.gdp_percentage_per_section_df[GlossaryCore.Years] > self.year_start - 1]
 
-        end_year_csv = self.gdp_percentage_per_section_df.iloc[-1][GlossaryCore.Years]
+        end_year_csv = self.gdp_percentage_per_section_df.loc[self.gdp_percentage_per_section_df.index[-1], GlossaryCore.Years]
         if end_year_csv > self.year_end:
             self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
                 self.gdp_percentage_per_section_df[GlossaryCore.Years] < self.year_end + 1]
         elif end_year_csv < self.year_end:
-            self.gdp_percentage_per_section_df = pd.concat([self.gdp_percentage_per_section_df,
-                                                            [self.gdp_percentage_per_section_df.iloc[-1:]] * (
-                                                                        start_year_csv - self.year_start)]).reset_index(
-                drop=True)
+            list_df_to_concat = [self.gdp_percentage_per_section_df]
+            list_df_to_concat.extend([self.gdp_percentage_per_section_df.iloc[-1:]] * (
+                                                                        self.year_end - end_year_csv))
+            self.gdp_percentage_per_section_df = pd.concat(list_df_to_concat).reset_index(drop=True)
+            # fill years with mising years (start at end_year_csv+1, and last element should be year_end)
             self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
-                end_year_csv, self.year_end)
+                end_year_csv+1, self.year_end+1)
+
+        section_gdp_percentage_df = pd.DataFrame()
+        # self.years = np.arange(self.year_start, self.year_end + 1)
+        # default_index = self.years
+        # section_gdp_percentage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys())
+        section_gdp_percentage_df[GlossaryCore.Years] = self.gdp_percentage_per_section_df[GlossaryCore.Years]
+        sum_sections = 0
+        for section in self.gdp_percentage_per_section_df.columns:
+            if section in self.section_list:
+                section_gdp_percentage_df[section] = self.gdp_percentage_per_section_df[section]
+                sum_sections += section_gdp_percentage_df[section].iloc[0]
+        for section in section_gdp_percentage_df.columns:
+            if section != 'years':
+                section_gdp_percentage_df[section] = (section_gdp_percentage_df[section] * 100) / sum_sections
+        return section_gdp_percentage_df
 
     def init_dataframes(self):
         '''
@@ -138,10 +160,12 @@ class SectorModel():
         default_index = self.years
         self.capital_df = pd.DataFrame(index=default_index, columns=GlossaryCore.CapitalDf['dataframe_descriptor'].keys())
         self.production_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductionDf['dataframe_descriptor'].keys())
+        self.section_gdp_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys())
         self.damage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
         self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductivityDf['dataframe_descriptor'].keys())
         self.growth_rate_df = pd.DataFrame(index=default_index, columns=[GlossaryCore.Years, 'net_output_growth_rate'])
         self.production_df[GlossaryCore.Years] = self.years
+        self.section_gdp_df[GlossaryCore.Years] = self.years
         self.damage_df[GlossaryCore.Years] = self.years
         self.capital_df[GlossaryCore.Years] = self.years
         self.productivity_df[GlossaryCore.Years] = self.years
@@ -282,6 +306,15 @@ class SectorModel():
                 output_net_of_d = gross_output * (1 - damefrac)
         self.production_df.loc[year, GlossaryCore.OutputNetOfDamage] = output_net_of_d
         return output_net_of_d
+
+    def compute_output_net_of_damage_per_section(self):
+        section_gdp_percentage_df = self.get_gdp_percentage_per_section()
+        self.section_gdp_df = section_gdp_percentage_df.copy()
+        production_df_copy = self.production_df.copy(deep=True)
+        self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(
+            production_df_copy.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
+
+
     
     def compute_output_growth_rate(self, year):
         """ Compute output growth rate for every year for the year before: 
@@ -435,18 +468,21 @@ class SectorModel():
             # capital t+1 :
             self.compute_capital(year+1)
         self.production_df = self.production_df.fillna(0.0)
+        self.section_gdp_df = self.section_gdp_df.fillna(0.0)
         self.capital_df = self.capital_df.fillna(0.0)
         self.productivity_df = self.productivity_df.fillna(0.0)
         if self.prod_function_fitting:
             self.compute_long_term_energy_efficiency()
             self.compute_energy_eff_constraints()
 
+        self.compute_output_net_of_damage_per_section()
+
         self.compute_energy_usage()
         self.compute_energy_wasted_objective()
         self.compute_damage_from_productivity_loss()
         self.compute_damage_from_climate()
         self.compute_total_damages()
-        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt
+        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df
     
     ### GRADIENTS ###
 

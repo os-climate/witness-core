@@ -13,8 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import copy
 from copy import deepcopy
-
 import pandas as pd
 
 from climateeconomics.core.core_sectorization.sector_model import SectorModel
@@ -24,6 +24,8 @@ from climateeconomics.charts_tools import graph_gross_and_net_output
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import TwoAxesInstanciatedChart, \
     InstanciatedSeries
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 
 
 class SectorDiscipline(ClimateEcoDiscipline):
@@ -32,6 +34,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     prod_cap_unit = 'T$' # to overwrite if necessary
     NS_SECTORS = GlossaryCore.NS_SECTORS
     DESC_IN = {
+        GlossaryCore.SectionGdpPercentageDfValue: GlossaryCore.SectionGdpPercentageDf,
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -74,6 +77,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                                   'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True}
     }
     DESC_OUT = {
+        GlossaryCore.SectionGdpDfValue: GlossaryCore.SectionGdpDf,
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
@@ -85,6 +89,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         """setup sos disciplines"""
         dynamic_outputs = {}
         dynamic_inputs = {}
+
         if GlossaryCore.WorkforceDfValue in self.get_sosdisc_inputs():
             workforce_df: pd.DataFrame = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
             if workforce_df is not None and self.sector_name not in workforce_df.columns:
@@ -135,14 +140,16 @@ class SectorDiscipline(ClimateEcoDiscipline):
         sector_investment = param[f"{self.sector_name}.{GlossaryCore.InvestmentDfValue}"]
         workforce_df = param[GlossaryCore.WorkforceDfValue]
         prod_function_fitting = param['prod_function_fitting']
+        section_gdp_percentage_df = param[GlossaryCore.SectionGdpPercentageDfValue]
 
         model_inputs = {
+            GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df,
             GlossaryCore.DamageFractionDfValue: damage_fraction_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
             GlossaryCore.EnergyProductionValue: energy_production,
             GlossaryCore.InvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
-        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt = self.model.compute(
+        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df = self.model.compute(
             model_inputs)
 
         # Store output data
@@ -152,8 +159,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
                        f"{self.sector_name}.{GlossaryCore.DamageDfValue}": damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}": damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
+                       #f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}": section_gdp_df[GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
                        GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
+                       GlossaryCore.SectionGdpDfValue: self.model.section_gdp_df,
                        }
 
         if prod_function_fitting:
@@ -341,7 +350,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
                       GlossaryCore.Workforce,
                       GlossaryCore.Productivity,
                       GlossaryCore.EnergyEfficiency,
-                      GlossaryCore.EnergyUsage,]
+                      GlossaryCore.EnergyUsage,
+                      GlossaryCore.SectionGdpPart,
+                      ]
 
         prod_func_fit = self.get_sosdisc_inputs('prod_function_fitting')
         if prod_func_fit:
@@ -366,8 +377,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         production_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.ProductionDfValue}")
+        #section_gdp_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}")
         detailed_capital_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}")
         productivity_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
+        section_gdp_df = self.get_sosdisc_outputs(GlossaryCore.SectionGdpDfValue)
         workforce_df = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
         capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')
@@ -629,5 +642,33 @@ class SectorDiscipline(ClimateEcoDiscipline):
                 new_chart.add_series(new_series)
 
             instanciated_charts.append(new_chart)
+
+        if GlossaryCore.SectionGdpPart in chart_list:
+            sections_gdp = self.get_sosdisc_outputs(GlossaryCore.SectionGdpDfValue)
+            sections_gdp = sections_gdp.drop('years', axis=1)
+            years = list(production_df.index)
+
+            chart_name = f'Breakdown of GDP per section for {self.sector_name} sector [T$]'
+
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, GlossaryCore.SectionGdpPart,
+                                                     chart_name=chart_name, stacked_bar=True)
+
+            # loop on all sections of the sector
+            for section, section_value in sections_gdp.items():
+                new_series = InstanciatedSeries(
+                    years, list(section_value),f'{section}', display_type=InstanciatedSeries.BAR_DISPLAY)
+                new_chart.add_series(new_series)
+
+            # have a full label on chart (for long names)
+            fig = new_chart.to_plotly()
+            fig.update_traces(hoverlabel=dict(namelength=-1))
+            # if dictionaries has big size, do not show legend, otherwise show it
+            if len(list(sections_gdp.keys())) > 5:
+                fig.update_layout(showlegend=False)
+            else:
+                fig.update_layout(showlegend=True)
+            instanciated_charts.append(InstantiatedPlotlyNativeChart(
+                fig, chart_name=chart_name,
+                default_title=True, default_legend=False))
 
         return instanciated_charts
