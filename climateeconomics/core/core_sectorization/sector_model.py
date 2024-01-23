@@ -96,6 +96,10 @@ class SectorModel():
 
 
     def retrieve_sections_list(self):
+        '''
+        Get the sections of the sector
+        :return:
+        '''
         if self.sector_name == GlossaryCore.SectorIndustry:
             self.section_list = GlossaryCore.SectionsIndustry
         if self.sector_name == GlossaryCore.SectorServices:
@@ -137,10 +141,8 @@ class SectorModel():
             self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
                 end_year_csv+1, self.year_end+1)
 
+        # filtering in order to keep only the percentages of the sections in the sector
         section_gdp_percentage_df = pd.DataFrame()
-        # self.years = np.arange(self.year_start, self.year_end + 1)
-        # default_index = self.years
-        # section_gdp_percentage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys())
         section_gdp_percentage_df[GlossaryCore.Years] = self.gdp_percentage_per_section_df[GlossaryCore.Years]
         sum_sections = 0
         for section in self.gdp_percentage_per_section_df.columns:
@@ -308,6 +310,9 @@ class SectorModel():
         return output_net_of_d
 
     def compute_output_net_of_damage_per_section(self):
+        """
+        Splitting output net of damages between sections of the sector
+        """
         section_gdp_percentage_df = self.get_gdp_percentage_per_section()
         self.section_gdp_df = section_gdp_percentage_df.copy()
         production_df_copy = self.production_df.copy(deep=True)

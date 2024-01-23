@@ -379,3 +379,9 @@ prod_function_fitting,Production function fitting,,Input to be activated if we f
 vegetables_and_carbs_calories_per_day,vegetables and fruit calories per day,kcal,number of calories coming from vegetables and fruits consumed per day per person.,,
 white_meat_calories_per_day,White meat calories per day,kcal,number of calories coming from white meat consumed per day per person.,,
 workforce_share_per_sector,Workforce share per sector,%,Distribution of workforce per economic sector in %. One column per sector. Total of column should be 100. ,,
+sector_list,Sectors list,,List of sectors,,
+section_list,Sub-sectors list,,List of sub-sectors,,
+section_gdp_percentage_df,Gdp percentage of sub-sectors,%,Percentage of the gdp for each sub-sector,,
+SectionGdpDict,Gdp values of all sub-sectors,T$,Gdp values of all sub-sectors,,
+section_gdp_df,Gdp values of sub-sectors,T$,Gdp values of sub-sectors for a sector,,
+
