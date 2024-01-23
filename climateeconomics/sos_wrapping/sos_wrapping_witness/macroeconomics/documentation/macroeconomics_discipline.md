@@ -12,7 +12,7 @@
 - Initial rate of time preference ($init\_rate\_time\_pref$)
 - Sector list ($sector\_list$): List of sectors
 - Section list ($section\_list$): List of all sub-sectors 
-- Gdp percentage per section ($section\_gdp\_percentage\_df$): Dataframe of gdp percentages for all sub-sectors
+- GDP percentage per section ($section\_gdp\_percentage\_df$): Dataframe of GDP percentages for all sub-sectors
   
 ### Outputs 
 - Economics detail df ($economics\_detail\_df$): Dataframe with most of model outputs
@@ -22,7 +22,7 @@
 - Energy invests wo renewable: Energy investment without additional investment coming from carbon tax. Unit: G\$
 - Workforce df ($workforce\_df$): Dataframe with workforce per year in million of people. 
 - Usable capital df ($usable\_capital\_df$): Dataframe with the usable capital in trillion dollars and the intermediate parameters (e_max, energy_efficiency).
-- Gdp value per sub-sector ($detailed\_section\_gdp$): Dictionary with the gdp value of each sub-sector in T\$.
+- GDP value per sub-sector ($detailed\_section\_gdp$): Dictionary with the GDP value of each sub-sector in T\$.
                     
 ### Time Step 
 The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
