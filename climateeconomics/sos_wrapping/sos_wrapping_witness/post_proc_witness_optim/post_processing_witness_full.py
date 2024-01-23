@@ -293,35 +293,34 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             techno_disc = execution_engine.dm.get_disciplines_with_name(
                 f'{namespace_disc}.{techno}')[0]
             production_techno = techno_disc.get_sosdisc_outputs(
-                'techno_production')[f'{energy} (TWh)'].values * \
-                                techno_disc.get_sosdisc_inputs(
-                                    'scaling_factor_techno_production')
+                'techno_production')[f'{energy} (TWh)'].values
             # crop had not invest_level but crop_investment. Same for Forest
-            if 'Crop' not in techno and 'Forest' not in techno:
-                '''
-            if 'Crop' in techno:
-                invest_techno = techno_disc.get_sosdisc_inputs('crop_investment')[
-                                    GlossaryCore.InvestmentsValue].values * \
-                                techno_disc.get_sosdisc_inputs('scaling_factor_crop_investment')
-                carbon_emissions = techno_disc.get_sosdisc_outputs(
-                    'CO2_land_emissions_detailed')
-
-            elif 'Forest' in techno:
+            # data_fuel_dict is missing in Forest and is a copy of biomass_dry for Crop
+            # TODO review the Forest and crop disciplines as the CO2 emissions are not correct and reactivate graphs below
+            if 'Forest' not in techno and 'Crop' not in techno:
+                '''  
+            if 'Forest' in techno:
+                data_fuel_dict = energy_disc.get_sosdisc_inputs('data_fuel_dict')
                 invest_techno = techno_disc.get_sosdisc_inputs('forest_investment')[
                                     'forest_investment'].values
-                # Calculate total CO2 emissions
-                data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
                 carbon_emissions = techno_disc.get_sosdisc_outputs(
-                    'CO2_land_emission_df')
+                    'CO2_emissions')
+            elif 'Crop' in techno:
+                data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
+                invest_techno = techno_disc.get_sosdisc_inputs('crop_investment')[
+                                    'investment'].values
+                carbon_emissions = techno_disc.get_sosdisc_outputs(
+                    'CO2_emissions')
             else:
                 '''
+                data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
                 invest_techno = techno_disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)[
                                     GlossaryCore.InvestValue].values * \
                                 techno_disc.get_sosdisc_inputs('scaling_factor_invest_level')
-                # Calculate total CO2 emissions
-                data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
                 carbon_emissions = techno_disc.get_sosdisc_outputs(
-                        'CO2_emissions_detailed')
+                    'CO2_emissions_detailed')
+
+                # Calculate total CO2 emissions
                 CO2_per_use = np.zeros(
                     len(carbon_emissions[GlossaryCore.Years]))
                 if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
@@ -648,17 +647,30 @@ def get_CO2_breakdown_multilevel_df(execution_engine, namespace):
         energy_disc = execution_engine.dm.get_disciplines_with_name(namespace_disc)[0]
         techno_list = energy_disc.get_sosdisc_inputs(GlossaryCore.techno_list)
         for techno in techno_list:
-            if 'Crop' not in techno and 'Forest' not in techno:
-                techno_disc = execution_engine.dm.get_disciplines_with_name(
-                    f'{namespace_disc}.{techno}')[0]
-                production_techno = techno_disc.get_sosdisc_outputs(
-                    'techno_production')[f'{energy} (TWh)'].values * \
-                                    techno_disc.get_sosdisc_inputs(
-                                        'scaling_factor_techno_production')
-                # Calculate total CO2 emissions
+            techno_disc = execution_engine.dm.get_disciplines_with_name(
+                f'{namespace_disc}.{techno}')[0]
+            production_techno = techno_disc.get_sosdisc_outputs(
+                'techno_production')[f'{energy} (TWh)'].values * \
+                                techno_disc.get_sosdisc_inputs(
+                                    'scaling_factor_techno_production')
+            # Calculate total CO2 emissions
+            # data_fuel is not defined for Forest => take the one from biomass dry
+            # TODO review the Forest and crop disciplines as the CO2 emissions are not correct and reactivate graphs below
+            if 'Forest' not in techno and 'Crop' not in techno:
+                '''
+            if 'Forest' in techno:
+                data_fuel_dict = energy_disc.get_sosdisc_inputs('data_fuel_dict')
+            else:
                 data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
+            # no detailed CO2_emissions_df for Crop and Forest => CO2_from_other_consumption = 0
+            if 'Crop' in techno or 'Forest' in techno:
+                CO2_df_name = 'CO2_emissions'
+            else:
+                '''
+                data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
+                CO2_df_name = 'CO2_emissions_detailed'
                 carbon_emissions = techno_disc.get_sosdisc_outputs(
-                    'CO2_emissions_detailed')
+                    CO2_df_name)
                 CO2_per_use = np.zeros(
                     len(carbon_emissions[GlossaryCore.Years]))
                 if 'CO2_per_use' in data_fuel_dict and 'high_calorific_value' in data_fuel_dict:
