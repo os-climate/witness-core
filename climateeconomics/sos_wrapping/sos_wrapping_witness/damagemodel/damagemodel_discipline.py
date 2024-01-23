@@ -61,6 +61,10 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'tp_a2': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 2, 'user_level': 3, 'unit': '-'},
         'tp_a3': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.081, 'user_level': 3, 'unit': '-'},
         'tp_a4': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.754, 'user_level': 3, 'unit': '-'},
+        'total_emissions_damage_ref': {'type': 'float', 'default': 72.0, 'unit': 'Gt',
+                                       'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
+                                       'namespace': 'ns_ref', 'user_level': 2},
+        'co2_damage_price_dev_formula': {'type': 'bool', 'default': False, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,
         GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
@@ -115,10 +119,11 @@ class DamageDiscipline(ClimateEcoDiscipline):
         damage_df = in_dict.pop(GlossaryCore.DamageDfValue)
         temperature_df = in_dict.pop(GlossaryCore.TemperatureDfValue)
         extra_gigatons_co2_eq_df = in_dict.pop(GlossaryCore.ExtraCO2EqSincePreIndustrialValue)
+        co2_damage_price_dev_formula = in_dict.pop("co2_damage_price_dev_formula")
 
         # pyworld3 execution
         damage_fraction_df, co2_damage_price_df, extra_co2_damage_price = self.model.compute(
-            damage_df, temperature_df, extra_gigatons_co2_eq_df)
+            damage_df, temperature_df, extra_gigatons_co2_eq_df, co2_damage_price_dev_formula)
 
         # store output data
         out_dict = {GlossaryCore.DamageFractionDfValue: damage_fraction_df[GlossaryCore.DamageFractionDf['dataframe_descriptor'].keys()],
@@ -142,33 +147,37 @@ class DamageDiscipline(ClimateEcoDiscipline):
         d_extra_co2_t_damage_price_d_damages = self.model.d_extra_co2_t_damage_price_d_damages()
         d_extra_co2_t_damage_price_d_extra_co2_ton = self.model.d_extra_co2_t_damage_price_d_extra_co2_ton()
 
-        d_co2_damage_price_d_damages = self.model.d_co2_damage_price_d_user_input(d_extra_co2_t_damage_price_d_damages)
-        d_co2_damage_price_d_extra_co2_ton = self.model.d_co2_damage_price_d_user_input(d_extra_co2_t_damage_price_d_extra_co2_ton)
-        # fill jacobians
-
-
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
             (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             ddamage_frac_output_temp_atmo)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
-            (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
-            d_co2_damage_price_d_damages)
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
-            (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue),
-            d_co2_damage_price_d_extra_co2_ton)
-
-        self.set_partial_derivative_for_other_types(
-            (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
-            (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
-            self.model.d_extra_co2_t_damage_price_d_damages())
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
             (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue),
             self.model.d_extra_co2_t_damage_price_d_extra_co2_ton())
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.ExtraCO2tDamagePrice, GlossaryCore.ExtraCO2tDamagePrice),
+            (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+            self.model.d_extra_co2_t_damage_price_d_damages())
+
+        co2_damage_price_dev_formula = self.get_sosdisc_inputs("co2_damage_price_dev_formula")
+        if co2_damage_price_dev_formula:
+            d_co2_damage_price_d_damages = self.model.d_co2_damage_price_dev_d_user_input(d_extra_co2_t_damage_price_d_damages)
+            d_co2_damage_price_d_extra_co2_ton = self.model.d_co2_damage_price_dev_d_user_input(d_extra_co2_t_damage_price_d_extra_co2_ton)
+
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
+                (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+                d_co2_damage_price_d_damages)
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
+                (GlossaryCore.ExtraCO2EqSincePreIndustrialValue, GlossaryCore.ExtraCO2EqSincePreIndustrialValue),
+                d_co2_damage_price_d_extra_co2_ton)
+        else:
+            self.set_partial_derivative_for_other_types(
+                (GlossaryCore.CO2DamagePrice, GlossaryCore.CO2DamagePrice),
+                (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+                self.model.d_co2_damage_price_d_damages())
 
     def get_chart_filter_list(self):
 
@@ -178,8 +187,11 @@ class DamageDiscipline(ClimateEcoDiscipline):
         chart_filters = []
 
         chart_list = [GlossaryCore.Damages,
-                      'CO2 damage price',
-                      GlossaryCore.ExtraCO2tDamagePrice]  # , 'Abatement cost']
+                      'CO2 damage price']
+        co2_damage_price_dev_formula = self.get_sosdisc_inputs("co2_damage_price_dev_formula")
+        if co2_damage_price_dev_formula:
+            chart_list.append(GlossaryCore.ExtraCO2tDamagePrice)
+
         # First filter to deal with the view : program or actor
         chart_filters.append(ChartFilter(
             'Charts', chart_list, chart_list, 'charts'))

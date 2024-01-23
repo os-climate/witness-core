@@ -42,6 +42,7 @@ class GlossaryCore:
     DamageFractionDfValue = "damage_fraction_df"
     EconomicsDfValue = "economics_df"
     SectorGdpDfValue = "sector_gdp_df"
+    SectionGdpDfValue = "section_gdp_df"
     SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     PopulationDfValue = "population_df"
@@ -152,6 +153,7 @@ class GlossaryCore:
     SectionList = {
         "var_name": SectionListValue,
         "type": "list",
+        "description": "List of sub-sectors",
         "subtype_descriptor": {"list": "string"},
         "default": SectionsPossibleValues,
         "visibility": "Shared",
@@ -159,15 +161,16 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
-
+    df_descriptor_section_df = {section: ('float', [0., 100.], True) for section in SectionsPossibleValues}
+    df_descriptor_section_df.update({Years: ("int", [1900, 2100], False)})
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
+        "unit": "%",
+        "description": "Percentage of the gdp for each sub-sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "dataframe_descriptor": {
-            Years: ("int", [1900, 2100], False),
-        },
+        "dataframe_descriptor": df_descriptor_section_df,
     }
 
     SectorsPossibleValues = [
@@ -180,6 +183,7 @@ class GlossaryCore:
     SectorList = {
         "var_name": SectorListValue,
         "type": "list",
+        "description": "List of sectors",
         "subtype_descriptor": {"list": "string"},
         "default": SectorsPossibleValues,
         "visibility": "Shared",
@@ -479,12 +483,24 @@ class GlossaryCore:
     }
 
     # The number of columns depends dynamically on SectionsList
+    SectionGdpDf = {
+        "var_name": SectionGdpDfValue,
+        "type": "dataframe",
+        "description": "",
+        "unit": "T$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, 2100], False),
+        },
+    }
+
+    # The number of columns depends dynamically on SectionsList
     SectionGdpDict = {
         "var_name": SectionGdpDictValue,
         "type": "dict",
+        "description": "Gdp values of sub-sectors",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "G$",
+        "unit": "T$",
     }
 
     EconomicsDf = {

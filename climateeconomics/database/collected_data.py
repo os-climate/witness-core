@@ -44,6 +44,15 @@ class ColectedData:
     def value(self, val):
         self.__value = val
 
+    @property
+    def gui_description(self) -> str:
+        """returns a description for displaying in GUI"""
+        gui_descr = f"Defaults values infos :" \
+                    f"{self.description}.\n" \
+                    f"source : {self.source} ({self.link})\n" \
+                    f"Lastly checked on {self.last_update_date.isoformat()}"
+        return gui_descr
+
 
 class HeavyCollectedData(ColectedData):
     """
