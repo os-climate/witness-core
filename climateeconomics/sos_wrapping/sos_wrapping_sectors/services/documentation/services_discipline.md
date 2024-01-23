@@ -8,8 +8,8 @@ The services sector represents one of the identified main economic sectors. In t
 - Sector energy quantity ($energy\_production$): Dataframe with Total Final Consumption of energy per year in Pwh for the sector
 - Sector investment ($sector\_investment$): Dataframe with investment in sector per year in 1e12\$
 - Damage to productivity ($damage\_to\_productivity$): If True: apply damage to productivity. if False: Apply damage only to production. 
-- Section list($section\_\list$): List of Sub_sectors for the sector.
-- GDP percentage per Section ($Gdp\_percentage\_per\_section\_df): Dataframe with the percentage of all sub_sectors (for all sectors). 
+- Section list($section\_list$): List of Sub_sectors for the sector.
+- GDP percentage per Section ($Gdp\_percentage\_per\_section\_df$): Dataframe with the percentage of all sub_sectors (for all sectors). 
 ### Outputs 
 - Capital detailed df ($capital\_detail\_df$): Dataframe with all variables relative to capital calculation (energy efficiency, E max, usable capital and capital) per year
 - Capital ($capital\_df$): Dataframe with coupling model outputs from previous dataframe. It contains capital and usable capital in 1e12 \$ per year
