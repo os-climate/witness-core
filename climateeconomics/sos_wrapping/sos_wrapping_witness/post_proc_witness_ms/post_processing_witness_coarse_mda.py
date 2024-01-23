@@ -116,7 +116,7 @@ def post_processings(execution_engine, namespace, filters):
     # put in a box the symbols used for tax and damage filtering
     note = {'__ __ ': 'no damage  ',
             '_____': 'with damage',
-            '| | | | |': 'with tax   ',
+            'o o o o': 'with tax   ',
             }
 
     if 'Temperature per scenario' in graphs_list:
@@ -572,12 +572,14 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
         with tax have circles on the line. whether or not damage and taxes are activated is provided in status_dict
         '''
         marker_symbol = 'circle'
+        marker = None #dict to describe the marker size, color, etc.
         if status_dict is not None:
             if status_dict[scenario][TAX_NAME] == False:
                 add_markers = ''
             else:
                 add_markers = SeriesTemplate.ADD_MARKERS
-                marker_symbol = 'line-ns-open' #if circles are used, the dashed line cannot be seen
+                marker_symbol = 'circle-open' #if circles are used, the dashed line cannot be seen
+                marker = dict(size=4)
 
             if status_dict[scenario][DAMAGE_NAME] == False:
                 lines = SeriesTemplate.DASH_LINES_DISPLAY + add_markers
@@ -588,7 +590,7 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
 
         if scenario in selected_scenarios:
             new_series = InstanciatedSeries(
-                x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol)
+                x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol, marker=marker)
 
             new_chart.series.append(new_series)
 
