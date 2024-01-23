@@ -153,6 +153,7 @@ class GlossaryCore:
     SectionList = {
         "var_name": SectionListValue,
         "type": "list",
+        "description": "List of sub-sectors",
         "subtype_descriptor": {"list": "string"},
         "default": SectionsPossibleValues,
         "visibility": "Shared",
@@ -165,6 +166,8 @@ class GlossaryCore:
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
+        "unit": "%",
+        "description": "Percentage of the gdp for each sub-sector",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": df_descriptor_section_df,
@@ -180,6 +183,7 @@ class GlossaryCore:
     SectorList = {
         "var_name": SectorListValue,
         "type": "list",
+        "description": "List of sectors",
         "subtype_descriptor": {"list": "string"},
         "default": SectorsPossibleValues,
         "visibility": "Shared",
@@ -482,7 +486,8 @@ class GlossaryCore:
     SectionGdpDf = {
         "var_name": SectionGdpDfValue,
         "type": "dataframe",
-        "unit": "G$",
+        "description": "",
+        "unit": "T$",
         "dataframe_descriptor": {
             Years: ("int", [1900, 2100], False),
         },
@@ -492,9 +497,10 @@ class GlossaryCore:
     SectionGdpDict = {
         "var_name": SectionGdpDictValue,
         "type": "dict",
+        "description": "Gdp values of sub-sectors",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "G$",
+        "unit": "T$",
     }
 
     EconomicsDf = {
