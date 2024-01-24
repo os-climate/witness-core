@@ -58,6 +58,7 @@ class GlossaryCore:
     LastYearDiscountedUtilityObjective = "last_year_discounted_utility_objective"
     energy_list = "energy_list"
     techno_list = "technologies_list"
+    flue_gas_emission_techno_list = 'fluegas_emissions_technology_list'
     ccs_list = "ccs_list"
 
     invest_mix = "invest_mix"
