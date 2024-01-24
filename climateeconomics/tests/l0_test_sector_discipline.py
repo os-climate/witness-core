@@ -57,12 +57,12 @@ class ServicesDiscTest(unittest.TestCase):
         self.ee.configure()
 
         # put manually the index
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         self.years = years
 
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         self.year_start = year_start
-        year_end = 2100
+        year_end = GlossaryCore.YeartEndDefault
         self.year_end = year_end
         time_step = 1
         self.time_step = time_step

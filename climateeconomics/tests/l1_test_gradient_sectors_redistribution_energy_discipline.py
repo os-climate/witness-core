@@ -30,7 +30,7 @@ class SectorsRedistributionEnergyDisciplineJacobianDiscTest(AbstractJacobianUnit
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2050
         self.years = np.arange(self.year_start, self.year_end + 1)
         n_years = len(self.years)

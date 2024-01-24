@@ -58,7 +58,7 @@ class IndusEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         data_dir = join(dirname(__file__), 'data')
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         economics_df_all = read_csv(
             join(data_dir, 'economics_data_onestep.csv'))
         economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= year_start][[
