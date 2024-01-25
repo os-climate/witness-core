@@ -32,7 +32,7 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2040
         nb_per = round(self.year_end - self.year_start + 1)
         self.nb_per = nb_per

@@ -31,8 +31,8 @@ class SectorsDemandDiscipline(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = 2020
-        self.year_end = 2100
+        self.year_start = GlossaryCore.YeartStartDefault
+        self.year_end = GlossaryCore.YeartEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         self.sector_list = GlossaryCore.SectorsPossibleValues

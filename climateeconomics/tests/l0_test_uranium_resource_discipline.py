@@ -29,8 +29,8 @@ class UraniumModelTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
-        self.year_end = 2100
+        self.year_start =GlossaryCore.YeartStartDefault
+        self.year_end = GlossaryCore.YeartEndDefault
         self.production_start=1970
 
         data_dir = join(dirname(__file__), 'data')

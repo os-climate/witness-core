@@ -56,8 +56,8 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        year_start = 2020
-        year_end = 2100
+        year_start = GlossaryCore.YeartStartDefault
+        year_end = GlossaryCore.YeartEndDefault
         years = np.arange(year_start, year_end + 1)
 
         CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,

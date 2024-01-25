@@ -44,8 +44,8 @@ class PlatinumResourceDiscipline(ResourceDiscipline):
         'icon': 'fa-solid fa-ring',
         'version': '',
     }
-    default_year_start = 2020
-    default_year_end = 2100
+    default_year_start = GlossaryCore.YeartStartDefault
+    default_year_end = GlossaryCore.YeartEndDefault
     default_regression_start = 1995
     default_regression_stop = 2005
     default_years = np.arange(default_year_start, default_year_end + 1, 1)

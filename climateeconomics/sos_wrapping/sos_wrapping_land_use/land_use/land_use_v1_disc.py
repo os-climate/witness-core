@@ -46,7 +46,7 @@ class LandUseV1Discipline(SoSWrapp):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    default_year_start = 2020
+    default_year_start = GlossaryCore.YeartStartDefault
     default_year_end = 2050
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,

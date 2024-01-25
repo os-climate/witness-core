@@ -36,7 +36,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2055
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)

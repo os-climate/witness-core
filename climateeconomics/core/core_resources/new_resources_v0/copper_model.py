@@ -87,7 +87,7 @@ class CopperModel :
     def create_dataframe(self, copper_demand) :
 
         self.copper_demand = copper_demand
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
 
         # filling the column Year
         self.copper_demand['Year'] = years
