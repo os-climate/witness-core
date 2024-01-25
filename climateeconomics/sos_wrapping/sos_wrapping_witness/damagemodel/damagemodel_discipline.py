@@ -43,7 +43,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
 
-    years = np.arange(2020, 2101)
+    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
     CO2_tax = np.asarray([500.] * len(years))
     default_CO2_tax = pd.DataFrame(
         {GlossaryCore.Years: years, GlossaryCore.CO2Tax: CO2_tax}, index=years)

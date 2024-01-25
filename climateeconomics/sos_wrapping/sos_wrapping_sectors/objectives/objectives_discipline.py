@@ -47,7 +47,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
     }
     
     default_earlier_energy_eff = pd.DataFrame()
-    default_years = np.arange(2000, 2020+1)
+    default_years = np.arange(2000, GlossaryCore.YeartStartDefault+1)
     default_weight = np.array([1]*len(default_years))
     default_weight_df = pd.DataFrame({GlossaryCore.Years: default_years, 'weight': default_weight})
 

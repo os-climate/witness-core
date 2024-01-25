@@ -30,7 +30,7 @@ class NaturalGasModelTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2055
         self.production_start=2010
 

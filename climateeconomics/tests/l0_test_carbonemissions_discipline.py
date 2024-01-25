@@ -60,8 +60,8 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020]
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
         energy_supply_df_y = energy_supply_df_y.rename(
             columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
 
@@ -85,7 +85,7 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         co2_emissions_needed_by_energy_mix[
             'carbon_capture needed by energy mix (Gt)'] = 0.0
         # put manually the index
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
         economics_df_y.index = years
         energy_supply_df_y.index = years
         co2_emissions_ccus_Gt.index = years
@@ -148,8 +148,8 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020]
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
         energy_supply_df_y = energy_supply_df_y.rename(
             columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
         co2_emissions_ccus_Gt = pd.DataFrame()
@@ -172,7 +172,7 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         co2_emissions_needed_by_energy_mix[
             'carbon_capture needed by energy mix (Gt)'] = 0.0
         # put manually the index
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
         economics_df_y.index = years
         energy_supply_df_y.index = years
         co2_emissions_ccus_Gt.index = years
@@ -182,7 +182,7 @@ class CarbonEmissionDiscTest(unittest.TestCase):
 
         min_co2_objective = -1000.0
         # put manually the index
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
         economics_df_y.index = years
         energy_supply_df_y.index = years
         energy_supply_df_y[GlossaryCore.TotalCO2Emissions] = np.linspace(

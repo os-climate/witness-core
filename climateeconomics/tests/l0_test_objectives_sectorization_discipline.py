@@ -34,7 +34,7 @@ class ObjectivesTestCase(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.year_start = 2000
-        self.year_end = 2020
+        self.year_end = GlossaryCore.YeartStartDefault
         nb_per = round(self.year_end - self.year_start + 1)
         self.nb_per = nb_per
         self.years = np.arange(self.year_start, self.year_end+1)

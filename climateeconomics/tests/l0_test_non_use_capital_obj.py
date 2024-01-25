@@ -51,8 +51,8 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        year_end = 2100
-        year_start = 2020
+        year_end = GlossaryCore.YeartEndDefault
+        year_start = GlossaryCore.YeartStartDefault
         loss_fg = 12
         loss_ct = 2
         loss_ub = 22
