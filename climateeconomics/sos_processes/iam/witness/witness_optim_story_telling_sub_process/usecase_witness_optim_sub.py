@@ -92,7 +92,7 @@ class Study(ClimateEconomicsStudyManager):
         self.design_var_descriptor = design_var_descriptor
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
-        len_var = 10
+        len_var = 4
 
         # design space
         dspace_dict = {'variable': 'percentage_gdp_invest_in_energy_array',
