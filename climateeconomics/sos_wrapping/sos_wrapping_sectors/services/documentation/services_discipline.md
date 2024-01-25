@@ -8,14 +8,16 @@ The services sector represents one of the identified main economic sectors. In t
 - Sector energy quantity ($energy\_production$): Dataframe with Total Final Consumption of energy per year in Pwh for the sector
 - Sector investment ($sector\_investment$): Dataframe with investment in sector per year in 1e12\$
 - Damage to productivity ($damage\_to\_productivity$): If True: apply damage to productivity. if False: Apply damage only to production. 
-- Section list($section\_list$): List of sub-sectors for the sector
-- GDP percentage per section ($Gdp\_percentage\_per\_section\_df$): Dataframe with the percentage of all sub_sectors (for all sectors)
+- Section list ($section\_list$): List of sub-sectors for the sector
+- Percentage of gdp per section ($section\_gdp\_percentage\_df$): Dataframe with the gdp percentage of all sub_sectors (for all sectors)
+
 ### Outputs 
 - Capital detailed df ($capital\_detail\_df$): Dataframe with all variables relative to capital calculation (energy efficiency, E max, usable capital and capital) per year
 - Capital ($capital\_df$): Dataframe with coupling model outputs from previous dataframe. It contains capital and usable capital in 1e12 \$ per year
 - Production dataframe ($production\_df$): Dataframe with sector output per year in 1e12\$
 - Productivity df ($productivity\_df$): Dataframe with productivity and productivity growth rate (in case of no climate damage) per year. 
-- Section GDP ($section\_gdp$): Dataframe with the GDP per sub-sector for the sector               
+- Section gdp ($section\_gdp\_df$): Dataframe with the gdp per sub-sector for the sector     
+
 ### Time Step 
 The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
 
@@ -43,7 +45,7 @@ $$Q_t = (1- \Omega_t )Y_t$$
 with $\Omega$ is the damage fraction of output explained in the documentation of the damage model.  
 
 ### Net output per sub-sector
-The list of sub-sectors ($section\_list$) and the GDP percentage of each sub-sector ($gdp\_percentage\_per\_section\_df$) are used to compute the net output of each sub-sector ($section\_gdp$) out of the net output of the sector.
+The list of sub-sectors ($section\_list$) and the gdp percentage of each sub-sector ($section\_gdp\_percentage\_df$) are used to compute the net output of each sub-sector ($section\_gdp\_df$) out of the net output of the sector.
 
 ### Productivity
 The Total factor productivity (TFP) measures the efficiency of the inputs in the production process. The initial values of the productivity and productivity growth rate are obtained during the fitting of the production function. For the TFP we have 2 options: 

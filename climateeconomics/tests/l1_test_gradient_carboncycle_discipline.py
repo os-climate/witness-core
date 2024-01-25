@@ -62,11 +62,11 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         emission_df_all = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
 
-        emission_df_y = emission_df_all[emission_df_all[GlossaryCore.Years] >= 2020][[GlossaryCore.Years,
+        emission_df_y = emission_df_all[emission_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[GlossaryCore.Years,
                                                                            'total_emissions', 'cum_total_emissions']]
 
         # put manually the index
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
         emission_df_y.index = years
 
         values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': emission_df_y}
@@ -109,11 +109,11 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         emission_df_all = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
 
-        emission_df_y = emission_df_all[emission_df_all[GlossaryCore.Years] >= 2020][[GlossaryCore.Years,
+        emission_df_y = emission_df_all[emission_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[GlossaryCore.Years,
                                                                            'total_emissions', 'cum_total_emissions']]
 
         # put manually the index
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
         emission_df_y.index = years
 
         values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': emission_df_y}

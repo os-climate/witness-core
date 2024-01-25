@@ -55,7 +55,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
         CCS_price = pd.DataFrame(
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(100, 900, len(years))})
         CO2_damage = pd.DataFrame(
@@ -94,7 +94,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
         CCS_price = pd.DataFrame(
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(900, 900, len(years))})
         CO2_damage = pd.DataFrame(
@@ -131,7 +131,7 @@ class PolicyDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
         CCS_price = pd.DataFrame(
             {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(-100, -900, len(years))})
         CO2_damage = pd.DataFrame(

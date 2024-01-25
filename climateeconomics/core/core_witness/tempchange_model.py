@@ -186,7 +186,7 @@ class TempChange(object):
         """
         Compute radiative forcing following MeinsHausen pyworld3 (found in FAIR)
         Meinshausen, M., Nicholls, Z.R., Lewis, J., Gidden, M.J., Vogel, E., Freund, 
-        M., Beyerle, U., Gessner, C., Nauels, A., Bauer, N. and Canadell, J.G., 2020. 
+        M., Beyerle, U., Gessner, C., Nauels, A., Bauer, N. and Canadell, J.G., 2020.
         The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. 
         Geoscientific Model Development, 13(8), pp.3571-3605.
         """

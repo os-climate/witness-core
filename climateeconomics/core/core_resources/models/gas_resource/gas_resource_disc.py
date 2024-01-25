@@ -41,7 +41,7 @@ class OilResourceDiscipline(ResourceDiscipline):
         'icon': 'fas fa-oil-can fa-fw',
         'version': '',
     }
-    default_year_start = 2020
+    default_year_start = GlossaryCore.YeartStartDefault
     default_year_end = 2050
     default_production_start = 1990
     default_years = np.arange(default_year_start, default_year_end + 1, 1)

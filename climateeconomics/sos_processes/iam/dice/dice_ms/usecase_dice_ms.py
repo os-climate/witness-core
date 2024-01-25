@@ -41,7 +41,7 @@ class Study(StudyManager):
 
         # setup_data_list[0].update(public_values)
         year_start = 2015
-        year_end = 2100
+        year_end = GlossaryCore.YeartEndDefault
         time_step = 5
         nb_per = round(
             (year_end - year_start) / time_step + 1)

@@ -56,7 +56,7 @@ class ConsumptionDiscTest(unittest.TestCase):
 
         economics_df = read_csv(
             join(data_dir, 'economics_data_onestep.csv'))
-        economics_df = economics_df[economics_df[GlossaryCore.Years] >= 2020]
+        economics_df = economics_df[economics_df[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
 
         # remove energy wasted as not used for the test and breaks other l0 tests (CO2 emissions) if adds it to
         # the csv file
@@ -67,7 +67,7 @@ class ConsumptionDiscTest(unittest.TestCase):
             join(global_data_dir, 'population_df.csv'))
 
         # put manually the index
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         economics_df.index = years
         population_df.index = years
         energy_price = np.arange(200, 200 + len(years))
@@ -81,8 +81,8 @@ class ConsumptionDiscTest(unittest.TestCase):
         invest = np.asarray([10] * len(years))
         investment_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: invest})
         np.set_printoptions(threshold=np.inf)
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
-                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,

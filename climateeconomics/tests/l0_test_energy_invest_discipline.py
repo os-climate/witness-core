@@ -51,7 +51,7 @@ class EnergyInvestDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         n_years = len(years)
         time = np.arange(0, n_years)
 

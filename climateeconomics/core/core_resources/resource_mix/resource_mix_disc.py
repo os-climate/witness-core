@@ -53,12 +53,12 @@ class ResourceMixDiscipline(SoSWrapp):
         'icon': 'fas fa-globe fa-fw',
         'version': '',
     }
-    default_year_start = 2020
+    default_year_start = GlossaryCore.YeartStartDefault
     default_year_end = 2050
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
-    years_default = np.arange(2020, 2051)
+    years_default = np.arange(GlossaryCore.YeartStartDefault, 2051)
     ratio_available_resource_default = pd.DataFrame(
-        {GlossaryCore.Years: np.arange(2020, 2050 + 1)})
+        {GlossaryCore.Years: np.arange(GlossaryCore.YeartStartDefault, 2050 + 1)})
     for resource in ResourceMixModel.RESOURCE_LIST:
         ratio_available_resource_default[resource] = np.linspace(
             1.0, 1.0, len(ratio_available_resource_default.index))

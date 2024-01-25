@@ -63,7 +63,7 @@ class GHGCycleJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'co2_emissions_onestep.csv'))
         emissions_df[GlossaryCore.TotalCO2Emissions] = emissions_df['total_emissions']
 
-        emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= 2020]
+        emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
         emissions_df[GlossaryCore.TotalCH4Emissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.01
         emissions_df[GlossaryCore.TotalN2OEmissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.001
 
