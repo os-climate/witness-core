@@ -29,9 +29,9 @@ from sostrades_core.tools.post_processing.post_processing_factory import PostPro
 
 class Study(ClimateEconomicsStudyManager):
     '''
-    Usecase 2, mda run only, no optim, based on usecase_witness_coarse_new. Working assumptions:
+    Usecase 2b, mda run only, no optim, based on usecase_witness_coarse_new. Working assumptions:
     - Macro-model: compute GDP
-    - Damage: N/A
+    - Damage: computed
     - Tax: N/A
     - invest: fossil
     '''
@@ -49,13 +49,13 @@ class Study(ClimateEconomicsStudyManager):
 
         # update the assumption dict to setup the working assumptions
         updated_data = {f'{self.study_name}.assumptions_dict': {'compute_gdp': True,
-                                                                'compute_climate_impact_on_gdp': False,
-                                                                'activate_climate_effect_population': False,
+                                                                'compute_climate_impact_on_gdp': True,
+                                                                'activate_climate_effect_population': True,
                                                                 'invest_co2_tax_in_renewables': False
                                                                },
                         f"{self.study_name}.ccs_price_percentage": 0.0,
                         f"{self.study_name}.co2_damage_price_percentage": 0.0,
-                        f"{self.study_name}.{'Macroeconomics'}.{'damage_to_productivity'}": False
+                        f"{self.study_name}.Macroeconomics.damage_to_productivity": True,
                         }
         data_witness.append(updated_data)
 
