@@ -20,6 +20,8 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as usecase2
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
+    Study as usecase2b
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_3_witness_coarse_mda_gdp_model_wo_damage_w_co2_tax import \
     Study as usecase3
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_4_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
@@ -44,12 +46,13 @@ class Study(ClimateEconomicsStudyManager):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {'Full fossil, no damage no tax': usecase2(execution_engine=self.execution_engine),
-                         'IEA energy mix, no damage with tax': usecase3(execution_engine=self.execution_engine),
-                         'Fossil + 2020 invest renewable & CCS, with damage no tax': usecase4(execution_engine=self.execution_engine),
-                         'Fossil + renewable (step) & 2020 CCS invest, with damage no tax': usecase5(execution_engine=self.execution_engine),
-                         'NZE inspired, with damage no tax': usecase6(execution_engine=self.execution_engine),
-                         'NZE, with damage with tax': usecase7(execution_engine=self.execution_engine),
+        scenario_dict = {'- damage - tax, fossil 100%': usecase2(execution_engine=self.execution_engine),
+                         '+ damage - tax, fossil 100%': usecase2b(execution_engine=self.execution_engine),
+                         '- damage + tax, IEA': usecase3(execution_engine=self.execution_engine),
+                         '+ damage - tax, fossil 40%': usecase4(execution_engine=self.execution_engine),
+                         '+ damage - tax, STEP inspired': usecase5(execution_engine=self.execution_engine),
+                         '+ damage - tax, NZE inspired': usecase6(execution_engine=self.execution_engine),
+                         '+ damage + tax, NZE': usecase7(execution_engine=self.execution_engine),
                          }
 
         '''
