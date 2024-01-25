@@ -61,7 +61,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'tp_a2': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 2, 'user_level': 3, 'unit': '-'},
         'tp_a3': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.081, 'user_level': 3, 'unit': '-'},
         'tp_a4': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.754, 'user_level': 3, 'unit': '-'},
-        'total_emissions_damage_ref': {'type': 'float', 'default': 72.0, 'unit': 'Gt',
+        'total_emissions_damage_ref': {'type': 'float', 'default': 140.0, 'unit': 'Gt',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                        'namespace': 'ns_ref', 'user_level': 2},
         'co2_damage_price_dev_formula': {'type': 'bool', 'default': False, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
