@@ -382,6 +382,5 @@ workforce_share_per_sector,Workforce share per sector,%,Distribution of workforc
 sector_list,Sectors list,,List of sectors,,
 section_list,Sub-sectors list,,List of sub-sectors,,
 section_gdp_percentage_df,Gdp percentage of sub-sectors,%,Percentage of the gdp for each sub-sector,,
-SectionGdpDict,Gdp values of all sub-sectors,T$,Gdp values of all sub-sectors,,
-section_gdp_df,Gdp values of sub-sectors,T$,Gdp values of sub-sectors for a sector,,
+section_gdp_df,Gdp values of sub-sectors,T$,Gdp values of sub-sectors,,
 
