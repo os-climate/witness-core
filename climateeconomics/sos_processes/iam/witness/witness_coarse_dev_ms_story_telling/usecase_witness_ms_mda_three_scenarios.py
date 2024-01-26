@@ -32,6 +32,8 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
     Study as usecase6
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import \
     Study as usecase7
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
+    Study as usecase_witness_mda
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
@@ -58,16 +60,17 @@ class Study(ClimateEconomicsStudyManager):
                                     'scenario_name': scenario_list})
         values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
+        # setup mda
+        uc_mda = usecase_witness_mda(execution_engine=self.execution_engine)
+        uc_mda.study_name = self.study_name  # mda settings on root coupling
+        values_dict.update(uc_mda.setup_mda())
         # assumes max of 16 cores per computational node
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
-
+        # setup each scenario (mda settings ignored)
         for scenario, uc in scenario_dict.items():
             uc.study_name = f'{self.study_name}.{self.scatter_scenario}.{scenario}'
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
-
-
-
         return values_dict
 
 
