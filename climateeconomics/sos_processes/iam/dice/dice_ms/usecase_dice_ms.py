@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/09/06-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/09/06-2024/01/18 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -99,13 +99,14 @@ class Study(StudyManager):
         for scenario in scenario_list:
             values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario}.{GlossaryCore.EconomicsDfValue}'] = economics_df
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = pd.DataFrame({
+            'selected_scenario': [True for _ in scenario_list],
+            'scenario_name': scenario_list})
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_A}.emissions_control_rate'] = control_rate_A
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_B}.emissions_control_rate'] = control_rate_B
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_C}.emissions_control_rate'] = control_rate_C
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_D}.emissions_control_rate'] = control_rate_D
         values_dict[f'{self.study_name}.{self.scatter_scenario}.{scenario_E}.emissions_control_rate'] = control_rate_E
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
         setup_data_list[0].update(values_dict)
 
         return setup_data_list

@@ -81,8 +81,8 @@ class ProcessBuilder(BaseProcessBuilder):
         self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': ['ns_ref', 'ns_post_processing',
                                                                                   'ns_scatter_scenario']})
 
-        multi_scenario = self.ee.factory.create_driver(
-            scatter_scenario_name, builder_cdf_list, flatten_subprocess=False, map_name='new_map'
+        multi_scenario = self.ee.factory.create_multi_instance_driver(
+            scatter_scenario_name, builder_cdf_list, map_name='new_map'
         )
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
                                                                                 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_ms.post_processing_witness_coarse_mda')
