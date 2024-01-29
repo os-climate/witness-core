@@ -34,12 +34,12 @@ class Testheader(unittest.TestCase):
         self.pp = pprint.PrettyPrinter(indent=4, compact=True)
         self.ExtensionToIgnore = ["pkl", "png", "jpg", "csv", "md", "markdown", "avif", "json", "in", "gitignore", "cfg", "puml", "pdf", "txt", "ipynb", "zip", "rst"]
         #Add here the files to ignore       
-        self.FilesToIgnore = ["climateeconomics/sos_processes/iam/witness/economics_sector_process/__init__.py",
-                              "climateeconomics/sos_processes/iam/witness/climate_process/__init__.py",
-                              "climateeconomics/sos_processes/iam/witness/witness_coarse_Ku_optim_process/process.py",
+        self.FilesToIgnore = [#"climateeconomics/sos_processes/iam/witness/economics_sector_process/__init__.py",
+                              #"climateeconomics/sos_processes/iam/witness/climate_process/__init__.py",
+                              "climateeconomics/sos_processes/iam/witness/witness_coarse_story_telling_optim_process/process.py",
                               "default_process_rights.yaml"]
         #commit from where to compare added, modeified deleted ...
-        self.airbus_rev_commit = "fb7c7e2"
+        self.airbus_rev_commit = "fb7c7e2e92dc37b1b6a7f8e968de806f981199a0"
 
     def test_Headers(self):
         check_headers(self.ExtensionToIgnore,self.FilesToIgnore,self.airbus_rev_commit)
