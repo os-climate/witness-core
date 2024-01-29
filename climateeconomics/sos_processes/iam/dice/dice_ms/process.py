@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2024/01/16-2024/01/18 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -44,17 +45,20 @@ class ProcessBuilder(BaseProcessBuilder):
             'climateeconomics.sos_processes.iam.dice', 'dice_model')
 
         scatter_scenario_name = 'Control rate scenarios'
-        # modify namespaces defined in the child process
-        self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            scatter_scenario_name, after_name=self.ee.study_name)
 
         # Add new namespaces needed for the scatter multiscenario
-        ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
+        # redefining namespaces that need not be scattered
+        ns_dict = {
+            'ns_witness': f'{self.ee.study_name}.{scatter_scenario_name}',
+            'ns_dice': f'{self.ee.study_name}.{scatter_scenario_name}',
+            'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
                    'ns_post_processing': f'{self.ee.study_name}.Post-processing'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
-        multi_scenario = self.ee.factory.create_driver(
-            'Control rate scenarios', builder_cdf_list, flatten_subprocess=False
+        self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': ['ns_dice',
+                                                                                  'ns_witness']})
+        multi_scenario = self.ee.factory.create_multi_instance_driver(
+            scatter_scenario_name, builder_cdf_list, map_name='new_map'
         )
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
                                                                                 'climateeconomics.sos_wrapping.sos_wrapping_dice.post_proc_dice_ms.post_processing')

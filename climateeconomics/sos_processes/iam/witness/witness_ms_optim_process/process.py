@@ -1,5 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
+Modifications on 2024/01/16-2024/01/18 Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -41,8 +42,8 @@ class ProcessBuilder(BaseProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        multi_scenario = self.ee.factory.create_driver(
-            'optimization scenarios', builder_cdf_list, flatten_subprocess=False
+        multi_scenario = self.ee.factory.create_multi_instance_driver(
+            'optimization scenarios', builder_cdf_list
         )
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',
                                                                                 'climateeconomics.sos_wrapping.sos_wrapping_witness.post_proc_witness_ms.post_processing_witness_full')
