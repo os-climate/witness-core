@@ -37,6 +37,7 @@ class Testheader(unittest.TestCase):
         self.FilesToIgnore = ["climateeconomics/sos_processes/iam/witness/economics_sector_process/__init__.py",
                               "climateeconomics/sos_processes/iam/witness/climate_process/__init__.py",
                               "climateeconomics/sos_processes/iam/witness/witness_coarse_Ku_optim_process/process.py",
+                              "climateeconomics/sos_processes/iam/witness/witness_coarse_story_telling_optim_process/process.py",
                               "default_process_rights.yaml"]
         #commit from where to compare added, modeified deleted ...
         self.airbus_rev_commit = "fb7c7e2"
