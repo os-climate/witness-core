@@ -19,6 +19,10 @@ from copy import deepcopy, copy
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
 
+    # Trillion $ / T$   /   10^12
+    # Giga$      / G$   /   10^9
+    # Million$   / M$   /   10^6
+
     Years = "years"
     YearStart = "year_start"
     YeartStartDefault = 2020
@@ -54,7 +58,7 @@ class GlossaryCore:
     EnergyInvestmentsWoTaxValue = "energy_investment_wo_tax"
     EnergyInvestmentsWoRenewableValue = "energy_investment_wo_renewable"
     NonEnergyInvestmentsValue = "non_energy_investment"
-    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # G$
+    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
     WelfareObjective = "welfare_objective"
     NormalizedWelfare = "Normalized welfare"
     NegativeWelfareObjective = "negative_welfare_objective"
@@ -548,7 +552,7 @@ class GlossaryCore:
             EnergyInvestmentsValue: ("float", None, False),  # G$
             EnergyInvestmentsWoTaxValue: ("float", None, False),  # G$
             NonEnergyInvestmentsValue: ("float", None, False),  # G$
-            EnergyInvestmentsFromTaxValue: ("float", None, False),  # G$
+            EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
             UsedEnergy: ("float", None, False),
             UnusedEnergy: ("float", None, False),
@@ -650,7 +654,7 @@ class GlossaryCore:
         {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
             "var_name": EnergyInvestmentsWoTaxValue,
             "type": "dataframe",
-            "unit": "G$",
+            "unit": "T$",
             "dataframe_descriptor": {
                 Years: ("int", [1900, YeartEndDefault], False),
                 EnergyInvestmentsWoTaxValue: ("float", [0.0, 1e30], True),
@@ -1130,6 +1134,30 @@ class GlossaryCore:
         "default": 100.0,
         "user_level": 3,
         "description": "Max investment reference to normalize associated constraint",
+    }
+
+    MaxBudgetValue = "Max budget"
+    MaxBudgetConstraintValue = "Max budget constraint"
+    MaxBudgetDf = {
+        "var_name": MaxBudgetValue,
+        "type": "dataframe",
+        "description": "Maximum budget that can be invested in Energy production and CCUS technos",
+        "unit": "G$",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YeartEndDefault], False),
+            MaxBudgetValue: ("float", [0., 1e12], True),
+        },
+    }
+
+    MaxBudgetConstraint = {
+        "var_name": MaxBudgetConstraintValue,
+        "type": "array",
+        "description": "Maximum budget that can be invested in Energy production and CCUS technos",
+        "unit": "G$",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
     }
 
     UsableCapitalObjective = {
