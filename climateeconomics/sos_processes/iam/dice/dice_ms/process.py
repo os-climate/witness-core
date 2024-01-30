@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -49,14 +50,14 @@ class ProcessBuilder(BaseProcessBuilder):
         # Add new namespaces needed for the scatter multiscenario
         # redefining namespaces that need not be scattered
         ns_dict = {
-            'ns_witness': f'{self.ee.study_name}.{scatter_scenario_name}',
+            GlossaryCore.NS_WITNESS: f'{self.ee.study_name}.{scatter_scenario_name}',
             'ns_dice': f'{self.ee.study_name}.{scatter_scenario_name}',
             'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
                    'ns_post_processing': f'{self.ee.study_name}.Post-processing'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
         self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': ['ns_dice',
-                                                                                  'ns_witness']})
+                                                                                  GlossaryCore.NS_WITNESS]})
         multi_scenario = self.ee.factory.create_multi_instance_driver(
             scatter_scenario_name, builder_cdf_list, map_name='new_map'
         )

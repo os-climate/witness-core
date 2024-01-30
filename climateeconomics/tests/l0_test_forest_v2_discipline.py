@@ -79,7 +79,7 @@ class ForestTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
-                   'ns_functions': f'{name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_forest': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_invest': f'{name}.{model_name}'}
@@ -151,7 +151,7 @@ class ForestTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
-                   'ns_functions': f'{name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_forest': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_invest': f'{name}.{model_name}'}
@@ -227,7 +227,7 @@ class ForestTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
-                   'ns_functions': f'{name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_forest': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_invest': f'{name}.{model_name}'}
@@ -349,7 +349,7 @@ class ForestTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
-                   'ns_functions': f'{name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_forest': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_invest': f'{name}.{model_name}'}
@@ -466,7 +466,7 @@ class ForestTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
-                   'ns_functions': f'{name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_forest': f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_invest': f'{name}.{model_name}'}
