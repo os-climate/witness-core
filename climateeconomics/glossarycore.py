@@ -91,6 +91,7 @@ class GlossaryCore:
     NS_ENERGY_MIX = "ns_energy_mix"
     NS_REFERENCE = "ns_ref"
     NS_FUNCTIONS = "ns_functions"
+    NS_CCS = "ns_ccs"
 
     SectionA = "Agriculture, forestry and fishing"
     SectionB = "Mining and quarrying"

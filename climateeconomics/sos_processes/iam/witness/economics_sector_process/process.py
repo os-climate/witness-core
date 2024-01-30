@@ -35,8 +35,8 @@ class ProcessBuilder(BaseProcessBuilder):
         ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
                    GlossaryCore.NS_MACRO: ns_macro,
                    'ns_public': ns_scatter,
-                   'ns_functions': ns_scatter,
-                   'ns_ref': ns_scatter,
+                   GlossaryCore.NS_FUNCTIONS: ns_scatter,
+                   GlossaryCore.NS_REFERENCE: ns_scatter,
                    GlossaryCore.NS_SECTORS: ns_macro
                    }
 

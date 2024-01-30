@@ -231,7 +231,7 @@ mix_detailed_production,Detailed mix production,TWh,Production load of residues 
 negative_welfare_objective,Negative Welfare objective,,Value of the negative welfare objective.,,
 non_modeled_resource_price,Non modeled resource price per year,$/t,Price data concerning modeled.,,
 nu_knowledge,nu knowledge,,Data concerning CO2 nu_knowl.,,
-other_calories_per_day,other calories per day,kcal,number of calories coming from food other than red and white meat, fish, vegetables, fruits, egg and milk consumed per day per person. This category typically includes sugar, oil wheat, alcohol, cocoa etc (see full list in crop_disc).,,
+other_calories_per_day,other calories per day,kcal,"number of calories coming from food other than red and white meat, fish, vegetables, fruits, egg and milk consumed per day per person. This category typically includes sugar, oil wheat, alcohol, cocoa etc (see full list in crop_disc).",,
 other_use_agriculture,Other use agriculture,ha/person,"ha/person requested for the production of other products than the other considerated (coffee, tea, chocolate, sugar).",,
 output_elasticity,Output elasticity,,Output elasticity of capital in DICE production function. ,,
 output_energy_exponent,Output energy exponent,,Parameter of WITNESS production function: Exponent of energy supply in the production function equation.,,

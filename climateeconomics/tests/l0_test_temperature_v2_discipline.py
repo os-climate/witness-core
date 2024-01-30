@@ -36,7 +36,7 @@ class TemperatureDiscTest(unittest.TestCase):
         self.model_name = 'temperature'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -89,7 +89,7 @@ class TemperatureDiscTest(unittest.TestCase):
         self.model_name = 'temperature'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -143,7 +143,7 @@ class TemperatureDiscTest(unittest.TestCase):
         self.model_name = 'temperature'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -197,7 +197,7 @@ class TemperatureDiscTest(unittest.TestCase):
         self.model_name = 'temperature'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -251,7 +251,7 @@ class TemperatureDiscTest(unittest.TestCase):
         self.model_name = 'temperature'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
