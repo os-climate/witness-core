@@ -90,7 +90,7 @@ class Study(ClimateEconomicsStudyManager):
             'ftype': [INEQ_CONSTRAINT],
             'weight': [-1.0],
             AGGR_TYPE: [AGGR_TYPE_SUM],
-            'namespace': ['ns_functions']
+            'namespace': [GlossaryCore.NS_FUNCTIONS]
         })
 
         return func_df

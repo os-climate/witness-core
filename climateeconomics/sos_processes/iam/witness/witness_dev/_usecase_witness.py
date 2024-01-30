@@ -68,7 +68,7 @@ class Study(ClimateEconomicsStudyManager):
         list_weight.extend([-1.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype

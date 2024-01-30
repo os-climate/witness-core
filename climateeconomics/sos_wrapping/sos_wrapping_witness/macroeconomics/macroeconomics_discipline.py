@@ -110,7 +110,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3,
-                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                     GlossaryCore.Capital: ('float', None, False), }
@@ -133,11 +133,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.DetailedCapitalDfValue: {'type': 'dataframe', 'unit': '-',
                                               'dataframe_descriptor':GlossaryCore.DetailedCapitalDf['dataframe_descriptor']},
         GlossaryCore.ConstraintLowerBoundUsableCapital: {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_functions'},
+                                     'namespace': GlossaryCore.NS_FUNCTIONS},
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
                                              'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                             'namespace': 'ns_functions'},
+                                             'namespace': GlossaryCore.NS_FUNCTIONS},
         GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict,
         GlossaryCore.UsableCapitalObjectiveName: GlossaryCore.UsableCapitalObjective
     }

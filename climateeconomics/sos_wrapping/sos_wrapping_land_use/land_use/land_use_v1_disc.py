@@ -117,12 +117,12 @@ class LandUseV1Discipline(SoSWrapp):
                'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                         'forest_surface_evol': ('float', None, False),}},
                LandUseV1.LAND_USE_CONSTRAINT_REF: {
-                   'type': 'float', 'default': 0.1, 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'}
+                   'type': 'float', 'default': 0.1, 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE}
                }
 
     DESC_OUT = {
         LandUseV1.LAND_DEMAND_CONSTRAINT: {
-            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions',
+            'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_FUNCTIONS,
                                      },
         LandUseV1.LAND_SURFACE_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},

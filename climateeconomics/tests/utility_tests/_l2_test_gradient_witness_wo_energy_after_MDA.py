@@ -45,7 +45,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         chain_builders = self.ee.factory.get_builder_from_process(
             repo, 'witness_wo_energy')
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    'ns_public': f'{self.ee.study_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -118,7 +118,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         chain_builders = self.ee2.factory.get_builder_from_process(
             repo, 'witness_wo_energy')
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    'ns_public': f'{self.ee.study_name}'}
         self.ee2.ns_manager.add_ns_def(ns_dict)
@@ -150,7 +150,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         chain_builders = self.ee2.factory.get_builder_from_process(
             repo, 'witness_wo_energy')
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    'ns_public': f'{self.ee.study_name}'}
         self.ee2.ns_manager.add_ns_def(ns_dict)
@@ -182,7 +182,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         chain_builders = self.ee2.factory.get_builder_from_process(
             repo, 'witness_wo_energy')
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    'ns_public': f'{self.ee.study_name}'}
         self.ee2.ns_manager.add_ns_def(ns_dict)
@@ -214,7 +214,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         chain_builders = self.ee2.factory.get_builder_from_process(
             repo, 'witness_wo_energy')
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    'ns_public': f'{self.ee.study_name}'}
         self.ee2.ns_manager.add_ns_def(ns_dict)
@@ -244,7 +244,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         chain_builders = self.ee2.factory.get_builder_from_process(
             repo, 'witness_wo_energy')
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    'ns_public': f'{self.ee.study_name}'}
         self.ee2.ns_manager.add_ns_def(ns_dict)
@@ -275,7 +275,7 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         chain_builders = self.ee2.factory.get_builder_from_process(
             repo, 'witness_wo_energy')
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    'ns_public': f'{self.ee.study_name}'}
         self.ee2.ns_manager.add_ns_def(ns_dict)

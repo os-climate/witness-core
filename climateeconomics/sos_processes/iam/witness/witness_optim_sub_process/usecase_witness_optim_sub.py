@@ -149,7 +149,7 @@ class Study(ClimateEconomicsStudyManager):
                     'key': f'{ccs}.{technology}',
                     'index': years,
                     'index_name': GlossaryCore.Years,
-                    'namespace_in': 'ns_ccs',
+                    'namespace_in': GlossaryCore.NS_CCS,
                     'namespace_out': 'ns_invest'
                 }
 
@@ -166,8 +166,8 @@ class Study(ClimateEconomicsStudyManager):
                     'key': GlossaryCore.UtilisationRatioValue,
                     'index': years,
                     'index_name': GlossaryCore.Years,
-                    'namespace_in': 'ns_ccs',
-                    'namespace_out': 'ns_ccs'
+                    'namespace_in': GlossaryCore.NS_CCS,
+                    'namespace_out': GlossaryCore.NS_CCS
                 }
 
         dv_arrays_dict[f'{self.witness_uc.study_name}.forest_investment_array_mix'] = dspace_df[f'forest_investment_array_mix']['value']

@@ -71,7 +71,7 @@ class SectorsDemandDiscipline(AbstractJacobianUnittest):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}',
-                   'ns_functions': f'{name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{name}',
                    'ns_coal_resource': f'{name}',
                    'ns_resource': f'{name}',
