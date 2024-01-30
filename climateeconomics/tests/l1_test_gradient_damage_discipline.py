@@ -60,10 +60,10 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020][[
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
             GlossaryCore.Years, GlossaryCore.TempAtmo]]
 
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         damage_df = pd.DataFrame({
             GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
             GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
@@ -128,7 +128,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020][[
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
             GlossaryCore.Years, GlossaryCore.TempAtmo]]
 
         damage_df = pd.DataFrame({
@@ -137,7 +137,7 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
             GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y)),
         })
 
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         damage_df.index = years
         temperature_df_y.index = years
 
@@ -201,10 +201,10 @@ class DamageJacobianDiscTest(AbstractJacobianUnittest):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020][[
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
             GlossaryCore.Years, GlossaryCore.TempAtmo]]
 
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         damage_df = pd.DataFrame({
             GlossaryCore.Years: temperature_df_y[GlossaryCore.Years],
             GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),

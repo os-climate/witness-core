@@ -84,8 +84,8 @@ class ProcessBuilder(BaseProcessBuilder):
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
-        multi_scenario = self.ee.factory.create_driver(
-            'optimization scenarios', builder_cdf_list, flatten_subprocess=False
+        multi_scenario = self.ee.factory.create_multi_instance_driver(
+            'optimization scenarios', builder_cdf_list
         )
 
         self.ee.post_processing_manager.add_post_processing_module_to_namespace('ns_post_processing',

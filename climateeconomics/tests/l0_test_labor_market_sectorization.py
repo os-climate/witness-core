@@ -33,8 +33,8 @@ class LaborMarketTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
-        self.year_end = 2100
+        self.year_start =GlossaryCore.YeartStartDefault
+        self.year_end = GlossaryCore.YeartEndDefault
         nb_per = round(self.year_end - self.year_start + 1)
         self.nb_per = nb_per
         self.years = np.arange(self.year_start, self.year_end+1)

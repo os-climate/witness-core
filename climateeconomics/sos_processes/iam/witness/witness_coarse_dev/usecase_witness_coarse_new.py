@@ -18,6 +18,7 @@ limitations under the License.
 from pandas import DataFrame
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
     DataStudy as datacase_witness
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -42,7 +43,7 @@ DEFAULT_CCS_LIST = [key for key, value in DEFAULT_COARSE_TECHNO_DICT.items(
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=True,
+    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, bspline=True, run_usecase=True,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2],
                  techno_dict=DEFAULT_COARSE_TECHNO_DICT):
@@ -103,6 +104,10 @@ class Study(ClimateEconomicsStudyManager):
         self.ccs_list = self.dc_energy.ccs_list
         self.dict_technos = self.dc_energy.dict_technos
 
+        setup_data_list.append(self.setup_mda())
+        return setup_data_list
+
+    def setup_mda(self):
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
             f'{self.study_name}.max_mda_iter': 50,
@@ -111,11 +116,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.linearization_mode': 'adjoint',
             f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
             f'{self.study_name}.cache_type': 'SimpleCache'}
-
-        setup_data_list.append(numerical_values_dict)
-
-        return setup_data_list
-
+        return numerical_values_dict
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)

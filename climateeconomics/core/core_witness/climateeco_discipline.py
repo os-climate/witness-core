@@ -29,9 +29,9 @@ class ClimateEcoDiscipline(SoSWrapp):
                                 'invest_co2_tax_in_renewables': True,
                                 }
 
-    YEAR_START_DESC_IN = {'type': 'int', 'default': 2020,
+    YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YeartStartDefault,
                           'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public'}
-    YEAR_END_DESC_IN = {'type': 'int', 'default': 2100,
+    YEAR_END_DESC_IN = {'type': 'int', 'default': GlossaryCore.YeartEndDefault,
                         'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public'}
     TIMESTEP_DESC_IN = {'type': 'int', 'default': 1, 'unit': 'year per period',
                         'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}

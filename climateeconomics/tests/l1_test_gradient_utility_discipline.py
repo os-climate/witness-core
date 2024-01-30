@@ -32,8 +32,8 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
     def setUp(self):
         self.name = 'Test'
         self.model_name = 'utility'
-        self.year_start = 2020
-        self.year_end = 2100
+        self.year_start =GlossaryCore.YeartStartDefault
+        self.year_end = GlossaryCore.YeartEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
 
@@ -58,10 +58,10 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
         economics_df_all = read_csv(
             join(data_dir, 'economics_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020]
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
         economics_df = economics_df_y[[
             GlossaryCore.Years, GlossaryCore.PerCapitaConsumption]]
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         economics_df.index = years
 
         global_data_dir = join(dirname(dirname(__file__)), 'data')

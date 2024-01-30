@@ -60,15 +60,15 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         values_dict = {}
         for dict_item in dc_witness.setup_usecase():
             values_dict.update(dict_item)
-        year_start = 2020
-        year_end = 2100
+        year_start = GlossaryCore.YeartStartDefault
+        year_end = GlossaryCore.YeartEndDefault
 
         data_dir = join(dirname(__file__), 'data')
 
         economics_df_all = pd.read_csv(
             join(data_dir, 'economics_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020][[
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
             GlossaryCore.Years, GlossaryCore.GrossOutput]]
 
         # energy simple outputs

@@ -64,7 +64,7 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
         land_demand_df = read_csv(
             join(data_dir, 'land_demand.csv'))
 
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1, 1)
         year_range = year_end - year_start + 1
