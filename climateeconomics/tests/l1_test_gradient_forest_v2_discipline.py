@@ -44,7 +44,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
                    GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_functions': f'{self.name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}
@@ -143,7 +143,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
                    GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_functions': f'{self.name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}
@@ -245,7 +245,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
                    GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_functions': f'{self.name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}
@@ -345,7 +345,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
                    GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_functions': f'{self.name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}

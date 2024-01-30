@@ -59,7 +59,7 @@ class OilModelTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
-                   'ns_functions': f'{name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_oil_resource': f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}'}
         ee.ns_manager.add_ns_def(ns_dict)

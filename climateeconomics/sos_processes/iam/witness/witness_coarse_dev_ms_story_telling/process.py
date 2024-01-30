@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -37,7 +38,7 @@ class ProcessBuilder(BaseProcessBuilder):
                         'scatter_ns': 'ns_scenario',
                         'gather_ns': 'ns_scatter_scenario',
                         'ns_to_update': [GlossaryCore.NS_WITNESS,
-                                         'ns_functions',
+                                         GlossaryCore.NS_FUNCTIONS,
                                          GlossaryCore.NS_ENERGY_MIX,
                                          'ns_public',
                                          'ns_optim',
@@ -49,9 +50,9 @@ class ProcessBuilder(BaseProcessBuilder):
                                          'ns_land_use',
                                          'ns_renewable',
                                          'ns_fossil',
-                                         'ns_ccs',
+                                         GlossaryCore.NS_CCS,
                                          'ns_resource',
-                                         #'ns_ref',
+                                         #GlossaryCore.NS_REFERENCE,
                                          'ns_invest',
                                          'ns_agriculture',
                                          'ns_crop',
@@ -73,12 +74,12 @@ class ProcessBuilder(BaseProcessBuilder):
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
                    'ns_post_processing': f'{self.ee.study_name}.{scatter_scenario_name}',
-                   'ns_ref': f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences',
+                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences',
                    }
 
 
         self.ee.ns_manager.add_ns_def(ns_dict)
-        self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': ['ns_ref', 'ns_post_processing',
+        self.ee.scattermap_manager.add_build_map('new_map', {'ns_not_to_update': [GlossaryCore.NS_REFERENCE, 'ns_post_processing',
                                                                                   'ns_scatter_scenario']})
 
         multi_scenario = self.ee.factory.create_multi_instance_driver(

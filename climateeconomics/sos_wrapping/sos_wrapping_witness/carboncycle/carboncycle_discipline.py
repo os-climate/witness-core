@@ -61,15 +61,15 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
         'lo_mu': {'type': 'float', 'default': 100, 'user_level': 2, 'unit': 'Gtc'},
         'lo_ml': {'type': 'float', 'default': 1000, 'user_level': 2, 'unit': 'Gtc'},
         GlossaryCore.CO2EmissionsDfValue: GlossaryCore.CO2EmissionsDf,
-        'ppm_ref': {'type': 'float', 'unit': 'ppm', 'default': 280, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'rockstrom_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'ppm_ref': {'type': 'float', 'unit': 'ppm', 'default': 280, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
+        'rockstrom_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 490, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         'alpha': ClimateEcoDiscipline.ALPHA_DESC_IN,
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'scale_factor_atmo_conc': {'type': 'float', 'default': 0.01, 'unit': '-', 'user_level': 2, 'visibility': 'Shared',
                                    'namespace': GlossaryCore.NS_WITNESS},
         'minimum_ppm_limit': {'type': 'float', 'unit': 'ppm', 'default': 250, 'user_level': 2},
-        'minimum_ppm_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 10, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+        'minimum_ppm_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 10, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
 
     }
 

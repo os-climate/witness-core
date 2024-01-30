@@ -94,8 +94,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'}
 
@@ -177,8 +177,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'
                    }
@@ -247,8 +247,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'
                    }

@@ -60,7 +60,7 @@ class NaturalGasModelTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
-                   'ns_functions': f'{name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_natural_gas_resource': f'{name}.{model_name}',
                    'ns_resource': f'{name}.{model_name}'
                    }

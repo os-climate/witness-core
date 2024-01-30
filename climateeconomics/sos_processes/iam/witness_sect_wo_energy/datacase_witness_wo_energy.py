@@ -237,7 +237,7 @@ class DataStudy():
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
             'weight': [1.0, 1.0, 0.0, 0.0],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', GlossaryCore.NS_WITNESS]
+            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_WITNESS]
         }
 
         func_df = DataFrame(data)
@@ -254,7 +254,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': 0.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': 'minimum_ppm_constraint',
@@ -262,7 +262,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': 'calories_per_day_constraint',
@@ -270,7 +270,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': GlossaryCore.ConstraintLowerBoundUsableCapital,
@@ -278,7 +278,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': 'non_use_capital_cons',
@@ -286,7 +286,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': 'forest_lost_capital_cons',
@@ -294,7 +294,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
         ]
 
