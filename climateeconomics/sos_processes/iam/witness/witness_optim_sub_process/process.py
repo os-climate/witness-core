@@ -43,7 +43,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness',
-            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, process_level=self.process_level)
+            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, process_level=self.process_level, use_resources_bool=self.use_resources_bool)
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
