@@ -56,7 +56,7 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
+            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, use_resources_bool=self.use_resources_bool)
         chain_builders.extend(chain_builders_energy)
 
         # Update namespace regarding land use and energy mix coupling
