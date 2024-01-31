@@ -80,8 +80,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     techno_name = 'CropEnergy'
-    default_year_start = 2020
-    default_year_end = 2100
+    default_year_start = GlossaryCore.YeartStartDefault
+    default_year_end = GlossaryCore.YeartEndDefault
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
     '''
     Sources:
@@ -398,7 +398,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'param_a': {'type': 'float', 'default': -0.00833, 'unit': '-', 'user_level': 3},
         'param_b': {'type': 'float', 'default': -0.04167, 'unit': '-', 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',
-                            'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                            'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YeartEndDefault], False),
                                                      GlossaryCore.InvestmentsValue: ('float', None, True)},
                             'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop',
                             'default': crop_investment_default},
@@ -415,12 +415,12 @@ class CropDiscipline(ClimateEcoDiscipline):
                                             'margin': ('float', None, True)}},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                            'namespace': GlossaryCore.NS_WITNESS,
-                           'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                           'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YeartEndDefault], False),
                                                     'transport': ('float', None, True)},
                            'dataframe_edition_locked': False},
         'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                              'namespace': GlossaryCore.NS_WITNESS,
-                             'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, 2100], False),
+                             'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YeartEndDefault], False),
                                                       'margin': ('float', None, True)},
                              'dataframe_edition_locked': False},
         'data_fuel_dict': {'type': 'dict', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
@@ -440,9 +440,9 @@ class CropDiscipline(ClimateEcoDiscipline):
         'n2o_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg',
                                  'default': default_n2o_emissions},
         'constraint_calories_ref': {'type': 'float', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                    'namespace': 'ns_ref', 'default': 4000.},
+                                    'namespace': GlossaryCore.NS_REFERENCE, 'default': 4000.},
         'constraint_calories_limit': {'type': 'float', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                      'namespace': 'ns_ref', 'default': 2000.},
+                                      'namespace': GlossaryCore.NS_REFERENCE, 'default': 2000.},
     }
 
     DESC_OUT = {
@@ -491,7 +491,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'calories_per_day_constraint': {'type': 'array', 'unit': 'kcal',
                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                        'namespace': 'ns_functions'},
+                                        'namespace': GlossaryCore.NS_FUNCTIONS},
         'calories_pc_df': {'type': 'dataframe', 'unit': 'kcal',
                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
     }

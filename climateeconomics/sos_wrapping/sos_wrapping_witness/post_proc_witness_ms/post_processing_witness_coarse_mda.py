@@ -54,7 +54,7 @@ def post_processing_filters(execution_engine, namespace):
     filters = []
 
     namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
+    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
     # recover year start and year end arbitrarily from the first scenario
     year_start = execution_engine.dm.get_value(f'{namespace_w}.{scenario_list[0]}.{GlossaryCore.YearStart}')
@@ -77,7 +77,7 @@ def post_processings(execution_engine, namespace, filters):
     instanciated_charts = []
 
     namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
+    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
     selected_scenarios = scenario_list
 
@@ -606,7 +606,7 @@ def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
     df_per_scenario_dicts = [{} for _ in df_paths]
     namespace_w = f'{execution_engine.study_name}.{SCATTER_SCENARIO}'
     if not scenario_list:
-        scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
+        scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
     for scenario in scenario_list:
         for i, df_path in enumerate(df_paths):

@@ -36,7 +36,7 @@ class CarbonCycleDiscTest(unittest.TestCase):
         self.model_name = 'carboncycle'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -54,10 +54,10 @@ class CarbonCycleDiscTest(unittest.TestCase):
         CO2_emissions_df_all = read_csv(
             join(data_dir, 'co2_emissions_onestep.csv'))
 
-        CO2_emissions_df_y = CO2_emissions_df_all[CO2_emissions_df_all[GlossaryCore.Years] >= 2020]
+        CO2_emissions_df_y = CO2_emissions_df_all[CO2_emissions_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
 
         # put manually the index
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
         CO2_emissions_df_y.index = years
         CO2_emissions_df_y = CO2_emissions_df_y[GlossaryCore.CO2EmissionsDf['dataframe_descriptor'].keys()]
         values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': CO2_emissions_df_y}

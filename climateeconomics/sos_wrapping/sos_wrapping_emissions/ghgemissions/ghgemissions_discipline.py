@@ -40,7 +40,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
-    years = np.arange(2020, 2101)
+    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
     name = 'GHGEmissions'
     _maturity = 'Research'
 

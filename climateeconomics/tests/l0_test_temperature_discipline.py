@@ -36,7 +36,7 @@ class TemperatureDiscTest(unittest.TestCase):
         self.model_name = 'temperature'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -53,14 +53,14 @@ class TemperatureDiscTest(unittest.TestCase):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        carboncycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= 2020]
+        carboncycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
 
         # put manually the index
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         carboncycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': 2020,
-                       f'{self.name}.{GlossaryCore.YearEnd}': 2100,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df}
 

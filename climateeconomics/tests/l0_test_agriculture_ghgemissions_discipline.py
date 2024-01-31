@@ -36,7 +36,7 @@ class AgricultureGHGEmissionDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_agriculture': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -50,8 +50,8 @@ class AgricultureGHGEmissionDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        year_start = 2020
-        year_end = 2100
+        year_start = GlossaryCore.YeartStartDefault
+        year_end = GlossaryCore.YeartEndDefault
         years = np.arange(year_start, year_end + 1)
 
         CO2_land_emissions_crop = pd.DataFrame({GlossaryCore.Years: years,

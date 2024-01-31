@@ -43,7 +43,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
 
-    years = np.arange(2020, 2101)
+    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
     CO2_tax = np.asarray([500.] * len(years))
     default_CO2_tax = pd.DataFrame(
         {GlossaryCore.Years: years, GlossaryCore.CO2Tax: CO2_tax}, index=years)
@@ -61,9 +61,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
         'tp_a2': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 2, 'user_level': 3, 'unit': '-'},
         'tp_a3': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.081, 'user_level': 3, 'unit': '-'},
         'tp_a4': {'type': 'float', 'visibility': ClimateEcoDiscipline.INTERNAL_VISIBILITY, 'default': 6.754, 'user_level': 3, 'unit': '-'},
-        'total_emissions_damage_ref': {'type': 'float', 'default': 72.0, 'unit': 'Gt',
+        'total_emissions_damage_ref': {'type': 'float', 'default': 140.0, 'unit': 'Gt',
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                       'namespace': 'ns_ref', 'user_level': 2},
+                                       'namespace': GlossaryCore.NS_REFERENCE, 'user_level': 2},
         'co2_damage_price_dev_formula': {'type': 'bool', 'default': False, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'default': 0.30, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         GlossaryCore.DamageDfValue: GlossaryCore.DamageDf,

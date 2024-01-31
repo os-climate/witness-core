@@ -35,7 +35,7 @@ class CropTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start = GlossaryCore.YeartStartDefault
         self.year_end = 2055
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -256,9 +256,9 @@ class CropTestCase(unittest.TestCase):
         model_name = 'crop'
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
-                   'ns_ref': f'{name}',
+                   GlossaryCore.NS_REFERENCE: f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
-                   'ns_functions': f'{name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_agriculture': f'{name}.{model_name}',
                    'ns_biomass_dry': f'{name}.{model_name}',
                    'ns_land_use':f'{name}.{model_name}',

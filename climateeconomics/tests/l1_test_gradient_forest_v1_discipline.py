@@ -56,7 +56,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2050
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)

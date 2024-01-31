@@ -33,7 +33,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
     def setUp(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = 2020
+        self.year_start = GlossaryCore.YeartStartDefault
         self.year_end = 2050
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
@@ -94,8 +94,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'}
 
@@ -177,8 +177,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'
                    }
@@ -247,8 +247,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'
                    }

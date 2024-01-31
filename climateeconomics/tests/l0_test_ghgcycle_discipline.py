@@ -35,7 +35,7 @@ class GHGCycleDiscTest(unittest.TestCase):
         self.model_name = 'GHGCycle'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -54,7 +54,7 @@ class GHGCycleDiscTest(unittest.TestCase):
             join(data_dir, 'co2_emissions_onestep.csv'))
         emissions_df[GlossaryCore.TotalCO2Emissions] = emissions_df['total_emissions']
 
-        emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= 2020]
+        emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
         emissions_df[GlossaryCore.TotalCH4Emissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.3/40
         emissions_df[GlossaryCore.TotalN2OEmissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.008/40
 

@@ -44,8 +44,8 @@ class ServicesDiscTest(unittest.TestCase):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -57,12 +57,12 @@ class ServicesDiscTest(unittest.TestCase):
         self.ee.configure()
 
         # put manually the index
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         self.years = years
 
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         self.year_start = year_start
-        year_end = 2100
+        year_end = GlossaryCore.YeartEndDefault
         self.year_end = year_end
         time_step = 1
         self.time_step = time_step

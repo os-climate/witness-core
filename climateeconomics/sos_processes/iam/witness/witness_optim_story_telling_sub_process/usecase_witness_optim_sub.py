@@ -38,7 +38,7 @@ EXTRA_NAME = "WITNESS"
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, run_usecase=False,
                  execution_engine=None, sub_usecase='uc2'):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
@@ -92,7 +92,7 @@ class Study(ClimateEconomicsStudyManager):
         self.design_var_descriptor = design_var_descriptor
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
-        len_var = 10
+        len_var = 4
 
         # design space
         dspace_dict = {'variable': 'percentage_gdp_invest_in_energy_array',
@@ -114,7 +114,7 @@ class Study(ClimateEconomicsStudyManager):
                      FunctionManagerDisc.FTYPE: 'objective',
                      FunctionManagerDisc.WEIGHT: [0.0, 1.0, 0.0],
                      FunctionManagerDisc.AGGR_TYPE: 'sum',
-                     FunctionManagerDisc.NAMESPACE_VARIABLE: 'ns_functions'}
+                     FunctionManagerDisc.NAMESPACE_VARIABLE: GlossaryCore.NS_FUNCTIONS}
         func_df = pd.DataFrame(data=func_dict)
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = func_df
 

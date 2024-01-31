@@ -69,7 +69,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                   'user_level': 1, 'unit': '-'},
         'init_output_growth': {'type': 'float', 'default': -0.046154, 'user_level': 2, 'unit': '-'},
         'ref_emax_enet_constraint': {'type': 'float', 'default': 60e3, 'user_level': 3,
-                                     'visibility': 'Shared', 'namespace': 'ns_ref',
+                                     'visibility': 'Shared', 'namespace': GlossaryCore.NS_REFERENCE,
                                      'unit': '-'},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         'prod_function_fitting': {'type': 'bool', 'default': False,
@@ -82,7 +82,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
                                              'unit': '-',
-                                             'namespace': 'ns_functions'}
+                                             'namespace': GlossaryCore.NS_FUNCTIONS}
     }
 
     def setup_sos_disciplines(self):

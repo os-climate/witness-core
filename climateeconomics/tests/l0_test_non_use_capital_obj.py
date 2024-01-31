@@ -35,8 +35,8 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_energy': f'{self.name}.EnergyMix',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_ccs': f'{self.name}.CCUS',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_CCS: f'{self.name}.CCUS',
                    'ns_agriculture': f'{self.name}.AgricultureMix',
                    'ns_forest': f'{self.name}.AgricultureMix.Forest',
                    'ns_invest': f'{self.name}'}
@@ -51,8 +51,8 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
-        year_end = 2100
-        year_start = 2020
+        year_end = GlossaryCore.YeartEndDefault
+        year_start = GlossaryCore.YeartStartDefault
         loss_fg = 12
         loss_ct = 2
         loss_ub = 22

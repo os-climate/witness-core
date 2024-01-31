@@ -18,6 +18,7 @@ limitations under the License.
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_wo_energy_dev.datacase_witness_wo_energy import \
     DataStudy as datacase_witness_dev
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
@@ -34,7 +35,7 @@ AGGR_TYPE_SMAX = FunctionManager.AGGR_TYPE_SMAX
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, bspline=True, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT_DEV,
                  process_level='dev'):
@@ -67,7 +68,7 @@ class Study(ClimateEconomicsStudyManager):
         list_weight.extend([-1.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype

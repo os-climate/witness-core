@@ -45,7 +45,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-thermometer-three-quarters fa-fw',
         'version': '',
     }
-    years = np.arange(2020, 2101)
+    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
@@ -79,7 +79,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                                    'default': TempChange.INTEGRAL_OBJECTIVE,
                                    'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS},
         'temperature_change_ref': {'type': 'float', 'default': 0.2, 'unit': '°C', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                   'namespace': 'ns_ref', 'user_level': 2},
+                                   'namespace': GlossaryCore.NS_REFERENCE, 'user_level': 2},
 
         'scale_factor_atmo_conc': {'type': 'float', 'default': 1e-2, 'unit': '-', 'user_level': 2, 'visibility': 'Shared',
                                    'namespace': GlossaryCore.NS_WITNESS},

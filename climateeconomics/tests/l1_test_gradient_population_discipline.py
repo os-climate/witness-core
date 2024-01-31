@@ -48,8 +48,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         data_dir = join(dirname(__file__), 'data')
-        self.year_start = 2020
-        self.year_end = 2100
+        self.year_start =GlossaryCore.YeartStartDefault
+        self.year_end = GlossaryCore.YeartEndDefault
         years = np.arange(self.year_start, self.year_end + 1)
         nb_per = self.year_end + 1 - self.year_start
 
@@ -171,7 +171,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population with negative temperature
         '''
 
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -216,7 +216,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population with big GDP
         '''
 
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -261,7 +261,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population with big temp but not so big
         '''
 
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -306,7 +306,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         Test gradient population with small population
         '''
 
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -357,7 +357,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         '''
 
         data_dir = join(dirname(__file__), 'data')
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1)
         nb_per = year_end + 1 - year_start
@@ -405,8 +405,8 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
         '''
         Test gradient population with a huge increase in calories intake
         '''
-        year_start = 2020
-        year_end = 2100
+        year_start = GlossaryCore.YeartStartDefault
+        year_end = GlossaryCore.YeartEndDefault
         years = np.arange(year_start, year_end + 1)
 
         calories_pc_df = pd.DataFrame(

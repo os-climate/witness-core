@@ -38,7 +38,7 @@ class DamageDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -57,7 +57,7 @@ class DamageDiscTest(unittest.TestCase):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020]
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
         years = temperature_df_y[GlossaryCore.Years]
         damage_df = pd.DataFrame({
             GlossaryCore.Years: years,
@@ -70,7 +70,7 @@ class DamageDiscTest(unittest.TestCase):
             GlossaryCore.ExtraCO2EqSincePreIndustrialValue: np.linspace(100, 300, len(years))
         })
 
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         temperature_df_y.index = years
 
         values_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
@@ -105,7 +105,7 @@ class DamageDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -124,7 +124,7 @@ class DamageDiscTest(unittest.TestCase):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= 2020]
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
         years = temperature_df_y[GlossaryCore.Years]
         damage_df = pd.DataFrame({
             GlossaryCore.Years: years,
@@ -137,7 +137,7 @@ class DamageDiscTest(unittest.TestCase):
             GlossaryCore.ExtraCO2EqSincePreIndustrialValue: np.linspace(100, 300, len(years))
         })
 
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         temperature_df_y.index = years
 
         values_dict = {f'{self.name}.{self.model_name}.tipping_point': True,

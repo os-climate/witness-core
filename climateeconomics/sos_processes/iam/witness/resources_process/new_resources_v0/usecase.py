@@ -19,6 +19,7 @@ import random as rd
 import numpy as np
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.study_manager.study_manager import StudyManager
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
@@ -31,7 +32,7 @@ class Study(StudyManager):
     def setup_usecase(self):
         setup_data_list = []
 
-        year, year_end = 2020, 2100
+        year, year_end = GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault
 
         copper_demand = pd.DataFrame(columns=['Year', 'Demand'])
 

@@ -82,7 +82,7 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
             coupling_name, after_name=self.ee.study_name)
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}.{coupling_name}.{extra_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{extra_name}',
                    'ns_public': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)

@@ -40,7 +40,7 @@ AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 class Study(ClimateEconomicsStudyManager):
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None):
+    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
 
         #self.study_name = 'default_name'
@@ -213,7 +213,7 @@ class Study(ClimateEconomicsStudyManager):
             ['co2_eq_100', 'co2_eq_20'])
         list_parent.extend([
                             'CO2_obj','CO2_obj'])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend(
             [OBJECTIVE, OBJECTIVE])
         list_weight.extend([2.0, 2.0])
@@ -242,7 +242,7 @@ class Study(ClimateEconomicsStudyManager):
         """
         list_var.append('non_use_capital_cons')
         list_parent.append('invests_constraints')
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
         list_aggr_type.append(
@@ -277,7 +277,7 @@ class Study(ClimateEconomicsStudyManager):
         list_weight.extend([-1.0, -3.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype

@@ -43,7 +43,7 @@ def post_processing_filters(execution_engine, namespace):
     '''
     chart_filters = []
 
-    chart_list = ['temperature and ghg evolution', 'population and death', 'gdp breakdown', 'land use', 'energy mix', 'investment distribution']
+    chart_list = ['temperature and ghg evolution', 'population and death', 'gdp breakdown', 'energy mix', 'investment distribution', 'land use']
     # First filter to deal with the view : program or actor
     chart_filters.append(ChartFilter(
         'Charts', chart_list, chart_list, 'Charts'))
@@ -109,69 +109,16 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if 'population and death' in chart_list:
-
         pop_df = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.population_detail_df')
         death_dict = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.death_dict')
         instanciated_charts = Population.graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts)
 
     if 'gdp breakdown' in chart_list:
-        economics_detail_df = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.EconomicsDetailDfValue}')
-        damage_detailed_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.DamageDetailedDfValue}')
+        economics_df = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.EconomicsDetailDfValue}')
+        damage_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.DamageDetailedDfValue}')
         compute_climate_impact_on_gdp = execution_engine.dm.get_value(f'{namespace}.assumptions_dict')['compute_climate_impact_on_gdp']
         damages_to_productivity = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.DamageToProductivity}') and compute_climate_impact_on_gdp
-        chart_name = 'Gross and net of damage output per year'
-        new_chart = graph_gross_and_net_output(chart_name=chart_name,
-                                               compute_climate_impact_on_gdp=compute_climate_impact_on_gdp,
-                                               damages_to_productivity=damages_to_productivity,
-                                               economics_detail_df=economics_detail_df,
-                                               damage_detailed_df=damage_detailed_df)
-        instanciated_charts.append(new_chart)
-
-    if 'land use' in chart_list:
-
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
-                                             chart_name='Surface for forest and food production vs available land over time', stacked_bar=True)
-
-        # total crop surface
-        surface_df = execution_engine.dm.get_value(f'{namespace}.{AGRICULTUREMIX_DISC}.{CROP_DISC}.food_land_surface_df')
-        years = surface_df[GlossaryCore.Years].values.tolist()
-        for key in surface_df.keys():
-            if key == GlossaryCore.Years:
-                pass
-            elif key.startswith('total'):
-                pass
-            else:
-                new_series = InstanciatedSeries(
-                    years, (surface_df[key]).values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
-
-                new_chart.add_series(new_series)
-
-        # total food and forest surface, food should be at the bottom to be compared with crop surface
-        land_surface_detailed = execution_engine.dm.get_value(f'{namespace}.{LANDUSE_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}')
-        column = 'Forest Surface (Gha)'
-        legend = column.replace(' (Gha)', '')
-        new_series = InstanciatedSeries(
-            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
-        new_chart.add_series(new_series)
-
-        column = 'Food Surface (Gha)'
-        legend = column.replace(' (Gha)', '')
-        new_series = InstanciatedSeries(
-            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.LINES_DISPLAY)
-        new_chart.add_series(new_series)
-
-        # total land available
-        total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
-                                    land_surface_detailed['Available Forest Surface (Gha)'].values + \
-                                    land_surface_detailed['Available Shrub Surface (Gha)'])
-
-        total_land_available_series = InstanciatedSeries(
-            years, list(np.ones(len(years)) * total_land_available),
-            'Total land available', InstanciatedSeries.LINES_DISPLAY
-        )
-
-        new_chart.add_series(total_land_available_series)
-
+        new_chart = MacroEconomics.breakdown_gdp(economics_df, damage_df, compute_climate_impact_on_gdp, damages_to_productivity)
         instanciated_charts.append(new_chart)
 
     if 'energy mix' in chart_list:
@@ -219,7 +166,6 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts.append(new_chart)
 
     if 'investment distribution' in chart_list:
-
         forest_investment = execution_engine.dm.get_value(f'{namespace}.{INVESTDISTRIB_DISC}.{GlossaryEnergy.ForestInvestmentValue}')
         years = forest_investment[GlossaryEnergy.Years]
 
@@ -288,7 +234,53 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                     invest[GlossaryEnergy.Years].values.tolist(),
                     invest[GlossaryEnergy.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
 
-        instanciated_charts.insert(0, new_chart_energy)
+        instanciated_charts.append(new_chart_energy)
+
+    if 'land use' in chart_list:
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
+                                             chart_name='Surface for forest and food production vs available land over time', stacked_bar=True)
+
+        # total crop surface
+        surface_df = execution_engine.dm.get_value(f'{namespace}.{AGRICULTUREMIX_DISC}.{CROP_DISC}.food_land_surface_df')
+        years = surface_df[GlossaryCore.Years].values.tolist()
+        for key in surface_df.keys():
+            if key == GlossaryCore.Years:
+                pass
+            elif key.startswith('total'):
+                pass
+            else:
+                new_series = InstanciatedSeries(
+                    years, (surface_df[key]).values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
+
+                new_chart.add_series(new_series)
+
+        # total food and forest surface, food should be at the bottom to be compared with crop surface
+        land_surface_detailed = execution_engine.dm.get_value(f'{namespace}.{LANDUSE_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}')
+        column = 'Forest Surface (Gha)'
+        legend = column.replace(' (Gha)', '')
+        new_series = InstanciatedSeries(
+            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
+        new_chart.add_series(new_series)
+
+        column = 'Food Surface (Gha)'
+        legend = column.replace(' (Gha)', '')
+        new_series = InstanciatedSeries(
+            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.LINES_DISPLAY)
+        new_chart.add_series(new_series)
+
+        # total land available
+        total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
+                                    land_surface_detailed['Available Forest Surface (Gha)'].values + \
+                                    land_surface_detailed['Available Shrub Surface (Gha)'])
+
+        total_land_available_series = InstanciatedSeries(
+            years, list(np.ones(len(years)) * total_land_available),
+            'Total land available', InstanciatedSeries.LINES_DISPLAY
+        )
+
+        new_chart.add_series(total_land_available_series)
+
+        instanciated_charts.append(new_chart)
 
     return instanciated_charts
 
