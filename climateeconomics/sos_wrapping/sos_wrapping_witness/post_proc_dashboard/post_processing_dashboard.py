@@ -114,16 +114,11 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts = Population.graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated_charts)
 
     if 'gdp breakdown' in chart_list:
-        economics_detail_df = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.EconomicsDetailDfValue}')
-        damage_detailed_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.DamageDetailedDfValue}')
+        economics_df = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.EconomicsDetailDfValue}')
+        damage_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.DamageDetailedDfValue}')
         compute_climate_impact_on_gdp = execution_engine.dm.get_value(f'{namespace}.assumptions_dict')['compute_climate_impact_on_gdp']
         damages_to_productivity = execution_engine.dm.get_value(f'{namespace}.{MACROECO_DISC}.{GlossaryCore.DamageToProductivity}') and compute_climate_impact_on_gdp
-        chart_name = 'Gross and net of damage output per year'
-        new_chart = graph_gross_and_net_output(chart_name=chart_name,
-                                               compute_climate_impact_on_gdp=compute_climate_impact_on_gdp,
-                                               damages_to_productivity=damages_to_productivity,
-                                               economics_detail_df=economics_detail_df,
-                                               damage_detailed_df=damage_detailed_df)
+        new_chart = MacroEconomics.breakdown_gdp(economics_df, damage_df, compute_climate_impact_on_gdp, damages_to_productivity)
         instanciated_charts.append(new_chart)
 
     if 'energy mix' in chart_list:
