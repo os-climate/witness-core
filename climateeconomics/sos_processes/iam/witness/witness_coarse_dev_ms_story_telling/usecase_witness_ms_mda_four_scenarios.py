@@ -22,6 +22,8 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
     Study as usecase1
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as usecase2
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
+    Study as usecase2b
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_3_witness_coarse_mda_gdp_model_wo_damage_w_co2_tax import \
     Study as usecase3
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_4_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
@@ -46,9 +48,10 @@ class Study(ClimateEconomicsStudyManager):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {'usecase_2': usecase2(execution_engine=self.execution_engine),
-                         'usecase_4': usecase4(execution_engine=self.execution_engine),
-                         'usecase_7': usecase7(execution_engine=self.execution_engine),
+        scenario_dict = {'- damage - tax, fossil 100%': usecase2(execution_engine=self.execution_engine),
+                         '+ damage - tax, fossil 100%': usecase2b(execution_engine=self.execution_engine),
+                         '+ damage - tax, fossil 40%': usecase4(execution_engine=self.execution_engine),
+                         '+ damage + tax, NZE': usecase7(execution_engine=self.execution_engine),
                          }
 
         scenario_list = list(scenario_dict.keys())
