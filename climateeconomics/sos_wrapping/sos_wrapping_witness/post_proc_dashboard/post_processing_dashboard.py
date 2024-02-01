@@ -61,6 +61,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
     AGRICULTUREMIX_DISC = 'AgricultureMix'
     MACROECO_DISC = 'Macroeconomics'
     TEMPCHANGE_DISC = 'Temperature_change'
+    CarbonCapture_DISC='carbon_capture'
     POPULATION_DISC = 'Population'
     LANDUSE_DISC = 'Land_Use'
     ENERGYMIX_DISC = 'EnergyMix'
@@ -79,6 +80,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
     if 'temperature and ghg evolution' in chart_list:
         temperature_df = execution_engine.dm.get_value(f'{namespace}.{TEMPCHANGE_DISC}.temperature_detail_df')
         total_ghg_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.GHGEmissionsDfValue}')
+        carbon_captured = execution_engine.dm.get_value(f'{namespace}.CCUS.{CarbonCapture_DISC}.{GlossaryEnergy.CarbonCapturedValue}')
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Temperature and GHG evolution over the years'
@@ -97,6 +99,18 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             y=total_ghg_df[f'Total CO2 emissions'].to_list(),
             name='Total CO2 emissions',
             line=dict(color=qualitative.Set1[0]),
+        ), secondary_y=True)
+        fig.add_trace(go.Scatter(
+            x=years,
+            y=carbon_captured['DAC'].to_list(),
+            name='CO2 captured by DAC',
+            line=dict(color='green'),
+        ), secondary_y=True)
+        fig.add_trace(go.Scatter(
+            x=years,
+            y=carbon_captured['flue gas'].to_list(),
+            name='CO2 captured by flue gas',
+
         ), secondary_y=True)
 
         fig.update_yaxes(title_text='temperature evolution (degrees Celsius above preindustrial)', rangemode="tozero",
@@ -235,6 +249,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             list_energy = []
             if energy != BiomassDry.name:
                 chart_name = f'Distribution of investments for {energy} vs years'
+                bar_width = 0.2
                 new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
                                                             chart_name=chart_name, stacked_bar=True)
                 techno_list_name = f'{energy}.{GlossaryEnergy.TechnoListName}'
@@ -251,12 +266,14 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                         invest_level[f'{GlossaryEnergy.InvestValue}'].values.tolist(), techno, 'bar')
                     list_energy.append(invest_level[f'{GlossaryEnergy.InvestValue}'].values)
 
+                    serie.bargap = 0
                 total_invest = list(np.sum(list_energy, axis=0))
                 # Add total inbest
                 serie = InstanciatedSeries(
                     years.tolist(),
                     total_invest, energy, 'bar')
-
+                #new_chart_energy.update_layout(bargap=0)
+                #new_chart_energy = new_chart_energy.update_traces(marker_line_width=0)
                 new_chart_energy.series.append(serie)
 
         chart_name = f'Distribution of reforestation investments vs years'
@@ -287,6 +304,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 serie = InstanciatedSeries(
                     invest[GlossaryEnergy.Years].values.tolist(),
                     invest[GlossaryEnergy.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
+
 
         instanciated_charts.insert(0, new_chart_energy)
 
