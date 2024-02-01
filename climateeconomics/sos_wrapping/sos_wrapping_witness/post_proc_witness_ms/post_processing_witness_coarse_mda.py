@@ -23,6 +23,8 @@ from sostrades_core.tools.post_processing.charts.two_axes_chart_template import 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.ccus.ccus import CCUS
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import \
+    Study as usecase_ms_mda
 
 TAX_NAME = 'with tax'
 DAMAGE_NAME = 'with damage'
@@ -574,9 +576,21 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
 
     for scenario, y_values in y_dict.items():
         '''
-        For ease of understanding of the plots, scenarios without damage are in dashed line(solid otherwise) and scenarios
-        with tax have circles on the line. whether or not damage and taxes are activated is provided in status_dict
+        For ease of understanding of the plots, scenarios without damage/without tax are in dashed line, 
+        with damage are dash_dot lines, with tax are dot lines and with  damage and tax are solid lines
+        whether or not damage and taxes are activated is provided in status_dict
+        
+        line color is red for fossil (usecase 2 & 2b), green for NZE (usecase 6 & 7), orange for fossil + renewable 
+        (usecase 3, 4, 5)
         '''
+        if scenario in [usecase_ms_mda.USECASE2, usecase_ms_mda.USECASE2B]:
+            line_color = dict(color='red')
+        elif scenario in [usecase_ms_mda.USECASE3, usecase_ms_mda.USECASE4, usecase_ms_mda.USECASE5]:
+            line_color = dict(color='orange')
+        elif scenario in [usecase_ms_mda.USECASE6, usecase_ms_mda.USECASE7]:
+            line_color = dict(color='green')
+        else:
+            line_color = None
         marker_symbol = 'circle'
         lines = SeriesTemplate.LINES_DISPLAY #default value for scenario with tax and damage
         if status_dict is not None:
@@ -589,7 +603,7 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
 
         if scenario in selected_scenarios:
             new_series = InstanciatedSeries(
-                x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol)
+                x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol, line=line_color)
 
             new_chart.series.append(new_series)
 
