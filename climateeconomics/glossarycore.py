@@ -587,6 +587,7 @@ class GlossaryCore:
     }
 
     EnergyProductionValue = "energy_production"
+    CarbonCapturedValue = "carbon_capture"
     EnergyProductionDetailedValue = "energy_production_detailed"
     EnergyProcductionWithoutRatioValue = "energy_production_woratio"
     EnergyConsumptionValue = "energy_consumption"
