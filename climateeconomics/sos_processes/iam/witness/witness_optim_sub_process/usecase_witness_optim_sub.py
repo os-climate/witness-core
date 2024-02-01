@@ -153,7 +153,7 @@ class Study(ClimateEconomicsStudyManager):
                     'namespace_out': 'ns_invest'
                 }
 
-                design_var_utilization_ratio_value = dspace_df[f'{ccs}_{technology}_utilization_ratio_array']['value']
+                design_var_utilization_ratio_value = dspace_df[f'{ccs}.{technology}_utilization_ratio_array']['value']
                 dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
                 dv_arrays_dict[
                     f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
