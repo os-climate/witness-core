@@ -55,12 +55,12 @@ def post_processings(execution_engine, namespace, chart_filters=None):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
-    # Name of the disciplines called
     CROP_DISC = 'Crop'
     FOREST_DISC = 'Forest'
     AGRICULTUREMIX_DISC = 'AgricultureMix'
     MACROECO_DISC = 'Macroeconomics'
     TEMPCHANGE_DISC = 'Temperature_change'
+    CarbonCapture_DISC = 'carbon_capture'
     POPULATION_DISC = 'Population'
     LANDUSE_DISC = 'Land_Use'
     ENERGYMIX_DISC = 'EnergyMix'
@@ -79,6 +79,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
     if 'temperature and ghg evolution' in chart_list:
         temperature_df = execution_engine.dm.get_value(f'{namespace}.{TEMPCHANGE_DISC}.temperature_detail_df')
         total_ghg_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.GHGEmissionsDfValue}')
+        carbon_captured = execution_engine.dm.get_value(f'{namespace}.CCUS.{CarbonCapture_DISC}.{GlossaryEnergy.CarbonCapturedValue}')
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Temperature and GHG evolution over the years'
