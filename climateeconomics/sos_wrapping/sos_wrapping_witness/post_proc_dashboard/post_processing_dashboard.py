@@ -151,12 +151,13 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 legend_title = f'{reactant}'.replace(
                     "(TWh)", "").replace('production', '')
 
-                fig.add_trace(go.Bar(
+                fig.add_trace(go.Scatter(
                     x=years,
                     y=energy_twh.tolist(),
                     #marker_color=color[column],
                     opacity=0.7,
                     name=legend_title,
+                    stackgroup='one',
                 ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
@@ -165,8 +166,6 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             name='mean energy prices [$/MWh]',
             line=dict(color=qualitative.Set1[0]),
         ), secondary_y=True)
-        fig.update_layout(
-            barmode='stack', )
 
         fig.update_yaxes(title_text="Net Energy [TWh]", secondary_y=False, rangemode="tozero")
         fig.update_yaxes(title_text="Prices [$/MWh]", secondary_y=True, rangemode="tozero",
