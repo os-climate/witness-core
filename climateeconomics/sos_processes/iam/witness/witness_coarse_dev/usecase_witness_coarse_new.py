@@ -72,7 +72,7 @@ class Study(ClimateEconomicsStudyManager):
             'ftype': [INEQ_CONSTRAINT],
             'weight': [-1.0],
             AGGR_TYPE: [AGGR_TYPE_SUM],
-            'namespace': ['ns_functions']
+            'namespace': [GlossaryCore.NS_FUNCTIONS]
         })
 
         return func_df
@@ -104,6 +104,10 @@ class Study(ClimateEconomicsStudyManager):
         self.ccs_list = self.dc_energy.ccs_list
         self.dict_technos = self.dc_energy.dict_technos
 
+        setup_data_list.append(self.setup_mda())
+        return setup_data_list
+
+    def setup_mda(self):
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
             f'{self.study_name}.max_mda_iter': 50,
@@ -112,11 +116,7 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.linearization_mode': 'adjoint',
             f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
             f'{self.study_name}.cache_type': 'SimpleCache'}
-
-        setup_data_list.append(numerical_values_dict)
-
-        return setup_data_list
-
+        return numerical_values_dict
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)

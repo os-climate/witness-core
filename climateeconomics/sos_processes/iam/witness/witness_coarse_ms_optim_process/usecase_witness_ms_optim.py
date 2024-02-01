@@ -52,7 +52,7 @@ class Study(ClimateEconomicsStudyManager):
         len_scenarios = len(scenario_list)
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
         #values_dict[f'{self.study_name}.epsilon0'] = 1.0
         # assumes max of 16 cores per computational node
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
@@ -68,7 +68,6 @@ class Study(ClimateEconomicsStudyManager):
         year_start = scenarioUseCase.year_start
         year_end = scenarioUseCase.year_end
         years = np.arange(year_start, year_end + 1)
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
 
         values_dict[f'{self.study_name}.{self.scatter_scenario}.NormalizationReferences.liquid_hydrogen_percentage'] = np.concatenate((np.ones(5)*1e-4,np.ones(len(years)-5)/4), axis=None)
         return values_dict

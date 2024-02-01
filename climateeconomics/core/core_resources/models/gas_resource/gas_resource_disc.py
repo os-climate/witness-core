@@ -21,6 +21,7 @@ import pandas as pd
 
 from climateeconomics.core.core_resources.models.oil_resource.oil_resource_model import OilResourceModel
 from climateeconomics.core.core_resources.resource_model.resource_disc import ResourceDiscipline
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 

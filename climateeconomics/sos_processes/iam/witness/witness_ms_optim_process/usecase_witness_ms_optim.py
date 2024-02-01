@@ -54,7 +54,7 @@ class Study(StudyManager):
         len_scenarios = len(scenario_list)
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len_scenarios ,'scenario_name': scenario_list})
 
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
         for scenario in scenario_list:
             scenarioUseCase = witness_optim_usecase(
                 bspline=self.bspline, execution_engine=self.execution_engine)
@@ -64,7 +64,6 @@ class Study(StudyManager):
 
             for dict_data in scenarioData:
                 values_dict.update(dict_data)
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode']= 'multi_instance'
 
         return values_dict
 
