@@ -55,12 +55,12 @@ def post_processings(execution_engine, namespace, chart_filters=None):
     '''
     WARNING : the execution_engine and namespace arguments are necessary to retrieve the post_processings
     '''
-    # Name of the disciplines called
     CROP_DISC = 'Crop'
     FOREST_DISC = 'Forest'
     AGRICULTUREMIX_DISC = 'AgricultureMix'
     MACROECO_DISC = 'Macroeconomics'
     TEMPCHANGE_DISC = 'Temperature_change'
+    CarbonCapture_DISC = 'carbon_capture'
     POPULATION_DISC = 'Population'
     LANDUSE_DISC = 'Land_Use'
     ENERGYMIX_DISC = 'EnergyMix'
@@ -79,6 +79,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
     if 'temperature and ghg evolution' in chart_list:
         temperature_df = execution_engine.dm.get_value(f'{namespace}.{TEMPCHANGE_DISC}.temperature_detail_df')
         total_ghg_df = execution_engine.dm.get_value(f'{namespace}.{GlossaryCore.GHGEmissionsDfValue}')
+        carbon_captured = execution_engine.dm.get_value(f'{namespace}.CCUS.{CarbonCapture_DISC}.{GlossaryEnergy.CarbonCapturedValue}')
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Temperature and GHG evolution over the years'
@@ -98,7 +99,18 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             name='Total CO2 emissions',
             line=dict(color=qualitative.Set1[0]),
         ), secondary_y=True)
+        fig.add_trace(go.Scatter(
+            x=years,
+            y=carbon_captured['DAC'].to_list(),
+            name='CO2 captured by DAC',
+            line=dict(color='green'),
+        ), secondary_y=True)
+        fig.add_trace(go.Scatter(
+            x=years,
+            y=carbon_captured['flue gas'].to_list(),
+            name='CO2 captured by flue gas',
 
+        ), secondary_y=True)
         fig.update_yaxes(title_text='temperature evolution (degrees Celsius above preindustrial)', rangemode="tozero",
                          secondary_y=False)
         fig.update_yaxes(title_text=f'Total CO2 emissions [Gt]', secondary_y=True, rangemode="tozero",
