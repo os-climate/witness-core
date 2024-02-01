@@ -154,13 +154,13 @@ class Study(ClimateEconomicsStudyManager):
                 }
 
                 design_var_utilization_ratio_value = dspace_df[f'{ccs}_{technology}_utilization_ratio_array']['value']
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}_{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
                 dv_arrays_dict[
                     f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
                     data={GlossaryCore.Years: years,
                           GlossaryCore.UtilisationRatioValue: 100.})
                 # add design variable for utilization ratio per technology
-                design_var_descriptor[f'{ccs}_{technology}_utilization_ratio_array'] = {
+                design_var_descriptor[f'{ccs}.{technology}_utilization_ratio_array'] = {
                     'out_name': f'{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}',
                     'out_type': 'dataframe',
                     'key': GlossaryCore.UtilisationRatioValue,
