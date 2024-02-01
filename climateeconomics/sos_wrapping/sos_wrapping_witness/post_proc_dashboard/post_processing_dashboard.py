@@ -248,8 +248,11 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts.append(new_chart_energy)
 
     if 'land use' in chart_list:
+        chart_name = 'Surface for forest and food production vs available land over time'
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
-                                             chart_name='Surface for forest and food production vs available land over time', stacked_bar=True)
+                                             chart_name=chart_name, stacked_bar=True)
+
+        new_chart = new_chart.to_plotly()
 
         # total crop surface
         surface_df = execution_engine.dm.get_value(f'{namespace}.{AGRICULTUREMIX_DISC}.{CROP_DISC}.food_land_surface_df')
@@ -260,36 +263,48 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             elif key.startswith('total'):
                 pass
             else:
-                new_series = InstanciatedSeries(
-                    years, (surface_df[key]).values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
-
-                new_chart.add_series(new_series)
+                new_chart.add_trace(go.Scatter(
+                    x=years,
+                    y=(surface_df[key]).values.tolist(),
+                    opacity=0.7,
+                    name=key,
+                    stackgroup='one',
+                ))
 
         # total food and forest surface, food should be at the bottom to be compared with crop surface
         land_surface_detailed = execution_engine.dm.get_value(f'{namespace}.{LANDUSE_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}')
         column = 'Forest Surface (Gha)'
         legend = column.replace(' (Gha)', '')
-        new_series = InstanciatedSeries(
-            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
-        new_chart.add_series(new_series)
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=(land_surface_detailed[column]).values.tolist(),
+            opacity=0.7,
+            name=legend,
+            stackgroup='one',
+        ))
 
         column = 'Food Surface (Gha)'
         legend = column.replace(' (Gha)', '')
-        new_series = InstanciatedSeries(
-            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.LINES_DISPLAY)
-        new_chart.add_series(new_series)
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=(land_surface_detailed[column]).values.tolist(),
+            mode='lines',
+            name=legend,
+        ))
 
         # total land available
         total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
                                     land_surface_detailed['Available Forest Surface (Gha)'].values + \
                                     land_surface_detailed['Available Shrub Surface (Gha)'])
 
-        total_land_available_series = InstanciatedSeries(
-            years, list(np.ones(len(years)) * total_land_available),
-            'Total land available', InstanciatedSeries.LINES_DISPLAY
-        )
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=list(np.ones(len(years)) * total_land_available),
+            mode='lines',
+            name='Total land available',
+        ))
 
-        new_chart.add_series(total_land_available_series)
+        new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
         instanciated_charts.append(new_chart)
 
