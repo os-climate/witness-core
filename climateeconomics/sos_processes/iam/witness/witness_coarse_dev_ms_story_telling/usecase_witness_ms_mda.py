@@ -39,6 +39,14 @@ from sostrades_core.tools.post_processing.post_processing_factory import PostPro
 
 class Study(ClimateEconomicsStudyManager):
 
+    USECASE2 = '- damage - tax, fossil 100%'
+    USECASE2B ='+ damage - tax, fossil 100%'
+    USECASE3 = '- damage + tax, IEA'
+    USECASE4 = '+ damage - tax, fossil 40%'
+    USECASE5 = '+ damage - tax, STEP inspired'
+    USECASE6 = '+ damage - tax, NZE inspired'
+    USECASE7 = '+ damage + tax, NZE'
+
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
@@ -48,13 +56,13 @@ class Study(ClimateEconomicsStudyManager):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {'- damage - tax, fossil 100%': usecase2(execution_engine=self.execution_engine),
-                         '+ damage - tax, fossil 100%': usecase2b(execution_engine=self.execution_engine),
-                         '- damage + tax, IEA': usecase3(execution_engine=self.execution_engine),
-                         '+ damage - tax, fossil 40%': usecase4(execution_engine=self.execution_engine),
-                         '+ damage - tax, STEP inspired': usecase5(execution_engine=self.execution_engine),
-                         '+ damage - tax, NZE inspired': usecase6(execution_engine=self.execution_engine),
-                         '+ damage + tax, NZE': usecase7(execution_engine=self.execution_engine),
+        scenario_dict = {self.USECASE2: usecase2(execution_engine=self.execution_engine),
+                         self.USECASE2B: usecase2b(execution_engine=self.execution_engine),
+                         self.USECASE3: usecase3(execution_engine=self.execution_engine),
+                         self.USECASE4: usecase4(execution_engine=self.execution_engine),
+                         self.USECASE5: usecase5(execution_engine=self.execution_engine),
+                         self.USECASE6: usecase6(execution_engine=self.execution_engine),
+                         self.USECASE7: usecase7(execution_engine=self.execution_engine),
                          }
 
         '''
