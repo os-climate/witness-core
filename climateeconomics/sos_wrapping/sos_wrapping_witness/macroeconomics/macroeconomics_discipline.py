@@ -1206,6 +1206,9 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
                 opacity=0.2,
                 name='Pessimistic estimation of gross output without damages to productivity', ))
 
+            new_chart.update_layout(bargap=0)
+            new_chart = new_chart.update_traces(marker_line_width=0)
+
             new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
     return new_chart
