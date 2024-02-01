@@ -48,8 +48,8 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_ccs': f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -68,7 +68,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
             join(data_dir, 'economics_data_onestep.csv'))
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= year_start][[
             GlossaryCore.Years, GlossaryCore.GrossOutput]]
         energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= year_start][[
@@ -97,7 +97,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         co2_emissions_needed_by_energy_mix[
             'carbon_capture needed by energy mix (Gt)'] = 0.0
         # put manually the index
-        years = np.arange(year_start, 2101)
+        years = np.arange(year_start, GlossaryCore.YeartEndDefault + 1)
         economics_df_y.index = years
         energy_supply_df_y.index = years
         co2_emissions_ccus_Gt.index = years
@@ -139,8 +139,8 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_ccs': f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -160,9 +160,9 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
 
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= 2020][[
+        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
             GlossaryCore.Years, GlossaryCore.GrossOutput]]
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020][[
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
             GlossaryCore.Years, 'total_CO2_emitted']]
         energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         energy_supply_df_y = energy_supply_df_y.rename(
@@ -187,7 +187,7 @@ class CarbonEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         co2_emissions_needed_by_energy_mix[
             'carbon_capture needed by energy mix (Gt)'] = 0.0
         # put manually the index
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
         economics_df_y.index = years
         energy_supply_df_y.index = years
         energy_supply_df_y[GlossaryCore.TotalCO2Emissions] = np.linspace(

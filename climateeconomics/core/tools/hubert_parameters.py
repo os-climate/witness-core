@@ -29,10 +29,10 @@ undiscovered_resources = 3500  #3500
 future_discovery = 0.5
 hypot_reservers = known_reserves + future_discovery * undiscovered_resources
 Q_2020 = 751.691 #751.691  0.007319767919
-Q_inf_th = Q_2020 + hypot_reservers # Q(2020) + reserve underground 
+Q_inf_th = Q_2020 + hypot_reservers # Q(2020) + reserve underground
 past_production = pd.read_csv(join(dirname(__file__), f'../core_resources/models/resources_data/{resource_name}_production_data.csv'))
 production_start = 1925 #1925   1967
-production_years = np.arange(production_start, 2101)
+production_years = np.arange(production_start, GlossaryCore.YeartEndDefault + 1)
 past_production_years = np.arange(production_start, 2021) 
 
 

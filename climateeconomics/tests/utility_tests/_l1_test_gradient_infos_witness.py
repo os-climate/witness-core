@@ -49,7 +49,7 @@ class WitnessFullGradient(AbstractJacobianUnittest):
         repo = 'climateeconomics.sos_processes.iam.witness'
         chain_builders = self.ee.factory.get_builder_from_process(
             repo, 'witness_optim_sub_process')
-        ns_dict = {'ns_functions': f'{self.ee.study_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
                    'ns_public': f'{self.ee.study_name}', }
         self.ee.ns_manager.add_ns_def(ns_dict)

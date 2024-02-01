@@ -24,6 +24,7 @@ import pandas as pd
 from pandas import DataFrame, concat
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.agriculture_mix_process.usecase import \
     AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import \
@@ -62,7 +63,7 @@ def create_fake_regions(data, regions_list):
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=True, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, bspline=True, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[
                      2], techno_dict=DEFAULT_TECHNO_DICT, agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT,
@@ -89,7 +90,7 @@ class Study(ClimateEconomicsStudyManager):
             'ftype': [INEQ_CONSTRAINT],
             'weight': [-1.0],
             AGGR_TYPE: [AGGR_TYPE_SUM],
-            'namespace': ['ns_functions']
+            'namespace': [GlossaryCore.NS_FUNCTIONS]
         })
 
         return func_df
@@ -134,6 +135,11 @@ class Study(ClimateEconomicsStudyManager):
         self.ccs_list = self.dc_energy.ccs_list
         self.dict_technos = self.dc_energy.dict_technos
 
+        setup_data_list.append(self.setup_mda())
+
+        return setup_data_list
+
+    def setup_mda(self):
         numerical_values_dict = {
             f'{self.study_name}.epsilon0': 1.0,
             f'{self.study_name}.max_mda_iter': 2,
@@ -142,12 +148,8 @@ class Study(ClimateEconomicsStudyManager):
             f'{self.study_name}.linearization_mode': 'adjoint',
             f'{self.study_name}.sub_mda_class': 'GSPureNewtonMDA',
             f'{self.study_name}.cache_type': 'SimpleCache', }
-        
         # f'{self.study_name}.gauss_seidel_execution': True}
-
-        setup_data_list.append(numerical_values_dict)
-
-        return setup_data_list
+        return numerical_values_dict
 
     def run(self, logger_level=None,
             dump_study=False,

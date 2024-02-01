@@ -40,7 +40,7 @@ AGGR_TYPE_DELTA = FunctionManager.AGGR_TYPE_DELTA
 AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 class Study(ClimateEconomicsStudyManager):
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, execution_engine=None):
+    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
 
         #self.study_name = 'default_name'
@@ -185,16 +185,13 @@ class Study(ClimateEconomicsStudyManager):
         witness_input[f'{self.study_name}.init_discounted_utility'] = 4000.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
-        witness_input[f'{self.study_name}.total_emissions_ref'] = 7.2
-        witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
-        witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
         witness_input[f'{self.study_name}.is_dev'] = True
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
-                                                   'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
+                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
+                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
 
         setup_data_list.append(witness_input)
@@ -216,7 +213,7 @@ class Study(ClimateEconomicsStudyManager):
             ['co2_eq_100', 'co2_eq_20'])
         list_parent.extend([
                             'CO2_obj','CO2_obj'])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend(
             [OBJECTIVE, OBJECTIVE])
         list_weight.extend([2.0, 2.0])
@@ -245,7 +242,7 @@ class Study(ClimateEconomicsStudyManager):
         """
         list_var.append('non_use_capital_cons')
         list_parent.append('invests_constraints')
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
         list_aggr_type.append(
@@ -280,7 +277,7 @@ class Study(ClimateEconomicsStudyManager):
         list_weight.extend([-1.0, -3.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype

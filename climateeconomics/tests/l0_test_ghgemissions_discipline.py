@@ -36,8 +36,8 @@ class GHGEmissionDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_ccs': f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -51,13 +51,13 @@ class GHGEmissionDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        year_start = 2020
-        year_end = 2100
+        year_start = GlossaryCore.YeartStartDefault
+        year_end = GlossaryCore.YeartEndDefault
         years = np.arange(year_start, year_end + 1)
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
-                                                   'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
+                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
+                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         CO2_land_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                            'Crop': np.linspace(0., 0., len(years)),
                                            'Forest': np.linspace(3., 4., len(years))})

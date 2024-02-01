@@ -21,6 +21,7 @@ import unittest
 
 import pandas as pd
 
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 
 
@@ -47,8 +48,8 @@ class TestSoSDiscipline(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        year = 2020
-        year_end = 2101
+        year = GlossaryCore.YeartStartDefault
+        year_end = GlossaryCore.YeartEndDefault + 1
 
         copper_demand = pd.DataFrame(
             [(year, rd.gauss(26, 0.5), 'million_tonnes')], columns=['Year', 'Demand', 'unit'])
@@ -58,9 +59,9 @@ class TestSoSDiscipline(unittest.TestCase):
 
         while year < year_end:
             copper_demand = copper_demand.append({'Year': year,
-                                                  'Demand': rd.gauss(26, 0.5) * (1.056467) ** (year - 2020),
+                                                  'Demand': rd.gauss(26, 0.5) * (1.056467) ** (year - GlossaryCore.YeartStartDefault),
                                                   'unit': 'million_tonnes'}, ignore_index=True)
-            extraction += [26 * (1.056467) ** (year - 2020)]
+            extraction += [26 * (1.056467) ** (year - GlossaryCore.YeartStartDefault)]
             year += 1
 
         print(extraction)

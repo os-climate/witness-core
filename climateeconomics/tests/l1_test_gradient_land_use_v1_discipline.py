@@ -43,10 +43,10 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
 
         self.model_name = 'land_use_v1'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_functions': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    'ns_land_use': f'{self.name}',
-                   'ns_ref': f'{self.name}'
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'
                    }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -64,7 +64,7 @@ class LandUseV1JacobianDiscTest(AbstractJacobianUnittest):
         land_demand_df = read_csv(
             join(data_dir, 'land_demand.csv'))
 
-        year_start = 2020
+        year_start = GlossaryCore.YeartStartDefault
         year_end = 2050
         years = np.arange(year_start, year_end + 1, 1)
         year_range = year_end - year_start + 1

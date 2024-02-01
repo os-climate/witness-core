@@ -25,7 +25,7 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart
 
 WITNESS_SERIES_NAME = 'WITNESS'
-WITNESS_YEARS = np.arange(2020, 2101, 1)
+WITNESS_YEARS = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
 
 # CSV files keys
 REGION = 'Region'
@@ -33,7 +33,7 @@ SCENARIO = 'Scenario'
 MODEL = 'Model'
 CSV_SEP = ';'
 CSV_DEC = ','
-CSV_YRS = [str(_yr) for _yr in range(2020, 2101, 10)]
+CSV_YRS = [str(_yr) for _yr in range(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1, 10)]
 YEARS = GlossaryCore.Years
 
 # POSTPROCESSING DICTS KEYS (INTERNAL USAGE)
@@ -88,24 +88,24 @@ _forcing = {FILE_NAME: 'forcing_global.csv',
 
 CO2_CONCENTRATION = 'CO2_concentration'
 _co2_concentration = {FILE_NAME: 'CO2_concentration_global.csv',
-                      VAR_NAME: 'ghg_cycle_df',
-                      COLUMN: 'co2_ppm',
+                      VAR_NAME: GlossaryCore.GHGCycleDfValue,
+                      COLUMN: GlossaryCore.CO2Concentration,
                       CHART_TITLE: 'Atmospheric CO2 concentration: WITNESS vs. SSP scenarios (IPCC)',
                       UNIT_CONV_FACTOR: 1.0,
                       Y_AXIS: 'CO2 concentration [ppm]'}
 
 CH4_CONCENTRATION = 'CH4_concentration'
 _ch4_concentration = {FILE_NAME: 'CH4_concentration_global.csv',
-                      VAR_NAME: 'ghg_cycle_df',
-                      COLUMN: 'ch4_ppm',
+                      VAR_NAME: GlossaryCore.GHGCycleDfValue,
+                      COLUMN: GlossaryCore.CH4Concentration,
                       CHART_TITLE: 'Atmospheric CH4 concentration: WITNESS vs. SSP scenarios (IPCC)',
                       UNIT_CONV_FACTOR: 1.0,
                       Y_AXIS: 'CH4 concentration [ppm]'}
 
 N2O_CONCENTRATION = 'N2O_concentration'
 _n2o_concentration = {FILE_NAME: 'N2O_concentration_global.csv',
-                      VAR_NAME: 'ghg_cycle_df',
-                      COLUMN: 'n2o_ppm',
+                      VAR_NAME: GlossaryCore.GHGCycleDfValue,
+                      COLUMN: GlossaryCore.N2OConcentration,
                       CHART_TITLE: 'Atmospheric N2O concentration: WITNESS vs. SSP scenarios (IPCC)',
                       UNIT_CONV_FACTOR: 1.0,
                       Y_AXIS: 'N2O concentration [ppm]'}
@@ -121,7 +121,7 @@ _co2_emissions = {FILE_NAME: 'CO2_emissions_global.csv',
 CH4_EMISSIONS = 'CH4_emissions'
 _ch4_emissions = {FILE_NAME: 'CH4_emissions_global.csv',
                   VAR_NAME: 'GHGEmissions.GHG_emissions_detail_df',
-                  COLUMN: 'Total CH4 emissions',
+                  COLUMN: GlossaryCore.TotalCH4Emissions,
                   CHART_TITLE: 'Total CH4 Emissions: WITNESS vs. SSP scenarios (IPCC)',
                   UNIT_CONV_FACTOR: 1e-3,
                   Y_AXIS: 'Total CH4 Emissions [GtCH4]'}
@@ -129,7 +129,7 @@ _ch4_emissions = {FILE_NAME: 'CH4_emissions_global.csv',
 N2O_EMISSIONS = 'N2O_emissions'
 _n2o_emissions = {FILE_NAME: 'N2O_emissions_global.csv',
                   VAR_NAME: 'GHGEmissions.GHG_emissions_detail_df',
-                  COLUMN: 'Total N2O emissions',
+                  COLUMN: GlossaryCore.TotalN2OEmissions,
                   CHART_TITLE: 'Total N2O Emissions: WITNESS vs. SSP scenarios (IPCC)',
                   UNIT_CONV_FACTOR: 1e-6,
                   Y_AXIS: 'Total N2O Emissions [GtN2O]'}
@@ -282,10 +282,10 @@ def get_witness_primary_energy_chart(execution_engine, namespace):
     """
     varname, colname = WITNESS_BRUT_ENERGY_TOTAL
     var_f_name = f'{namespace}.{varname}'
-    total_brut_energy = execution_engine.dm.get_value(var_f_name)[colname].values
+    total_brut_energy = execution_engine.dm.get_value(var_f_name)[colname].to_numpy(copy=True)
     for varname, colname in WITNESS_BRUT_ENERGY_TOTAL_MINUS:
         var_f_name = f'{namespace}.{varname}'
-        total_brut_energy -= execution_engine.dm.get_value(var_f_name)[colname].values
+        total_brut_energy -= execution_engine.dm.get_value(var_f_name)[colname].to_numpy(copy=True)
 
     energy_df = pd.DataFrame({YEARS: WITNESS_YEARS,
                               COAL: 0.,
@@ -297,7 +297,7 @@ def get_witness_primary_energy_chart(execution_engine, namespace):
     for energy_type, _energy_dict in WITNESS_PRIMARY_ENERGY_DATA.items():
         for varname, colname in _energy_dict[WITNESS_VARS_COLS]:
             var_f_name = f'{namespace}.{varname}'
-            contr = execution_engine.dm.get_value(var_f_name)[colname]
+            contr = execution_engine.dm.get_value(var_f_name)[colname].to_numpy(copy=True)
             energy_df.loc[:, energy_type] += contr
         energy_df.loc[:, energy_type] /= total_brut_energy
         energy_df.loc[:, NON_FOSSIL] -= energy_df[energy_type]
@@ -365,7 +365,7 @@ def post_processings(execution_engine, namespace, filters):
         var_f_name = f"{namespace}.{CHARTS_DATA[data_name][VAR_NAME]}"
         column = CHARTS_DATA[data_name][COLUMN]
         witness_data = execution_engine.dm.get_value(var_f_name)[
-            [column]].rename(columns={column: WITNESS_SERIES_NAME})
+            [column]].copy().rename(columns={column: WITNESS_SERIES_NAME})
         # [YEARS, column]].rename(columns={column: WITNESS_SERIES_NAME})
         witness_data[YEARS] = WITNESS_YEARS  # Not all witness vars include years
         ssp_data = get_ssp_data(data_name, CHARTS_DATA, region='World')

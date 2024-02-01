@@ -268,7 +268,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         prefix = self.name + '.' + func_mng_name + '.'
 
         ee = ExecutionEngine(self.name)
-        ns_dict = {'ns_functions': self.name + '.' + 'WITNESS_Eval.WITNESS',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: self.name + '.' + 'WITNESS_Eval.WITNESS',
                    'ns_optim': self.name + '.' + func_mng_name}
         ee.ns_manager.add_ns_def(ns_dict)
 

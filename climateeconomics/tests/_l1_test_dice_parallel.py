@@ -57,13 +57,13 @@ class DICEParallelTest(unittest.TestCase):
         usecase = DataStudy()
         usecase.study_name = self.name
         values_dict = {}
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
         data_dir = join(dirname(__file__), 'data')
         energy_supply_df_all = pd.read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020][[
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
             GlossaryCore.Years, 'total_CO2_emitted']]
         energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df_y.rename(
@@ -107,7 +107,7 @@ class DICEParallelTest(unittest.TestCase):
         co2_emissions_needed_by_energy_mix[
             'carbon_capture needed by energy mix (Gt)'] = 0.0
         # put manually the index
-        years = np.arange(2020, 2101)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
         co2_emissions_ccus_Gt.index = years
         CO2_emissions_by_use_sources.index = years
         CO2_emissions_by_use_sinks.index = years

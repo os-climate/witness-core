@@ -33,7 +33,7 @@ class ForestTestCase(unittest.TestCase):
         '''
         Initialize third data needed for testing
         '''
-        self.year_start = 2020
+        self.year_start = GlossaryCore.YeartStartDefault
         self.year_end = 2055
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -82,7 +82,7 @@ class ForestTestCase(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}.{model_name}',
-                   'ns_functions': f'{name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}.{model_name}',
                    'ns_forest': f'{name}.{model_name}',
                    'ns_invest': f'{name}.{model_name}' }
         ee.ns_manager.add_ns_def(ns_dict)

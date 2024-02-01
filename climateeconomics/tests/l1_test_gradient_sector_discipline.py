@@ -33,7 +33,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
     def setUp(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = 2020
+        self.year_start = GlossaryCore.YeartStartDefault
         self.year_end = 2050
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
@@ -94,20 +94,25 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'
         builder = self.ee.factory.get_builder_from_module(self.model_name, mod_path)
 
         self.ee.factory.set_builders_to_coupling_builder(builder)
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+
+        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        section_list = GlossaryCore.SectionsIndustry
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -129,6 +134,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_xzero'}": 1993,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
+                       f'{self.name}.{GlossaryCore.SectionList}': section_list,
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,
@@ -170,8 +177,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'
                    }
@@ -179,6 +186,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -186,6 +194,10 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+
+        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        section_list = GlossaryCore.SectionsIndustry
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -207,6 +219,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_xzero'}": 1993,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
+                       f'{self.name}.{GlossaryCore.SectionList}': section_list,
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        }
 
@@ -233,8 +247,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    GlossaryCore.NS_SECTORS: f'{self.name}'
                    }
@@ -242,6 +256,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline.SectorDiscipline'
+        # mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_sectors.industrial.industrial_discipline.IndustrialDiscipline'
         builder = self.ee.factory.get_builder_from_module(
             self.model_name, mod_path)
 
@@ -249,6 +264,10 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+
+        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        section_list = GlossaryCore.SectionsIndustry
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -270,6 +289,8 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_xzero'}": 1993,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'energy_eff_max'}": 2.35832,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'output_alpha'}": 0.99,
+                       f'{self.name}.{GlossaryCore.SectionList}': section_list,
+                       f'{self.name}.{GlossaryCore.SectionGdpPercentageDfValue}': section_gdp_df,
                        f"{self.name}.{SectorDiscipline.sector_name}.{'depreciation_capital'}": 0.058,
                        f'{self.name}.assumptions_dict': {
                            'compute_gdp': True,

@@ -30,7 +30,7 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
     def setUp(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = 2020
+        self.year_start = GlossaryCore.YeartStartDefault
         self.year_end = 2023
         nb_per = round(self.year_end - self.year_start + 1)
         self.nb_per = nb_per
@@ -93,21 +93,25 @@ class MacroeconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                       GlossaryCore.DamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
                                       GlossaryCore.EstimatedDamagesFromClimate: np.linspace(10, 24, self.nb_per),
                                       GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24,
-                                                                                                     self.nb_per), })
+                                                                                                     self.nb_per),
+                                      GlossaryCore.EstimatedDamages: np.linspace(20, 48, self.nb_per), })
         self.damage_indus = DataFrame({GlossaryCore.Years: self.years,
                                        GlossaryCore.Damages: np.linspace(15, 34, self.nb_per),
                                        GlossaryCore.DamagesFromClimate: np.linspace(5, 10, self.nb_per),
                                        GlossaryCore.DamagesFromProductivityLoss: np.linspace(10, 24, self.nb_per),
                                        GlossaryCore.EstimatedDamagesFromClimate: np.linspace(5, 10, self.nb_per),
                                        GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(10, 24,
-                                                                                                      self.nb_per), })
+                                                                                                      self.nb_per),
+                                       GlossaryCore.EstimatedDamages: np.linspace(15, 34, self.nb_per), })
         self.damage_service = DataFrame({GlossaryCore.Years: self.years,
                                          GlossaryCore.Damages: np.linspace(4, 15, self.nb_per),
                                          GlossaryCore.DamagesFromClimate: np.linspace(1, 6, self.nb_per),
                                          GlossaryCore.DamagesFromProductivityLoss: np.linspace(3, 9, self.nb_per),
                                          GlossaryCore.EstimatedDamagesFromClimate: np.linspace(1, 6, self.nb_per),
                                          GlossaryCore.EstimatedDamagesFromProductivityLoss: np.linspace(3, 9,
-                                                                                                        self.nb_per), })
+                                                                                                        self.nb_per),
+                                         GlossaryCore.EstimatedDamages: np.linspace(4, 15, self.nb_per),
+                                         })
 
     def analytic_grad_entry(self):
         return [

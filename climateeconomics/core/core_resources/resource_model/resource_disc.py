@@ -44,7 +44,7 @@ class ResourceDiscipline(SoSWrapp):
         'icon': '',
         'version': '',
     }
-    default_year_start = 2020
+    default_year_start = GlossaryCore.YeartStartDefault
     default_year_end = 2050
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
 
