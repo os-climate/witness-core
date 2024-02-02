@@ -16,7 +16,8 @@
         "txt",
         "ipynb",
         "zip",
-        "rst"
+        "rst",
+        "ini"
     ],
     "files_to_ignore": [
         "climateeconomics/sos_processes/iam/witness/economics_sector_process/process.py",
