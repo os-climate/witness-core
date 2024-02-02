@@ -1133,7 +1133,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
                     GlossaryCore.NonEnergyInvestmentsValue,
                    GlossaryCore.Consumption]
 
-    legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
+    legend = {GlossaryCore.OutputNetOfDamage: 'Net GDP',
               GlossaryCore.InvestmentsValue: 'Total investments',
               GlossaryCore.EnergyInvestmentsValue: 'Energy investments',
               GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy investments',
@@ -1142,7 +1142,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
 
     years = list(economics_detail_df.index)
 
-    chart_name = 'Breakdown of output per year'
+    chart_name = 'Breakdown of GDP per year'
 
     new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
                                          chart_name=chart_name, stacked_bar=True,
@@ -1195,7 +1195,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
 
             new_chart.add_trace(go.Scatter(x=years, y=list(gross_output),
                                            mode='lines',
-                                           name="Gross output"
+                                           name="Gross GDP"
                                            ))
 
             new_chart.add_trace(go.Scatter(
@@ -1206,7 +1206,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
                 fillcolor='rgba(200, 200, 200, 0.3)',
                 line={'dash': 'dash', 'color': 'rgb(200, 200, 200)'},
                 opacity=0.2,
-                name='Estimation of output without damages', ))
+                name='Estimation of GDP without damages', ))
 
             new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 

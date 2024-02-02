@@ -181,12 +181,14 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         forest_investment = execution_engine.dm.get_value(f'{namespace}.{INVESTDISTRIB_DISC}.{GlossaryEnergy.ForestInvestmentValue}')
         years = forest_investment[GlossaryEnergy.Years]
 
-        chart_name = f'Distribution of investments on each energy vs years'
+        chart_name_energy = f'Distribution of investments on each energy vs years'
 
         new_chart_energy = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                    chart_name=chart_name, stacked_bar=True)
+                                                    chart_name=chart_name_energy, stacked_bar=True)
         energy_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryEnergy.energy_list}')
         ccs_list = execution_engine.dm.get_value(f'{namespace}.{GlossaryEnergy.ccs_list}')
+
+        new_chart_energy = new_chart_energy.to_plotly()
 
         # add a chart per energy with breakdown of investments in every technology of the energy
         for energy in energy_list + ccs_list:
@@ -211,11 +213,18 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
                 total_invest = list(np.sum(list_energy, axis=0))
                 # Add total inbest
-                serie = InstanciatedSeries(
-                    years.tolist(),
-                    total_invest, energy, 'bar')
-
-                new_chart_energy.series.append(serie)
+                # serie = InstanciatedSeries(
+                #     years.tolist(),
+                #     total_invest, energy, 'lines')
+                #
+                # new_chart_energy.series.append(serie)
+                new_chart_energy.add_trace(go.Scatter(
+                    x=years.tolist(),
+                    y=total_invest,
+                    opacity=0.7,
+                    name=energy,
+                    stackgroup='one',
+                ))
 
         chart_name = f'Distribution of reforestation investments vs years'
         agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
@@ -245,6 +254,8 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 serie = InstanciatedSeries(
                     invest[GlossaryEnergy.Years].values.tolist(),
                     invest[GlossaryEnergy.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
+
+        new_chart_energy = InstantiatedPlotlyNativeChart(fig=new_chart_energy, chart_name=chart_name_energy)
 
         instanciated_charts.append(new_chart_energy)
 
