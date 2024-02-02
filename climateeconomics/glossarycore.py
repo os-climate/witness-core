@@ -30,7 +30,7 @@ class GlossaryCore:
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
     CCUS = "CCUS"
-
+    CheckRangeBeforeRunBoolName = "check_range_before_run_bool_name"
     SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
@@ -1154,6 +1154,12 @@ class GlossaryCore:
         "description": "reference to normalize usable capital objective",
     }
 
+    CheckRangeBeforeRunBool = {
+        "var_name": CheckRangeBeforeRunBoolName,
+        "type": "bool",
+        "default": False
+    }
+
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""
@@ -1177,3 +1183,4 @@ class GlossaryCore:
         out = deepcopy(variable)
         out["namespace"] = namespace
         return out
+
