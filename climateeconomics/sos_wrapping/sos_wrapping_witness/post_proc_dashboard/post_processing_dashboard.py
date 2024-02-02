@@ -209,12 +209,6 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                     list_energy.append(invest_level[f'{GlossaryEnergy.InvestValue}'].values)
 
                 total_invest = list(np.sum(list_energy, axis=0))
-                # Add total inbest
-                # serie = InstanciatedSeries(
-                #     years.tolist(),
-                #     total_invest, energy, 'lines')
-                #
-                # new_chart_energy.series.append(serie)
                 new_chart_energy.add_trace(go.Scatter(
                     x=years.tolist(),
                     y=total_invest,
