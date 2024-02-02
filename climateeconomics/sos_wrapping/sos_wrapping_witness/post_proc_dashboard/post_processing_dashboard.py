@@ -90,21 +90,20 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             x=years,
             y=temperature_df[GlossaryCore.TempAtmo].values.tolist(),
             name='Temperature',
-            #line=dict(color=qualitative.Set1[0]),
         ), secondary_y=True)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=total_ghg_df[f'Total CO2 emissions'].to_list(),
             name='Total CO2 emissions',
-            line=dict(color=qualitative.Set1[0]),
+            #line=dict(color=qualitative.Set1[0]),
         ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=carbon_captured['DAC'].to_list(),
             name='CO2 captured by DAC',
-            line=dict(color='green'),
+            #line=dict(color='green'),
         ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
@@ -114,8 +113,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
         ), secondary_y=False)
         fig.update_yaxes(title_text='temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
-        fig.update_yaxes(title_text=f'Total CO2 emissions [Gt]',  rangemode="tozero",
-                         color=qualitative.Set1[0],secondary_y=False)
+        fig.update_yaxes(title_text=f'Total CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
 
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
@@ -165,12 +163,11 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             x=years,
             y=energy_mean_price[GlossaryEnergy.EnergyPriceValue].values.tolist(),
             name='mean energy prices [$/MWh]',
-            line=dict(color=qualitative.Set1[0]),
+            #line=dict(color=qualitative.Set1[0]),
         ), secondary_y=True)
 
         fig.update_yaxes(title_text="Net Energy [TWh]", secondary_y=False, rangemode="tozero")
-        fig.update_yaxes(title_text="Prices [$/MWh]", secondary_y=True, rangemode="tozero",
-                         color=qualitative.Set1[0])
+        fig.update_yaxes(title_text="Prices [$/MWh]", secondary_y=True, rangemode="tozero")
 
         new_chart = InstantiatedPlotlyNativeChart(
         fig = fig, chart_name = chart_name)
