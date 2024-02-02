@@ -82,7 +82,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         carbon_captured = execution_engine.dm.get_value(f'{namespace}.CCUS.{CarbonCapture_DISC}.{GlossaryEnergy.CarbonCapturedValue}')
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
-        chart_name = 'Temperature and GHG evolution over the years'
+        chart_name = 'Temperature and CO2 evolution over the years'
 
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
@@ -91,30 +91,31 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             y=temperature_df[GlossaryCore.TempAtmo].values.tolist(),
             name='Temperature',
             #line=dict(color=qualitative.Set1[0]),
-        ), secondary_y=False)
+        ), secondary_y=True)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=total_ghg_df[f'Total CO2 emissions'].to_list(),
             name='Total CO2 emissions',
             line=dict(color=qualitative.Set1[0]),
-        ), secondary_y=True)
+        ), secondary_y=False)
+
         fig.add_trace(go.Scatter(
             x=years,
             y=carbon_captured['DAC'].to_list(),
             name='CO2 captured by DAC',
             line=dict(color='green'),
-        ), secondary_y=True)
+        ), secondary_y=False)
+
         fig.add_trace(go.Scatter(
             x=years,
             y=carbon_captured['flue gas'].to_list(),
             name='CO2 captured by flue gas',
 
-        ), secondary_y=True)
-        fig.update_yaxes(title_text='temperature evolution (degrees Celsius above preindustrial)', rangemode="tozero",
-                         secondary_y=False)
-        fig.update_yaxes(title_text=f'Total CO2 emissions [Gt]', secondary_y=True, rangemode="tozero",
-                         color=qualitative.Set1[0])
+        ), secondary_y=False)
+        fig.update_yaxes(title_text='temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
+        fig.update_yaxes(title_text=f'Total CO2 emissions [Gt]',  rangemode="tozero",
+                         color=qualitative.Set1[0],secondary_y=False)
 
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
