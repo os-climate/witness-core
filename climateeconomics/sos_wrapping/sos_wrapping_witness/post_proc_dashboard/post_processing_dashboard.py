@@ -155,8 +155,8 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 fig.add_trace(go.Scatter(
                     x=years,
                     y=energy_twh.tolist(),
-                    #marker_color=color[column],
                     opacity=0.7,
+                    line=dict(width=1.25),
                     name=legend_title,
                     stackgroup='one',
                 ), secondary_y=False)
@@ -222,6 +222,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                     x=years.tolist(),
                     y=total_invest,
                     opacity=0.7,
+                    line=dict(width=1.25),
                     name=energy,
                     stackgroup='one',
                 ))
@@ -279,6 +280,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                     x=years,
                     y=(surface_df[key]).values.tolist(),
                     opacity=0.7,
+                    line=dict(width=1.25),
                     name=key,
                     stackgroup='one',
                 ))
@@ -291,6 +293,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             x=years,
             y=(land_surface_detailed[column]).values.tolist(),
             opacity=0.7,
+            line=dict(width=1.25),
             name=legend,
             stackgroup='one',
         ))
