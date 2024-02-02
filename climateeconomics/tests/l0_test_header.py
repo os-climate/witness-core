@@ -17,10 +17,12 @@ limitations under the License.
 mode: python; py-indent-offset: 4; tab-width: 8; coding:utf-8
 '''
 
-import HeadersIgnoreConfig
+
 from sostrades_core.tools.check_headers import HeaderTools
 import unittest
 import pprint
+import os
+import json
 
 class Testheader(unittest.TestCase):
     """
@@ -32,11 +34,18 @@ class Testheader(unittest.TestCase):
         Initialize third data needed for testing
         '''
         self.pp = pprint.PrettyPrinter(indent=4, compact=True)
-        self.extension_to_ignore = HeadersIgnoreConfig.extension_to_ignore
-        #Add here the files to ignore  
-        self.files_to_ignore = HeadersIgnoreConfig.files_to_ignore
-        #commit from where to compare added, modeified deleted ...
-        self.airbus_rev_commit = HeadersIgnoreConfig.airbus_rev_commit
+
+        with open(os.path.join(os.path.dirname(__file__),"..","..","headers_ignore_config.json"),"r",encoding="utf-8") as f:
+
+            headers_ignore_config=json.load(f)
+
+            self.extension_to_ignore = headers_ignore_config["extension_to_ignore"]
+            #Add here the files to ignore
+            self.files_to_ignore = headers_ignore_config["files_to_ignore"]
+            #commit from where to compare added, modeified deleted ...
+            self.airbus_rev_commit = headers_ignore_config["airbus_rev_commit"]
+
+        
 
     def test_Headers(self):
         ht = HeaderTools()
