@@ -82,7 +82,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         carbon_captured = execution_engine.dm.get_value(f'{namespace}.CCUS.{CarbonCapture_DISC}.{GlossaryEnergy.CarbonCapturedValue}')
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
-        chart_name = 'Temperature and GHG evolution over the years'
+        chart_name = 'Temperature and CO2 evolution over the years'
 
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
@@ -91,30 +91,31 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             y=temperature_df[GlossaryCore.TempAtmo].values.tolist(),
             name='Temperature',
             #line=dict(color=qualitative.Set1[0]),
-        ), secondary_y=False)
+        ), secondary_y=True)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=total_ghg_df[f'Total CO2 emissions'].to_list(),
             name='Total CO2 emissions',
             line=dict(color=qualitative.Set1[0]),
-        ), secondary_y=True)
+        ), secondary_y=False)
+
         fig.add_trace(go.Scatter(
             x=years,
             y=carbon_captured['DAC'].to_list(),
             name='CO2 captured by DAC',
             line=dict(color='green'),
-        ), secondary_y=True)
+        ), secondary_y=False)
+
         fig.add_trace(go.Scatter(
             x=years,
             y=carbon_captured['flue gas'].to_list(),
             name='CO2 captured by flue gas',
 
-        ), secondary_y=True)
-        fig.update_yaxes(title_text='temperature evolution (degrees Celsius above preindustrial)', rangemode="tozero",
-                         secondary_y=False)
-        fig.update_yaxes(title_text=f'Total CO2 emissions [Gt]', secondary_y=True, rangemode="tozero",
-                         color=qualitative.Set1[0])
+        ), secondary_y=False)
+        fig.update_yaxes(title_text='temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
+        fig.update_yaxes(title_text=f'Total CO2 emissions [Gt]',  rangemode="tozero",
+                         color=qualitative.Set1[0],secondary_y=False)
 
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
@@ -151,12 +152,13 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 legend_title = f'{reactant}'.replace(
                     "(TWh)", "").replace('production', '')
 
-                fig.add_trace(go.Bar(
+                fig.add_trace(go.Scatter(
                     x=years,
                     y=energy_twh.tolist(),
                     #marker_color=color[column],
                     opacity=0.7,
                     name=legend_title,
+                    stackgroup='one',
                 ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
@@ -165,8 +167,6 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             name='mean energy prices [$/MWh]',
             line=dict(color=qualitative.Set1[0]),
         ), secondary_y=True)
-        fig.update_layout(
-            barmode='stack', )
 
         fig.update_yaxes(title_text="Net Energy [TWh]", secondary_y=False, rangemode="tozero")
         fig.update_yaxes(title_text="Prices [$/MWh]", secondary_y=True, rangemode="tozero",
@@ -249,8 +249,11 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         instanciated_charts.append(new_chart_energy)
 
     if 'land use' in chart_list:
+        chart_name = 'Surface for forest and food production vs available land over time'
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
-                                             chart_name='Surface for forest and food production vs available land over time', stacked_bar=True)
+                                             chart_name=chart_name, stacked_bar=True)
+
+        new_chart = new_chart.to_plotly()
 
         # total crop surface
         surface_df = execution_engine.dm.get_value(f'{namespace}.{AGRICULTUREMIX_DISC}.{CROP_DISC}.food_land_surface_df')
@@ -261,36 +264,48 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             elif key.startswith('total'):
                 pass
             else:
-                new_series = InstanciatedSeries(
-                    years, (surface_df[key]).values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
-
-                new_chart.add_series(new_series)
+                new_chart.add_trace(go.Scatter(
+                    x=years,
+                    y=(surface_df[key]).values.tolist(),
+                    opacity=0.7,
+                    name=key,
+                    stackgroup='one',
+                ))
 
         # total food and forest surface, food should be at the bottom to be compared with crop surface
         land_surface_detailed = execution_engine.dm.get_value(f'{namespace}.{LANDUSE_DISC}.{LandUseV2.LAND_SURFACE_DETAIL_DF}')
         column = 'Forest Surface (Gha)'
         legend = column.replace(' (Gha)', '')
-        new_series = InstanciatedSeries(
-            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.BAR_DISPLAY)
-        new_chart.add_series(new_series)
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=(land_surface_detailed[column]).values.tolist(),
+            opacity=0.7,
+            name=legend,
+            stackgroup='one',
+        ))
 
         column = 'Food Surface (Gha)'
         legend = column.replace(' (Gha)', '')
-        new_series = InstanciatedSeries(
-            years, (land_surface_detailed[column]).values.tolist(), legend, InstanciatedSeries.LINES_DISPLAY)
-        new_chart.add_series(new_series)
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=(land_surface_detailed[column]).values.tolist(),
+            mode='lines',
+            name=legend,
+        ))
 
         # total land available
         total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
                                     land_surface_detailed['Available Forest Surface (Gha)'].values + \
                                     land_surface_detailed['Available Shrub Surface (Gha)'])
 
-        total_land_available_series = InstanciatedSeries(
-            years, list(np.ones(len(years)) * total_land_available),
-            'Total land available', InstanciatedSeries.LINES_DISPLAY
-        )
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=list(np.ones(len(years)) * total_land_available),
+            mode='lines',
+            name='Total land available',
+        ))
 
-        new_chart.add_series(total_land_available_series)
+        new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
         instanciated_charts.append(new_chart)
 
