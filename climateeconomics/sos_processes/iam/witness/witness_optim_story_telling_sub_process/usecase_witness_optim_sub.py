@@ -92,7 +92,7 @@ class Study(ClimateEconomicsStudyManager):
         self.design_var_descriptor = design_var_descriptor
         values_dict[
             f'{self.study_name}.{self.coupling_name}.{self.designvariable_name}.design_var_descriptor'] = design_var_descriptor
-        len_var = 10
+        len_var = 4
 
         # design space
         dspace_dict = {'variable': 'percentage_gdp_invest_in_energy_array',
@@ -114,7 +114,7 @@ class Study(ClimateEconomicsStudyManager):
                      FunctionManagerDisc.FTYPE: 'objective',
                      FunctionManagerDisc.WEIGHT: [0.0, 1.0, 0.0],
                      FunctionManagerDisc.AGGR_TYPE: 'sum',
-                     FunctionManagerDisc.NAMESPACE_VARIABLE: 'ns_functions'}
+                     FunctionManagerDisc.NAMESPACE_VARIABLE: GlossaryCore.NS_FUNCTIONS}
         func_df = pd.DataFrame(data=func_dict)
         values_dict[f'{self.study_name}.{self.coupling_name}.{self.func_manager_name}.{FUNC_DF}'] = func_df
 

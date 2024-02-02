@@ -56,13 +56,13 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders_energy = self.ee.factory.get_builder_from_process(
             'energy_models.sos_processes.energy.MDA', 'energy_process_v0_mda',
-            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline)
+            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, use_resources_bool=self.use_resources_bool)
         chain_builders.extend(chain_builders_energy)
 
         # Update namespace regarding land use and energy mix coupling
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
-                   'ns_functions': f'{self.ee.study_name}.EnergyMix',
-                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
+                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)

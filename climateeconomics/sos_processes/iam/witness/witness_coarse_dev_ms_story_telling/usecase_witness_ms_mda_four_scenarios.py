@@ -18,20 +18,18 @@ from os.path import join, dirname
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_1_witness_coarse_mda_fixed_gdp_wo_damage_wo_co2_tax import \
-    Study as usecase1
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as usecase2
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_3_witness_coarse_mda_gdp_model_wo_damage_w_co2_tax import \
-    Study as usecase3
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
+    Study as usecase2b
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_4_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
     Study as usecase4
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_5_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
-    Study as usecase5
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_6_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
-    Study as usecase6
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import \
     Study as usecase7
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
+    Study as usecase_witness_mda
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import \
+    Study as usecase_ms_mda
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
@@ -46,9 +44,10 @@ class Study(ClimateEconomicsStudyManager):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {'usecase_2': usecase2(execution_engine=self.execution_engine),
-                         'usecase_4': usecase4(execution_engine=self.execution_engine),
-                         'usecase_7': usecase7(execution_engine=self.execution_engine),
+        scenario_dict = {usecase_ms_mda.USECASE2: usecase2(execution_engine=self.execution_engine),
+                         usecase_ms_mda.USECASE2B: usecase2b(execution_engine=self.execution_engine),
+                         usecase_ms_mda.USECASE4: usecase4(execution_engine=self.execution_engine),
+                         usecase_ms_mda.USECASE7: usecase7(execution_engine=self.execution_engine),
                          }
 
         scenario_list = list(scenario_dict.keys())
@@ -56,19 +55,19 @@ class Study(ClimateEconomicsStudyManager):
 
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_list),
                                     'scenario_name': scenario_list})
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
+        # setup mda
+        uc_mda = usecase_witness_mda(execution_engine=self.execution_engine)
+        uc_mda.study_name = self.study_name  # mda settings on root coupling
+        values_dict.update(uc_mda.setup_mda())
         # assumes max of 16 cores per computational node
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
-
+        # setup each scenario (mda settings ignored)
         for scenario, uc in scenario_dict.items():
             uc.study_name = f'{self.study_name}.{self.scatter_scenario}.{scenario}'
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
-
-
-
         return values_dict
 
 

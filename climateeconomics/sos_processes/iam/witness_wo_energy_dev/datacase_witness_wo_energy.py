@@ -266,7 +266,7 @@ class DataStudy():
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
             'weight': [5e-4, 1.0, 1.0, 0.0, 0.0, 1.0],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', 'ns_functions', 'ns_functions', 'ns_functions']
+            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS]
         }
 
         func_df = DataFrame(data)
@@ -287,7 +287,7 @@ class DataStudy():
         list_var.extend(
             ['rockstrom_limit_constraint', 'minimum_ppm_constraint'])
         list_parent.extend(['CO2 ppm', 'CO2 ppm'])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
         list_weight.extend([0.0, -1.0])
         list_aggr_type.extend(
@@ -297,7 +297,7 @@ class DataStudy():
         # calories_per_day_constraint
         list_var.append('calories_per_day_constraint')
         list_parent.append('agriculture_constraints')
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
         list_aggr_type.append(
@@ -307,7 +307,7 @@ class DataStudy():
         # -------------------------------------------------
         list_var.extend([GlossaryCore.ConstraintLowerBoundUsableCapital])
         list_parent.extend(['invests_constraints'])
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend([INEQ_CONSTRAINT])
         list_weight.extend([-1.0])
         list_aggr_type.extend([
@@ -315,7 +315,7 @@ class DataStudy():
 
         list_var.append('non_use_capital_cons')
         list_parent.append('invests_constraints')
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
         list_aggr_type.append(
@@ -323,7 +323,7 @@ class DataStudy():
 
         list_var.append('forest_lost_capital_cons')
         list_parent.append('agriculture_constraint')
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
         list_aggr_type.append(

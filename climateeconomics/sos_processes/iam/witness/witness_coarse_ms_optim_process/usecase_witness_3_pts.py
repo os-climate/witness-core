@@ -56,8 +56,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict[f'{self.study_name}.epsilon0'] = 1.0
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = 3
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
 
         for scenario in scenario_list:
             scenarioUseCase = witness_optim_usecase(

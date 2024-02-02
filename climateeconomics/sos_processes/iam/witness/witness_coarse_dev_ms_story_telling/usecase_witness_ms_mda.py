@@ -20,6 +20,8 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as usecase2
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
+    Study as usecase2b
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_3_witness_coarse_mda_gdp_model_wo_damage_w_co2_tax import \
     Study as usecase3
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_4_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
@@ -30,10 +32,20 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
     Study as usecase6
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import \
     Study as usecase7
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
+    Study as usecase_witness_mda
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(ClimateEconomicsStudyManager):
+
+    USECASE2 = '- damage - tax, fossil 100%'
+    USECASE2B ='+ damage - tax, fossil 100%'
+    USECASE3 = '- damage + tax, IEA'
+    USECASE4 = '+ damage - tax, fossil 40%'
+    USECASE5 = '+ damage - tax, STEP inspired'
+    USECASE6 = '+ damage - tax, NZE inspired'
+    USECASE7 = '+ damage + tax, NZE'
 
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
@@ -44,12 +56,13 @@ class Study(ClimateEconomicsStudyManager):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {'Full fossil, no damage no tax': usecase2(execution_engine=self.execution_engine),
-                         'IEA energy mix, no damage with tax': usecase3(execution_engine=self.execution_engine),
-                         'Fossil + 2020 invest renewable & CCS, with damage no tax': usecase4(execution_engine=self.execution_engine),
-                         'Fossil + renewable (step) & 2020 CCS invest, with damage no tax': usecase5(execution_engine=self.execution_engine),
-                         'NZE inspired, with damage no tax': usecase6(execution_engine=self.execution_engine),
-                         'NZE, with damage with tax': usecase7(execution_engine=self.execution_engine),
+        scenario_dict = {self.USECASE2: usecase2(execution_engine=self.execution_engine),
+                         self.USECASE2B: usecase2b(execution_engine=self.execution_engine),
+                         self.USECASE3: usecase3(execution_engine=self.execution_engine),
+                         self.USECASE4: usecase4(execution_engine=self.execution_engine),
+                         self.USECASE5: usecase5(execution_engine=self.execution_engine),
+                         self.USECASE6: usecase6(execution_engine=self.execution_engine),
+                         self.USECASE7: usecase7(execution_engine=self.execution_engine),
                          }
 
         '''
@@ -64,19 +77,20 @@ class Study(ClimateEconomicsStudyManager):
 
         scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_list),
                                     'scenario_name': scenario_list})
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_df'] = scenario_df
+        values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
         values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.builder_mode'] = 'multi_instance'
+
+        # setup mda
+        uc_mda = usecase_witness_mda(execution_engine=self.execution_engine)
+        uc_mda.study_name = self.study_name  # mda settings on root coupling
+        values_dict.update(uc_mda.setup_mda())
         # assumes max of 16 cores per computational node
         values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
-
+        # setup each scenario (mda settings ignored)
         for scenario, uc in scenario_dict.items():
             uc.study_name = f'{self.study_name}.{self.scatter_scenario}.{scenario}'
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
-
-
-
         return values_dict
 
 

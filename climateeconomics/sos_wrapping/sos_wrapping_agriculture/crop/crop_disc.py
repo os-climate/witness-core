@@ -440,9 +440,9 @@ class CropDiscipline(ClimateEcoDiscipline):
         'n2o_emissions_per_kg': {'type': 'dict', 'subtype_descriptor': {'dict': 'float'}, 'unit': 'kg/kg',
                                  'default': default_n2o_emissions},
         'constraint_calories_ref': {'type': 'float', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                    'namespace': 'ns_ref', 'default': 4000.},
+                                    'namespace': GlossaryCore.NS_REFERENCE, 'default': 4000.},
         'constraint_calories_limit': {'type': 'float', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                      'namespace': 'ns_ref', 'default': 2000.},
+                                      'namespace': GlossaryCore.NS_REFERENCE, 'default': 2000.},
     }
 
     DESC_OUT = {
@@ -491,7 +491,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                        'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_crop'},
         'calories_per_day_constraint': {'type': 'array', 'unit': 'kcal',
                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                        'namespace': 'ns_functions'},
+                                        'namespace': GlossaryCore.NS_FUNCTIONS},
         'calories_pc_df': {'type': 'dataframe', 'unit': 'kcal',
                            'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
     }

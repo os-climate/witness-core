@@ -38,9 +38,9 @@ class ProcessBuilder(BaseProcessBuilder):
 
         ns_dict = {GlossaryCore.NS_WITNESS: ns_scatter,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
-                   'ns_ref': f'{ns_scatter}.NormalizationReferences',
+                   GlossaryCore.NS_REFERENCE: f'{ns_scatter}.NormalizationReferences',
                    'ns_agriculture': ns_scatter,
-                   'ns_ccs': ns_scatter,
+                   GlossaryCore.NS_CCS: ns_scatter,
                    'ns_energy': ns_scatter,
                    'ns_forest': ns_scatter,
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
@@ -62,9 +62,9 @@ class ProcessBuilder(BaseProcessBuilder):
         builder_list.extend(chain_builders_population)
 
         ns_dict = {'ns_land_use': f'{self.ee.study_name}.EnergyMix',
-                   'ns_functions': f'{self.ee.study_name}.EnergyMix',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.EnergyMix',
                    'ns_resource': f'{self.ee.study_name}.EnergyMix',
-                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences',
+                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.InvestmentDistribution'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
