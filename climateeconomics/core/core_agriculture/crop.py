@@ -820,9 +820,9 @@ class Crop():
         dghg_dpop_n2o = np.diag(self.n2o_emissions_per_kg[GlossaryCore.Fish] * \
                         self.updated_diet_df[GlossaryCore.Fish] * 1e6 / 1e12)
 
-        return {'CO2': dghg_dpop_co2,
-                'CH4': dghg_dpop_ch4,
-                'N2O': dghg_dpop_n2o,}
+        return {GlossaryCore.CO2: dghg_dpop_co2,
+                GlossaryCore.CH4: dghg_dpop_ch4,
+                GlossaryCore.N2O: dghg_dpop_n2o,}
 
     def d_ghg_fish_emission_d_fish_kcal(self):
         '''
@@ -839,9 +839,9 @@ class Crop():
         dn2o_dkcal_fish = np.diag(self.n2o_emissions_per_kg[GlossaryCore.Fish] * 365 / self.kg_to_kcal_dict[GlossaryCore.Fish] * \
                         self.population_df[GlossaryCore.PopulationValue].values * 1e6 / 1e12)
 
-        return {'CO2': dco2_dkcal_fish,
-                'CH4': dch4_dkcal_fish,
-                'N2O': dn2o_dkcal_fish,}
+        return {GlossaryCore.CO2: dco2_dkcal_fish,
+                GlossaryCore.CH4: dch4_dkcal_fish,
+                GlossaryCore.N2O: dn2o_dkcal_fish,}
 
     def d_food_land_surface_d_temperature(self, temperature_df, column_name):
         """
@@ -1134,9 +1134,9 @@ class Crop():
             co2 = self.co2_emissions_per_kg[food] * 0.
             ch4 = self.ch4_emissions_per_kg[food] * 0.
             n2O = self.n2o_emissions_per_kg[food] * 0.
-        return {'CO2': co2,
-                'CH4': ch4,
-                'N2O': n2O, }
+        return {GlossaryCore.CO2: co2,
+                GlossaryCore.CH4: ch4,
+                GlossaryCore.N2O: n2O, }
 
     def compute_d_food_surface_d_red_meat_percentage(self, population_df, food):
         """

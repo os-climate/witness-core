@@ -83,7 +83,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
             coupling_name, after_name=self.ee.study_name)
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}.{coupling_name}.{extra_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{extra_name}',
                    'ns_public': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -259,7 +259,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         # self.ee.execute()
         full_values_dict = {}
         full_values_dict[f'{self.name}.CCUS.ccs_percentage'] = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(2020, 2101), 'ccs_percentage': 25})
+            {GlossaryCore.Years: np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1), 'ccs_percentage': 25})
         full_values_dict[f'{self.name}.sub_mda_class'] = 'GSNewtonMDA'
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)

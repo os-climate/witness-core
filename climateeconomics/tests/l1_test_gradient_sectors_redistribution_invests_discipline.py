@@ -30,7 +30,7 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2030
         self.years = np.arange(self.year_start, self.year_end + 1)
         n_years = len(self.years)
@@ -66,7 +66,7 @@ class SectorsRedistributionInvestsDiscipline(AbstractJacobianUnittest):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}',
-                   'ns_functions': f'{name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{name}',
                    'ns_coal_resource': f'{name}',
                    'ns_resource': f'{name}',

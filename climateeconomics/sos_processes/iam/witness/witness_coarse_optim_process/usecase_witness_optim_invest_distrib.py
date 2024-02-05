@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
     COUPLING_NAME, EXTRA_NAME
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import \
@@ -33,7 +34,7 @@ EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, bspline=False, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)

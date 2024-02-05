@@ -42,7 +42,7 @@ AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 
 class DataStudy():
-    def __init__(self, year_start=2020, year_end=2100, time_step=1,
+    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1,
                  agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT):
         self.study_name = 'default_name'
         self.year_start = year_start
@@ -206,16 +206,15 @@ class DataStudy():
         witness_input[f'{self.study_name}.init_discounted_utility'] = 4000.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
-        witness_input[f'{self.study_name}.total_emissions_ref'] = 7.2
-        witness_input[f'{self.study_name}.total_emissions_damage_ref'] = 18.0
+        
         witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
-        witness_input[f'{self.study_name_wo_extra_name}.NormalizationReferences.total_emissions_ref'] = 12.0
+        
         # 
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
                                                    GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   'Total N2O emissions': np.linspace(1.7e-3, 5.e-4, len(years)),
-                                                   'Total CH4 emissions': np.linspace(0.17, 0.01, len(years))})
+                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
+                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
         setup_data_list.append(witness_input)
 
@@ -238,7 +237,7 @@ class DataStudy():
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
             'weight': [1.0, 1.0, 0.0, 0.0],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', GlossaryCore.NS_WITNESS]
+            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_WITNESS]
         }
 
         func_df = DataFrame(data)
@@ -255,7 +254,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': 0.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': 'minimum_ppm_constraint',
@@ -263,7 +262,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': 'calories_per_day_constraint',
@@ -271,7 +270,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': GlossaryCore.ConstraintLowerBoundUsableCapital,
@@ -279,7 +278,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': 'non_use_capital_cons',
@@ -287,7 +286,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
             {
                 'variable': 'forest_lost_capital_cons',
@@ -295,7 +294,7 @@ class DataStudy():
                 'ftype': INEQ_CONSTRAINT,
                 'weight': -1.0,
                 AGGR_TYPE: AGGR_TYPE_SMAX,
-                'namespace': 'ns_functions',
+                'namespace': GlossaryCore.NS_FUNCTIONS,
             },
         ]
 

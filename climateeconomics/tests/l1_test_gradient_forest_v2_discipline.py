@@ -44,7 +44,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
                    GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_functions': f'{self.name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}
@@ -59,7 +59,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2035
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -143,7 +143,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
                    GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_functions': f'{self.name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}
@@ -158,7 +158,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2030
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -245,7 +245,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
                    GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_functions': f'{self.name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}
@@ -260,7 +260,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2030
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
@@ -345,7 +345,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         model_name = 'Forest'
         ns_dict = {'ns_public': f'{self.name}',
                    GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_functions': f'{self.name}.{model_name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}.{model_name}',
                    'ns_forest': f'{self.name}.{model_name}',
                    'ns_agriculture': f'{self.name}.{model_name}',
                    'ns_invest': f'{self.name}.{model_name}'}
@@ -360,7 +360,7 @@ class ForestJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.year_start = 2020
+        self.year_start =GlossaryCore.YeartStartDefault
         self.year_end = 2030
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)

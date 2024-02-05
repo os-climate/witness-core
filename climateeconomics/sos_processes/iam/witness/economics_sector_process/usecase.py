@@ -54,7 +54,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2000, year_end=2020, time_step=1, name='', execution_engine=None):
+    def __init__(self, year_start=2000, year_end=GlossaryCore.YeartStartDefault, time_step=1, name='', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.macro_name = 'Macroeconomics'
@@ -138,6 +138,13 @@ class Study(StudyManager):
             {GlossaryCore.Years: years,
              GlossaryCore.EnergyInvestmentsWoTaxValue: np.linspace(40, 65, len(years))})
 
+        global_data_dir = join(dirname(dirname(dirname(dirname(dirname(__file__))))), 'data')
+        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        # for i in range(len(section_gdp_df)):
+        #     section_gdp_df.replace(section_gdp_df.iloc[i]['years'], int(section_gdp_df.iloc[i]['years']))
+
+        section_gdp_df = section_gdp_df.astype({'years': int})
+
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         sect_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
@@ -151,6 +158,7 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
         sect_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}"] = invest_energy_wo_tax
         sect_input[f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}"] = damage_df
+        sect_input[f"{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}"] = section_gdp_df
 
         if self.year_start == 2000:
             sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{'capital_start'}"] = 31.763

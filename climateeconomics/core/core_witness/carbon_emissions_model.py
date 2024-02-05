@@ -25,7 +25,7 @@ class CarbonEmissions():
     '''
     Used to compute carbon emissions from gross output 
     '''
-    GHG_TYPE_LIST = [N2O.name, 'CO2', 'CH4']
+    GHG_TYPE_LIST = [N2O.name, GlossaryCore.CO2, GlossaryCore.CH4]
 
     def __init__(self, param):
         '''

@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.diet.diet_optim_sub_process._usecase_witness_optim_sub import \
     Study as witness_optim_sub_usecase
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME, \
@@ -35,7 +36,7 @@ WRITE_XVECT = DesignVarDiscipline.WRITE_XVECT
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=2020, year_end=2100, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, bspline=False, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)

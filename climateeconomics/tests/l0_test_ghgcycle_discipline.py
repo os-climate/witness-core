@@ -35,7 +35,7 @@ class GHGCycleDiscTest(unittest.TestCase):
         self.model_name = 'GHGCycle'
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -54,20 +54,19 @@ class GHGCycleDiscTest(unittest.TestCase):
             join(data_dir, 'co2_emissions_onestep.csv'))
         emissions_df[GlossaryCore.TotalCO2Emissions] = emissions_df['total_emissions']
 
-        emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= 2020]
-        emissions_df['Total CH4 emissions'] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.3/40
-        emissions_df['Total N2O emissions'] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.008/40
+        emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        emissions_df[GlossaryCore.TotalCH4Emissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.3/40
+        emissions_df[GlossaryCore.TotalN2OEmissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.008/40
 
-        values_dict = {f'{self.name}.GHG_emissions_df': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, 'Total CH4 emissions', 'Total N2O emissions']]}
+        values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, GlossaryCore.TotalCH4Emissions, GlossaryCore.TotalN2OEmissions]]}
 
         self.ee.load_study_from_input_dict(values_dict)
 
         self.ee.execute()
 
-        ghg_cycle_df = self.ee.dm.get_value(f'{self.name}.ghg_cycle_df')
-
-        # disc = self.ee.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[0]
-        # filter = disc.get_chart_filter_list()
-        # graph_list = disc.get_post_processing_list(filter)
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+        disc = self.ee.dm.get_disciplines_with_name(f'{self.name}.{self.model_name}')[0]
+        filter = disc.get_chart_filter_list()
+        graph_list = disc.get_post_processing_list(filter)
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass

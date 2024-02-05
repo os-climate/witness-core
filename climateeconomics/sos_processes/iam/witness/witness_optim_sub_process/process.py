@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 # -*- coding: utf-8 -*-
 
 
@@ -42,11 +43,11 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         chain_builders = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.witness', 'witness',
-            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, process_level=self.process_level)
+            techno_dict=self.techno_dict, invest_discipline=self.invest_discipline, process_level=self.process_level, use_resources_bool=self.use_resources_bool)
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            extra_name, after_name=self.ee.study_name, clean_namespaces = True, clean_all_ns_with_name = True)
+            extra_name, after_name=self.ee.study_name, clean_existing=True)
         self.ee.factory.update_builder_list_with_extra_name(
             extra_name, builder_list=chain_builders)
 
@@ -64,12 +65,12 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # modify namespaces defined in the child process
         self.ee.ns_manager.update_namespace_list_with_extra_ns(
-            coupling_name, after_name=self.ee.study_name, clean_namespaces = True, clean_all_ns_with_name = True)
+            coupling_name, after_name=self.ee.study_name, clean_existing = True)
 
-        ns_dict = {'ns_functions': f'{self.ee.study_name}.{coupling_name}.{extra_name}',
+        ns_dict = {GlossaryCore.NS_FUNCTIONS: f'{self.ee.study_name}.{coupling_name}.{extra_name}',
                    #'ns_public': f'{self.ee.study_name}',
                    'ns_optim': f'{self.ee.study_name}',
-                   'ns_ref': f'{self.ee.study_name}.NormalizationReferences',
+                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.NormalizationReferences',
                    'ns_invest': f'{self.ee.study_name}.{coupling_name}.{extra_name}.{INVEST_DISC_NAME}', }
         self.ee.ns_manager.add_ns_def(ns_dict)
 

@@ -103,7 +103,7 @@ class UraniumResourceModel(ResourceModel):
                 self.predictable_production[resource_type] = np.linspace(
                     0, 0, len(self.predictable_production.index))
 
-        current_year = 2020
+        current_year = GlossaryCore.YeartStartDefault
         production_sample = self.predictable_production.loc[self.predictable_production[GlossaryCore.Years]
                                                             >= self.production_start]
         for idx in self.predictable_production.index:

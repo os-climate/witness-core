@@ -44,8 +44,8 @@ class MacroDiscTest(unittest.TestCase):
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_MACRO: f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    'ns_energy_study': f'{self.name}',}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -60,11 +60,11 @@ class MacroDiscTest(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         # put manually the index
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         self.years = years
 
-        year_start = 2020
-        year_end = 2100
+        year_start = GlossaryCore.YeartStartDefault
+        year_end = GlossaryCore.YeartEndDefault
         time_step = 1
         nb_per = round(
             (year_end - year_start) / time_step + 1)
@@ -89,7 +89,7 @@ class MacroDiscTest(unittest.TestCase):
             'year': [2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
             'energy': [149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
         f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
-        #Find values for 2020, 2050 and concat dfs 
+        #Find values for 2020, 2050 and concat dfs
         energy_supply = f2(np.arange(year_start, year_end+1))
         energy_supply_values = energy_supply * brut_net 
         energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: energy_supply_values})
@@ -125,7 +125,7 @@ class MacroDiscTest(unittest.TestCase):
         working_age_pop_df.index = years
         energy_supply_df_all = read_csv(
             join(data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= 2020][[
+        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
             GlossaryCore.Years, 'total_CO2_emitted']]
         energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
         co2_emissions_gt = energy_supply_df_y.rename(

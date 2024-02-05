@@ -39,7 +39,7 @@ def post_processing_filters(execution_engine, namespace):
 
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
+    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
     filters.append(ChartFilter('Charts', chart_list, chart_list, 'Charts'))
     filters.append(ChartFilter('Scenarios', scenario_list,
@@ -54,7 +54,7 @@ def post_processings(execution_engine, namespace, filters):
 
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
-    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
+    scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
     # Overload default value with chart filter
     graphs_list = ['Temperature vs Utility',
@@ -120,7 +120,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = f'Summed CO2 emissions'
         y_axis_name = f'Welfare in {year_end}'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHG_emissions_df',
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGEmissionsDfValue}',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
         (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
@@ -145,7 +145,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = f'Summed CO2 emissions'
         y_axis_name = 'min( Utility )'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHG_emissions_df',
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGEmissionsDfValue}',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
         (co2_emissions_df_dict, utility_df_dict) = get_df_per_scenario_dict(
@@ -171,7 +171,7 @@ def post_processings(execution_engine, namespace, filters):
         x_axis_name = f'Mean ppm'
         y_axis_name = f'Utility in {year_end}'
 
-        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.ghg_cycle_df',
+        df_paths = [f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGCycleDfValue}',
                     f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.UtilityDfValue}',
                     ]
         (carboncycle_detail_df_dict, utility_df_dict) = get_df_per_scenario_dict(
@@ -179,7 +179,7 @@ def post_processings(execution_engine, namespace, filters):
 
         mean_co2_ppm_dict, welfare_dict = {}, {}
         for scenario in scenario_list:
-            mean_co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario]['co2_ppm'].mean(
+            mean_co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario][GlossaryCore.CO2Concentration].mean(
             )
             welfare_dict[scenario] = utility_df_dict[scenario][GlossaryCore.DiscountedUtility][year_end]
         namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
@@ -297,7 +297,7 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Carbon emissions (Gtc)'
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.GHG_emissions_df']
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGEmissionsDfValue}']
         (co2_emissions_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
@@ -319,13 +319,13 @@ def post_processings(execution_engine, namespace, filters):
         y_axis_name = 'Atmospheric concentrations parts per million'
 
         df_paths = [
-            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.ghg_cycle_df']
+            f'{OPTIM_NAME}.{COUPLING_NAME}.{EXTRA_NAME}.{GlossaryCore.GHGCycleDfValue}']
         (carboncycle_detail_df_dict,) = get_df_per_scenario_dict(
             execution_engine, df_paths)
 
         co2_ppm_dict, welfare_dict = {}, {}
         for scenario in scenario_list:
-            co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario]['co2_ppm'].values.tolist(
+            co2_ppm_dict[scenario] = carboncycle_detail_df_dict[scenario][GlossaryCore.CO2Concentration].values.tolist(
             )
 
         new_chart = get_scenario_comparison_chart(years, co2_ppm_dict,
@@ -494,7 +494,7 @@ def get_df_per_scenario_dict(execution_engine, df_paths, scenario_list=None):
     scatter_scenario = 'optimization scenarios'
     namespace_w = f'{execution_engine.study_name}.{scatter_scenario}'
     if not scenario_list:
-        scenario_list = execution_engine.dm.get_value(f'{namespace_w}.scenario_df')['scenario_name'].tolist()
+        scenario_list = execution_engine.dm.get_value(f'{namespace_w}.samples_df')['scenario_name'].tolist()
 
     for scenario in scenario_list:
         for i, df_path in enumerate(df_paths):

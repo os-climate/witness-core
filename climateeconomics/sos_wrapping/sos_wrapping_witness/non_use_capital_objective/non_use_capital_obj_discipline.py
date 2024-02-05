@@ -60,11 +60,11 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                      'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                      'user_level': 1, 'structuring': True, 'unit': '-'},
         'non_use_capital_obj_ref': {'type': 'float', 'default': 50000., 'unit': 'G$', 'user_level': 2,
-                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                    'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         'non_use_capital_cons_ref': {'type': 'float', 'default': 20000., 'unit': 'G$', 'user_level': 2,
-                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                     'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         'non_use_capital_cons_limit': {'type': 'float', 'default': 40000., 'unit': 'G$', 'user_level': 2,
-                                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                                       'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         'forest_lost_capital': {'type': 'dataframe', 'unit': 'G$', 'user_level': 2, 'visibility': SoSWrapp.SHARED_VISIBILITY,
                                 'namespace': 'ns_forest', 'dataframe_descriptor':{
                                                          GlossaryCore.Years: ('float', None, False),
@@ -74,9 +74,9 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                                                      }
                                                  },
         'forest_lost_capital_cons_ref': {'type': 'float',  'unit': 'G$', 'default': 20., 'user_level': 2,
-                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref',},
+                                         'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE,},
         'forest_lost_capital_cons_limit': {'type': 'float', 'unit': 'G$', 'default': 40., 'user_level': 2,
-                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref',
+                                           'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE,
                                            }
 
     }
@@ -125,7 +125,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                     dynamic_inputs[f'{ccs}.{GlossaryCore.techno_list}'] = {'type': 'list',
                                                                   'subtype_descriptor': {'list': 'string'},
                                                                   'visibility': SoSWrapp.SHARED_VISIBILITY,
-                                                                  'namespace': 'ns_ccs',
+                                                                  'namespace': GlossaryCore.NS_CCS,
                                                                   'structuring': True,
                                                                   'possible_values': EnergyMix.stream_class_dict[
                                                                       ccs].default_techno_list}
@@ -134,7 +134,7 @@ class NonUseCapitalObjectiveDiscipline(SoSWrapp):
                         techno_list = self.get_sosdisc_inputs(
                             f'{ccs}.{GlossaryCore.techno_list}')
                         if techno_list is not None:
-                            energy_techno_dict[ccs] = {'namespace': 'ns_ccs',
+                            energy_techno_dict[ccs] = {'namespace': GlossaryCore.NS_CCS,
                                                        'value': techno_list}
 
         if 'agri_capital_techno_list' in self.get_data_in():

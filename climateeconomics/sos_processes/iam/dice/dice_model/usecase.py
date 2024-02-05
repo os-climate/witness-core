@@ -23,7 +23,7 @@ from sostrades_core.study_manager.study_manager import StudyManager
 
 class Study(StudyManager):
     year_start = 2015
-    year_end = 2100
+    year_end = GlossaryCore.YeartEndDefault
     time_step = 5
 
     def __init__(self, execution_engine=None):

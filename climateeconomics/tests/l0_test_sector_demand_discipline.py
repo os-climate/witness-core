@@ -27,8 +27,8 @@ class SectorDemandDisciplineTest(unittest.TestCase):
 
     def setUp(self):
         """Initialize third data needed for testing"""
-        self.year_start = 2020
-        self.year_end = 2100
+        self.year_start =GlossaryCore.YeartStartDefault
+        self.year_end = GlossaryCore.YeartEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
 
         self.sector_list = GlossaryCore.SectorsPossibleValues
@@ -64,7 +64,7 @@ class SectorDemandDisciplineTest(unittest.TestCase):
         ee = ExecutionEngine(name)
         ns_dict = {'ns_public': f'{name}',
                    GlossaryCore.NS_WITNESS: f'{name}',
-                   'ns_functions': f'{name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{name}',
                    'ns_coal_resource': f'{name}',
                    'ns_resource': f'{name}',

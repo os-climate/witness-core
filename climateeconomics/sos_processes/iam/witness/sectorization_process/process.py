@@ -36,8 +36,8 @@ class ProcessBuilder(BaseProcessBuilder):
                    GlossaryCore.NS_MACRO: ns_macro,
                    GlossaryCore.NS_ENERGY_MIX: ns_scatter,
                    'ns_public': ns_scatter,
-                   'ns_functions': ns_scatter,
-                   'ns_ref': ns_scatter,
+                   GlossaryCore.NS_FUNCTIONS: ns_scatter,
+                   GlossaryCore.NS_REFERENCE: ns_scatter,
                    GlossaryCore.NS_SECTORS: ns_macro
                    }
 

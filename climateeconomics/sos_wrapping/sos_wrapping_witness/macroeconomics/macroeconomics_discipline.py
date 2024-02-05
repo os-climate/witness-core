@@ -51,7 +51,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     _maturity = 'Research'
-    years = np.arange(2020, 2101)
+    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
@@ -110,13 +110,14 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3,
-                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                     GlossaryCore.Capital: ('float', None, False), }
                            },
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
+        GlossaryCore.UsableCapitalObjectiveRefName: GlossaryCore.UsableCapitalObjectiveRef
     }
 
     DESC_OUT = {
@@ -132,12 +133,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.DetailedCapitalDfValue: {'type': 'dataframe', 'unit': '-',
                                               'dataframe_descriptor':GlossaryCore.DetailedCapitalDf['dataframe_descriptor']},
         GlossaryCore.ConstraintLowerBoundUsableCapital: {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_functions'},
+                                     'namespace': GlossaryCore.NS_FUNCTIONS},
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
                                              'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                             'namespace': 'ns_functions'},
-        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict
+                                             'namespace': GlossaryCore.NS_FUNCTIONS},
+        GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict,
+        GlossaryCore.UsableCapitalObjectiveName: GlossaryCore.UsableCapitalObjective
     }
 
     def setup_sos_disciplines(self):
@@ -193,8 +195,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         '''
         Get default values for gross_output_in into GDP PPP economics_df_ssp3.csv file
         '''
-        year_start = 2020
-        year_end = 2100
+        year_start = GlossaryCore.YeartStartDefault
+        year_end = GlossaryCore.YeartEndDefault
         if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 [GlossaryCore.YearStart, GlossaryCore.YearEnd])
@@ -305,7 +307,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.CapitalDfValue: capital_df[GlossaryCore.CapitalDf['dataframe_descriptor'].keys()],
                        GlossaryCore.ConstraintLowerBoundUsableCapital: self.macro_model.delta_capital_cons,
                        GlossaryCore.EnergyWastedObjective: energy_wasted_objective,
-                       GlossaryCore.SectionGdpDictValue: self.macro_model.dict_sectors_detailed
+                       GlossaryCore.SectionGdpDictValue: self.macro_model.dict_sectors_detailed,
+                       GlossaryCore.UsableCapitalObjectiveName: self.macro_model.usable_capital_objective
                        }
 
         self.store_sos_outputs_values(dict_values)
@@ -346,7 +349,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             npzeros)
 
         # Compute gradient for coupling variable Total production
-        d_gross_output_d_energy, d_usable_capital_d_energy, d_lower_bound_constraint_dE, d_energy_wasted_d_energy = self.macro_model.d_Y_Ku_Ew_Constraint_d_energy()
+        d_gross_output_d_energy, d_usable_capital_d_energy, d_lower_bound_constraint_dE, d_energy_wasted_d_energy, dusable_capital_obj_d_energy = self.macro_model.d_Y_Ku_Ew_Constraint_d_energy()
         # gradient of the energy_wasted_objective
         d_sum_energy_wasted_d_energy_total = np.ones(nb_years) @ d_energy_wasted_d_energy
         d_sum_energy_total_d_energy_total = np.ones(nb_years) @ np.identity(nb_years)
@@ -358,8 +361,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             d_net_output_d_energy, d_investment_d_energy)
         d_consumption_pc_d_energy = self.macro_model.d_consumption_per_capita_d_user_input(d_consumption_d_energy)
         d_damage_from_climate_d_energy = self.macro_model.d_damages_from_climate_d_user_input(d_gross_output_d_energy, d_net_output_d_energy)
-        d_damage_from_productivity_loss_d_energy = self.macro_model.d_damages_from_productivity_loss_d_user_input(d_gross_output_d_energy)
+        d_estimated_damage_from_climate_d_energy = self.macro_model.d_estimated_damages_from_climate_d_user_input(d_gross_output_d_energy,d_net_output_d_energy)
+        d_damage_from_productivity_loss_d_energy, d_estimated_damages_from_prod_loss_d_energy = \
+            self.macro_model.d_damages_from_productivity_loss_d_user_input(d_gross_output_d_energy)
         d_damages_d_energy = self.macro_model.d_damages_d_user_input(d_damage_from_productivity_loss_d_energy , d_damage_from_climate_d_energy)
+        d_estimated_damages_d_energy = self.macro_model.d_estimated_damages_d_user_input(d_estimated_damages_from_prod_loss_d_energy, d_estimated_damage_from_climate_d_energy)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.CapitalDfValue, GlossaryCore.UsableCapital),
@@ -389,6 +395,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             d_lower_bound_constraint_dE)
 
         self.set_partial_derivative_for_other_types(
+            (GlossaryCore.UsableCapitalObjectiveName,),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            dusable_capital_obj_d_energy)
+
+        self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_energy_wasted_d_energy)
@@ -402,9 +413,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
             (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
             d_damages_d_energy)
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+            (GlossaryCore.EnergyProductionValue, GlossaryCore.TotalProductionValue),
+            d_estimated_damages_d_energy)
 
         # Compute gradient for coupling variable damage (column damage frac output)
-        d_gross_output_d_damage_frac_output, d_Ku_d_dfo, d_Ew_d_dfo, d_lower_bound_constraint_d_dfo = \
+        d_gross_output_d_damage_frac_output, d_Ku_d_dfo, d_Ew_d_dfo, d_lower_bound_constraint_d_dfo, dusable_capital_obj_d_dfo = \
             self.macro_model.d_gross_output_d_damage_frac_output()
         d_net_output_d_damage_frac_output = self.macro_model.d_net_output_d_damage_frac_output(d_gross_output_d_damage_frac_output)
         (denergy_investment_d_damage_frac_output,
@@ -421,8 +436,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         d_sum_energy_total_d_damage_frac_output = np.zeros(nb_years) @ np.identity(nb_years)
         d_energy_wasted_objective_d_damage_frac_output = self.macro_model.grad_energy_wasted_objective(d_sum_energy_wasted_d_damage_frac_output, d_sum_energy_total_d_damage_frac_output)
         d_damages_from_climate_d_damage_frac_output = self.macro_model.d_damages_from_climate_d_user_input(d_gross_output_d_damage_frac_output, d_net_output_d_damage_frac_output)
-        d_damages_from_productivity_loss_d_damage_frac_output = self.macro_model.d_damages_from_productivity_loss_d_damage_fraction_output(d_gross_output_d_damage_frac_output)
+        d_estimated_damages_from_climate_d_damage_frac_output = self.macro_model.d_estimated_damages_from_climate_d_damage_frac_output(d_gross_output_d_damage_frac_output, d_net_output_d_damage_frac_output)
+        d_damages_from_productivity_loss_d_damage_frac_output, d_estimated_damages_from_productivity_loss_d_damage_fraction_output = \
+            self.macro_model.d_damages_from_productivity_loss_d_damage_fraction_output(d_gross_output_d_damage_frac_output)
         d_damages_d_damage_frac_output = self.macro_model.d_damages_d_user_input(d_damages_from_climate_d_damage_frac_output, d_damages_from_productivity_loss_d_damage_frac_output)
+        d_estimated_damages_d_damage_frac_output = self.macro_model.d_estimated_damages_d_user_input(d_estimated_damages_from_climate_d_damage_frac_output, d_estimated_damages_from_productivity_loss_d_damage_fraction_output)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.GrossOutput),
@@ -448,6 +466,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.ConstraintLowerBoundUsableCapital,),
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
             d_lower_bound_constraint_d_dfo)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.UsableCapitalObjectiveName,),
+            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            dusable_capital_obj_d_dfo)
+
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
@@ -461,6 +485,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
             d_damages_d_damage_frac_output)
 
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+            (GlossaryCore.DamageFractionDfValue, GlossaryCore.DamageFractionOutput),
+            d_estimated_damages_d_damage_frac_output)
+
         # Compute gradients wrt population_df
         d_consumption_pc_d_population = self.macro_model.d_consumption_pc_d_population()
         self.set_partial_derivative_for_other_types(
@@ -470,7 +499,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
         # Compute gradients with respect to working age population
         d_workforce_d_working_age_population = self.macro_model.d_workforce_d_workagepop()
-        d_Ku_d_wap, d_Ew_d_wap, d_gross_output_d_working_age_population, d_lower_bound_constraint_d_wap = self.macro_model.d_gross_output_d_working_pop()
+        d_Ku_d_wap, d_Ew_d_wap, d_gross_output_d_working_age_population, d_lower_bound_constraint_d_wap, dusable_capital_obj_d_wap = self.macro_model.d_gross_output_d_working_pop()
         d_net_output_d_work_age_population = self.macro_model.d_net_output_d_user_input(d_gross_output_d_working_age_population)
         d_energy_investment_d_working_age_population, \
         d_investment_d_working_age_population, \
@@ -486,8 +515,13 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         d_energy_wasted_objective_d_working_age_population = self.macro_model.grad_energy_wasted_objective(
             d_sum_energy_wasted_d_working_age_population, d_sum_energy_total_d_working_age_population)
         d_damage_from_climate_d_working_age_pop = self.macro_model.d_damages_from_climate_d_user_input(d_gross_output_d_working_age_population, d_net_output_d_work_age_population)
-        d_damage_from_productivity_loss_d_working_age_pop = self.macro_model.d_damages_from_productivity_loss_d_user_input(d_gross_output_d_working_age_population)
+        d_estimated_damage_from_climate_d_working_age_pop = self.macro_model.d_estimated_damages_from_climate_d_user_input(
+            d_gross_output_d_working_age_population, d_net_output_d_work_age_population)
+        d_damage_from_productivity_loss_d_working_age_pop, d_estimated_damage_from_productivity_loss_d_working_age_pop = \
+            self.macro_model.d_damages_from_productivity_loss_d_user_input(d_gross_output_d_working_age_population)
         d_damages_d_working_age_pop = self.macro_model.d_damages_d_user_input(d_damage_from_productivity_loss_d_working_age_pop,d_damage_from_climate_d_working_age_pop)
+        d_estimated_damages_d_working_age_pop = self.macro_model.d_estimated_damages_d_user_input(
+            d_estimated_damage_from_productivity_loss_d_working_age_pop, d_estimated_damage_from_climate_d_working_age_pop)
 
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.WorkforceDfValue, GlossaryCore.Workforce),
@@ -525,6 +559,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             d_lower_bound_constraint_d_wap)
 
         self.set_partial_derivative_for_other_types(
+            (GlossaryCore.UsableCapitalObjectiveName,),
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
+            dusable_capital_obj_d_wap)
+
+        self.set_partial_derivative_for_other_types(
             (GlossaryCore.EconomicsDfValue, GlossaryCore.EnergyWasted),
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             d_Ew_d_wap)
@@ -537,6 +576,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             (GlossaryCore.DamageDfValue, GlossaryCore.Damages),
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
             d_damages_d_working_age_pop)
+
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.DamageDfValue, GlossaryCore.EstimatedDamages),
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
+            d_estimated_damages_d_working_age_pop)
 
         # Compute gradients with respect to energy_investment
         d_investment_d_energy_investment_wo_tax, d_energy_investment_d_energy_investment_wo_tax,\
@@ -716,7 +760,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                 GlossaryCore.EstimatedDamagesFromProductivityLoss: 'Damages due to loss of productivity (estimation ' + 'not ' * (not damage_to_productivity) +'applied to gross output)',})
 
             applied_damages = damage_detailed_df[GlossaryCore.Damages].values
-            all_damages = damage_detailed_df[GlossaryCore.EstimatedDamagesFromClimate].values + damage_detailed_df[GlossaryCore.EstimatedDamagesFromProductivityLoss].values
+            all_damages = damage_detailed_df[GlossaryCore.EstimatedDamages].values
             years = list(damage_detailed_df[GlossaryCore.Years].values)
             chart_name = f'Breakdown of damages' + ' (not applied)' * (not compute_climate_impact_on_gdp)
 
@@ -1078,3 +1122,90 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     default_title=True, default_legend=False))
 
         return instanciated_charts
+
+def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impact_on_gdp, damages_to_productivity):
+    """ returns dashboard graph for output """
+    to_plot_line = [GlossaryCore.OutputNetOfDamage]
+
+    to_plot_bar = [GlossaryCore.EnergyInvestmentsValue,
+                    GlossaryCore.NonEnergyInvestmentsValue,
+                   GlossaryCore.Consumption]
+
+    legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
+              GlossaryCore.InvestmentsValue: 'Total investments',
+              GlossaryCore.EnergyInvestmentsValue: 'Energy investments',
+              GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy investments',
+              GlossaryCore.Consumption: 'Consumption',
+              }
+
+    years = list(economics_detail_df.index)
+
+    chart_name = 'Breakdown of output per year'
+
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
+                                         chart_name=chart_name, stacked_bar=True,
+                                         y_min_zero=not compute_climate_impact_on_gdp)
+
+    for key in to_plot_line:
+        visible_line = True
+        ordonate_data = list(economics_detail_df[key])
+        new_series = InstanciatedSeries(
+            years, ordonate_data, legend[key], 'lines', visible_line)
+        new_chart.series.append(new_series)
+
+    gross_output = economics_detail_df[GlossaryCore.GrossOutput].values
+    new_series = InstanciatedSeries(
+        years, list(gross_output), 'Gross output', 'lines', True)
+    new_chart.series.append(new_series)
+
+    for key in to_plot_bar:
+        ordonate_data = list(economics_detail_df[key])
+        new_series = InstanciatedSeries(
+            years, ordonate_data, legend[key], 'bar', True)
+        new_chart.series.append(new_series)
+
+    new_series = InstanciatedSeries(
+        years, list(economics_detail_df[GlossaryCore.InvestmentsValue]),
+        legend[GlossaryCore.InvestmentsValue],
+        'lines', True)
+    new_chart.series.append(new_series)
+
+    if compute_climate_impact_on_gdp:
+        ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
+        new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
+        new_chart.series.append(new_series)
+
+        if damages_to_productivity:
+            gdp_without_damage_to_prod = gross_output + damage_detailed_df[
+                GlossaryCore.EstimatedDamagesFromProductivityLoss].values
+            ordonate_data = list(gdp_without_damage_to_prod)
+            new_series = InstanciatedSeries(years, ordonate_data,
+                                            'Pessimistic estimation of gross output without damages to productivity',
+                                            'dash_lines')
+            new_chart.add_series(new_series)
+
+            # removing the lines used for the surface so that they are not duplicated
+            new_chart.series.pop(-1)
+            new_chart.series.pop(1)
+
+            new_chart = new_chart.to_plotly()
+            import plotly.graph_objects as go
+
+            new_chart.add_trace(go.Scatter(x=years, y=list(gross_output),
+                                           mode='lines',
+                                           name="Gross output"
+                                           ))
+
+            new_chart.add_trace(go.Scatter(
+                x=years,
+                y=list(gdp_without_damage_to_prod),
+                fill='tonexty',  # fill area between trace0 and trace1
+                mode='lines',
+                fillcolor='rgba(200, 200, 200, 0.3)',
+                line={'dash': 'dash', 'color': 'rgb(200, 200, 200)'},
+                opacity=0.2,
+                name='Pessimistic estimation of gross output without damages to productivity', ))
+
+            new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+
+    return new_chart

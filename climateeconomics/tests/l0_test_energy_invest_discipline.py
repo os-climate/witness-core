@@ -36,8 +36,8 @@ class EnergyInvestDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
                    'ns_energy_study': f'{self.name}',}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -51,7 +51,7 @@ class EnergyInvestDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        years = np.arange(2020, 2101, 1)
+        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
         n_years = len(years)
         time = np.arange(0, n_years)
 

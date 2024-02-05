@@ -49,7 +49,7 @@ class LandUseV2Discipline(SoSWrapp):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    default_year_start = 2020
+    default_year_start = GlossaryCore.YeartStartDefault
     default_year_end = 2050
     initial_unmanaged_forest_surface = 4 - 1.25
 
@@ -122,11 +122,11 @@ class LandUseV2Discipline(SoSWrapp):
                                             'global_forest_surface': ('float', None, False), }
                },
                LandUseV2.LAND_DEMAND_CONSTRAINT_REF: {
-                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_ref'},}
+                   'type': 'float', 'unit': 'GHa', 'default': 0.1,  'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},}
 
     DESC_OUT = {
         LandUseV2.LAND_DEMAND_CONSTRAINT: {
-            'type': 'array', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_functions'},
+            'type': 'array', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_FUNCTIONS},
         LandUseV2.LAND_SURFACE_DETAIL_DF: {'type': 'dataframe', 'unit': 'Gha'},
         LandUseV2.LAND_SURFACE_FOR_FOOD_DF: {
             'type': 'dataframe', 'unit': 'Gha', 'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS}

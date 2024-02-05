@@ -44,7 +44,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
-    years = np.arange(2020, 2101)
+    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
 
     _maturity = 'Research'
     DESC_IN = {
@@ -80,17 +80,17 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'beta': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-',
                  'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
         'min_co2_objective': {'type': 'float', 'default': -1000., 'unit': 'GtCO2', 'user_level': 2},
-        'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'GtCO2', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
-        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs',
+        'total_emissions_ref': {'type': 'float', 'default': 39.6, 'unit': 'GtCO2', 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
+        'co2_emissions_ccus_Gt': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_CCS,
                                   'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                            'carbon_storage Limited by capture (Gt)': ('float', None, False),}},
-        'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs',
+        'CO2_emissions_by_use_sources': {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_CCS,
                                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                   'carbon_capture from energy mix (Gt)': ('float', None, False),
                                                                   'Total CO2 by use (Gt)': ('float', None, False),
                                                                   'Total CO2 from Flue Gas (Gt)': ('float', None, False),
                                                                   'CO2 from energy mix (Gt)': ('float', None, False)}},
-        'CO2_emissions_by_use_sinks':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ccs',
+        'CO2_emissions_by_use_sinks':  {'type': 'dataframe', 'unit': 'Gt', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_CCS,
                                         'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                  'CO2_resource removed by energy mix (Gt)': ('float', None, False),
                                                                  'CO2 removed by energy mix (Gt)': ('float', None, False),}},

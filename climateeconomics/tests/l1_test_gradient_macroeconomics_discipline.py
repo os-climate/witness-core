@@ -33,7 +33,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = 2020
+        self.year_start = GlossaryCore.YeartStartDefault
         self.year_end = 2050
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
@@ -105,7 +105,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         # default CO2 tax
         self.default_CO2_tax = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 50.0}, index = self.years)
-        self.default_CO2_tax.loc[2020, GlossaryCore.CO2Tax] = 5000.0
+        self.default_CO2_tax.loc[GlossaryCore.YeartStartDefault, GlossaryCore.CO2Tax] = 5000.0
         self.default_CO2_tax.loc[2021, GlossaryCore.CO2Tax] = 120.0
 
         #Population workforce
@@ -144,8 +144,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}' }
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}' }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -207,7 +207,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
-                            ])
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
+                                     ])
 
     def test_macro_economics_analytic_grad_damageproductivity(self):
         self.model_name = 'Macroeconomics'
@@ -216,8 +218,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
@@ -271,6 +273,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
         ])
 
     def test_macro_economics_analytic_grad_max_damage(self):
@@ -281,8 +284,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
@@ -338,7 +341,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
-        ])
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
+                                     ])
 
     def test_macro_economics_analytic_grad_gigantic_invest(self):
         self.model_name = 'Macroeconomics'
@@ -347,8 +352,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
@@ -410,7 +415,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
-        ])
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
+                                     ])
 
     def test_macro_economics_very_high_emissions(self):
         self.model_name = 'Macroeconomics'
@@ -419,8 +426,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -486,7 +493,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
-        ])
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
+                                     ])
 
     def test_macro_economics_negativeco2_emissions(self):
         self.model_name = 'Macroeconomics'
@@ -495,8 +504,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -564,7 +573,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
-        ])
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
+                                     ])
 
     def test_macro_economics_negativeco2_tax(self):
         self.model_name = 'Macroeconomics'
@@ -573,8 +584,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -631,7 +642,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
-        ])
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
+                                     ])
 
     def test_macro_economics_without_compute_gdp_analytic_grad(self):
         """
@@ -644,8 +657,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -708,7 +721,9 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
-        ])
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
+                                     ])
 
     def test_macro_economics_without_compute_gdp_w_damage_to_productivity_analytic_grad(self):
         """
@@ -721,8 +736,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -785,6 +800,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
                                      ])
 
     def test_macro_economics_analytic_grad_deactive_co2_tax_investment(self):
@@ -797,8 +814,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -859,6 +876,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
                                      ])
 
     def test_gigantic_energy_production_no_damage_productivity(self):
@@ -868,8 +887,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -936,6 +955,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
                                      ])
 
     def test_gigantic_energy_production_damage_productivity(self):
@@ -945,8 +966,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -1015,6 +1036,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
                                      ])
 
     def test_gigantic_energy_production_wo_compute_gdp(self):
@@ -1024,8 +1047,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -1098,6 +1121,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
+
                                      ])
 
 

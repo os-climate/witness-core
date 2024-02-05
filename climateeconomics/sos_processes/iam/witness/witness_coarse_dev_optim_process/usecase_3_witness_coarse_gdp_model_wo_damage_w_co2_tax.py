@@ -15,13 +15,14 @@ limitations under the License.
 '''
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \
     Study as usecase_witness
 
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, run_usecase=False, execution_engine=None, year_start=2020, year_end=2100, time_step=1):
+    def __init__(self, run_usecase=False, execution_engine=None, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault , time_step=1):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end

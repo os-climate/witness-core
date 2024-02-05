@@ -50,7 +50,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
     AGRI_CAPITAL_TECHNO_LIST = []
     biomass_cal_val = BiomassDry.data_energy_dict[
         'calorific_value']
-    default_year_start = 2020
+    default_year_start = GlossaryCore.YeartStartDefault
     default_year_end = 2050
 
     deforestation_limit = 1000
