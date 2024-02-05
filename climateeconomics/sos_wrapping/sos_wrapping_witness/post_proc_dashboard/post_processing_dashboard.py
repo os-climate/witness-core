@@ -112,8 +112,8 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             name='CO2 captured by flue gas',
 
         ), secondary_y=False)
-        fig.update_yaxes(title_text='temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
-        fig.update_yaxes(title_text=f'Total CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
+        fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
+        fig.update_yaxes(title_text=f'CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
 
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
@@ -162,7 +162,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         fig.add_trace(go.Scatter(
             x=years,
             y=energy_mean_price[GlossaryEnergy.EnergyPriceValue].values.tolist(),
-            name='mean energy prices [$/MWh]',
+            name='Mean energy prices',
             #line=dict(color=qualitative.Set1[0]),
         ), secondary_y=True)
 
@@ -253,7 +253,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
     if 'land use' in chart_list:
         chart_name = 'Surface for forest and food production vs available land over time'
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Surface [Gha]',
                                              chart_name=chart_name, stacked_bar=True)
 
         new_chart = new_chart.to_plotly()
