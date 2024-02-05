@@ -54,7 +54,6 @@ class Study(ClimateEconomicsStudyManager):
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
         self.energy_mix_name = 'EnergyMix'
-        self.ccs_mix_name = 'CCUS'
         self.bspline = bspline
         self.invest_discipline = invest_discipline
         self.techno_dict = techno_dict
@@ -66,6 +65,7 @@ class Study(ClimateEconomicsStudyManager):
             agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
+    
     def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process
 
@@ -141,7 +141,7 @@ class Study(ClimateEconomicsStudyManager):
 
 
                 dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
+                    f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = \
                     activated_value
                 design_var_descriptor[f'{ccs}.{technology}.{ccs_wo_dot}_{technology_wo_dot}_array_mix'] = {
                     'out_name': GlossaryCore.invest_mix,
@@ -154,9 +154,9 @@ class Study(ClimateEconomicsStudyManager):
                 }
 
                 design_var_utilization_ratio_value = dspace_df[f'{ccs}.{technology}_utilization_ratio_array']['value']
-                dv_arrays_dict[f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
+                dv_arrays_dict[f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}_utilization_ratio_array'] = design_var_utilization_ratio_value
                 dv_arrays_dict[
-                    f'{self.witness_uc.study_name}.{self.ccs_mix_name}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
+                    f'{self.witness_uc.study_name}.{GlossaryCore.CCUS}.{ccs}.{technology}.{GlossaryCore.UtilisationRatioValue}'] = pd.DataFrame(
                     data={GlossaryCore.Years: years,
                           GlossaryCore.UtilisationRatioValue: 100.})
                 # add design variable for utilization ratio per technology

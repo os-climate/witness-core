@@ -50,7 +50,7 @@ class Study(ClimateEconomicsStudyManager):
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
         self.energy_mix_name = 'EnergyMix'
-        self.ccs_mix_name = 'CCUS'
+        GlossaryCore.CCUS = 'CCUS'
         if sub_usecase == 'uc2':
             self.witness_uc = witness_usecase2_story_telling(
                 self.year_start, self.year_end, self.time_step)
