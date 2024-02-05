@@ -66,7 +66,7 @@ class Study(ClimateEconomicsStudyManager):
             agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process
 
         @return list of dictionary: [{str: *}]
