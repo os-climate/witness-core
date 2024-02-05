@@ -1154,6 +1154,29 @@ class GlossaryCore:
         "description": "reference to normalize usable capital objective",
     }
 
+    TargetEnergyProductionValue = "Target energy production"
+    TargetProductionConstraintValue = "Target production constraint"
+    TargetEnergyProductionDf = {
+        "var_name": TargetEnergyProductionValue,
+        "type": "dataframe",
+        "description": " Energy Production",
+        "unit": "TWh$",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YeartEndDefault], False),
+            TargetEnergyProductionValue: ("float", [0., 1e12], True),
+        },
+    }
+
+    TargetProductionConstraint = {
+        "var_name": TargetProductionConstraintValue,
+        "type": "array",
+        "description": "Production Constraint",
+        "unit": "TWh$",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+    }
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""
