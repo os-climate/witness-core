@@ -53,7 +53,7 @@ class DataStudy():
         self.dspace = {}
         self.dspace['dspace_size'] = 0
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
         nb_per = round(
             (self.year_end - self.year_start) / self.time_step + 1)
@@ -153,7 +153,7 @@ class DataStudy():
 
         # -- load data from resource
         dc_resource = datacase_resource(
-            self.year_start, self.year_end)
+            self.year_start, self.year_end, main_study=False)
         dc_resource.study_name = self.study_name
 
         # -- load data from land use

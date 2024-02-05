@@ -57,7 +57,7 @@ class Study(ClimateEconomicsStudyManager):
         elif sub_usecase == 'uc7':
             self.witness_uc = witness_usecase7_story_telling(self.year_start, self.year_end, self.time_step)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process
 
         @return list of dictionary: [{str: *}]
