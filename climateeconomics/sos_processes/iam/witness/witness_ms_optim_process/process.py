@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.sos_processes.base_process_builder import BaseProcessBuilder
 
 
@@ -38,7 +39,7 @@ class ProcessBuilder(BaseProcessBuilder):
         # Add new namespaces needed for the scatter multiscenario
         ns_dict = {'ns_scatter_scenario': f'{self.ee.study_name}.{scatter_scenario_name}',
                    'ns_post_processing': f'{self.ee.study_name}.Post-processing',
-                   'ns_ref': f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences'}
+                   GlossaryCore.NS_REFERENCE: f'{self.ee.study_name}.{scatter_scenario_name}.NormalizationReferences'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

@@ -54,7 +54,7 @@ class DataStudy():
         self.dspace = {}
         self.dspace['dspace_size'] = 0
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
         nb_per = round(
             (self.year_end - self.year_start) / self.time_step + 1)
@@ -148,7 +148,6 @@ class DataStudy():
                                                             'energy_investment_before_year_start': [1924, 1927, 1935]},
                                                            index=[2017, 2018, 2019])
 
-        witness_input[f"{self.study_name}.{'agri_capital_techno_list'}"] = []
 
         CO2_emitted_land = pd.DataFrame()
         # GtCO2
@@ -162,7 +161,6 @@ class DataStudy():
         self.CO2_tax = np.asarray([50.] * len(years))
 
         witness_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsValue}"] = df_energy_investment
-        witness_input[f"{self.study_name}.{'energy_investment_before_year_start'}"] = df_energy_investment_before_year_start
 
         intermediate_point = 30
         # CO2 taxes related inputs
@@ -178,7 +176,7 @@ class DataStudy():
 
         # -- load data from resource
         dc_resource = datacase_resource(
-            self.year_start, self.year_end)
+            self.year_start, self.year_end, main_study=False)
         dc_resource.study_name = self.study_name
 
         # -- load data from land use
@@ -220,13 +218,10 @@ class DataStudy():
         witness_input[f'{self.study_name}.Macroeconomics.{GlossaryCore.CO2TaxEfficiencyValue}'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0
-        witness_input[f'{self.study_name}.gamma'] = 0.5
-        witness_input[f'{self.study_name}.init_discounted_utility'] = 4000.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
         
-        witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
-        
+
         # 
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
@@ -266,7 +261,7 @@ class DataStudy():
             'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
             'weight': [5e-4, 1.0, 1.0, 0.0, 0.0, 1.0],
             AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': ['ns_functions', 'ns_functions', 'ns_functions', 'ns_functions', 'ns_functions', 'ns_functions']
+            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS]
         }
 
         func_df = DataFrame(data)
@@ -287,7 +282,7 @@ class DataStudy():
         list_var.extend(
             ['rockstrom_limit_constraint', 'minimum_ppm_constraint'])
         list_parent.extend(['CO2 ppm', 'CO2 ppm'])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
         list_weight.extend([0.0, -1.0])
         list_aggr_type.extend(
@@ -297,7 +292,7 @@ class DataStudy():
         # calories_per_day_constraint
         list_var.append('calories_per_day_constraint')
         list_parent.append('agriculture_constraints')
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
         list_aggr_type.append(
@@ -307,7 +302,7 @@ class DataStudy():
         # -------------------------------------------------
         list_var.extend([GlossaryCore.ConstraintLowerBoundUsableCapital])
         list_parent.extend(['invests_constraints'])
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend([INEQ_CONSTRAINT])
         list_weight.extend([-1.0])
         list_aggr_type.extend([
@@ -315,7 +310,7 @@ class DataStudy():
 
         list_var.append('non_use_capital_cons')
         list_parent.append('invests_constraints')
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
         list_aggr_type.append(
@@ -323,7 +318,7 @@ class DataStudy():
 
         list_var.append('forest_lost_capital_cons')
         list_parent.append('agriculture_constraint')
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
         list_aggr_type.append(

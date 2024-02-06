@@ -51,7 +51,7 @@ class Study(ClimateEconomicsStudyManager):
         self.dspace = {}
         self.dspace['dspace_size'] = 0
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
         nb_per = round(
             (self.year_end - self.year_start) / self.time_step + 1)
@@ -67,16 +67,7 @@ class Study(ClimateEconomicsStudyManager):
         witness_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         witness_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
 
-        witness_input[f"{self.study_name}.{'Damage'}.{'tipping_point'}"] = True
-        witness_input[f"{self.study_name}.{'Macroeconomics'}.{GlossaryCore.DamageToProductivity}"] = True
-        witness_input[f"{self.study_name}.{GlossaryCore.FractionDamageToProductivityValue}"] = 0.30
-        witness_input[f"{self.study_name}.{'init_rate_time_pref'}"] = .015
-        witness_input[f"{self.study_name}.{'conso_elasticity'}"] = 1.45
-        witness_input[f"{self.study_name}.{GlossaryCore.InitialGrossOutput['var_name']}"] = 130.187
         # Relax constraint for 15 first years
-        witness_input[f"{self.study_name}.{'Damage.damage_constraint_factor'}"] = np.concatenate(
-            (np.linspace(1.0, 1.0, 20), np.asarray([1] * (len(years) - 20))))
-        #         witness_input[f"{self.study_name}.{}                       '.Damage.damage_constraint_factor'}" = np.asarray([1] * len(years))
         witness_input[f"{self.study_name}.{'InvestmentDistribution'}.forest_investment"] = self.forest_invest_df
         # get population from csv file
         # get file from the data folder 3 folder up.
@@ -91,13 +82,6 @@ class Study(ClimateEconomicsStudyManager):
 
         self.share_energy_investment_array = asarray([1.65] * nb_per)
 
-        total_invest = asarray([27.0] * nb_per)
-        total_invest = DataFrame(
-            {GlossaryCore.Years: years, 'share_investment': total_invest})
-        witness_input[f"{self.study_name}.{GlossaryCore.InvestmentShareGDPValue}"] = total_invest
-        share_energy_investment = DataFrame(
-            {GlossaryCore.Years: years, 'share_investment': self.share_energy_investment_array}, index=years)
-        witness_input[f"{self.study_name}.{'share_energy_investment'}"] = share_energy_investment
         gdp = [130.187]*len(years)
 
         df_eco = DataFrame({GlossaryCore.Years: years,
@@ -116,8 +100,6 @@ class Study(ClimateEconomicsStudyManager):
                                                                                                     1935]},
                                                            index=[2017, 2018, 2019])
 
-        witness_input[f"{self.study_name}.{'agri_capital_techno_list'}"] = []
-
         CO2_emitted_land = pd.DataFrame()
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
@@ -129,9 +111,10 @@ class Study(ClimateEconomicsStudyManager):
 
         self.CO2_tax = np.asarray([50.] * len(years))
 
-        witness_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsValue}"] = df_energy_investment
-        witness_input[f"{self.study_name}.{'energy_investment_before_year_start'}"] = df_energy_investment_before_year_start
 
+        forest_invest = np.linspace(5.0, 8.0, len(years))
+        self.forest_invest_df = pd.DataFrame(
+            {GlossaryCore.Years: years, "forest_investment": forest_invest})
         intermediate_point = 30
         # CO2 taxes related inputs
         CO2_tax_efficiency = np.concatenate(
@@ -139,14 +122,8 @@ class Study(ClimateEconomicsStudyManager):
         # CO2_tax_efficiency = 30.0
         default_co2_efficiency = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.CO2TaxEfficiencyValue: CO2_tax_efficiency})
-
-        forest_invest = np.linspace(5.0, 8.0, len(years))
-        self.forest_invest_df = pd.DataFrame(
-            {GlossaryCore.Years: years, "forest_investment": forest_invest})
-
         # -- load data from resource
-        dc_resource = datacase_resource(
-            self.year_start, self.year_end)
+        dc_resource = datacase_resource(self.year_start, self.year_end, main_study=False)
         dc_resource.study_name = self.study_name
 
         # -- load data from land use
@@ -175,24 +152,6 @@ class Study(ClimateEconomicsStudyManager):
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
 
-        share_energy_investment = DataFrame(
-            {GlossaryCore.Years: years, 'share_investment': self.share_energy_investment_array}, index=years)
-        witness_input[f"{self.study_name}.{'share_energy_investment'}"] = share_energy_investment
-        witness_input[f'{self.study_name}.Macroeconomics.{GlossaryCore.CO2TaxEfficiencyValue}'] = default_co2_efficiency
-
-        witness_input[f'{self.study_name}.beta'] = 1.0
-        witness_input[f'{self.study_name}.gamma'] = 0.5
-        witness_input[f'{self.study_name}.init_discounted_utility'] = 4000.0
-
-        witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
-        witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
-        witness_input[f'{self.study_name}.is_dev'] = True
-
-        GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,
-                                                   GlossaryCore.TotalCO2Emissions: np.linspace(37., 10., len(years)),
-                                                   GlossaryCore.TotalN2OEmissions: np.linspace(1.7e-3, 5.e-4, len(years)),
-                                                   GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
-        witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
 
         setup_data_list.append(witness_input)
 
@@ -213,7 +172,7 @@ class Study(ClimateEconomicsStudyManager):
             ['co2_eq_100', 'co2_eq_20'])
         list_parent.extend([
                             'CO2_obj','CO2_obj'])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend(
             [OBJECTIVE, OBJECTIVE])
         list_weight.extend([2.0, 2.0])
@@ -242,7 +201,7 @@ class Study(ClimateEconomicsStudyManager):
         """
         list_var.append('non_use_capital_cons')
         list_parent.append('invests_constraints')
-        list_ns.extend(['ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
         list_weight.append(-1.0)
         list_aggr_type.append(
@@ -277,7 +236,7 @@ class Study(ClimateEconomicsStudyManager):
         list_weight.extend([-1.0, -3.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SUM, AGGR_TYPE_SUM])
-        list_ns.extend(['ns_functions', 'ns_functions'])
+        list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         func_df['variable'] = list_var
         func_df['parent'] = list_parent
         func_df['ftype'] = list_ftype

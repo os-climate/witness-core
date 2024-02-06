@@ -32,6 +32,8 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -110,7 +112,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'employment_power_param': {'type': 'float', 'default': 0.0156, 'user_level': 3, 'unit': '-'},
         'employment_rate_base_value': {'type': 'float', 'default': 0.659, 'user_level': 3, 'unit': '-'},
         'usable_capital_ref': {'type': 'float', 'unit': 'T$', 'default': 0.3, 'user_level': 3,
-                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_ref'},
+                               'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
         GlossaryCore.EnergyCapitalDfValue: {'type': 'dataframe', 'unit': 'T$', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
                            'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                     GlossaryCore.Capital: ('float', None, False), }
@@ -133,11 +135,11 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         GlossaryCore.DetailedCapitalDfValue: {'type': 'dataframe', 'unit': '-',
                                               'dataframe_descriptor':GlossaryCore.DetailedCapitalDf['dataframe_descriptor']},
         GlossaryCore.ConstraintLowerBoundUsableCapital: {'type': 'array', 'unit': '-', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                     'namespace': 'ns_functions'},
+                                     'namespace': GlossaryCore.NS_FUNCTIONS},
         GlossaryCore.EnergyWastedObjective: {'type': 'array',
                                              'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
-                                             'namespace': 'ns_functions'},
+                                             'namespace': GlossaryCore.NS_FUNCTIONS},
         GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict,
         GlossaryCore.UsableCapitalObjectiveName: GlossaryCore.UsableCapitalObjective
     }
@@ -1122,3 +1124,92 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                     default_title=True, default_legend=False))
 
         return instanciated_charts
+
+def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impact_on_gdp, damages_to_productivity):
+    """ returns dashboard graph for output """
+    to_plot_line = [GlossaryCore.OutputNetOfDamage]
+
+    to_plot_bar = [GlossaryCore.EnergyInvestmentsValue,
+                    GlossaryCore.NonEnergyInvestmentsValue,
+                   GlossaryCore.Consumption]
+
+    legend = {GlossaryCore.OutputNetOfDamage: 'Net GDP',
+              GlossaryCore.InvestmentsValue: 'Total investments',
+              GlossaryCore.EnergyInvestmentsValue: 'Energy investments',
+              GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy investments',
+              GlossaryCore.Consumption: 'Consumption',
+              }
+
+    years = list(economics_detail_df.index)
+
+    chart_name = 'Breakdown of GDP per year'
+
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
+                                         chart_name=chart_name, stacked_bar=True,
+                                         y_min_zero=not compute_climate_impact_on_gdp)
+
+    new_chart = new_chart.to_plotly()
+
+    gross_output = economics_detail_df[GlossaryCore.GrossOutput].values
+
+    for key in to_plot_bar:
+        ordonate_data = list(economics_detail_df[key])
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=ordonate_data,
+            opacity=0.7,
+            line=dict(width=1.25),
+            name=legend[key],
+            stackgroup='one',
+        ))
+
+    for key in to_plot_line:
+        ordonate_data = list(economics_detail_df[key])
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=ordonate_data,
+            mode='lines',
+            name=legend[key],
+        ))
+
+    new_chart.add_trace(go.Scatter(
+        x=years,
+        y=list(economics_detail_df[GlossaryCore.InvestmentsValue]),
+        mode='lines',
+        name=legend[GlossaryCore.InvestmentsValue],
+    ))
+
+    if compute_climate_impact_on_gdp:
+        ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
+
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=ordonate_data,
+            opacity=0.7,
+            line=dict(width=1.25),
+            name='Immediate damages from climate',
+            stackgroup='two',
+        ))
+
+        if damages_to_productivity:
+            gdp_without_damage_to_prod = gross_output + damage_detailed_df[
+                GlossaryCore.EstimatedDamagesFromProductivityLoss].values
+
+            new_chart.add_trace(go.Scatter(x=years, y=list(gross_output),
+                                           mode='lines',
+                                           name="Gross GDP"
+                                           ))
+
+            new_chart.add_trace(go.Scatter(
+                x=years,
+                y=list(gdp_without_damage_to_prod),
+                fill='tonexty',  # fill area between trace0 and trace1
+                mode='lines',
+                fillcolor='rgba(200, 200, 200, 0.3)',
+                line={'dash': 'dash', 'color': 'rgb(200, 200, 200)'},
+                opacity=0.2,
+                name='Estimation of GDP without damages', ))
+
+            new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+
+    return new_chart

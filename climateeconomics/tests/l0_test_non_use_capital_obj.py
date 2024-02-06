@@ -35,8 +35,8 @@ class NonUseCapitalObjDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_energy': f'{self.name}.EnergyMix',
                    'ns_public': f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_ccs': f'{self.name}.CCUS',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_CCS: f'{self.name}.CCUS',
                    'ns_agriculture': f'{self.name}.AgricultureMix',
                    'ns_forest': f'{self.name}.AgricultureMix.Forest',
                    'ns_invest': f'{self.name}'}

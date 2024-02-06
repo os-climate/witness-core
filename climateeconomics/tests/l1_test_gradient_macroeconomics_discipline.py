@@ -144,8 +144,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}' }
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}' }
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -218,8 +218,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
@@ -284,8 +284,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
@@ -352,8 +352,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.macroeconomics.macroeconomics_discipline.MacroeconomicsDiscipline'
@@ -426,8 +426,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -504,8 +504,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -584,8 +584,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref':f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE:f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -657,8 +657,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -736,8 +736,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -814,8 +814,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -887,8 +887,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -966,8 +966,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -1047,8 +1047,8 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                    GlossaryCore.NS_MACRO: f'{self.name}',
                    'ns_energy_study': f'{self.name}',
                    'ns_public': f'{self.name}',
-                   'ns_functions': f'{self.name}',
-                   'ns_ref': f'{self.name}'}
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 

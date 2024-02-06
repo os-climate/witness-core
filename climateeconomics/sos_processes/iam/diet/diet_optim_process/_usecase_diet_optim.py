@@ -53,7 +53,7 @@ class Study(ClimateEconomicsStudyManager):
         self.witness_uc = diet_optim_sub_usecase(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         ns = self.study_name
 
         values_dict = {}

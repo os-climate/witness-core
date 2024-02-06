@@ -52,9 +52,16 @@ def update_dspace_with(dspace_dict, name, value, lower, upper):
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, execution_engine=None):
+    def __init__(self,
+                 year_start=GlossaryCore.YeartStartDefault,
+                 year_end=GlossaryCore.YeartEndDefault,
+                 time_step=1,
+                 execution_engine=None,
+                 main_study: bool = True,
+                 ):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
+        self.main_study = main_study
 
         self.all_resource_name = '.Resources'
 
@@ -63,7 +70,7 @@ class Study(ClimateEconomicsStudyManager):
         self.time_step = time_step
         self.nb_poles = 5
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
 
         setup_data_list = []
 
@@ -84,12 +91,9 @@ class Study(ClimateEconomicsStudyManager):
                                            ] = resource['price']
             resources_CO2_emissions[resource['name']
                                     ] = resource['CO2_emissions']
-        non_modeled_resource_price.index = non_modeled_resource_price[GlossaryCore.Years]
         resources_CO2_emissions.index = resources_CO2_emissions[GlossaryCore.Years]
         resource_input[self.study_name + self.all_resource_name +
                        '.non_modeled_resource_price'] = non_modeled_resource_price
-        resource_input[self.study_name + self.all_resource_name +
-                       '.resources_CO2_emissions'] = resources_CO2_emissions
         resource_input[f'{self.study_name}.{GlossaryCore.YearStart}'] = self.year_start
         resource_input[f'{self.study_name}.{GlossaryCore.YearEnd}'] = self.year_end
         setup_data_list.append(resource_input)
@@ -102,21 +106,15 @@ class Study(ClimateEconomicsStudyManager):
                                               >= self.year_start]
         resource_demand = resource_demand.loc[resource_demand[GlossaryCore.Years]
                                               <= self.year_end]
-        resource_input[self.study_name +
-                       self.all_resource_name + '.resources_demand'] = resource_demand
-        resource_input[self.study_name +
-                       self.all_resource_name + '.resources_demand_woratio'] = resource_demand
+        if self.main_study:
+            resource_input[self.study_name + self.all_resource_name + '.resources_CO2_emissions'] = resources_CO2_emissions
+            resource_input[self.study_name + self.all_resource_name + '.resources_demand'] = resource_demand
+            resource_input[self.study_name + self.all_resource_name + '.resources_demand_woratio'] = resource_demand
         setup_data_list.append(resource_input)
 
         return setup_data_list
 
 
 if '__main__' == __name__:
-    uc_cls = Study()
-    uc_cls.load_data()
-    #uc_cls.execution_engine.set_debug_mode()
-    uc_cls.run()
-    uc_cls.execution_engine.display_treeview_nodes(True)
-
-        # for graph in graph_list:
-        #     graph.to_plotly().show()
+    uc_cls = Study(main_study=True)
+    uc_cls.test()

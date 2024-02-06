@@ -45,7 +45,7 @@ class Study(StudyManager):
         self.year_end = year_end
         self.time_step = time_step
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
         nb_per = round(
             (self.year_end - self.year_start) / self.time_step + 1)

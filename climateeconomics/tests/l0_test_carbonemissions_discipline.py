@@ -38,8 +38,8 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_ccs': f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
@@ -111,8 +111,6 @@ class CarbonEmissionDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_carbon_cycle = self.ee.dm.get_value(
-            f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}')
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
@@ -126,8 +124,8 @@ class CarbonEmissionDiscTest(unittest.TestCase):
         ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
                    'ns_public': f'{self.name}',
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
-                   'ns_ref': f'{self.name}',
-                   'ns_ccs': f'{self.name}',
+                   GlossaryCore.NS_REFERENCE: f'{self.name}',
+                   GlossaryCore.NS_CCS: f'{self.name}',
                    'ns_energy': f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
