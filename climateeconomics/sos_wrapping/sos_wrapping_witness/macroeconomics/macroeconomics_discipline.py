@@ -32,6 +32,8 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
     TwoAxesInstanciatedChart
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):
@@ -1131,7 +1133,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
                     GlossaryCore.NonEnergyInvestmentsValue,
                    GlossaryCore.Consumption]
 
-    legend = {GlossaryCore.OutputNetOfDamage: 'Net output',
+    legend = {GlossaryCore.OutputNetOfDamage: 'Net GDP',
               GlossaryCore.InvestmentsValue: 'Total investments',
               GlossaryCore.EnergyInvestmentsValue: 'Energy investments',
               GlossaryCore.NonEnergyInvestmentsValue: 'Non-energy investments',
@@ -1140,60 +1142,62 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
 
     years = list(economics_detail_df.index)
 
-    chart_name = 'Breakdown of output per year'
+    chart_name = 'Breakdown of GDP per year'
 
     new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
                                          chart_name=chart_name, stacked_bar=True,
                                          y_min_zero=not compute_climate_impact_on_gdp)
 
-    for key in to_plot_line:
-        visible_line = True
-        ordonate_data = list(economics_detail_df[key])
-        new_series = InstanciatedSeries(
-            years, ordonate_data, legend[key], 'lines', visible_line)
-        new_chart.series.append(new_series)
+    new_chart = new_chart.to_plotly()
 
     gross_output = economics_detail_df[GlossaryCore.GrossOutput].values
-    new_series = InstanciatedSeries(
-        years, list(gross_output), 'Gross output', 'lines', True)
-    new_chart.series.append(new_series)
 
     for key in to_plot_bar:
         ordonate_data = list(economics_detail_df[key])
-        new_series = InstanciatedSeries(
-            years, ordonate_data, legend[key], 'bar', True)
-        new_chart.series.append(new_series)
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=ordonate_data,
+            opacity=0.7,
+            line=dict(width=1.25),
+            name=legend[key],
+            stackgroup='one',
+        ))
 
-    new_series = InstanciatedSeries(
-        years, list(economics_detail_df[GlossaryCore.InvestmentsValue]),
-        legend[GlossaryCore.InvestmentsValue],
-        'lines', True)
-    new_chart.series.append(new_series)
+    for key in to_plot_line:
+        ordonate_data = list(economics_detail_df[key])
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=ordonate_data,
+            mode='lines',
+            name=legend[key],
+        ))
+
+    new_chart.add_trace(go.Scatter(
+        x=years,
+        y=list(economics_detail_df[GlossaryCore.InvestmentsValue]),
+        mode='lines',
+        name=legend[GlossaryCore.InvestmentsValue],
+    ))
 
     if compute_climate_impact_on_gdp:
         ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
-        new_series = InstanciatedSeries(years, ordonate_data, 'Immediate damages from climate', 'bar')
-        new_chart.series.append(new_series)
+
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=ordonate_data,
+            opacity=0.7,
+            line=dict(width=1.25),
+            name='Immediate damages from climate',
+            stackgroup='two',
+        ))
 
         if damages_to_productivity:
             gdp_without_damage_to_prod = gross_output + damage_detailed_df[
                 GlossaryCore.EstimatedDamagesFromProductivityLoss].values
-            ordonate_data = list(gdp_without_damage_to_prod)
-            new_series = InstanciatedSeries(years, ordonate_data,
-                                            'Pessimistic estimation of gross output without damages to productivity',
-                                            'dash_lines')
-            new_chart.add_series(new_series)
-
-            # removing the lines used for the surface so that they are not duplicated
-            new_chart.series.pop(-1)
-            new_chart.series.pop(1)
-
-            new_chart = new_chart.to_plotly()
-            import plotly.graph_objects as go
 
             new_chart.add_trace(go.Scatter(x=years, y=list(gross_output),
                                            mode='lines',
-                                           name="Gross output"
+                                           name="Gross GDP"
                                            ))
 
             new_chart.add_trace(go.Scatter(
@@ -1204,7 +1208,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
                 fillcolor='rgba(200, 200, 200, 0.3)',
                 line={'dash': 'dash', 'color': 'rgb(200, 200, 200)'},
                 opacity=0.2,
-                name='Pessimistic estimation of gross output without damages to productivity', ))
+                name='Estimation of GDP without damages', ))
 
             new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
