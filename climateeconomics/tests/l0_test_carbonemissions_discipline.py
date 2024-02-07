@@ -111,8 +111,6 @@ class CarbonEmissionDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_carbon_cycle = self.ee.dm.get_value(
-            f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}')
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()

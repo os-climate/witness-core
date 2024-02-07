@@ -330,7 +330,7 @@ class ResourceMixDiscipline(SoSWrapp):
             ResourceMixModel.ALL_RESOURCE_CO2_EMISSIONS: self.all_resource_model.all_resource_co2_emissions.reset_index(),
         }
 
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def get_chart_filter_list(self):

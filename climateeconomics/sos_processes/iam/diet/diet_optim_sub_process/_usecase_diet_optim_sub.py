@@ -51,14 +51,14 @@ class Study(ClimateEconomicsStudyManager):
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
         self.energy_mix_name = 'EnergyMix'
-        self.ccs_mix_name = 'CCUS'
+        GlossaryCore.CCUS = 'CCUS'
         self.bspline = bspline
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level
         self.witness_uc = usecase_diet(
             self.year_start, self.year_end, self.time_step)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process
 
         @return list of dictionary: [{str: *}]

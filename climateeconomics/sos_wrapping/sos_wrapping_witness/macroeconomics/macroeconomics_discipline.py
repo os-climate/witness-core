@@ -1158,6 +1158,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
             x=years,
             y=ordonate_data,
             opacity=0.7,
+            line=dict(width=1.25),
             name=legend[key],
             stackgroup='one',
         ))
@@ -1185,6 +1186,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
             x=years,
             y=ordonate_data,
             opacity=0.7,
+            line=dict(width=1.25),
             name='Immediate damages from climate',
             stackgroup='two',
         ))

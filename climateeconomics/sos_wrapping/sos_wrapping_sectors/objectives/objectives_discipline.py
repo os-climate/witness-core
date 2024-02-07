@@ -175,7 +175,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 outputs_dict[f'{sector}.energy_eff_error'] = np.array([energy_eff_errors[sector]])
                 outputs_dict[f'{sector}.historical_energy_efficiency'] = hist_energy_eff[sector]
 
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def get_chart_filter_list(self):

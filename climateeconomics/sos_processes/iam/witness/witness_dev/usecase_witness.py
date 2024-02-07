@@ -49,7 +49,7 @@ class Study(ClimateEconomicsStudyManager):
         self.process_level = process_level
         self.dc_energy = datacase_energy(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict, main_study=False)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_constraint_land_use(self):
@@ -67,7 +67,7 @@ class Study(ClimateEconomicsStudyManager):
 
         return func_df
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
         # -- load data from energy pyworld3
@@ -76,8 +76,7 @@ class Study(ClimateEconomicsStudyManager):
         self.dc_energy.study_name = self.study_name
         self.energy_mda_usecase = self.dc_energy
         # -- load data from witness
-        dc_witness = datacase_witness_dev(
-            self.year_start, self.year_end, self.time_step)
+        dc_witness = datacase_witness_dev(self.year_start, self.year_end, self.time_step)
         dc_witness.study_name = self.study_name
 
         witness_input_list = dc_witness.setup_usecase()

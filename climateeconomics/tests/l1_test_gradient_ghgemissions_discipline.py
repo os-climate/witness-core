@@ -48,7 +48,8 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                    'ns_agriculture': f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
-                   'ns_energy': f'{self.name}'}
+                   'ns_energy': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
         self.ee.ns_manager.add_ns_def(ns_dict)
 
         mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_emissions.ghgemissions.ghgemissions_discipline.GHGemissionsDiscipline'
@@ -78,13 +79,18 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         CO2_indus_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
                                                'indus_emissions': np.linspace(1., 2., len(years))})
+
+        CO2_emissions_ref = 1047.96 #Gt
+
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.CO2_land_emissions': CO2_land_emissions,
                        f'{self.name}.CH4_land_emissions': CH4_land_emissions,
                        f'{self.name}.N2O_land_emissions': N2O_land_emissions,
                        f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
-                       f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions, }
+                       f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions,
+                       f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": CO2_emissions_ref,
+                       }
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()
@@ -99,4 +105,5 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.CO2_indus_emissions_df',
                                     f'{self.name}.GHG_total_energy_emissions'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
-                                     f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}'])
+                                     f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}',
+                                     f"{self.name}.{GlossaryCore.CO2EmissionsObjective['var_name']}"])

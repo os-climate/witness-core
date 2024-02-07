@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import deepcopy, copy
+from climateeconomics.database import DatabaseWitnessCore
 
 
 class GlossaryCore:
@@ -1177,6 +1178,37 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
     }
+
+    # objective functions
+    CO2EmissionsObjective = {
+        "var_name": 'CO2EmissionsObjective',
+        "type": "float",
+        "default": 1.,
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "Objective on Total CO2 emissions",
+    }
+    # compute Gt of CO2 emissions added between 1900 and 2020. Formula extracted from ghg_cycle_model.py
+    # value is 1047.96 Gt
+    atmosphere_total_mass_kg = 5.1480 * 10 ** 18
+    molar_mass_atmosphere = 0.02897  # kg/mol
+    n_moles_in_atmosphere = atmosphere_total_mass_kg / molar_mass_atmosphere
+    kg_to_gt = 10 ** (-12)
+    molar_mass_co2 = 0.04401  # kg/mol
+
+    CO2EmissionsRef = {
+        "var_name": 'CO2EmissionsRef',
+        "type": "float",
+        "default": (DatabaseWitnessCore.C02YearStartConcentration.value - DatabaseWitnessCore.CO2PreIndustrialConcentration.value) * \
+        n_moles_in_atmosphere * molar_mass_co2 * kg_to_gt * 10 ** -6,
+        "unit": "Gt",
+        "visibility": "Shared",
+        "namespace": NS_REFERENCE,
+        "description": "CO2 emissions cumulated during industrial era until 2020 and used as reference to normalize CO2EmissionsObjective",
+    }
+
+>>>>>>> develop
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""

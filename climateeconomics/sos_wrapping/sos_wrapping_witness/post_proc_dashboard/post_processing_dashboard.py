@@ -90,21 +90,20 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             x=years,
             y=temperature_df[GlossaryCore.TempAtmo].values.tolist(),
             name='Temperature',
-            #line=dict(color=qualitative.Set1[0]),
         ), secondary_y=True)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=total_ghg_df[f'Total CO2 emissions'].to_list(),
             name='Total CO2 emissions',
-            line=dict(color=qualitative.Set1[0]),
+            #line=dict(color=qualitative.Set1[0]),
         ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=carbon_captured['DAC'].to_list(),
             name='CO2 captured by DAC',
-            line=dict(color='green'),
+            #line=dict(color='green'),
         ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
@@ -113,9 +112,8 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             name='CO2 captured by flue gas',
 
         ), secondary_y=False)
-        fig.update_yaxes(title_text='temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
-        fig.update_yaxes(title_text=f'Total CO2 emissions [Gt]',  rangemode="tozero",
-                         color=qualitative.Set1[0],secondary_y=False)
+        fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
+        fig.update_yaxes(title_text=f'CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
 
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
@@ -155,8 +153,8 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 fig.add_trace(go.Scatter(
                     x=years,
                     y=energy_twh.tolist(),
-                    #marker_color=color[column],
                     opacity=0.7,
+                    line=dict(width=1.25),
                     name=legend_title,
                     stackgroup='one',
                 ), secondary_y=False)
@@ -164,13 +162,12 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         fig.add_trace(go.Scatter(
             x=years,
             y=energy_mean_price[GlossaryEnergy.EnergyPriceValue].values.tolist(),
-            name='mean energy prices [$/MWh]',
-            line=dict(color=qualitative.Set1[0]),
+            name='Mean energy prices',
+            #line=dict(color=qualitative.Set1[0]),
         ), secondary_y=True)
 
         fig.update_yaxes(title_text="Net Energy [TWh]", secondary_y=False, rangemode="tozero")
-        fig.update_yaxes(title_text="Prices [$/MWh]", secondary_y=True, rangemode="tozero",
-                         color=qualitative.Set1[0])
+        fig.update_yaxes(title_text="Prices [$/MWh]", secondary_y=True, rangemode="tozero")
 
         new_chart = InstantiatedPlotlyNativeChart(
         fig = fig, chart_name = chart_name)
@@ -194,9 +191,6 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         for energy in energy_list + ccs_list:
             list_energy = []
             if energy != BiomassDry.name:
-                chart_name = f'Distribution of investments for {energy} vs years'
-                new_chart_techno = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                            chart_name=chart_name, stacked_bar=True)
                 techno_list_name = f'{energy}.{GlossaryEnergy.TechnoListName}'
                 var = [var for var in execution_engine.dm.get_all_namespaces_from_var_name(techno_list_name) if
                        namespace in var][0]
@@ -206,54 +200,17 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                     investval = [var for var in execution_engine.dm.get_all_namespaces_from_var_name(
                         f'{energy}.{techno}.{GlossaryEnergy.InvestLevelValue}') if namespace in var][0]
                     invest_level = execution_engine.dm.get_value(investval)
-                    serie = InstanciatedSeries(
-                        years.tolist(),
-                        invest_level[f'{GlossaryEnergy.InvestValue}'].values.tolist(), techno, 'bar')
                     list_energy.append(invest_level[f'{GlossaryEnergy.InvestValue}'].values)
 
                 total_invest = list(np.sum(list_energy, axis=0))
-                # Add total inbest
-                # serie = InstanciatedSeries(
-                #     years.tolist(),
-                #     total_invest, energy, 'lines')
-                #
-                # new_chart_energy.series.append(serie)
                 new_chart_energy.add_trace(go.Scatter(
                     x=years.tolist(),
                     y=total_invest,
                     opacity=0.7,
+                    line=dict(width=1.25),
                     name=energy,
                     stackgroup='one',
                 ))
-
-        chart_name = f'Distribution of reforestation investments vs years'
-        agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                     chart_name=chart_name, stacked_bar=True)
-        serie_agriculture = InstanciatedSeries(
-            forest_investment[GlossaryEnergy.Years].values.tolist(),
-            forest_investment[GlossaryEnergy.ForestInvestmentValue].values.tolist(), 'Reforestation', 'bar')
-
-        serie = InstanciatedSeries(
-            forest_investment[GlossaryEnergy.Years].values.tolist(),
-            forest_investment[GlossaryEnergy.ForestInvestmentValue].tolist(), 'Reforestation', 'bar')
-
-        if BiomassDry.name in energy_list:
-            chart_name = f'Distribution of agriculture sector investments vs years'
-            agriculture_chart = TwoAxesInstanciatedChart(GlossaryEnergy.Years, 'Invest [G$]',
-                                                         chart_name=chart_name, stacked_bar=True)
-
-            for techno in ['managed_wood_investment', 'deforestation_investment', 'crop_investment']:
-                if techno == 'crop_investment':
-                    invest = execution_engine.dm.get_value(f'{namespace}.{CROP_DISC}.{techno}')
-                else:
-                    invest = execution_engine.dm.get_value(f'{namespace}.{FOREST_DISC}.{techno}')
-                serie_agriculture = InstanciatedSeries(
-                    invest[GlossaryEnergy.Years].values.tolist(),
-                    invest[GlossaryEnergy.InvestmentsValue].values.tolist(), techno.replace("_investment", ""), 'bar')
-
-                serie = InstanciatedSeries(
-                    invest[GlossaryEnergy.Years].values.tolist(),
-                    invest[GlossaryEnergy.InvestmentsValue].tolist(), techno.replace("_investment", ""), 'bar')
 
         new_chart_energy = InstantiatedPlotlyNativeChart(fig=new_chart_energy, chart_name=chart_name_energy)
 
@@ -261,7 +218,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
     if 'land use' in chart_list:
         chart_name = 'Surface for forest and food production vs available land over time'
-        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
+        new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Surface [Gha]',
                                              chart_name=chart_name, stacked_bar=True)
 
         new_chart = new_chart.to_plotly()
@@ -279,6 +236,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                     x=years,
                     y=(surface_df[key]).values.tolist(),
                     opacity=0.7,
+                    line=dict(width=1.25),
                     name=key,
                     stackgroup='one',
                 ))
@@ -291,6 +249,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             x=years,
             y=(land_surface_detailed[column]).values.tolist(),
             opacity=0.7,
+            line=dict(width=1.25),
             name=legend,
             stackgroup='one',
         ))

@@ -53,6 +53,8 @@ class GHGEmissions():
         self.gwp_20 = self.param['GHG_global_warming_potential20']
         self.gwp_100 = self.param['GHG_global_warming_potential100']
 
+        self.CO2EmissionsRef = self.param[GlossaryCore.CO2EmissionsRef['var_name']]
+
     def configure_parameters_update(self, inputs_dict):
 
         self.CO2_land_emissions = inputs_dict['CO2_land_emissions']
@@ -115,6 +117,27 @@ class GHGEmissions():
             {GlossaryCore.TotalCO2Emissions: 'total_emissions'}, axis=1)
         return co2_emissions_df
 
+    def compute_CO2_emissions_objective(self):
+        '''
+        CO2emissionsObjective = 1 + sum(CO2_emissions over years)/CO2emissionsRef
+        CO2emissionsRef corresponds to the cumulated emissions during the industrial era until 2020
+        the cumulated CO2_emissions after 2020 can be < 0 thanks to CCUS. In the ideal case where climate changes were
+        revereted, the cumulated CO2_emissions after 2020 = - CO2emissions ref.
+        In that ideal case, CO2emissionsObjective = 0.
+        If more CCUS is performed, there would be global cooling wrt pre-industrial era which is another unwanted
+        climate change. Therefore, CO2emissionsObjective >= 0
+        '''
+        self.co2_emissions_objective = 1. + self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].sum() / self.CO2EmissionsRef
+
+    def d_CO2_emissions_objective_d_total_co2_emissions(self):
+        '''
+        Compute gradient of CO2 emissions objective wrt ToTalCO2Emissions
+        '''
+        d_CO2_emissions_objective_d_total_co2_emissions = np.ones(len(self.years_range)) / self.CO2EmissionsRef
+
+        return d_CO2_emissions_objective_d_total_co2_emissions
+
+
     def compute(self):
         """
         Compute outputs of the pyworld3
@@ -123,5 +146,6 @@ class GHGEmissions():
         self.compute_land_emissions()
         self.compute_total_emissions()
         self.compute_gwp()
+        self.compute_CO2_emissions_objective()
 
 

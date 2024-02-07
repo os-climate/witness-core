@@ -96,7 +96,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         outputs_dict = {GlossaryCore.WorkforceDfValue: workforce_df,
                         'employment_df': employment_df}
 
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

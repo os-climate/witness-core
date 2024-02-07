@@ -78,7 +78,7 @@ class Study(ClimateEconomicsStudyManager):
 
         return func_df
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
         # -- load data from energy pyworld3
