@@ -1208,7 +1208,6 @@ class GlossaryCore:
         "description": "CO2 emissions cumulated during industrial era until 2020 and used as reference to normalize CO2EmissionsObjective",
     }
 
->>>>>>> develop
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""
