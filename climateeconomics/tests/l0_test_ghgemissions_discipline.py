@@ -71,7 +71,7 @@ class GHGEmissionDiscTest(unittest.TestCase):
 
         CO2_indus_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
                                                'indus_emissions': np.linspace(1., 2., len(years))})
-        CO2_emissions_ref = 1047.96 # Gt
+        CO2_emissions_ref = 1772.8 # Gt
 
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
