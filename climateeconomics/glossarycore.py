@@ -1163,17 +1163,17 @@ class GlossaryCore:
         "unit": "-",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
-        "description": "Objective on Total CO2 emissions, mean of emissions between 2020 and 2100",
+        "description": "Objective on Total CO2 emissions, mean of emissions between 2020 and 2100. Can be negative",
     }
 
     CO2EmissionsRef = {
         "var_name": 'CO2EmissionsRef',
         "type": "float",
-        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value,
+        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.),
         "unit": "Gt",
         "visibility": "Shared",
         "namespace": NS_REFERENCE,
-        "description": DatabaseWitnessCore.CumulativeCO2Emissions.description,
+        "description": 'Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022',
     }
 
     @staticmethod

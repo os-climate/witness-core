@@ -226,7 +226,7 @@ class DatabaseWitnessCore:
     CumulativeCO2Emissions = ColectedData(
         value=1772.8,
         unit="Gt",
-        description="Running sum of CO2 emissions produced from fossil fuels and industry since the first year of recording 1750 until 2022, measured in tonnes. Land-use change is not included ",
+        description="Running sum of CO2 emissions produced from fossil fuels and industry since the first year of recording 1750 until 2022, measured in Giga tonnes. Land-use change is not included ",
         link="https://ourworldindata.org/grapher/cumulative-co-emissions?tab=table",
         source="Our World in Data",
         last_update_date=date(2024, 2, 7),
