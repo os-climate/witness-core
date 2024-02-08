@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import deepcopy, copy
+from climateeconomics.database import DatabaseWitnessCore
 
 
 class GlossaryCore:
@@ -1158,6 +1159,27 @@ class GlossaryCore:
         "var_name": CheckRangeBeforeRunBoolName,
         "type": "bool",
         "default": False
+    }
+
+    # objective functions
+    CO2EmissionsObjective = {
+        "var_name": 'CO2EmissionsObjective',
+        "type": "float",
+        "default": 1.,
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "Objective on Total CO2 emissions, mean of emissions between 2020 and 2100. Can be negative",
+    }
+
+    CO2EmissionsRef = {
+        "var_name": 'CO2EmissionsRef',
+        "type": "float",
+        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.),
+        "unit": "Gt",
+        "visibility": "Shared",
+        "namespace": NS_REFERENCE,
+        "description": 'Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022',
     }
 
     @staticmethod

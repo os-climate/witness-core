@@ -38,7 +38,8 @@ class GHGEmissionDiscTest(unittest.TestCase):
                    GlossaryCore.NS_ENERGY_MIX: f'{self.name}',
                    GlossaryCore.NS_REFERENCE: f'{self.name}',
                    GlossaryCore.NS_CCS: f'{self.name}',
-                   'ns_energy': f'{self.name}'}
+                   'ns_energy': f'{self.name}',
+                   GlossaryCore.NS_FUNCTIONS: f'{self.name}'}
 
         self.ee.ns_manager.add_ns_def(ns_dict)
 
@@ -70,6 +71,8 @@ class GHGEmissionDiscTest(unittest.TestCase):
 
         CO2_indus_emissions_df = pd.DataFrame({GlossaryCore.Years: years,
                                                'indus_emissions': np.linspace(1., 2., len(years))})
+        CO2_emissions_ref = 6.49 # Gt
+
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.CO2_land_emissions': CO2_land_emissions,
@@ -78,6 +81,7 @@ class GHGEmissionDiscTest(unittest.TestCase):
                        f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
                        f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions,
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
+                       f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": CO2_emissions_ref,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

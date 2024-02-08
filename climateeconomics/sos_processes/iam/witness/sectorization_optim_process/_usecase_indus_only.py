@@ -49,7 +49,7 @@ class Study(StudyManager):
         self.witness_sect_uc = witness_sect_usecase(self.year_start, self.year_end, self.time_step,
                                                     execution_engine=execution_engine)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         ns = self.study_name
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
         ns_optim = f"{self.study_name}.{self.optim_name}"

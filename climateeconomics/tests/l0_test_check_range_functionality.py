@@ -203,7 +203,7 @@ class CarbonEmissionDiscTestCheckRange(unittest.TestCase):
                        f'{self.name}.CO2_emissions_by_use_sources': CO2_emissions_by_use_sources,
                        f'{self.name}.CO2_emissions_by_use_sinks': CO2_emissions_by_use_sinks,
                        f'{self.name}.co2_emissions_needed_by_energy_mix': co2_emissions_needed_by_energy_mix,
-                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False}
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': True}
 
         self.ee.load_study_from_input_dict(values_dict)
         # check test will fail because year of CO2_land_emissions is not in correct range

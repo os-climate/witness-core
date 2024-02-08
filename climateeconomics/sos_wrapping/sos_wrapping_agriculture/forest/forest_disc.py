@@ -292,7 +292,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'CO2_emissions': self.forest_model.CO2_emissions,
             'forest_lost_capital': self.forest_model.forest_lost_capital
         }
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

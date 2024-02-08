@@ -54,7 +54,7 @@ class DataStudy():
         self.dspace = {}
         self.dspace['dspace_size'] = 0
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
         nb_per = round(
             (self.year_end - self.year_start) / self.time_step + 1)
@@ -148,7 +148,6 @@ class DataStudy():
                                                             'energy_investment_before_year_start': [1924, 1927, 1935]},
                                                            index=[2017, 2018, 2019])
 
-        witness_input[f"{self.study_name}.{'agri_capital_techno_list'}"] = []
 
         CO2_emitted_land = pd.DataFrame()
         # GtCO2
@@ -162,7 +161,6 @@ class DataStudy():
         self.CO2_tax = np.asarray([50.] * len(years))
 
         witness_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsValue}"] = df_energy_investment
-        witness_input[f"{self.study_name}.{'energy_investment_before_year_start'}"] = df_energy_investment_before_year_start
 
         intermediate_point = 30
         # CO2 taxes related inputs
@@ -178,7 +176,7 @@ class DataStudy():
 
         # -- load data from resource
         dc_resource = datacase_resource(
-            self.year_start, self.year_end)
+            self.year_start, self.year_end, main_study=False)
         dc_resource.study_name = self.study_name
 
         # -- load data from land use
@@ -220,13 +218,10 @@ class DataStudy():
         witness_input[f'{self.study_name}.Macroeconomics.{GlossaryCore.CO2TaxEfficiencyValue}'] = default_co2_efficiency
 
         witness_input[f'{self.study_name}.beta'] = 1.0
-        witness_input[f'{self.study_name}.gamma'] = 0.5
-        witness_input[f'{self.study_name}.init_discounted_utility'] = 4000.0
 
         witness_input[f'{self.study_name}.init_rate_time_pref'] = 0.0
         
-        witness_input[f'{self.study_name}.temperature_change_ref'] = 1.0
-        
+
         # 
 
         GHG_total_energy_emissions = pd.DataFrame({GlossaryCore.Years: years,

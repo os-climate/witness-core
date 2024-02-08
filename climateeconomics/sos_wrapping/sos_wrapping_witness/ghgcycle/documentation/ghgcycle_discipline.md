@@ -17,12 +17,11 @@ with
 
 $$C_t = \sum_{i=1}^5 \alpha_i Box_{i, t}$$
 
-where $\alpha_{i}$ denotes the fraction of emissions $E$ (in million metric tonnes of carbon) that is allocated to $Box_{i}$($0.13$, $0.20$, $0.32$, $0.25$ and $0.10$, respectively) 
-and $\rho$ the decay-rate of the boxes $(\rho = exp( - \frac{1}{\mathrm{\text{lifetime}}})$
+where $\alpha_{i}$ denotes the fraction of emissions $E$ (in million metric tonnes of carbon) that is allocated to $Box_{i}$ ($0.13$, $0.20$, $0.32$, $0.25$ and $0.10$, respectively) and $\rho$ the decay-rate of the boxes $(\rho = exp( - \frac{1}{\mathrm{\text{lifetime}}})$
 with life-times $infinity$, $363$, $74$, $17$ and $2$ years, respectively).
 
 The model is due to Maier-Reimer and Hasselmann (1987)[^1].
-Its parameters are due to Hammitt et al. (1992)[^2]. Thus, 13$\%$ of total emissions remains forever in the atmosphere, while 10$\%$ is—on average—removed in two years. Carbon dioxide concentrations are measured in parts per million by volume.
+Its parameters are due to Hammitt et al. (1992)[^2]. Thus, $13 \%$ of total emissions remains forever in the atmosphere, while $10\%$ is — on average — removed in two years. Carbon dioxide concentrations are measured in parts per million by volume.
 You can find an implementation (and parameters) of this model on GitHub.[^3]
 
 
@@ -33,18 +32,18 @@ The inputs are:
 * year end, the last year of the study. Default is 2100.
 * time step, the number of year between each step of computation. Default is 1.
 * GHG emissions, the quantity of GHG released in the atmosphere in Gt. This data comes from ghg_emission model. 
-* Alpha, is the trade variable between utility and CO2 emission, used to compute the output ppm objective. The weight of utility is Alpha, the weight of climate is (1 - Alpha). The default value is 0.5.
+* Alpha is the trade variable between utility and CO2 emission, used to compute the output ppm objective. The weight of utility is Alpha, the weight of climate is (1 - Alpha). The default value is 0.5.
 * Beta is the trade variable between CO2 emission and temperature, used to compute the output ppm objective. The weight of CO2 emission is Beta, the weight of temperature is (1 - Beta).
-* Numerical parameters from the FUND model. In paricular, emissions fractions, decay rates and initial concentrations for CO2, CH4 and N2O gases.
+* Numerical parameters from the FUND model. In particular, emissions fractions, decay rates and initial concentrations for CO2, CH4 and N2O gases.
 
 The outputs of the models are:
-* ppm\_objective, gives the concentration of carbon of the atmosphere in parts per millions for each year.
-* GHG cycle data, gives the concentration of carbon in the atmosphere for each year.
-* GHG\_cycle\_detail\_df, gives the concentration of carbon in atmoshpere and ocean. 
+* ppm\_objective gives the concentration of carbon of the atmosphere in parts per millions for each year.
+* GHG cycle data gives the concentration of carbon in the atmosphere for each year.
+* GHG\_cycle\_detail\_df gives the concentration of carbon in atmoshpere and ocean. 
 
 ### PPM objective
 
-A "ppm objective" is calculated and set as an output of the model, based on the number of CO2 particule per meter:
+A ppm objective is computed and set as an output of the model, based on the number of CO2 particule per meter:
 $$ppm_{objective} = \frac{(1 - \alpha) * (1 - \beta) * \sum CO2_{ppm} }{(CO2_{ppm}^{ref} * \Delta_{years})}$$
 
 where $CO2_{ppm}^{ref}$ is a reference value used to normalize the value of the objective, $\beta$ is a trade variable between the objectives based on the CO2 emissions or concentration and $\alpha$ is the global tradeof variable between global warning and the economy.

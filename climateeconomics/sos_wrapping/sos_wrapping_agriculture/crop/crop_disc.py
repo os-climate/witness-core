@@ -563,7 +563,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             'calories_pc_df': self.crop_model.calories_pc_df
         }
 
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

@@ -82,12 +82,14 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                                                                  GlossaryCore.TotalCH4Emissions: ('float', None, False), }
                                         },
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
+        GlossaryCore.CO2EmissionsRef['var_name']: GlossaryCore.CO2EmissionsRef,
     }
     DESC_OUT = {
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
         GlossaryCore.GHGEmissionsDfValue: {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'Gt'},
         'GHG_emissions_detail_df': {'type': 'dataframe', 'unit': 'Gt'},
-        'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'}
+        'GWP_emissions': {'type': 'dataframe', 'unit': 'GtCO2eq'},
+        GlossaryCore.CO2EmissionsObjective['var_name']: GlossaryCore.CO2EmissionsObjective,
     }
 
     def init_execution(self):
@@ -112,7 +114,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         dict_values = {'GHG_emissions_detail_df': self.emissions_model.ghg_emissions_df,
                        GlossaryCore.CO2EmissionsGtValue: self.emissions_model.GHG_total_energy_emissions[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]],
                        GlossaryCore.GHGEmissionsDfValue: emissions_df,
-                       'GWP_emissions': self.emissions_model.gwp_emissions}
+                       'GWP_emissions': self.emissions_model.gwp_emissions,
+                       GlossaryCore.CO2EmissionsObjective['var_name']: self.emissions_model.co2_emissions_objective,
+                       }
 
         self.store_sos_outputs_values(dict_values)
 
@@ -144,6 +148,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.GHGEmissionsDfValue, GlossaryCore.TotalCO2Emissions), ('CO2_indus_emissions_df', 'indus_emissions'),
             np.identity(len(years)))
+        self.set_partial_derivative_for_other_types(
+            (GlossaryCore.CO2EmissionsObjective['var_name'],), ('GHG_total_energy_emissions', GlossaryCore.TotalCO2Emissions),
+            self.emissions_model.d_CO2_emissions_objective_d_total_co2_emissions())
 
     def get_chart_filter_list(self):
 

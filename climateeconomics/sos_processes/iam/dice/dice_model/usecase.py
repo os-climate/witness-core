@@ -29,7 +29,7 @@ class Study(StudyManager):
     def __init__(self, execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
         # private values economics operator pyworld3
         dice_input = {}
@@ -37,17 +37,6 @@ class Study(StudyManager):
         dice_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start
         dice_input[f"{self.study_name}.{GlossaryCore.YearEnd}"] = self.year_end
         dice_input[f"{self.study_name}.{GlossaryCore.TimeStep}"] = self.time_step
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'conc_lower_strata'}"] = 1720.0
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'conc_upper_strata'}"] = 360.0
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'conc_atmo'}"] = 588.0
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'init_conc_atmo'}"] = 851.0
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'init_upper_strata'}"] = 460.0
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'init_lower_strata'}"] = 1740.0
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'b_twelve'}"] = 0.12
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'b_twentythree'}"] = 0.007
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'lo_mat'}"] = 10.0
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'lo_mu'}"] = 100.0
-        dice_input[f"{self.study_name}.{'Carbon_cycle'}.{'lo_ml'}"] = 1000.0
 
         dice_input[f"{self.study_name}.{'Carbon_emissions'}.{'init_land_emissions'}"] = 2.6
         dice_input[f"{self.study_name}.{'Carbon_emissions'}.{'decline_rate_land_emissions'}"] = .115
