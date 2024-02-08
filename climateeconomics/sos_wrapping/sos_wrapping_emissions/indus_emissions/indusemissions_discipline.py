@@ -74,7 +74,8 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
                                                   GlossaryCore.OutputGrowth: ('float', None, False),}
                          },
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2, 'unit': '-'},
-        'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'}
+        'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
     DESC_OUT = {
         'CO2_indus_emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'Gt'},
@@ -88,7 +89,9 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         in_dict = self.get_sosdisc_inputs()
-
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(in_dict, dict_ranges)
         # Compute de emissions_model
         CO2_indus_emissions_df = self.emissions_model.compute(in_dict)
         # Store output data

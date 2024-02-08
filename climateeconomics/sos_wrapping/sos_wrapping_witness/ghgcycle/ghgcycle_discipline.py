@@ -81,6 +81,7 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
                                             'default': ClimateEcoDiscipline.GWP_100_default,
                                             'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                             'namespace': GlossaryCore.NS_WITNESS, 'user_level': 3},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
 
     }
 
@@ -105,6 +106,9 @@ class GHGCycleDiscipline(ClimateEcoDiscipline):
     def run(self):
         # get input of discipline
         param_in = self.get_sosdisc_inputs()
+        if param_in[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(param_in, dict_ranges)
 
         # compute output
         self.ghg_cycle.compute(param_in)

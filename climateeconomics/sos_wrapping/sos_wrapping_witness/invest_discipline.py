@@ -48,6 +48,7 @@ class InvestDiscipline(ClimateEcoDiscipline):
         'invest_norm': {'type': 'float', 'default': 10.0},
         'formulation': {'type': 'string', 'default': 'objective', 'possile_values': ['objective', 'constraint']},
         'max_difference': {'type': 'float', 'default': 1.0e-1},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
@@ -58,6 +59,9 @@ class InvestDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         inputs = self.get_sosdisc_inputs()
+        if inputs[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inputs, dict_ranges)
 
         difference = np.linalg.norm(inputs['energy_investment_macro'][GlossaryCore.EnergyInvestmentsValue].values -
                                     inputs[GlossaryCore.EnergyInvestmentsValue][GlossaryCore.EnergyInvestmentsValue].values) / inputs['invest_norm']
