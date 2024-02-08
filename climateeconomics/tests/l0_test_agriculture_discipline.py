@@ -95,7 +95,8 @@ class AgricultureTestCase(unittest.TestCase):
                       'white_meat_percentage': self.white_meat_percentage,
                       'other_use_agriculture': self.other,
                       'param_a': - 0.00833,
-                      'param_b': - 0.04167
+                      'param_b': - 0.04167,
+                      GlossaryCore.CheckRangeBeforeRunBoolName: False,
                       }
 
     def test_agriculture_model(self):
@@ -140,7 +141,8 @@ class AgricultureTestCase(unittest.TestCase):
                        f'{name}.{model_name}.red_meat_percentage': self.red_meat_percentage,
                        f'{name}.{model_name}.white_meat_percentage': self.white_meat_percentage,
                        f'{name}.{model_name}.{Agriculture.OTHER_USE_AGRICULTURE}': self.other,
-                       f'{name}.{model_name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df
+                       f'{name}.{model_name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{name}.{model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)

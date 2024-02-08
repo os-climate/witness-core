@@ -76,7 +76,9 @@ class GHGEmissionDiscTest(unittest.TestCase):
                        f'{self.name}.CH4_land_emissions': CH4_land_emissions,
                        f'{self.name}.N2O_land_emissions': N2O_land_emissions,
                        f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
-                       f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions, }
+                       f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
+                       }
 
         self.ee.load_study_from_input_dict(values_dict)
 
