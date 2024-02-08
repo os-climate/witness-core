@@ -47,7 +47,7 @@ class CopperModel :
         self.set_data()
         
 
-        data_dir = join(dirname(dirname(__file__)), 'sos_wrapping', 'data')
+        join(dirname(dirname(__file__)), 'sos_wrapping', 'data')
 
         self.copper_stock =  pd.DataFrame(columns = ['Year', 'Stock']) #pd.read_csv(join(data_dir, 'copper_previous_stock.csv'))  
         self.copper_reserve = pd.DataFrame(columns = ['Year', 'Reserve']) #DataFrame with the wolrd's reserve updated each year

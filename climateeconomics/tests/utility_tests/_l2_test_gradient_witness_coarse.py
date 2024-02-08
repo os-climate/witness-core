@@ -113,7 +113,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         full_values_dict[f'{self.name}.{usecase.coupling_name}.sub_mda_class'] = 'MDAGaussSeidel'
         self.ee.load_study_from_input_dict(full_values_dict)
 
-        disc = self.ee.root_process.proxy_disciplines[0]
+        self.ee.root_process.proxy_disciplines[0]
 
         output_full_names = [
             f'{self.name}.{usecase.coupling_name}.{usecase.extra_name}.{obj}' for obj in self.obj_const]
@@ -276,7 +276,6 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                     row['value'][1:-1].split(', '), dtype=float)
             except:
                 pass
-        dspace_df = df_xvect
 
         self.ee.load_study_from_input_dict(values_dict_design_var)
 
@@ -396,7 +395,6 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
                     row['value'][1:-1].split(', '), dtype=float)
             except:
                 pass
-        dspace_df = df_xvect
 
         self.ee.load_study_from_input_dict(values_dict_design_var)
 

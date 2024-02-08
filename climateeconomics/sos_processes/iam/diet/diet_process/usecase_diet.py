@@ -147,7 +147,6 @@ class Study(ClimateEconomicsStudyManager):
         setup_data_list = setup_data_list + agriculture_list
         self.dspace_size = dc_agriculture_mix.dspace.pop('dspace_size')
         self.dspace.update(dc_agriculture_mix.dspace)
-        nb_poles = 8
         # WITNESS
         # setup objectives
         self.share_energy_investment_array = asarray([1.65] * len(years))
@@ -191,12 +190,6 @@ class Study(ClimateEconomicsStudyManager):
     def setup_constraints(self):
         func_df = pd.DataFrame(
             columns=['variable', 'parent', 'ftype', 'weight', AGGR_TYPE])
-        list_var = []
-        list_parent = []
-        list_ftype = []
-        list_weight = []
-        list_aggr_type = []
-        list_ns = []
 
         """
         list_var.append('non_use_capital_cons')

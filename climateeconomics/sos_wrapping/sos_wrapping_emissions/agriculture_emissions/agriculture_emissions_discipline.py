@@ -269,7 +269,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         new_chart = TwoAxesInstanciatedChart(
             GlossaryCore.Years, 'GHG emissions (Gt)', chart_name=chart_name, stacked_bar=True)
 
-        technology_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
+        self.get_sosdisc_inputs(GlossaryCore.techno_list)
 
         CO2_emissions_land_use_df = self.get_sosdisc_outputs(
             'CO2_land_emissions')
@@ -307,7 +307,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         new_chart = TwoAxesInstanciatedChart(
             GlossaryCore.Years, 'CO2 emissions (GtCO2)', chart_name=chart_name, stacked_bar=True)
 
-        technology_list = self.get_sosdisc_inputs(GlossaryCore.techno_list)
+        self.get_sosdisc_inputs(GlossaryCore.techno_list)
 
         CO2_emissions_land_use_df = self.get_sosdisc_outputs(
             'CO2_land_emissions')

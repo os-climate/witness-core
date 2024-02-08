@@ -71,7 +71,7 @@ class ServicesDiscTest(unittest.TestCase):
        
         # input
         data_dir = join(dirname(__file__), 'data')
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        join(dirname(dirname(__file__)), 'data')
 
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
         total_workforce_df.index = years
@@ -200,7 +200,7 @@ class ServicesDiscTest(unittest.TestCase):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{SectorDiscipline.sector_name}')[0]
         filterr = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filterr)
+        disc.get_post_processing_list(filterr)
         # for graph in graph_list:
         #     graph.to_plotly().show()
 

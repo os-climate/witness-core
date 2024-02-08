@@ -67,7 +67,7 @@ def post_processings(execution_engine, namespace, filters):
 
         min_temp = min(list(temperature.values()))
         max_temp = max(list(temperature.values()))
-        maxs = max(max_temp, abs(min_temp))
+        max(max_temp, abs(min_temp))
 
         max_value_welfare = max(list(welfare.values()))
         min_value_welfare = min(list(welfare.values()))

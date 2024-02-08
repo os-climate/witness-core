@@ -151,7 +151,7 @@ class LaborMarketModel():
         workforce_df[GlossaryCore.Workforce] = workforce_df.sum(axis = 1)
         workforce_df.insert(0, GlossaryCore.Years, self.years_range)
         self.workforce_df = workforce_df
-        share = self.workforce_share_per_sector[GlossaryCore.SectorAgriculture].values
+        self.workforce_share_per_sector[GlossaryCore.SectorAgriculture].values
         
         return workforce_df
     

@@ -33,7 +33,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 
 class MacroeconomicsDiscipline(ClimateEcoDiscipline):

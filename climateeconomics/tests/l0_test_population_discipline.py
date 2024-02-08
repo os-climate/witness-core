@@ -80,7 +80,7 @@ class PopDiscTest(unittest.TestCase):
         print('old_time : 8.636150598526001  s ')
         print('Time : ', time.time() - t0, ' s')
 
-        res_pop = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.PopulationDfValue}')
+        self.ee.dm.get_value(f'{self.name}.{GlossaryCore.PopulationDfValue}')
 
         birth_rate = self.ee.dm.get_value(
             f'{self.name}.{self.model_name}.birth_rate_df')
@@ -90,13 +90,13 @@ class PopDiscTest(unittest.TestCase):
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
+        disc.get_post_processing_list(filter)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 
     def test_economicdegrowth(self):
 
-        data_dir = join(dirname(__file__), 'data')
+        join(dirname(__file__), 'data')
 
         # Test With a GDP that grows at 2%
         years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
@@ -127,13 +127,13 @@ class PopDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_pop = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.PopulationDfValue}')
+        self.ee.dm.get_value(f'{self.name}.{GlossaryCore.PopulationDfValue}')
 #        print(res_pop)
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
+        disc.get_post_processing_list(filter)
         # for graph in graph_list:
         #     graph.to_plotly().show()
 
@@ -173,13 +173,13 @@ class PopDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_pop = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.PopulationDfValue}')
+        self.ee.dm.get_value(f'{self.name}.{GlossaryCore.PopulationDfValue}')
 #        print(res_pop)
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
+        disc.get_post_processing_list(filter)
         # for graph in graph_list:
         #    graph.to_plotly().show()
 
@@ -222,7 +222,7 @@ class PopDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_pop = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.PopulationDfValue}')
+        self.ee.dm.get_value(f'{self.name}.{GlossaryCore.PopulationDfValue}')
 #        print(res_pop)
 
         disc = self.ee.dm.get_disciplines_with_name(

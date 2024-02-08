@@ -75,7 +75,7 @@ class TestSoSDiscipline(unittest.TestCase):
         copper_model = self.ee.dm.get_disciplines_with_name('Test.CopperModel')[
             0]
         filters = copper_model.get_chart_filter_list()
-        graph_list = copper_model.get_post_processing_list(filters)
+        copper_model.get_post_processing_list(filters)
 #         for graph in graph_list:
 #             graph.to_plotly().show()
 

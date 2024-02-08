@@ -60,7 +60,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                            )
         usecase.study_name = self.name
         usecase.init_from_subusecase = True
-        directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'optim_check_gradient_dev')
+        join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'optim_check_gradient_dev')
 
         values_dict = usecase.setup_usecase()
         full_values_dict = {}
@@ -151,7 +151,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
                                                )
             usecase.study_name = self.name
             usecase.init_from_subusecase = True
-            directory = join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'optim_check_gradient_dev')
+            join(AbstractJacobianUnittest.PICKLE_DIRECTORY, 'optim_check_gradient_dev')
 
             values_dict = usecase.setup_usecase()
             full_values_dict = {}
@@ -265,7 +265,7 @@ class OptimSubprocessJacobianDiscTest(AbstractJacobianUnittest):
         self.name = 'Test'
         # -- init the case
         func_mng_name = 'FunctionsManager'
-        prefix = self.name + '.' + func_mng_name + '.'
+        self.name + '.' + func_mng_name + '.'
 
         ee = ExecutionEngine(self.name)
         ns_dict = {GlossaryCore.NS_FUNCTIONS: self.name + '.' + 'WITNESS_Eval.WITNESS',

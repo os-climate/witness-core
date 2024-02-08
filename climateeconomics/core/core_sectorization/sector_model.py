@@ -17,7 +17,6 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-import copy
 
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -682,7 +681,7 @@ class SectorModel():
         d_Ku_d_E[index_zeros, index_zeros] = 0.
 
         damefrac = self.damage_fraction_df[GlossaryCore.DamageFractionOutput].values
-        dQ_dY = 1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
+        1 - damefrac if not self.damage_to_productivity else (1 - damefrac) / (1 - self.frac_damage_prod * damefrac)
         d_K_d_E = self._null_derivative()
         dY_dE = np.diag(
             productivity * alpha * usable_capital ** (gamma - 1) * np.diag(d_Ku_d_E) *

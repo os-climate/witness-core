@@ -64,12 +64,7 @@ class TestScatter(unittest.TestCase):
 
     def test_01_witness_perfos_execute(self):
 
-        cumtime_gems_list = []
-        cumtime_configure_list = []
-        cumtime_build_list = []
-        cumtime_treeview_list = []
-        cumtime_execute_list = []
-        cumtime_total_configure_list = []
+        pass
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -180,12 +175,7 @@ class TestScatter(unittest.TestCase):
 
     def test_02_witness_perfos_execute_GSNR(self):
 
-        cumtime_gems_list = []
-        cumtime_configure_list = []
-        cumtime_build_list = []
-        cumtime_treeview_list = []
-        cumtime_execute_list = []
-        cumtime_total_configure_list = []
+        pass
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -290,12 +280,7 @@ class TestScatter(unittest.TestCase):
 
     def test_03_witness_perfos_execute_PureParallel(self):
 
-        cumtime_gems_list = []
-        cumtime_configure_list = []
-        cumtime_build_list = []
-        cumtime_treeview_list = []
-        cumtime_execute_list = []
-        cumtime_total_configure_list = []
+        pass
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -495,7 +480,7 @@ class TestScatter(unittest.TestCase):
             execute_time_list.append(execute_time)
             total_time_list.append(total_time)
 
-        fig = plt.figure()
+        plt.figure()
         plt.plot(n_proc_list, total_time_list, label='Total time')
         plt.plot(n_proc_list, execute_time_list, label='Execute time')
         plt.plot(n_proc_list, linearize_time_list, label='Linearize time')
@@ -606,7 +591,7 @@ class TestScatter(unittest.TestCase):
                 os.system(
                     f'git add ./climateeconomics/tests/utility_tests/{fig_name}')
 
-        fig = plt.figure()
+        plt.figure()
         plt.plot(n_proc_list, total_time_list, label='Total time')
         plt.plot(n_proc_list, execute_time_list, label='Execute time')
         plt.plot(n_proc_list, linearize_time_list, label='Linearize time')
@@ -742,7 +727,6 @@ class TestScatter(unittest.TestCase):
             linearizes_full = [327, 345, 349, 107, 135]
             execute_full = [73, 66, 70, 108, 117]
             others_full = [144, 137, 136, 165, 165]
-            total_full = [543, 548, 555, 380, 417]
             execution_modes_new = ['sequential', 'threading_10_cores', 'threading_20_cores', 'multiprocessing_10_cores',
                                    'multiprocessing_20_cores', 'multiproc_10_seq', 'multiproc_20_seq']
             total_full_new = [543, 548, 555, 380, 417, 327, 346]
@@ -816,8 +800,6 @@ class TestScatter(unittest.TestCase):
 
         labels = ['n_processes', 'Linearize', 'Pre-run', 'Gauss Seidel', 'Execute', 'Matrix Inversion', 'Matrix Build',
                   'convert_array_into_new_types', 'Others']
-        n_processes_list = [1, 10, 20, 30]
-        n_processes_list = [1]
 
         # dict_perfo = {}
         # for n_core in n_processes_list:
@@ -1055,7 +1037,7 @@ class TestScatter(unittest.TestCase):
             x = np.arange(len(labels))  # the label locations
             width = 0.35  # the width of the bars
             fig, ax = plt.subplots()
-            rects1 = ax.bar(labels, values, width)
+            ax.bar(labels, values, width)
             ax.set_title(title)
             fig.tight_layout()
             if save:
@@ -1222,7 +1204,7 @@ class TestScatter(unittest.TestCase):
             x = np.arange(len(labels))  # the label locations
             width = 0.35  # the width of the bars
             fig, ax = plt.subplots()
-            rects1 = ax.bar(labels, values, width)
+            ax.bar(labels, values, width)
             ax.set_title(title)
             fig.tight_layout()
             if save:

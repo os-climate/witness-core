@@ -64,7 +64,6 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
 
     def compute_sos_jacobian(self):
         """sos jacobian"""
-        pass
 
     def get_chart_filter_list(self):
 

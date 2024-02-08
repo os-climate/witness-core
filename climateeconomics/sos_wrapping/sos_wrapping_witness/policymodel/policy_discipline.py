@@ -72,7 +72,7 @@ class PolicyDiscipline(SoSWrapp):
     }
 
     def init_execution(self):
-        param_in = self.get_sosdisc_inputs()
+        self.get_sosdisc_inputs()
         self.policy_model = PolicyModel()
 
     def run(self):

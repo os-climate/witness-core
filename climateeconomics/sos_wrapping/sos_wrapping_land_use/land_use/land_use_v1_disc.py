@@ -177,8 +177,8 @@ class LandUseV1Discipline(SoSWrapp):
         """
         inputs_dict = self.get_sosdisc_inputs()
         land_demand_df = inputs_dict['land_demand_df']
-        total_food_land_surface = inputs_dict['total_food_land_surface']
-        deforested_surface_df = inputs_dict['forest_surface_df']
+        inputs_dict['total_food_land_surface']
+        inputs_dict['forest_surface_df']
         model = self.land_use_model
 
         # Retrieve variables

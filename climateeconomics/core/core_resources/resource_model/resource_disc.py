@@ -115,8 +115,8 @@ class ResourceDiscipline(SoSWrapp):
         price and stock resource with resource_demand_df
         """
         inputs_dict = self.get_sosdisc_inputs()
-        output_dict = self.get_sosdisc_outputs()
-        resources_demand = inputs_dict['resources_demand']
+        self.get_sosdisc_outputs()
+        inputs_dict['resources_demand']
         sub_resource_list = self.resource_model.sub_resource_list
 
         grad_stock, grad_price, grad_use, grad_recycling = self.resource_model.get_derivative_resource()
@@ -175,7 +175,7 @@ class ResourceDiscipline(SoSWrapp):
         inputs_dict = self.get_sosdisc_inputs()
         outputs_dict = self.get_sosdisc_outputs()
         year_start = inputs_dict[GlossaryCore.YearStart]
-        year_end = inputs_dict[GlossaryCore.YearEnd]
+        inputs_dict[GlossaryCore.YearEnd]
         production_start = inputs_dict['production_start']
         number_of_subtypes = 0
         if 'Stock' in chart_list:

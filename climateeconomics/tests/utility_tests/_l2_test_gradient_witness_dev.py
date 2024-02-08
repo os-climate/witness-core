@@ -207,7 +207,6 @@ class WitnessDevJacobianDiscTest(AbstractJacobianUnittest):
 
         disc = self.ee.root_process.proxy_disciplines[0]
 
-        values_dict_design_var = {}
         # df_xvect = pd.read_csv(
         #     join(dirname(__file__), 'data', 'design_space_last_ite_crash.csv'))
         # for i, row in df_xvect.iterrows():

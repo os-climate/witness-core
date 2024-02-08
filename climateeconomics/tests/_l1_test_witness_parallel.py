@@ -88,7 +88,7 @@ class WITNESSParallelTest(unittest.TestCase):
 
         self.ee.execute()
         dm_dict_1 = deepcopy(self.ee.get_anonimated_data_dict())
-        residual_history = self.ee.root_process.sub_mda_list[0].residual_history
+        self.ee.root_process.sub_mda_list[0].residual_history
 
         dict_error = {}
         # to delete modelorigin and discipline dependencies which are not the
@@ -98,7 +98,7 @@ class WITNESSParallelTest(unittest.TestCase):
         compare_dict(dm_dict_1,
                      dm_dict_8, '', dict_error)
 
-        residual_history8 = self.ee8.root_process.sub_mda_list[0].residual_history
+        self.ee8.root_process.sub_mda_list[0].residual_history
         # self.assertListEqual(residual_history, residual_history8)
         for key, value in dict_error.items():
             print(key)

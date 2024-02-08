@@ -149,7 +149,6 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
 
         coupling_name = "WITNESS_Eval"
         designvariable_name = "DesignVariables"
-        func_manager_name = "FunctionsManager"
         extra_name = 'WITNESS'
         # retrieve energy process
         chain_builders = self.ee.factory.get_builder_from_process(

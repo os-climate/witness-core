@@ -704,7 +704,6 @@ def graph_model_cumulative_climate_deaths(death_dict, instanciated_charts):
                                             [min_value, max_value],
                                             chart_name)
 
-    visible_line = True
     ordonate_data = list(death_dict['climate']['cum_total'])
 
     new_series = InstanciatedSeries(

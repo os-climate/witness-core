@@ -50,11 +50,11 @@ class Study(StudyManager):
                                                     execution_engine=execution_engine)
 
     def setup_usecase(self, study_folder_path=None):
-        ns = self.study_name
+        self.study_name
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
         ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
-        INEQ_CONSTRAINT = FunctionManager.INEQ_CONSTRAINT
+        FunctionManager.INEQ_CONSTRAINT
         OBJECTIVE = FunctionManager.OBJECTIVE
 
         dspace_dict = {'variable': ['output_alpha_indus_in', 'prod_gr_start_indus_in', 'decl_rate_tfp_indus_in',

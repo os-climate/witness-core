@@ -75,10 +75,10 @@ class Study(ClimateEconomicsStudyManager):
         setup_data_list = []
 
 
-        year_range = self.year_end - self.year_start
+        self.year_end - self.year_start
         years = arange(self.year_start, self.year_end + 1, 1)
 
-        global_data_dir = join(Path(__file__).parents[4], 'data')
+        join(Path(__file__).parents[4], 'data')
 
         # ALL_RESOURCE
         resource_input = {}

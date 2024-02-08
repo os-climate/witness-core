@@ -41,7 +41,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
         # -------------------------
         # input
         data_dir = join(dirname(__file__), 'data')
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        join(dirname(dirname(__file__)), 'data')
 
         total_workforce_df = read_csv(join(data_dir, 'workingage_population_df.csv'))
         total_workforce_df = total_workforce_df[total_workforce_df[GlossaryCore.Years] <= self.year_end]

@@ -53,7 +53,7 @@ class Study(StudyManager):
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
         ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
-        INEQ_CONSTRAINT = FunctionManager.INEQ_CONSTRAINT
+        FunctionManager.INEQ_CONSTRAINT
         OBJECTIVE = FunctionManager.OBJECTIVE
 
         dspace_dict = {
@@ -104,8 +104,6 @@ class Study(StudyManager):
         dspace = pd.DataFrame(dspace_dict)
 
         services = 'Services.'
-        agri = 'Agriculture.'
-        industry = 'Industry.'
         design_var_descriptor = {
             'output_alpha_services_in': {'out_name': services + 'output_alpha', 'out_type': 'float', 'index': arange(1),
                                          'namespace_in': 'ns_optim', 'namespace_out': GlossaryCore.NS_MACRO},

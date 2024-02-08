@@ -17,7 +17,6 @@ limitations under the License.
 # -*- coding: utf-8 -*-
 
 from climateeconomics.sos_processes.iam.witness.witness_optim_sub_process.usecase_witness_optim_sub import OPTIM_NAME
-from energy_models.core.energy_study_manager import DEFAULT_TECHNO_DICT
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
 
 
@@ -37,7 +36,6 @@ class ProcessBuilder(WITNESSSubProcessBuilder):
 
         # if one invest discipline then we need to setup all subprocesses
         # before get them
-        techno_dict = DEFAULT_TECHNO_DICT
 
         coupling_builder = self.ee.factory.get_builder_from_process(
             'climateeconomics.sos_processes.iam.diet', 'diet_optim_sub_process')

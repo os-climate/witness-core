@@ -327,7 +327,7 @@ class Population:
         if year > self.year_end:
             pass
         else:
-            year_start = self.year_start
+            self.year_start
             pop_before = self.population_dict[year - 1][:-1]
             pop_before = pop_before - total_death
 

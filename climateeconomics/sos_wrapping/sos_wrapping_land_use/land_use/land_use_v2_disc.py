@@ -234,8 +234,8 @@ class LandUseV2Discipline(SoSWrapp):
         inputs_dict = self.get_sosdisc_inputs()
         outputs_dict = self.get_sosdisc_outputs()
         years = list(np.arange(inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd]+1))
-        total_food_land_surface = inputs_dict['total_food_land_surface']
-        total_forest_surface_df = inputs_dict['forest_surface_df']
+        inputs_dict['total_food_land_surface']
+        inputs_dict['forest_surface_df']
         land_surface_detailed = outputs_dict[LandUseV2.LAND_SURFACE_DETAIL_DF]
         land_demand_constraint = outputs_dict[LandUseV2.LAND_DEMAND_CONSTRAINT]
         # Surfaces available

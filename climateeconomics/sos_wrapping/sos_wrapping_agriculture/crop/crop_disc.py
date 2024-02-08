@@ -1146,7 +1146,6 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         list_categories = ['red meat', 'white meat', 'eggs_milk', 'vegetables_and_carbs', GlossaryCore.Fish, GlossaryCore.OtherFood]
 
-        co2_gwp_100 = 1.0
         ch4_gwp_100 = 28.0
         n2o_gwp_100 = 265.0
 

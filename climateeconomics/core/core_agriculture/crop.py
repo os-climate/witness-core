@@ -1157,7 +1157,6 @@ class Crop():
                 sub_total_surface_grad = red_meat_diet_grad / self.kg_to_kcal_dict[food]
 
             else:
-                pass
                 """proportion = self.kcal_diet_df[food] / (self.kcal_diet_df['fruits and vegetables'] + self.kcal_diet_df['cereals'] + self.kcal_diet_df['rice and maize'])
                 sub_total_surface_grad = removed_red_kcal * proportion / self.kg_to_kcal_dict[food] * kg_food_to_surface[food]
                 """

@@ -270,7 +270,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 
             # temperature_constraint
             d_tempatmo_d_atmoconc, _ = self.model.compute_d_temp_atmo()
-            d_tempatmoobj_d_temp_atmo = self.model.compute_d_temp_atmo_objective()
+            self.model.compute_d_temp_atmo_objective()
             self.set_partial_derivative_for_other_types(
                 ('temperature_constraint',), (GlossaryCore.GHGCycleDfValue, GlossaryCore.CO2Concentration),
                 -d_tempatmo_d_atmoconc[-1] / temperature_constraint_ref, )

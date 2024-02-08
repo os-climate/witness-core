@@ -68,11 +68,11 @@ class TemperatureDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_damage = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.TemperatureDfValue}')
+        self.ee.dm.get_value(f'{self.name}.{GlossaryCore.TemperatureDfValue}')
 
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()
-        graph_list = disc.get_post_processing_list(filter)
+        disc.get_post_processing_list(filter)
 #         for graph in graph_list:
 #             graph.to_plotly().show()

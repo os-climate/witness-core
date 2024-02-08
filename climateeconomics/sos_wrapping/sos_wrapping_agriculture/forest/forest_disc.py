@@ -297,7 +297,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         """
         inputs_dict = self.get_sosdisc_inputs()
         self.forest_model.compute(inputs_dict)
-        wood_techno_dict = inputs_dict['wood_techno_dict']
+        inputs_dict['wood_techno_dict']
         scaling_factor_techno_production = inputs_dict['scaling_factor_techno_production']
         scaling_factor_techno_consumption = inputs_dict['scaling_factor_techno_consumption']
 

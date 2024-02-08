@@ -159,7 +159,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         inputs_dict = self.get_sosdisc_inputs()
         years = np.arange(
             inputs_dict[GlossaryCore.YearStart], inputs_dict[GlossaryCore.YearEnd] + 1, inputs_dict[GlossaryCore.TimeStep])
-        nb_years = len(years)
+        len(years)
 
         d_indus_emissions_d_gross_output, d_cum_indus_emissions_d_gross_output, d_cum_indus_emissions_d_total_CO2_emitted = self.emissions_model.compute_d_indus_emissions()
         d_CO2_obj_d_total_emission = self.emissions_model.compute_d_CO2_objective()

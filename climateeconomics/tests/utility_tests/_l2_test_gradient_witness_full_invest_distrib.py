@@ -104,7 +104,6 @@ class WitnessFullJacobianDiscTest(AbstractJacobianUnittest):
                     row['value'][1:-1].split(', '), dtype=float)
             except:
                 pass
-        dspace_df = df_xvect
 
         self.ee.load_study_from_input_dict(values_dict_design_var)
 

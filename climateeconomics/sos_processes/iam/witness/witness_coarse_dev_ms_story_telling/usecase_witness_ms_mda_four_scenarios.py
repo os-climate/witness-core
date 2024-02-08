@@ -30,7 +30,6 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witne
     Study as usecase_witness_mda
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import \
     Study as usecase_ms_mda
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
 
 
 class Study(ClimateEconomicsStudyManager):

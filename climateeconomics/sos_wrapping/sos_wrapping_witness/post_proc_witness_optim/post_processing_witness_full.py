@@ -24,7 +24,6 @@ from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
     InstantiatedPlotlyNativeChart
 from energy_models.glossaryenergy import GlossaryEnergy
-from climateeconomics.core.core_forest.forest_v2 import Forest
 
 
 def post_processing_filters(execution_engine, namespace):
@@ -376,7 +375,7 @@ def get_chart_Global_CO2_breakdown_sankey(execution_engine, namespace, chart_nam
     multilevel_df, years = get_CO2_breakdown_multilevel_df(
         execution_engine, namespace)
     energy_list = list(set(multilevel_df.index.droplevel(1)))
-    technologies_list = list(multilevel_df.index.droplevel(0))
+    list(multilevel_df.index.droplevel(0))
     label_col1 = ['CO2 from production',
                   'CO2 per use', 'CO2 from other consumption']
     label_col2 = energy_list

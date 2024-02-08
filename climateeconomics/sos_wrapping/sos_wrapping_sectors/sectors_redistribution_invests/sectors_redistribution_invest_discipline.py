@@ -116,10 +116,9 @@ class SectorsRedistributionInvestsDiscipline(SoSWrapp):
 
     def get_post_processing_list(self, filters=None):
         all_filters = True
-        charts = []
 
         if filters is not None:
-            charts = filters
+            pass
 
         instanciated_charts = []
 

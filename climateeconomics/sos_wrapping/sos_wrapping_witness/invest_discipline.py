@@ -125,8 +125,8 @@ class InvestDiscipline(ClimateEcoDiscipline):
 
             years = list(energy_investment_macro[GlossaryCore.Years].values)
 
-            year_start = years[0]
-            year_end = years[len(years) - 1]
+            years[0]
+            years[len(years) - 1]
 
             chart_name = 'Energy investments between macroeconomy output and energy input'
 
@@ -144,7 +144,7 @@ class InvestDiscipline(ClimateEcoDiscipline):
             new_chart.series.append(energy_investment_macro_series)
             instanciated_charts.append(new_chart)
 
-            norm = self.get_sosdisc_outputs('diff_norm')
+            self.get_sosdisc_outputs('diff_norm')
             chart_name = 'Differences between energy investments'
 
             new_chart = TwoAxesInstanciatedChart(

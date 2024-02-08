@@ -174,10 +174,9 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
 
     def get_post_processing_list(self, filters=None):
         all_filters = True
-        charts = []
 
         if filters is not None:
-            charts = filters
+            pass
 
         instanciated_charts = []
         if all_filters or GlossaryCore.RedistributionEnergyProductionDf:
@@ -186,7 +185,7 @@ class SectorsRedistributionEnergyDiscipline(SoSWrapp):
             redistribution_energy_production_df = self.get_sosdisc_outputs(GlossaryCore.RedistributionEnergyProductionDfValue)
             sector_list = self.get_sosdisc_inputs(GlossaryCore.SectorListValue)
             categories_list = [col for col in redistribution_energy_production_df.columns if col != GlossaryCore.Years]
-            other_categ_list = [categ for categ in categories_list if categ not in sector_list]
+            [categ for categ in categories_list if categ not in sector_list]
 
             chart_name = f"Energy allocated to sectors [TWh]"
 

@@ -298,7 +298,7 @@ def resize_array(array):
         i = i - 1
         to_check = to_check = array[i]
 
-    size_diff = len(array) - i
+    len(array) - i
     new_array = array[0:i]
 
     return new_array

@@ -66,7 +66,7 @@ class PolicyDiscTest(unittest.TestCase):
 
         max_CCS_CO2 = np.maximum(
             CCS_price['ccs_price_per_tCO2'], CO2_damage[GlossaryCore.CO2DamagePrice])
-        CO2_tax = self.ee.dm.get_value(f'{self.name}.{GlossaryCore.CO2TaxesValue}')
+        self.ee.dm.get_value(f'{self.name}.{GlossaryCore.CO2TaxesValue}')
 
 #         np.testing.assert_almost_equal(
 # max_CCS_CO2, CO2_tax[GlossaryCore.CO2Tax].values, err_msg='arrays are not equal')

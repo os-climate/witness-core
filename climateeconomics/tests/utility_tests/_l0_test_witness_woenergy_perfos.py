@@ -61,12 +61,7 @@ class TestScatter(unittest.TestCase):
 
     def test_01_witness_perfos_execute(self):
 
-        cumtime_gems_list = []
-        cumtime_configure_list = []
-        cumtime_build_list = []
-        cumtime_treeview_list = []
-        cumtime_execute_list = []
-        cumtime_total_configure_list = []
+        pass
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)

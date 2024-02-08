@@ -297,7 +297,6 @@ class ResourceModel():
         '''
         To be overloaded in specific resource models
         '''
-        pass
 
     def compute_recycling(self, year_demand, resource_type, recycled_production_dict, use_stock_dict):
         # infrastructures have a certain lifespan, so the recycled materials
@@ -310,7 +309,6 @@ class ResourceModel():
         '''
         To be overloaded in specific resource models
         '''
-        pass
 
     def compute_derivative_recycling(self, year_demand, resource_type, grad_use, grad_stock, grad_recycling) :
         """ 
