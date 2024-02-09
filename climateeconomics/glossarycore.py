@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 from copy import deepcopy, copy
 
 
@@ -39,6 +39,7 @@ class GlossaryCore:
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
+    CO2MinimizationObjective = "CO2MinimizationObjective"
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
@@ -62,7 +63,7 @@ class GlossaryCore:
     LastYearDiscountedUtilityObjective = "last_year_discounted_utility_objective"
     energy_list = "energy_list"
     techno_list = "technologies_list"
-    flue_gas_emission_techno_list = 'fluegas_emissions_technology_list'
+    flue_gas_emission_techno_list = "fluegas_emissions_technology_list"
     ccs_list = "ccs_list"
     UsableCapitalObjectiveName = "usable_capital_objective"
     UsableCapitalObjectiveRefName = "usable_capital_objective_ref"
@@ -184,7 +185,9 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
-    df_descriptor_section_df = {section: ('float', [0., 100.], True) for section in SectionsPossibleValues}
+    df_descriptor_section_df = {
+        section: ("float", [0.0, 100.0], True) for section in SectionsPossibleValues
+    }
     df_descriptor_section_df.update({Years: ("int", [1900, YeartEndDefault], False)})
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
@@ -709,9 +712,9 @@ class GlossaryCore:
         "unit": "ppm",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            CO2Concentration: ("float", [0., 1e6], True),
-            CH4Concentration: ("float", [0., 1e6], True),
-            N2OConcentration: ("float", [0., 1e6], True),
+            CO2Concentration: ("float", [0.0, 1e6], True),
+            CH4Concentration: ("float", [0.0, 1e6], True),
+            N2OConcentration: ("float", [0.0, 1e6], True),
         },
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -1150,6 +1153,27 @@ class GlossaryCore:
         "type": "array",
         "unit": "[]",
         "description": "Max investment in sectors constraint using share_max_invest percentage",
+    }
+
+    TargetHeatProductionValue = "TargetHeatProduction"
+    TargetHeatProduction = {
+        "type": "dataframe",
+        "unit": "PWh",
+        "description": "Aimed minimal heat production for HeatMixDiscipline",
+        "dataframe_edition_locked": False,
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YeartEndDefault], True),
+            TargetHeatProductionValue: ("float", [1.0e-8, 1e30], True),
+        },
+    }
+
+    TargetHeatProductionConstraintValue = "TargetHeatProductionConstraint"
+    TargetHeatProductionConstraint = {
+        "type": "array",
+        "unit": "-",
+        "visibility": "Shared",
+        "description": "Contraint for minimum heat production",
+        "namespace": NS_FUNCTIONS,
     }
 
     MaxInvestConstraintRefName = "max_invest_constraint_ref"
