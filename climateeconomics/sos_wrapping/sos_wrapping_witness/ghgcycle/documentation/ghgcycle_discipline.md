@@ -44,7 +44,7 @@ The outputs of the models are:
 ### PPM objective
 
 A ppm objective is computed and set as an output of the model, based on the number of CO2 particule per meter:
-$$ppm_{objective} = \frac{(1 - \alpha) * (1 - \beta) * \sum CO2_{ppm} }{(CO2_{ppm}^{ref} * \Delta_{years})}$$
+$$ppm_{objective} = \frac{(1 - \alpha) \times (1 - \beta) \times \sum CO2_{ppm} }{(CO2_{ppm}^{ref} \times \Delta_{years})}$$
 
 where $CO2_{ppm}^{ref}$ is a reference value used to normalize the value of the objective, $\beta$ is a trade variable between the objectives based on the CO2 emissions or concentration and $\alpha$ is the global tradeof variable between global warning and the economy.
 ## References 

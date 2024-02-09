@@ -54,7 +54,7 @@ $$RF_{CO_2,t} = \eta_{CO_2,Etminan}(\ln(C_{CO_2}^t) - ln(C_{CO_2}^{1750}))$$
 
 with:
  
-$$ \eta_{CO_2,Etminan} = -2.4.10^{-7} (C_{CO_2}^t - C_{CO_2}^{1750})^2 + 7.2.10^{-4} abs(C_{CO_2}^t - C_{CO_2}^{1750}) \\ -2.1.10^{-4} * n2o_{mean} + \frac{\eta}{np.log(2)} $$
+$$ \eta_{CO_2,Etminan} = -2.4.10^{-7} (C_{CO_2}^t - C_{CO_2}^{1750})^2 + 7.2.10^{-4} abs(C_{CO_2}^t - C_{CO_2}^{1750}) \\ -2.1.10^{-4} \times n2o_{mean} + \frac{\eta}{np.log(2)} $$
 
 $$n2o_{mean}= \frac{1}{2}(C_{N2O}^t + C_{N2O}^{1750})$$
 
@@ -66,9 +66,9 @@ $$RF_{N2O,t} = \eta_{N2O,Etminan}(\sqrt{C_{N2O}^t}-\sqrt{C_{N2O}^{1750}})$$
 
 with: 
 
-$$\eta_{CH4,Etminan} = -1.3e-6 * ch4_{mean} - 8.2e-6 * n2o_{mean} + 0.043 $$
+$$\eta_{CH4,Etminan} = -1.3e-6 \times ch4_{mean} - 8.2e-6 \times n2o_{mean} + 0.043 $$
 
-$$\eta_{N2O,Etminan} = -8.0e-6 * co2_{mean} + 4.2e-6 * n2o_{mean} - 4.9e-6 * ch4_{mean} + 0.117 $$
+$$\eta_{N2O,Etminan} = -8.0e-6 \times co2_{mean} + 4.2e-6 \times n2o_{mean} - 4.9e-6 \times ch4_{mean} + 0.117 $$
 
 $$co2{mean}= \frac{1}{2}(C_{CO_2}^t + C_{CO_2}^{1750})$$
 $$ch4_{mean}= \frac{1}{2}(C_{CH4}^t + C_{CH4}^{1750})$$
