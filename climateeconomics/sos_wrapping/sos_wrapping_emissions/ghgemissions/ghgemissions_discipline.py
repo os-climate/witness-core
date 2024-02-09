@@ -81,6 +81,7 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                                                                  GlossaryCore.TotalN2OEmissions: ('float', None, False),
                                                                  GlossaryCore.TotalCH4Emissions: ('float', None, False), }
                                         },
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.CO2EmissionsRef['var_name']: GlossaryCore.CO2EmissionsRef,
     }
     DESC_OUT = {
@@ -98,6 +99,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         inputs_dict = self.get_sosdisc_inputs()
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inputs_dict, dict_ranges)
         self.emissions_model.configure_parameters_update(inputs_dict)
         # Compute de emissions_model
         self.emissions_model.compute()

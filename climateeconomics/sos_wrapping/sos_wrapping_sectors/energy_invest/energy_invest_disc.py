@@ -43,6 +43,7 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
         GlossaryCore.CO2TaxEfficiencyValue: GlossaryCore.CO2TaxEfficiency,
         GlossaryCore.CO2TaxesValue: GlossaryCore.CO2Taxes,
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
     DESC_OUT = {
         GlossaryCore.RenewablesEnergyInvestmentsValue: GlossaryCore.RenewablesEnergyInvestments,
@@ -52,6 +53,9 @@ class EnergyInvestDiscipline(ClimateEcoDiscipline):
     def run(self):
         """run"""
         inputs = self.get_sosdisc_inputs()
+        if inputs[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inputs, dict_ranges)
         self.model = EnergyInvestModel()
 
         self.model.compute(inputs)

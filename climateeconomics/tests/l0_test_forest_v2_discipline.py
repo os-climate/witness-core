@@ -127,6 +127,7 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.margin': self.margin,
                        f'{name}.{model_name}.initial_unmanaged_forest_surface': self.initial_unmanaged_forest_surface,
                        f'{name}.{model_name}.protected_forest_surface': self.initial_protected_forest_surface,
+                       f'{name}.{model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
