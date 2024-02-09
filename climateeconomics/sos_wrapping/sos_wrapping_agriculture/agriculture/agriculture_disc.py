@@ -109,7 +109,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'default': default_other_use, 'namespace': 'ns_agriculture'},
                GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
                'param_a': {'type': 'float', 'unit': '-', 'default': - 0.00833, 'user_level': 3},
-               'param_b': {'type': 'float', 'unit': '-', 'default': - 0.04167, 'user_level': 3}
+               'param_b': {'type': 'float', 'unit': '-', 'default': - 0.04167, 'user_level': 3},
+               GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool
                }
 
     DESC_OUT = {
@@ -135,6 +136,9 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         #-- get inputs
 
         inp_dict = self.get_sosdisc_inputs()
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inp_dict, dict_ranges)
 
         self.agriculture_model.apply_percentage(inp_dict)
         #-- compute

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import deepcopy, copy
+from climateeconomics.database import DatabaseWitnessCore
 
 
 class GlossaryCore:
@@ -34,7 +35,7 @@ class GlossaryCore:
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
     CCUS = "CCUS"
-
+    CheckRangeBeforeRunBoolName = "check_range_before_run_bool_name"
     SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
@@ -1182,6 +1183,57 @@ class GlossaryCore:
         "description": "reference to normalize usable capital objective",
     }
 
+    TargetEnergyProductionValue = "Target energy production"
+    TargetProductionConstraintValue = "Target production constraint"
+    TargetEnergyProductionDf = {
+        "var_name": TargetEnergyProductionValue,
+        "type": "dataframe",
+        "description": " Energy Production",
+        "unit": "TWh$",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YeartEndDefault], False),
+            TargetEnergyProductionValue: ("float", [0., 1e12], True),
+        },
+    }
+
+    TargetProductionConstraint = {
+        "var_name": TargetProductionConstraintValue,
+        "type": "array",
+        "description": "Production Constraint",
+        "unit": "TWh$",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+    }
+
+    CheckRangeBeforeRunBool = {
+        "var_name": CheckRangeBeforeRunBoolName,
+        "type": "bool",
+        "default": False
+    }
+
+    # objective functions
+    CO2EmissionsObjective = {
+        "var_name": 'CO2EmissionsObjective',
+        "type": "float",
+        "default": 1.,
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "Objective on Total CO2 emissions, mean of emissions between 2020 and 2100. Can be negative",
+    }
+
+    CO2EmissionsRef = {
+        "var_name": 'CO2EmissionsRef',
+        "type": "float",
+        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.),
+        "unit": "Gt",
+        "visibility": "Shared",
+        "namespace": NS_REFERENCE,
+        "description": 'Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022',
+    }
+
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""
@@ -1205,3 +1257,4 @@ class GlossaryCore:
         out = deepcopy(variable)
         out["namespace"] = namespace
         return out
+

@@ -62,6 +62,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
                                                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                                   'forest_investment': ('float', [0, 1e9], True)}, 'dataframe_edition_locked': False,
                                                          'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': 'ns_invest'},
+               GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
                }
 
     DESC_OUT = {
@@ -91,6 +92,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         #-- compute
         in_dict = self.get_sosdisc_inputs()
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(in_dict, dict_ranges)
         self.forest_model.compute(in_dict)
 
         outputs_dict = {

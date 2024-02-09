@@ -79,7 +79,8 @@ class UtilityDiscTest(unittest.TestCase):
 
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
                        f'{self.name}.{GlossaryCore.PopulationDfValue}': population_df,
-                       f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
+                       f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,}
 
         self.ee.load_study_from_input_dict(values_dict)
 

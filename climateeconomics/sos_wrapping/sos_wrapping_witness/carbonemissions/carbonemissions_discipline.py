@@ -72,7 +72,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                                                   GlossaryCore.EnergyInvestmentsValue: ('float', None, False),
                                                   'pc_consumption': ('float', None, False),
                                                   'output_net_of_d': ('float', None, False),
-                                                  GlossaryCore.NetOutput: ('float', None, False),
+                                                  GlossaryCore.NetOutput: ('float', [0, 1e30], False),
                                                   }},
         'energy_emis_share': {'type': 'float', 'default': 0.9, 'user_level': 2, 'unit': '-'},
         'land_emis_share': {'type': 'float', 'default': 0.0636, 'user_level': 2, 'unit': '-'},
@@ -102,9 +102,10 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         # reference
         'CO2_land_emissions': {'type': 'dataframe', 'unit': 'GtCO2', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS,
                                'dataframe_descriptor': {
-                                   GlossaryCore.Years: ('float', None, False),
-                                   'emitted_CO2_evol': ('float', None, False),
+                                   GlossaryCore.Years: ('float', [2000, 2200], False),
+                                   'emitted_CO2_evol': ('float', [-1e5, 1e7], False),
                                    'emitted_CO2_evol_cumulative': ('float', None, False),}},
+        GlossaryCore.CheckRangeBeforeRunBoolName : GlossaryCore.CheckRangeBeforeRunBool
     }
     DESC_OUT = {
         GlossaryCore.CO2EmissionsDetailDfValue: GlossaryCore.CO2EmissionsDetailDf,
@@ -120,6 +121,9 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         in_dict = self.get_sosdisc_inputs()
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(in_dict, dict_ranges)
 
         # Compute de emissions_model
         CO2_emissions_df, CO2_objective = self.emissions_model.compute(in_dict)

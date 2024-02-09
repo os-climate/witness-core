@@ -66,7 +66,8 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         'lo_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 0.01, 'user_level': 3},
         GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         'residential_energy_conso_ref' : {'type': 'float', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_REFERENCE, 'unit': 'MWh', 'default': 24.3816},
-        GlossaryCore.ResidentialEnergyProductionDfValue : GlossaryCore.ResidentialEnergyProductionDf
+        GlossaryCore.ResidentialEnergyProductionDfValue : GlossaryCore.ResidentialEnergyProductionDf,
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
     DESC_OUT = {
         'utility_detail_df': {'type': 'dataframe', 'unit': '-'},
@@ -85,6 +86,9 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         # get inputs
         inputs = list(self.DESC_IN.keys())
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inp_dict, dict_ranges)
 
         # compute utility
         economics_df = inp_dict.pop(GlossaryCore.EconomicsDfValue)

@@ -54,6 +54,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                       GlossaryCore.Population1570: ('float', None, False),}
                                              },
+               GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
               }
     DESC_OUT = {
         GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'],
@@ -87,6 +88,9 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inputs_dict, dict_ranges)
         # -- configure class with inputs
         self.labor_model.configure_parameters(inputs_dict)
 

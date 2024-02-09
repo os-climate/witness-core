@@ -70,6 +70,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
                                    'namespace': GlossaryCore.NS_WITNESS},
         'minimum_ppm_limit': {'type': 'float', 'unit': 'ppm', 'default': 250, 'user_level': 2},
         'minimum_ppm_constraint_ref': {'type': 'float', 'unit': 'ppm', 'default': 10, 'user_level': 2, 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_REFERENCE},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
 
     }
 
@@ -88,6 +89,9 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
     def run(self):
         # get input of discipline
         param_in = self.get_sosdisc_inputs()
+        if param_in[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(param_in, dict_ranges)
 
         # compute output
         carboncycle_df, ppm_objective = self.carboncycle.compute(
