@@ -71,7 +71,8 @@ class DamageDiscipline(ClimateEcoDiscipline):
         GlossaryCore.ExtraCO2EqSincePreIndustrialValue: GlossaryCore.ExtraCO2EqSincePreIndustrialDf,
         'damage_constraint_factor': {'type': 'array', 'unit': '-', 'user_level': 2},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
-        GlossaryCore.CO2DamagePriceInitValue: GlossaryCore.CO2DamagePriceInitVar
+        GlossaryCore.CO2DamagePriceInitValue: GlossaryCore.CO2DamagePriceInitVar,
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
 
     }
 
@@ -116,6 +117,9 @@ class DamageDiscipline(ClimateEcoDiscipline):
     def run(self):
         # get inputs
         in_dict = self.get_sosdisc_inputs()
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(in_dict, dict_ranges)
         damage_df = in_dict.pop(GlossaryCore.DamageDfValue)
         temperature_df = in_dict.pop(GlossaryCore.TemperatureDfValue)
         extra_gigatons_co2_eq_df = in_dict.pop(GlossaryCore.ExtraCO2EqSincePreIndustrialValue)

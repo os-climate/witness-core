@@ -71,7 +71,8 @@ class PopDiscTest(unittest.TestCase):
         values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
-                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_all
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_all,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

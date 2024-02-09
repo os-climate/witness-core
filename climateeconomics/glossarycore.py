@@ -31,7 +31,7 @@ class GlossaryCore:
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
     CCUS = "CCUS"
-
+    CheckRangeBeforeRunBoolName = "check_range_before_run_bool_name"
     SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
@@ -1179,6 +1179,12 @@ class GlossaryCore:
         "namespace": NS_FUNCTIONS,
     }
 
+    CheckRangeBeforeRunBool = {
+        "var_name": CheckRangeBeforeRunBoolName,
+        "type": "bool",
+        "default": False
+    }
+
     # objective functions
     CO2EmissionsObjective = {
         "var_name": 'CO2EmissionsObjective',
@@ -1187,25 +1193,17 @@ class GlossaryCore:
         "unit": "-",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
-        "description": "Objective on Total CO2 emissions",
+        "description": "Objective on Total CO2 emissions, mean of emissions between 2020 and 2100. Can be negative",
     }
-    # compute Gt of CO2 emissions added between 1900 and 2020. Formula extracted from ghg_cycle_model.py
-    # value is 1047.96 Gt
-    atmosphere_total_mass_kg = 5.1480 * 10 ** 18
-    molar_mass_atmosphere = 0.02897  # kg/mol
-    n_moles_in_atmosphere = atmosphere_total_mass_kg / molar_mass_atmosphere
-    kg_to_gt = 10 ** (-12)
-    molar_mass_co2 = 0.04401  # kg/mol
 
     CO2EmissionsRef = {
         "var_name": 'CO2EmissionsRef',
         "type": "float",
-        "default": (DatabaseWitnessCore.C02YearStartConcentration.value - DatabaseWitnessCore.CO2PreIndustrialConcentration.value) * \
-        n_moles_in_atmosphere * molar_mass_co2 * kg_to_gt * 10 ** -6,
+        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.),
         "unit": "Gt",
         "visibility": "Shared",
         "namespace": NS_REFERENCE,
-        "description": "CO2 emissions cumulated during industrial era until 2020 and used as reference to normalize CO2EmissionsObjective",
+        "description": 'Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022',
     }
 
     @staticmethod
@@ -1231,3 +1229,4 @@ class GlossaryCore:
         out = deepcopy(variable)
         out["namespace"] = namespace
         return out
+

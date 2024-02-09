@@ -58,7 +58,9 @@ class GHGCycleDiscTest(unittest.TestCase):
         emissions_df[GlossaryCore.TotalCH4Emissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.3/40
         emissions_df[GlossaryCore.TotalN2OEmissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.008/40
 
-        values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, GlossaryCore.TotalCH4Emissions, GlossaryCore.TotalN2OEmissions]]}
+        values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, GlossaryCore.TotalCH4Emissions, GlossaryCore.TotalN2OEmissions]],
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
+                       }
 
         self.ee.load_study_from_input_dict(values_dict)
 

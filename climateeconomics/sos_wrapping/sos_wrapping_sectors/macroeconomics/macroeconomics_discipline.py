@@ -52,6 +52,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                             'visibility': 'Shared',
                                             'unit': '-', 'namespace': GlossaryCore.NS_WITNESS},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
@@ -95,6 +96,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     def run(self):
         """run method"""
         inputs_dict = self.get_sosdisc_inputs()
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inputs_dict, dict_ranges)
         self.macro_model.compute(inputs_dict)
 
         outputs_dict = {

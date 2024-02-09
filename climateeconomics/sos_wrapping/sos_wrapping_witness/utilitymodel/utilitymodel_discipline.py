@@ -73,7 +73,8 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
                               'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False), GlossaryCore.EnergyPriceValue: ('float', None, True)}},
         'initial_raw_energy_price': {'type': 'float', 'unit': '$/MWh', 'default': 110, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 2},
         'init_discounted_utility': {'type': 'float', 'unit': '-', 'default': 3400, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_REFERENCE, 'user_level': 2},
-        GlossaryCore.PerCapitaConsumptionUtilityRefName: GlossaryCore.PerCapitaConsumptionUtilityRef
+        GlossaryCore.PerCapitaConsumptionUtilityRefName: GlossaryCore.PerCapitaConsumptionUtilityRef,
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
@@ -96,6 +97,9 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
     def run(self):
         """run"""
         inp_dict = self.get_sosdisc_inputs()
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inp_dict, dict_ranges)
 
         economics_df = deepcopy(inp_dict[GlossaryCore.EconomicsDfValue])
         energy_mean_price = deepcopy(inp_dict[GlossaryCore.EnergyMeanPriceValue])

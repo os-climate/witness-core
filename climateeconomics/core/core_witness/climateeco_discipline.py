@@ -14,6 +14,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+import pandas as pd
+
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
@@ -30,9 +33,9 @@ class ClimateEcoDiscipline(SoSWrapp):
                                 }
 
     YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YeartStartDefault,
-                          'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public'}
+                          'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950,2040]}
     YEAR_END_DESC_IN = {'type': 'int', 'default': GlossaryCore.YeartEndDefault,
-                        'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public'}
+                        'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public',  'range': [2000,2300]}
     TIMESTEP_DESC_IN = {'type': 'int', 'default': 1, 'unit': 'year per period',
                         'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}
     ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
@@ -92,3 +95,87 @@ class ClimateEcoDiscipline(SoSWrapp):
                 value_out = 0
 
         return value_out
+
+    def get_ranges_input_var(self):
+        """
+        Get available ranges of input data.
+
+        Returns:
+            dict: Dictionary containing ranges for each variable.
+                  For DataFrame variables, it includes ranges for each column.
+
+        Note:
+            This method looks into the DESC_IN attribute, which is a dictionary
+            describing input variables, and extracts the available ranges.
+        """
+
+        # Initialize an empty dictionary to store variable ranges
+        dict_ranges = {}
+        # Loop through input variables
+        for var_name, dict_data in self.DESC_IN.items():
+            # Check if the variable type is a DataFrame
+            if dict_data[self.TYPE] == 'dataframe':
+                if self.DATAFRAME_DESCRIPTOR in dict_data:
+                    range_dict_df = {}
+                    # Extract ranges from DataFrame descriptor and store them in a dictionary
+                    for variable, (_, variable_range, _) in dict_data[self.DATAFRAME_DESCRIPTOR].items():
+                        if variable_range is not None:
+                            range_dict_df[variable] = variable_range
+                    # Store the type of each column of the DataFrame
+                    dict_ranges[var_name] = range_dict_df
+
+            # For other types, check if the range is defined in DESC_IN
+            else:
+                # Check if the range is specified in DESC_IN
+                if self.RANGE in dict_data:
+                    range_data = dict_data[self.RANGE]
+                    if range_data is not None:
+                        dict_ranges[var_name] = range_data
+        # Return the dictionary of ranges
+        return dict_ranges
+
+    def check_ranges(self, data, ranges):
+        """
+        Check value ranges for each variable with a defined range.
+
+        Args:
+            data (dict): Dictionary with variable values.
+            ranges (dict): Dictionary with possible value ranges for each variable.
+
+        Raises:
+            ValueError: If a variable is outside the specified range.
+            TypeError: If the variable type is not supported.
+        """
+        # Iterate through each variable in the provided data
+        for key, value in data.items():
+            # Check if the variable has a defined range
+            if key in ranges:
+                variable_range = ranges[key]
+                if variable_range is not None:
+                    # If the variable is a nested dictionary, apply recursion
+                    if isinstance(value, dict) and isinstance(variable_range, dict):
+                        # Recursion for nested dictionaries
+                        self.check_ranges(value, variable_range)
+                    # If the variable is of type float or int, check if it is within the specified range
+                    elif isinstance(value, (float, int)):
+                        if not (variable_range[0] <= value <= variable_range[1]):
+                            raise ValueError(
+                                f"The value of '{key}' ({value}) is outside the specified range {variable_range}")
+                    # If the variable is a DataFrame, check each column's values against the specified range
+                    elif isinstance(value, pd.DataFrame):
+                        # Check for DataFrames
+                        for column in value.columns:
+                            column_range = variable_range.get(column)
+                            if column_range:
+                                # Check if all values of the column are in the specified range
+                                if not value[column].between(column_range[0], column_range[1]).all():
+                                    raise ValueError(
+                                        f"The values in column '{column}' of '{key}' are outside the specified range {column_range}")
+                    # If the variable is a NumPy array or a list, check if all values are within the specified range
+                    elif isinstance(value, (np.ndarray, list)):
+                        # Check for arrays
+                        if not np.all(np.logical_and(variable_range[0] <= value, value <= variable_range[1])):
+                            raise ValueError(f"The values of '{key}' are outside the specified range {variable_range}")
+                    # If the variable type is not supported, raise a TypeError
+                    else:
+                        raise TypeError(f"Unsupported type for variable '{key}'")

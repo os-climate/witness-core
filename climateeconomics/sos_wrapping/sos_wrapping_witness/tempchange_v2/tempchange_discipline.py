@@ -81,6 +81,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                                    'namespace': GlossaryCore.NS_WITNESS},
         'temperature_end_constraint_limit': {'type': 'float', 'default': 1.5, 'unit': '°C', 'user_level': 2},
         'temperature_end_constraint_ref': {'type': 'float', 'default': 3., 'unit': '°C', 'user_level': 2},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
@@ -148,6 +149,9 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(in_dict, dict_ranges)
 
         # pyworld3 execution
         temperature_df = self.model.compute(in_dict)
