@@ -188,6 +188,10 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                     "death_dict": death_dict,
                     "life_expectancy_df": life_expectancy_df}
 
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(out_dict, dict_ranges)
+
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):

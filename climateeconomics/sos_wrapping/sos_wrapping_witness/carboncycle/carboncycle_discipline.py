@@ -103,6 +103,10 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             'rockstrom_limit_constraint': self.carboncycle.rockstrom_limit_constraint,
             'minimum_ppm_constraint': self.carboncycle.minimum_ppm_constraint}
 
+        if param_in[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
+
         # store data
         self.store_sos_outputs_values(dict_values)
 

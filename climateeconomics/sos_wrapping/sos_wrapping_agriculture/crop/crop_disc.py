@@ -562,7 +562,9 @@ class CropDiscipline(ClimateEcoDiscipline):
             'calories_per_day_constraint': self.crop_model.calories_per_day_constraint,
             'calories_pc_df': self.crop_model.calories_pc_df
         }
-
+        if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs_dict, dict_ranges)
         
         self.store_sos_outputs_values(outputs_dict)
 
