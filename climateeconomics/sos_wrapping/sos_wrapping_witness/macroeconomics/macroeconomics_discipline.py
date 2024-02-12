@@ -119,7 +119,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                            },
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
-        GlossaryCore.UsableCapitalObjectiveRefName: GlossaryCore.UsableCapitalObjectiveRef
+        GlossaryCore.UsableCapitalObjectiveRefName: GlossaryCore.UsableCapitalObjectiveRef,
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
@@ -260,6 +261,9 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
 
     def run(self):
         param = self.get_sosdisc_inputs()
+        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(param, dict_ranges)
         damage_frac_df = param.pop(GlossaryCore.DamageFractionDfValue)
         energy_production = param.pop(GlossaryCore.EnergyProductionValue)
         co2_emissions_Gt = param.pop(GlossaryCore.CO2EmissionsGtValue)

@@ -14,10 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import deepcopy, copy
+from climateeconomics.database import DatabaseWitnessCore
 
 
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
+
+    # Trillion $ / T$   /   10^12
+    # Giga$      / G$   /   10^9
+    # Million$   / M$   /   10^6
 
     Years = "years"
     YearStart = "year_start"
@@ -30,7 +35,7 @@ class GlossaryCore:
     InvestLevelValue = "invest_level"
     InvestmentsValue = "investment"
     CCUS = "CCUS"
-
+    CheckRangeBeforeRunBoolName = "check_range_before_run_bool_name"
     SectorGdpPart = "Part of the GDP per sector [T$]"
     ChartSectorGDPPercentage = "Part of the GDP per sector [%]"
     SectionGdpPart = "Part of the GDP per section [T$]"
@@ -55,7 +60,7 @@ class GlossaryCore:
     EnergyInvestmentsWoTaxValue = "energy_investment_wo_tax"
     EnergyInvestmentsWoRenewableValue = "energy_investment_wo_renewable"
     NonEnergyInvestmentsValue = "non_energy_investment"
-    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # G$
+    EnergyInvestmentsFromTaxValue = "energy_investment_from_tax"  # T$
     WelfareObjective = "welfare_objective"
     NormalizedWelfare = "Normalized welfare"
     NegativeWelfareObjective = "negative_welfare_objective"
@@ -550,7 +555,7 @@ class GlossaryCore:
             EnergyInvestmentsValue: ("float", None, False),  # G$
             EnergyInvestmentsWoTaxValue: ("float", None, False),  # G$
             NonEnergyInvestmentsValue: ("float", None, False),  # G$
-            EnergyInvestmentsFromTaxValue: ("float", None, False),  # G$
+            EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
             UsedEnergy: ("float", None, False),
             UnusedEnergy: ("float", None, False),
@@ -652,7 +657,7 @@ class GlossaryCore:
         {  # output of IndependentInvestDiscipline & input of MacroeconomicsDiscipline
             "var_name": EnergyInvestmentsWoTaxValue,
             "type": "dataframe",
-            "unit": "G$",
+            "unit": "T$",
             "dataframe_descriptor": {
                 Years: ("int", [1900, YeartEndDefault], False),
                 EnergyInvestmentsWoTaxValue: ("float", [0.0, 1e30], True),
@@ -1134,6 +1139,30 @@ class GlossaryCore:
         "description": "Max investment reference to normalize associated constraint",
     }
 
+    MaxBudgetValue = "Max budget"
+    MaxBudgetConstraintValue = "Max budget constraint"
+    MaxBudgetDf = {
+        "var_name": MaxBudgetValue,
+        "type": "dataframe",
+        "description": "Maximum budget that can be invested in Energy production and CCUS technos",
+        "unit": "G$",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YeartEndDefault], False),
+            MaxBudgetValue: ("float", [0., 1e12], True),
+        },
+    }
+
+    MaxBudgetConstraint = {
+        "var_name": MaxBudgetConstraintValue,
+        "type": "array",
+        "description": "Maximum budget that can be invested in Energy production and CCUS technos",
+        "unit": "G$",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+    }
+
     UsableCapitalObjective = {
         "var_name": UsableCapitalObjectiveName,
         "type": "array",
@@ -1152,6 +1181,57 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_REFERENCE,
         "description": "reference to normalize usable capital objective",
+    }
+
+    TargetEnergyProductionValue = "Target energy production"
+    TargetProductionConstraintValue = "Target production constraint"
+    TargetEnergyProductionDf = {
+        "var_name": TargetEnergyProductionValue,
+        "type": "dataframe",
+        "description": " Energy Production",
+        "unit": "TWh$",
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YeartEndDefault], False),
+            TargetEnergyProductionValue: ("float", [0., 1e12], True),
+        },
+    }
+
+    TargetProductionConstraint = {
+        "var_name": TargetProductionConstraintValue,
+        "type": "array",
+        "description": "Production Constraint",
+        "unit": "TWh$",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+    }
+
+    CheckRangeBeforeRunBool = {
+        "var_name": CheckRangeBeforeRunBoolName,
+        "type": "bool",
+        "default": False
+    }
+
+    # objective functions
+    CO2EmissionsObjective = {
+        "var_name": 'CO2EmissionsObjective',
+        "type": "float",
+        "default": 1.,
+        "unit": "-",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "description": "Objective on Total CO2 emissions, mean of emissions between 2020 and 2100. Can be negative",
+    }
+
+    CO2EmissionsRef = {
+        "var_name": 'CO2EmissionsRef',
+        "type": "float",
+        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.),
+        "unit": "Gt",
+        "visibility": "Shared",
+        "namespace": NS_REFERENCE,
+        "description": 'Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022',
     }
 
     @staticmethod
@@ -1177,3 +1257,4 @@ class GlossaryCore:
         out = deepcopy(variable)
         out["namespace"] = namespace
         return out
+

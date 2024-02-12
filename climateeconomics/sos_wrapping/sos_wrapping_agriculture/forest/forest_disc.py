@@ -186,6 +186,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                              'namespace': 'ns_public', 'user_level': 2},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
@@ -247,6 +248,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         # -- compute
         inputs_dict = self.get_sosdisc_inputs()
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inputs_dict, dict_ranges)
         self.forest_model.compute(inputs_dict)
         # Scale production TWh -> PWh
         techno_production = self.forest_model.techno_production[[

@@ -65,6 +65,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         'other_land_CO2_emissions': {'type': 'float', 'unit': 'GtCO2', 'default': 10.1, },
         'co2_eq_20_objective_ref': {'type': 'float', 'default': 1000.} ,
         'co2_eq_100_objective_ref': {'type': 'float', 'default': 500.} ,
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         # other land emissions = land use change emission - Forest initial
         # emission - computed crop emissions = 3.2(initial) + 7.6(frorest) -
         # 0.7(crop)
@@ -103,6 +104,10 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         self.add_inputs(dynamic_inputs)
 
     def run(self):
+        in_dict = self.get_sosdisc_inputs()
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(in_dict, dict_ranges)
         # -- get CO2 emissions inputs
         CO2_emitted_crop_df = self.get_sosdisc_inputs(
             'Crop.CO2_land_emission_df')
