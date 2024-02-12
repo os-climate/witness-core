@@ -1224,10 +1224,10 @@ class GlossaryCore:
     }
 
     # objective functions
+    CO2EmissionsObjectiveValue = "CO2EmissionsObjective"
     CO2EmissionsObjective = {
-        "var_name": "CO2EmissionsObjective",
-        "type": "float",
-        "default": 1.0,
+        "var_name": CO2EmissionsObjectiveValue,
+        "type": "array",
         "unit": "-",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,

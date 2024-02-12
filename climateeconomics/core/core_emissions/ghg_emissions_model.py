@@ -31,6 +31,7 @@ class GHGEmissions():
         """
         Constructor
         """
+        self.co2_emissions_objective = None
         self.param = param
         self.configure_parameters()
         self.create_dataframe()
@@ -128,8 +129,8 @@ class GHGEmissions():
         For the full fossil case,  CO2emissionsRef + mean(CO2_emissions between 2020 and 2100 =  6.49 + 102.9 = 109.39
         to keep the objective function between 0 and 1, it is sufficient to normalize the sum above by 20 * CO2emiisionsRef
         '''
-        self.co2_emissions_objective = (self.CO2EmissionsRef + self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()) / \
-                                       (20. * self.CO2EmissionsRef)
+        self.co2_emissions_objective = np.array([(self.CO2EmissionsRef + self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()) / \
+                                       (20. * self.CO2EmissionsRef)])
 
     def d_CO2_emissions_objective_d_total_co2_emissions(self):
         '''
