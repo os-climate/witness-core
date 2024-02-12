@@ -115,6 +115,10 @@ class UtilityModelDiscipline(ClimateEcoDiscipline):
             GlossaryCore.LastYearDiscountedUtilityObjective: self.utility_m.last_year_utility_objective,
             GlossaryCore.PerCapitaConsumptionUtilityObjectiveName: self.utility_m.per_capita_consumption_objective
         }
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
+
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

@@ -117,7 +117,9 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                        'GWP_emissions': self.emissions_model.gwp_emissions,
                        GlossaryCore.CO2EmissionsObjectiveValue: self.emissions_model.co2_emissions_objective,
                        }
-
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

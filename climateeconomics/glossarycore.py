@@ -300,8 +300,8 @@ class GlossaryCore:
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "total_emissions": ("float", None, False),
-            "cum_total_emissions": ("float", None, False),
+            "total_emissions": ("float", [-1.e9, 1.e9], False),
+            "cum_total_emissions": ("float", [-1.e9, 1.e9], False),
         },
     }
 

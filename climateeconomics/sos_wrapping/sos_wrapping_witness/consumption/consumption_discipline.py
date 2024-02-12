@@ -123,6 +123,10 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
                        'min_utility_objective': min_utility_objective,
                        GlossaryCore.NegativeWelfareObjective : negative_welfare_objective
                        }
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
+
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

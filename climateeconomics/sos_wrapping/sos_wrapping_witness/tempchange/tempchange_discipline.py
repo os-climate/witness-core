@@ -155,6 +155,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                         'temperature_objective': temperature_objective,
                         'temperature_constraint': self.model.temperature_end_constraint}
 
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(out_dict, dict_ranges)
+
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):

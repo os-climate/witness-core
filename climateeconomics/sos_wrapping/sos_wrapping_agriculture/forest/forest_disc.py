@@ -292,7 +292,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'CO2_emissions': self.forest_model.CO2_emissions,
             'forest_lost_capital': self.forest_model.forest_lost_capital
         }
-        
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs_dict, dict_ranges)
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

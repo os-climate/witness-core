@@ -134,6 +134,10 @@ class DamageDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.CO2DamagePrice: co2_damage_price_df,
                     GlossaryCore.ExtraCO2tDamagePrice: extra_co2_damage_price}
 
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(out_dict, dict_ranges)
+
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):

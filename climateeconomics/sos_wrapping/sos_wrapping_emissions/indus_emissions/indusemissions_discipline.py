@@ -98,6 +98,9 @@ class IndusemissionsDiscipline(ClimateEcoDiscipline):
         dict_values = {
             'CO2_indus_emissions_df': CO2_indus_emissions_df[[GlossaryCore.Years, 'indus_emissions']],
             'CO2_indus_emissions_df_detailed': CO2_indus_emissions_df}
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

@@ -173,6 +173,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
             dict_values['longterm_energy_efficiency'] = lt_energy_eff
             dict_values['range_energy_eff_constraint'] = range_energy_eff_cstrt
 
+        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
+
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

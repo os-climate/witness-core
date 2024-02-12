@@ -162,6 +162,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, GlossaryCore.TempAtmo]],  # pylint: disable=unsubscriptable-object
                     'forcing_detail_df': self.model.forcing_df,
                     'temperature_constraint': self.model.temperature_end_constraint}
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(out_dict, dict_ranges)
+
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):

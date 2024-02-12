@@ -75,6 +75,11 @@ class InvestDiscipline(ClimateEcoDiscipline):
         dict_values = {'invest_objective': pd.DataFrame(
             {'norm': [invest_objective]}),
             'diff_norm': difference}
+
+        if inputs[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
+
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):
