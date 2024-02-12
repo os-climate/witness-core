@@ -66,7 +66,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'population_start': {'type': 'dataframe', 'default': pop_init_df, 'unit': 'millions of people',
                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),

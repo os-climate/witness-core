@@ -56,7 +56,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
     years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'default': 0.27357, 'user_level': 2, 'unit': '-'},
         GlossaryCore.InitialGrossOutput['var_name']: GlossaryCore.InitialGrossOutput,

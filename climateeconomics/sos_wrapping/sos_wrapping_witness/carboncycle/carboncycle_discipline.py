@@ -47,7 +47,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
     years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'conc_lower_strata': {'type': 'int', 'default': 1720, 'unit': 'Gtc', 'user_level': 2},
         'conc_upper_strata': {'type': 'int', 'default': 360, 'unit': 'Gtc', 'user_level': 2},

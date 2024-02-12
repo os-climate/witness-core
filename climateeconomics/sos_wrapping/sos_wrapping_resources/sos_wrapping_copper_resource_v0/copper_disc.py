@@ -48,7 +48,7 @@ class CopperDisc(SoSWrapp):
                                                           'unit': ('string', None, False),}
                                  },
                GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
 
                'annual_extraction': {'type': 'list', 'subtype_descriptor': {'list': 'float'}, 'unit': 'Mt',
                                      'default': [26] * 81},

@@ -46,7 +46,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
     initial_emissions = 3.21
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                Forest.DEFORESTATION_SURFACE: {'type': 'dataframe', 'unit': 'Mha',
                                                       'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
