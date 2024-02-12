@@ -74,7 +74,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         'prod_function_fitting': {'type': 'bool', 'default': False,
                                   'visibility': 'Shared',
-                                  'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True}
+                                  'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
     DESC_OUT = {
         GlossaryCore.SectionGdpDfValue: GlossaryCore.SectionGdpDf,
@@ -132,6 +133,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         param = self.get_sosdisc_inputs(in_dict=True)
+        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(param, dict_ranges)
         # configure param
         self.model.configure_parameters(param, self.sector_name)
         # coupling df

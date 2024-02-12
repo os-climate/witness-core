@@ -59,7 +59,8 @@ class ForestTestCase(unittest.TestCase):
                       Forest.CO2_PER_HA: self.CO2_per_ha,
                       Forest.INITIAL_CO2_EMISSIONS: self.initial_emissions,
                       Forest.REFORESTATION_INVESTMENT:  self.forest_invest_df,
-                      Forest.REFORESTATION_COST_PER_HA:  self.reforestation_cost_per_ha
+                      Forest.REFORESTATION_COST_PER_HA:  self.reforestation_cost_per_ha,
+                      GlossaryCore.CheckRangeBeforeRunBoolName: False,
                       }
 
     def test_forest_model(self):
@@ -104,6 +105,7 @@ class ForestTestCase(unittest.TestCase):
                        f'{name}.{model_name}.{Forest.INITIAL_CO2_EMISSIONS}': self.initial_emissions,
                        f'{name}.{model_name}.{Forest.REFORESTATION_INVESTMENT}': self.forest_invest_df,
                        f'{name}.{model_name}.{Forest.REFORESTATION_COST_PER_HA}': self.reforestation_cost_per_ha,
+                       f'{name}.{model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         ee.load_study_from_input_dict(inputs_dict)
