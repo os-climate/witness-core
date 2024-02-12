@@ -50,7 +50,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},

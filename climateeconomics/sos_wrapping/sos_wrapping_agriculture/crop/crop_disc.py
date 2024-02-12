@@ -315,7 +315,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': diet_df_default,
@@ -498,6 +498,11 @@ class CropDiscipline(ClimateEcoDiscipline):
     }
 
     CROP_CHARTS = 'crop and diet charts'
+
+    def setup_sos_disciplines(self):  # type: (...) -> None
+
+
+        pass
 
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())

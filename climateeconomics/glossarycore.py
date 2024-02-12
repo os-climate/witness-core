@@ -29,6 +29,14 @@ class GlossaryCore:
     YeartStartDefault = 2020
     YearEnd = "year_end"
     YeartEndDefault = 2100
+    YearEndVar = {
+        "type": "int",
+        "default": YeartEndDefault,
+        "unit": "year",
+        "visibility": "Shared",
+        "namespace": "ns_public",
+        "range": [2000, 2300],
+    }
     TimeStep = "time_step"
     # todo in the futur: merge these 3 invest values
     InvestValue = "invest"
@@ -170,7 +178,9 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
-    df_descriptor_section_df = {section: ('float', [0., 100.], True) for section in SectionsPossibleValues}
+    df_descriptor_section_df = {
+        section: ("float", [0.0, 100.0], True) for section in SectionsPossibleValues
+    }
     df_descriptor_section_df.update({Years: ("int", [1900, YeartEndDefault], False)})
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
@@ -695,9 +705,9 @@ class GlossaryCore:
         "unit": "ppm",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            CO2Concentration: ("float", [0., 1e6], True),
-            CH4Concentration: ("float", [0., 1e6], True),
-            N2OConcentration: ("float", [0., 1e6], True),
+            CO2Concentration: ("float", [0.0, 1e6], True),
+            CH4Concentration: ("float", [0.0, 1e6], True),
+            N2OConcentration: ("float", [0.0, 1e6], True),
         },
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -1150,7 +1160,7 @@ class GlossaryCore:
         "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
             Years: ("float", [1900, YeartEndDefault], False),
-            MaxBudgetValue: ("float", [0., 1e12], True),
+            MaxBudgetValue: ("float", [0.0, 1e12], True),
         },
     }
 
@@ -1189,12 +1199,12 @@ class GlossaryCore:
         "var_name": TargetEnergyProductionValue,
         "type": "dataframe",
         "description": " Energy Production",
-        "unit": "TWh$",
+        "unit": "TWh",
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
             Years: ("float", [1900, YeartEndDefault], False),
-            TargetEnergyProductionValue: ("float", [0., 1e12], True),
+            TargetEnergyProductionValue: ("float", [0.0, 1e12], True),
         },
     }
 
@@ -1202,7 +1212,7 @@ class GlossaryCore:
         "var_name": TargetProductionConstraintValue,
         "type": "array",
         "description": "Production Constraint",
-        "unit": "TWh$",
+        "unit": "TWh",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
     }
@@ -1210,14 +1220,14 @@ class GlossaryCore:
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
         "type": "bool",
-        "default": False
+        "default": False,
     }
 
     # objective functions
     CO2EmissionsObjective = {
-        "var_name": 'CO2EmissionsObjective',
+        "var_name": "CO2EmissionsObjective",
         "type": "float",
-        "default": 1.,
+        "default": 1.0,
         "unit": "-",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
@@ -1225,13 +1235,14 @@ class GlossaryCore:
     }
 
     CO2EmissionsRef = {
-        "var_name": 'CO2EmissionsRef',
+        "var_name": "CO2EmissionsRef",
         "type": "float",
-        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.),
+        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value
+        / (2022 - 1750 + 1.0),
         "unit": "Gt",
         "visibility": "Shared",
         "namespace": NS_REFERENCE,
-        "description": 'Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022',
+        "description": "Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022",
     }
 
     @staticmethod
@@ -1257,4 +1268,3 @@ class GlossaryCore:
         out = deepcopy(variable)
         out["namespace"] = namespace
         return out
-

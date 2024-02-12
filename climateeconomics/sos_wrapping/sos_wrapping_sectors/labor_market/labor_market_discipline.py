@@ -43,7 +43,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                GlossaryCore.SectorListValue: GlossaryCore.SectorList,
                # Employment rate param
