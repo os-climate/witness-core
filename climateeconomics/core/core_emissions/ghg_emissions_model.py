@@ -119,13 +119,13 @@ class GHGEmissions():
 
     def compute_CO2_emissions_objective(self):
         '''
-        CO2emissionsObjective = (CO2emissionsRef + mean(CO2_emissions between 2020 and 2100))/(10 * CO2emissionsRef)
+        CO2emissionsObjective = (CO2emissionsRef + mean(CO2_emissions between 2023 and 2100))/(20 * CO2emissionsRef)
 
         CO2emissionsRef corresponds to mean CO2 emissions during the industrial era until 2022 from the energy sector = 6.49 Gt
-        the mean CO2_emissions after 2022 can be < 0 thanks to CCUS.
+        the mean CO2_emissions after 2023 can be < 0 thanks to CCUS.
         When it reaches - CO2emissionsRef, then the energy sector is net zero emission and objective function should be 0
-        When CO2 emissions are max, in full fossil, mean emissions between 2020 and 2100 are around 102.9 Gt
-        For the full fossil case,  CO2emissionsRef + mean(CO2_emissions between 2020 and 2100 =  6.49 + 102.9 = 109.39
+        When CO2 emissions are max, in full fossil, mean emissions between 2023 and 2100 are around 102.9 Gt
+        For the full fossil case,  CO2emissionsRef + mean(CO2_emissions between 2023 and 2100 =  6.49 + 102.9 = 109.39
         to keep the objective function between 0 and 1, it is sufficient to normalize the sum above by 20 * CO2emiisionsRef
         '''
         self.co2_emissions_objective = (self.CO2EmissionsRef + self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()) / \
