@@ -271,7 +271,7 @@ class GlossaryCore:
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("float", [1900, YeartEndDefault], False),
-            "sigma": ("float", None, False),
+            "sigma": ("float", [0, 1e30], False),
             "gr_sigma": ("float", None, False),
             "land_emissions": ("float", [0, 1e30], False),
             "cum_land_emissions": ("float", [0, 1e30], False),
@@ -313,7 +313,7 @@ class GlossaryCore:
         "unit": "%",
         "dataframe_descriptor": {
             Years: ("float", [1900, YeartEndDefault], False),
-            CO2TaxEfficiencyValue: ("float", None, False),
+            CO2TaxEfficiencyValue: ("float", [0.0, 100.0], False),
         },
     }
 
@@ -1091,7 +1091,7 @@ class GlossaryCore:
         "unit": "%",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "share_investment": ("float", [0, 1e30], True),
+            "share_investment": ("float", [0.0, 100.0], True),
         },
         "dataframe_edition_locked": False,
         "visibility": "Shared",
