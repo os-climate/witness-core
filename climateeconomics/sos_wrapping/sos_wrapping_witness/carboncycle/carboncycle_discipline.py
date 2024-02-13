@@ -47,7 +47,7 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
     years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'conc_lower_strata': {'type': 'int', 'default': 1720, 'unit': 'Gtc', 'user_level': 2},
         'conc_upper_strata': {'type': 'int', 'default': 360, 'unit': 'Gtc', 'user_level': 2},
@@ -102,6 +102,10 @@ class CarbonCycleDiscipline(ClimateEcoDiscipline):
             'ppm_objective': ppm_objective,
             'rockstrom_limit_constraint': self.carboncycle.rockstrom_limit_constraint,
             'minimum_ppm_constraint': self.carboncycle.minimum_ppm_constraint}
+
+        if param_in[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
 
         # store data
         self.store_sos_outputs_values(dict_values)

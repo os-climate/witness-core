@@ -315,7 +315,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': diet_df_default,
@@ -499,6 +499,11 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     CROP_CHARTS = 'crop and diet charts'
 
+    def setup_sos_disciplines(self):  # type: (...) -> None
+
+
+        pass
+
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
@@ -562,7 +567,9 @@ class CropDiscipline(ClimateEcoDiscipline):
             'calories_per_day_constraint': self.crop_model.calories_per_day_constraint,
             'calories_pc_df': self.crop_model.calories_pc_df
         }
-
+        if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs_dict, dict_ranges)
         
         self.store_sos_outputs_values(outputs_dict)
 

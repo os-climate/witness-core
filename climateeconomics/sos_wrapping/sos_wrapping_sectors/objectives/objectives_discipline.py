@@ -52,7 +52,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
     default_weight_df = pd.DataFrame({GlossaryCore.Years: default_years, 'weight': default_weight})
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                GlossaryCore.SectorListValue: GlossaryCore.SectorList,
                 'historical_gdp': {'type': 'dataframe', 'unit': 'T$',

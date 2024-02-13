@@ -50,7 +50,7 @@ class LandUseV1Discipline(SoSWrapp):
     default_year_end = 2050
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                LandUseV1.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_land_use',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),

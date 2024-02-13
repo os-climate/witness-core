@@ -127,7 +127,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         Forest.DEFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -292,7 +292,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'CO2_emissions': self.forest_model.CO2_emissions,
             'forest_lost_capital': self.forest_model.forest_lost_capital
         }
-        
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs_dict, dict_ranges)
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

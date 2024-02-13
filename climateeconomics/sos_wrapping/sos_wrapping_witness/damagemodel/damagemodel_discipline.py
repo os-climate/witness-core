@@ -50,7 +50,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
         'damag_int': {'type': 'float', 'default': 0.0, 'unit': '-', 'user_level': 3},
@@ -133,6 +133,10 @@ class DamageDiscipline(ClimateEcoDiscipline):
         out_dict = {GlossaryCore.DamageFractionDfValue: damage_fraction_df[GlossaryCore.DamageFractionDf['dataframe_descriptor'].keys()],
                     GlossaryCore.CO2DamagePrice: co2_damage_price_df,
                     GlossaryCore.ExtraCO2tDamagePrice: extra_co2_damage_price}
+
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(out_dict, dict_ranges)
 
         self.store_sos_outputs_values(out_dict)
 

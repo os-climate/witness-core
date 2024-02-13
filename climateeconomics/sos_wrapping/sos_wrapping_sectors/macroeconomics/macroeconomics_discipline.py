@@ -109,6 +109,10 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
             GlossaryCore.DamageDfValue: self.macro_model.damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
             GlossaryCore.DamageDetailedDfValue: self.macro_model.damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
         }
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs_dict, dict_ranges)
+
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):
