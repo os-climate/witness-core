@@ -761,9 +761,9 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YeartEndDefault], False),
             ExoGForcing: ("float", None, False),
-            Forcing: ("float", [-1.0, 10.0], False),
-            TempAtmo: ("float", [-1.0, 10.0], False),
-            TempOcean: ("float", [-1.0, 10.0], False),
+            Forcing: ("float", None, False),
+            TempAtmo: ("float", None, False),
+            TempOcean: ("float", None, False),
         },
     }
 
