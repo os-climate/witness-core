@@ -127,7 +127,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         Forest.DEFORESTATION_INVESTMENT: {'type': 'dataframe', 'unit': 'G$',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -186,6 +186,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                              'namespace': 'ns_public', 'user_level': 2},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
@@ -247,6 +248,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
 
         # -- compute
         inputs_dict = self.get_sosdisc_inputs()
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inputs_dict, dict_ranges)
         self.forest_model.compute(inputs_dict)
         # Scale production TWh -> PWh
         techno_production = self.forest_model.techno_production[[
@@ -288,7 +292,9 @@ class ForestDiscipline(ClimateEcoDiscipline):
             'CO2_emissions': self.forest_model.CO2_emissions,
             'forest_lost_capital': self.forest_model.forest_lost_capital
         }
-        # -- store outputs
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs_dict, dict_ranges)
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

@@ -43,7 +43,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
     }
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                GlossaryCore.SectorListValue: GlossaryCore.SectorList,
                # Employment rate param
@@ -54,6 +54,7 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
                                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
                                                                       GlossaryCore.Population1570: ('float', None, False),}
                                              },
+               GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
               }
     DESC_OUT = {
         GlossaryCore.WorkforceDfValue: {'type': GlossaryCore.WorkforceDf['type'],
@@ -87,6 +88,9 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
 
         # -- get inputs
         inputs_dict = self.get_sosdisc_inputs()
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inputs_dict, dict_ranges)
         # -- configure class with inputs
         self.labor_model.configure_parameters(inputs_dict)
 
@@ -96,7 +100,9 @@ class LaborMarketDiscipline(ClimateEcoDiscipline):
         outputs_dict = {GlossaryCore.WorkforceDfValue: workforce_df,
                         'employment_df': employment_df}
 
-        # -- store outputs
+        if inputs_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs_dict, dict_ranges)
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

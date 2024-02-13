@@ -52,7 +52,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
     default_weight_df = pd.DataFrame({GlossaryCore.Years: default_years, 'weight': default_weight})
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                GlossaryCore.SectorListValue: GlossaryCore.SectorList,
                 'historical_gdp': {'type': 'dataframe', 'unit': 'T$',
@@ -175,7 +175,7 @@ class ObjectivesDiscipline(ClimateEcoDiscipline):
                 outputs_dict[f'{sector}.energy_eff_error'] = np.array([energy_eff_errors[sector]])
                 outputs_dict[f'{sector}.historical_energy_efficiency'] = hist_energy_eff[sector]
 
-        # -- store outputs
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def get_chart_filter_list(self):

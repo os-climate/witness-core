@@ -1,28 +1,28 @@
 ## Macroeconomics model
 ### Main Inputs 
-- Damage data ($damage\_df$): Dataframe with damage fraction to be applied to output 
-- Working age population ($working\_age\_population\_df$): Dataframe with working age population per year in million of people
-- Population df ($population\_df$): Dataframe with total population per year in millions of people
-- Energy Production Quantity ($energy\_production$): Dataframe with Total Final Consumption of energy per year in Pwh
-- Energy capital ($energy\_capital$): Dataframe with the total capital stock dedicated to energy production per year. Unit: trillion dollars. 
-- Shares of investment in  ($energy$ and $non\ energy$): Share of total investment that goes to energy sector and non-energy sectors
-- Damage to productivity ($damage\_to\_productivity$): If True: apply damage to productivity. if False: Apply damage only to production. 
-- CO2 Emissions: Dataframe with C02 emissions per year in Gt 
+- Damage data ($damage\_df$): dataframe with damage fraction to be applied to output 
+- Working age population ($working\_age\_population\_df$): dataframe with working age population per year in million of people
+- Population df ($population\_df$): dataframe with total population per year in million of people
+- Energy Production Quantity ($energy\_production$): dataframe with Total Final Consumption of energy per year in Pwh
+- Energy capital ($energy\_capital$): dataframe with the total capital stock dedicated to energy production per year. Unit: trillion dollars. 
+- Shares of investment in  ($energy$ and $non\ energy$): share of total investment that goes to energy sector and non-energy sectors
+- Damage to productivity ($damage\_to\_productivity$): if True: apply damage to productivity. If False: Apply damage only to production. 
+- CO2 Emissions: dataframe with C02 emissions per year in Gt 
 - C02 taxes($CO2\_taxes$): C02 taxes per year in\$/tC02 
 - Initial rate of time preference ($init\_rate\_time\_pref$)
-- Sector list ($sector\_list$): List of sectors
-- Section list ($section\_list$): List of all sub-sectors
-- Percentage of gdp per section ($section\_gdp\_percentage\_df$): Dataframe with the gdp percentage of all sub_sectors 
+- Sector list ($sector\_list$): list of sectors
+- Section list ($section\_list$): list of all sub-sectors
+- Percentage of gdp per section ($section\_gdp\_percentage\_df$): dataframe with the gdp percentage of all sub_sectors 
   
 ### Outputs 
-- Economics detail df ($economics\_detail\_df$): Dataframe with most of model outputs
-- Economics Data ($economics\_df$): Dataframe with coupling model outputs from previous dataframe. It contains gross output and net output in trillion dollars and consumption per capita in k\$.
+- Economics detail df ($economics\_detail\_df$): dataframe with most of model outputs
+- Economics Data ($economics\_df$): dataframe with coupling model outputs from previous dataframe. It contains gross output and net output in trillion dollars and consumption per capita in k\$.
 - Energy investment by year ($energy\_investment$): the investment in energy by year in G\$. 
-- Per capita consumption constraint ($pc\_consumption\_constraint$): Value of the per capita consumption constraint for the optimization
-- Energy invests wo renewable: Energy investment without additional investment coming from carbon tax. Unit: G\$
-- Workforce df ($workforce\_df$): Dataframe with workforce per year in million of people. 
-- Usable capital df ($usable\_capital\_df$): Dataframe with the usable capital in trillion dollars and the intermediate parameters (e_max, energy_efficiency).
-- Section gdp ($detailed\_section\_gdp$): Dictionary with the gdp value of each sub-sector in T\$.
+- Per capita consumption constraint ($pc\_consumption\_constraint$): value of the per capita consumption constraint for the optimization
+- Energy invests wo renewable: energy investment without additional investment coming from carbon tax. Unit: G\$
+- Workforce df ($workforce\_df$): dataframe with workforce per year in million of people. 
+- Usable capital df ($usable\_capital\_df$): dataframe with the usable capital in trillion dollars and the intermediate parameters (e_max, energy_efficiency).
+- Section gdp ($detailed\_section\_gdp$): dictionary with the gdp value of each sub-sector in T\$.
                     
 ### Time Step 
 The time step $t$ in each equation represents the period we are looking at. In the inputs we initialize the data with 2020 information. 
@@ -51,14 +51,14 @@ $$Q_t = (1- \Omega_t )Y_t$$
 with $\Omega$ is the damage fraction of output explained in the documentation of the damage model.  
 
 ### Productivity
-The Total factor productivity (TFP) measures the efficiency of the inputs in the production process. The initial values of the productivity and productivity growth rate are obtained during the fitting of the production function. For the TFP we have 2 options: 
+The Total Factor Productivity (TFP) measures the efficiency of the inputs in the production process. The initial values of the productivity and productivity growth rate are obtained during the fitting of the production function. For the TFP we have 2 options: 
 * The standard DICE ($damage\,to\,productivity$ = $False$) where $A_t$ evolves according to:
 $$A_t = \frac{A_{t-1}}{1-A_{gt-1}}$$ with $A_g$ the productivity growth rate.
 The initial level $A_0$ can ben changed in the inputs ($productivity\_start$),
 $$A_{gt}=A_{g0} \cdot exp(-\Delta_a \cdot (t-1) \cdot time\_step)$$
 and $\Delta_a$ is the percentage growth rate of $A_g$.
 * The “Damage to productivity growth” one ($damage\,to\,productivity$ = $True$) comes from Moyer et al. (2014) [^4]. It applies a fraction of damage $f$ ($frac\_damage\_prod$) to the productivity instead of all damage being applied to output:
-$$A^*_t=(1-f\Omega_t) \cdot \frac{A^*_{t-1}}{1-A_{gt-1}}$$ with $A_0 =A^*_0$.  
+$$A^*_t=(1-f\Omega_t) \cdot \frac{A^*_{t-1}}{1-A_{gt-1}}$$ with $A_0 =A^*_0$,  
 and then damage to output $\Omega_{yt}$ becomes: 
 $$\Omega_{yt} = 1- \frac{1- \Omega_t}{1-f\Omega_t}$$
 such that the output net of climate damage is 
@@ -101,12 +101,11 @@ The capital is divided into two types: energy capital and non energy capital. En
 The equation above is applied to both energy and non energy capital, the total capital stock being the sum. We apply to non energy capital the depreciation rate in input ($depreciation\_rate$) of this model. For energy capital the depreciation rate depends on the technology, the energy capital is therefore computed in each energy technology model and is an input of the macroeconomics model.  
 
 ### Investment
-Investment $I_t$ is defined using the inputs $I^E_{raw}$ and $share\ non\ energy\ investements$, which respectively are 
-direct investments in the energy sector (not resulting from CO2 tax, also called "without tax") and the share percentage of the net GDP output allowed to other sectors.
+Investment $I_t$ is defined using the inputs $I^E_{raw}$ and $share\ non\ energy\ investements$, which respectively are direct investments in the energy sector (not resulting from CO2 tax, also called "without tax") and the share percentage of the net GDP output allowed to other sectors.
 
 The investment in energy $I^E$ is:
 $$I^E = I^E_{raw} + I^E_{from CO2 tax}$$
-With:
+with:
 $$I^E_{from CO2 tax} = emissions \cdot co2\_taxes \cdot co2\_tax\_eff$$
 However, investments in energy coming from CO2 taxes are capped at the value of energy investment without tax multiplied by the model input factor co2_input_limit. It is 2 by default and smoothed with the following formula:
 $$ren\_investments = co2\_invest\_limit \cdot \frac{energy\_investment\_wo\_tax}{10} \cdot(9.0 + e^{- \frac{co2\_invest\_limit \cdot energy\_investment\_wo\_tax}{ren\_investments}})$$
@@ -125,11 +124,11 @@ To obtain the value of the production function parameters we fitted our calculat
 
 ### Other inputs 
 -  Year start, year end and time step 
-- Parameters for production function: output_alpha,  output_gamma
-- parameters for productivity function: productivity_start, productivity_gr_start, decline_rate_tfp
+- Parameters for production function: $output\_alpha$,  $output\_gamma$
+- parameters for productivity function: $productivity\_start$, $productivity\_gr\_start$, $decline\_rate\_tfp$
 - Non Energy capital at year start in trillion dollars ($capital\_start\_non\_energy$)
 - Output at year start $(init\_gross\_output$) in trillion dollars
-- Usable capital parameters: capital_utilisation_ratio, $energy\_eff\_k$, $energy\_eff\_cst$, $energy\_eff\_xzero$, $energy\_eff\_max$
+- Usable capital parameters: $capital\_utilisation_\_ratio$, $energy\_eff\_k$, $energy\_eff\_cst$, $energy\_eff\_xzero$, $energy\_eff\_max$
 - Capital depreciation rate 
 - Elasticity of consumption
 -  Lower bounds for capital, consumption, per capita consumption

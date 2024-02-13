@@ -38,7 +38,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'productivity_start': {'type': 'float', 'user_level': 2, 'unit': '-'},
         'capital_start': {'type': 'float', 'unit': 'T$', 'user_level': 2},
@@ -74,7 +74,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         'prod_function_fitting': {'type': 'bool', 'default': False,
                                   'visibility': 'Shared',
-                                  'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True}
+                                  'unit': '-', 'namespace': GlossaryCore.NS_MACRO, 'structuring': True},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
     DESC_OUT = {
         GlossaryCore.SectionGdpDfValue: GlossaryCore.SectionGdpDf,
@@ -132,6 +133,9 @@ class SectorDiscipline(ClimateEcoDiscipline):
     def run(self):
         # Get inputs
         param = self.get_sosdisc_inputs(in_dict=True)
+        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(param, dict_ranges)
         # configure param
         self.model.configure_parameters(param, self.sector_name)
         # coupling df
@@ -168,6 +172,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
         if prod_function_fitting:
             dict_values['longterm_energy_efficiency'] = lt_energy_eff
             dict_values['range_energy_eff_constraint'] = range_energy_eff_cstrt
+
+        if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
 
         self.store_sos_outputs_values(dict_values)
 

@@ -161,7 +161,8 @@ class MacroDiscTest(unittest.TestCase):
                            'compute_climate_impact_on_gdp': True,
                            'activate_climate_effect_population': True,
                            'invest_co2_tax_in_renewables': True
-                           }
+                           },
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

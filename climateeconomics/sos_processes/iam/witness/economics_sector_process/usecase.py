@@ -63,7 +63,7 @@ class Study(StudyManager):
         self.time_step = time_step
         self.nb_poles = 8
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
 
         setup_data_list = []
 
@@ -155,7 +155,6 @@ class Study(StudyManager):
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorIndustry}.{GlossaryCore.EnergyProductionValue}"] = indus_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorAgriculture}.{GlossaryCore.EnergyProductionValue}"] = agri_energy
         sect_input[f"{self.study_name}.{self.macro_name}.{GlossaryCore.SectorServices}.{GlossaryCore.EnergyProductionValue}"] = services_energy
-        sect_input[f"{self.study_name}.{GlossaryCore.InvestmentDfValue}"] = total_invests
         sect_input[f"{self.study_name}.{GlossaryCore.EnergyInvestmentsWoTaxValue}"] = invest_energy_wo_tax
         sect_input[f"{self.study_name}.{GlossaryCore.DamageFractionDfValue}"] = damage_df
         sect_input[f"{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}"] = section_gdp_df

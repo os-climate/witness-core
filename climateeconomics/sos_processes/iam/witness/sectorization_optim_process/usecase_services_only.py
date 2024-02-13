@@ -48,9 +48,9 @@ class Study(StudyManager):
         self.year_end = year_end
         self.time_step = time_step
         self.witness_sect_uc = witness_sect_usecase(self.year_start, self.year_end, self.time_step,
-                                                    execution_engine=execution_engine)
+                                                    execution_engine=execution_engine, main_study=False)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
         ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
@@ -147,12 +147,6 @@ class Study(StudyManager):
         disc_dict[f"{ns_optim}.{'decl_rate_tfp_services_in'}"] = np.array([0.02])
         disc_dict[f"{ns_optim}.{'prod_start_services_in'}"] = np.array([0.27])
 
-        # other inputs
-        disc_dict[f"{self.ns_services}.{'energy_eff_k'}"] = 0.039609214
-        disc_dict[f"{self.ns_services}.{'energy_eff_cst'}"] = 2.867328682
-        disc_dict[f"{self.ns_services}.{'energy_eff_xzero'}"] = 2041.038019
-        disc_dict[f"{self.ns_services}.{'energy_eff_max'}"] = 11.4693228
-
         func_df = pd.DataFrame(
             columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
         func_df['variable'] = ['Services.gdp_error',
@@ -197,9 +191,6 @@ class Study(StudyManager):
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_gdp'}"] = hist_gdp
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_capital'}"] = hist_capital
         sect_input[f"{ns_coupling}.{self.obj_name}.{'historical_energy'}"] = hist_energy
-        sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = hist_invest
-        sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = hist_invest
-        sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = hist_invest
         sect_input[f"{ns_industry_macro}.{'longterm_energy_efficiency'}"] = lt_enef_indus
         sect_input[f"{ns_agriculture_macro}.{'longterm_energy_efficiency'}"] = lt_enef_agri
         sect_input[f"{ns_services_macro}.{'longterm_energy_efficiency'}"] = lt_enef_services

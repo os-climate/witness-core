@@ -84,7 +84,7 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                                     'fruits and vegetables': [217.62],
                                     })
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
                GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
                'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': default_diet_df,
@@ -109,7 +109,8 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
                'other_use_agriculture': {'type': 'array', 'unit': 'ha/person', 'default': default_other_use, 'namespace': 'ns_agriculture'},
                GlossaryCore.TemperatureDfValue: GlossaryCore.TemperatureDf,
                'param_a': {'type': 'float', 'unit': '-', 'default': - 0.00833, 'user_level': 3},
-               'param_b': {'type': 'float', 'unit': '-', 'default': - 0.04167, 'user_level': 3}
+               'param_b': {'type': 'float', 'unit': '-', 'default': - 0.04167, 'user_level': 3},
+               GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool
                }
 
     DESC_OUT = {
@@ -135,6 +136,9 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
         #-- get inputs
 
         inp_dict = self.get_sosdisc_inputs()
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inp_dict, dict_ranges)
 
         self.agriculture_model.apply_percentage(inp_dict)
         #-- compute
@@ -149,7 +153,9 @@ class AgricultureDiscipline(ClimateEcoDiscipline):
             'updated_diet_df': self.agriculture_model.updated_diet_df,
             'agriculture_productivity_evolution': self.agriculture_model.productivity_evolution,
         }
-
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs_dict, dict_ranges)
         #-- store outputs
         self.store_sos_outputs_values(outputs_dict)
 
