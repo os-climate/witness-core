@@ -242,6 +242,10 @@ class LandUseV2Discipline(SoSWrapp):
         total_land_available = list(land_surface_detailed['Available Agriculture Surface (Gha)'].values + \
                                     land_surface_detailed['Available Forest Surface (Gha)'].values + \
                                     land_surface_detailed['Available Shrub Surface (Gha)'])
+        # Habitable land in 2020 covered by agriculture and forest. When agri and forest surface go above
+        # this value over the years, shrub surface decreases
+        habitable_land_from_forest_agri_2020 = (land_surface_detailed['Total Agriculture Surface (Gha)'][0] + \
+                                               land_surface_detailed['Total Forest Surface (Gha)'][0]) * np.ones(len(years))
 
         if 'Land Demand Constraint' in chart_list:
             if 'Land Demand Constraint' in chart_list:
@@ -261,7 +265,10 @@ class LandUseV2Discipline(SoSWrapp):
                             ), secondary_y=False)
                     fig.add_trace(go.Scatter(x=years, y=list(np.ones(len(years))*total_land_available),
                                              line=dict(color=qualitative.Dark2[7]),
-                                             name='Total Land Available'), secondary_y=False)
+                                             name='Total Land Available (Shrub, Forest, Agri)'), secondary_y=False)
+                    fig.add_trace(go.Scatter(x=years, y=list(habitable_land_from_forest_agri_2020),
+                                             line=dict(color=qualitative.Dark2[7], dash='dot'),
+                                             name='Land used by Agri and Forest in 2020'), secondary_y=False)
                     fig.add_trace(go.Scatter(
                         x=years,
                         y=list(np.maximum(0.0,-land_demand_constraint)),
@@ -304,56 +311,54 @@ class LandUseV2Discipline(SoSWrapp):
             # ------------------------------------------------------------
             # GLOBAL LAND USE -> Display surfaces (Ocean, Land, Forest..)
             years_list = [self.get_sosdisc_inputs(GlossaryCore.YearStart)]
-            land_surface_df = self.get_sosdisc_outputs(LandUseV2.LAND_SURFACE_DETAIL_DF)
+            if land_surface_detailed is not None:
+                # ------------------
+                # Sunburst figure for global land use. Source
+                # https://ourworldindata.org/land-use
+                for year in years_list:
+                    # data from ourworld in data are identical for all years to year 2020 5.1 + 3.9 + 1.2 = 10.2 Gha
+                    available_forest_agri_shrub = land_surface_detailed.loc[land_surface_detailed[GlossaryCore.Years]==year]['Available Agriculture Surface (Gha)'][0] + \
+                                     land_surface_detailed.loc[land_surface_detailed[GlossaryCore.Years]==year]['Available Forest Surface (Gha)'][0] + \
+                                     land_surface_detailed.loc[land_surface_detailed[GlossaryCore.Years]==year]['Available Shrub Surface (Gha)'][0]
+                    urban_land = 0.15
+                    fresh_water = 0.15
+                    habitable_land = available_forest_agri_shrub + urban_land + fresh_water
+                    glaciers = 1.5
+                    barren_land = 2.8
+                    land = habitable_land + glaciers + barren_land
+                    # data from the model
+                    agriculture_land = land_surface_detailed.loc[land_surface_detailed[GlossaryCore.Years]==year]['Total Agriculture Surface (Gha)'][0] # 5.1 Gha in 2020
+                    forest_land = land_surface_detailed.loc[land_surface_detailed[GlossaryCore.Years]==year]['Total Forest Surface (Gha)'][0] # 3.9 Gha in 2020
+                    if agriculture_land + forest_land > available_forest_agri_shrub:
+                        shrub = 0.
+                        agriculture_land = available_forest_agri_shrub * agriculture_land / (agriculture_land + forest_land)
+                        forest_land = available_forest_agri_shrub - agriculture_land
+                    else:
+                        shrub = available_forest_agri_shrub - agriculture_land - forest_land # 1.2 Gha in 2020
+                    # Create figure
+                    fig = go.Figure(go.Sunburst(
+                        labels=["Land", "Ocean", "Habitable land", "Glaciers", "Barren land",
+                                "Agriculture", "Forest", "Shrub", "Urban", "Fresh water"],
+                        parents=["Earth", "Earth", "Land", "Land", "Land", "Habitable land",
+                                 "Habitable land", "Habitable land", "Habitable land", "Habitable land"],
+                        values=[land, 36.1, habitable_land, glaciers, barren_land,
+                                agriculture_land, forest_land, shrub, urban_land, fresh_water],
+                        marker=dict(colors=["#CD912A", "#1456C5", "#DBBF6A", "#D3D3D0",
+                                            "#E7C841", "#7CC873", "#1EA02F", "#5C8C56", "#B1B4AF", "#18CDFA"]),
+                        branchvalues="total",
+                        rotation=90,
+                    )
+                    )
+                    fig.update_layout(
+                        autosize=True,
+                        margin=dict(t=80, l=0, r=0, b=0)
+                    )
 
+                    # Create native plotly chart
+                    chart_name = f'Global land use (Gha) in {year}'
+                    land_use_chart = InstantiatedPlotlyNativeChart(
+                        fig=fig, chart_name=chart_name)
 
-            # ------------------
-            # Sunburst figure for global land use. Source
-            # https://ourworldindata.org/land-use
-            for year in years_list:
-                # data from ourworld in data are identical for all years to year 2020 5.1 + 3.9 + 1.2 = 10.2 Gha
-                available_forest_agri_shrub = land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Available Agriculture Surface (Gha)'][0] + \
-                                 land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Available Forest Surface (Gha)'][0] + \
-                                 land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Available Shrub Surface (Gha)'][0]
-                urban_land = 0.15
-                fresh_water = 0.15
-                habitable_land = available_forest_agri_shrub + urban_land + fresh_water
-                glaciers = 1.5
-                barren_land = 2.8
-                land = habitable_land + glaciers + barren_land
-                # data from the model
-                agriculture_land = land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Total Agriculture Surface (Gha)'][0] # 5.1 Gha in 2020
-                forest_land = land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Total Forest Surface (Gha)'][0] # 3.9 Gha in 2020
-                if agriculture_land + forest_land > available_forest_agri_shrub:
-                    shrub = 0.
-                    agriculture_land = available_forest_agri_shrub * agriculture_land / (agriculture_land + forest_land)
-                    forest_land = available_forest_agri_shrub - agriculture_land
-                else:
-                    shrub = available_forest_agri_shrub - agriculture_land - forest_land # 1.2 Gha in 2020
-                # Create figure
-                fig = go.Figure(go.Sunburst(
-                    labels=["Land", "Ocean", "Habitable land", "Glaciers", "Barren land",
-                            "Agriculture", "Forest", "Shrub", "Urban", "Fresh water"],
-                    parents=["Earth", "Earth", "Land", "Land", "Land", "Habitable land",
-                             "Habitable land", "Habitable land", "Habitable land", "Habitable land"],
-                    values=[land, 36.1, habitable_land, glaciers, barren_land,
-                            agriculture_land, forest_land, shrub, urban_land, fresh_water],
-                    marker=dict(colors=["#CD912A", "#1456C5", "#DBBF6A", "#D3D3D0",
-                                        "#E7C841", "#7CC873", "#1EA02F", "#5C8C56", "#B1B4AF", "#18CDFA"]),
-                    branchvalues="total",
-                    rotation=90,
-                )
-                )
-                fig.update_layout(
-                    autosize=True,
-                    margin=dict(t=80, l=0, r=0, b=0)
-                )
-
-                # Create native plotly chart
-                chart_name = f'Global land use (Gha) in {year}'
-                land_use_chart = InstantiatedPlotlyNativeChart(
-                    fig=fig, chart_name=chart_name)
-
-                instanciated_charts.append(land_use_chart)
+                    instanciated_charts.append(land_use_chart)
 
         return instanciated_charts
