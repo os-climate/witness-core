@@ -231,3 +231,16 @@ class DatabaseWitnessCore:
         source="Our World in Data",
         last_update_date=date(2024, 2, 7),
     )
+
+    atmosphere_total_mass_kg = 5.1480 * 10 ** 18
+    molar_mass_atmosphere = 0.02897  # kg/mol
+    n_moles_in_atmosphere = atmosphere_total_mass_kg / molar_mass_atmosphere
+    kg_to_gt = 10 ** (-12)
+    molar_mass_co2, molar_mass_ch4, molar_mass_n2o = 0.04401, 0.016_04, 0.044_013  # kg/mol
+
+    pp_to_gt = {
+        "CO2": n_moles_in_atmosphere * molar_mass_co2 * kg_to_gt * 10 ** -6,  # ppm
+        "CH4": n_moles_in_atmosphere * molar_mass_ch4 * kg_to_gt * 10 ** -6 * 1e-3,  # ppb
+        "N2O": n_moles_in_atmosphere * molar_mass_n2o * kg_to_gt * 10 ** -6 * 1e-3,  # ppb
+    }
+    del atmosphere_total_mass_kg, molar_mass_atmosphere, n_moles_in_atmosphere, kg_to_gt, molar_mass_co2, molar_mass_ch4, molar_mass_n2o

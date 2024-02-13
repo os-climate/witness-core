@@ -16,6 +16,24 @@ limitations under the License.
 from copy import deepcopy, copy
 from climateeconomics.database import DatabaseWitnessCore
 
+def get_ref_var_name(var_name: str) -> str:
+    return f"{var_name}_ref"
+
+def get_ref_variable(var_name: str, unit: str, default_value = None) -> dict:
+    """returns a description for a variable"""
+    variable_description = {
+        "var_name": var_name,
+        "description": f"Normalisation reference for {var_name}",
+        "namespace": "ns_reference",
+        "type": "float",
+        "unit": unit
+    }
+    if default_value is not None:
+        variable_description.update({
+            "default": default_value
+        })
+
+    return variable_description
 
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
@@ -1173,6 +1191,11 @@ class GlossaryCore:
         "namespace": NS_FUNCTIONS,
     }
 
+    MaxBudgetConstraintRefValue = get_ref_var_name(MaxBudgetConstraintValue)
+    MaxBudgetConstraintRef = get_ref_variable(var_name=MaxBudgetConstraintRefValue,
+                                              unit="T$",
+                                              default_value=1e4)
+
     UsableCapitalObjective = {
         "var_name": UsableCapitalObjectiveName,
         "type": "array",
@@ -1217,6 +1240,11 @@ class GlossaryCore:
         "namespace": NS_FUNCTIONS,
     }
 
+    TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
+    TargetProductionConstraintRef = get_ref_variable(var_name=TargetProductionConstraintRefValue,
+                                                     unit="TWh",
+                                                     default_value=1e9)
+
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
         "type": "bool",
@@ -1224,10 +1252,10 @@ class GlossaryCore:
     }
 
     # objective functions
+    CO2EmissionsObjectiveValue = "CO2EmissionsObjective"
     CO2EmissionsObjective = {
-        "var_name": "CO2EmissionsObjective",
-        "type": "float",
-        "default": 1.0,
+        "var_name": CO2EmissionsObjectiveValue,
+        "type": "array",
         "unit": "-",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
