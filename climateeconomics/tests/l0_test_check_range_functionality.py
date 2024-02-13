@@ -283,7 +283,7 @@ class CarbonEmissionDiscTestCheckRange(unittest.TestCase):
             0, -100000, len(years))
 
         CO2_emitted_forest = pd.DataFrame()
-        emission_forest = np.linspace(1.e9, 1.e9, len(years))
+        emission_forest = np.linspace(1.e6, 1.e6, len(years))
         cum_emission = np.cumsum(emission_forest) + 1.e9
         # put incorrect year in column to check test will fail
         CO2_emitted_forest[GlossaryCore.Years] = years

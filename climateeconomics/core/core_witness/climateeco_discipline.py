@@ -182,12 +182,12 @@ class ClimateEcoDiscipline(SoSWrapp):
                                 # Check if all values of the column are in the specified range
                                 if not value[column].between(column_range[0], column_range[1]).all():
                                     raise ValueError(
-                                        f"The values in column '{column}' of '{key}' are outside the specified range {column_range}")
+                                        f"The values in column '{column}' of '{key}' are outside the specified range {column_range}. Values={value[column]}")
                     # If the variable is a NumPy array or a list, check if all values are within the specified range
                     elif isinstance(value, (np.ndarray, list)):
                         # Check for arrays
                         if not np.all(np.logical_and(variable_range[0] <= value, value <= variable_range[1])):
-                            raise ValueError(f"The values of '{key}' are outside the specified range {variable_range}")
+                            raise ValueError(f"The values of '{key}' are outside the specified range {variable_range}. Value={value}")
                     # If the variable type is not supported, raise a TypeError
                     else:
                         raise TypeError(f"Unsupported type for variable '{key}'")
