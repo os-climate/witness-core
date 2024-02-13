@@ -304,18 +304,40 @@ class LandUseV2Discipline(SoSWrapp):
             # ------------------------------------------------------------
             # GLOBAL LAND USE -> Display surfaces (Ocean, Land, Forest..)
             years_list = [self.get_sosdisc_inputs(GlossaryCore.YearStart)]
+            land_surface_df = self.get_sosdisc_outputs(LandUseV2.LAND_SURFACE_DETAIL_DF)
+
+
             # ------------------
             # Sunburst figure for global land use. Source
             # https://ourworldindata.org/land-use
             for year in years_list:
+                # data from ourworld in data are identical for all years to year 2020 5.1 + 3.9 + 1.2 = 10.2 Gha
+                available_forest_agri_shrub = land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Available Agriculture Surface (Gha)'][0] + \
+                                 land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Available Forest Surface (Gha)'][0] + \
+                                 land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Available Shrub Surface (Gha)'][0]
+                urban_land = 0.15
+                fresh_water = 0.15
+                habitable_land = available_forest_agri_shrub + urban_land + fresh_water
+                glaciers = 1.5
+                barren_land = 2.8
+                land = habitable_land + glaciers + barren_land
+                # data from the model
+                agriculture_land = land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Total Agriculture Surface (Gha)'][0] # 5.1 Gha in 2020
+                forest_land = land_surface_df.loc[land_surface_df[GlossaryCore.Years]==year]['Total Forest Surface (Gha)'][0] # 3.9 Gha in 2020
+                if agriculture_land + forest_land > available_forest_agri_shrub:
+                    shrub = 0.
+                    agriculture_land = available_forest_agri_shrub * agriculture_land / (agriculture_land + forest_land)
+                    forest_land = available_forest_agri_shrub - agriculture_land
+                else:
+                    shrub = available_forest_agri_shrub - agriculture_land - forest_land # 1.2 Gha in 2020
                 # Create figure
                 fig = go.Figure(go.Sunburst(
                     labels=["Land", "Ocean", "Habitable land", "Glaciers", "Barren land",
                             "Agriculture", "Forest", "Shrub", "Urban", "Fresh water"],
                     parents=["Earth", "Earth", "Land", "Land", "Land", "Habitable land",
                              "Habitable land", "Habitable land", "Habitable land", "Habitable land"],
-                    values=[14.9, 36.1, 10.5, 1.5, 2.8,
-                            5.1, 3.9, 1.2, 0.15, 0.15],
+                    values=[land, 36.1, habitable_land, glaciers, barren_land,
+                            agriculture_land, forest_land, shrub, urban_land, fresh_water],
                     marker=dict(colors=["#CD912A", "#1456C5", "#DBBF6A", "#D3D3D0",
                                         "#E7C841", "#7CC873", "#1EA02F", "#5C8C56", "#B1B4AF", "#18CDFA"]),
                     branchvalues="total",
