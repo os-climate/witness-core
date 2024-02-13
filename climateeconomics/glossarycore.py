@@ -314,7 +314,7 @@ class GlossaryCore:
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("int", [1900, YeartEndDefault], False),
-            TotalCO2Emissions: ("float", [0, 1e30], False),
+            TotalCO2Emissions: ("float", None, False),
         },
     }
     CO2TaxEfficiencyValue = "CO2_tax_efficiency"
@@ -336,7 +336,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YeartEndDefault], False),
-            CO2Tax: ("float", [0, 1e30], True),
+            CO2Tax: ("float", None, True),
         },
         "dataframe_edition_locked": False,
     }
@@ -781,10 +781,10 @@ class GlossaryCore:
         "dataframe_descriptor": {
             Years: ("int", [1900, YeartEndDefault], False),
             UtilityDiscountRate: ("float", [0, 100], False),
-            PeriodUtilityPerCapita: ("float", [0, 1e30], False),
-            DiscountedUtility: ("float", [0, 1e30], False),
+            PeriodUtilityPerCapita: ("float", None, False),
+            DiscountedUtility: ("float", None, False),
             EnergyPriceRatio: ("float", [0, 1e30], False),
-            PerCapitaConsumptionUtility: ("float", [0, 1e30], False),
+            PerCapitaConsumptionUtility: ("float", None, False),
         },
         "unit": "-",
     }
@@ -1220,7 +1220,7 @@ class GlossaryCore:
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
         "type": "bool",
-        "default": False,
+        "default": True,
     }
 
     # objective functions
