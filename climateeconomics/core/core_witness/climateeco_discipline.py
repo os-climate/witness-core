@@ -34,8 +34,6 @@ class ClimateEcoDiscipline(SoSWrapp):
 
     YEAR_START_DESC_IN = {'type': 'int', 'default': GlossaryCore.YeartStartDefault,
                           'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public', 'range': [1950,2040]}
-    YEAR_END_DESC_IN = {'type': 'int', 'default': GlossaryCore.YeartEndDefault,
-                        'unit': 'year', 'visibility': 'Shared', 'namespace': 'ns_public',  'range': [2000,2300]}
     TIMESTEP_DESC_IN = {'type': 'int', 'default': 1, 'unit': 'year per period',
                         'visibility': 'Shared', 'namespace': 'ns_public', 'user_level': 2}
     ALPHA_DESC_IN = {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS,
@@ -97,22 +95,36 @@ class ClimateEcoDiscipline(SoSWrapp):
         return value_out
 
     def get_ranges_input_var(self):
-        """
+        '''
         Get available ranges of input data.
+        '''
+        return self.get_ranges_var(self.DESC_IN)
+
+    def get_ranges_output_var(self):
+        '''
+        Get available ranges of output data.
+        '''
+        return self.get_ranges_var(self.DESC_OUT)
+
+    def get_ranges_var(self, DESC):
+        """
+        Get available ranges of input or output data.
+
+        DESC: [dataframe descriptor] from which the data range will be recovered (self.DESC_IN or self.DESC_OUT)
 
         Returns:
             dict: Dictionary containing ranges for each variable.
                   For DataFrame variables, it includes ranges for each column.
 
         Note:
-            This method looks into the DESC_IN attribute, which is a dictionary
-            describing input variables, and extracts the available ranges.
+            This method looks into the DESC attribute, which is a dictionary
+            describing input or output variables, and extracts the available ranges.
         """
 
         # Initialize an empty dictionary to store variable ranges
         dict_ranges = {}
         # Loop through input variables
-        for var_name, dict_data in self.DESC_IN.items():
+        for var_name, dict_data in DESC.items():
             # Check if the variable type is a DataFrame
             if dict_data[self.TYPE] == 'dataframe':
                 if self.DATAFRAME_DESCRIPTOR in dict_data:
@@ -170,12 +182,12 @@ class ClimateEcoDiscipline(SoSWrapp):
                                 # Check if all values of the column are in the specified range
                                 if not value[column].between(column_range[0], column_range[1]).all():
                                     raise ValueError(
-                                        f"The values in column '{column}' of '{key}' are outside the specified range {column_range}")
+                                        f"The values in column '{column}' of '{key}' are outside the specified range {column_range}. Values={value[column]}")
                     # If the variable is a NumPy array or a list, check if all values are within the specified range
                     elif isinstance(value, (np.ndarray, list)):
                         # Check for arrays
                         if not np.all(np.logical_and(variable_range[0] <= value, value <= variable_range[1])):
-                            raise ValueError(f"The values of '{key}' are outside the specified range {variable_range}")
+                            raise ValueError(f"The values of '{key}' are outside the specified range {variable_range}. Value={value}")
                     # If the variable type is not supported, raise a TypeError
                     else:
                         raise TypeError(f"Unsupported type for variable '{key}'")

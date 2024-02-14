@@ -46,7 +46,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
     years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 1},
         'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 1},
@@ -123,6 +123,10 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
                        'min_utility_objective': min_utility_objective,
                        GlossaryCore.NegativeWelfareObjective : negative_welfare_objective
                        }
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
+
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

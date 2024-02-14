@@ -48,7 +48,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2, 'unit': '°C'},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2, 'unit': '°C'},
@@ -162,6 +162,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                     GlossaryCore.TemperatureDfValue: temperature_df[[GlossaryCore.Years, GlossaryCore.TempAtmo]],  # pylint: disable=unsubscriptable-object
                     'forcing_detail_df': self.model.forcing_df,
                     'temperature_constraint': self.model.temperature_end_constraint}
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(out_dict, dict_ranges)
+
         self.store_sos_outputs_values(out_dict)
 
     def compute_sos_jacobian(self):
