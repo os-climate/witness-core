@@ -20,6 +20,8 @@ import pandas as pd
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as usecase2
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
+    Study as usecase2b
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_3_witness_coarse_mda_gdp_model_wo_damage_w_co2_tax import \
     Study as usecase3
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_4_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
@@ -37,21 +39,30 @@ from sostrades_core.tools.post_processing.post_processing_factory import PostPro
 
 class Study(ClimateEconomicsStudyManager):
 
+    USECASE2 = '- damage - tax, fossil 100%'
+    USECASE2B ='+ damage - tax, fossil 100%'
+    USECASE3 = '- damage + tax, IEA'
+    USECASE4 = '+ damage - tax, fossil 40%'
+    USECASE5 = '+ damage - tax, STEP inspired'
+    USECASE6 = '+ damage - tax, NZE inspired'
+    USECASE7 = '+ damage + tax, NZE'
+
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {'Full fossil, no damage no tax': usecase2(execution_engine=self.execution_engine),
-                         'IEA energy mix, no damage with tax': usecase3(execution_engine=self.execution_engine),
-                         'Fossil + 2020 invest renewable & CCS, with damage no tax': usecase4(execution_engine=self.execution_engine),
-                         'Fossil + renewable (step) & 2020 CCS invest, with damage no tax': usecase5(execution_engine=self.execution_engine),
-                         'NZE inspired, with damage no tax': usecase6(execution_engine=self.execution_engine),
-                         'NZE, with damage with tax': usecase7(execution_engine=self.execution_engine),
+        scenario_dict = {self.USECASE2: usecase2(execution_engine=self.execution_engine),
+                         self.USECASE2B: usecase2b(execution_engine=self.execution_engine),
+                         self.USECASE3: usecase3(execution_engine=self.execution_engine),
+                         self.USECASE4: usecase4(execution_engine=self.execution_engine),
+                         self.USECASE5: usecase5(execution_engine=self.execution_engine),
+                         self.USECASE6: usecase6(execution_engine=self.execution_engine),
+                         self.USECASE7: usecase7(execution_engine=self.execution_engine),
                          }
 
         '''

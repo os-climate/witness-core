@@ -60,7 +60,9 @@ class CarbonCycleDiscTest(unittest.TestCase):
         years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
         CO2_emissions_df_y.index = years
         CO2_emissions_df_y = CO2_emissions_df_y[GlossaryCore.CO2EmissionsDf['dataframe_descriptor'].keys()]
-        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': CO2_emissions_df_y}
+        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': CO2_emissions_df_y,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
+                       }
 
         self.ee.load_study_from_input_dict(values_dict)
 

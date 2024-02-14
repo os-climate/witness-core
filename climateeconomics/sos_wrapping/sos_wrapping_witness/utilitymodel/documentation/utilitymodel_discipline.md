@@ -9,15 +9,14 @@ where $energy\_price$ is the mean price of energy in dollars per MWh and comes f
 ### Objectives   
 The DICE's objective function is the social welfare, the discounted sum of utility: 
 $$W = \sum_{t=1}^{t_{max}}U_{pc}(c_t)R_tL_t$$
-with $R_t$ the discount factor, a discount on the economic well-being of future
-generations. 
+with $R_t$ the discount factor, a discount on the economic well-being of future generations: 
 $$R_t = \frac{1}{(1+\rho)^t}$$ 
 and $\rho$ is the pure rate of social time preference. 
 The discount rate is a very debated parameter as it can change drastically the results and no consensus exists on its value. This topic has been extensively analysed by Gaullier (2011)[^2].
 
 Another objective value is calculated and set as an output of the utility model, based on the minimum value of the discounted utility:
 
-$$ utility_{min} = \alpha * (1 - \gamma) * utility_{min}^{ref} / min(U_{pc}(c_t)R_tL_t)$$ 
+$$ utility_{min} = \alpha \times (1 - \gamma) \times utility_{min}^{ref} / min(U_{pc}(c_t)R_tL_t)$$ 
 
 where $\gamma$ is a trade variable between the objectives based on the economy and $\alpha$ is the global tradeof variable between global warning and the economy.
 

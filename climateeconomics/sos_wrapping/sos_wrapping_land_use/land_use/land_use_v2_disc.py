@@ -54,7 +54,7 @@ class LandUseV2Discipline(SoSWrapp):
     initial_unmanaged_forest_surface = 4 - 1.25
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                LandUseV2.LAND_DEMAND_DF: {'type': 'dataframe', 'unit': 'Gha',
                                                   'visibility': SoSWrapp.SHARED_VISIBILITY, 'namespace': 'ns_land_use',
                                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),

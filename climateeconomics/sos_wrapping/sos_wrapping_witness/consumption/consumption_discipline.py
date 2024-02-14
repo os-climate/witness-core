@@ -46,7 +46,7 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
     years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'alpha': {'type': 'float', 'range': [0., 1.], 'unit': '-', 'default': 0.5, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 1},
         'gamma': {'type': 'float', 'range': [0., 1.], 'default': 0.5, 'unit': '-', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'user_level': 1},
@@ -66,7 +66,8 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         'lo_per_capita_conso': {'type': 'float', 'unit': 'k$', 'default': 0.01, 'user_level': 3},
         GlossaryCore.InvestmentDfValue: GlossaryCore.InvestmentDf,
         'residential_energy_conso_ref' : {'type': 'float', 'visibility': 'Shared', 'namespace': GlossaryCore.NS_REFERENCE, 'unit': 'MWh', 'default': 24.3816},
-        GlossaryCore.ResidentialEnergyProductionDfValue : GlossaryCore.ResidentialEnergyProductionDf
+        GlossaryCore.ResidentialEnergyProductionDfValue : GlossaryCore.ResidentialEnergyProductionDf,
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
     DESC_OUT = {
         'utility_detail_df': {'type': 'dataframe', 'unit': '-'},
@@ -85,6 +86,9 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
         # get inputs
         inputs = list(self.DESC_IN.keys())
         inp_dict = self.get_sosdisc_inputs(inputs, in_dict=True)
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(inp_dict, dict_ranges)
 
         # compute utility
         economics_df = inp_dict.pop(GlossaryCore.EconomicsDfValue)
@@ -119,6 +123,10 @@ class ConsumptionDiscipline(ClimateEcoDiscipline):
                        'min_utility_objective': min_utility_objective,
                        GlossaryCore.NegativeWelfareObjective : negative_welfare_objective
                        }
+        if inp_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
+
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

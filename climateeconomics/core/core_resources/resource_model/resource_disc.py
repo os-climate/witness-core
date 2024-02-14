@@ -67,7 +67,7 @@ class ResourceDiscipline(SoSWrapp):
 
                                     },
                GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
 
                }
 

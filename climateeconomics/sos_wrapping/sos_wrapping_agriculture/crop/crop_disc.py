@@ -315,7 +315,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': diet_df_default,
@@ -443,6 +443,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                                     'namespace': GlossaryCore.NS_REFERENCE, 'default': 4000.},
         'constraint_calories_limit': {'type': 'float', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                       'namespace': GlossaryCore.NS_REFERENCE, 'default': 2000.},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
     DESC_OUT = {
@@ -498,6 +499,11 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     CROP_CHARTS = 'crop and diet charts'
 
+    def setup_sos_disciplines(self):  # type: (...) -> None
+
+
+        pass
+
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
         param = self.get_sosdisc_inputs(inputs, in_dict=True)
@@ -507,6 +513,9 @@ class CropDiscipline(ClimateEcoDiscipline):
 
         # -- get inputs
         input_dict = self.get_sosdisc_inputs()
+        if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(input_dict, dict_ranges)
         # -- configure class with inputs
         self.crop_model.configure_parameters_update(input_dict)
         # -- compute
@@ -558,8 +567,10 @@ class CropDiscipline(ClimateEcoDiscipline):
             'calories_per_day_constraint': self.crop_model.calories_per_day_constraint,
             'calories_pc_df': self.crop_model.calories_pc_df
         }
-
-        # -- store outputs
+        if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(outputs_dict, dict_ranges)
+        
         self.store_sos_outputs_values(outputs_dict)
 
     def compute_sos_jacobian(self):

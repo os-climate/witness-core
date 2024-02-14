@@ -72,6 +72,7 @@ class AgricultureGHGEmissionDiscTest(unittest.TestCase):
                        f'{self.name}.Forest.CO2_land_emission_df': CO2_land_emissions_forest,
                        f'{self.name}.Crop.CH4_land_emission_df': CH4_land_emissions,
                        f'{self.name}.Crop.N2O_land_emission_df': N2O_land_emissions,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

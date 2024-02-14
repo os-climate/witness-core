@@ -3,7 +3,8 @@
 This model is partly based on the latest version of DICE[^1] model.   
 
 Economic activity produces emissions, industrial emissions are: 
-$$E_{t\,Ind} = E_{t\, Non\,Energy}$$ with $E_{t\, Non\,Energy}$ the other emissions from industrial activity. 
+$$E_{t\,Ind} = E_{t\, Non\,Energy}$$ 
+with $E_{t\, Non\,Energy}$ the other emissions from industrial activity. 
 
 The emissions from energy use in industrial activity are not included for now. 
   

@@ -48,7 +48,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
     years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2, 'unit': '°C'},
         'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2, 'unit': '°C'},
@@ -85,7 +85,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                                    'namespace': GlossaryCore.NS_WITNESS},
         'temperature_end_constraint_limit': {'type': 'float', 'default': 1.5, 'unit': '°C', 'user_level': 2},
         'temperature_end_constraint_ref': {'type': 'float', 'default': 3., 'unit': '°C', 'user_level': 2},
-        'temperature_effect': {'type': 'bool', 'default': True}
+        'temperature_effect': {'type': 'bool', 'default': True},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
 
     }
 
@@ -126,6 +127,9 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(in_dict, dict_ranges)
 #         carboncycle_df = in_dict.pop(GlossaryCore.CarbonCycleDfValue)
 
         # pyworld3 execution
@@ -150,6 +154,10 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
                         'forcing_detail_df': self.model.forcing_df,
                         'temperature_objective': temperature_objective,
                         'temperature_constraint': self.model.temperature_end_constraint}
+
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(out_dict, dict_ranges)
 
         self.store_sos_outputs_values(out_dict)
 

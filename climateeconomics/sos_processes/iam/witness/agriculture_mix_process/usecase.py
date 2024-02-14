@@ -70,7 +70,7 @@ class Study(StudyManager):
         self.nb_poles = 8
         self.additional_ns = ''
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
 
         agriculture_mix = 'AgricultureMix'
         energy_name = f'{agriculture_mix}'
@@ -228,7 +228,6 @@ class Study(StudyManager):
             f'{self.study_name}.{energy_name}.Crop.{GlossaryCore.OtherDailyCal}': self.other_ca_per_day,
             f'{self.study_name}.{energy_name}.Crop.milk_and_eggs_calories_per_day': self.milk_and_eggs_calories_per_day,
             f'{self.study_name}.{energy_name}.Crop.crop_investment': self.crop_investment,
-            f'{self.study_name}.deforestation_surface': self.deforestation_surface_df,
             f'{self.study_name + self.additional_ns}.forest_investment': self.forest_invest_df,
             f'{self.study_name}.{energy_name}.Forest.managed_wood_investment': self.mw_invest_df,
             f'{self.study_name}.{energy_name}.Forest.deforestation_investment': deforest_invest_df,

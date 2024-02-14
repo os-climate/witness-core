@@ -69,7 +69,9 @@ class IndusEmissionDiscTest(unittest.TestCase):
         economics_df_y.index = years
         energy_supply_df_y.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y}
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
+                       f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
+                       }
 
         self.ee.load_study_from_input_dict(values_dict)
 

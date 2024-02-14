@@ -56,7 +56,7 @@ class Study(ClimateEconomicsStudyManager):
         self.ccs_list = DEFAULT_CCS_LIST
         self.dc_energy = datacase_energy(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict, main_study=False)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_process(self):
@@ -88,7 +88,7 @@ class Study(ClimateEconomicsStudyManager):
 
         return func_df
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
         # -- load data from energy pyworld3

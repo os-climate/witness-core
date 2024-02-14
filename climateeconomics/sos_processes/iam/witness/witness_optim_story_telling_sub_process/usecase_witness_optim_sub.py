@@ -50,14 +50,14 @@ class Study(ClimateEconomicsStudyManager):
         self.func_manager_name = "FunctionsManager"
         self.extra_name = EXTRA_NAME
         self.energy_mix_name = 'EnergyMix'
-        self.ccs_mix_name = 'CCUS'
+        GlossaryCore.CCUS = 'CCUS'
         if sub_usecase == 'uc2':
             self.witness_uc = witness_usecase2_story_telling(
                 self.year_start, self.year_end, self.time_step)
         elif sub_usecase == 'uc7':
             self.witness_uc = witness_usecase7_story_telling(self.year_start, self.year_end, self.time_step)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process
 
         @return list of dictionary: [{str: *}]
