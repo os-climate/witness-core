@@ -94,7 +94,9 @@ class GlossaryCore:
     LastYearDiscountedUtilityObjective = "last_year_discounted_utility_objective"
     energy_list = "energy_list"
     techno_list = "technologies_list"
-    flue_gas_emission_techno_list = "fluegas_emissions_technology_list"
+    flue_gas_emission_techno_list = 'fluegas_emissions_technology_list'
+    food_storage_emission_techno_list = 'foodstorage_emissions_technology_list'
+
     ccs_list = "ccs_list"
     UsableCapitalObjectiveName = "usable_capital_objective"
     UsableCapitalObjectiveRefName = "usable_capital_objective_ref"
