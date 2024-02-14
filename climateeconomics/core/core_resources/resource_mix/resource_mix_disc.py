@@ -87,7 +87,7 @@ class ResourceMixDiscipline(SoSWrapp):
     }
 
     DESC_IN = {GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-               GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+               GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
                'resource_list': {'type': 'list', 'subtype_descriptor': {'list': 'string'},
                                  'unit': '-',
                                  'default': ResourceMixModel.RESOURCE_LIST,

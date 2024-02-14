@@ -106,4 +106,4 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.GHG_total_energy_emissions'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
                                      f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}',
-                                     f"{self.name}.{GlossaryCore.CO2EmissionsObjective['var_name']}"])
+                                     f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}"])

@@ -49,7 +49,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
     _maturity = 'Research'
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_gr_sigma': {'type': 'float', 'default': -0.0152, 'user_level': 2, 'unit': '-'},
         'decline_rate_decarbo': {'type': 'float', 'default': -0.001, 'user_level': 2, 'unit': '-'},
@@ -133,6 +133,9 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.CO2EmissionsDfValue: CO2_emissions_df[GlossaryCore.CO2EmissionsDf['dataframe_descriptor'].keys()],
                        'CO2_objective': CO2_objective,
                        GlossaryCore.CO2EmissionsGtValue: self.emissions_model.co2_emissions[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions]]}
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(dict_values, dict_ranges)
         self.store_sos_outputs_values(dict_values)
 
     def compute_sos_jacobian(self):

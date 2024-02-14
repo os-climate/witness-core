@@ -16,6 +16,24 @@ limitations under the License.
 from copy import deepcopy, copy
 from climateeconomics.database import DatabaseWitnessCore
 
+def get_ref_var_name(var_name: str) -> str:
+    return f"{var_name}_ref"
+
+def get_ref_variable(var_name: str, unit: str, default_value = None) -> dict:
+    """returns a description for a variable"""
+    variable_description = {
+        "var_name": var_name,
+        "description": f"Normalisation reference for {var_name}",
+        "namespace": "ns_ref",
+        "type": "float",
+        "unit": unit
+    }
+    if default_value is not None:
+        variable_description.update({
+            "default": default_value
+        })
+
+    return variable_description
 
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
@@ -29,6 +47,14 @@ class GlossaryCore:
     YeartStartDefault = 2020
     YearEnd = "year_end"
     YeartEndDefault = 2100
+    YearEndVar = {
+        "type": "int",
+        "default": YeartEndDefault,
+        "unit": "year",
+        "visibility": "Shared",
+        "namespace": "ns_public",
+        "range": [2000, 2300],
+    }
     TimeStep = "time_step"
     # todo in the futur: merge these 3 invest values
     InvestValue = "invest"
@@ -170,7 +196,9 @@ class GlossaryCore:
         "editable": False,
         "structuring": True,
     }
-    df_descriptor_section_df = {section: ('float', [0., 100.], True) for section in SectionsPossibleValues}
+    df_descriptor_section_df = {
+        section: ("float", [0.0, 100.0], True) for section in SectionsPossibleValues
+    }
     df_descriptor_section_df.update({Years: ("int", [1900, YeartEndDefault], False)})
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
@@ -290,8 +318,8 @@ class GlossaryCore:
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            "total_emissions": ("float", None, False),
-            "cum_total_emissions": ("float", None, False),
+            "total_emissions": ("float", [-1.e9, 1.e9], False),
+            "cum_total_emissions": ("float", [-1.e9, 1.e9], False),
         },
     }
 
@@ -695,9 +723,9 @@ class GlossaryCore:
         "unit": "ppm",
         "dataframe_descriptor": {
             Years: ("float", None, False),
-            CO2Concentration: ("float", [0., 1e6], True),
-            CH4Concentration: ("float", [0., 1e6], True),
-            N2OConcentration: ("float", [0., 1e6], True),
+            CO2Concentration: ("float", [0.0, 1e6], True),
+            CH4Concentration: ("float", [0.0, 1e6], True),
+            N2OConcentration: ("float", [0.0, 1e6], True),
         },
         "visibility": "Shared",
         "namespace": NS_WITNESS,
@@ -1150,7 +1178,7 @@ class GlossaryCore:
         "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
             Years: ("float", [1900, YeartEndDefault], False),
-            MaxBudgetValue: ("float", [0., 1e12], True),
+            MaxBudgetValue: ("float", [0.0, 1e12], True),
         },
     }
 
@@ -1162,6 +1190,11 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
     }
+
+    MaxBudgetConstraintRefValue = get_ref_var_name(MaxBudgetConstraintValue)
+    MaxBudgetConstraintRef = get_ref_variable(var_name=MaxBudgetConstraintRefValue,
+                                              unit="T$",
+                                              default_value=1e4)
 
     UsableCapitalObjective = {
         "var_name": UsableCapitalObjectiveName,
@@ -1189,12 +1222,12 @@ class GlossaryCore:
         "var_name": TargetEnergyProductionValue,
         "type": "dataframe",
         "description": " Energy Production",
-        "unit": "TWh$",
+        "unit": "TWh",
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
             Years: ("float", [1900, YeartEndDefault], False),
-            TargetEnergyProductionValue: ("float", [0., 1e12], True),
+            TargetEnergyProductionValue: ("float", [0.0, 1e12], True),
         },
     }
 
@@ -1202,22 +1235,27 @@ class GlossaryCore:
         "var_name": TargetProductionConstraintValue,
         "type": "array",
         "description": "Production Constraint",
-        "unit": "TWh$",
+        "unit": "TWh",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
     }
 
+    TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
+    TargetProductionConstraintRef = get_ref_variable(var_name=TargetProductionConstraintRefValue,
+                                                     unit="TWh",
+                                                     default_value=1e9)
+
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
         "type": "bool",
-        "default": False
+        "default": False,
     }
 
     # objective functions
+    CO2EmissionsObjectiveValue = "CO2EmissionsObjective"
     CO2EmissionsObjective = {
-        "var_name": 'CO2EmissionsObjective',
-        "type": "float",
-        "default": 1.,
+        "var_name": CO2EmissionsObjectiveValue,
+        "type": "array",
         "unit": "-",
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
@@ -1225,13 +1263,14 @@ class GlossaryCore:
     }
 
     CO2EmissionsRef = {
-        "var_name": 'CO2EmissionsRef',
+        "var_name": "CO2EmissionsRef",
         "type": "float",
-        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value / (2022 - 1750 + 1.),
+        "default": DatabaseWitnessCore.CumulativeCO2Emissions.value
+        / (2022 - 1750 + 1.0),
         "unit": "Gt",
         "visibility": "Shared",
         "namespace": NS_REFERENCE,
-        "description": 'Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022',
+        "description": "Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022",
     }
 
     @staticmethod
@@ -1257,4 +1296,3 @@ class GlossaryCore:
         out = deepcopy(variable)
         out["namespace"] = namespace
         return out
-
