@@ -73,13 +73,13 @@ Coming from Damage Discipline, the input $\Omega$ represents the fraction of the
 
 Therefore, when applied, the damage from climate are computed as :
 
-$$ D^{climate}_t = \Omega_t Y_t$$
+$$D^{climate}_t = \Omega_t Y_t$$
 
 #### Damages from productivity loss
 
 When damage to productivity is on,
 
-$$ D^{productivity\ loss}_t = Y_t$ \times  \frac{A_t - A^{\star}_t}{A_t} $$
+$$D^{productivity\ loss}_t = Y_t \times  \frac{A_t - A^{\star}_t}{A_t}$$
 
 where $A$ is the productivity without damage and $A^{\star}$ is productivity with damage (see above section on productivity computation).
 
