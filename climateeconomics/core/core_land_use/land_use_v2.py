@@ -119,6 +119,8 @@ class LandUseV2():
         number_of_data = (self.year_end - self.year_start + 1)
         self.land_demand_df = land_demand_df
 
+        # add years
+        self.land_surface_df[GlossaryCore.Years] = np.arange(self.year_start, self.year_end + 1, 1)
         #------------------------------------------------
         # Add available surfaces to df
         self.land_surface_df['Available Agriculture Surface (Gha)'] = np.ones(number_of_data)*self.total_agriculture_surfaces
