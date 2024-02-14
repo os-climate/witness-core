@@ -24,7 +24,7 @@ def get_ref_variable(var_name: str, unit: str, default_value = None) -> dict:
     variable_description = {
         "var_name": var_name,
         "description": f"Normalisation reference for {var_name}",
-        "namespace": 'ns_ref',
+        "namespace": "ns_ref",
         "type": "float",
         "unit": unit
     }
