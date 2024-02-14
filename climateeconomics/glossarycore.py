@@ -583,7 +583,7 @@ class GlossaryCore:
             EnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
             EnergyInvestmentsWoTaxValue: ("float", [0, 1e30], False),  # G$
             NonEnergyInvestmentsValue: ("float", [0, 1e30], False),  # G$
-            EnergyInvestmentsFromTaxValue: ("float", [0, 1e30], False),  # T$
+            EnergyInvestmentsFromTaxValue: ("float", None, False),  # T$
             OutputGrowth: ("float", None, False),
             UsedEnergy: ("float", [0, 1e30], False),
             UnusedEnergy: ("float", [0, 1e30], False),
@@ -600,7 +600,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YeartEndDefault], False),
-            PopulationValue: ("float", [0, 1e30], False),
+            PopulationValue: ("float", None, False),
         },
     }
 
