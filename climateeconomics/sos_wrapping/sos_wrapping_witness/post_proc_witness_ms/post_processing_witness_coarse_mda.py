@@ -23,15 +23,18 @@ from sostrades_core.tools.post_processing.charts.two_axes_chart_template import 
 from energy_models.core.energy_mix.energy_mix import EnergyMix
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from energy_models.core.ccus.ccus import CCUS
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_ms_story_telling.usecase_witness_ms_mda import \
+    Study as usecase_ms_mda
 
 TAX_NAME = 'with tax'
 DAMAGE_NAME = 'with damage'
 DAMAGE_AND_TAX_NAME = 'with damage and tax'
-ALL_SCENARIOS = 'all scenarios'
+ALL_SCENARIOS = 'all filtered scenarios'
 effects_list = [ALL_SCENARIOS, TAX_NAME, DAMAGE_NAME, DAMAGE_AND_TAX_NAME]
-EFFECT_NAME = 'Effects'
+EFFECT_NAME = 'Effects on filtered scenarios'
 CHART_NAME = 'Charts'
 END_YEAR_NAME = 'Ending year'
+SCENARIO_NAME = 'Scenarios'
 SCATTER_SCENARIO = 'mda_scenarios'
 # list of graphs to be plotted and filtered
 graphs_list = ['Temperature per scenario',
@@ -62,6 +65,9 @@ def post_processing_filters(execution_engine, namespace):
 
     filters.append(ChartFilter(CHART_NAME, graphs_list, graphs_list, CHART_NAME))
     filters.append(ChartFilter(END_YEAR_NAME, years_list, year_end, END_YEAR_NAME, multiple_selection=False)) # by default shows all years
+    # filter on effects applies on the list of scenarios already filtered (ie it's a logical AND between the filters)
+    filters.append(ChartFilter(SCENARIO_NAME, scenario_list,
+                               scenario_list, SCENARIO_NAME))
     filters.append(ChartFilter(EFFECT_NAME, effects_list,
                                ALL_SCENARIOS, EFFECT_NAME, multiple_selection=False)) # by default shows all studies, ie does not apply any filter
 
@@ -87,22 +93,24 @@ def post_processings(execution_engine, namespace, filters):
     damage_tax_activation_status_dict = get_scenario_damage_tax_activation_status(execution_engine, scenario_list)
 
     if filters is not None:
-        for chart_filter in filters:
+        for chart_filter in filters: # filter on "scenarios" must occur before filter on "Effects" otherwise filter "Effects" does not work
             if chart_filter.filter_key == CHART_NAME:
                 graphs_list = chart_filter.selected_values
             if chart_filter.filter_key == END_YEAR_NAME:
                 year_end = chart_filter.selected_values
+            if chart_filter.filter_key == SCENARIO_NAME:
+                selected_scenarios = chart_filter.selected_values
             if chart_filter.filter_key == EFFECT_NAME:
                 # performs a "OR" operation on the filter criteria. If no effect is selected for filtering, all scenarios
                 # are shown. Then, restricts the scenarios shown to those respecting at least one of the filtered condition(s)
                 effect = chart_filter.selected_values
                 if effect != ALL_SCENARIOS:
                     if effect == DAMAGE_AND_TAX_NAME:
-                        selected_scenarios = [scenario for scenario in scenario_list
+                        selected_scenarios = [scenario for scenario in selected_scenarios
                                                     if (damage_tax_activation_status_dict[scenario][TAX_NAME] and \
                                                         damage_tax_activation_status_dict[scenario][DAMAGE_NAME])]
                     else:
-                        selected_scenarios = [scenario for scenario in scenario_list
+                        selected_scenarios = [scenario for scenario in selected_scenarios
                                               if damage_tax_activation_status_dict[scenario][effect]]
 
     years = np.arange(year_start, year_end + 1).tolist()
@@ -114,9 +122,9 @@ def post_processings(execution_engine, namespace, filters):
         -------------
     """
     # put in a box the symbols used for tax and damage filtering
-    note = {'__ __ ': 'no damage  ',
-            '_____': 'with damage',
-            '| | | | |': 'with tax   ',
+    note = {'______': 'tax + damage',
+            '............': 'with tax',
+            '__ . __': 'with damage',
             }
 
     if 'Temperature per scenario' in graphs_list:
@@ -568,27 +576,34 @@ def get_scenario_comparison_chart(x_list, y_dict, chart_name, x_axis_name, y_axi
 
     for scenario, y_values in y_dict.items():
         '''
-        For ease of understanding of the plots, scenarios without damage are in dashed line(solid otherwise) and scenarios
-        with tax have circles on the line. whether or not damage and taxes are activated is provided in status_dict
+        For ease of understanding of the plots, scenarios without damage/without tax are in dashed line, 
+        with damage are dash_dot lines, with tax are dot lines and with  damage and tax are solid lines
+        whether or not damage and taxes are activated is provided in status_dict
+        
+        line color is red for fossil (usecase 2 & 2b), green for NZE (usecase 6 & 7), orange for fossil + renewable 
+        (usecase 3, 4, 5)
         '''
-        marker_symbol = 'circle'
-        if status_dict is not None:
-            if status_dict[scenario][TAX_NAME] == False:
-                add_markers = ''
-            else:
-                add_markers = SeriesTemplate.ADD_MARKERS
-                marker_symbol = 'line-ns-open' #if circles are used, the dashed line cannot be seen
-
-            if status_dict[scenario][DAMAGE_NAME] == False:
-                lines = SeriesTemplate.DASH_LINES_DISPLAY + add_markers
-            else:
-                lines = SeriesTemplate.LINES_DISPLAY + add_markers
+        if scenario in [usecase_ms_mda.USECASE2, usecase_ms_mda.USECASE2B]:
+            line_color = dict(color='red')
+        elif scenario in [usecase_ms_mda.USECASE3, usecase_ms_mda.USECASE4, usecase_ms_mda.USECASE5]:
+            line_color = dict(color='orange')
+        elif scenario in [usecase_ms_mda.USECASE6, usecase_ms_mda.USECASE7]:
+            line_color = dict(color='green')
         else:
-            lines = SeriesTemplate.LINES_DISPLAY
+            line_color = None
+        marker_symbol = 'circle'
+        lines = SeriesTemplate.LINES_DISPLAY #default value for scenario with tax and damage
+        if status_dict is not None:
+            if status_dict[scenario][TAX_NAME] is False and status_dict[scenario][DAMAGE_NAME] is False:
+                lines = SeriesTemplate.DASH_LINES_DISPLAY
+            elif status_dict[scenario][TAX_NAME] is True and status_dict[scenario][DAMAGE_NAME] is False:
+                lines = SeriesTemplate.DOT_LINES_DISPLAY
+            elif status_dict[scenario][TAX_NAME] is False and status_dict[scenario][DAMAGE_NAME] is True:
+                lines = SeriesTemplate.DASH_DOT_LINES_DISPLAY
 
         if scenario in selected_scenarios:
             new_series = InstanciatedSeries(
-                x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol)
+                x_list, y_values, scenario, lines, True, marker_symbol=marker_symbol, line=line_color)
 
             new_chart.series.append(new_series)
 

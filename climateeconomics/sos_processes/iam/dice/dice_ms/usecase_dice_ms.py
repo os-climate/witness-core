@@ -31,7 +31,7 @@ class Study(StudyManager):
         super().__init__(__file__, execution_engine=execution_engine)
         self.data_dir = join(dirname(__file__), 'data')
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         dice_ms_usecase = dice_usecase(execution_engine=self.execution_engine)
 
         self.scatter_scenario = 'Control rate scenarios'

@@ -78,6 +78,7 @@ class EnergyInvestDiscTest(unittest.TestCase):
             f'{self.name}.{GlossaryCore.CO2TaxesValue}': default_CO2_tax,
             f'{self.name}.{self.model_name}.{GlossaryCore.CO2TaxEfficiencyValue}': default_co2_efficiency,
             f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}': co2_emissions_gt,
+            f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
         }
 
         self.ee.load_study_from_input_dict(values_dict)

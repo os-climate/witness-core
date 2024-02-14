@@ -48,9 +48,9 @@ class Study(StudyManager):
         self.year_end = year_end
         self.time_step = time_step
         self.witness_sect_uc = witness_sect_usecase(self.year_start, self.year_end, self.time_step,
-                                                    execution_engine=execution_engine)
+                                                    execution_engine=execution_engine, main_study=False)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         ns_coupling = f"{self.study_name}.{self.optim_name}.{self.coupling_name}"
         ns_optim = f"{self.study_name}.{self.optim_name}"
         # Optim param
@@ -219,16 +219,16 @@ class Study(StudyManager):
         disc_dict[f"{ns_optim}.{'energy_eff_xzero_indus_in'}"] = np.array([2015])
         disc_dict[f"{ns_optim}.{'energy_eff_max_indus_in'}"] = np.array([4.18])
 
-        func_df = pd.DataFrame(
-            columns=['variable', 'ftype', 'weight', AGGR_TYPE, 'namespace'])
-        func_df['variable'] = ['error_pib_total',
-                               'Industry.gdp_error', 'Agriculture.gdp_error', 'Services.gdp_error',
-                               'Industry.energy_eff_error', 'Agriculture.energy_eff_error', 'Services.energy_eff_error']
-        func_df['ftype'] = [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE]
-        func_df['weight'] = [1, 1, 1, 1, 1, 1, 1]
-        func_df[AGGR_TYPE] = [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM,
-                              AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM,]
-        func_df['namespace'] = ['ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj', 'ns_obj']
+        func_df = pd.DataFrame({
+            'variable': ['error_pib_total', 'Industry.gdp_error', 'Agriculture.gdp_error',
+                         'Services.gdp_error', 'Industry.energy_eff_error',
+                         'Agriculture.energy_eff_error', 'Services.energy_eff_error'],
+            'ftype': [OBJECTIVE] * 7,
+            'weight': [1] * 7,
+            AGGR_TYPE: [AGGR_TYPE_SUM] * 7,
+            'namespace': ['ns_obj'] * 7
+        })
+
         func_mng_name = 'FunctionsManager'
 
         prefix = f'{ns_coupling}.{func_mng_name}.'
@@ -245,10 +245,6 @@ class Study(StudyManager):
         hist_energy = pd.read_csv(join(data_dir, 'hist_energy_sect.csv'))
         extra_data = pd.read_csv(join(data_dir, 'extra_data_for_energy_eff.csv'))
         weights = pd.read_csv(join(data_dir, 'weights_df.csv'))
-        hist_invest = pd.read_csv(join(data_dir, 'hist_invest_sectors.csv'))
-        agri_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorAgriculture: hist_invest[GlossaryCore.SectorAgriculture]})
-        services_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorServices: hist_invest[GlossaryCore.SectorServices]})
-        indus_invest = pd.DataFrame({GlossaryCore.Years: hist_invest[GlossaryCore.Years], GlossaryCore.SectorIndustry: hist_invest[GlossaryCore.SectorIndustry]})
         long_term_energy_eff = pd.read_csv(join(data_dir, 'long_term_energy_eff_sectors.csv'))
         lt_enef_agri = pd.DataFrame({GlossaryCore.Years: long_term_energy_eff[GlossaryCore.Years],
                                      GlossaryCore.EnergyEfficiency: long_term_energy_eff[
@@ -276,9 +272,6 @@ class Study(StudyManager):
         sect_input[f"{ns_coupling}.{self.macro_name}.{'prod_function_fitting'}"] = False
         sect_input[f"{ns_coupling}.{self.obj_name}.{'data_for_earlier_energy_eff'}"] = extra_data
         sect_input[f"{ns_coupling}.{self.obj_name}.{'weights_df'}"] = weights
-        sect_input[f"{self.ns_agriculture}.{'hist_sector_investment'}"] = agri_invest
-        sect_input[f"{self.ns_services}.{'hist_sector_investment'}"] = services_invest
-        sect_input[f"{self.ns_industry}.{'hist_sector_investment'}"] = indus_invest
         sect_input[f"{ns_industry_macro}.{'longterm_energy_efficiency'}"] = lt_enef_indus
         sect_input[f"{ns_agriculture_macro}.{'longterm_energy_efficiency'}"] = lt_enef_agri
         sect_input[f"{ns_services_macro}.{'longterm_energy_efficiency'}"] = lt_enef_services

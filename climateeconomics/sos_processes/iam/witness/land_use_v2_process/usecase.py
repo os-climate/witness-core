@@ -44,7 +44,7 @@ class Study(StudyManager):
         self.time_step = time_step
         self.extra_name = extra_name
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
         setup_data_list = []

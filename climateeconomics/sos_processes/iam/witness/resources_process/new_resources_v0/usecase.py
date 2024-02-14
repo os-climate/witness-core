@@ -29,7 +29,7 @@ class Study(StudyManager):
     def __init__(self):
         super().__init__(__file__)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
         year, year_end = GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault

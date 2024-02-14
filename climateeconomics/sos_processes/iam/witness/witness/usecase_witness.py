@@ -21,7 +21,7 @@ from io import StringIO
 from os.path import join, dirname
 
 import pandas as pd
-from pandas import DataFrame, concat
+from pandas import concat
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
@@ -79,7 +79,7 @@ class Study(ClimateEconomicsStudyManager):
         self.process_level = process_level
         self.dc_energy = datacase_energy(
             self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
-            invest_discipline=self.invest_discipline, techno_dict=techno_dict)
+            invest_discipline=self.invest_discipline, techno_dict=techno_dict, main_study=False)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 
     def setup_constraint_land_use(self):
@@ -95,7 +95,7 @@ class Study(ClimateEconomicsStudyManager):
 
         return func_df
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         setup_data_list = []
 
         # -- load data from energy pyworld3
@@ -174,4 +174,4 @@ if '__main__' == __name__:
 
     # TODO : careful, this usecase is quite long to test ! 800 sec
     uc_cls = Study()
-    uc_cls.test(force_run=True)
+    uc_cls.test()

@@ -66,7 +66,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: ClimateEcoDiscipline.YEAR_END_DESC_IN,
+        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'population_start': {'type': 'dataframe', 'default': pop_init_df, 'unit': 'millions of people',
                              'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -135,6 +135,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         GlossaryCore.DietMortalityParamDf['var_name']: desc_in_default_diet_mortality_param,
         'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
         'kcal_pc_ref': {'type': 'float', 'default': 2000.0, 'user_level': 3, 'unit': 'kcal'},
+        GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         }
 
     DESC_OUT = {
@@ -160,6 +161,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         ''' model execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_input_var()
+            self.check_ranges(in_dict, dict_ranges)
 
         # model execution
         population_detail_df, birth_rate_df, death_rate_dict, birth_df, death_dict, life_expectancy_df, working_age_population_df = self.model.compute(
@@ -183,6 +187,10 @@ class PopulationDiscipline(ClimateEcoDiscipline):
                     "birth_df": birth_df,
                     "death_dict": death_dict,
                     "life_expectancy_df": life_expectancy_df}
+
+        if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
+            dict_ranges = self.get_ranges_output_var()
+            self.check_ranges(out_dict, dict_ranges)
 
         self.store_sos_outputs_values(out_dict)
 
@@ -765,9 +773,9 @@ def graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated
     min_value = min(min(min_values.values()), min_value_pop)
     max_value = max(max(max_values.values()), max_value_pop)
 
-    chart_name = 'World population and Cumulative climate deaths vs years'
+    chart_name = 'World population and cumulative climate deaths vs years'
 
-    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' world pop and cumulative climatic deaths',
+    new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, ' Number of people',
                                             [year_start - 5, year_end + 5],
                                             [min_value, max_value],
                                             chart_name)
@@ -775,7 +783,7 @@ def graph_model_world_pop_and_cumulative_deaths(pop_df, death_dict, instanciated
     visible_line = True
     ordonate_data = list(death_dict['climate']['cum_total'])
     new_series = InstanciatedSeries(
-        years, ordonate_data, f'cumulative climatic deaths', 'bar')
+        years, ordonate_data, f'Cumulative climate deaths', 'bar')
     new_chart.series.append(new_series)
 
     ordonate_data = list(pop_df['total'])

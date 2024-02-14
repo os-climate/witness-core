@@ -58,7 +58,7 @@ class Study(ClimateEconomicsStudyManager):
     def setup_process(self):
         witness_optim_sub_usecase.setup_process(self)
 
-    def setup_usecase(self):
+    def setup_usecase(self, study_folder_path=None):
         ns = self.study_name
 
         values_dict = {}

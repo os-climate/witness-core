@@ -146,7 +146,8 @@ class MacroeconomicsTestCase(unittest.TestCase):
                 'compute_climate_impact_on_gdp': True,
                 'activate_climate_effect_population': True,
                 'invest_co2_tax_in_renewables': True
-            }
+            },
+            f'{name}.{model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
         }
 
         ee.load_study_from_input_dict(inputs_dict)
