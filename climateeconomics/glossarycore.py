@@ -1248,7 +1248,7 @@ class GlossaryCore:
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
         "type": "bool",
-        "default": True,
+        "default": False,
     }
 
     # objective functions
