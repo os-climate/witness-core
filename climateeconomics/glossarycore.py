@@ -18,6 +18,7 @@ from climateeconomics.database import DatabaseWitnessCore
 
 def get_ref_var_name(var_name: str) -> str:
     return f"{var_name}_ref"
+
 def get_ref_variable(var_name: str, unit: str, default_value = None) -> dict:
     """returns a description for a variable"""
     variable_description = {
@@ -1241,10 +1242,13 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
     }
-    TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
-    TargetProductionConstraintRef = get_ref_variable(var_name=TargetProductionConstraintRefValue,
-                                                     unit="TWh",
-                                                     default_value=1e9)
+
+
+    MaxBudgetConstraintRefValue = get_ref_var_name(MaxBudgetConstraintValue)
+    MaxBudgetConstraintRef = get_ref_variable(var_name=MaxBudgetConstraintRefValue,
+                                              unit="T$",
+                                              default_value=1e4)
+
     UsableCapitalObjective = {
         "var_name": UsableCapitalObjectiveName,
         "type": "array",
@@ -1288,6 +1292,11 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_FUNCTIONS,
     }
+
+    TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
+    TargetProductionConstraintRef = get_ref_variable(var_name=TargetProductionConstraintRefValue,
+                                                     unit="TWh",
+                                                     default_value=1e9)
 
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
