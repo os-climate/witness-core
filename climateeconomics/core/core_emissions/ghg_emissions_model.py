@@ -36,6 +36,7 @@ class GHGEmissions():
         self.configure_parameters()
         self.create_dataframe()
         self.sector_list = ['energy', 'land', 'industry']
+        self.epsilon = 1.e-5 # for the CO2 objective function
 
     def configure_parameters(self):
         self.year_start = self.param[GlossaryCore.YearStart]
@@ -120,23 +121,36 @@ class GHGEmissions():
 
     def compute_CO2_emissions_objective(self):
         '''
-        CO2emissionsObjective = (CO2emissionsRef + mean(CO2_emissions between 2023 and 2100))/(20 * CO2emissionsRef)
+        CO2emissionsObjective = (sqrt((CO2Ref + CO2)^2 + epsilon^2) - epsilon)/ (2 * CO2 ref)
 
-        CO2emissionsRef corresponds to mean CO2 emissions during the industrial era until 2022 from the energy sector = 6.49 Gt
-        the mean CO2_emissions after 2023 can be < 0 thanks to CCUS.
-        When it reaches - CO2emissionsRef, then the energy sector is net zero emission and objective function should be 0
+
+        CO2Ref = CO2emissionsRef corresponds to mean CO2 emissions during the industrial era until 2022 from the energy sector = 6.49 Gt
+        CO2 = mean of the CO2 emissions between 2023 and 2100. Can be < 0 thanks to CCUS.
+        When CO2 emissions reaches - CO2emissionsRef, then the energy sector is net zero emission and objective function should be 0
         When CO2 emissions are max, in full fossil, mean emissions between 2023 and 2100 are around 102.9 Gt
         For the full fossil case,  CO2emissionsRef + mean(CO2_emissions between 2023 and 2100 =  6.49 + 102.9 = 109.39
-        to keep the objective function between 0 and 1, it is sufficient to normalize the sum above by 20 * CO2emiisionsRef
+        to keep the objective function between 0 and 10, it is sufficient to normalize the sum above by 2 * CO2emiisionsRef
+
+        The objective must be >= 0, hence the square value. If there is too much CCUS invest and CO2 < CO2Ref, there is
+        also a climate change (icing) that is unwanted and the objective should depart from 0.
+        Epsilon value allows to have the objective function infinitely derivable in -CO2Ref
         '''
-        self.co2_emissions_objective = np.array([(self.CO2EmissionsRef + self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()) / \
-                                       (20. * self.CO2EmissionsRef)])
+        CO2Ref = self.CO2EmissionsRef
+        CO2 = self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()
+        epsilon = self.epsilon
+        self.co2_emissions_objective = np.array([(np.sqrt((CO2Ref + CO2)**2 + epsilon**2) - epsilon) / (2. * CO2Ref)])
+
 
     def d_CO2_emissions_objective_d_total_co2_emissions(self):
         '''
         Compute gradient of CO2 emissions objective wrt ToTalCO2Emissions
+        f' = CO2' * (CO2Ref + CO2)/sqrt(CO2^2 + epsilon^2)/ CO2Ref
         '''
-        d_CO2_emissions_objective_d_total_co2_emissions = np.ones(len(self.years_range)) / len(self.years_range) / (20. * self.CO2EmissionsRef)
+        CO2Ref = self.CO2EmissionsRef
+        CO2 = self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()
+        dCO2 = np.ones(len(self.years_range)) / len(self.years_range)
+        epsilon = self.epsilon
+        d_CO2_emissions_objective_d_total_co2_emissions = np.array([dCO2 * (CO2Ref + CO2) / np.sqrt((CO2Ref + CO2)**2 + epsilon**2) / (2. * CO2Ref)])
 
         return d_CO2_emissions_objective_d_total_co2_emissions
 

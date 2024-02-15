@@ -286,10 +286,6 @@ class LandUseV2Discipline(SoSWrapp):
                     fig.add_trace(go.Scatter(x=years, y=list(np.ones(len(years)) * total_land_available),
                                              line=dict(color=qualitative.Dark2[7]),
                                              name='Total Land Available'), secondary_y=False)
-                    fig.add_trace(go.Scatter(x=years, y=list(np.ones(len(years)) * (land_surface_detailed['Total Forest Surface (Gha)'][0] +
-                                    land_surface_detailed['Total Agriculture Surface (Gha)'][0])),
-                                             line=dict(color=qualitative.Dark2[7], dash='dot'),
-                                             name='Land used by Agriculture and Forest in 2020'), secondary_y=False)
                     fig.add_trace(go.Scatter(
                         x=years,
                         y=list(np.maximum(0.0,-land_demand_constraint)),
