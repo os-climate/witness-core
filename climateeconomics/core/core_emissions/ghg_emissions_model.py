@@ -31,6 +31,7 @@ class GHGEmissions():
         """
         Constructor
         """
+        self.affine_co2_objective: bool = False
         self.co2_emissions_objective = None
         self.param = param
         self.configure_parameters()
@@ -64,6 +65,7 @@ class GHGEmissions():
         self.N2O_land_emissions = inputs_dict['N2O_land_emissions']
         self.CO2_indus_emissions_df = inputs_dict['CO2_indus_emissions_df']
         self.GHG_total_energy_emissions = inputs_dict['GHG_total_energy_emissions']
+        self.affine_co2_objective = inputs_dict['affine_co2_objective']
         self.create_dataframe()
 
     def create_dataframe(self):
@@ -135,10 +137,16 @@ class GHGEmissions():
         also a climate change (icing) that is unwanted and the objective should depart from 0.
         Epsilon value allows to have the objective function infinitely derivable in -CO2Ref
         '''
-        CO2Ref = self.CO2EmissionsRef
-        CO2 = self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()
+        annual_co2_emissions_ref = self.CO2EmissionsRef
+        mean_annual_co2_emissions = self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()
         epsilon = self.epsilon
-        self.co2_emissions_objective = np.array([(np.sqrt((CO2Ref + CO2)**2 + epsilon**2) - epsilon) / (2. * CO2Ref)])
+
+        if self.affine_co2_objective:
+            self.co2_emissions_objective = np.array(
+                [(10 * self.CO2EmissionsRef + self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()) / \
+                 (20. * self.CO2EmissionsRef)])
+        else:
+            self.co2_emissions_objective = np.array([(np.sqrt((annual_co2_emissions_ref + mean_annual_co2_emissions)**2 + epsilon**2) - epsilon) / (2. * annual_co2_emissions_ref)])
 
 
     def d_CO2_emissions_objective_d_total_co2_emissions(self):
@@ -146,11 +154,15 @@ class GHGEmissions():
         Compute gradient of CO2 emissions objective wrt ToTalCO2Emissions
         f' = CO2' * (CO2Ref + CO2)/sqrt(CO2^2 + epsilon^2)/ CO2Ref
         '''
-        CO2Ref = self.CO2EmissionsRef
-        CO2 = self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()
+        annual_co2_emissions_ref = self.CO2EmissionsRef
+        mean_annual_co2_emissions = self.GHG_total_energy_emissions[GlossaryCore.TotalCO2Emissions].mean()
         dCO2 = np.ones(len(self.years_range)) / len(self.years_range)
-        epsilon = self.epsilon
-        d_CO2_emissions_objective_d_total_co2_emissions = np.array([dCO2 * (CO2Ref + CO2) / np.sqrt((CO2Ref + CO2)**2 + epsilon**2) / (2. * CO2Ref)])
+
+        if self.affine_co2_objective:
+            d_CO2_emissions_objective_d_total_co2_emissions = np.ones(len(self.years_range)) / len(self.years_range) / (20. * self.CO2EmissionsRef)
+        else:
+            epsilon = self.epsilon
+            d_CO2_emissions_objective_d_total_co2_emissions = np.array([dCO2 * (annual_co2_emissions_ref + mean_annual_co2_emissions) / np.sqrt((annual_co2_emissions_ref + mean_annual_co2_emissions)**2 + epsilon**2) / (2. * annual_co2_emissions_ref)])
 
         return d_CO2_emissions_objective_d_total_co2_emissions
 
