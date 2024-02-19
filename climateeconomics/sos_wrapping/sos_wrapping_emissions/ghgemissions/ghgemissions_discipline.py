@@ -83,6 +83,8 @@ class GHGemissionsDiscipline(ClimateEcoDiscipline):
                                         },
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         GlossaryCore.CO2EmissionsRef['var_name']: GlossaryCore.CO2EmissionsRef,
+        'affine_co2_objective': {'type': 'bool','default': False, 'user_level': 2, 'namespace': GlossaryCore.NS_WITNESS},
+
     }
     DESC_OUT = {
         GlossaryCore.CO2EmissionsGtValue: GlossaryCore.CO2EmissionsGt,
