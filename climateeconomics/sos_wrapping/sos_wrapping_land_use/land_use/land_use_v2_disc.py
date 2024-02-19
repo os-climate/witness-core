@@ -309,7 +309,7 @@ class LandUseV2Discipline(SoSWrapp):
                 series_to_add = []
                 # Total surface usage
                 for column in list(land_surface_detailed.columns):
-                    if column not in ['Total Forest Surface (Gha)', 'Total Agriculture Surface (Gha)',
+                    if column not in [GlossaryCore.Years, 'Total Forest Surface (Gha)', 'Total Agriculture Surface (Gha)',
                                       'Available Agriculture Surface (Gha)', 'Available Forest Surface (Gha)',
                                       'Available Shrub Surface (Gha)']:
                         legend = column.replace(' (Gha)', '')

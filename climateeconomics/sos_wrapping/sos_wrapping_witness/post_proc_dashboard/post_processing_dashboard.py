@@ -268,6 +268,22 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                                     land_surface_detailed['Available Forest Surface (Gha)'].values + \
                                     land_surface_detailed['Available Shrub Surface (Gha)'])
 
+        # shrub surface cannot be <0
+        shrub_surface = np.maximum(np.zeros(len(years)), total_land_available[0] * np.ones(len(years)) -
+                                   (land_surface_detailed['Total Forest Surface (Gha)'] +
+                                    land_surface_detailed['Total Agriculture Surface (Gha)']).values)
+
+        column = 'Shrub Surface (Gha)'
+        legend = column.replace(' (Gha)', '')
+        new_chart.add_trace(go.Scatter(
+            x=years,
+            y=(list(shrub_surface)),
+            opacity=0.7,
+            line=dict(width=1.25),
+            name=legend,
+            stackgroup='one',
+        ))
+
         new_chart.add_trace(go.Scatter(
             x=years,
             y=list(np.ones(len(years)) * total_land_available),
