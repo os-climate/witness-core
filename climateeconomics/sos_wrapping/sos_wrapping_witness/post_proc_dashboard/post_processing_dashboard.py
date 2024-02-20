@@ -180,7 +180,6 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
         instanciated_charts.append(new_chart)
-
     if 'population and death' in chart_list:
         pop_df = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.population_detail_df')
         death_dict = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.death_dict')
