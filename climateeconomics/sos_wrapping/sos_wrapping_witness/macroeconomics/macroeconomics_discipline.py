@@ -1216,6 +1216,6 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
                 opacity=0.2,
                 name='Estimation of GDP without damages', ))
 
-            new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+    new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
     return new_chart
