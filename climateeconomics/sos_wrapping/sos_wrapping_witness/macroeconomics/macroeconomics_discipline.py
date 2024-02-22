@@ -1152,7 +1152,7 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
 
     new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '[trillion $2020]',
                                          chart_name=chart_name, stacked_bar=True,
-                                         y_min_zero=not compute_climate_impact_on_gdp)
+                                         y_min_zero=False)
 
     new_chart = new_chart.to_plotly()
 
@@ -1185,6 +1185,11 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
         name=legend[GlossaryCore.InvestmentsValue],
     ))
 
+    new_chart.add_trace(go.Scatter(x=years, y=list(gross_output),
+                                   mode='lines',
+                                   name="Gross GDP"
+                                   ))
+
     if compute_climate_impact_on_gdp:
         ordonate_data = list(-damage_detailed_df[GlossaryCore.DamagesFromClimate])
 
@@ -1201,11 +1206,6 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
             gdp_without_damage_to_prod = gross_output + damage_detailed_df[
                 GlossaryCore.EstimatedDamagesFromProductivityLoss].values
 
-            new_chart.add_trace(go.Scatter(x=years, y=list(gross_output),
-                                           mode='lines',
-                                           name="Gross GDP"
-                                           ))
-
             new_chart.add_trace(go.Scatter(
                 x=years,
                 y=list(gdp_without_damage_to_prod),
@@ -1216,6 +1216,6 @@ def breakdown_gdp(economics_detail_df, damage_detailed_df, compute_climate_impac
                 opacity=0.2,
                 name='Estimation of GDP without damages', ))
 
-            new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
+    new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
 
     return new_chart

@@ -1243,7 +1243,7 @@ class GlossaryCore:
     TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
     TargetProductionConstraintRef = get_ref_variable(var_name=TargetProductionConstraintRefValue,
                                                      unit="TWh",
-                                                     default_value=100000)
+                                                     default_value=1e5)
 
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,
