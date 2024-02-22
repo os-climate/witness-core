@@ -159,7 +159,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.CO2_indus_emissions_df': CO2_indus_emissions_df,
                        f'{self.name}.GHG_total_energy_emissions': GHG_total_energy_emissions,
                        f"{self.name}.{GlossaryCore.CO2EmissionsRef['var_name']}": CO2_emissions_ref,
-                       f"{self.name}.affine_co2_objective": True,
+                       f"{self.name}.affine_co2_objective": False,
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
