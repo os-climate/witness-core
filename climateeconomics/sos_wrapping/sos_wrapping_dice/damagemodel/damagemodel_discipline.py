@@ -28,7 +28,6 @@ from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart imp
 class DamageDiscipline(SoSWrapp):
     "     Temperature evolution"
 
-
     # ontology information
     _ontology_data = {
         'label': 'Damage DICE Model',
@@ -47,12 +46,12 @@ class DamageDiscipline(SoSWrapp):
         GlossaryCore.YearEnd: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         GlossaryCore.TimeStep: {'type': 'int', 'visibility': 'Shared', 'namespace': 'ns_dice'},
         'init_damag_int': {'type': 'float', 'default': 0},
-        'damag_int': {'type': 'float', 'default':0},
+        'damag_int': {'type': 'float', 'default': 0},
         'damag_quad': {'type': 'float', 'default': 0.00236},
         'damag_expo': {'type': 'float', 'default': 2},
         'exp_cont_f': {'type': 'float', 'default': 2.6},
         'cost_backstop': {'type': 'float', 'default': 550},
-        'init_cost_backstop': {'type': 'float', 'default' : .025},
+        'init_cost_backstop': {'type': 'float', 'default': .025},
         'gr_base_carbonprice': {'type': 'float', 'default': .02},
         'init_base_carbonprice': {'type': 'float', 'default': 2},
         'tipping_point': {'type': 'bool', 'default': False},
@@ -61,7 +60,8 @@ class DamageDiscipline(SoSWrapp):
         'tp_a3': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.081},
         'tp_a4': {'type': 'float', 'visibility': SoSWrapp.INTERNAL_VISIBILITY, 'default': 6.754},
         GlossaryCore.DamageToProductivity: {'type': 'bool', 'visibility': 'Shared', 'namespace': 'ns_dice'},
-        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared', 'namespace': 'ns_dice'},
+        GlossaryCore.FractionDamageToProductivityValue: {'type': 'float', 'visibility': 'Shared',
+                                                         'namespace': 'ns_dice'},
         GlossaryCore.EconomicsDfValue: GlossaryCore.set_namespace(GlossaryCore.EconomicsDf, 'ns_scenario'),
         'emissions_df': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
                          'dataframe_descriptor': {GlossaryCore.Years: ('float', None, False),
@@ -72,7 +72,8 @@ class DamageDiscipline(SoSWrapp):
                          },
         GlossaryCore.TemperatureDfValue: GlossaryCore.set_namespace(GlossaryCore.TemperatureDf, 'ns_scenario'),
         'emissions_control_rate': {'type': 'dataframe', 'visibility': 'Shared', 'namespace': 'ns_scenario',
-                                   'dataframe_descriptor': {'year': ('float', None, False), 'value': ('float', None, True)},
+                                   'dataframe_descriptor': {'year': ('float', None, False),
+                                                            'value': ('float', None, True)},
                                    'dataframe_edition_locked': False},
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
     }
@@ -96,7 +97,7 @@ class DamageDiscipline(SoSWrapp):
                                   temperature_df, emissions_control_rate)
 
         # store output data
-        out_dict = {"damage_df": damage_df}        
+        out_dict = {"damage_df": damage_df}
         self.store_sos_outputs_values(out_dict)
 
     def get_chart_filter_list(self):
@@ -119,7 +120,7 @@ class DamageDiscipline(SoSWrapp):
         # value of ToT with a shift of five year between then
 
         instanciated_charts = []
-
+        chart_list = []
         # Overload default value with chart filter
         if chart_filters is not None:
             for chart_filter in chart_filters:
@@ -127,9 +128,8 @@ class DamageDiscipline(SoSWrapp):
                     chart_list = chart_filter.selected_values
 
         if GlossaryCore.Damages in chart_list:
-
             to_plot = [GlossaryCore.Damages]
-            damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageFractionDfValue)
+            damage_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
             damage_df = resize_df(damage_df)
 
             damage = damage_df[GlossaryCore.Damages]
@@ -143,15 +143,25 @@ class DamageDiscipline(SoSWrapp):
 
             chart_name = 'environmental damage'
 
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Damage (trill $)',
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, f'{GlossaryCore.Damages} (trill $)',
                                                  [year_start - 5, year_end + 5], [
                                                      0, max_value * 1.1],
                                                  chart_name)
+            for key in to_plot:
+                visible_line = True
 
+                c_emission = list(damage_df[key])
+
+                new_series = InstanciatedSeries(
+                    years, c_emission, key, 'lines', visible_line)
+
+                new_chart.series.append(new_series)
+
+            instanciated_charts.append(new_chart)
         if 'Abatement cost' in chart_list:
 
             to_plot = ['abatecost']
-            abate_df = self.get_sosdisc_outputs(GlossaryCore.DamageFractionDfValue)
+            abate_df = self.get_sosdisc_outputs(GlossaryCore.DamageDfValue)
 
             abatecost = damage_df['abatecost']
 
@@ -184,7 +194,6 @@ class DamageDiscipline(SoSWrapp):
 
 
 def resize_df(df):
-
     index = df.index
     i = len(index) - 1
     key = df.keys()
@@ -208,7 +217,6 @@ def resize_df(df):
 
 
 def resize_array(array):
-
     i = len(array) - 1
     to_check = array[i]
 
@@ -223,7 +231,6 @@ def resize_array(array):
 
 
 def resize_index(index, array):
-
     l = len(array)
     new_index = index[0:l]
     return new_index
