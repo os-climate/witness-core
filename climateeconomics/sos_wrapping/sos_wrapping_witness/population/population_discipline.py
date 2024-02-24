@@ -64,6 +64,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     desc_in_default_diet_mortality_param = GlossaryCore.DietMortalityParamDf
     desc_in_default_diet_mortality_param['default'] = pd.read_csv(join(global_data_dir, 'diet_mortality_param.csv'))
 
+    desc_in_default_pandemic_param = GlossaryCore.PandemicParamDf
+    desc_in_default_pandemic_param['default'] = pd.read_csv(join(global_data_dir, 'pandemic_param.csv'))
+
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
@@ -135,6 +138,9 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         GlossaryCore.DietMortalityParamDf['var_name']: desc_in_default_diet_mortality_param,
         'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
         'kcal_pc_ref': {'type': 'float', 'default': 2000.0, 'user_level': 3, 'unit': 'kcal'},
+        GlossaryCore.PandemicParamDf['var_name']: desc_in_default_pandemic_param,
+        'disability_pandemic': {'type': 'float', 'default': 0.0, 'user_level': 3, 'unit': '-'},
+        'mortality_pandemic': {'type': 'float', 'default': 0.0, 'user_level': 3, 'unit': '-'},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         }
 
