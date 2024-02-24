@@ -54,6 +54,7 @@ class Population:
         self.br_nu = inputs['birth_rate_nu']
         self.br_delta = inputs['birth_rate_delta']
         self.climate_mortality_param_df = deepcopy(inputs['climate_mortality_param_df'])
+        # Pandemic parameters
         self.pandemic_param_df = deepcopy(inputs['pandemic_param_df'])
         self.cal_temp_increase = inputs['calibration_temperature_increase']
         self.theta = inputs['theta']
@@ -75,9 +76,6 @@ class Population:
         self.activate_climate_effect_on_population = inputs['assumptions_dict']['activate_climate_effect_population']
         # First year of the regression of knowledge function
         self.year_reg_know = 1800
-        # Pandemic parameters
-        self.disability_pandemic = inputs['disability_pandemic']
-        self.mortality_pandemic = inputs['mortality_pandemic']
 
 
     def create_dataframe(self):
@@ -286,7 +284,7 @@ class Population:
                 diet_death_rate[i] = (1 - death_rate[i] * (1 + climate_death_rate[i]))/ (1 + np.exp(-diet_death_rate[i]))
 
         # Add pandemic impact on death rate
-        pandemic_death_rate = param['mortality_pandemic']
+        pandemic_death_rate = self.pandemic_param_df['mortality'].values
 
         # Fill the year key in each death rate dict
         self.base_death_rate_df_dict[year] = death_rate
@@ -421,7 +419,7 @@ class Population:
         working_age_idx = [str(i) for i in np.arange(15, 71)]
         self.working_age_population_df[GlossaryCore.Population1570] = (
             self.population_df[working_age_idx]
-            .mul(self.disability_pandemic[working_age_idx].rsub(1.0))
+            .mul(self.pandemic_param_df['disability'][working_age_idx].rsub(1.0))
             .sum(axis=1)
         )
 
