@@ -287,6 +287,7 @@ class Population:
         pandemic_death_rate = self.pandemic_param_df['mortality'].values
 
         # Fill the year key in each death rate dict
+        # FIXME: why do we have [year] on the left and side and not also on the right hand side?
         self.base_death_rate_df_dict[year] = death_rate
         self.climate_death_rate_df_dict[year] = climate_death_rate * death_rate
         self.diet_death_rate_df_dict[year] = diet_death_rate
@@ -396,6 +397,16 @@ class Population:
         self.calories_pc_df = in_dict['calories_pc_df']
         self.calories_pc_df.index = self.calories_pc_df[GlossaryCore.Years].values
         self.compute_knowledge()
+        init_disability_pandemic_df = in_dict['pandemic_param_df']['disability']
+        init_disability_pandemic_df.index = in_dict['pandemic_param_df']['param'].values
+        disability_pandemic_df = pd.DataFrame({
+            year: [value]
+            for year_range in init_disability_pandemic_df.index[:-1]
+            for year_start, year_end in [year_range.split('-')]
+            for year in range(int(year_start), int(year_end))
+            for value in [init_disability_pandemic_df.loc[year_range]['disability']]
+        }).T.rename(columns={0: 'disability'})
+
         # Loop over year to compute population evolution. except last year
 
         for year in year_range:
@@ -419,7 +430,7 @@ class Population:
         working_age_idx = [str(i) for i in np.arange(15, 71)]
         self.working_age_population_df[GlossaryCore.Population1570] = (
             self.population_df[working_age_idx]
-            .mul(self.pandemic_param_df['disability'][working_age_idx].rsub(1.0))
+            .mul(disability_pandemic_df[working_age_idx].rsub(1.0))
             .sum(axis=1)
         )
 
