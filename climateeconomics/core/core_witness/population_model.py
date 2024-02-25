@@ -397,15 +397,15 @@ class Population:
         self.calories_pc_df = in_dict['calories_pc_df']
         self.calories_pc_df.index = self.calories_pc_df[GlossaryCore.Years].values
         self.compute_knowledge()
-        init_disability_pandemic_df = in_dict['pandemic_param_df']['disability']
-        init_disability_pandemic_df.index = in_dict['pandemic_param_df']['param'].values
+        init_disability_pandemic_df = in_dict['pandemic_param_df']
+        init_disability_pandemic_df.index = init_disability_pandemic_df['param'].values
         disability_pandemic_df = DataFrame({
-            year: [value]
+            str(year): [value]
             for year_range in init_disability_pandemic_df.index[:-1]
             for year_start, year_end in [year_range.split('-')]
-            for year in range(int(year_start), int(year_end))
+            for year in range(int(year_start), int(year_end)+1)
             for value in [init_disability_pandemic_df.loc[year_range]['disability']]
-        }).T.rename(columns={0: 'disability'})
+        })
 
         # Loop over year to compute population evolution. except last year
 
@@ -430,7 +430,7 @@ class Population:
         working_age_idx = [str(i) for i in np.arange(15, 71)]
         self.working_age_population_df[GlossaryCore.Population1570] = (
             self.population_df[working_age_idx]
-            .mul(disability_pandemic_df[working_age_idx].rsub(1.0))
+            .mul(disability_pandemic_df[working_age_idx].rsub(1.0).values, axis=1)
             .sum(axis=1)
         )
 

@@ -139,6 +139,11 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
         'kcal_pc_ref': {'type': 'float', 'default': 2000.0, 'user_level': 3, 'unit': 'kcal'},
         GlossaryCore.PandemicParamDf['var_name']: desc_in_default_pandemic_param,
+        'pandemic_param': {'type': 'dataframe', 'default': desc_in_default_pandemic_param['default'], 'unit': '-',
+                           'dataframe_descriptor': {'param': ('string', None, False),
+                                                    'disability': ('float', None, False),
+                                                    'mortality': ('float', None, False),}
+                           },
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
         }
 
