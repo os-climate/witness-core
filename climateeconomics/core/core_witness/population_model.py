@@ -399,7 +399,7 @@ class Population:
         self.compute_knowledge()
         init_disability_pandemic_df = in_dict['pandemic_param_df']['disability']
         init_disability_pandemic_df.index = in_dict['pandemic_param_df']['param'].values
-        disability_pandemic_df = pd.DataFrame({
+        disability_pandemic_df = DataFrame({
             year: [value]
             for year_range in init_disability_pandemic_df.index[:-1]
             for year_start, year_end in [year_range.split('-')]
