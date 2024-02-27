@@ -59,7 +59,9 @@ death\_rate_{i, t} = dr\_upper_i + \frac{dr\_lower_i - dr\_upper_i}{(1 + \exp(-\
 where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $dr{\textunderscore}upper$ and $dr{\textunderscore}lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.
 
 Death rate is also impacted by climate in four principal ways, global warming affects crops by reducing yields and the micro/macronutrients contents of cereals, favors allergens and vector-borne infectious diseases such as malaria or dengue, increases risks of diarrheal diseases due to heat waves causing reduced access to safe water, and increases probability of heat waves that causes higher mortality related to cardiovasculare or chronic respiratory diseases [^2]. It is modelized following excess mortality function associated with climate change:
-$$\widetilde{DR}_i = {DR}_i [ 1 + \sum_{\mathclap{j \in J}} \alpha_{i,j} (\frac{T}{T^0})^{\theta}]$$
+```math
+\widetilde{DR}_i = {DR}_i [ 1 + \sum_{\mathclap{j \in J}} \alpha_{i,j} (\frac{T}{T^0})^{\theta}]
+```
 
 with $\alpha_{i,j}$ the relative increase in the probability of dying due to risk $j$ for the age-group $i$, calibration_temperature_increase corresponding to $T_0$ the temperature change of +2.5 Celcius degrees in 2050 for the A1b scenario used in the WHO study[^3], and $\theta$ specifies the dependence of the probability of dying with respect to temperature.
 Variable climate_mortality_param_df is the calibrated parameter value (Table 7) corresponding to: 
@@ -68,9 +70,13 @@ $$\beta_i := \sum_{\mathclap{j \in J}} \alpha_{i,j}$$
 ![](climate_death_multipliers.PNG)
 
 Finally [^10], death rate is impacted by average calorie intake and deviating from a parametrable reference value will have a significant impact on death rate in both ways. Death rate age range is impacted differently whether the average calorie intake rises or decreases: younger people will be more impacted by undernutrition whereas older one by overnutrition due to cardiovascular deseases [^11]. It is modelized such as:
-$$DR_i = \widetilde{DR}_i + \overline{DR}_i$$
+```math
+DR_i = \widetilde{DR}_i + \overline{DR}_i
+```
 with $\widetilde{DR}_i$ death rate related to economy and temperature, $\overline{DR}_i$ related to calorie intake.
-$$\overline{DR}_i = \alpha_{i,j}*|\frac{kcal-kcal_{ref}}{\theta*kcal_{ref}}|$$
+```math
+\overline{DR}_i = \alpha_{i,j}*|\frac{kcal-kcal_{ref}}{\theta*kcal_{ref}}|
+```
 with $kcal$ average food intake per capita per day, $kcal_ref$ food intake recommended per capita per day, $\alpha$ relative increase in the probability of dying due to risk j for age-group i, $\theta$ fitting value.
 
 The following table shows the relative increase in mortality $\alpha$:
@@ -100,7 +106,9 @@ The following table shows the relative increase in mortality $\alpha$:
 |100+|1|0.2|
 
 To avoid death rate greater than 1 and non physical behavior, we use a logistic function:
-$$\overline{DR}_i = \frac{1-\widetilde{DR}_i}{1+e^{-\overline{DR}_i}}$$
+```math
+\overline{DR}_i = \frac{1-\widetilde{DR}_i}{1+e^{-\overline{DR}_i}}
+```
 
 We then have one death rate per age category and per year. 
 Having a different GDP from McIsaac (2017)[^1] we could not use values of parameters from the paper so we fitted the death using data detailed in the data section bellow. 
