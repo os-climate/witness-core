@@ -29,7 +29,6 @@ The function looks like:
  ![](knowledgefunction.png)  
 
 And then: 
-
 $$birth\_rate(knowledge)_t = c + \alpha * (1- \frac{knowledge_t}{100})^{\beta}$$
 with $c$, $\alpha$ and $\beta$ the parameters obtained by the fitting of the full birth rate function.   
 For the second part we follow McIsaac (2017)[^1]:
