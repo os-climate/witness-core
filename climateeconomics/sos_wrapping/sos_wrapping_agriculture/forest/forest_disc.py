@@ -186,6 +186,7 @@ class ForestDiscipline(ClimateEcoDiscipline):
         'scaling_factor_techno_production': {'type': 'float', 'default': 1e3, 'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                              'namespace': 'ns_public', 'user_level': 2},
+        'scaling_factor_forest_investment': {'type': 'float', 'default': 1e3, 'unit': '-', 'user_level': 2},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
