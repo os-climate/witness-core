@@ -22,9 +22,10 @@ class ClimateEconomicsStudyManager(StudyManager):
     Class that overloads study manager to define a specific check for climate economics usecases
     '''
 
-    def specific_check(self):
+    def specific_check_inputs(self):
         """
         Check that the column years of the input dataframes are in [year_start, year_end]
         """
         specific_check_years(self.execution_engine.dm)
+
 

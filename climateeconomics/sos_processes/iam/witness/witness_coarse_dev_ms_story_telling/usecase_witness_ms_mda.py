@@ -35,6 +35,7 @@ from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
     Study as usecase_witness_mda
 from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
+from climateeconomics.glossarycore import GlossaryCore
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -51,17 +52,18 @@ class Study(ClimateEconomicsStudyManager):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
+        self.check_outputs = True
 
     def setup_usecase(self, study_folder_path=None):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {self.USECASE2: usecase2(execution_engine=self.execution_engine),
-                         self.USECASE2B: usecase2b(execution_engine=self.execution_engine),
+        scenario_dict = {#self.USECASE2: usecase2(execution_engine=self.execution_engine),
+                         #self.USECASE2B: usecase2b(execution_engine=self.execution_engine),
                          self.USECASE3: usecase3(execution_engine=self.execution_engine),
-                         self.USECASE4: usecase4(execution_engine=self.execution_engine),
-                         self.USECASE5: usecase5(execution_engine=self.execution_engine),
-                         self.USECASE6: usecase6(execution_engine=self.execution_engine),
+                         # self.USECASE4: usecase4(execution_engine=self.execution_engine),
+                         # self.USECASE5: usecase5(execution_engine=self.execution_engine),
+                         # self.USECASE6: usecase6(execution_engine=self.execution_engine),
                          self.USECASE7: usecase7(execution_engine=self.execution_engine),
                          }
 
@@ -93,16 +95,32 @@ class Study(ClimateEconomicsStudyManager):
                 values_dict.update(dict_data)
         return values_dict
 
+    def specific_check_outputs(self):
+        """Some outputs are retrieved and their range is checked"""
+        # list_scenario = {self.USECASE2, self.USECASE2B, self.USECASE3, self.USECASE4, self.USECASE5, self.USECASE6, self.USECASE7}
+        list_scenario = {self.USECASE3, self.USECASE7}
+        dm = self.execution_engine.dm
+        all_co2_taxes = dm.get_all_namespaces_from_var_name('CO2_taxes')
+        ref_value_2100_max = {self.USECASE3: 1000, self.USECASE7: 1200}
+        ref_value_2100_min = {self.USECASE3: 100, self.USECASE7: 110}
+        for scenario in list_scenario:
+            for co2_tax_scenario in all_co2_taxes:
+                if scenario in co2_tax_scenario:
+                    co2_tax = dm.get_value(co2_tax_scenario)
+                    value_co2_tax = co2_tax.loc[co2_tax['years']==2100]['CO2_tax'].values[0]
+                    print("CO2_tax in 2100 for scenario ", scenario, ":", value_co2_tax)
+                    assert value_co2_tax > ref_value_2100_min[scenario]
+                    assert value_co2_tax < ref_value_2100_max[scenario]
+
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-    post_processing_factory = PostProcessingFactory()
-    post_processing_factory.get_post_processing_by_namespace(
-        uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
-    all_post_processings = post_processing_factory.get_all_post_processings(
-         uc_cls.execution_engine, False, as_json=False, for_test=False)
+    uc_cls.test()
+    # post_processing_factory = PostProcessingFactory()
+    # post_processing_factory.get_post_processing_by_namespace(
+    #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
+    # all_post_processings = post_processing_factory.get_all_post_processings(
+    #      uc_cls.execution_engine, False, as_json=False, for_test=False)
 
 #    for namespace, post_proc_list in all_post_processings.items():
 #        for chart in post_proc_list:
