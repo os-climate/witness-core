@@ -58,6 +58,8 @@ death\_rate_{i, t} = dr\_upper_i + \frac{dr\_lower_i - dr\_upper_i}{(1 + \exp(-\
 ```
 where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $dr{\textunderscore}upper$ and $dr{\textunderscore}lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.
 
+In 2021 the novel coronavirus COVID-19 has become endemic, killing millions of people around the world and disabling countless others who suffer the symptoms known as Long Covid.  While vaccines have been successful at reducing hospitalizations and death rates, there appears to be no long-lasting COVID immunity, and each successive COVID infection appears to be as likely to kill or disable those re-infected as when they were first infected.  The cumulative probabilities of such risks are non-trivial on a global basis.  To model death rates (per 100,000) by age, we use CDC data[^11] (and will look for world-wide sources in a future update).
+
 Death rate is also impacted by climate in four principal ways, global warming affects crops by reducing yields and the micro/macronutrients contents of cereals, favors allergens and vector-borne infectious diseases such as malaria or dengue, increases risks of diarrheal diseases due to heat waves causing reduced access to safe water, and increases probability of heat waves that causes higher mortality related to cardiovasculare or chronic respiratory diseases[^2]. It is modelized following excess mortality function associated with climate change:
 ```math
 \widetilde{DR}_i = {DR}_i [ 1 + \sum_{\mathclap{j \in J}} \alpha_{i,j} (\frac{T}{T^0})^{\theta}]
@@ -116,6 +118,8 @@ Having a different GDP from McIsaac (2017)[^1] we could not use values of parame
 ## Working age population
 The working age population is the population in age to work, it is the sum of population in the 15-70 age range.
 
+When modeling the effects of COVID-19, we calculate the fraction of the population estimated to be affected by Long Covid (by age [^12]) and thus unable to work.
+
 ## Life expectancy
 Life expectancy at birth is the age-averaged proportion of surviving people:
 
@@ -164,3 +168,7 @@ The following graphs show the results of our birth rate fitting:
 [^9]: Vollset, S.E., Goren, E., Yuan, C.W., Cao, J., Smith, A.E., Hsiao, T., Bisignano, C., Azhar, G.S., Castro, E., Chalek, J. and Dolgert, A.J., 2020. Fertility, mortality, migration, and population scenarios for 195 countries and territories from 2017 to 2100: a forecasting analysis for the Global Burden of Disease Study. The Lancet, 396(10258), pp.1285-1306.
 
 [^10]: MISSING REFERENCE
+
+[^11]: Ahmad FB, Cisewski JA, Xu J, Anderson RN. COVID-19 Mortality Update — United States, 2022. MMWR Morb Mortal Wkly Rep 2023;72:493–496. DOI: http://dx.doi.org/10.15585/mmwr.mm7218a4
+
+[^12]: Adjaye-Gbewonyo D, Vahratian A, Perrine CG, Bertolli J. Long COVID in adults: United States, 2022. NCHS Data Brief, no 480. Hyattsville, MD: National Center for Health Statistics. 2023. DOI: https://dx.doi.org/10.15620/cdc:132417
