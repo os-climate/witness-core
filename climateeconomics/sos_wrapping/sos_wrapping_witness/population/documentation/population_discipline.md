@@ -20,32 +20,43 @@ The birth rate is then:
 birth\_rate_{15-49, t} = \frac{I_{t}}{N_{15-49, t}}
 ```
 The birth rate depends on Gross World Product, population and knowledge: 
-$$birth\_rate_{15-49, t} = a.birth\_rate(knowledge)_t + (1-a)*birth\_rate(gdp\_capita)_t$$
+```math
+birth\_rate_{15-49, t} = a.birth\_rate(knowledge)_t + (1-a)*birth\_rate(gdp\_capita)_t
+```
 The fitting of this function is explained in the section below.   
 Compared to McIsaac (2017)[^1] we added a variable $knowledge$ to the equation. Without it, in case of economic crisis (a decrease of gdp), the birth rate increases. We argue that in case of degrowth  we will not retrieve past level of birth rate because of all the knowledge acquired including better access to contraception, higher level of education...  Therefore we need a way to include this effect in birth rate equation. To estimate our variable $knowledge$ we use the percentage of litterate world population and do a regression on this data[^8] to fit a S-curve.
  ![](literate-and-illiterate-world-population.png)
-$$knowledge_t =  know\_upper + \frac{know\_lower - know\_upper}{(1 + \exp(-\delta (t - 1800 - \phi)))^{\frac{1}{\nu}}}$$
-with t the year at which we estimate the variable, 1800 the first year of the regression. $know\_upper$ and $know\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the year value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes. 
+```math
+knowledge_t =  know\_upper + \frac{know\_lower - know\_upper}{(1 + \exp(-\delta (t - 1800 - \phi)))^{\frac{1}{\nu}}}
+```
+with t the year at which we estimate the variable, 1800 the first year of the regression. $\usepackage{underscore}\usepackage[T1]{fontenc}know_upper$` and $\usepackage{underscore}\usepackage[T1]{fontenc}know\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the year value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes. 
   
 The function looks like:   
  ![](knowledgefunction.png)  
 
 And then: 
-
-$$birth\_rate(knowledge)_t = c + \alpha * (1- \frac{knowledge_t}{100})^{\beta}$$
+```math
+birth\_rate(knowledge)_t = c + \alpha * (1- \frac{knowledge_t}{100})^{\beta}
+```
 with $c$, $\alpha$ and $\beta$ the parameters obtained by the fitting of the full birth rate function.   
 For the second part we follow McIsaac (2017)[^1]:
-$$birth\_rate(gdp\_capita)_{15-49, t} = br\_upper + \frac{br\_lower - br\_upper}{(1 + \exp(-\delta (\frac{Y_t}{N_t}-\phi)))^{\frac{1}{\nu}}}$$
-where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $br\_upper$ and $br\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.  
+```math
+birth\_rate(gdp\_capita)_{15-49, t} = br\_upper + \frac{br\_lower - br\_upper}{(1 + \exp(-\delta (\frac{Y_t}{N_t}-\phi)))^{\frac{1}{\nu}}}
+```
+where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $\usepackage{underscore}\usepackage[T1]{fontenc}br\_upper$ and $\usepackage{underscore}\usepackage[T1]{fontenc}br\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.  
 
 
 ## Death rate 
 The death rate is the number of deaths divided by the number of persons in a specific age category and year. The death rate for age category $i$ and year $t$ is then:
-$$death\_rate_{i, t} = \frac{D_{i, t}}{N_{i, t}}$$
+```math
+death\_rate_{i, t} = \frac{D_{i, t}}{N_{i, t}}
+```
 with D the number of death and N the population. 
 Following McIsaac (2017)[^1], and similarly to birth rate, the death rate per age category $i$  and year $t$ depends on Gross World Product and on population so that: 
-$$death\_rate_{i, t} = dr\_upper_i + \frac{dr\_lower_i - dr\_upper_i}{(1 + \exp(-\delta_i (\frac{Y_t}{N_t} - \phi_i)))^{\frac{1}{\nu_i}}}$$
-where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $dr\_upper$ and $dr\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.
+```math
+death\_rate_{i, t} = dr\_upper_i + \frac{dr\_lower_i - dr\_upper_i}{(1 + \exp(-\delta_i (\frac{Y_t}{N_t} - \phi_i)))^{\frac{1}{\nu_i}}}
+```
+where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $\usepackage{underscore}\usepackage[T1]{fontenc}dr\_upper$ and $\usepackage{underscore}\usepackage[T1]{fontenc}dr\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.
 
 Death rate is also impacted by climate in four principal ways, global warming affects crops by reducing yields and the micro/macronutrients contents of cereals, favors allergens and vector-borne infectious diseases such as malaria or dengue, increases risks of diarrheal diseases due to heat waves causing reduced access to safe water, and increases probability of heat waves that causes higher mortality related to cardiovasculare or chronic respiratory diseases [^2]. It is modelized following excess mortality function associated with climate change:
 $$\widetilde{DR}_i = {DR}_i [ 1 + \sum_{\mathclap{j \in J}} \alpha_{i,j} (\frac{T}{T^0})^{\theta}]$$
@@ -56,7 +67,7 @@ $$\beta_i := \sum_{\mathclap{j \in J}} \alpha_{i,j}$$
 
 ![](climate_death_multipliers.PNG)
 
-inally [^10], death rate is impacted by average calorie intake and deviating from a parametrable reference value will have a significant impact on death rate in both ways. Death rate age range is impacted differently whether the average calorie intake rises or decreases: younger people will be more impacted by undernutrition whereas older one by overnutrition due to cardiovascular deseases [^11]. It is modelized such as:
+Finally [^10], death rate is impacted by average calorie intake and deviating from a parametrable reference value will have a significant impact on death rate in both ways. Death rate age range is impacted differently whether the average calorie intake rises or decreases: younger people will be more impacted by undernutrition whereas older one by overnutrition due to cardiovascular deseases [^11]. It is modelized such as:
 $$DR_i = \widetilde{DR}_i + \overline{DR}_i$$
 with $\widetilde{DR}_i$ death rate related to economy and temperature, $\overline{DR}_i$ related to calorie intake.
 $$\overline{DR}_i = \alpha_{i,j}*|\frac{kcal-kcal_{ref}}{\theta*kcal_{ref}}|$$
@@ -101,7 +112,9 @@ The working age population is the population in age to work, it is the sum of po
 Life expectancy at birth is the age-averaged proportion of surviving people:
 
 with $d_n$ the death rate at age $n$, and $s_n$ the surviving rate at age $n$ the life expectancy is:
-$$life\_expectancy = \sum_{\mathclap{1\le n\le 100}} s_n$$
+```math
+life\_expectancy = \sum_{\mathclap{1\le n\le 100}} s_n
+```
 
 Surviving rate is calculated as:
 $$s_{n+1} = s_n * (1 - d_n)$$
