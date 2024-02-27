@@ -29,7 +29,7 @@ Compared to McIsaac (2017)[^1] we added a variable $knowledge$ to the equation. 
 ```math
 knowledge_t =  know\_upper + \frac{know\_lower - know\_upper}{(1 + \exp(-\delta (t - 1800 - \phi)))^{\frac{1}{\nu}}}
 ```
-with t the year at which we estimate the variable, 1800 the first year of the regression. $\usepackage{underscore}\usepackage[T1]{fontenc}know_upper$` and $\usepackage{underscore}\usepackage[T1]{fontenc}know\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the year value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes. 
+with t the year at which we estimate the variable, 1800 the first year of the regression. $know{\_}upper$ and $know{\_}lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the year value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes. 
   
 The function looks like:   
  ![](knowledgefunction.png)  
@@ -43,7 +43,7 @@ For the second part we follow McIsaac (2017)[^1]:
 ```math
 birth\_rate(gdp\_capita)_{15-49, t} = br\_upper + \frac{br\_lower - br\_upper}{(1 + \exp(-\delta (\frac{Y_t}{N_t}-\phi)))^{\frac{1}{\nu}}}
 ```
-where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $\usepackage{underscore}\usepackage[T1]{fontenc}br\_upper$ and $\usepackage{underscore}\usepackage[T1]{fontenc}br\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.  
+where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $br{\_}upper$ and $br{\_}lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.  
 
 
 ## Death rate 
@@ -56,7 +56,7 @@ Following McIsaac (2017)[^1], and similarly to birth rate, the death rate per ag
 ```math
 death\_rate_{i, t} = dr\_upper_i + \frac{dr\_lower_i - dr\_upper_i}{(1 + \exp(-\delta_i (\frac{Y_t}{N_t} - \phi_i)))^{\frac{1}{\nu_i}}}
 ```
-where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $\usepackage{underscore}\usepackage[T1]{fontenc}dr\_upper$ and $\usepackage{underscore}\usepackage[T1]{fontenc}dr\_lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.
+where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $dr{\_}upper$ and $dr{\_}lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.
 
 Death rate is also impacted by climate in four principal ways, global warming affects crops by reducing yields and the micro/macronutrients contents of cereals, favors allergens and vector-borne infectious diseases such as malaria or dengue, increases risks of diarrheal diseases due to heat waves causing reduced access to safe water, and increases probability of heat waves that causes higher mortality related to cardiovasculare or chronic respiratory diseases [^2]. It is modelized following excess mortality function associated with climate change:
 $$\widetilde{DR}_i = {DR}_i [ 1 + \sum_{\mathclap{j \in J}} \alpha_{i,j} (\frac{T}{T^0})^{\theta}]$$
