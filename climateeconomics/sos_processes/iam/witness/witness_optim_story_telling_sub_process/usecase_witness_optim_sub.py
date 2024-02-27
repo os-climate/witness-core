@@ -23,6 +23,10 @@ from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as witness_usecase2_story_telling
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import Study as witness_usecase7_story_telling
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
+    Study as usecase2b
+from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_4_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
+    Study as usecase4
 from sostrades_core.execution_engine.func_manager.func_manager_disc import FunctionManagerDisc
 from energy_models.glossaryenergy import GlossaryEnergy
 
@@ -56,6 +60,10 @@ class Study(ClimateEconomicsStudyManager):
                 self.year_start, self.year_end, self.time_step)
         elif sub_usecase == 'uc7':
             self.witness_uc = witness_usecase7_story_telling(self.year_start, self.year_end, self.time_step)
+        elif sub_usecase == 'uc2b':
+            self.witness_uc = usecase2b(self.year_start, self.year_end, self.time_step)
+        elif sub_usecase == 'uc4':
+            self.witness_uc = usecase4(self.year_start, self.year_end, self.time_step)
 
     def setup_usecase(self, study_folder_path=None):
         """ Overloaded method to initialize witness multiscenario optimization process
