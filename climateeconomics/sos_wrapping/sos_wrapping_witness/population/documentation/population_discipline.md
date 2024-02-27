@@ -58,7 +58,7 @@ death\_rate_{i, t} = dr\_upper_i + \frac{dr\_lower_i - dr\_upper_i}{(1 + \exp(-\
 ```
 where $Y_t$ represents the GDP, $N_t$ the total population at year $t$, $dr{\textunderscore}upper$ and $dr{\textunderscore}lower$ the upper and lower asymptotes, $\delta$ a slope parameter, $\phi$ is the GWP/capita value determining the inflection point and $\nu$ is a parameter that controls the curvature of the function near the asymptotes.
 
-Death rate is also impacted by climate in four principal ways, global warming affects crops by reducing yields and the micro/macronutrients contents of cereals, favors allergens and vector-borne infectious diseases such as malaria or dengue, increases risks of diarrheal diseases due to heat waves causing reduced access to safe water, and increases probability of heat waves that causes higher mortality related to cardiovasculare or chronic respiratory diseases [^2]. It is modelized following excess mortality function associated with climate change:
+Death rate is also impacted by climate in four principal ways, global warming affects crops by reducing yields and the micro/macronutrients contents of cereals, favors allergens and vector-borne infectious diseases such as malaria or dengue, increases risks of diarrheal diseases due to heat waves causing reduced access to safe water, and increases probability of heat waves that causes higher mortality related to cardiovasculare or chronic respiratory diseases[^2]. It is modelized following excess mortality function associated with climate change:
 ```math
 \widetilde{DR}_i = {DR}_i [ 1 + \sum_{\mathclap{j \in J}} \alpha_{i,j} (\frac{T}{T^0})^{\theta}]
 ```
@@ -69,7 +69,7 @@ $$\beta_i := \sum_{\mathclap{j \in J}} \alpha_{i,j}$$
 
 ![](climate_death_multipliers.PNG)
 
-Finally [^10], death rate is impacted by average calorie intake and deviating from a parametrable reference value will have a significant impact on death rate in both ways. Death rate age range is impacted differently whether the average calorie intake rises or decreases: younger people will be more impacted by undernutrition whereas older one by overnutrition due to cardiovascular deseases [^11]. It is modelized such as:
+Finally[^10], death rate is impacted by average calorie intake and deviating from a parametrable reference value will have a significant impact on death rate in both ways. Death rate age range is impacted differently whether the average calorie intake rises or decreases: younger people will be more impacted by undernutrition whereas older one by overnutrition due to cardiovascular deseases[^11]. It is modelized such as:
 ```math
 DR_i = \widetilde{DR}_i + \overline{DR}_i
 ```
@@ -161,4 +161,8 @@ The following graphs show the results of our birth rate fitting:
 
 [^8]: Our world in data. Literate and illiterate world population. Available at: https://ourworldindata.org/grapher/literate-and-illiterate-world-population?country=~OWID_WRL
 
-[^9]: Vollset, S.E., Goren, E., Yuan, C.W., Cao, J., Smith, A.E., Hsiao, T., Bisignano, C., Azhar, G.S., Castro, E., Chalek, J. and Dolgert, A.J., 2020. Fertility, mortality, migration, and population scenarios for 195 countries and territories from 2017 to 2100: a forecasting analysis for the Global Burden of Disease Study. The Lancet, 396(10258), pp.1285-1306. 
+[^9]: Vollset, S.E., Goren, E., Yuan, C.W., Cao, J., Smith, A.E., Hsiao, T., Bisignano, C., Azhar, G.S., Castro, E., Chalek, J. and Dolgert, A.J., 2020. Fertility, mortality, migration, and population scenarios for 195 countries and territories from 2017 to 2100: a forecasting analysis for the Global Burden of Disease Study. The Lancet, 396(10258), pp.1285-1306.
+
+[^10]: MISSING REFERENCE
+
+[^11]: MISSING REFERENCE
