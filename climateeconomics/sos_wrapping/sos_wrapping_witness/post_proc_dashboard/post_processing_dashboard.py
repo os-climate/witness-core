@@ -90,16 +90,6 @@ def post_processings(execution_engine, namespace, chart_filters=None):
 
         fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-        # Add the CO2 storage limited by CO2 to store last
-        fig.add_trace(go.Scatter(
-            x=years,
-            y=total_ghg_df[f'Total CO2 emissions'].to_list(),
-            name='Total CO2 emissions',
-            stackgroup='one',
-            # line=dict(color=qualitative.Set1[0]),
-        ), secondary_y=False)
-
-        # Add the rest of the traces
         fig.add_trace(go.Scatter(
             x=years,
             y=temperature_df[GlossaryCore.TempAtmo].values.tolist(),
@@ -111,6 +101,14 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             storage_limit = co2_emissions['carbon_storage Limited by capture (Gt)'][year_index]
             captured_total = carbon_captured['DAC'][year_index]*0.001+carbon_captured['flue gas'][year_index]*0.001
             if storage_limit == captured_total:
+
+                fig.add_trace(go.Scatter(
+                    x=years,
+                    y=total_ghg_df[f'Total CO2 emissions'].to_list(),
+                    name='Net CO2 emissions',
+                    stackgroup='one',
+                    visible='legendonly'
+                ), secondary_y=False)
 
                 fig.add_trace(go.Scatter(
                     x=years,
@@ -129,23 +127,24 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 ), secondary_y=False)
                 fig.add_trace(go.Scatter(
                     x=years,
-                    y=carbon_captured['DAC']*0.001+carbon_captured['flue gas']*0.001,
-                    name='CO2 storage limited by CO2 to store',
+                    y=total_ghg_df[f'Total CO2 emissions'].to_list() + co2_emissions['carbon_storage Limited by capture (Gt)'].to_list(),
+                    name='Brut CO2 emissions',
                     visible='legendonly',
                 ), secondary_y=False)
 
 
-            elif storage_limit < captured_total:
+            elif storage_limit < captured_total and storage_limit>0 :
 
-
-                proportion_dac = 0.5 * co2_emissions['carbon_storage Limited by capture (Gt)']
-                proportion_flue_gas = 0.5 * co2_emissions['carbon_storage Limited by capture (Gt)']
+                proportion_stockage = storage_limit/captured_total
+                proportion_dac = proportion_stockage * carbon_captured['DAC']*0.001
+                proportion_flue_gas = proportion_stockage * carbon_captured['flue gas']*0.001
 
                 fig.add_trace(go.Scatter(
                     x=years,
-                    y=co2_emissions['carbon_storage Limited by capture (Gt)'].to_list(),
-                    name='CO2 storage limited by CO2 to store',
-                    visible='legendonly',
+                    y=total_ghg_df[f'Total CO2 emissions'].to_list(),
+                    name='Net CO2 emissions',
+                    stackgroup='one',
+                    visible='legendonly'
                 ), secondary_y=False)
 
                 fig.add_trace(go.Scatter(
@@ -163,12 +162,36 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                     stackgroup='one',
                     visible='legendonly',
                 ), secondary_y=False)
+                fig.add_trace(go.Scatter(
+                    x=years,
+                    y=total_ghg_df[f'Total CO2 emissions'].to_list()+co2_emissions['carbon_storage Limited by capture (Gt)'].to_list(),
+                    name='Brut CO2 emissions',
+                    visible='legendonly',
+                ), secondary_y=False)
+
+            else:
+                fig.add_trace(go.Scatter(
+                    x=years,
+                    y=total_ghg_df[f'Total CO2 emissions'].to_list(),
+                    name='Net CO2 emissions',
+                    stackgroup='one',
+                    visible='legendonly'
+                ), secondary_y=False)
+                fig.add_trace(go.Scatter(
+                    x=years,
+                    y=total_ghg_df[f'Total CO2 emissions'].to_list() + co2_emissions[
+                        'carbon_storage Limited by capture (Gt)'].to_list(),
+                    name='Brut CO2 emissions',
+                    visible='legendonly',
+                ), secondary_y=False)
+
+
 
 
 
         legend_added = {}
         for trace in fig.data:
-            if trace.name in ['CO2 captured by DAC', 'CO2 captured by flue gas', 'CO2 storage limited by CO2 to store']:
+            if trace.name in ['Net CO2 emissions','CO2 captured by DAC', 'CO2 captured by flue gas','Brut CO2 emissions']:
                 if trace.name not in legend_added:
                     trace.showlegend = True
                     legend_added[trace.name] = True
