@@ -145,6 +145,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                     name='Net CO2 emissions',
                     stackgroup='one',
                     visible='legendonly'
+
                 ), secondary_y=False)
 
                 fig.add_trace(go.Scatter(
