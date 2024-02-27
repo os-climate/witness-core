@@ -16,7 +16,7 @@ In order to compute the number of deaths and births we use a birth rate and a de
 ## Birth rate 
 According to the United Nation definition, the  age-specific birth rate is the "number of births to women in a particular age group, divided by the number of women in that age group". In our model, we look at the birth rate for the 15-49 age group, the young active population in childbearing age. 
 The birth rate is then: 
-$$birth\_rate_{15-49, t} = \frac{I_{t}}{N_{15-49, t}}$$
+$$birth\\_rate_{15-49, t} = \frac{I_{t}}{N_{15-49, t}}$$
 The birth rate depends on Gross World Product, population and knowledge: 
 $$birth\_rate_{15-49, t} = a.birth\_rate(knowledge)_t + (1-a)*birth\_rate(gdp\_capita)_t$$
 The fitting of this function is explained in the section below.   
