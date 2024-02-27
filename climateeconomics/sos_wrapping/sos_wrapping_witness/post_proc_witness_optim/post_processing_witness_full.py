@@ -297,22 +297,24 @@ def get_multilevel_df(execution_engine, namespace, columns=None):
             # crop had not invest_level but crop_investment. Same for Forest
             # data_fuel_dict is missing in Forest and is a copy of biomass_dry for Crop
             # TODO review the Forest and crop disciplines as the CO2 emissions are not correct and reactivate graphs below
-            if 'Forest' not in techno and 'Crop' not in techno:
-                '''  
+            # if 'Forest' not in techno and 'Crop' not in techno:
+            #    '''
             if 'Forest' in techno:
                 data_fuel_dict = energy_disc.get_sosdisc_inputs('data_fuel_dict')
                 invest_techno = techno_disc.get_sosdisc_inputs('forest_investment')[
-                                    'forest_investment'].values
+                                    'forest_investment'].values * \
+                                techno_disc.get_sosdisc_inputs('scaling_factor_forest_investment')
                 carbon_emissions = techno_disc.get_sosdisc_outputs(
                     'CO2_emissions')
             elif 'Crop' in techno:
                 data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
                 invest_techno = techno_disc.get_sosdisc_inputs('crop_investment')[
-                                    'investment'].values
+                                    'investment'].values * \
+                                techno_disc.get_sosdisc_inputs('scaling_factor_crop_investment')
                 carbon_emissions = techno_disc.get_sosdisc_outputs(
                     'CO2_emissions')
             else:
-                '''
+                #'''
                 data_fuel_dict = techno_disc.get_sosdisc_inputs('data_fuel_dict')
                 invest_techno = techno_disc.get_sosdisc_inputs(GlossaryCore.InvestLevelValue)[
                                     GlossaryCore.InvestValue].values * \
