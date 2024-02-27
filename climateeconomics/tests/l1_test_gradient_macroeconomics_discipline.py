@@ -207,6 +207,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -273,6 +274,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
         ])
 
@@ -341,6 +343,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -415,6 +418,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -493,6 +497,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -573,6 +578,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -642,6 +648,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -721,6 +728,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -800,6 +808,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -876,6 +885,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -955,6 +965,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -1036,6 +1047,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
@@ -1121,6 +1133,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyInvestmentsValue}',
                                      f'{self.name}.{GlossaryCore.ConstraintLowerBoundUsableCapital}',
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
+                                     f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
 
                                      ])
