@@ -27,6 +27,8 @@ import sostrades_core.tools.post_processing.post_processing_tools as ppt
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
+from sostrades_core.tools.post_processing.plotly_native_charts.instantiated_plotly_native_chart import \
+    InstantiatedPlotlyNativeChart
 
 
 class TempChangeDiscipline(ClimateEcoDiscipline):
@@ -51,7 +53,7 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         'init_temp_ocean': {'type': 'float', 'default': 0.02794825, 'user_level': 2, 'unit': '°C'},
-        'init_temp_atmo': {'type': 'float', 'default': 1.05, 'user_level': 2, 'unit': '°C'},
+        'init_temp_atmo': {'type': 'float', 'default': DatabaseWitnessCore.TemperatureAnomalyPreIndustrialYearStart.value, 'user_level': 2, 'unit': '°C'},
         'eq_temp_impact': {'type': 'float', 'unit': '-', 'default': 3.1, 'user_level': 3},
         'temperature_model': {'type': 'string', 'default': 'FUND', 'possible_values': ['DICE', 'FUND', 'FAIR'],
                               'structuring': True},
@@ -329,12 +331,12 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
 def temperature_evolution(model, temperature_df, instanciated_charts):
     if model == 'DICE':
         to_plot = [GlossaryCore.TempAtmo, GlossaryCore.TempOcean]
-        legend = {GlossaryCore.TempAtmo: 'atmosphere temperature',
-                      GlossaryCore.TempOcean: 'ocean temperature'}
+        legend = {GlossaryCore.TempAtmo: 'Atmosphere',
+                      GlossaryCore.TempOcean: 'Ocean'}
 
     elif model == 'FUND':
         to_plot = [GlossaryCore.TempAtmo]
-        legend = {GlossaryCore.TempAtmo: 'atmosphere temperature'}
+        legend = {GlossaryCore.TempAtmo: 'Atmosphere'}
 
     elif model == 'FAIR':
         raise NotImplementedError('Model not implemented yet')
@@ -351,12 +353,12 @@ def temperature_evolution(model, temperature_df, instanciated_charts):
             temperature_df[to_plot])
 
     min_value = min(min_values.values())
-    max_value = max(max_values.values())
+    max_value = max(max_values.values()) + DatabaseWitnessCore.ENSOTemperatureAnomaly.value
 
-    chart_name = 'Temperature evolution over the years'
+    chart_name = 'Temperature anomaly since pre-industrial era (1850-1900)'
 
     new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
-                                             'temperature evolution (degrees Celsius above preindustrial)',
+                                             '°C',
                                              [year_start - 5, year_end + 5], [
                                                  min_value, max_value],
                                              chart_name)
@@ -371,11 +373,40 @@ def temperature_evolution(model, temperature_df, instanciated_charts):
 
         new_chart.series.append(new_series)
 
+    new_chart = new_chart.to_plotly()
+
+    el_nino_max_temp = temperature_df[GlossaryCore.TempAtmo].values + DatabaseWitnessCore.ENSOTemperatureAnomaly.value
+
+    import plotly.graph_objects as go
+    new_chart.add_trace(go.Scatter(
+        x=years,
+        y=list(el_nino_max_temp),
+        fill='tonexty',  # fill area between trace0 and trace1
+        mode='lines',
+        fillcolor='rgba(200,200,200,0.25)',
+        line={'dash': 'dash', 'color': "rgba(200,200,200,0.3)"},
+        opacity=0.2,
+        name='El Ninõ/La Niña', ))
+
+    la_nina_min_temp = temperature_df[GlossaryCore.TempAtmo].values - DatabaseWitnessCore.ENSOTemperatureAnomaly.value
+    new_chart.add_trace(go.Scatter(
+        x=years,
+        y=list(la_nina_min_temp),
+        fill='tonexty',  # fill area between trace0 and trace1
+        mode='lines',
+        fillcolor='rgba(200,200,200,0.25)',
+        line={'dash': 'dash', 'color': "rgba(200,200,200,0.3)"},
+        opacity=0.2,
+        showlegend=False))
+
+    new_chart.update_layout(legend_traceorder="normal")
+
+    new_chart = InstantiatedPlotlyNativeChart(fig=new_chart, chart_name=chart_name)
     instanciated_charts.append(new_chart)
 
     # Seal level chart for FUND pyworld3
     if model == 'FUND':
-        chart_name = 'Sea level evolution over the years'
+        chart_name = 'Sea level'
         min_value, max_value = ppt.get_greataxisrange(temperature_df['sea_level'])
         new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years,
                                                  'Seal level evolution',
@@ -394,7 +425,7 @@ def temperature_evolution(model, temperature_df, instanciated_charts):
 def radiative_forcing(forcing_df, instanciated_charts):
     years = forcing_df[GlossaryCore.Years].values.tolist()
 
-    chart_name = 'Gas Radiative forcing evolution over the years'
+    chart_name = 'Gas Radiative forcing'
 
     new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Radiative forcing (W.m-2)',
                                              chart_name=chart_name)
