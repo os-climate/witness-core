@@ -71,6 +71,7 @@ class GlossaryCore:
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
     ConsumptionObjective = "consumption_objective"
+
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
@@ -102,6 +103,11 @@ class GlossaryCore:
     SectorAgriculture = "Agriculture"
     SectorIndustry = "Industry"
     SectorEnergy = "energy"
+
+    ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
+    ConsumptionObjectiveRef = get_ref_variable(var_name=ConsumptionObjectiveRefValue,
+                                               unit="T$",
+                                               default_value=250)
 
     # Diet
     Fish = "fish"
