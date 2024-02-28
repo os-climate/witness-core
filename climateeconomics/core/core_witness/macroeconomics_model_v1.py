@@ -39,6 +39,7 @@ class MacroEconomics:
         self.damage_df = None
         self.capital_df = None
         self.energy_wasted_objective = None
+        self.consommation_objective = None
         self.gdp_percentage_per_section_df = None
         self.sector_gdp_df = None
         self.section_gdp_df = None
@@ -705,6 +706,8 @@ class MacroEconomics:
         self.compute_damage_from_climate()
         self.compute_total_damages()
 
+        self.compute_consumption_objective()
+
         self.prepare_outputs()
 
         return self.economics_detail_df, self.economics_df, self.damage_df,self.energy_investment, \
@@ -1284,4 +1287,11 @@ class MacroEconomics:
 
     def d_estimated_damages_d_user_input(self, d_estimated_damages_from_climate_d_user_input, d_estimated_damages_from_productivity_loss_d_user_input):
         return d_estimated_damages_from_climate_d_user_input + d_estimated_damages_from_productivity_loss_d_user_input
+
+    def d_consumption_objective_d_consumption(self, d_consumption):
+        return d_consumption.mean(axis=0)
+
     """-------------------END of Gradient functions-------------------"""
+
+    def compute_consumption_objective(self):
+        self.consommation_objective = np.array([self.economics_df[GlossaryCore.Consumption].mean()])
