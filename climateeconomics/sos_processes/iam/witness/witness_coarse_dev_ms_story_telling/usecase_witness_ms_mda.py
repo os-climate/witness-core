@@ -104,12 +104,14 @@ class Study(ClimateEconomicsStudyManager):
         all_co2_taxes = dm.get_all_namespaces_from_var_name('CO2_taxes')
         ref_value_co2_tax = {self.USECASE2: 0, self.USECASE2B: 0, self.USECASE3: 344, self.USECASE4: 0, self.USECASE5: 0, self.USECASE6: 0, self.USECASE7: 1192}
         for scenario in list_scenario:
+            # Checking that the temperature value in 2100 is in an acceptable range for each usecase
             for scenario_temp_increase in all_temp_increase:
                 if scenario in scenario_temp_increase:
                     temp_increase = dm.get_value(scenario_temp_increase)
                     value_temp_increase = temp_increase.loc[temp_increase['years']==2100]['temp_atmo'].values[0]
                     assert value_temp_increase >= ref_value_temp_increase[scenario] * 0.8
                     assert value_temp_increase <= ref_value_temp_increase[scenario] * 1.2
+            # Checking that the CO2 tax value in 2100 is in an acceptable range for each usecase
             for scenario_co2_tax in all_co2_taxes:
                 if scenario in scenario_co2_tax:
                     co2_tax = dm.get_value(scenario_co2_tax)
