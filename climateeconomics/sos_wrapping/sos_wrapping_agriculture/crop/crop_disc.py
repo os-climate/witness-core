@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import logging
 from copy import deepcopy
 from os.path import join, dirname
 
@@ -22,6 +23,7 @@ import pandas as pd
 
 from climateeconomics.core.core_agriculture.crop import Crop
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
+from climateeconomics.database import DatabaseWitnessCore
 from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.stream_type.energy_models.biomass_dry import BiomassDry
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
@@ -444,6 +446,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'constraint_calories_limit': {'type': 'float', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                       'namespace': GlossaryCore.NS_REFERENCE, 'default': 2000.},
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
+        GlossaryCore.FoodWastePercentageValue: GlossaryCore.FoodWastePercentage,
     }
 
     DESC_OUT = {
@@ -493,16 +496,27 @@ class CropDiscipline(ClimateEcoDiscipline):
         'calories_per_day_constraint': {'type': 'array', 'unit': 'kcal',
                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                         'namespace': GlossaryCore.NS_FUNCTIONS},
-        'calories_pc_df': {'type': 'dataframe', 'unit': 'kcal',
-                           'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY, 'namespace': GlossaryCore.NS_WITNESS},
+        GlossaryCore.CaloriesPerCapitaValue: GlossaryCore.CaloriesPerCapita,
     }
 
     CROP_CHARTS = 'crop and diet charts'
 
+    def __init__(self, sos_name, logger: logging.Logger):
+        super().__init__(sos_name, logger)
+        self.crop_model = None
+
     def setup_sos_disciplines(self):  # type: (...) -> None
 
+        if GlossaryCore.YearStart in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
+                [GlossaryCore.YearStart, GlossaryCore.YearEnd])
+            years = np.arange(year_start, year_end + 1)
+            default_food_waste_percentage_df = pd.DataFrame({
+                GlossaryCore.Years: years,
+                GlossaryCore.FoodWastePercentageValue: DatabaseWitnessCore.FoodWastePercentage.value
+            })
+            self.set_dynamic_default_values({GlossaryCore.FoodWastePercentageValue: default_food_waste_percentage_df})
 
-        pass
 
     def init_execution(self):
         inputs = list(self.DESC_IN.keys())
@@ -521,28 +535,6 @@ class CropDiscipline(ClimateEcoDiscipline):
         # -- compute
         self.crop_model.compute()
 
-        # Scale production TWh -> PWh
-        techno_production = self.crop_model.mix_detailed_production[[
-            GlossaryCore.Years, 'Total (TWh)']]
-        techno_production = techno_production.rename(
-            columns={'Total (TWh)': "biomass_dry (TWh)"})
-        for column in techno_production.columns:
-            if column == GlossaryCore.Years:
-                continue
-            techno_production[column] = techno_production[column].values / \
-                                        input_dict['scaling_factor_techno_production']
-        # Scale production Mt -> Gt
-        techno_consumption = deepcopy(self.crop_model.techno_consumption)
-        techno_consumption_woratio = deepcopy(
-            self.crop_model.techno_consumption_woratio)
-        for column in techno_consumption.columns:
-            if column == GlossaryCore.Years:
-                continue
-            techno_consumption[column] = techno_consumption[column].values / \
-                                         input_dict['scaling_factor_techno_consumption']
-            techno_consumption_woratio[column] = techno_consumption_woratio[column].values / \
-                                                 input_dict['scaling_factor_techno_consumption']
-
         outputs_dict = {
             'food_land_surface_df': self.crop_model.food_land_surface_df,
             'total_food_land_surface': self.crop_model.total_food_land_surface,
@@ -552,11 +544,11 @@ class CropDiscipline(ClimateEcoDiscipline):
             'mix_detailed_prices': self.crop_model.mix_detailed_prices,
             'cost_details': self.crop_model.cost_details,
             'mix_detailed_production': self.crop_model.mix_detailed_production,
-            'techno_production': techno_production,
+            'techno_production': self.crop_model.techno_production,
             'techno_prices': self.crop_model.techno_prices,
             'land_use_required': self.crop_model.land_use_required,
-            'techno_consumption': techno_consumption,
-            'techno_consumption_woratio': techno_consumption_woratio,
+            'techno_consumption': self.crop_model.techno_consumption,
+            'techno_consumption_woratio': self.crop_model.techno_consumption_woratio,
             'CO2_emissions': self.crop_model.CO2_emissions,
             'CO2_land_emission_df': self.crop_model.CO2_land_emissions,
             'CO2_land_emission_detailed': self.crop_model.CO2_land_emissions_detailed,
@@ -565,7 +557,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             'N2O_land_emission_df': self.crop_model.N2O_land_emissions,
             'N2O_land_emission_detailed': self.crop_model.N2O_land_emissions_detailed,
             'calories_per_day_constraint': self.crop_model.calories_per_day_constraint,
-            'calories_pc_df': self.crop_model.calories_pc_df
+            GlossaryCore.CaloriesPerCapitaValue: self.crop_model.calories_pc_df
         }
         if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
@@ -672,21 +664,21 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(('calories_per_day_constraint',), (
         'milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'), grad_constraint)
 
-        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'), (
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'), (
         'vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'), np.identity(l_years))
-        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
                                                     ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
                                                     np.identity(l_years))
-        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
                                                     ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
                                                     np.identity(l_years))
-        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
                                                     (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
                                                     np.identity(l_years))
-        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'),
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
                                                     (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
                                                     np.identity(l_years))
-        self.set_partial_derivative_for_other_types(('calories_pc_df', 'kcal_pc'), (
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'), (
         'milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'), np.identity(l_years))
 
         # gradients for techno_production from total food land surface
