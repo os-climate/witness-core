@@ -108,14 +108,12 @@ class Study(ClimateEconomicsStudyManager):
                 if scenario in scenario_temp_increase:
                     temp_increase = dm.get_value(scenario_temp_increase)
                     value_temp_increase = temp_increase.loc[temp_increase['years']==2100]['temp_atmo'].values[0]
-                    print("Temperature increase by 2100 for scenario ", scenario, ":", value_temp_increase, " degrees")
                     assert value_temp_increase >= ref_value_temp_increase[scenario] * 0.8
                     assert value_temp_increase <= ref_value_temp_increase[scenario] * 1.2
             for scenario_co2_tax in all_co2_taxes:
                 if scenario in scenario_co2_tax:
                     co2_tax = dm.get_value(scenario_co2_tax)
                     value_co2_tax = co2_tax.loc[co2_tax['years']==2100]['CO2_tax'].values[0]
-                    print("CO2_tax in 2100 for scenario ", scenario, ":", value_co2_tax)
                     assert value_co2_tax >= ref_value_co2_tax[scenario] * 0.8
                     assert value_co2_tax <= ref_value_co2_tax[scenario] * 1.2
 
