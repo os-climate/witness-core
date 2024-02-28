@@ -27,7 +27,7 @@ from sostrades_core.tests.core.abstract_jacobian_unit_test import AbstractJacobi
 
 
 class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
-    #AbstractJacobianUnittest.DUMP_JACOBIAN = True
+    AbstractJacobianUnittest.DUMP_JACOBIAN = True
 
     def setUp(self):
 
@@ -219,5 +219,5 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.CH4_land_emission_df',
                                      f'{self.name}.N2O_land_emission_df',
                                      f'{self.name}.calories_per_day_constraint',
-                                     f'{self.name}.calories_pc_df'
+                                     f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}'
                                     ])

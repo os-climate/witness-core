@@ -238,16 +238,6 @@ class CropTestCase(unittest.TestCase):
                       GlossaryCore.CheckRangeBeforeRunBoolName: False,
                       }
 
-    def test_crop_model(self):
-        ''' 
-        Basic test of crop model
-        Check the overal run without value checks (will be done in another test)
-        '''
-
-        crop = Crop(self.param)
-        crop.configure_parameters_update(self.param)
-        crop.compute()
-
     def test_crop_discipline(self):
         '''
         Check discipline setup and run
@@ -307,5 +297,6 @@ class CropTestCase(unittest.TestCase):
         #outputs = disc.get_sosdisc_outputs() # to compare the emissions and land use with the ones computed on excel
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        #for graph in graph_list:
-        #    graph.to_plotly().show()
+        for graph in graph_list:
+            #graph.to_plotly().show()
+            pass
