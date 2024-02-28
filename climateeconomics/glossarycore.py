@@ -16,24 +16,25 @@ limitations under the License.
 from copy import deepcopy, copy
 from climateeconomics.database import DatabaseWitnessCore
 
+
 def get_ref_var_name(var_name: str) -> str:
     return f"{var_name}_ref"
 
-def get_ref_variable(var_name: str, unit: str, default_value = None) -> dict:
+
+def get_ref_variable(var_name: str, unit: str, default_value=None) -> dict:
     """returns a description for a variable"""
     variable_description = {
         "var_name": var_name,
         "description": f"Normalisation reference for {var_name}",
         "namespace": "ns_ref",
         "type": "float",
-        "unit": unit
+        "unit": unit,
     }
     if default_value is not None:
-        variable_description.update({
-            "default": default_value
-        })
+        variable_description.update({"default": default_value})
 
     return variable_description
+
 
 class GlossaryCore:
     """Glossary gathering variables used in witness core"""
@@ -70,6 +71,8 @@ class GlossaryCore:
     ConstraintLowerBoundUsableCapital = "Lower bound usable capital constraint"
     EnergyWasted = "energy wasted [TWh]"
     EnergyWastedObjective = "energy_wasted_objective"
+    ConsumptionObjective = "consumption_objective"
+
     ShareNonEnergyInvestmentsValue = "share_non_energy_investment"
     CO2EmissionsGtValue = "co2_emissions_Gt"
     CO2TaxesValue = "CO2_taxes"
@@ -101,6 +104,11 @@ class GlossaryCore:
     SectorAgriculture = "Agriculture"
     SectorIndustry = "Industry"
     SectorEnergy = "energy"
+
+    ConsumptionObjectiveRefValue = get_ref_var_name(ConsumptionObjective)
+    ConsumptionObjectiveRef = get_ref_variable(
+        var_name=ConsumptionObjectiveRefValue, unit="T$", default_value=250
+    )
 
     # Diet
     Fish = "fish"
@@ -238,6 +246,26 @@ class GlossaryCore:
         "structuring": True,
     }
 
+    CaloriesPerCapitaValue = "calories_pc_df"
+    CaloriesPerCapita = {
+        "var_name": CaloriesPerCapitaValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "unit": "kcal/day/person",
+        "dataframe_descriptor": {
+            Years: ("float", None, True),
+            "kcal_pc": ("float", None, True),
+        },
+    }
+
+    CaloriesPerCapitaBreakdownValue = "calories_pc_breakdown_df"
+    CaloriesPerCapitaBreakdown = {
+        "var_name": CaloriesPerCapitaBreakdownValue,
+        "type": "dataframe",
+        "unit": "kcal/day/person",
+    }
+
     CarbonCycleDfValue = "carboncycle_df"
     CarbonCycleDf = {
         "var_name": CarbonCycleDfValue,
@@ -246,12 +274,12 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("int", [1900, YeartEndDefault], False),
-            "atmo_conc": ("float",[0, 1e30], False),
+            "atmo_conc": ("float", [0, 1e30], False),
             "lower_ocean_conc": ("float", [0, 1e30], False),
-            "shallow_ocean_conc": ("float",  [0, 1e30], False),
+            "shallow_ocean_conc": ("float", [0, 1e30], False),
             "ppm": ("float", [0, 1e30], False),
             "atmo_share_since1850": ("float", [0, 1e30], False),
-            "atmo_share_sinceystart": ("float",[0, 1e30], False),
+            "atmo_share_sinceystart": ("float", [0, 1e30], False),
         },
     }
 
@@ -318,8 +346,8 @@ class GlossaryCore:
         "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("float", [1900, YeartEndDefault], False),
-            "total_emissions": ("float", [-1.e9, 1.e9], False),
-            "cum_total_emissions": ("float", [-1.e9, 1.e9], False),
+            "total_emissions": ("float", [-1.0e9, 1.0e9], False),
+            "cum_total_emissions": ("float", [-1.0e9, 1.0e9], False),
         },
     }
 
@@ -696,6 +724,16 @@ class GlossaryCore:
         }
     )
 
+    FoodWastePercentageValue = "food_waste_percentage"
+    FoodWastePercentage = {
+        "type": "dataframe",
+        "unit": "%",
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YeartEndDefault], False),
+            FoodWastePercentageValue: ("float", [0.0, 100.0], False),
+        },
+    }
+
     GHGEmissionsDfValue = "GHG_emissions_df"
     TotalN2OEmissions = f"Total {N2O} emissions"
     TotalCH4Emissions = f"Total {CH4} emissions"
@@ -705,7 +743,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("float",  [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YeartEndDefault], False),
             TotalCO2Emissions: ("float", [0, 1e30], False),
             TotalN2OEmissions: ("float", [0, 1e30], False),
             TotalCH4Emissions: ("float", [0, 1e30], False),
@@ -1192,9 +1230,9 @@ class GlossaryCore:
     }
 
     MaxBudgetConstraintRefValue = get_ref_var_name(MaxBudgetConstraintValue)
-    MaxBudgetConstraintRef = get_ref_variable(var_name=MaxBudgetConstraintRefValue,
-                                              unit="T$",
-                                              default_value=1e4)
+    MaxBudgetConstraintRef = get_ref_variable(
+        var_name=MaxBudgetConstraintRefValue, unit="T$", default_value=1e4
+    )
 
     UsableCapitalObjective = {
         "var_name": UsableCapitalObjectiveName,
@@ -1227,7 +1265,7 @@ class GlossaryCore:
         "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
             Years: ("float", [1900, YeartEndDefault], False),
-            TargetEnergyProductionValue: ("float", [0., 1e30], True),
+            TargetEnergyProductionValue: ("float", [0.0, 1e30], True),
         },
     }
 
@@ -1240,10 +1278,12 @@ class GlossaryCore:
         "namespace": NS_FUNCTIONS,
     }
 
-    TargetProductionConstraintRefValue = get_ref_var_name(TargetProductionConstraintValue)
-    TargetProductionConstraintRef = get_ref_variable(var_name=TargetProductionConstraintRefValue,
-                                                     unit="TWh",
-                                                     default_value=1e5)
+    TargetProductionConstraintRefValue = get_ref_var_name(
+        TargetProductionConstraintValue
+    )
+    TargetProductionConstraintRef = get_ref_variable(
+        var_name=TargetProductionConstraintRefValue, unit="TWh", default_value=1e5
+    )
 
     CheckRangeBeforeRunBool = {
         "var_name": CheckRangeBeforeRunBoolName,

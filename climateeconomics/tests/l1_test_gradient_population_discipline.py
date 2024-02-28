@@ -195,7 +195,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -240,7 +240,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -285,7 +285,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -334,7 +334,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -384,7 +384,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -417,7 +417,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                        f'{self.name}.{GlossaryCore.YearStart}': year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': year_end,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc_df
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc_df
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -431,7 +431,7 @@ class PopulationJacobianDiscTest(AbstractJacobianUnittest):
                             filename=f'jacobian_population_discipline_3000_kcal.pkl',
                             discipline=disc_techno,
                             local_data=disc_techno.local_data,
-                            inputs=[f'{self.name}.calories_pc_df'],
+                            inputs=[f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.PopulationDfValue}',
                                      f'{self.name}.{GlossaryCore.WorkingAgePopulationDfValue}'],
                             step=1e-15,
