@@ -58,12 +58,12 @@ class Study(ClimateEconomicsStudyManager):
 
         self.scatter_scenario = 'mda_scenarios'
 
-        scenario_dict = {#self.USECASE2: usecase2(execution_engine=self.execution_engine),
-                         #self.USECASE2B: usecase2b(execution_engine=self.execution_engine),
+        scenario_dict = {self.USECASE2: usecase2(execution_engine=self.execution_engine),
+                         self.USECASE2B: usecase2b(execution_engine=self.execution_engine),
                          self.USECASE3: usecase3(execution_engine=self.execution_engine),
-                         # self.USECASE4: usecase4(execution_engine=self.execution_engine),
-                         # self.USECASE5: usecase5(execution_engine=self.execution_engine),
-                         # self.USECASE6: usecase6(execution_engine=self.execution_engine),
+                         self.USECASE4: usecase4(execution_engine=self.execution_engine),
+                         self.USECASE5: usecase5(execution_engine=self.execution_engine),
+                         self.USECASE6: usecase6(execution_engine=self.execution_engine),
                          self.USECASE7: usecase7(execution_engine=self.execution_engine),
                          }
 
@@ -97,20 +97,27 @@ class Study(ClimateEconomicsStudyManager):
 
     def specific_check_outputs(self):
         """Some outputs are retrieved and their range is checked"""
-        # list_scenario = {self.USECASE2, self.USECASE2B, self.USECASE3, self.USECASE4, self.USECASE5, self.USECASE6, self.USECASE7}
-        list_scenario = {self.USECASE3, self.USECASE7}
+        list_scenario = {self.USECASE2, self.USECASE2B, self.USECASE3, self.USECASE4, self.USECASE5, self.USECASE6, self.USECASE7}
         dm = self.execution_engine.dm
+        all_temp_increase = dm.get_all_namespaces_from_var_name('temperature_df')
+        ref_value_temp_increase= {self.USECASE2: 4.23, self.USECASE2B: 4.07, self.USECASE3: 3.14, self.USECASE4: 3.34, self.USECASE5: 2.86, self.USECASE6: 2.58, self.USECASE7: 2.41}
         all_co2_taxes = dm.get_all_namespaces_from_var_name('CO2_taxes')
-        ref_value_2100_max = {self.USECASE3: 1000, self.USECASE7: 1200}
-        ref_value_2100_min = {self.USECASE3: 100, self.USECASE7: 110}
+        ref_value_co2_tax = {self.USECASE2: 0, self.USECASE2B: 0, self.USECASE3: 344, self.USECASE4: 0, self.USECASE5: 0, self.USECASE6: 0, self.USECASE7: 1192}
         for scenario in list_scenario:
-            for co2_tax_scenario in all_co2_taxes:
-                if scenario in co2_tax_scenario:
-                    co2_tax = dm.get_value(co2_tax_scenario)
+            for scenario_temp_increase in all_temp_increase:
+                if scenario in scenario_temp_increase:
+                    temp_increase = dm.get_value(scenario_temp_increase)
+                    value_temp_increase = temp_increase.loc[temp_increase['years']==2100]['temp_atmo'].values[0]
+                    print("Temperature increase by 2100 for scenario ", scenario, ":", value_temp_increase, " degrees")
+                    assert value_temp_increase >= ref_value_temp_increase[scenario] * 0.8
+                    assert value_temp_increase <= ref_value_temp_increase[scenario] * 1.2
+            for scenario_co2_tax in all_co2_taxes:
+                if scenario in scenario_co2_tax:
+                    co2_tax = dm.get_value(scenario_co2_tax)
                     value_co2_tax = co2_tax.loc[co2_tax['years']==2100]['CO2_tax'].values[0]
                     print("CO2_tax in 2100 for scenario ", scenario, ":", value_co2_tax)
-                    assert value_co2_tax > ref_value_2100_min[scenario]
-                    assert value_co2_tax < ref_value_2100_max[scenario]
+                    assert value_co2_tax >= ref_value_co2_tax[scenario] * 0.8
+                    assert value_co2_tax <= ref_value_co2_tax[scenario] * 1.2
 
 
 if '__main__' == __name__:
