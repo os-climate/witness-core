@@ -386,7 +386,7 @@ def temperature_evolution(model, temperature_df, instanciated_charts):
         fillcolor='rgba(200,200,200,0.25)',
         line={'dash': 'dash', 'color': "rgba(200,200,200,0.3)"},
         opacity=0.2,
-        name='El Ninõ/La Niña', ))
+        name='Natural variations (El Niño/La Niña)', ))
 
     la_nina_min_temp = temperature_df[GlossaryCore.TempAtmo].values - DatabaseWitnessCore.ENSOTemperatureAnomaly.value
     new_chart.add_trace(go.Scatter(
