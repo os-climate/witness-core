@@ -251,11 +251,18 @@ class GlossaryCore:
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
-        "unit": "kcal",
+        "unit": "kcal/day/person",
         "dataframe_descriptor": {
             Years: ("float", None, True),
             "kcal_pc": ("float", None, True),
         },
+    }
+
+    CaloriesPerCapitaBreakdownValue = "calories_pc_breakdown_df"
+    CaloriesPerCapitaBreakdown = {
+        "var_name": CaloriesPerCapitaBreakdownValue,
+        "type": "dataframe",
+        "unit": "kcal/day/person",
     }
 
     CarbonCycleDfValue = "carboncycle_df"
