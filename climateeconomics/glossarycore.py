@@ -80,8 +80,11 @@ class GlossaryCore:
     EconomicsDfValue = "economics_df"
     SectorGdpDfValue = "sector_gdp_df"
     SectionGdpDfValue = "section_gdp_df"
+    SectionEmissionDfValue = "section_emission_df"
     SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
+    SectionEnergyPercentageDfValue = 'section_energy_percentage_df'
+    NonEnergyEmissionValue = 'non_energy_emission'
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
     UtilityDfValue = "utility_df"
@@ -213,6 +216,24 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "%",
         "description": "Percentage of the gdp for each sub-sector",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "dataframe_descriptor": df_descriptor_section_df,
+    }
+    SectionEnergyPercentageDf = {
+        "var_name": SectionEnergyPercentageDfValue,
+        "type": "dataframe",
+        "unit": "%",
+        "description": "Percentage of the energy consumption for each sub-sector",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "dataframe_descriptor": df_descriptor_section_df,
+    }
+    NonEnergyEmission = {
+        "var_name": NonEnergyEmissionValue,
+        "type": "dataframe",
+        "unit": "t/Million $GDP",
+        "description": "Non energy CO2 emission per $GDP",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": df_descriptor_section_df,
@@ -552,6 +573,15 @@ class GlossaryCore:
         "type": "dataframe",
         "description": "",
         "unit": "T$",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YeartEndDefault], False),
+        },
+    }
+    SectionEmissionDf = {
+        "var_name": SectionEmissionDfValue,
+        "type": "dataframe",
+        "description": "",
+        "unit": "Gt",
         "dataframe_descriptor": {
             Years: ("int", [1900, YeartEndDefault], False),
         },

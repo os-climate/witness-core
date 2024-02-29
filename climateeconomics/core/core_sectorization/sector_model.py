@@ -319,8 +319,19 @@ class SectorModel():
         self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(
             production_df_copy.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
 
+    # def compute_section_emission(self, section_list):
+    #
+    #     emissions_by_section = {}
+    #     for energy_section in section_list:
+    #         emissions_by_section[energy_section] = 0.0
+    #         if energy_section in self.sub_consumption_dict:
+    #             total_energy_consumption = sum(self.sub_consumption_dict[energy_section].values())
+    #             if total_energy_consumption != 0:
+    #                 for col, consumption in self.sub_consumption_dict[energy_section].items():
+    #                     if col in self.CO2_list:
+    #                         emissions_by_section[energy_section] += (consumption / total_energy_consumption) * \
+    #                                                                 self.co2_per_energy_unit[col]
 
-    
     def compute_output_growth_rate(self, year):
         """ Compute output growth rate for every year for the year before: 
         output_growth_rate(t-1) = (output(t) - output(t-1))/output(t-1)
