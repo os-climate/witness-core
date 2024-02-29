@@ -106,8 +106,7 @@ class Crop():
         self.N2O_land_emissions = None
         self.N2O_land_emissions_detailed = None
         self.updated_diet_df = None
-        self.consumed_calories_pc_df = None
-        self.consumed_calories_pc_breakdown_per_day_df = None
+        self.calories_pc_df = None
         self.margin = None
         self.red_meat_calories_per_day = None
         self.white_meat_calories_per_day = None
@@ -211,7 +210,7 @@ class Crop():
         self.N2O_land_emissions = pd.DataFrame({GlossaryCore.Years: self.years})
         self.N2O_land_emissions_detailed = pd.DataFrame({GlossaryCore.Years: self.years})
         self.updated_diet_df = pd.DataFrame({GlossaryCore.Years: self.years})
-        self.consumed_calories_pc_df = pd.DataFrame({GlossaryCore.Years: self.years})
+        self.calories_pc_df = pd.DataFrame({GlossaryCore.Years: self.years})
 
     def configure_parameters_update(self, inputs_dict):
         '''
@@ -276,9 +275,8 @@ class Crop():
 
         # construct the diet over time
         self.compute_updated_diet()
-        self.compute_consumed_calories_per_capita_breakdown()
-        self.compute_consumed_calories_per_capita_total()
         self.compute_calories_per_day_constraint()
+        self.compute_calories_per_capita()
 
         self.compute_surface_usage_by_food_type_wo_climate_impact()
         self.compute_surface_usage_by_food_type()
@@ -1270,16 +1268,22 @@ class Crop():
 
         return total_surface_climate_grad.values * idty
 
-    def compute_consumed_calories_per_capita_total(self):
-        """
-        Computes calories consumed per capita, that is the calories produces minus the waste share.
-        """
-        non_years_columns = self.updated_diet_df.columns[1:]
-        consumed_calories_per_capita = self.consumed_calories_pc_breakdown_per_day_df[non_years_columns].sum(axis=1)
-        self.consumed_calories_pc_df['kcal_pc'] = consumed_calories_per_capita
-
     def compute_calories_per_day_constraint(self):
-        self.calories_per_day_constraint = (self.consumed_calories_pc_df['kcal_pc'].values - self.constaint_calories_limit) / self.constraint_calories_ref
+        self.calories_per_day_constraint = (self.red_meat_calories_per_day
+                                            + self.white_meat_calories_per_day
+                                            + self.vegetables_and_carbs_calories_per_day
+                                            + self.fish_calories_per_day
+                                            + self.other_calories_per_day
+                                            + self.milk_and_eggs_calories_per_day
+                                            - self.constaint_calories_limit) / self.constraint_calories_ref
+
+    def compute_calories_per_capita(self):
+        self.calories_pc_df['kcal_pc'] = self.red_meat_calories_per_day \
+                                         + self.white_meat_calories_per_day \
+                                         + self.vegetables_and_carbs_calories_per_day \
+                                         + self.milk_and_eggs_calories_per_day \
+                                         + self.fish_calories_per_day \
+                                         + self.other_calories_per_day
 
     def compute_total_food_land_surface(self):
         self.total_food_land_surface[GlossaryCore.Years] = self.food_land_surface_df[GlossaryCore.Years]
@@ -1323,13 +1327,4 @@ class Crop():
             if column != GlossaryCore.Years:
                 self.techno_consumption[column] /= self.scaling_factor_techno_consumption
                 self.techno_consumption_woratio[column] /= self.scaling_factor_techno_consumption
-
-    def compute_consumed_calories_per_capita_breakdown(self):
-        non_years_columns = self.updated_diet_df.columns[1:]
-        non_wasted_share = 1 - self.food_waste_percentage_df[GlossaryCore.FoodWastePercentageValue].values/100.
-        self.consumed_calories_pc_breakdown_per_day_df = pd.DataFrame({
-            key : self.updated_diet_df[key] / 365 * self.kg_to_kcal_dict[key]* non_wasted_share for key in non_years_columns
-        })
-
-        self.consumed_calories_pc_breakdown_per_day_df.insert(0, GlossaryCore.Years, self.updated_diet_df[GlossaryCore.Years])
 

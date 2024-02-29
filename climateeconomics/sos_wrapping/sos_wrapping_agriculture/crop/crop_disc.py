@@ -497,7 +497,6 @@ class CropDiscipline(ClimateEcoDiscipline):
                                         'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                         'namespace': GlossaryCore.NS_FUNCTIONS},
         GlossaryCore.CaloriesPerCapitaValue: GlossaryCore.CaloriesPerCapita,
-        GlossaryCore.CaloriesPerCapitaBreakdownValue: GlossaryCore.CaloriesPerCapitaBreakdown,
     }
 
     CROP_CHARTS = 'crop and diet charts'
@@ -558,8 +557,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             'N2O_land_emission_df': self.crop_model.N2O_land_emissions,
             'N2O_land_emission_detailed': self.crop_model.N2O_land_emissions_detailed,
             'calories_per_day_constraint': self.crop_model.calories_per_day_constraint,
-            GlossaryCore.CaloriesPerCapitaValue: self.crop_model.consumed_calories_pc_df,
-            GlossaryCore.CaloriesPerCapitaBreakdownValue: self.crop_model.consumed_calories_pc_breakdown_per_day_df
+            GlossaryCore.CaloriesPerCapitaValue: self.crop_model.calories_pc_df
         }
         if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_output_var()
@@ -581,8 +579,9 @@ class CropDiscipline(ClimateEcoDiscipline):
         calorific_value = inputs_dict['data_fuel_dict']['calorific_value']
         CO2_from_production = inputs_dict['techno_infos_dict']['CO2_from_production']
         high_calorific_value = inputs_dict['data_fuel_dict']['high_calorific_value']
-        food_waste_percentage = inputs_dict[GlossaryCore.FoodWastePercentageValue][GlossaryCore.FoodWastePercentageValue].values
         model = self.crop_model
+        model.configure_parameters_update(inputs_dict)
+        model.compute()
 
         # get variable
         food_land_surface_df = model.food_land_surface_df
@@ -599,23 +598,22 @@ class CropDiscipline(ClimateEcoDiscipline):
             result = model.d_land_surface_d_population(column_name)
             summ += result
 
+        self.set_partial_derivative_for_other_types(
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), summ)
         d_total_d_temperature = model.d_food_land_surface_d_temperature(
             temperature_df, 'total surface (Gha)')
-
-
-        d_surface_d_red_meat_percentage = model.d_surface_d_calories(population_df, 'red meat')
-        d_surface_d_white_meat_percentage = model.d_surface_d_calories(population_df, 'white meat')
-        d_surface_d_fish_percentage = model.d_surface_d_calories(population_df, GlossaryCore.Fish)
-        d_surface_d_other_food_percentage = model.d_surface_d_calories(population_df, GlossaryCore.OtherFood)
-
         self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'),
-            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-            summ)
-        self.set_partial_derivative_for_other_types(
-            ('total_food_land_surface', 'total surface (Gha)'),
-            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
-            d_total_d_temperature)
+            ('total_food_land_surface', 'total surface (Gha)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_total_d_temperature)
+
+        d_surface_d_red_meat_percentage = model.d_surface_d_calories(
+            population_df, 'red meat')
+        d_surface_d_white_meat_percentage = model.d_surface_d_calories(
+            population_df, 'white meat')
+        d_surface_d_fish_percentage = model.d_surface_d_calories(
+            population_df, GlossaryCore.Fish)
+        d_surface_d_other_food_percentage = model.d_surface_d_calories(
+            population_df, GlossaryCore.OtherFood)
+
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'),
             ('red_meat_calories_per_day', 'red_meat_calories_per_day'), d_surface_d_red_meat_percentage)
@@ -628,7 +626,13 @@ class CropDiscipline(ClimateEcoDiscipline):
         self.set_partial_derivative_for_other_types(
             ('total_food_land_surface', 'total surface (Gha)'),
             (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal), d_surface_d_other_food_percentage)
-
+        """
+        vegetables_column_names = ['fruits and vegetables', 'cereals', 'rice and maize']
+        d_surface_d_other_cal = np.zeros((l_years , l_years))
+        for veg in vegetables_column_names:
+            grad_res = model.d_surface_d_other_calories_percentage(population_df, veg)
+            d_surface_d_other_cal = d_surface_d_other_cal + grad_res
+        """
         l_years = len(model.years)
 
         d_surface_d_vegetables_carbs = model.d_surface_d_vegetables_carbs_calories_per_day(population_df)
@@ -642,166 +646,183 @@ class CropDiscipline(ClimateEcoDiscipline):
             ('total_food_land_surface', 'total surface (Gha)'),
             ('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'), d_surface_d_eggs_milk)
 
-        food_types = [
-            'vegetables_and_carbs_calories_per_day',
-            'red_meat_calories_per_day',
-            'white_meat_calories_per_day',
-            GlossaryCore.FishDailyCal,
-            GlossaryCore.OtherDailyCal,
-            'milk_and_eggs_calories_per_day',
-        ]
+        grad_constraint = np.identity(l_years) / self.crop_model.constraint_calories_ref
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',), (
+        'vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'), grad_constraint)
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),
+                                                    ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
+                                                    grad_constraint)
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),
+                                                    ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
+                                                    grad_constraint)
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),
+                                                    (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
+                                                    grad_constraint)
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',),
+                                                    (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
+                                                    grad_constraint)
+        self.set_partial_derivative_for_other_types(('calories_per_day_constraint',), (
+        'milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'), grad_constraint)
 
-        for food_type in food_types:
-            self.set_partial_derivative_for_other_types(
-                ('calories_per_day_constraint',),
-                (food_type, food_type),
-                np.identity(l_years) * (1 -  food_waste_percentage /100.) / self.crop_model.constraint_calories_ref)
-
-            self.set_partial_derivative_for_other_types(
-                (GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
-                (food_type, food_type),
-                np.identity(l_years) * (1 -  food_waste_percentage /100.))
-
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'), (
+        'vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'), np.identity(l_years))
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
+                                                    ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
+                                                    np.identity(l_years))
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
+                                                    ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
+                                                    np.identity(l_years))
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
+                                                    (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
+                                                    np.identity(l_years))
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
+                                                    (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
+                                                    np.identity(l_years))
+        self.set_partial_derivative_for_other_types((GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'), (
+        'milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'), np.identity(l_years))
 
         # gradients for techno_production from total food land surface
         d_prod_dpopulation = model.compute_d_prod_dland_for_food(summ)
-        d_prod_dtemperature = model.compute_d_prod_dland_for_food(d_total_d_temperature)
-        d_prod_dred_to_white = model.compute_d_prod_dland_for_food(d_surface_d_red_meat_percentage)
-        d_prod_dmeat_to_vegetable = model.compute_d_prod_dland_for_food(d_surface_d_white_meat_percentage)
-        d_prod_dfish_cal = model.compute_d_prod_dland_for_food(d_surface_d_fish_percentage)
-        d_prod_dother_cal = model.compute_d_prod_dland_for_food(d_surface_d_other_food_percentage)
+        d_prod_dtemperature = model.compute_d_prod_dland_for_food(
+            d_total_d_temperature)
+        d_prod_dred_to_white = model.compute_d_prod_dland_for_food(
+            d_surface_d_red_meat_percentage)
+        d_prod_dmeat_to_vegetable = model.compute_d_prod_dland_for_food(
+            d_surface_d_white_meat_percentage)
+        d_prod_dfish_cal = model.compute_d_prod_dland_for_food(
+            d_surface_d_fish_percentage)
+        d_prod_dother_cal = model.compute_d_prod_dland_for_food(
+            d_surface_d_other_food_percentage)
         d_prod_dveg_carbs_cal = model.compute_d_prod_dland_for_food(d_surface_d_vegetables_carbs)
         dprod_deggs_milk_cal = model.compute_d_prod_dland_for_food(d_surface_d_eggs_milk)
         # --------------------------------------------------------------
         # Techno production gradients
-        self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
+        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'),
+                                                    (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
                                                     d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_prod_dtemperature)
+            ('techno_production', 'biomass_dry (TWh)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
+            d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
+            ('techno_production', 'biomass_dry (TWh)'), ('red_meat_calories_per_day',
+                                                         'red_meat_calories_per_day'),
             d_prod_dred_to_white)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
+            ('techno_production', 'biomass_dry (TWh)'), ('white_meat_calories_per_day',
+                                                         'white_meat_calories_per_day'),
             d_prod_dmeat_to_vegetable)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            ('vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'),
+            ('techno_production', 'biomass_dry (TWh)'), ('vegetables_and_carbs_calories_per_day',
+                                                         'vegetables_and_carbs_calories_per_day'),
             d_prod_dveg_carbs_cal)
+
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            ('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'),
+            ('techno_production', 'biomass_dry (TWh)'), ('milk_and_eggs_calories_per_day',
+                                                         'milk_and_eggs_calories_per_day'),
             dprod_deggs_milk_cal)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
+            ('techno_production', 'biomass_dry (TWh)'), (GlossaryCore.FishDailyCal,
+                                                         GlossaryCore.FishDailyCal),
             d_prod_dfish_cal)
         self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
+            ('techno_production', 'biomass_dry (TWh)'), (GlossaryCore.OtherDailyCal,
+                                                         GlossaryCore.OtherDailyCal),
             d_prod_dother_cal)
 
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
-        self.set_partial_derivative_for_other_types(
-            ('techno_production', 'biomass_dry (TWh)'),
-            ('crop_investment', GlossaryCore.InvestmentsValue),
-            dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
+        self.set_partial_derivative_for_other_types(('techno_production', 'biomass_dry (TWh)'),
+                                                    ('crop_investment', GlossaryCore.InvestmentsValue),
+                                                    dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
         # --------------------------------------------------------------
         # Techno consumption gradients
+        self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'),
+                                                    (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
+                                                    -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'),
-            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-            -CO2_from_production / high_calorific_value * d_prod_dpopulation)
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'),
-            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), -CO2_from_production / high_calorific_value * d_prod_dtemperature)
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'),
-            ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
-            -CO2_from_production / high_calorific_value * d_prod_dred_to_white)
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'),
-            ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
-            -CO2_from_production / high_calorific_value * d_prod_dmeat_to_vegetable)
-
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'),
-            ('vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'),
-            -CO2_from_production / high_calorific_value * d_prod_dveg_carbs_cal)
-
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'),
-            ('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'),
-            -CO2_from_production / high_calorific_value * dprod_deggs_milk_cal)
-
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'),
-            (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
-            -CO2_from_production / high_calorific_value * d_prod_dfish_cal)
-
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'),
-            (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
-            -CO2_from_production / high_calorific_value * d_prod_dother_cal)
-
-        # gradients for techno_production from investment
-        dprod_dinvest = model.compute_dprod_from_dinvest()
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption', 'CO2_resource (Mt)'),
-            ('crop_investment', GlossaryCore.InvestmentsValue),
-            -CO2_from_production / high_calorific_value *dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
-
-        # --------------------------------------------------------------
-        # Techno consumption wo ratio gradients
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'CO2_resource (Mt)'),
-            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-            -CO2_from_production / high_calorific_value * d_prod_dpopulation)
-        self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'CO2_resource (Mt)'),
-            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
+            ('techno_consumption', 'CO2_resource (Mt)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
             -CO2_from_production / high_calorific_value * d_prod_dtemperature)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'CO2_resource (Mt)'),
-            ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
+            ('techno_consumption', 'CO2_resource (Mt)'), ('red_meat_calories_per_day',
+                                                          'red_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dred_to_white)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'CO2_resource (Mt)'),
-            ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
+            ('techno_consumption', 'CO2_resource (Mt)'), ('white_meat_calories_per_day',
+                                                          'white_meat_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dmeat_to_vegetable)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'CO2_resource (Mt)'),
-            ('vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'),
+            ('techno_consumption', 'CO2_resource (Mt)'), ('vegetables_and_carbs_calories_per_day',
+                                                          'vegetables_and_carbs_calories_per_day'),
             -CO2_from_production / high_calorific_value * d_prod_dveg_carbs_cal)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'CO2_resource (Mt)'),
-            ('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'),
+            ('techno_consumption', 'CO2_resource (Mt)'), ('milk_and_eggs_calories_per_day',
+                                                          'milk_and_eggs_calories_per_day'),
             -CO2_from_production / high_calorific_value * dprod_deggs_milk_cal)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'CO2_resource (Mt)'),
-            (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
+            ('techno_consumption', 'CO2_resource (Mt)'), (GlossaryCore.FishDailyCal,
+                                                          GlossaryCore.FishDailyCal),
             -CO2_from_production / high_calorific_value * d_prod_dfish_cal)
 
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'CO2_resource (Mt)'),
-            (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
+            ('techno_consumption', 'CO2_resource (Mt)'), (GlossaryCore.OtherDailyCal,
+                                                          GlossaryCore.OtherDailyCal),
             -CO2_from_production / high_calorific_value * d_prod_dother_cal)
 
         # gradients for techno_production from investment
         dprod_dinvest = model.compute_dprod_from_dinvest()
+        self.set_partial_derivative_for_other_types(('techno_consumption', 'CO2_resource (Mt)'),
+                                                    ('crop_investment', GlossaryCore.InvestmentsValue),
+                                                    -CO2_from_production / high_calorific_value *
+                                                    dprod_dinvest * scaling_factor_crop_investment
+                                                    * calorific_value / scaling_factor_techno_production)
+        # --------------------------------------------------------------
+        # Techno consumption wo ratio gradients
+        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'),
+                                                    (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
+                                                    -CO2_from_production / high_calorific_value * d_prod_dpopulation)
         self.set_partial_derivative_for_other_types(
-            ('techno_consumption_woratio', 'CO2_resource (Mt)'),
-            ('crop_investment', GlossaryCore.InvestmentsValue),
-            -CO2_from_production / high_calorific_value * dprod_dinvest * scaling_factor_crop_investment * calorific_value / scaling_factor_techno_production)
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
+            -CO2_from_production / high_calorific_value * d_prod_dtemperature)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), ('red_meat_calories_per_day', 'red_meat_calories_per_day'),
+            -CO2_from_production / high_calorific_value * d_prod_dred_to_white)
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), ('white_meat_calories_per_day', 'white_meat_calories_per_day'),
+            -CO2_from_production / high_calorific_value * d_prod_dmeat_to_vegetable)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), ('vegetables_and_carbs_calories_per_day', 'vegetables_and_carbs_calories_per_day'),
+            -CO2_from_production / high_calorific_value * d_prod_dveg_carbs_cal)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), ('milk_and_eggs_calories_per_day', 'milk_and_eggs_calories_per_day'),
+            -CO2_from_production / high_calorific_value * dprod_deggs_milk_cal)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), (GlossaryCore.FishDailyCal, GlossaryCore.FishDailyCal),
+            -CO2_from_production / high_calorific_value * d_prod_dfish_cal)
+
+        self.set_partial_derivative_for_other_types(
+            ('techno_consumption_woratio',
+             'CO2_resource (Mt)'), (GlossaryCore.OtherDailyCal, GlossaryCore.OtherDailyCal),
+            -CO2_from_production / high_calorific_value * d_prod_dother_cal)
+
+        # gradients for techno_production from investment
+        dprod_dinvest = model.compute_dprod_from_dinvest()
+        self.set_partial_derivative_for_other_types(('techno_consumption_woratio', 'CO2_resource (Mt)'),
+                                                    ('crop_investment', GlossaryCore.InvestmentsValue),
+                                                    -CO2_from_production / high_calorific_value *
+                                                    dprod_dinvest * scaling_factor_crop_investment
+                                                    * calorific_value / scaling_factor_techno_production)
 
         # gradient for land demand
         self.set_partial_derivative_for_other_types(
@@ -983,7 +1004,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
-                                                 chart_name='Surface taken to produce food', stacked_bar=True)
+                                                 chart_name='Surface taken to produce food over time', stacked_bar=True)
             new_chart.add_series(crop_surface_series)
 
             for serie in series_to_add:
@@ -1010,7 +1031,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [%]',
-                                                 chart_name='Share of the surface used to produce food',
+                                                 chart_name='Share of the surface used to produce food over time',
                                                  stacked_bar=True)
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
@@ -1024,7 +1045,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-            #-------------------------- chart of the updated diet
+            # chart of the updated diet
             updated_diet_df = self.get_sosdisc_outputs('updated_diet_df')
             starting_diet = self.get_sosdisc_inputs('diet_df')
             kg_to_kcal_dict = self.get_sosdisc_inputs('kg_to_kcal_dict')
@@ -1049,7 +1070,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'food calories [kcal / person / day]',
-                                                 chart_name='Food calories produced per person (before waste)', stacked_bar=True)
+                                                 chart_name='Food calories per person', stacked_bar=True)
 
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
@@ -1063,60 +1084,67 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             instanciated_charts.append(new_chart)
 
-            # -------------------------- chart of the consumed calories
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'kcal / person / day',
-                                                 chart_name='Food calories consumed per person (production - waste)', stacked_bar=True)
+            # ------------------------------------------
+            # DIET EVOLUTION VARIABLES
+            chart_name = "Calories per day"
 
-            consumed_breakdown_pc_per_day = self.get_sosdisc_outputs(GlossaryCore.CaloriesPerCapitaBreakdownValue)
-            years = list(consumed_breakdown_pc_per_day[GlossaryCore.Years].values)
-            total_consumed_pc_per_day = self.get_sosdisc_outputs(GlossaryCore.CaloriesPerCapitaValue)["kcal_pc"].values.tolist()
-            # add a fake serie of value before the other serie to keep the same color than in the first graph,
-            # where the line plot of total surface take the first color
-            fake_serie = InstanciatedSeries(years, surface_percentage_df[key].values.tolist() * 0, '',
-                                            InstanciatedSeries.BAR_DISPLAY)
-            new_chart.add_series(fake_serie)
-            for key in consumed_breakdown_pc_per_day.columns[1:]:
-                l_values = consumed_breakdown_pc_per_day[key]
-                new_series = InstanciatedSeries(
-                    years, l_values.tolist(), key, InstanciatedSeries.BAR_DISPLAY)
+            red_meat_calories = self.get_sosdisc_inputs('red_meat_calories_per_day')
+            white_meat_calories = self.get_sosdisc_inputs(
+                'white_meat_calories_per_day')
+            veg_carbs = self.get_sosdisc_inputs(
+                'vegetables_and_carbs_calories_per_day')
+            eggs_milk = self.get_sosdisc_inputs(
+                'milk_and_eggs_calories_per_day')
+            fish = self.get_sosdisc_inputs(GlossaryCore.FishDailyCal)
+            other = self.get_sosdisc_inputs(GlossaryCore.OtherDailyCal)
 
-                new_chart.add_series(new_series)
+            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'calories per day [kcal]',
+                                                 chart_name=chart_name)
 
+            visible_line = True
+            ordonate_data = list(
+                red_meat_calories['red_meat_calories_per_day'].values)
             new_series = InstanciatedSeries(
-                years, total_consumed_pc_per_day, "Total", InstanciatedSeries.LINES_DISPLAY)
-
-            new_chart.add_series(new_series)
-
+                years, ordonate_data, 'Calories of red meat per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
+                white_meat_calories['white_meat_calories_per_day'].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Calories of white meat per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
+                fish[GlossaryCore.FishDailyCal].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Calories of fish per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
+                other[GlossaryCore.OtherDailyCal].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Calories of other categories per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
+                veg_carbs['vegetables_and_carbs_calories_per_day'].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Calories of vegetables and carbs per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
+                eggs_milk['milk_and_eggs_calories_per_day'].values)
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Calories of eggs and milk per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
+            ordonate_data = list(
+                eggs_milk['milk_and_eggs_calories_per_day'].values +
+                veg_carbs['vegetables_and_carbs_calories_per_day'].values +
+                red_meat_calories['red_meat_calories_per_day'].values +
+                white_meat_calories['white_meat_calories_per_day'].values +
+                fish[GlossaryCore.FishDailyCal].values +
+                other[GlossaryCore.OtherDailyCal].values
+            )
+            new_series = InstanciatedSeries(
+                years, ordonate_data, 'Total calories per day per person', 'lines', visible_line)
+            new_chart.series.append(new_series)
             instanciated_charts.append(new_chart)
 
-            # ------------------------------------------
-            # -------------------------- chart of constraint
-            new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'kcal / person / day',
-                                                 chart_name='Minimum daily kcalories constraint',
-                                                 stacked_bar=True)
-
-            total_consumed_pc_per_day_df = self.get_sosdisc_outputs(GlossaryCore.CaloriesPerCapitaValue)
-            total_consumed_pc_per_day = total_consumed_pc_per_day_df["kcal_pc"].values
-            food_waste_percentage = self.get_sosdisc_inputs(GlossaryCore.FoodWastePercentageValue)[GlossaryCore.FoodWastePercentageValue]/100.
-            produced_food  = total_consumed_pc_per_day / (1 - food_waste_percentage)
-            wasted_food = produced_food - total_consumed_pc_per_day
-            years = list(total_consumed_pc_per_day_df[GlossaryCore.Years].values)
-            minimum_kcal_daily_apport = self.get_sosdisc_inputs('constraint_calories_limit')
-
-            new_series = InstanciatedSeries(
-                years, total_consumed_pc_per_day.tolist(), "Total consumed", InstanciatedSeries.BAR_DISPLAY)
-            new_chart.add_series(new_series)
-            new_series = InstanciatedSeries(
-                years, wasted_food.tolist(), "Wasted food", InstanciatedSeries.BAR_DISPLAY)
-            new_chart.add_series(new_series)
-            new_series = InstanciatedSeries(
-                years, [minimum_kcal_daily_apport] * len(years), "Minimum daily kcalories", InstanciatedSeries.DASH_LINES_DISPLAY)
-            new_chart.add_series(new_series)
-
-
-            instanciated_charts.append(new_chart)
-
-            # ------------------------------------------
         ##################### Kcal per kg per category #################
 
         list_categories = ['red meat', 'white meat', 'eggs_milk', 'vegetables_and_carbs', GlossaryCore.Fish, GlossaryCore.OtherFood]
@@ -1408,7 +1436,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                              ch4_crop_emissions_series, n2o_crop_emissions_series]
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Greenhouse Gas Emissions [Gt]',
-                                                 chart_name='Greenhouse Gas Emissions of food and energy production',
+                                                 chart_name='Greenhouse Gas Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)
@@ -1435,7 +1463,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                              ch4_crop_emissions_series, n2o_crop_emissions_series]
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Greenhouse Gas Emissions [GtCO2eq]',
-                                                 chart_name='Greenhouse Gas CO2 Eq. Emissions of food and energy production',
+                                                 chart_name='Greenhouse Gas CO2 Eq. Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)
@@ -1453,7 +1481,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 Emissions [Gt]',
-                                                 chart_name='CO2 Emissions of food and energy production',
+                                                 chart_name='CO2 Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)
@@ -1471,7 +1499,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CH4 Emissions [Gt]',
-                                                 chart_name='CH4 Emissions of food and energy production',
+                                                 chart_name='CH4 Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)
@@ -1491,7 +1519,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'N2O Emissions [Gt]',
-                                                 chart_name='N2O Emissions of food and energy production',
+                                                 chart_name='N2O Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)

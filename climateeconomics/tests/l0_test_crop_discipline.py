@@ -297,6 +297,5 @@ class CropTestCase(unittest.TestCase):
         #outputs = disc.get_sosdisc_outputs() # to compare the emissions and land use with the ones computed on excel
         filter = disc.get_chart_filter_list()
         graph_list = disc.get_post_processing_list(filter)
-        for graph in graph_list:
-            #graph.to_plotly().show()
-            pass
+        #for graph in graph_list:
+        #    graph.to_plotly().show()
