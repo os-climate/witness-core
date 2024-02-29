@@ -558,7 +558,7 @@ class CropDiscipline(ClimateEcoDiscipline):
             'N2O_land_emission_df': self.crop_model.N2O_land_emissions,
             'N2O_land_emission_detailed': self.crop_model.N2O_land_emissions_detailed,
             'calories_per_day_constraint': self.crop_model.calories_per_day_constraint,
-            GlossaryCore.CaloriesPerCapitaValue: self.crop_model.consumed_calories_pc_df,
+            GlossaryCore.CaloriesPerCapitaValue: self.crop_model.calories_pc_df,
             GlossaryCore.CaloriesPerCapitaBreakdownValue: self.crop_model.consumed_calories_pc_breakdown_per_day_df
         }
         if input_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
@@ -983,7 +983,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [Gha]',
-                                                 chart_name='Surface taken to produce food', stacked_bar=True)
+                                                 chart_name='Surface taken to produce food over time', stacked_bar=True)
             new_chart.add_series(crop_surface_series)
 
             for serie in series_to_add:
@@ -1010,7 +1010,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'surface [%]',
-                                                 chart_name='Share of the surface used to produce food',
+                                                 chart_name='Share of the surface used to produce food over time',
                                                  stacked_bar=True)
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
@@ -1023,8 +1023,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                 new_chart.add_series(serie)
 
             instanciated_charts.append(new_chart)
-
-            #-------------------------- chart of the updated diet
+            # -------------------------- chart of the updated diet
             updated_diet_df = self.get_sosdisc_outputs('updated_diet_df')
             starting_diet = self.get_sosdisc_inputs('diet_df')
             kg_to_kcal_dict = self.get_sosdisc_inputs('kg_to_kcal_dict')
@@ -1049,7 +1048,8 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'food calories [kcal / person / day]',
-                                                 chart_name='Food calories produced per person (before waste)', stacked_bar=True)
+                                                 chart_name='Food calories produced per person (before waste)',
+                                                 stacked_bar=True)
 
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
@@ -1062,14 +1062,15 @@ class CropDiscipline(ClimateEcoDiscipline):
                 new_chart.add_series(serie)
 
             instanciated_charts.append(new_chart)
-
             # -------------------------- chart of the consumed calories
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'kcal / person / day',
-                                                 chart_name='Food calories consumed per person (production - waste)', stacked_bar=True)
+                                                 chart_name='Food calories consumed per person (production - waste)',
+                                                 stacked_bar=True)
 
             consumed_breakdown_pc_per_day = self.get_sosdisc_outputs(GlossaryCore.CaloriesPerCapitaBreakdownValue)
             years = list(consumed_breakdown_pc_per_day[GlossaryCore.Years].values)
-            total_consumed_pc_per_day = self.get_sosdisc_outputs(GlossaryCore.CaloriesPerCapitaValue)["kcal_pc"].values.tolist()
+            total_consumed_pc_per_day = self.get_sosdisc_outputs(GlossaryCore.CaloriesPerCapitaValue)[
+                "kcal_pc"].values.tolist()
             # add a fake serie of value before the other serie to keep the same color than in the first graph,
             # where the line plot of total surface take the first color
             fake_serie = InstanciatedSeries(years, surface_percentage_df[key].values.tolist() * 0, '',
@@ -1097,8 +1098,9 @@ class CropDiscipline(ClimateEcoDiscipline):
 
             total_consumed_pc_per_day_df = self.get_sosdisc_outputs(GlossaryCore.CaloriesPerCapitaValue)
             total_consumed_pc_per_day = total_consumed_pc_per_day_df["kcal_pc"].values
-            food_waste_percentage = self.get_sosdisc_inputs(GlossaryCore.FoodWastePercentageValue)[GlossaryCore.FoodWastePercentageValue]/100.
-            produced_food  = total_consumed_pc_per_day / (1 - food_waste_percentage)
+            food_waste_percentage = self.get_sosdisc_inputs(GlossaryCore.FoodWastePercentageValue)[
+                                        GlossaryCore.FoodWastePercentageValue] / 100.
+            produced_food = total_consumed_pc_per_day / (1 - food_waste_percentage)
             wasted_food = produced_food - total_consumed_pc_per_day
             years = list(total_consumed_pc_per_day_df[GlossaryCore.Years].values)
             minimum_kcal_daily_apport = self.get_sosdisc_inputs('constraint_calories_limit')
@@ -1110,13 +1112,12 @@ class CropDiscipline(ClimateEcoDiscipline):
                 years, wasted_food.tolist(), "Wasted food", InstanciatedSeries.BAR_DISPLAY)
             new_chart.add_series(new_series)
             new_series = InstanciatedSeries(
-                years, [minimum_kcal_daily_apport] * len(years), "Minimum daily kcalories", InstanciatedSeries.DASH_LINES_DISPLAY)
+                years, [minimum_kcal_daily_apport] * len(years), "Minimum daily kcalories",
+                InstanciatedSeries.DASH_LINES_DISPLAY)
             new_chart.add_series(new_series)
-
 
             instanciated_charts.append(new_chart)
 
-            # ------------------------------------------
         ##################### Kcal per kg per category #################
 
         list_categories = ['red meat', 'white meat', 'eggs_milk', 'vegetables_and_carbs', GlossaryCore.Fish, GlossaryCore.OtherFood]
@@ -1135,7 +1136,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         n2o_emissions_per_kcal_dict_mean = {'vegetables_and_carbs': 0, 'eggs_milk': 0}
 
         ghg_emissions_per_kcal = {}
-
+        starting_diet = self.get_sosdisc_inputs('diet_df')
+        kg_to_kcal_dict = self.get_sosdisc_inputs('kg_to_kcal_dict')
         for key in starting_diet:
             if key == 'fruits and vegetables' or key == 'cereals' or key == 'rice and maize':
 
@@ -1408,7 +1410,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                              ch4_crop_emissions_series, n2o_crop_emissions_series]
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Greenhouse Gas Emissions [Gt]',
-                                                 chart_name='Greenhouse Gas Emissions of food and energy production',
+                                                 chart_name='Greenhouse Gas Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)
@@ -1435,7 +1437,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                              ch4_crop_emissions_series, n2o_crop_emissions_series]
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'Greenhouse Gas Emissions [GtCO2eq]',
-                                                 chart_name='Greenhouse Gas CO2 Eq. Emissions of food and energy production',
+                                                 chart_name='Greenhouse Gas CO2 Eq. Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)
@@ -1453,7 +1455,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CO2 Emissions [Gt]',
-                                                 chart_name='CO2 Emissions of food and energy production',
+                                                 chart_name='CO2 Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)
@@ -1471,7 +1473,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'CH4 Emissions [Gt]',
-                                                 chart_name='CH4 Emissions of food and energy production',
+                                                 chart_name='CH4 Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)
@@ -1491,7 +1493,7 @@ class CropDiscipline(ClimateEcoDiscipline):
                     series_to_add.append(new_series)
 
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, 'N2O Emissions [Gt]',
-                                                 chart_name='N2O Emissions of food and energy production',
+                                                 chart_name='N2O Emissions of food and energy production over time',
                                                  stacked_bar=True)
             for serie in series_to_add:
                 new_chart.add_series(serie)

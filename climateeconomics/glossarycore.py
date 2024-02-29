@@ -248,7 +248,6 @@ class GlossaryCore:
 
     CaloriesPerCapitaValue = "calories_pc_df"
     CaloriesPerCapita = {
-        "var_name": CaloriesPerCapitaValue,
         "type": "dataframe",
         "visibility": "Shared",
         "namespace": NS_WITNESS,
