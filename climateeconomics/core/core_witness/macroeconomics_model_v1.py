@@ -32,15 +32,15 @@ class MacroEconomics:
         Constructor
         """
         self.consommation_objective_ref = None
-        self.year_start = None
+        self.year_start: int = 0
         self.year_end = None
         self.time_step = None
         self.productivity_start = None
         self.init_gross_output = None
         self.capital_start_ne = None
         self.population_df = None
-        self.productivity_gr_start = None
-        self.decline_rate_tfp = None
+        self.productivity_gr_start: float = 0
+        self.decline_rate_tfp: float = 0.
         self.depreciation_capital = None
         self.init_rate_time_pref = None
         self.conso_elasticity = None
@@ -49,22 +49,22 @@ class MacroEconomics:
         self.lo_per_capita_conso = None
         self.hi_per_capita_conso = None
         self.nb_per = None
-        self.years_range = None
+        self.years_range: int = 0
         self.nb_years = None
         self.frac_damage_prod = None
         self.init_output_growth = None
         self.output_alpha = None
         self.output_gamma = None
-        self.energy_eff_k = None
-        self.energy_eff_cst = None
-        self.energy_eff_xzero = None
-        self.energy_eff_max = None
+        self.energy_eff_k: float = 0.
+        self.energy_eff_cst: float = 0.
+        self.energy_eff_xzero: float = 0.
+        self.energy_eff_max: float = 0.
         self.capital_utilisation_ratio = None
         self.max_capital_utilisation_ratio = None
         self.co2_emissions_Gt = None
         self.co2_taxes = None
         self.co2_tax_efficiency = None
-        self.co2_invest_limit = None
+        self.co2_invest_limit: float = 0.
         self.employment_a_param = None
         self.employment_power_param = None
         self.employment_rate_base_value = None
