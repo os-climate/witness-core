@@ -15,7 +15,7 @@ title: Study
 ---
 flowchart LR
     di[(Data In)] -- data --> d1[Discipline 1]
-    subgraph ExcutionEngine
+    subgraph ExecutionEngine
       d1 -- data --> d2[Discipline 2]
       d2 -- data --> ddots([...])
       ddots -- data --> dn[Discipline N]
@@ -151,7 +151,7 @@ processing. An example of coupling is shown on the diagram below.
 flowchart LR
   di1([ ])
   di2([ ])
-  subgraph ExcutionEngine
+  subgraph ExecutionEngine
     d1[Discipline 1]
     d2[Discipline 2]
     d3[Discipline 3]
