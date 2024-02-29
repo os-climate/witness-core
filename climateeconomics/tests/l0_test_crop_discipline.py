@@ -238,16 +238,6 @@ class CropTestCase(unittest.TestCase):
                       GlossaryCore.CheckRangeBeforeRunBoolName: False,
                       }
 
-    def test_crop_model(self):
-        ''' 
-        Basic test of crop model
-        Check the overal run without value checks (will be done in another test)
-        '''
-
-        crop = Crop(self.param)
-        crop.configure_parameters_update(self.param)
-        crop.compute()
-
     def test_crop_discipline(self):
         '''
         Check discipline setup and run

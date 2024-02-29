@@ -24,6 +24,34 @@ data_folder = join(dirname(dirname(__file__)), "data")
 class DatabaseWitnessCore:
     '''Stocke les valeurs utilisées dans witness core'''
 
+
+    FoodWastePercentage = ColectedData(
+        value=30,
+        unit="%",
+        description="Share of food production that is not consumed (wasted). From harvest to retail: 13%, Retail and conso:17% ",
+        link="https://www.fao.org/platform-food-loss-waste/flw-data/en",
+        source="Food and Agriculture Organization of the United Nations",
+        last_update_date=date(2024, 2, 28)
+    )
+
+    ENSOTemperatureAnomaly = ColectedData(
+        value=+0.25,
+        unit="°C",
+        description="Global temperature anomaly due to El Nino - Southern Oscillation phenomenon",
+        link="https://berkeleyearth.org/global-temperature-report-for-2023/#:~:text=Annual%20Temperature%20Anomaly&text=As%20a%20result%2C%202023%20is,C%20(2.7%20%C2%B0F).",
+        source="BerkleyEarth",
+        last_update_date=date(2024, 2, 27)
+    )
+
+    TemperatureAnomalyPreIndustrialYearStart = ColectedData(
+        value=+1.3,
+        unit="°C",
+        description="Global average temperature anomaly relative to 1850-1900 average",
+        link="https://berkeleyearth.org/global-temperature-report-for-2023/#:~:text=Annual%20Temperature%20Anomaly&text=As%20a%20result%2C%202023%20is,C%20(2.7%20%C2%B0F).",
+        source="BerkleyEarth",
+        last_update_date=date(2024, 2, 27)
+    )
+
     # Data for sectorization
     InvestInduspercofgdp2020 = ColectedData(
         value=5.831,
