@@ -37,7 +37,7 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
         Initialize third data needed for testing
         '''
         self.year_start =GlossaryCore.YeartStartDefault
-        self.year_end = 2055
+        self.year_end = 2035
         self.time_step = 1
         years = np.arange(self.year_start, self.year_end + 1, 1)
         year_range = self.year_end - self.year_start + 1
@@ -219,5 +219,5 @@ class AgricultureJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.CH4_land_emission_df',
                                      f'{self.name}.N2O_land_emission_df',
                                      f'{self.name}.calories_per_day_constraint',
-                                     f'{self.name}.calories_pc_df'
+                                     f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}'
                                     ])

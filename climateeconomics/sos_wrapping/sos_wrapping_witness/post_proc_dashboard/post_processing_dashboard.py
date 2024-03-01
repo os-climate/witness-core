@@ -95,109 +95,53 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             y=temperature_df[GlossaryCore.TempAtmo].values.tolist(),
             name='Temperature',
         ), secondary_y=True)
-
-
+       #create list of values according to CO2 storage limited by co2 captured
+        graph_dac = []
+        graph_flue_gas = []
         for year_index, year in enumerate(years):
             storage_limit = co2_emissions['carbon_storage Limited by capture (Gt)'][year_index]
             captured_total = carbon_captured['DAC'][year_index]*0.001+carbon_captured['flue gas'][year_index]*0.001
-            if storage_limit == captured_total:
-
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=total_ghg_df[f'Total CO2 emissions'].to_list(),
-                    name='Net CO2 emissions',
-                    stackgroup='one',
-                    visible='legendonly'
-                ), secondary_y=False)
-
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=(carbon_captured['DAC']*0.001),
-                    name='CO2 captured by DAC',
-                    stackgroup='one',
-                    visible='legendonly'
-                ), secondary_y=False)
-
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=(carbon_captured['flue gas']*0.001),
-                    name='CO2 captured by flue gas',
-                    stackgroup='one',
-                    visible='legendonly',
-                ), secondary_y=False)
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=total_ghg_df[f'Total CO2 emissions'].to_list() + co2_emissions['carbon_storage Limited by capture (Gt)'].to_list(),
-                    name='Brut CO2 emissions',
-                    visible='legendonly',
-                ), secondary_y=False)
-
-
-            elif storage_limit < captured_total and storage_limit>0 :
-
+            if captured_total > 0.0:
                 proportion_stockage = storage_limit/captured_total
-                proportion_dac = proportion_stockage * carbon_captured['DAC']*0.001
-                proportion_flue_gas = proportion_stockage * carbon_captured['flue gas']*0.001
-
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=total_ghg_df[f'Total CO2 emissions'].to_list(),
-                    name='Net CO2 emissions',
-                    stackgroup='one',
-                    visible='legendonly'
-
-                ), secondary_y=False)
-
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=proportion_dac,
-                    name='CO2 captured by DAC',
-                    stackgroup='one',
-                    visible='legendonly',
-                ), secondary_y=False)
-
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=proportion_flue_gas,
-                    name='CO2 captured by flue gas',
-                    stackgroup='one',
-                    visible='legendonly',
-                ), secondary_y=False)
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=total_ghg_df[f'Total CO2 emissions'].to_list()+co2_emissions['carbon_storage Limited by capture (Gt)'].to_list(),
-                    name='Brut CO2 emissions',
-                    visible='legendonly',
-                ), secondary_y=False)
-
+                graph_dac.append(proportion_stockage * carbon_captured['DAC'][year_index]*0.001)
+                graph_flue_gas.append(proportion_stockage * carbon_captured['flue gas'][year_index]*0.001)
             else:
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=total_ghg_df[f'Total CO2 emissions'].to_list(),
-                    name='Net CO2 emissions',
-                    stackgroup='one',
-                    visible='legendonly'
-                ), secondary_y=False)
-                fig.add_trace(go.Scatter(
-                    x=years,
-                    y=total_ghg_df[f'Total CO2 emissions'].to_list() + co2_emissions[
-                        'carbon_storage Limited by capture (Gt)'].to_list(),
-                    name='Brut CO2 emissions',
-                    visible='legendonly',
-                ), secondary_y=False)
+                graph_dac.append(0)
+                graph_flue_gas.append(0)
 
 
+        fig.add_trace(go.Scatter(
+            x=years,
+            y=total_ghg_df[f'Total CO2 emissions'].to_list(),
+            name='Net CO2 emissions',
+            stackgroup='one',
+            visible='legendonly'
+
+        ), secondary_y=False)
+
+        fig.add_trace(go.Scatter(
+            x=years,
+            y=graph_dac,
+            name='CO2 captured by DAC',
+            stackgroup='one',
+            visible='legendonly',
+        ), secondary_y=False)
+
+        fig.add_trace(go.Scatter(
+            x=years,
+            y=graph_flue_gas,
+            name='CO2 captured by flue gas',
+            stackgroup='one',
+            visible='legendonly',
+        ), secondary_y=False)
+        fig.add_trace(go.Scatter(
+            x=years,
+            y=total_ghg_df[f'Total CO2 emissions'].to_list()+co2_emissions['carbon_storage Limited by capture (Gt)'].to_list(),
+            name='Gross CO2 emissions',
+            visible='legendonly',
+        ), secondary_y=False)
 
 
-
-        legend_added = {}
-        for trace in fig.data:
-            if trace.name in ['Net CO2 emissions','CO2 captured by DAC', 'CO2 captured by flue gas','Brut CO2 emissions']:
-                if trace.name not in legend_added:
-                    trace.showlegend = True
-                    legend_added[trace.name] = True
-                else:
-                    trace.showlegend = False
         fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
         fig.update_yaxes(title_text=f'CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
 

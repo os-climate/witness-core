@@ -167,7 +167,7 @@ class PopDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc_df
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc_df
                        }
 
         self.ee.load_study_from_input_dict(values_dict)
@@ -215,7 +215,7 @@ class PopDiscTest(unittest.TestCase):
                        f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
-                       f'{self.name}.calories_pc_df': calories_pc_df,
+                       f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc_df,
                        f'{self.name}.assumptions_dict': assumptions_dict
                        }
 

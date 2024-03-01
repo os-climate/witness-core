@@ -58,7 +58,6 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     # World Health Organization.
     default_climate_mortality_param_df = pd.read_csv(
         join(global_data_dir, 'climate_additional_deaths_V2.csv'))
-    cal_pc_init = pd.DataFrame({GlossaryCore.Years: years, 'kcal_pc': np.linspace(2400,2400,len(years))})
     # ADD DICTIONARY OF VALUES FOR DEATH RATE
 
     desc_in_default_diet_mortality_param = GlossaryCore.DietMortalityParamDf
@@ -127,11 +126,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'beta_birthrate_know': {'type': 'float', 'default': 8.01923418e-01, 'user_level': 3, 'unit': '-'},
         'share_know_birthrate': {'type': 'float', 'default': 7.89207064e-01, 'user_level': 3, 'unit': '-'},
         ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN['var_name']: ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
-        'calories_pc_df': {'type': 'dataframe', 'default': cal_pc_init, 'visibility': 'Shared', 'namespace': GlossaryCore.NS_WITNESS, 'unit': 'kcal',
-                           'dataframe_descriptor': {GlossaryCore.Years: ('float', None, True),
-                                                    'kcal_pc': ('float', None, True),
-                                                    }
-                           },
+        GlossaryCore.CaloriesPerCapitaValue: GlossaryCore.CaloriesPerCapita,
         GlossaryCore.DietMortalityParamDf['var_name']: desc_in_default_diet_mortality_param,
         'theta_diet': {'type': 'float', 'default': 5.0, 'user_level': 3, 'unit': '-'},
         'kcal_pc_ref': {'type': 'float', 'default': 2000.0, 'user_level': 3, 'unit': 'kcal'},
@@ -156,6 +151,15 @@ class PopulationDiscipline(ClimateEcoDiscipline):
     def init_execution(self):
         in_dict = self.get_sosdisc_inputs()
         self.model = Population(in_dict)
+
+    def setup_sos_disciplines(self):  # type: (...) -> None
+        if GlossaryCore.YearStart in self.get_data_in():
+            year_start, year_end = self.get_sosdisc_inputs(
+                [GlossaryCore.YearStart, GlossaryCore.YearEnd])
+            years = np.arange(year_start, year_end + 1)
+            default_calories_pc_df = pd.DataFrame({GlossaryCore.Years: years,
+                                                   'kcal_pc': 2400.})
+            self.set_dynamic_default_values({GlossaryCore.CaloriesPerCapitaValue: default_calories_pc_df})
 
     def run(self):
         ''' model execution '''
@@ -203,24 +207,32 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         d_pop_d_output, d_working_pop_d_output = self.model.compute_d_pop_d_output()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_pop_d_output / self.model.million)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+            d_pop_d_output / self.model.million)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
-            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage), d_working_pop_d_output / self.model.million)
+            (GlossaryCore.EconomicsDfValue, GlossaryCore.OutputNetOfDamage),
+            d_working_pop_d_output / self.model.million)
 
         d_pop_d_temp, d_working_pop_d_temp = self.model.compute_d_pop_d_temp()
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
-            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_pop_d_temp / self.model.million)
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
+            d_pop_d_temp / self.model.million)
         self.set_partial_derivative_for_other_types(
             (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
-            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo), d_working_pop_d_temp / self.model.million)
+            (GlossaryCore.TemperatureDfValue, GlossaryCore.TempAtmo),
+            d_working_pop_d_temp / self.model.million)
         
         d_pop_d_kcal_pc, d_working_pop_d_kcal_pc = self.model.compute_d_pop_d_kcal_pc()
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue), ('calories_pc_df', 'kcal_pc'), d_pop_d_kcal_pc / self.model.million)
+            (GlossaryCore.PopulationDfValue, GlossaryCore.PopulationValue),
+            (GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
+            d_pop_d_kcal_pc / self.model.million)
         self.set_partial_derivative_for_other_types(
-            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570), ('calories_pc_df', 'kcal_pc'), d_working_pop_d_kcal_pc / self.model.million)
+            (GlossaryCore.WorkingAgePopulationDfValue, GlossaryCore.Population1570),
+            (GlossaryCore.CaloriesPerCapitaValue, 'kcal_pc'),
+            d_working_pop_d_kcal_pc / self.model.million)
 
     def get_chart_filter_list(self):
 
