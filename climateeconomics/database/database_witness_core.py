@@ -25,6 +25,15 @@ class DatabaseWitnessCore:
     '''Stocke les valeurs utilisées dans witness core'''
 
 
+    FoodWastePercentage = ColectedData(
+        value=30,
+        unit="%",
+        description="Share of food production that is not consumed (wasted). From harvest to retail: 13%, Retail and conso:17% ",
+        link="https://www.fao.org/platform-food-loss-waste/flw-data/en",
+        source="Food and Agriculture Organization of the United Nations",
+        last_update_date=date(2024, 2, 28)
+    )
+
     ENSOTemperatureAnomaly = ColectedData(
         value=+0.25,
         unit="°C",

@@ -120,6 +120,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'assumptions_dict': ClimateEcoDiscipline.ASSUMPTIONS_DESC_IN,
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
         GlossaryCore.UsableCapitalObjectiveRefName: GlossaryCore.UsableCapitalObjectiveRef,
+        GlossaryCore.ConsumptionObjectiveRefValue: GlossaryCore.ConsumptionObjectiveRef,
         GlossaryCore.CheckRangeBeforeRunBoolName: GlossaryCore.CheckRangeBeforeRunBool,
     }
 
@@ -145,7 +146,6 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
                                              'unit': '-',
                                              'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                                              'namespace': GlossaryCore.NS_FUNCTIONS},
-
         GlossaryCore.SectionGdpDictValue: GlossaryCore.SectionGdpDict,
         GlossaryCore.UsableCapitalObjectiveName: GlossaryCore.UsableCapitalObjective
     }
@@ -269,41 +269,12 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         if param[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_input_var()
             self.check_ranges(param, dict_ranges)
-        damage_frac_df = param.pop(GlossaryCore.DamageFractionDfValue)
-        energy_production = param.pop(GlossaryCore.EnergyProductionValue)
-        co2_emissions_Gt = param.pop(GlossaryCore.CO2EmissionsGtValue)
-        co2_taxes = param.pop(GlossaryCore.CO2TaxesValue)
-        co2_tax_efficiency = param.pop(GlossaryCore.CO2TaxEfficiencyValue)
-        co2_invest_limit = param.pop('co2_invest_limit')
-        population_df = param.pop(GlossaryCore.PopulationDfValue)
-        working_age_population_df = param.pop(GlossaryCore.WorkingAgePopulationDfValue)
-        energy_capital_df = param[GlossaryCore.EnergyCapitalDfValue]
-        compute_gdp: bool = param['assumptions_dict']['compute_gdp']
-        sector_list = param[GlossaryCore.SectorListValue]
-        section_gdp_percentage_df = param[GlossaryCore.SectionGdpPercentageDfValue]
-        macro_inputs = {GlossaryCore.DamageFractionDfValue: damage_frac_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
-                        GlossaryCore.EnergyProductionValue: energy_production,
-                        GlossaryCore.EnergyInvestmentsWoTaxValue: param[GlossaryCore.EnergyInvestmentsWoTaxValue],
-                        GlossaryCore.ShareNonEnergyInvestmentsValue: param[GlossaryCore.ShareNonEnergyInvestmentsValue],
-                        GlossaryCore.CO2EmissionsGtValue: co2_emissions_Gt,
-                        GlossaryCore.CO2TaxesValue: co2_taxes,
-                        GlossaryCore.CO2TaxEfficiencyValue: co2_tax_efficiency,
-                        'co2_invest_limit': co2_invest_limit,
-                        GlossaryCore.PopulationDfValue: population_df[[GlossaryCore.Years, GlossaryCore.PopulationValue]],
-                        GlossaryCore.WorkingAgePopulationDfValue: working_age_population_df[[GlossaryCore.Years, GlossaryCore.Population1570]],
-                        'energy_capital_df': energy_capital_df,
-                        'compute_gdp': compute_gdp,
-                        GlossaryCore.SectorListValue: sector_list,
-                        GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df
-                        }
 
-        if not compute_gdp:
-            macro_inputs.update({'gross_output_in': param['gross_output_in']})
 
         # Model execution
         economics_detail_df, economics_df, damage_df, energy_investment, energy_investment_wo_renewable, \
             workforce_df, capital_df, sector_gdp_df, energy_wasted_objective = \
-            self.macro_model.compute(macro_inputs)
+            self.macro_model.compute(param)
 
         # Store output data
         dict_values = {GlossaryCore.EconomicsDetailDfValue: economics_detail_df,
