@@ -1,5 +1,5 @@
 # Temperature model
-The temperature model computes the evolution of atmospheric and ocean temperature following change in C02 concentration. In contains three equations, one for the radiative forcing and two equation for the climate system, all extracted from DICE[^1]  model with no modification (Nordhaus, 2017). 
+The temperature model computes the evolution of atmospheric and ocean temperature following change in green house gases (C02, CH4, N2O) concentrations. In contains three equations, one for the radiative forcing and two equation for the climate system, all extracted from DICE[^1]  model with no modification (Nordhaus, 2017). 
 
 ## Time step 
 The time step $t$ in each equation represents the period we are looking at. In the inputs we initialise the data with 2020 information. The user can choose the year end and the duration of the period (in years) by changing the parameters $year\, end$ and $time \,step$. For example, for a year start at 2020, year end in 2100 and a duration of time step of 5 years we have $t \, \epsilon \,[0, 16]$.
@@ -110,6 +110,13 @@ $$\varphi = \max{\left(\alpha + \beta^l CS + \beta^q CS^2, 1\right)}$$
 
 where $\alpha$ is set to $-42.7$, $\beta^{l}$ is set to $29.1$ and $\beta^{q}$ is set to 0.001, such that the best guess e-folding time for a climate sensitivity of $3.0$ is $44$ years.
 
+###### Natural variations around global mean temperature
+
+Once the global mean temperature is computed by the model, some natural fluctuations exist around that result.
+The amplitude of these fluctuations is estimated at 0.25°C [^11]. Important contributors of these variations can be the ENSO (El Niño System Oscillation), or volcanic eruptions for instance.
+This margin is represented in the graphics to explain the gap that can exist between predictions of the model and 
+observed temperature for a given year.
+
 #### Sea Level Rise
 
 Global mean sea level is also geometric, with its equilibrium level determined by the temperature and a life-time of $500$ years:
@@ -131,3 +138,4 @@ T. Nakajima, A. Robock, G. Stephens, T. Takemura and H. Zhang, 2013: Anthropogen
 [^8]: Meinshausen, M., Nicholls, Z.R., Lewis, J., Gidden, M.J, Vogel, E., Freund, M., Beyerle, U., Gessner, C., Nauels, A., Bauer, N. and Canadell, J.G., 2020. The shared socio-economic pathway (SSP) greenhouse gas concentrations and their extensions to 2500. Geoscientific Model Development, 13(8), pp.3571-3605
 [^9]: FUND Model Online Documentation (http://www.fund-model.org/MimiFUND.jl/latest/science/#.3.-Temperature-and-sea-level-rise-1)
 [^10]: Kattenberg, A., F.Giorgi, H.Grassl, G.A.Meehl, J.F.B.Mitchell, R.J.Stouffer, T.Tokioka, A.J.Weaver, and T.M.L.Wigley (1996), 'Climate Models - Projections of Future Climate', in Climate Change 1995: The Science of Climate Change – Contribution of Working Group I to the Second Assessment Report of the Intergovernmental Panel on Climate Change, 1 edn, J.T. Houghton et al. (eds.), Cambridge University Press, Cambridge, pp. 285-357.
+[^11] [Berkley's Earth Analysis](https://berkeleyearth.org/global-temperature-report-for-2023/#:~:text=Annual%20Temperature%20Anomaly&text=As%20a%20result%2C%202023%20is,C%20(2.7%20%C2%B0F).)

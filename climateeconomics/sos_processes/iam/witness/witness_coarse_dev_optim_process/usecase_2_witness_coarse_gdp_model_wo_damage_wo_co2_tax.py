@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import os.path
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
@@ -64,3 +65,15 @@ if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
     uc_cls.run()
+    design_space_out_var_name = uc_cls.ee.dm.get_all_namespaces_from_var_name("design_space_out")[0]
+    dspace_end = uc_cls.ee.dm.get_value(design_space_out_var_name)
+    design_space_last_ite_var_name = uc_cls.ee.dm.get_all_namespaces_from_var_name("design_space_last_ite")[0]
+    dspace_last_ite = uc_cls.ee.dm.get_value(design_space_last_ite_var_name)
+    max_ite_varname = uc_cls.ee.dm.get_all_namespaces_from_var_name("max_iter")[0]
+    max_itee =  uc_cls.ee.dm.get_value(max_ite_varname)
+    import os
+    path_dir = os.path.dirname(os.path.abspath(__file__))
+    path_ds_end = os.path.join(path_dir, f"{uc_cls.study_name}_design_space_out_{max_itee}_iter.csv")
+    path_ds_last_ite = os.path.join(path_dir, f"{uc_cls.study_name}_design_space_last_ite_{max_itee}_iter.csv")
+    dspace_end.to_csv(path_ds_end)
+    dspace_last_ite.to_csv(path_ds_last_ite)
