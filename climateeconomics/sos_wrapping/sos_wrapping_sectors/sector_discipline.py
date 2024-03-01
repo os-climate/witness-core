@@ -35,8 +35,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
     NS_SECTORS = GlossaryCore.NS_SECTORS
     DESC_IN = {
         GlossaryCore.SectionGdpPercentageDfValue: GlossaryCore.SectionGdpPercentageDf,
-        GlossaryCore.NonEnergyEmissionValue: GlossaryCore.NonEnergyEmission,
-        GlossaryCore.SectionEnergyPercentageDfValue: GlossaryCore.SectionEnergyPercentageDf,
+        GlossaryCore.SectionNonEnergyEmissionDfValue: GlossaryCore.SectionNonEnergyEmissionDf,
+        GlossaryCore.SectionEnergyConsumptionPercentageDfValue: GlossaryCore.SectionEnergyConsumptionPercentageDf,
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
         GlossaryCore.DamageFractionDfValue: GlossaryCore.DamageFractionDf,
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
@@ -148,19 +148,19 @@ class SectorDiscipline(ClimateEcoDiscipline):
         workforce_df = param[GlossaryCore.WorkforceDfValue]
         prod_function_fitting = param['prod_function_fitting']
         section_gdp_percentage_df = param[GlossaryCore.SectionGdpPercentageDfValue]
-        non_energy_emission_df = param[GlossaryCore.NonEnergyEmissionValue]
-        section_energy_percentage_df = param[GlossaryCore.SectionEnergyPercentageDfValue]
+        section_non_energy_emission_df = param[GlossaryCore.SectionNonEnergyEmissionDfValue]
+        section_energy_consumption_percentage_df = param[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
 
         model_inputs = {
-            GlossaryCore.NonEnergyEmissionValue: non_energy_emission_df,
-            GlossaryCore.SectionEnergyPercentageDfValue: section_energy_percentage_df,
+            GlossaryCore.SectionNonEnergyEmissionDfValue: section_non_energy_emission_df,
+            GlossaryCore.SectionEnergyConsumptionPercentageDfValue: section_energy_consumption_percentage_df,
             GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df,
             GlossaryCore.DamageFractionDfValue: damage_fraction_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]],
             GlossaryCore.EnergyProductionValue: energy_production,
             GlossaryCore.InvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
-        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df = self.model.compute(
+        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df = self.model.compute(
             model_inputs)
 
         # Store output data
@@ -170,10 +170,10 @@ class SectorDiscipline(ClimateEcoDiscipline):
                        f"{self.sector_name}.{GlossaryCore.DamageDfValue}": damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}": damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
-                       #f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}": section_gdp_df[GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
                        GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
                        GlossaryCore.SectionGdpDfValue: self.model.section_gdp_df,
+                       GlossaryCore.SectionEmissionDfValue: self.model.section_emission_df,
                        }
 
         if prod_function_fitting:
@@ -392,10 +392,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
                     chart_list = chart_filter.selected_values
 
         production_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.ProductionDfValue}")
-        #section_gdp_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.SectionGdpDfValue}")
         detailed_capital_df = self.get_sosdisc_outputs(f"{self.sector_name}.{GlossaryCore.DetailedCapitalDfValue}")
-        productivity_df = self.get_sosdisc_outputs(GlossaryCore.ProductivityDfValue)
-        section_gdp_df = self.get_sosdisc_outputs(GlossaryCore.SectionGdpDfValue)
         workforce_df = self.get_sosdisc_inputs(GlossaryCore.WorkforceDfValue)
         growth_rate_df = self.get_sosdisc_outputs('growth_rate_df')
         capital_utilisation_ratio = self.get_sosdisc_inputs('capital_utilisation_ratio')

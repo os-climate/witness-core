@@ -46,8 +46,11 @@ class SectorModel():
         self.gdp_percentage_per_section_df = None
         self.section_list = []
         self.section_gdp_df = None
+        self.energy_consumption_percentage_per_section_df = None
+        self.section_non_energy_emission_df = None
+        self.section_emission_df = None
         self.range_energy_eff_cstrt = None
-        self.energy_eff_xzero_constraint =  None
+        self.energy_eff_xzero_constraint = None
     def configure_parameters(self, inputs_dict, sector_name):
         '''
         Configure with inputs_dict from the discipline
@@ -67,6 +70,8 @@ class SectorModel():
         self.sector_name = sector_name
         self.retrieve_sections_list()
         self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
+        self.energy_consumption_percentage_per_section_df = inputs_dict[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
+        self.section_non_energy_emission_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionDfValue]
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']
@@ -154,6 +159,8 @@ class SectorModel():
                 section_gdp_percentage_df[section] = (section_gdp_percentage_df[section] * 100) / sum_sections
         return section_gdp_percentage_df
 
+    # TODO : add method that does the same for energy consumption as for gdp
+
     def init_dataframes(self):
         '''
         Init dataframes with years
@@ -163,11 +170,14 @@ class SectorModel():
         self.capital_df = pd.DataFrame(index=default_index, columns=GlossaryCore.CapitalDf['dataframe_descriptor'].keys())
         self.production_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductionDf['dataframe_descriptor'].keys())
         self.section_gdp_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionGdpDf['dataframe_descriptor'].keys())
+        self.section_emission_df = pd.DataFrame(index=default_index,
+                                           columns=GlossaryCore.SectionEmissionDf['dataframe_descriptor'].keys())
         self.damage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
         self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductivityDf['dataframe_descriptor'].keys())
         self.growth_rate_df = pd.DataFrame(index=default_index, columns=[GlossaryCore.Years, 'net_output_growth_rate'])
         self.production_df[GlossaryCore.Years] = self.years
         self.section_gdp_df[GlossaryCore.Years] = self.years
+        self.section_emission_df[GlossaryCore.Years] = self.years
         self.damage_df[GlossaryCore.Years] = self.years
         self.capital_df[GlossaryCore.Years] = self.years
         self.productivity_df[GlossaryCore.Years] = self.years
@@ -485,6 +495,7 @@ class SectorModel():
             self.compute_capital(year+1)
         self.production_df = self.production_df.fillna(0.0)
         self.section_gdp_df = self.section_gdp_df.fillna(0.0)
+        self.section_emission_df = self.section_emission_df.fillna(0.0)
         self.capital_df = self.capital_df.fillna(0.0)
         self.productivity_df = self.productivity_df.fillna(0.0)
         if self.prod_function_fitting:
@@ -492,13 +503,14 @@ class SectorModel():
             self.compute_energy_eff_constraints()
 
         self.compute_output_net_of_damage_per_section()
+        # self.compute_section_emission()
 
         self.compute_energy_usage()
         self.compute_energy_wasted_objective()
         self.compute_damage_from_productivity_loss()
         self.compute_damage_from_climate()
         self.compute_total_damages()
-        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df
+        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df, self.section_emission_df
     
     ### GRADIENTS ###
 
