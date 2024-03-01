@@ -92,7 +92,7 @@ class Study(ClimateEconomicsStudyManager):
                              f'{ns}.{self.optim_name}.ineq_constraints': [],
 
                              # optimization parameters:
-                             f'{ns}.{self.optim_name}.max_iter': 500,
+                             f'{ns}.{self.optim_name}.max_iter': 400,
                              f'{ns}.warm_start': True,
                              f'{ns}.{self.optim_name}.{self.witness_uc.coupling_name}.warm_start': True,
                              # SLSQP, NLOPT_SLSQP
@@ -104,6 +104,7 @@ class Study(ClimateEconomicsStudyManager):
                                                                       "normalize_design_space": True,
                                                                       "maxls": 3 * dspace_size,
                                                                       "maxcor": dspace_size,
+                                                                      "factr": 1,
                                                                       "pg_tol": 1e-16,
                                                                       "xtol_rel": 1e-16,
                                                                       "xtol_abs": 1e-16,

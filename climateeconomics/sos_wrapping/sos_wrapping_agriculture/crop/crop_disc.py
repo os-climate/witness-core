@@ -317,7 +317,7 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
-        GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
+        GlossaryCore.YearEnd: GlossaryCore.get_dynamic_variable(GlossaryCore.YearEndVar),
         GlossaryCore.TimeStep: ClimateEcoDiscipline.TIMESTEP_DESC_IN,
         GlossaryCore.PopulationDfValue: GlossaryCore.PopulationDf,
         'diet_df': {'type': 'dataframe', 'unit': 'kg_food/person/year', 'default': diet_df_default,
@@ -508,12 +508,10 @@ class CropDiscipline(ClimateEcoDiscipline):
 
     def setup_sos_disciplines(self):  # type: (...) -> None
 
-        if GlossaryCore.YearStart in self.get_data_in():
-            year_start, year_end = self.get_sosdisc_inputs(
-                [GlossaryCore.YearStart, GlossaryCore.YearEnd])
-            years = np.arange(year_start, year_end + 1)
+        if "red_meat_calories_per_day" in self.get_data_in():
+            red_meat_calories_per_day = self.get_sosdisc_inputs("red_meat_calories_per_day")
             default_food_waste_percentage_df = pd.DataFrame({
-                GlossaryCore.Years: years,
+                GlossaryCore.Years: red_meat_calories_per_day[GlossaryCore.Years].values,
                 GlossaryCore.FoodWastePercentageValue: DatabaseWitnessCore.FoodWastePercentage.value
             })
             self.set_dynamic_default_values({GlossaryCore.FoodWastePercentageValue: default_food_waste_percentage_df})
