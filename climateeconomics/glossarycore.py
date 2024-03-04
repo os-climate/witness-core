@@ -633,6 +633,19 @@ class GlossaryCore:
 
     EnergyMeanPriceValue = "energy_mean_price"
 
+    EnergyMeanPriceObjectiveValue = f"{EnergyMeanPriceValue}_objective"
+    EnergyMeanPriceObjective = {
+        "var_name": EnergyMeanPriceObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "unit": "-",
+    }
+    EnergyMeanPriceObjectiveRefValue = get_ref_var_name(EnergyMeanPriceObjectiveValue)
+    EnergyMeanPriceObjectiveRef = get_ref_variable(var_name=EnergyMeanPriceObjectiveRefValue,
+                                                   unit="$",
+                                                   default_value=100.,)
+
     EnergyPricesValue = "energy_prices"
     ResourcesPriceValue = "resources_price"
     EnergyPriceValue = "energy_price"
