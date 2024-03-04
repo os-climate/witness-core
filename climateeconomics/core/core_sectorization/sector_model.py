@@ -112,52 +112,49 @@ class SectorModel():
         if self.sector_name == GlossaryCore.SectorAgriculture:
             self.section_list = GlossaryCore.SectionsAgriculture
 
-    def get_gdp_percentage_per_section(self):
+    def compute_percentage_per_section(self, dataframe):
         '''
-        Get default values for gdp percentage per sector from gdp_percentage_per_sector.csv file
+        Compute percentage values for each section of a sector in a dataframe
         '''
         # the year range for the study can differ from that stated in the csv file
-        start_year_csv = self.gdp_percentage_per_section_df.loc[0, GlossaryCore.Years]
+        start_year_csv = dataframe.loc[0, GlossaryCore.Years]
         if start_year_csv > self.year_start:
             # duplicate first row (start_year_csv - year_start) time
-            list_df_to_concat = [self.gdp_percentage_per_section_df.iloc[0:1]] * (start_year_csv - self.year_start)
+            list_df_to_concat = [dataframe.iloc[0:1]] * (start_year_csv - self.year_start)
             # add input dataframe to the list
-            list_df_to_concat.append(self.gdp_percentage_per_section_df)
+            list_df_to_concat.append(dataframe)
             # concatenate the dataframes using the created list to fill the missing rows
-            self.gdp_percentage_per_section_df = pd.concat(list_df_to_concat).reset_index(drop=True)
+            dataframe = pd.concat(list_df_to_concat).reset_index(drop=True)
             # set years of the updated dataframe
-            self.gdp_percentage_per_section_df.iloc[0:(start_year_csv - self.year_start)][
+            dataframe.iloc[0:(start_year_csv - self.year_start)][
                 GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
 
         elif start_year_csv < self.year_start:
-            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
-                self.gdp_percentage_per_section_df[GlossaryCore.Years] > self.year_start - 1]
+            dataframe = dataframe[dataframe[GlossaryCore.Years] > self.year_start - 1]
 
-        end_year_csv = self.gdp_percentage_per_section_df.loc[self.gdp_percentage_per_section_df.index[-1], GlossaryCore.Years]
+        end_year_csv = dataframe.loc[dataframe.index[-1], GlossaryCore.Years]
         if end_year_csv > self.year_end:
-            self.gdp_percentage_per_section_df = self.gdp_percentage_per_section_df[
-                self.gdp_percentage_per_section_df[GlossaryCore.Years] < self.year_end + 1]
+            dataframe = dataframe[dataframe[GlossaryCore.Years] < self.year_end + 1]
         elif end_year_csv < self.year_end:
-            list_df_to_concat = [self.gdp_percentage_per_section_df]
-            list_df_to_concat.extend([self.gdp_percentage_per_section_df.iloc[-1:]] * (
-                                                                        self.year_end - end_year_csv))
-            self.gdp_percentage_per_section_df = pd.concat(list_df_to_concat).reset_index(drop=True)
-            # fill years with mising years (start at end_year_csv+1, and last element should be year_end)
-            self.gdp_percentage_per_section_df.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
+            list_df_to_concat = [dataframe]
+            list_df_to_concat.extend([dataframe.iloc[-1:]] * (self.year_end - end_year_csv))
+            dataframe = pd.concat(list_df_to_concat).reset_index(drop=True)
+            # fill years with missing years (start at end_year_csv+1, and last element should be year_end)
+            dataframe.iloc[-(self.year_end - end_year_csv):][GlossaryCore.Years] = np.arange(
                 end_year_csv+1, self.year_end+1)
 
         # filtering in order to keep only the percentages of the sections in the sector
-        section_gdp_percentage_df = pd.DataFrame()
-        section_gdp_percentage_df[GlossaryCore.Years] = self.gdp_percentage_per_section_df[GlossaryCore.Years]
+        new_dataframe = pd.DataFrame()
+        new_dataframe[GlossaryCore.Years] = dataframe[GlossaryCore.Years]
         sum_sections = 0
-        for section in self.gdp_percentage_per_section_df.columns:
+        for section in dataframe.columns:
             if section in self.section_list:
-                section_gdp_percentage_df[section] = self.gdp_percentage_per_section_df[section]
-                sum_sections += section_gdp_percentage_df[section].iloc[0]
-        for section in section_gdp_percentage_df.columns:
+                new_dataframe[section] = dataframe[section]
+                sum_sections += new_dataframe[section].iloc[0]
+        for section in new_dataframe.columns:
             if section != 'years':
-                section_gdp_percentage_df[section] = (section_gdp_percentage_df[section] * 100) / sum_sections
-        return section_gdp_percentage_df
+                new_dataframe[section] = (new_dataframe[section] * 100) / sum_sections
+        return new_dataframe
 
     # TODO : add method that does the same for energy consumption as for gdp
 
@@ -323,7 +320,7 @@ class SectorModel():
         """
         Splitting output net of damages between sections of the sector
         """
-        section_gdp_percentage_df = self.get_gdp_percentage_per_section()
+        section_gdp_percentage_df = self.compute_percentage_per_section(self.gdp_percentage_per_section_df)
         self.section_gdp_df = section_gdp_percentage_df.copy()
         production_df_copy = self.production_df.copy(deep=True)
         self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(
