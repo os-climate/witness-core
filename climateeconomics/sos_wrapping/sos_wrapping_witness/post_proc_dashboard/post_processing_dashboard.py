@@ -96,10 +96,12 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         ), secondary_y=True)
 
        # Creating list of values according to CO2 storage limited by CO2 captured
+        graph_gross_co2 = []
         graph_dac = []
         graph_flue_gas = []
         for year_index, year in enumerate(years):
             storage_limit = co2_emissions['carbon_storage Limited by capture (Gt)'][year_index]
+            graph_gross_co2.append(total_ghg_df[f'Total CO2 emissions'][year_index] + storage_limit)
             captured_total = carbon_captured['DAC'][year_index]*0.001+carbon_captured['flue gas'][year_index]*0.001
             if captured_total > 0.0:
                 proportion_stockage = storage_limit/captured_total
@@ -131,7 +133,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         ), secondary_y=False)
         fig.add_trace(go.Scatter(
             x=years,
-            y=total_ghg_df[f'Total CO2 emissions'].to_list()+co2_emissions['carbon_storage Limited by capture (Gt)'].to_list(),
+            y=graph_gross_co2,
             name='Gross CO2 emissions',
         ), secondary_y=False)
 
