@@ -46,10 +46,11 @@ class FossilTechnoInfos(SoSWrapp):
                'CO2_from_production': {SoSWrapp.TYPE: 'float', SoSWrapp.DEFAULT: 0.37077040550222284},
                }
 
-    DESC_OUT = {'techno_infos_dict': {'type': 'dict',
-                                      'namespace': 'ns_fossil_techno',
-                                      'default': FOSSIL_DEFAULT_TECHNO_DICT.copy(),
-                                      'unit': 'defined in dict'}
+    DESC_OUT = {'techno_infos_dict': {SoSWrapp.TYPE: 'dict',
+                                      SoSWrapp.VISIBILITY: SoSWrapp.SHARED_VISIBILITY,
+                                      SoSWrapp.NAMESPACE: 'ns_fossil_techno',
+                                      SoSWrapp.DEFAULT: FOSSIL_DEFAULT_TECHNO_DICT.copy(),
+                                      SoSWrapp.UNIT: 'defined in dict'}
                 }
 
     def run(self):

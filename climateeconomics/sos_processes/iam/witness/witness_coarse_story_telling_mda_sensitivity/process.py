@@ -27,7 +27,7 @@ class ProcessBuilder(BaseProcessBuilder):
         'version': '',
     }
 
-    COUPLING_NAME = '+ damage + tax, NZE'
+    COUPLING_NAME = 'NZE'
     DRIVER_NAME = 'AnalysisWITNESS'
 
     def get_builders(self):

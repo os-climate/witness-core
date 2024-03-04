@@ -44,10 +44,11 @@ class RenewableTechnoInfos(SoSWrapp):
                'Energy_costs': {SoSWrapp.TYPE: 'float', SoSWrapp.DEFAULT: 70.0},
                }
 
-    DESC_OUT = {'techno_infos_dict': {'type': 'dict',
-                                      'namespace': 'ns_renewable_techno',
-                                      'default': RENEWABLE_DEFAULT_TECHNO_DICT.copy(),
-                                      'unit': 'defined in dict'}
+    DESC_OUT = {'techno_infos_dict': {SoSWrapp.TYPE: 'dict',
+                                      SoSWrapp.VISIBILITY: SoSWrapp.SHARED_VISIBILITY,
+                                      SoSWrapp.NAMESPACE: 'ns_renewable_techno',
+                                      SoSWrapp.DEFAULT: RENEWABLE_DEFAULT_TECHNO_DICT.copy(),
+                                      SoSWrapp.UNIT: 'defined in dict'}
                 }
 
     def run(self):
