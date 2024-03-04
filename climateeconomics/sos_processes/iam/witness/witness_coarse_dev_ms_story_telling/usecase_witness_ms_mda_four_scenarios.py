@@ -18,6 +18,7 @@ from os.path import join, dirname
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
+from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
     Study as usecase2
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
@@ -35,10 +36,16 @@ from sostrades_core.tools.post_processing.post_processing_factory import PostPro
 
 class Study(ClimateEconomicsStudyManager):
 
+    USECASE2 = '- damage - tax, fossil 100%'
+    USECASE2B ='+ damage - tax, fossil 100%'
+    USECASE4 = '+ damage - tax, fossil 40%'
+    USECASE7 = '+ damage + tax, NZE'
+
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
+        self.check_outputs = True
 
     def setup_usecase(self, study_folder_path=None):
 
@@ -69,6 +76,128 @@ class Study(ClimateEconomicsStudyManager):
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
         return values_dict
+
+    def specific_check_outputs(self):
+        """Some outputs are retrieved and their range is checked"""
+        list_scenario = {self.USECASE2, self.USECASE2B, self.USECASE4, self.USECASE7}
+        dm = self.execution_engine.dm
+        all_temp_increase = dm.get_all_namespaces_from_var_name('temperature_df')
+        ref_value_temp_increase = {
+            self.USECASE2: 4.23,
+            self.USECASE2B: 4.07,
+            self.USECASE4: 3.34,
+            self.USECASE7: 2.41
+        }
+        all_co2_taxes = dm.get_all_namespaces_from_var_name('CO2_taxes')
+        ref_value_co2_tax = {
+            self.USECASE2: 0,
+            self.USECASE2B: 0,
+            self.USECASE4: 0,
+            self.USECASE7: 1192
+        }
+        all_gdps = dm.get_all_namespaces_from_var_name(GlossaryCore.EconomicsDfValue)
+        ref_value_world_gdp_net_of_damage = {
+            self.USECASE2: 421,
+            self.USECASE2B: 126,
+            self.USECASE4: 198,
+            self.USECASE7: 251
+        }
+
+        all_co2_emissions = dm.get_all_namespaces_from_var_name(GlossaryCore.GHGEmissionsDfValue)
+        ref_value_co2_emissions = {
+            self.USECASE2: 141,
+            self.USECASE2B: 81,
+            self.USECASE4: 54,
+            self.USECASE7: -5.45
+        }
+
+        all_net_energy_productions = dm.get_all_namespaces_from_var_name(f'EnergyMix.energy_production_detailed')
+        ref_value_net_energy_production = {
+            self.USECASE2: 338*1e3,
+            self.USECASE2B: 182*1e3,
+            self.USECASE4: 223*1e3,
+            self.USECASE7: 248*1e3
+        }
+
+        all_populations = dm.get_all_namespaces_from_var_name(GlossaryCore.PopulationDfValue)
+        ref_value_populations = {
+            self.USECASE2: 9.17 * 1e3,
+            self.USECASE2B: 8.64 * 1e3,
+            self.USECASE4: 8.84 * 1e3,
+            self.USECASE7: 8.96 * 1e3
+        }
+
+        all_energy_investment_without_tax = dm.get_all_namespaces_from_var_name(GlossaryCore.EnergyInvestmentsWoTaxValue)
+        ref_value_energy_investment_without_tax = {
+            self.USECASE2: 2.11,
+            self.USECASE2B: 0.7,
+            self.USECASE4: 1.41,
+            self.USECASE7: 3.0
+        }
+
+        for scenario in list_scenario:
+            # Checking that the temperature value in 2100 is in an acceptable range for each usecase
+            for scenario_temp_increase in all_temp_increase:
+                if scenario in scenario_temp_increase:
+                    temp_increase = dm.get_value(scenario_temp_increase)
+                    value_temp_increase = temp_increase.loc[temp_increase['years'] == 2100]['temp_atmo'].values[0]
+                    assert value_temp_increase >= ref_value_temp_increase[scenario] * 0.8
+                    assert value_temp_increase <= ref_value_temp_increase[scenario] * 1.2
+            # Checking that the CO2 tax value in 2100 is in an acceptable range for each usecase
+            for scenario_co2_tax in all_co2_taxes:
+                if scenario in scenario_co2_tax:
+                    co2_tax = dm.get_value(scenario_co2_tax)
+                    value_co2_tax = co2_tax.loc[co2_tax['years'] == 2100]['CO2_tax'].values[0]
+                    assert value_co2_tax >= ref_value_co2_tax[scenario] * 0.8
+                    assert value_co2_tax <= ref_value_co2_tax[scenario] * 1.2
+
+            for scenario_gdp in all_gdps:
+                if scenario in scenario_gdp:
+                    gdp_df = dm.get_value(scenario_gdp)
+                    value_gdp = gdp_df.loc[gdp_df['years'] == 2100][GlossaryCore.OutputNetOfDamage].values[0]
+                    assert value_gdp >= ref_value_world_gdp_net_of_damage[scenario] * 0.8
+                    assert value_gdp <= ref_value_world_gdp_net_of_damage[scenario] * 1.2
+
+            for scenario_emissions in all_co2_emissions:
+                if scenario in scenario_emissions:
+                    emissions_df = dm.get_value(scenario_emissions)
+                    value_emissions = \
+                    emissions_df.loc[emissions_df['years'] == 2100][GlossaryCore.TotalCO2Emissions].values[0]
+                    if self.USECASE7 in scenario:
+                        assert value_emissions <= ref_value_co2_emissions[scenario] * 0.8
+                        assert value_emissions >= ref_value_co2_emissions[scenario] * 1.2
+                    else:
+                        assert value_emissions >= ref_value_co2_emissions[scenario] * 0.8
+                        assert value_emissions <= ref_value_co2_emissions[scenario] * 1.2
+
+            for scenario_net_energy_production in all_net_energy_productions:
+                if scenario in scenario_net_energy_production:
+                    net_energy_production_df = dm.get_value(scenario_net_energy_production)
+                    value_net_energy_production = \
+                    net_energy_production_df.loc[net_energy_production_df['years'] == 2100][
+                        'Total production (uncut)'].values[0]
+                    assert value_net_energy_production >= ref_value_net_energy_production[scenario] * 0.8
+                    assert value_net_energy_production <= ref_value_net_energy_production[scenario] * 1.2
+
+            for scenario_population in all_populations:
+                if scenario in scenario_population:
+                    population_df = dm.get_value(scenario_population)
+                    value_population = \
+                    population_df.loc[population_df['years'] == 2100][
+                        GlossaryCore.PopulationValue].values[0]
+                    assert value_population >= ref_value_populations[scenario] * 0.8
+                    assert value_population <= ref_value_populations[scenario] * 1.2
+
+            for scenario_energy_investment_without_tax in all_energy_investment_without_tax:
+                if scenario in scenario_energy_investment_without_tax:
+                    energy_investment_without_tax_df = dm.get_value(scenario_energy_investment_without_tax)
+                    value_energy_investment_without_tax = \
+                    energy_investment_without_tax_df.loc[energy_investment_without_tax_df['years'] == 2100][
+                        GlossaryCore.EnergyInvestmentsWoTaxValue].values[0]
+                    assert value_energy_investment_without_tax >= ref_value_energy_investment_without_tax[
+                        scenario] * 0.8
+                    assert value_energy_investment_without_tax <= ref_value_energy_investment_without_tax[
+                        scenario] * 1.2
 
 
 if '__main__' == __name__:
