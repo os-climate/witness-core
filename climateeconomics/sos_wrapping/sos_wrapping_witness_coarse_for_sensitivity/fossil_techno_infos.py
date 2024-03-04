@@ -14,11 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc import RenewableSimpleTechnoDiscipline
 from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
-
+from copy import deepcopy
 
 FOSSIL_DEFAULT_TECHNO_DICT = FossilSimpleTechnoDiscipline.techno_infos_dict_default
 
@@ -46,16 +43,17 @@ class FossilTechnoInfos(SoSWrapp):
                'CO2_from_production': {SoSWrapp.TYPE: 'float', SoSWrapp.DEFAULT: 0.37077040550222284},
                }
 
-    DESC_OUT = {'techno_infos_dict': {'type': 'dict',
-                                      'namespace': 'ns_fossil_techno',
-                                      'default': FOSSIL_DEFAULT_TECHNO_DICT.copy(),
-                                      'unit': 'defined in dict'}
+    DESC_OUT = {'techno_infos_dict': {SoSWrapp.TYPE: 'dict',
+                                      SoSWrapp.VISIBILITY: SoSWrapp.SHARED_VISIBILITY,
+                                      SoSWrapp.NAMESPACE: 'ns_fossil_techno',
+                                      SoSWrapp.DEFAULT: deepcopy(FOSSIL_DEFAULT_TECHNO_DICT),
+                                      SoSWrapp.UNIT: 'defined in dict'}
                 }
 
     def run(self):
-        techno_infos_dict = FOSSIL_DEFAULT_TECHNO_DICT.copy()
+        techno_infos_dict = deepcopy(FOSSIL_DEFAULT_TECHNO_DICT)
         techno_infos_dict['Opex_percentage'] = self.get_sosdisc_inputs('Opex_percentage')
         techno_infos_dict['Capex_init'] = self.get_sosdisc_inputs('Initial_capex')
-        techno_infos_dict['Opex_percentage'] = self.get_sosdisc_inputs('Energy_costs')
+        techno_infos_dict['resource_price'] = self.get_sosdisc_inputs('Energy_costs')
         techno_infos_dict['CO2_from_production'] = self.get_sosdisc_inputs('CO2_from_production')
         self.store_sos_outputs_values({'techno_infos_dict': techno_infos_dict})

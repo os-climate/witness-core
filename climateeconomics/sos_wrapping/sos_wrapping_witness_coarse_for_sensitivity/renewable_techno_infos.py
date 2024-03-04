@@ -15,9 +15,7 @@ limitations under the License.
 '''
 from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc import RenewableSimpleTechnoDiscipline
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
-from climateeconomics.glossarycore import GlossaryCore
-from energy_models.glossaryenergy import GlossaryEnergy
+from copy import deepcopy
 
 
 RENEWABLE_DEFAULT_TECHNO_DICT = RenewableSimpleTechnoDiscipline.techno_infos_dict_default
@@ -44,15 +42,16 @@ class RenewableTechnoInfos(SoSWrapp):
                'Energy_costs': {SoSWrapp.TYPE: 'float', SoSWrapp.DEFAULT: 70.0},
                }
 
-    DESC_OUT = {'techno_infos_dict': {'type': 'dict',
-                                      'namespace': 'ns_renewable_techno',
-                                      'default': RENEWABLE_DEFAULT_TECHNO_DICT.copy(),
-                                      'unit': 'defined in dict'}
+    DESC_OUT = {'techno_infos_dict': {SoSWrapp.TYPE: 'dict',
+                                      SoSWrapp.VISIBILITY: SoSWrapp.SHARED_VISIBILITY,
+                                      SoSWrapp.NAMESPACE: 'ns_renewable_techno',
+                                      SoSWrapp.DEFAULT: deepcopy(RENEWABLE_DEFAULT_TECHNO_DICT),
+                                      SoSWrapp.UNIT: 'defined in dict'}
                 }
 
     def run(self):
-        techno_infos_dict = RENEWABLE_DEFAULT_TECHNO_DICT.copy()
+        techno_infos_dict = deepcopy(RENEWABLE_DEFAULT_TECHNO_DICT)
         techno_infos_dict['Opex_percentage'] = self.get_sosdisc_inputs('Opex_percentage')
         techno_infos_dict['Capex_init'] = self.get_sosdisc_inputs('Initial_capex')
-        techno_infos_dict['Opex_percentage'] = self.get_sosdisc_inputs('Energy_costs')
+        techno_infos_dict['resource_price'] = self.get_sosdisc_inputs('Energy_costs')
         self.store_sos_outputs_values({'techno_infos_dict': techno_infos_dict})

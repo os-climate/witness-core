@@ -39,7 +39,7 @@ from climateeconomics.glossarycore import GlossaryCore
 
 
 class Study(ClimateEconomicsStudyManager):
-    USECASE7 = '+ damage + tax, NZE'
+    USECASE7 = 'NZE'
 
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
@@ -87,7 +87,7 @@ class Study(ClimateEconomicsStudyManager):
 
         values_dict = {}
         values_dict[f'{self.study_name}.SampleGenerator.sampling_method'] = "tornado_chart_analysis"
-        values_dict[f'{self.study_name}.SampleGenerator.variation_list'] = [-2.5, 2.5]
+        values_dict[f'{self.study_name}.SampleGenerator.variation_list'] = [-5., 5.]
         values_dict[f'{self.study_name}.{self.driver_name}.with_sample_generator'] = True
         values_dict[f'{self.study_name}.SampleGenerator.eval_inputs'] = input_selection
         values_dict[f'{self.study_name}.{self.driver_name}.gather_outputs'] = output_selection
