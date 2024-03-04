@@ -76,7 +76,7 @@ The default diet per capita per year in kg of food is:
 
 These data are the average world diet [^7], in other words it represents the world food produced (not eaten) normalized by the 
 world population. This leads to a daily diet of 2927 kcal/person. It therefore includes the food wasted, namely not eaten.
-Since about 30% of the food produced is wasted [^22], the daily diet actually eaten is around 2049 kcal/person. 
+Since about 30% of the food produced is wasted [^22][^26], the daily diet actually eaten is around 2049 kcal/person. 
 
 * **m2 per kg**, gives the average area needed to produce 1kg of the considered food. The unit is m^2/kg. By default, data comes from [^8]. 
 The value for category other is adjusted so that the total land use of 4.9 Gha is reached considering the average diet for a population of 
@@ -256,6 +256,9 @@ higher than the ghg values computed. Then, for the red meat and milk categories,
 This approach is debatable, but it's the only way to recompute the global CH4 emissions with 8% error 
 while keeping accurate the global ghg and N2O emissions.  
 
+## Food waste
+Once the food is produced, part of it (30% [^22][^26])is not send to the population model to represent the waste that exists between production and consumption.
+
 
 ## Results
 This sections aims at describing the results charts.
@@ -284,8 +287,8 @@ in one year is allowed in the model, even if it is probably not realisable.
 with no regards of average weather or climate conditions. 
 For example equatorial or temperate climate may have different affinity with food production.
 * The CH4 emissions for livestock are underestimated to keep global ghg estimates accurate
-* The average diet describes the food produced, not the food eaten, ie it includes food waste. In the future, 
-if food waste is reduced, the number of calories of the average diet should be reduced as well
+* Food waste modeling: Food can be wasted during two stages [^22][^26] (harvest to retail - 17%, retail to consumption - 13%). Currently, these two stages are not represented, and all the wasted food comes from the crop model. Later, harvest to retail wastes should be included in the crop model, and retail to consumption wastes should be included in the population model.
+  
 
 
 ## Biomass dry Production
@@ -352,3 +355,4 @@ Prices are computed with the input parameter crop_residue_price_percent_dif.
 [^23]: Le monde, https://www.lemonde.fr/planete/article/2013/02/28/la-viande-de-boeuf-dans-votre-assiette-de-la-vieille-vache_1839589_3244.html
 [^24]: OurWorldInData: Rise of Aquaculture, https://ourworldindata.org/rise-of-aquaculture
 [^25]: Food and Agriculture Organisation, https://www.fao.org/3/cc8543en/cc8543en.pdf
+[^26]: Food and Agriculture Organisation, https://www.fao.org/platform-food-loss-waste/flw-data/en

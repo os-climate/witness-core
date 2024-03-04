@@ -83,7 +83,6 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         carbon_captured = execution_engine.dm.get_value(
             f'{namespace}.CCUS.{CarbonCapture_DISC}.{GlossaryEnergy.CarbonCapturedValue}')
         co2_emissions = execution_engine.dm.get_value(f'{namespace}.{CO2Emissions_Disc}.co2_emissions_ccus_Gt')
-        #carbon_storage_by_invest = execution_engine.dm.get_value(f'{namespace}.{CO2Emissions_Disc}.
         years = temperature_df[GlossaryEnergy.Years].values.tolist()
 
         chart_name = 'Temperature and CO2 evolution over the years'
@@ -95,11 +94,14 @@ def post_processings(execution_engine, namespace, chart_filters=None):
             y=temperature_df[GlossaryCore.TempAtmo].values.tolist(),
             name='Temperature',
         ), secondary_y=True)
-       #create list of values according to CO2 storage limited by co2 captured
+
+       # Creating list of values according to CO2 storage limited by CO2 captured
+        graph_gross_co2 = []
         graph_dac = []
         graph_flue_gas = []
         for year_index, year in enumerate(years):
             storage_limit = co2_emissions['carbon_storage Limited by capture (Gt)'][year_index]
+            graph_gross_co2.append(total_ghg_df[f'Total CO2 emissions'][year_index] + storage_limit)
             captured_total = carbon_captured['DAC'][year_index]*0.001+carbon_captured['flue gas'][year_index]*0.001
             if captured_total > 0.0:
                 proportion_stockage = storage_limit/captured_total
@@ -109,38 +111,31 @@ def post_processings(execution_engine, namespace, chart_filters=None):
                 graph_dac.append(0)
                 graph_flue_gas.append(0)
 
-
         fig.add_trace(go.Scatter(
             x=years,
             y=total_ghg_df[f'Total CO2 emissions'].to_list(),
             name='Net CO2 emissions',
             stackgroup='one',
-            visible='legendonly'
-
         ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=graph_dac,
-            name='CO2 captured by DAC',
+            name='CO2 captured by DAC and stored',
             stackgroup='one',
-            visible='legendonly',
         ), secondary_y=False)
 
         fig.add_trace(go.Scatter(
             x=years,
             y=graph_flue_gas,
-            name='CO2 captured by flue gas',
+            name='CO2 captured by flue gas and stored',
             stackgroup='one',
-            visible='legendonly',
         ), secondary_y=False)
         fig.add_trace(go.Scatter(
             x=years,
-            y=total_ghg_df[f'Total CO2 emissions'].to_list()+co2_emissions['carbon_storage Limited by capture (Gt)'].to_list(),
+            y=graph_gross_co2,
             name='Gross CO2 emissions',
-            visible='legendonly',
         ), secondary_y=False)
-
 
         fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
         fig.update_yaxes(title_text=f'CO2 emissions [Gt]',  rangemode="tozero", secondary_y=False)
@@ -148,6 +143,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         new_chart = InstantiatedPlotlyNativeChart(fig=fig, chart_name=chart_name)
 
         instanciated_charts.append(new_chart)
+
     if 'population and death' in chart_list:
         pop_df = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.population_detail_df')
         death_dict = execution_engine.dm.get_value(f'{namespace}.{POPULATION_DISC}.death_dict')
