@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/19-2023/11/03 Copyright 2023 Capgemini
+Modifications on 2023/04/19-2024/03/05 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -151,6 +151,8 @@ class TempChangeDiscipline(ClimateEcoDiscipline):
         ''' pyworld3 execution '''
         # get inputs
         in_dict = self.get_sosdisc_inputs()
+        # todo: for sensitivity, generalise ?
+        self.model.init_temp_atmo = in_dict['init_temp_atmo']
         if in_dict[GlossaryCore.CheckRangeBeforeRunBoolName]:
             dict_ranges = self.get_ranges_input_var()
             self.check_ranges(in_dict, dict_ranges)

@@ -114,6 +114,9 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         fig.add_trace(go.Scatter(
             x=years,
             y=total_ghg_df[f'Total CO2 emissions'].to_list(),
+            fill='tonexty',  # fill area between trace0 and trace1
+            mode='lines',
+            fillcolor='rgba(200, 200, 200, 0.0)',
             name='Net CO2 emissions',
             stackgroup='one',
         ), secondary_y=False)
