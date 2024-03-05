@@ -1419,6 +1419,19 @@ class GlossaryCore:
         "dynamic_dataframe_columns": True,
     }
 
+    TotalEnergyCO2eqEmissionsDfValue = "total_energy_co2eq_emissions_df"
+    TotalEnergyCO2eqEmissionsDf = {
+        "var_name": TotalEnergyCO2eqEmissionsDfValue,
+        'type': 'dataframe',
+        'unit': 'Gt',
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "dataframe_descriptor": {
+            Years: ("float", [1900, YeartEndDefault], False),
+            TotalEnergyCO2eqEmissionsDfValue: ("float", [0.0, 1e30], True),
+        },
+    }
+
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""
