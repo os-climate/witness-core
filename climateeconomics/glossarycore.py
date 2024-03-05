@@ -1325,6 +1325,16 @@ class GlossaryCore:
         "description": "Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022",
     }
 
+    EnergyCO2EmissionsValue = "energy_CO2_emissions"
+    EnergyCO2Emissions = {
+        "var_name": EnergyCO2EmissionsValue,
+        'type': 'dataframe',
+        'unit': 'kg/kWh',
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "dynamic_dataframe_columns": True,
+    }
+
     @staticmethod
     def get_dynamic_variable(variable: dict):
         """to be used with dynamic inputs/outputs"""
