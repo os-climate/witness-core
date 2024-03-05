@@ -35,7 +35,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
     NS_SECTORS = GlossaryCore.NS_SECTORS
     DESC_IN = {
         GlossaryCore.SectionGdpPercentageDfValue: GlossaryCore.SectionGdpPercentageDf,
-        GlossaryCore.SectionNonEnergyEmissionDfValue: GlossaryCore.SectionNonEnergyEmissionDf,
+        GlossaryCore.SectionNonEnergyEmissionGdpDfValue: GlossaryCore.SectionNonEnergyEmissionGdpDf,
         GlossaryCore.EnergyCO2EmissionsValue: GlossaryCore.EnergyCO2Emissions,
         GlossaryCore.SectionEnergyConsumptionPercentageDfValue: GlossaryCore.SectionEnergyConsumptionPercentageDf,
         GlossaryCore.SectionListValue: GlossaryCore.SectionList,
@@ -149,12 +149,12 @@ class SectorDiscipline(ClimateEcoDiscipline):
         workforce_df = param[GlossaryCore.WorkforceDfValue]
         prod_function_fitting = param['prod_function_fitting']
         section_gdp_percentage_df = param[GlossaryCore.SectionGdpPercentageDfValue]
-        section_non_energy_emission_df = param[GlossaryCore.SectionNonEnergyEmissionDfValue]
+        section_non_energy_emission_gdp_df = param[GlossaryCore.SectionNonEnergyEmissionGdpDfValue]
         energy_emission_df = param[GlossaryCore.EnergyCO2EmissionsValue]
         section_energy_consumption_percentage_df = param[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
 
         model_inputs = {
-            GlossaryCore.SectionNonEnergyEmissionDfValue: section_non_energy_emission_df,
+            GlossaryCore.SectionNonEnergyEmissionGdpDfValue: section_non_energy_emission_gdp_df,
             GlossaryCore.EnergyCO2EmissionsValue: energy_emission_df,
             GlossaryCore.SectionEnergyConsumptionPercentageDfValue: section_energy_consumption_percentage_df,
             GlossaryCore.SectionGdpPercentageDfValue: section_gdp_percentage_df,

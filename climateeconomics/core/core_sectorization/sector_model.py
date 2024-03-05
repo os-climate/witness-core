@@ -47,7 +47,7 @@ class SectorModel():
         self.section_list = []
         self.section_gdp_df = None
         self.energy_consumption_percentage_per_section_df = None
-        self.section_non_energy_emission_df = None
+        self.section_non_energy_emission_gdp_df = None
         self.energy_emission_df = None
         self.section_emission_df = None
         self.range_energy_eff_cstrt = None
@@ -71,8 +71,8 @@ class SectorModel():
         self.sector_name = sector_name
         self.retrieve_sections_list()
         self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
-        self.section_non_energy_emission_df = inputs_dict[GlossaryCore.EnergyCO2EmissionsValue]
-        self.energy_emission_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionDfValue]
+        self.section_non_energy_emission_gdp_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionGdpDf]
+        self.energy_emission_df = inputs_dict[GlossaryCore.EnergyCO2EmissionsValue]
         self.energy_consumption_percentage_per_section_df = inputs_dict[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
@@ -130,7 +130,6 @@ class SectorModel():
             # set years of the updated dataframe
             dataframe.iloc[0:(start_year_csv - self.year_start)][
                 GlossaryCore.Years] = np.arange(self.year_start, start_year_csv)
-
         elif start_year_csv < self.year_start:
             dataframe = dataframe[dataframe[GlossaryCore.Years] > self.year_start - 1]
 
@@ -157,8 +156,6 @@ class SectorModel():
             if section != 'years':
                 new_dataframe[section] = (new_dataframe[section] * 100) / sum_sections
         return new_dataframe
-
-    # TODO : add method that does the same for energy consumption as for gdp
 
     def init_dataframes(self):
         '''

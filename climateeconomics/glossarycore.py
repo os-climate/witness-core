@@ -84,7 +84,7 @@ class GlossaryCore:
     SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     SectionEnergyConsumptionPercentageDfValue = 'section_energy_consumption_percentage_df'
-    SectionNonEnergyEmissionDfValue = 'section_non_energy_emission_df'
+    SectionNonEnergyEmissionGdpDfValue = 'section_non_energy_emission_gdp_df'
     PopulationDfValue = "population_df"
     TemperatureDfValue = "temperature_df"
     UtilityDfValue = "utility_df"
@@ -229,8 +229,8 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "dataframe_descriptor": df_descriptor_section_df,
     }
-    SectionNonEnergyEmissionDf = {
-        "var_name": SectionNonEnergyEmissionDfValue,
+    SectionNonEnergyEmissionGdpDf = {
+        "var_name": SectionNonEnergyEmissionGdpDfValue,
         "type": "dataframe",
         "unit": "t/Million $GDP",
         "description": "Non energy CO2 emission per $GDP",
