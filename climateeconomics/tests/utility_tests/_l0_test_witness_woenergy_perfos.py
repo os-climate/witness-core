@@ -50,7 +50,7 @@ class TestScatter(unittest.TestCase):
         self.namespace = 'MyCase'
         self.study_name = f'{self.namespace}'
 
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.energy_supply_df_all = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years))

@@ -32,7 +32,7 @@ class SectorDisciplineJacobianTest(AbstractJacobianUnittest):
     def setUp(self):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = GlossaryCore.YeartStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)

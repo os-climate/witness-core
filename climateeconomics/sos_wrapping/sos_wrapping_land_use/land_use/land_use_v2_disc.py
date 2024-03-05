@@ -49,7 +49,7 @@ class LandUseV2Discipline(SoSWrapp):
         'icon': 'fas fa-globe-europe fa-fw',
         'version': '',
     }
-    default_year_start = GlossaryCore.YeartStartDefault
+    default_year_start = GlossaryCore.YearStartDefault
     default_year_end = 2050
     initial_unmanaged_forest_surface = 4 - 1.25
 

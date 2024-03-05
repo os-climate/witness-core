@@ -60,10 +60,10 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         values_dict = {}
         for dict_item in dc_witness.setup_usecase():
             values_dict.update(dict_item)
-        year_start = GlossaryCore.YeartStartDefault
-        year_end = GlossaryCore.YeartEndDefault
+        year_start = GlossaryCore.YearStartDefault
+        year_end = GlossaryCore.YearEndDefault
 
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),

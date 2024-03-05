@@ -54,7 +54,7 @@ def update_dspace_dict_with(dspace_dict, name, value, lower, upper, activated_el
 
 class Study(StudyManager):
 
-    def __init__(self, year_start=2000, year_end=GlossaryCore.YeartStartDefault, time_step=1, name='', execution_engine=None):
+    def __init__(self, year_start=2000, year_end=GlossaryCore.YearStartDefault, time_step=1, name='', execution_engine=None):
         super().__init__(__file__, execution_engine=execution_engine)
         self.study_name = 'usecase'
         self.macro_name = 'Macroeconomics'

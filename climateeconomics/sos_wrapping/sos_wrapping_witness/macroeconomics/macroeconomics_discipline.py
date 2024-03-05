@@ -52,7 +52,7 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     _maturity = 'Research'
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     DESC_IN = {
         GlossaryCore.YearStart: ClimateEcoDiscipline.YEAR_START_DESC_IN,
         GlossaryCore.YearEnd: GlossaryCore.YearEndVar,
@@ -202,8 +202,8 @@ class MacroeconomicsDiscipline(ClimateEcoDiscipline):
         '''
         Get default values for gross_output_in into GDP PPP economics_df_ssp3.csv file
         '''
-        year_start = GlossaryCore.YeartStartDefault
-        year_end = GlossaryCore.YeartEndDefault
+        year_start = GlossaryCore.YearStartDefault
+        year_end = GlossaryCore.YearEndDefault
         if GlossaryCore.YearStart in self.get_data_in():
             year_start, year_end = self.get_sosdisc_inputs(
                 [GlossaryCore.YearStart, GlossaryCore.YearEnd])

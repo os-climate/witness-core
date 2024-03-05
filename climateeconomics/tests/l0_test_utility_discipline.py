@@ -30,7 +30,7 @@ class UtilityDiscTest(unittest.TestCase):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
@@ -67,8 +67,8 @@ class UtilityDiscTest(unittest.TestCase):
         energy_mean_price = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.EnergyPriceValue: energy_price})
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,

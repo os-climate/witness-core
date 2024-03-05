@@ -29,7 +29,7 @@ class CarbonCycleDiscTest(unittest.TestCase):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.CO2_emissions_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             "total_emissions": np.linspace(35, 0, len(self.years)),

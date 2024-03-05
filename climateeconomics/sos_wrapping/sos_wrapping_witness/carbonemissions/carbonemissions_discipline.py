@@ -43,7 +43,7 @@ class CarbonemissionsDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
 
     _maturity = 'Research'
     DESC_IN = {

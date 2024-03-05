@@ -31,7 +31,7 @@ class ConsumptionDiscTest(unittest.TestCase):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.OutputNetOfDamage: np.linspace(121, 91, len(self.years)),
@@ -66,7 +66,7 @@ class ConsumptionDiscTest(unittest.TestCase):
         })
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         energy_price = np.arange(200, 200 + len(years))
         energy_mean_price = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
@@ -78,8 +78,8 @@ class ConsumptionDiscTest(unittest.TestCase):
         invest = np.asarray([10] * len(years))
         investment_df = pd.DataFrame({GlossaryCore.Years: years, GlossaryCore.InvestmentsValue: invest})
         np.set_printoptions(threshold=np.inf)
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.conso_elasticity': 1.45,
                        f'{self.name}.init_rate_time_pref': 0.015,

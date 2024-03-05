@@ -42,7 +42,7 @@ class AgricultureEmissionsDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-smog fa-fw',
         'version': '',
     }
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     GHG_TYPE_LIST = [GlossaryCore.CO2, GlossaryCore.CH4, 'N20']
     GWP_100_default = {GlossaryCore.CO2: 1.0,
                        GlossaryCore.CH4: 28.,

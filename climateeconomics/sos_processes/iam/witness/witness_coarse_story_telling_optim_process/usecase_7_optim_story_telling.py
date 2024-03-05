@@ -25,7 +25,7 @@ from sostrades_core.execution_engine.func_manager.func_manager_disc import Funct
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, run_usecase=False,
                  execution_engine=None):
         # initialize usecase and set default values
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)

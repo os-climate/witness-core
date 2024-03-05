@@ -47,7 +47,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-users fa-fw',
         'version': '',
     }
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     global_data_dir = join(Path(__file__).parents[3], 'data')
     pop_init_df = pd.read_csv(
         join(global_data_dir, 'population_by_age_2020.csv'))

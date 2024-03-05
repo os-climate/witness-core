@@ -31,8 +31,8 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
     def setUp(self):
         self.name = 'Test'
         self.model_name = GlossaryCore.Consumption
-        self.year_start =GlossaryCore.YeartStartDefault
-        self.year_end = GlossaryCore.YeartEndDefault
+        self.year_start =GlossaryCore.YearStartDefault
+        self.year_end = GlossaryCore.YearEndDefault
         self.years = np.arange(self.year_start, self.year_end + 1)
         self.year_range = self.year_end - self.year_start
 
@@ -54,7 +54,7 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.OutputNetOfDamage: np.linspace(121, 91, len(self.years)),

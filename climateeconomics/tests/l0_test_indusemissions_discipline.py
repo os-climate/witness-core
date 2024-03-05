@@ -29,13 +29,13 @@ class IndusEmissionDiscTest(unittest.TestCase):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.economics_df = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
         })
 
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
 
     def test_execute(self):
 

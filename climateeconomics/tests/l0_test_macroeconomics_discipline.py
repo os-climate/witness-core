@@ -37,7 +37,7 @@ class MacroDiscTest(unittest.TestCase):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.energy_supply_df_all = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years))
@@ -70,11 +70,11 @@ class MacroDiscTest(unittest.TestCase):
         self.ee.display_treeview_nodes()
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         self.years = years
 
-        year_start = GlossaryCore.YeartStartDefault
-        year_end = GlossaryCore.YeartEndDefault
+        year_start = GlossaryCore.YearStartDefault
+        year_end = GlossaryCore.YearEndDefault
         time_step = 1
         nb_per = round(
             (year_end - year_start) / time_step + 1)

@@ -55,10 +55,10 @@ class DICEParallelTest(unittest.TestCase):
         usecase = DataStudy()
         usecase.study_name = self.name
         values_dict = {}
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         for dict_item in usecase.setup_usecase():
             values_dict.update(dict_item)
-        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
         self.energy_supply_df_all = pd.DataFrame({
             GlossaryCore.Years: self.years,
             GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years))

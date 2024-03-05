@@ -31,7 +31,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = GlossaryCore.YeartStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
@@ -69,7 +69,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         # default CO2 tax
         self.default_CO2_tax = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 50.0}, index = self.years)
-        self.default_CO2_tax.loc[GlossaryCore.YeartStartDefault, GlossaryCore.CO2Tax] = 5000.0
+        self.default_CO2_tax.loc[GlossaryCore.YearStartDefault, GlossaryCore.CO2Tax] = 5000.0
         self.default_CO2_tax.loc[2021, GlossaryCore.CO2Tax] = 120.0
 
         self.working_age_population_df = pd.DataFrame(

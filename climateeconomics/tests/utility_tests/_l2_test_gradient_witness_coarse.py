@@ -259,7 +259,7 @@ class WitnessCoarseJacobianDiscTest(AbstractJacobianUnittest):
         # self.ee.execute()
         full_values_dict = {}
         full_values_dict[f'{self.name}.CCUS.ccs_percentage'] = pd.DataFrame(
-            {GlossaryCore.Years: np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1), 'ccs_percentage': 25})
+            {GlossaryCore.Years: np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1), 'ccs_percentage': 25})
         full_values_dict[f'{self.name}.sub_mda_class'] = 'GSNewtonMDA'
         full_values_dict[f'{self.name}.max_mda_iter'] = 1
         self.ee.load_study_from_input_dict(full_values_dict)
