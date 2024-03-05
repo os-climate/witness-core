@@ -48,6 +48,7 @@ class SectorModel():
         self.section_gdp_df = None
         self.energy_consumption_percentage_per_section_df = None
         self.section_non_energy_emission_df = None
+        self.energy_emission_df = None
         self.section_emission_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint = None
@@ -70,8 +71,9 @@ class SectorModel():
         self.sector_name = sector_name
         self.retrieve_sections_list()
         self.gdp_percentage_per_section_df = inputs_dict[GlossaryCore.SectionGdpPercentageDfValue]
+        self.section_non_energy_emission_df = inputs_dict[GlossaryCore.EnergyCO2EmissionsValue]
+        self.energy_emission_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionDfValue]
         self.energy_consumption_percentage_per_section_df = inputs_dict[GlossaryCore.SectionEnergyConsumptionPercentageDfValue]
-        self.section_non_energy_emission_df = inputs_dict[GlossaryCore.SectionNonEnergyEmissionDfValue]
         self.productivity_start = inputs_dict['productivity_start']
         #self.init_gross_output = inputs_dict[GlossaryCore.InitialGrossOutput['var_name']]
         self.capital_start = inputs_dict['capital_start']
