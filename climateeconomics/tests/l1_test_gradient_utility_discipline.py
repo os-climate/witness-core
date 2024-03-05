@@ -53,27 +53,25 @@ class UtilityJacobianDiscTest(AbstractJacobianUnittest):
 
         self.ee.configure()
         self.ee.display_treeview_nodes()
+        
+        self.economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+            GlossaryCore.PerCapitaConsumption: np.linspace(12, 6, len(self.years)),
+        })
 
-        data_dir = join(dirname(__file__), 'data')
-        economics_df_all = read_csv(
-            join(data_dir, 'economics_data_onestep.csv'))
+        self.population_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.PopulationValue: np.linspace(7886, 9550, len(self.years))
+        })
+        self.population_df.index = self.years
 
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
-        economics_df = economics_df_y[[
-            GlossaryCore.Years, GlossaryCore.PerCapitaConsumption]]
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-        economics_df.index = years
+        energy_mean_price = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.EnergyPriceValue: np.linspace(200, 10, len(self.years))
+        })
 
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
-        self.population_df = read_csv(
-            join(global_data_dir, 'population_df.csv'))
-        self.population_df.index = years
-
-        energy_price = np.linspace(200, 10, len(years))
-        energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
-
-        self.values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df,
+        self.values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                             f'{self.name}.{GlossaryCore.PopulationDfValue}': self.population_df,
                             f'{self.name}.{GlossaryCore.EnergyMeanPriceValue}': energy_mean_price}
 
