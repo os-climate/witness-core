@@ -55,6 +55,7 @@ class SectorModel():
         self.emission_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint = None
+
     def configure_parameters(self, inputs_dict, sector_name):
         '''
         Configure with inputs_dict from the discipline
@@ -103,7 +104,6 @@ class SectorModel():
         self.sector_name = sector_name
         
         self.init_dataframes()
-
 
     def retrieve_sections_list(self):
         '''
@@ -333,19 +333,6 @@ class SectorModel():
         self.section_gdp_df[self.section_list] = self.section_gdp_df[self.section_list].multiply(
             production_df_copy.reset_index(drop=True)[GlossaryCore.OutputNetOfDamage], axis='index') / 100.
 
-    # def compute_section_emission(self, section_list):
-    #
-    #     emissions_by_section = {}
-    #     for energy_section in section_list:
-    #         emissions_by_section[energy_section] = 0.0
-    #         if energy_section in self.sub_consumption_dict:
-    #             total_energy_consumption = sum(self.sub_consumption_dict[energy_section].values())
-    #             if total_energy_consumption != 0:
-    #                 for col, consumption in self.sub_consumption_dict[energy_section].items():
-    #                     if col in self.CO2_list:
-    #                         emissions_by_section[energy_section] += (consumption / total_energy_consumption) * \
-    #                                                                 self.co2_per_energy_unit[col]
-
     def compute_output_growth_rate(self, year):
         """ Compute output growth rate for every year for the year before: 
         output_growth_rate(t-1) = (output(t) - output(t-1))/output(t-1)
@@ -475,6 +462,16 @@ class SectorModel():
 
         self.damage_df[GlossaryCore.EstimatedDamages] = self.damage_df[GlossaryCore.EstimatedDamagesFromClimate] + self.damage_df[GlossaryCore.EstimatedDamagesFromProductivityLoss]
         self.damage_df[GlossaryCore.Damages] = self.damage_df[GlossaryCore.DamagesFromClimate] + self.damage_df[GlossaryCore.DamagesFromProductivityLoss]
+
+    def compute_energy_emission_per_section(self):
+        """
+        Computing the energy emission for each section of the sector
+        """
+        section_energy_consumption_percentage_df = self.compute_percentage_per_section(self.energy_consumption_percentage_per_section_df)
+        self.section_emission_df = section_energy_consumption_percentage_df.copy()
+        energy_emission_df_copy = self.energy_emission_df.copy(deep=True)
+        self.section_emission_df[self.section_list] = self.section_emission_df[self.section_list].multiply(
+            energy_emission_df_copy.reset_index(drop=True)[GlossaryCore.TotalEnergyCO2eqEmissionsDfValue], axis='index') / 100.
 
     # RUN
     def compute(self, inputs):
