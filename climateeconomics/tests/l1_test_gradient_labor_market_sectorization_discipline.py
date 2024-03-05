@@ -17,8 +17,7 @@ limitations under the License.
 from os.path import join, dirname
 
 import numpy as np
-from pandas import DataFrame
-from pandas import read_csv
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -39,21 +38,21 @@ class LaborMarketJacobianDiscTest(AbstractJacobianUnittest):
         self.years = np.arange(self.year_start, self.year_end+1)
         
         indusshare = 21.7
-        agri_year_start = 27.4
-        agri = []
-        agri.append(agri_year_start)
-        for year in np.arange(1, nb_per):
-            agri.append(agri[year - 1] * 0.99)
-        service = np.array([100.0]*nb_per) - agri - indusshare
+        agri = 27.4 * 0.99 ** np.arange(len(self.years))
 
         #service = np.substract(total, agri)
-        workforce_share = DataFrame({GlossaryCore.Years:self. years, GlossaryCore.SectorAgriculture: agri,
-                                     GlossaryCore.SectorIndustry: indusshare, GlossaryCore.SectorServices: service})
+        workforce_share = pd.DataFrame({
+            GlossaryCore.Years:self.years,
+            GlossaryCore.SectorAgriculture: agri,
+            GlossaryCore.SectorIndustry: indusshare,
+            GlossaryCore.SectorServices: 100. - indusshare - agri})
         self.workforce_share = workforce_share
-        data_dir = join(dirname(__file__), 'data')
-        working_age_pop_df = read_csv(
-                join(data_dir, 'workingage_population_df.csv'))
-        self.working_age_pop_df = working_age_pop_df[(working_age_pop_df[GlossaryCore.Years]<=self.year_end) & (working_age_pop_df[GlossaryCore.Years]>=self.year_start)]
+
+
+        self.working_age_pop_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Population1570: np.linspace(5490, 6061, len(self.years))
+        })
         
         
     def analytic_grad_entry(self):

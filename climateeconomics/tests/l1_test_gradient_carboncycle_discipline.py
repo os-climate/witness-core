@@ -18,7 +18,7 @@ limitations under the License.
 from os.path import join, dirname
 
 import numpy as np
-from pandas import read_csv
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -33,10 +33,17 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
+        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+
+        self.CO2_emissions_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            "total_emissions": np.linspace(35, 0, len(self.years)),
+            "cum_total_emissions": np.linspace(513, 680, len(self.years)),
+        })
+
     def analytic_grad_entry(self):
         return [
             self.test_execute,
-            self.test_execute_2
         ]
 
     def test_execute(self):
@@ -57,19 +64,8 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
 
-        emission_df_all = read_csv(
-            join(data_dir, 'co2_emissions_onestep.csv'))
-
-        emission_df_y = emission_df_all[emission_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[GlossaryCore.Years,
-                                                                           'total_emissions', 'cum_total_emissions']]
-
-        # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
-        emission_df_y.index = years
-
-        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': emission_df_y}
+        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': self.CO2_emissions_df}
 
         self.ee.load_study_from_input_dict(values_dict)
 
@@ -78,53 +74,6 @@ class CarboncycleJacobianDiscTest(AbstractJacobianUnittest):
         disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
 
         self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline1.pkl',
-                            discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
-                            inputs=[f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}'],
-                            outputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}',
-                                     f'{self.name}.ppm_objective',
-                                     f'{self.name}.rockstrom_limit_constraint',
-                                     f'{self.name}.minimum_ppm_constraint'])
-
-    def test_execute_2(self):
-        # test limit for max for lower_ocean_conc / upper_ocean_conc /
-        # atmo_conc
-        self.model_name = 'carboncycle'
-        ns_dict = {GlossaryCore.NS_WITNESS: f'{self.name}',
-                   'ns_public': f'{self.name}',
-                   GlossaryCore.NS_REFERENCE: f'{self.name}'}
-
-        self.ee.ns_manager.add_ns_def(ns_dict)
-
-        mod_path = 'climateeconomics.sos_wrapping.sos_wrapping_witness.carboncycle.carboncycle_discipline.CarbonCycleDiscipline'
-        builder = self.ee.factory.get_builder_from_module(
-            self.model_name, mod_path)
-
-        self.ee.factory.set_builders_to_coupling_builder(builder)
-
-        self.ee.configure()
-        self.ee.display_treeview_nodes()
-
-        data_dir = join(dirname(__file__), 'data')
-
-        emission_df_all = read_csv(
-            join(data_dir, 'co2_emissions_onestep.csv'))
-
-        emission_df_y = emission_df_all[emission_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[GlossaryCore.Years,
-                                                                           'total_emissions', 'cum_total_emissions']]
-
-        # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
-        emission_df_y.index = years
-
-        values_dict = {f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}': emission_df_y}
-
-        self.ee.load_study_from_input_dict(values_dict)
-
-        self.ee.execute()
-
-        disc_techno = self.ee.root_process.proxy_disciplines[0].mdo_discipline_wrapp.mdo_discipline
-
-        self.check_jacobian(location=dirname(__file__), filename=f'jacobian_carbon_cycle_discipline2.pkl',
                             discipline=disc_techno, step=1e-15, derr_approx='complex_step', local_data = disc_techno.local_data,
                             inputs=[f'{self.name}.{GlossaryCore.CO2EmissionsDfValue}'],
                             outputs=[f'{self.name}.{GlossaryCore.CarbonCycleDfValue}',

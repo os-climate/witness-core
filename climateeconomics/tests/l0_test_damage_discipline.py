@@ -32,6 +32,29 @@ class DamageDiscTest(unittest.TestCase):
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
 
+        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+
+        self.temperature_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            "exog_forcing": np.linspace(.5, 1., len(self.years)),
+            "forcing": np.linspace(2.46, 3.02, len(self.years)),
+            "temp_atmo": np.linspace(.85, 2.25, len(self.years)),
+            "temp_ocean": np.linspace(.006, 0.61, len(self.years)),
+        })
+
+        self.damage_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Damages: np.linspace(40, 60, len(self.years)),
+            GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(self.years))
+        })
+
+        self.extra_co2_t_since_preindustrial = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.ExtraCO2EqSincePreIndustrialValue: np.linspace(100, 300, len(self.years))
+        })
+
+        self.damage_constraint_factor = np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(self.years) - 15))))
+
     def test_execute(self):
 
         self.model_name = 'damage'
@@ -51,28 +74,6 @@ class DamageDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
-
-
-        temperature_df_all = read_csv(
-            join(data_dir, 'temperature_data_onestep.csv'))
-
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
-        years = temperature_df_y[GlossaryCore.Years]
-        damage_df = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
-            GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y))
-        })
-
-        extra_co2_t_since_preindustrial = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.ExtraCO2EqSincePreIndustrialValue: np.linspace(100, 300, len(years))
-        })
-
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-        temperature_df_y.index = years
-
         values_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
                        f'{self.name}.assumptions_dict': {'compute_gdp': True,
                                 'compute_climate_impact_on_gdp': False,
@@ -80,10 +81,10 @@ class DamageDiscTest(unittest.TestCase):
                                 'invest_co2_tax_in_renewables': True,
                                 },
                        f'{self.name}.co2_damage_price_dev_formula': False,
-                       f'{self.name}.{GlossaryCore.DamageDfValue}': damage_df,
-                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
-                       f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': extra_co2_t_since_preindustrial,
-                       f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15)))),
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': self.extra_co2_t_since_preindustrial,
+                       f'{self.name}.{self.model_name}.damage_constraint_factor': self.damage_constraint_factor,
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
@@ -119,27 +120,6 @@ class DamageDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
-
-
-        temperature_df_all = read_csv(
-            join(data_dir, 'temperature_data_onestep.csv'))
-
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
-        years = temperature_df_y[GlossaryCore.Years]
-        damage_df = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.Damages: np.linspace(40, 60, len(temperature_df_y)),
-            GlossaryCore.EstimatedDamages: np.linspace(40, 60, len(temperature_df_y))
-        })
-
-        extra_co2_t_since_preindustrial = pd.DataFrame({
-            GlossaryCore.Years: years,
-            GlossaryCore.ExtraCO2EqSincePreIndustrialValue: np.linspace(100, 300, len(years))
-        })
-
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-        temperature_df_y.index = years
 
         values_dict = {f'{self.name}.{self.model_name}.tipping_point': True,
                        f'{self.name}.assumptions_dict': {'compute_gdp': True,
@@ -148,10 +128,10 @@ class DamageDiscTest(unittest.TestCase):
                                 'invest_co2_tax_in_renewables': True,
                                 },
                        f'{self.name}.co2_damage_price_dev_formula': True,
-                       f'{self.name}.{GlossaryCore.DamageDfValue}': damage_df,
-                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_y,
-                       f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': extra_co2_t_since_preindustrial,
-                       f'{self.name}.{self.model_name}.damage_constraint_factor': np.concatenate((np.linspace(0.5, 1, 15), np.asarray([1] * (len(years) - 15))))
+                       f'{self.name}.{GlossaryCore.DamageDfValue}': self.damage_df,
+                       f'{self.name}.{GlossaryCore.TemperatureDfValue}': self.temperature_df,
+                       f'{self.name}.{GlossaryCore.ExtraCO2EqSincePreIndustrialValue}': self.extra_co2_t_since_preindustrial,
+                       f'{self.name}.{self.model_name}.damage_constraint_factor': self.damage_constraint_factor
                        }
 
         self.ee.load_study_from_input_dict(values_dict)

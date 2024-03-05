@@ -15,9 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from os.path import join, dirname
-
-from pandas import read_csv
+from os.path import dirname
+import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -32,6 +32,12 @@ class IndusEmissionsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
+
+        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+        })
 
     def analytic_grad_entry(self):
         return [
@@ -57,13 +63,7 @@ class IndusEmissionsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
-        year_start = GlossaryCore.YeartStartDefault
-        economics_df_all = read_csv(
-            join(data_dir, 'economics_data_onestep.csv'))
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= year_start][[
-            GlossaryCore.Years, GlossaryCore.GrossOutput]]
-        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y}
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df}
 
         self.ee.load_study_from_input_dict(values_dict)
         self.ee.execute()

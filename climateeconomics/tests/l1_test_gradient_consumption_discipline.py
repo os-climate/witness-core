@@ -55,36 +55,30 @@ class ConsumptionJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
-        economics_df_all = read_csv(
-            join(data_dir, 'economics_data_onestep.csv'))
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
-        population_df = read_csv(
-            join(global_data_dir, 'population_df.csv'))
-        # part to adapt lenght to the year range
+        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.OutputNetOfDamage: np.linspace(121, 91, len(self.years)),
+        })
+        self.population_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.PopulationValue: np.linspace(7886, 9550, len(self.years))
+        })
 
-        economics_df = economics_df_all.loc[economics_df_all[GlossaryCore.Years]
-                                                                  >= self.year_start]
-        economics_df = economics_df.loc[economics_df[GlossaryCore.Years] <= self.year_end]
-        self.population_df = population_df.loc[population_df[GlossaryCore.Years]
-                                                                    >= self.year_start]
-        self.population_df = population_df.loc[population_df[GlossaryCore.Years]
-                                                                  <= self.year_end]
-        self.population_df.index = self.years
-        self.economics_df = economics_df[[
-            GlossaryCore.Years, GlossaryCore.OutputNetOfDamage]]
-        self.economics_df.index = self.years
+        self.energy_mean_price = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.EnergyPriceValue: np.linspace(200, 10, len(self.years))
+        })
 
-        energy_price = np.linspace(200, 10, len(self.years))
-        self.energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: self.years, GlossaryCore.EnergyPriceValue: energy_price})
-        self.residential_energy_conso_ref = 100
-        residential_energy = np.linspace(200, 10, len(self.years))
-        self.residential_energy_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: residential_energy})
-        #Invest
-        invest = np.asarray([10.0] * len(self.years))
-        self.investment_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.InvestmentsValue: invest})
+        self.residential_energy_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalProductionValue: np.linspace(200, 10, len(self.years))
+        })
+
+        self.investment_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.InvestmentsValue: np.full(len(self.years), 10.0)
+        })
 
         self.values_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                             f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,

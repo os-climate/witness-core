@@ -15,10 +15,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-from os.path import join, dirname
 
 import numpy as np
-from pandas import read_csv
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -30,6 +29,13 @@ class IndusEmissionDiscTest(unittest.TestCase):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
+        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+        })
+
+        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
 
     def test_execute(self):
 
@@ -52,24 +58,7 @@ class IndusEmissionDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
-
-        economics_df_all = read_csv(
-            join(data_dir, 'economics_data_onestep.csv'))
-        energy_supply_df_all = read_csv(
-            join(data_dir, 'energy_supply_data_onestep.csv'))
-
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
-        energy_supply_df_y = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
-
-        # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
-        economics_df_y.index = years
-        energy_supply_df_y.index = years
-
-        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
+        values_dict = {f'{self.name}.{GlossaryCore.EconomicsDfValue}': self.economics_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
@@ -77,8 +66,6 @@ class IndusEmissionDiscTest(unittest.TestCase):
 
         self.ee.execute()
 
-        res_indus_emissions = self.ee.dm.get_value(
-            f'{self.name}.CO2_indus_emissions_df')
         disc = self.ee.dm.get_disciplines_with_name(
             f'{self.name}.{self.model_name}')[0]
         filter = disc.get_chart_filter_list()

@@ -63,13 +63,11 @@ class WitnessWOEnergyTestCase(AbstractJacobianUnittest):
         year_start = GlossaryCore.YeartStartDefault
         year_end = GlossaryCore.YeartEndDefault
 
-        data_dir = join(dirname(__file__), 'data')
-
-        economics_df_all = pd.read_csv(
-            join(data_dir, 'economics_data_onestep.csv'))
-
-        economics_df_y = economics_df_all[economics_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
-            GlossaryCore.Years, GlossaryCore.GrossOutput]]
+        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+        self.economics_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.GrossOutput: np.linspace(121, 91, len(self.years)),
+        })
 
         # energy simple outputs
         values_dict[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = pd.DataFrame({GlossaryCore.Years: np.arange(year_start, year_end + 1),

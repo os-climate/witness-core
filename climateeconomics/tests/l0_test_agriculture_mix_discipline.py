@@ -47,11 +47,9 @@ class AgricultureMixModelTestCase(unittest.TestCase):
 
         self.temperature_df = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.TempAtmo: temperature})
-        self.temperature_df.index = self.years
 
         self.population_df = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.PopulationValue: population})
-        self.population_df.index = self.years
 
         red_meat_percentage = np.linspace(6, 1, year_range)
         white_meat_percentage = np.linspace(14, 5, year_range)

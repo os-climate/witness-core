@@ -139,11 +139,14 @@ class Study(StudyManager):
              GlossaryCore.EnergyInvestmentsWoTaxValue: np.linspace(40, 65, len(years))})
 
         global_data_dir = join(dirname(dirname(dirname(dirname(dirname(__file__))))), 'data')
-        section_gdp_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
-        # for i in range(len(section_gdp_df)):
-        #     section_gdp_df.replace(section_gdp_df.iloc[i]['years'], int(section_gdp_df.iloc[i]['years']))
-
-        section_gdp_df = section_gdp_df.astype({'years': int})
+        weighted_average_percentage_per_sector_df = pd.read_csv(
+            join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        subsector_share_dict = {
+            **{GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1), },
+            **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
+                       weighted_average_percentage_per_sector_df.values[0, 1:]))
+        }
+        section_gdp_df = pd.DataFrame(subsector_share_dict)
 
         sect_input = {}
         sect_input[f"{self.study_name}.{GlossaryCore.YearStart}"] = self.year_start

@@ -21,6 +21,8 @@ from pandas import read_csv
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
+import pandas as pd
+import numpy as np
 
 
 class GHGCycleDiscTest(unittest.TestCase):
@@ -29,6 +31,15 @@ class GHGCycleDiscTest(unittest.TestCase):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
+
+        self.years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault + 1)
+
+        self.ghg_emissions_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years)),
+            GlossaryCore.TotalCH4Emissions: np.linspace(35, 0, len(self.years)) * 0.3 / 40,
+            GlossaryCore.TotalN2OEmissions: np.linspace(35, 0, len(self.years)) * 0.008 / 40,
+        })
 
     def test_execute(self):
 
@@ -48,17 +59,7 @@ class GHGCycleDiscTest(unittest.TestCase):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        data_dir = join(dirname(__file__), 'data')
-
-        emissions_df = read_csv(
-            join(data_dir, 'co2_emissions_onestep.csv'))
-        emissions_df[GlossaryCore.TotalCO2Emissions] = emissions_df['total_emissions']
-
-        emissions_df = emissions_df[emissions_df[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
-        emissions_df[GlossaryCore.TotalCH4Emissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.3/40
-        emissions_df[GlossaryCore.TotalN2OEmissions] = emissions_df[GlossaryCore.TotalCO2Emissions] * 0.008/40
-
-        values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': emissions_df[[GlossaryCore.Years, GlossaryCore.TotalCO2Emissions, GlossaryCore.TotalCH4Emissions, GlossaryCore.TotalN2OEmissions]],
+        values_dict = {f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}': self.ghg_emissions_df,
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
                        }
 
