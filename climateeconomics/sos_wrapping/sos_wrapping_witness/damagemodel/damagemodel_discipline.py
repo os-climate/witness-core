@@ -228,7 +228,7 @@ class DamageDiscipline(ClimateEcoDiscipline):
             new_chart = TwoAxesInstanciatedChart(GlossaryCore.Years, '%', chart_name=chart_name, y_min_zero=True)
 
             new_series = InstanciatedSeries(
-                years, list(damage_fraction_df[GlossaryCore.DamageFractionOutput]),
+                years, list(damage_fraction_df[GlossaryCore.DamageFractionOutput] * 100),
                 'Climate damage on GDP', 'lines', True)
 
             new_chart.add_series(new_series)

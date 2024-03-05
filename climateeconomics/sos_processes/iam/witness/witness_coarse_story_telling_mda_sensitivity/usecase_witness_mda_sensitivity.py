@@ -1,5 +1,5 @@
 '''
-Copyright 2023 Capgemini
+Copyright 2024 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -39,32 +39,19 @@ from climateeconomics.glossarycore import GlossaryCore
 
 
 class Study(ClimateEconomicsStudyManager):
-
-    USECASE2 = '- damage - tax, fossil 100%'
-    USECASE2B ='+ damage - tax, fossil 100%'
-    USECASE3 = '- damage + tax, IEA'
-    USECASE4 = '+ damage - tax, fossil 40%'
-    USECASE5 = '+ damage - tax, STEP inspired'
-    USECASE6 = '+ damage - tax, NZE inspired'
-    USECASE7 = '+ damage + tax, NZE'
+    USECASE7 = 'NZE'
 
     def __init__(self, bspline=False, run_usecase=False, execution_engine=None):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.bspline = bspline
         self.data_dir = join(dirname(__file__), 'data')
+        self.check_outputs = True
 
     def setup_usecase(self, study_folder_path=None):
 
-        self.scatter_scenario = 'mda_scenarios'
+        self.driver_name = 'AnalysisWITNESS'
 
-        scenario_dict = {self.USECASE2: usecase2(execution_engine=self.execution_engine),
-                         self.USECASE2B: usecase2b(execution_engine=self.execution_engine),
-                         self.USECASE3: usecase3(execution_engine=self.execution_engine),
-                         self.USECASE4: usecase4(execution_engine=self.execution_engine),
-                         self.USECASE5: usecase5(execution_engine=self.execution_engine),
-                         self.USECASE6: usecase6(execution_engine=self.execution_engine),
-                         self.USECASE7: usecase7(execution_engine=self.execution_engine),
-                         }
+        scenario_dict = {self.USECASE7: usecase7(execution_engine=self.execution_engine)}
 
         '''
         NZE inspired: Net Zero Emissions just for the energy sector, ie CO2 emissions = 0 for the energy sector
@@ -73,29 +60,44 @@ class Study(ClimateEconomicsStudyManager):
             the energy sector has a negative CO2 emission balance to compensate the non zero emissions of the other sectors
         '''
 
-        scenario_list = list(scenario_dict.keys())
+        input_selection = {
+            "selected_input": [True, True, True, True, True, True, True],
+            "full_name": [
+                f"{self.USECASE7}.RenewableTechnoInfo.Opex_percentage",
+                f"{self.USECASE7}.RenewableTechnoInfo.Initial_capex",
+                f"{self.USECASE7}.RenewableTechnoInfo.Energy_costs",
+                f"{self.USECASE7}.FossilTechnoInfo.Opex_percentage",
+                f"{self.USECASE7}.FossilTechnoInfo.Initial_capex",
+                f"{self.USECASE7}.FossilTechnoInfo.Energy_costs",
+                f"{self.USECASE7}.FossilTechnoInfo.CO2_from_production",
+                          ],
+        }
+        input_selection = pd.DataFrame(input_selection)
+
+        output_selection = {
+            "selected_output": [True, True, True, True],
+            "full_name": [
+                f"{self.USECASE7}.Indicators.mean_energy_price_2100",
+                f"{self.USECASE7}.Indicators.world_net_product_2100",
+                f"{self.USECASE7}.Indicators.temperature_rise_2100",
+                f"{self.USECASE7}.Indicators.welfare_indicator",
+                          ],
+        }
+        output_selection = pd.DataFrame(output_selection)
+
         values_dict = {}
+        values_dict[f'{self.study_name}.SampleGenerator.sampling_method'] = "tornado_chart_analysis"
+        values_dict[f'{self.study_name}.SampleGenerator.variation_list'] = [-5., 5.]
+        values_dict[f'{self.study_name}.{self.driver_name}.with_sample_generator'] = True
+        values_dict[f'{self.study_name}.SampleGenerator.eval_inputs'] = input_selection
+        values_dict[f'{self.study_name}.{self.driver_name}.gather_outputs'] = output_selection
 
-        scenario_df = pd.DataFrame({'selected_scenario': [True] * len(scenario_list),
-                                    'scenario_name': scenario_list})
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.samples_df'] = scenario_df
-        values_dict[f'{self.study_name}.{self.scatter_scenario}.scenario_list'] = scenario_list
-
-        # setup mda
-        uc_mda = usecase_witness_mda(execution_engine=self.execution_engine)
-        uc_mda.study_name = self.study_name  # mda settings on root coupling
-        values_dict.update(uc_mda.setup_mda())
-        # assumes max of 16 cores per computational node
-        values_dict[f'{self.study_name}.n_subcouplings_parallel'] = min(16, len(scenario_df.loc[scenario_df['selected_scenario']==True]))
         # setup each scenario (mda settings ignored)
         for scenario, uc in scenario_dict.items():
-            uc.study_name = f'{self.study_name}.{self.scatter_scenario}.{scenario}'
+            uc.study_name = f'{self.study_name}.{self.driver_name}.{scenario}'
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
         return values_dict
-
-
-
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)

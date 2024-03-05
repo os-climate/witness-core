@@ -663,6 +663,19 @@ class GlossaryCore:
 
     EnergyMeanPriceValue = "energy_mean_price"
 
+    EnergyMeanPriceObjectiveValue = f"{EnergyMeanPriceValue}_objective"
+    EnergyMeanPriceObjective = {
+        "var_name": EnergyMeanPriceObjectiveValue,
+        "type": "array",
+        "visibility": "Shared",
+        "namespace": NS_FUNCTIONS,
+        "unit": "-",
+    }
+    EnergyMeanPriceObjectiveRefValue = get_ref_var_name(EnergyMeanPriceObjectiveValue)
+    EnergyMeanPriceObjectiveRef = get_ref_variable(var_name=EnergyMeanPriceObjectiveRefValue,
+                                                   unit="$",
+                                                   default_value=100.,)
+
     EnergyPricesValue = "energy_prices"
     ResourcesPriceValue = "resources_price"
     EnergyPriceValue = "energy_price"
@@ -1340,6 +1353,16 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_REFERENCE,
         "description": "Mean CO2 emissions produced from fossil fuels and industry between 1750 and 2022",
+    }
+
+    EnergyCO2EmissionsValue = "energy_CO2_emissions"
+    EnergyCO2Emissions = {
+        "var_name": EnergyCO2EmissionsValue,
+        'type': 'dataframe',
+        'unit': 'kg/kWh',
+        "visibility": "Shared",
+        "namespace": NS_ENERGY_MIX,
+        "dynamic_dataframe_columns": True,
     }
 
     @staticmethod
