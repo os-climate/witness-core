@@ -19,8 +19,7 @@ from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from pandas import DataFrame, read_csv
-from scipy.interpolate import interp1d
+from pandas import DataFrame
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine

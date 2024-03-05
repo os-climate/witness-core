@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 from os.path import join, dirname
+
+import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
     Study as usecase_witness_mda
-from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
 

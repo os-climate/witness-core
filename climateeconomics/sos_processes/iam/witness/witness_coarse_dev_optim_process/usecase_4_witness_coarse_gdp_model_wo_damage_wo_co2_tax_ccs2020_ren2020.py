@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import copy
+
 import numpy as np
+
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_optim_process.usecase_witness_optim_invest_distrib import \

@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-from os.path import join, dirname
+from os.path import dirname
 
 import numpy as np
 import pandas as pd

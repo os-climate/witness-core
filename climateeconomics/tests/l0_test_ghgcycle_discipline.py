@@ -15,14 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 import unittest
-from os.path import join, dirname
 
-from pandas import read_csv
+import numpy as np
+import pandas as pd
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
-import pandas as pd
-import numpy as np
 
 
 class GHGCycleDiscTest(unittest.TestCase):

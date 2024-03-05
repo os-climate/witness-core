@@ -16,8 +16,6 @@ limitations under the License.
 '''
 from copy import deepcopy
 
-import numpy as np
-
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.utility_model import UtilityModel
 from climateeconomics.glossarycore import GlossaryCore

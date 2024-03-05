@@ -18,8 +18,6 @@ from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from pandas import read_csv
-from scipy.interpolate import interp1d
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_wrapping.sos_wrapping_sectors.sector_discipline import SectorDiscipline

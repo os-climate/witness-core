@@ -22,9 +22,7 @@ from climateeconomics.glossarycore import GlossaryCore
 mode: python; py-indent-offset: 4; tab-width: 8; coding: utf-8
 '''
 import unittest
-from os.path import join, dirname
-from pandas import read_csv
-from pandas import DataFrame 
+from pandas import DataFrame
 import numpy as np
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
 

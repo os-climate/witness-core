@@ -22,7 +22,6 @@ import pandas as pd
 from climateeconomics.core.core_witness.carbon_emissions_model import CarbonEmissions
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
-from energy_models.core.stream_type.resources_models.resource_glossary import ResourceGlossary
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart

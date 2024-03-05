@@ -13,9 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
 from copy import deepcopy
+
+from energy_models.models.fossil.fossil_simple_techno.fossil_simple_techno_disc import FossilSimpleTechnoDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 FOSSIL_DEFAULT_TECHNO_DICT = FossilSimpleTechnoDiscipline.techno_infos_dict_default
 

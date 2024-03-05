@@ -16,7 +16,7 @@ limitations under the License.
 '''
 # -*- coding: utf-8 -*-
 
-from os.path import join, dirname
+from os.path import dirname
 
 import numpy as np
 import pandas as pd

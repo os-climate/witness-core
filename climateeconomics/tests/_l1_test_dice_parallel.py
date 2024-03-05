@@ -16,12 +16,10 @@ limitations under the License.
 '''
 import unittest
 from copy import deepcopy
-from os.path import join, dirname
 from tempfile import gettempdir
 
 import numpy as np
 import pandas as pd
-from scipy.interpolate.interpolate import interp1d
 
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness_wo_energy.datacase_witness_wo_energy import DataStudy
