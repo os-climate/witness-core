@@ -52,6 +52,7 @@ class SectorModel():
         self.section_emission_df = None
         self.section_energy_emission_df = None
         self.section_non_energy_emission_df = None
+        self.emission_df = None
         self.range_energy_eff_cstrt = None
         self.energy_eff_xzero_constraint = None
     def configure_parameters(self, inputs_dict, sector_name):
@@ -171,6 +172,7 @@ class SectorModel():
         self.section_emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionEmissionDf['dataframe_descriptor'].keys())
         self.section_energy_emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionEnergyEmissionDf['dataframe_descriptor'].keys())
         self.section_non_energy_emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.SectionNonEnergyEmissionDf['dataframe_descriptor'].keys())
+        self.emission_df = pd.DataFrame(index=default_index, columns=GlossaryCore.EmissionDetailedDf['dataframe_descriptor'].keys())
         self.damage_df = pd.DataFrame(index=default_index, columns=GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys())
         self.productivity_df = pd.DataFrame(index=default_index, columns=GlossaryCore.ProductivityDf['dataframe_descriptor'].keys())
         self.growth_rate_df = pd.DataFrame(index=default_index, columns=[GlossaryCore.Years, 'net_output_growth_rate'])
@@ -179,6 +181,7 @@ class SectorModel():
         self.section_emission_df[GlossaryCore.Years] = self.years
         self.section_energy_emission_df[GlossaryCore.Years] = self.years
         self.section_non_energy_emission_df[GlossaryCore.Years] = self.years
+        self.emission_df[GlossaryCore.Years] = self.years
         self.damage_df[GlossaryCore.Years] = self.years
         self.capital_df[GlossaryCore.Years] = self.years
         self.productivity_df[GlossaryCore.Years] = self.years
@@ -513,7 +516,7 @@ class SectorModel():
         self.compute_damage_from_productivity_loss()
         self.compute_damage_from_climate()
         self.compute_total_damages()
-        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df, self.section_emission_df, self.section_energy_emission_df, self.section_non_energy_emission_df
+        return self.production_df, self.capital_df, self.productivity_df, self.damage_df, self.growth_rate_df, self.emax_enet_constraint, self.lt_energy_eff, self.range_energy_eff_cstrt, self.section_gdp_df, self.section_emission_df, self.section_energy_emission_df, self.section_non_energy_emission_df, self.emission_df
     
     ### GRADIENTS ###
 

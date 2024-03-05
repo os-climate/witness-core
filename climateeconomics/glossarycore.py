@@ -580,6 +580,37 @@ class GlossaryCore:
         },
     }
 
+    TotalEmissions = "Total emissions [Gt]"
+    EmissionDfValue = "emission_df"
+    EmissionDf = {
+        "var_name": EmissionDfValue,
+        "type": "dataframe",
+        "visibility": "Shared",
+        "namespace": NS_WITNESS,
+        "unit": "Gt",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YeartEndDefault], False),
+            TotalEmissions: ("float", [0, 1e30], False),
+        },
+    }
+
+    EnergyEmissions = "Energy emissions [Gt]"
+    NonEnergyEmissions = "Non energy emissions [Gt]"
+    EmissionDetailedDfValue = "emission_detailed_df"
+    EmissionDetailedDf = {
+        "var_name": EmissionDetailedDfValue,
+        "type": "dataframe",
+        "namespace": NS_MACRO,
+        "visibility": "Shared",
+        "unit": "Gt",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YeartEndDefault], False),
+            TotalEmissions: ("float", [0, 1e30], False),
+            EnergyEmissions: ("float", [0, 1e30], False),
+            NonEnergyEmissions: ("float", [0, 1e30], False),
+        },
+    }
+
     SectionEmissionDf = {
         "var_name": SectionEmissionDfValue,
         "type": "dataframe",

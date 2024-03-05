@@ -128,6 +128,13 @@ class SectorDiscipline(ClimateEcoDiscipline):
         damage_detailed.update({self.NAMESPACE: GlossaryCore.NS_SECTORS})
         dynamic_outputs[f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}"] = damage_detailed
 
+        emission_df_disc = GlossaryCore.get_dynamic_variable(GlossaryCore.EmissionDf)
+        emission_df_disc.update({self.NAMESPACE: GlossaryCore.NS_SECTORS})
+        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.EmissionDfValue}"] = emission_df_disc
+        emission_detailed = GlossaryCore.get_dynamic_variable(GlossaryCore.EmissionDetailedDf)
+        emission_detailed.update({self.NAMESPACE: GlossaryCore.NS_SECTORS})
+        dynamic_outputs[f"{self.sector_name}.{GlossaryCore.EmissionDetailedDfValue}"] = emission_detailed
+
         self.add_inputs(dynamic_inputs)
         self.add_outputs(dynamic_outputs)
 
@@ -165,7 +172,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             GlossaryCore.InvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
-        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df, section_energy_emission_df, section_non_energy_emission_df = self.model.compute(
+        production_df, detailed_capital_df, productivity_df, damage_df, emission_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df, section_energy_emission_df, section_non_energy_emission_df = self.model.compute(
             model_inputs)
 
         # Store output data
@@ -174,6 +181,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
                        'growth_rate_df': growth_rate_df,
                        f"{self.sector_name}.{GlossaryCore.DamageDfValue}": damage_df[GlossaryCore.DamageDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.DamageDetailedDfValue}": damage_df[GlossaryCore.DamageDetailedDf['dataframe_descriptor'].keys()],
+                       f"{self.sector_name}.{GlossaryCore.EmissionDfValue}": emission_df[GlossaryCore.EmissionDf['dataframe_descriptor'].keys()],
+                       f"{self.sector_name}.{GlossaryCore.EmissionDetailedDfValue}": emission_df[GlossaryCore.EmissionDetailedDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.ProductionDfValue}": production_df[GlossaryCore.ProductionDf['dataframe_descriptor'].keys()],
                        f"{self.sector_name}.{GlossaryCore.CapitalDfValue}": detailed_capital_df[[GlossaryCore.Years, GlossaryCore.Capital, GlossaryCore.UsableCapital, GlossaryCore.UsableCapitalUnbounded]],
                        GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
