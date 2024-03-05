@@ -18,8 +18,6 @@ from os.path import join, dirname
 
 import numpy as np
 import pandas as pd
-from pandas import DataFrame, read_csv
-from scipy.interpolate import interp1d
 
 from climateeconomics.glossarycore import GlossaryCore
 from sostrades_core.execution_engine.execution_engine import ExecutionEngine
@@ -33,97 +31,76 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
-        self.year_start = GlossaryCore.YeartStartDefault
+        self.year_start = GlossaryCore.YearStartDefault
         self.year_end = 2050
         self.time_step = 1
         self.years = np.arange(self.year_start, self.year_end + 1, self.time_step)
         self.nb_per = round(
             (self.year_end - self.year_start) / self.time_step + 1)
-        # -------------------------
-        # csv data
-        # energy production
-        self.data_dir = join(dirname(__file__), 'data')
-        brut_net = 1/1.45
-        #prepare energy df
-        energy_outlook = pd.DataFrame({
-            'year': [2010, 2017, 2018, 2025, 2030, 2035, 2040, 2050, 2060, 2100],
-            'energy': [149.483879, 162.7848774, 166.4685636, 180.7072889, 189.6932084, 197.8418842, 206.1201182, 220.000, 250.0, 300.0]})
-        f2 = interp1d(energy_outlook['year'], energy_outlook['energy'])
-        #Find values for 2020, 2050 and concat dfs
-        energy_supply = f2(np.arange(self.year_start, self.year_end+1))
-        energy_supply_values = energy_supply * brut_net
-        energy_supply_df = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.TotalProductionValue: energy_supply_values})
-        energy_supply_df.index = self.years
-        energy_supply_df.loc[2021, GlossaryCore.TotalProductionValue] = 116.1036348
-        self.energy_supply_df = energy_supply_df
+        
+        self.energy_supply_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalProductionValue: np.linspace(43, 76, len(self.years))
+        })
 
-        # -------------------------
-        # csv data
-        # co2 emissions
-        energy_supply_csv = read_csv(join(self.data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_start = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] >= self.year_start]
-        energy_supply_end = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] <= self.year_end]
-        energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
-        # energy production divided by 1e3 (scaling factor production)
-        self.co2_emissions_gt = energy_supply_df.rename(
-            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
-        self.co2_emissions_gt = self.co2_emissions_gt[GlossaryCore.CO2EmissionsGt['dataframe_descriptor'].keys()]
-        self.co2_emissions_gt.index = self.years
-        for i in np.arange(2021, self.year_end+1):
-            emission_vefore = self.co2_emissions_gt.loc[i-1, GlossaryCore.TotalCO2Emissions]
-            self.co2_emissions_gt.loc[i,GlossaryCore.TotalCO2Emissions] = emission_vefore*(1.02)
-        self.default_co2_efficiency = pd.DataFrame({GlossaryCore.Years: self.years, 'CO2_tax_efficiency': 40.0}, index=self.years)
-        # -------------------------
-        # csv data
-        # damage
-        damage_csv = read_csv(join(self.data_dir, 'damage_data_onestep.csv'))
-        # adapt lenght to the year range
-        damage_df_start = damage_csv.loc[damage_csv[GlossaryCore.Years] >= self.year_start]
-        damage_df_end = damage_csv.loc[damage_csv[GlossaryCore.Years] <= self.year_end]
-        damage_df = pd.merge(damage_df_start, damage_df_end)
-        self.damage_fraction_df = damage_df[[GlossaryCore.Years, GlossaryCore.DamageFractionOutput]]
-        self.damage_fraction_df.index = self.years
-        # -------------------------
-        # csv data
-        # population
-        global_data_dir = join(dirname(dirname(__file__)), 'data')
-        population_csv = read_csv(
-            join(global_data_dir, 'population_df.csv'))
-        population_df_start = population_csv.loc[population_csv[GlossaryCore.Years] >= self.year_start]
-        population_df_end = population_csv.loc[population_csv[GlossaryCore.Years] <= self.year_end]
-        self.population_df = pd.merge(population_df_start, population_df_end)
-        self.population_df.index = self.years
+        self.default_co2_efficiency = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            'CO2_tax_efficiency': 40.0
+        })
 
-        self.energy_investment_wo_tax = DataFrame(
+        self.damage_fraction_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.DamageFractionOutput: np.linspace(0.001, 0.01, len(self.years))
+        })
+
+        self.population_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.PopulationValue: np.linspace(7886, 9550, len(self.years))
+        })
+
+        self.energy_investment_wo_tax = pd.DataFrame(
             {GlossaryCore.Years: self.years,
              GlossaryCore.EnergyInvestmentsWoTaxValue: [3.5] * self.nb_per})
 
-        self.share_non_energy_investment = DataFrame(
+        self.share_non_energy_investment = pd.DataFrame(
             {GlossaryCore.Years: self.years,
              GlossaryCore.ShareNonEnergyInvestmentsValue: [27.0 - 2.6] * self.nb_per})
 
         # default CO2 tax
         self.default_CO2_tax = pd.DataFrame(
             {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: 50.0}, index = self.years)
-        self.default_CO2_tax.loc[GlossaryCore.YeartStartDefault, GlossaryCore.CO2Tax] = 5000.0
+        self.default_CO2_tax.loc[GlossaryCore.YearStartDefault, GlossaryCore.CO2Tax] = 5000.0
         self.default_CO2_tax.loc[2021, GlossaryCore.CO2Tax] = 120.0
 
-        #Population workforce
         self.working_age_population_df = pd.DataFrame(
-            {GlossaryCore.Years: self.years, GlossaryCore.Population1570: 6300}, index=self.years)
+            {GlossaryCore.Years: self.years, GlossaryCore.Population1570: 6300})
 
-        # energy_capital
-        nb_per = len(self.years)
-        energy_capital_year_start = 16.09
-        energy_capital = []
-        energy_capital.append(energy_capital_year_start)
-        for year in np.arange(1, nb_per):
-            energy_capital.append(energy_capital[year - 1] * 1.02)
-        self.energy_capital = pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.Capital: energy_capital})
+        self.energy_capital = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.Capital: 16.09 * (1.02 ** np.arange(len(self.years)))
+        })
+
         self.sectors_list = [GlossaryCore.SectorServices, GlossaryCore.SectorAgriculture, GlossaryCore.SectorIndustry]
 
-        # gdp percentage csv
-        self.gdp_section_df = pd.read_csv(join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+
+        global_data_dir = join(dirname(dirname(__file__)), 'data')
+        weighted_average_percentage_per_sector_df = pd.read_csv(
+            join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+        subsector_share_dict = {
+            **{GlossaryCore.Years: self.years, },
+            **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
+                       weighted_average_percentage_per_sector_df.values[0, 1:]))
+        }
+        self.gdp_section_df = pd.DataFrame(subsector_share_dict)
+
+        self.energy_supply_df_all = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years))
+        })
+
+        self.co2_emissions_gt = pd.DataFrame(
+            {GlossaryCore.Years: self.years,
+             GlossaryCore.TotalCO2Emissions: np.linspace(34, 55, len(self.years))})
 
     def analytic_grad_entry(self):
         return [
@@ -368,11 +345,11 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        energy_investment_wo_tax = DataFrame(
+        energy_investment_wo_tax = pd.DataFrame(
             {GlossaryCore.Years: self.years,
              GlossaryCore.EnergyInvestmentsWoTaxValue: [50.] * self.nb_per,})
 
-        share_non_energy_investment = DataFrame(
+        share_non_energy_investment = pd.DataFrame(
             {GlossaryCore.Years: self.years,
              GlossaryCore.ShareNonEnergyInvestmentsValue: [20.0] * self.nb_per})
 
@@ -444,18 +421,11 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        #- retrieve co2_emissions_gt input
-        energy_supply_csv = read_csv(
-            join(self.data_dir, 'energy_supply_data_onestep_high_CO2.csv'))
-        # adapt lenght to the year range
-        energy_supply_start = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] >= self.year_start]
-        energy_supply_end = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] <= self.year_end]
-        energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
-        energy_supply_df[GlossaryCore.Years] = energy_supply_df[GlossaryCore.Years]
-        co2_emissions_gt = energy_supply_df.rename(
-            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
-        co2_emissions_gt.index = self.years
-        co2_emissions_gt = self.co2_emissions_gt[GlossaryCore.CO2EmissionsGt['dataframe_descriptor'].keys()]
+        co2_emissions_gt = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalCO2Emissions: np.linspace(1035, 0, len(self.years)),
+        })
+
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
@@ -523,19 +493,10 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.configure()
         self.ee.display_treeview_nodes()
 
-        #- retrieve co2_emissions_gt input
-        energy_supply_csv = read_csv(
-            join(self.data_dir, 'energy_supply_data_onestep_negative_CO2.csv'))
-        # adapt lenght to the year range
-        energy_supply_start = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] >= self.year_start]
-        energy_supply_end = energy_supply_csv.loc[energy_supply_csv[GlossaryCore.Years] <= self.year_end]
-        energy_supply_df = pd.merge(energy_supply_start, energy_supply_end)
-        energy_supply_df[GlossaryCore.Years] = energy_supply_df[GlossaryCore.Years]
-        co2_emissions_gt = energy_supply_df.rename(
-            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
-        co2_emissions_gt.index = self.years
-
-        co2_emissions_gt = self.co2_emissions_gt[GlossaryCore.CO2EmissionsGt['dataframe_descriptor'].keys()]
+        co2_emissions_gt = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalCO2Emissions: np.linspace(45, -0.66, len(self.years)),
+        })
 
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
@@ -605,7 +566,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
         self.ee.display_treeview_nodes()
 
         self.default_CO2_tax = pd.DataFrame(
-            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: np.linspace(50, -50, len(self.years))}, index=self.years)
+            {GlossaryCore.Years: self.years, GlossaryCore.CO2Tax: np.linspace(50, -50, len(self.years))})
         inputs_dict = {f'{self.name}.{GlossaryCore.YearStart}': self.year_start,
                        f'{self.name}.{GlossaryCore.YearEnd}': self.year_end,
                        f'{self.name}.{GlossaryCore.TimeStep}': self.time_step,
@@ -702,7 +663,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             'activate_climate_effect_population': True,
                             'invest_co2_tax_in_renewables': True
                             },
-                       f'{self.name}.gross_output_in': pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.GrossOutput: .02}, index=self.years),
+                       f'{self.name}.gross_output_in': pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.GrossOutput: .02}),
                        }
 
 
@@ -782,7 +743,7 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                             'activate_climate_effect_population': True,
                             'invest_co2_tax_in_renewables': True,
                             },
-                       f'{self.name}.gross_output_in': pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.GrossOutput: .02}, index=self.years),
+                       f'{self.name}.gross_output_in': pd.DataFrame({GlossaryCore.Years: self.years, GlossaryCore.GrossOutput: .02}),
                        }
 
 
@@ -1135,7 +1096,6 @@ class MacroEconomicsJacobianDiscTest(AbstractJacobianUnittest):
                                      f'{self.name}.{GlossaryCore.EnergyWastedObjective}',
                                      f'{self.name}.{GlossaryCore.ConsumptionObjective}',
                                      f'{self.name}.{GlossaryCore.UsableCapitalObjectiveName}'
-
                                      ])
 
 

@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 
-import pandas as pd
 from os.path import join, dirname
+
+import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
     Study as usecase_witness_mda
-from energy_models.database_witness_energy import DatabaseWitnessEnergy
 from energy_models.glossaryenergy import GlossaryEnergy
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
 
@@ -35,7 +35,7 @@ class Study(ClimateEconomicsStudyManager):
     - invest: full fossil, with CCS = CCS_2020 & Renew = Renew_2020
     '''
 
-    def __init__(self, run_usecase=False, execution_engine=None, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault , time_step=1):
+    def __init__(self, run_usecase=False, execution_engine=None, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)
         self.year_start = year_start
         self.year_end = year_end
