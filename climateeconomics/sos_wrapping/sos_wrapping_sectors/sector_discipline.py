@@ -82,6 +82,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
     }
     DESC_OUT = {
         GlossaryCore.SectionEmissionDfValue: GlossaryCore.SectionEmissionDf,
+        GlossaryCore.SectionEnergyEmissionDfValue: GlossaryCore.SectionEnergyEmissionDf,
+        GlossaryCore.SectionNonEnergyEmissionDfValue: GlossaryCore.SectionNonEnergyEmissionDf,
         GlossaryCore.SectionGdpDfValue: GlossaryCore.SectionGdpDf,
         GlossaryCore.ProductivityDfValue: GlossaryCore.ProductivityDf,
         'growth_rate_df': {'type': 'dataframe', 'unit': '-'},
@@ -163,7 +165,7 @@ class SectorDiscipline(ClimateEcoDiscipline):
             GlossaryCore.InvestmentDfValue: sector_investment,
             GlossaryCore.WorkforceDfValue: workforce_df}
         # Model execution
-        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df = self.model.compute(
+        production_df, detailed_capital_df, productivity_df, damage_df, growth_rate_df, emax_enet_constraint, lt_energy_eff, range_energy_eff_cstrt, section_gdp_df, section_emission_df, section_energy_emission_df, section_non_energy_emission_df = self.model.compute(
             model_inputs)
 
         # Store output data
@@ -177,6 +179,8 @@ class SectorDiscipline(ClimateEcoDiscipline):
                        GlossaryCore.EnergyWastedObjective: self.model.energy_wasted_objective,
                        GlossaryCore.SectionGdpDfValue: self.model.section_gdp_df,
                        GlossaryCore.SectionEmissionDfValue: self.model.section_emission_df,
+                       GlossaryCore.SectionEnergyEmissionDfValue: self.model.section_energy_emission_df,
+                       GlossaryCore.SectionNonEnergyEmissionDfValue: self.model.section_non_energy_emission_df,
                        }
 
         if prod_function_fitting:

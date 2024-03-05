@@ -81,6 +81,8 @@ class GlossaryCore:
     SectorGdpDfValue = "sector_gdp_df"
     SectionGdpDfValue = "section_gdp_df"
     SectionEmissionDfValue = "section_emission_df"
+    SectionEnergyEmissionDfValue = "section_energy_emission_df"
+    SectionNonEnergyEmissionDfValue = "section_non_energy_emission_df"
     SectionGdpDictValue = "detailed_section_gdp"
     SectionGdpPercentageDfValue = "section_gdp_percentage_df"
     SectionEnergyConsumptionPercentageDfValue = 'section_energy_consumption_percentage_df'
@@ -577,8 +579,29 @@ class GlossaryCore:
             Years: ("int", [1900, YeartEndDefault], False),
         },
     }
+
     SectionEmissionDf = {
         "var_name": SectionEmissionDfValue,
+        "type": "dataframe",
+        "description": "",
+        "unit": "Gt",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YeartEndDefault], False),
+        },
+    }
+
+    SectionEnergyEmissionDf = {
+        "var_name": SectionEnergyEmissionDfValue,
+        "type": "dataframe",
+        "description": "",
+        "unit": "Gt",
+        "dataframe_descriptor": {
+            Years: ("int", [1900, YeartEndDefault], False),
+        },
+    }
+
+    SectionNonEnergyEmissionDf = {
+        "var_name": SectionNonEnergyEmissionDfValue,
         "type": "dataframe",
         "description": "",
         "unit": "Gt",
