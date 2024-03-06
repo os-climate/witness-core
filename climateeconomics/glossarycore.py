@@ -1344,7 +1344,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             TotalEnergyCO2eqEmissionsDfValue: ("float", [0.0, 1e30], True),
         },
     }
