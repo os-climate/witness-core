@@ -78,7 +78,7 @@ class Study(ClimateEconomicsStudyManager):
         self.agri_techno_list = agri_techno_list
         self.process_level = process_level
         self.dc_energy = datacase_energy(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
+            year_start=self.year_start, year_end=self.year_end, time_step=self.time_step, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, main_study=False)
         self.sub_study_path_dict = self.dc_energy.sub_study_path_dict
 

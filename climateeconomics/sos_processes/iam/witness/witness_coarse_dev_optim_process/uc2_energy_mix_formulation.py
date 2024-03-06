@@ -13,6 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
+import numpy as np
+import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
 from climateeconomics.glossarycore import GlossaryCore
@@ -44,8 +46,8 @@ class Study(ClimateEconomicsStudyManager):
         
         updated_dvar_descriptor = {k:v for k,v in dvar_descriptor.items() if k not in list_design_var_to_clean}
         updated_data = {f'{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.assumptions_dict': {'compute_gdp': True,
-                                                                'compute_climate_impact_on_gdp': True,
-                                                                'activate_climate_effect_population': True,
+                                                                'compute_climate_impact_on_gdp': False,
+                                                                'activate_climate_effect_population': False,
                                                                 'invest_co2_tax_in_renewables': False
                                                                },
                         f'{self.study_name}.{witness_uc.optim_name}.design_space' : dspace,
@@ -57,23 +59,28 @@ class Study(ClimateEconomicsStudyManager):
             f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.co2_damage_price_percentage": 0.0,
         })
 
+        new_func_df = pd.read_csv('function_df_energy_mix_formulation.csv')
+        years = np.arange(self.year_start, self.year_end + 1)
+        max_budget_df = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.MaxBudgetValue: np.linspace(3000, 18590, len(years))
+        })
+        target_energy_prod = pd.DataFrame({
+            GlossaryCore.Years: years,
+            GlossaryCore.TargetEnergyProductionValue: np.linspace(100. * 1.e3, 150. * 1e3, len(years))
+        })
+        data_witness.append({
+            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.FunctionsManager.function_df": new_func_df,
+            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.EnergyMix.{GlossaryCore.MaxBudgetValue}": max_budget_df,
+            f"{self.study_name}.{witness_uc.optim_name}.{witness_uc.coupling_name}.{witness_uc.extra_name}.EnergyMix.{GlossaryCore.TargetEnergyProductionValue}": target_energy_prod,
+        })
+
+
         return data_witness
 
 
 if '__main__' == __name__:
     uc_cls = Study(run_usecase=True)
     uc_cls.load_data()
+    a =1
     uc_cls.run()
-    design_space_out_var_name = uc_cls.ee.dm.get_all_namespaces_from_var_name("design_space_out")[0]
-    dspace_end = uc_cls.ee.dm.get_value(design_space_out_var_name)
-    design_space_last_ite_var_name = uc_cls.ee.dm.get_all_namespaces_from_var_name("design_space_last_ite")[0]
-    dspace_last_ite = uc_cls.ee.dm.get_value(design_space_last_ite_var_name)
-    max_ite_varname = uc_cls.ee.dm.get_all_namespaces_from_var_name("max_iter")[0]
-    max_itee = uc_cls.ee.dm.get_value(max_ite_varname)
-    import os
-
-    path_dir = os.path.dirname(os.path.abspath(__file__))
-    path_ds_end = os.path.join(path_dir, f"{uc_cls.study_name}_design_space_out_{max_itee}_iter.csv")
-    path_ds_last_ite = os.path.join(path_dir, f"{uc_cls.study_name}_design_space_last_ite_{max_itee}_iter.csv")
-    dspace_end.to_csv(path_ds_end)
-    dspace_last_ite.to_csv(path_ds_last_ite)

@@ -55,7 +55,7 @@ class Study(ClimateEconomicsStudyManager):
         self.techno_dict = techno_dict
         self.process_level = process_level
         self.witness_uc = witness_optim_sub_usecase(
-            self.year_start, self.year_end, self.time_step, bspline=self.bspline, execution_engine=execution_engine,
+            year_start=self.year_start, year_end=self.year_end, time_step=self.time_step, bspline=self.bspline, execution_engine=execution_engine,
             invest_discipline=self.invest_discipline, techno_dict=techno_dict, process_level=process_level,
             agri_techno_list=agri_techno_list)
         self.sub_study_path_dict = self.witness_uc.sub_study_path_dict
