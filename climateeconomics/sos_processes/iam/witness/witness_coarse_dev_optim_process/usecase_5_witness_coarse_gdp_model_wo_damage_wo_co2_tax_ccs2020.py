@@ -33,7 +33,7 @@ class Study(ClimateEconomicsStudyManager):
         self.time_step = time_step
 
     def setup_usecase(self, study_folder_path=None):
-        witness_uc = usecase_witness()
+        witness_uc = usecase_witness(year_start=self.year_start, year_end=self.year_end)
         witness_uc.study_name = self.study_name
         data_witness = witness_uc.setup_usecase()
         

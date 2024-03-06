@@ -85,7 +85,7 @@ class DataStudy():
         global_data_dir = join(Path(__file__).parents[3], 'data')
         population_df = pd.read_csv(
             join(global_data_dir, 'population_df.csv'))
-        population_df.index = years
+        #population_df.index = years
         witness_input[self.study_name + f'.{GlossaryCore.PopulationDfValue}'] = population_df
         working_age_population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
