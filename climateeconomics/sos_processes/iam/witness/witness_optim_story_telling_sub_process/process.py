@@ -20,7 +20,6 @@ from climateeconomics.glossarycore import GlossaryCore
 from energy_models.core.energy_process_builder import INVEST_DISCIPLINE_OPTIONS
 from energy_models.sos_processes.energy.MDA.energy_process_v0.usecase import INVEST_DISC_NAME
 from energy_models.sos_processes.witness_sub_process_builder import WITNESSSubProcessBuilder
-from energy_models.core.energy_study_manager import DEFAULT_COARSE_TECHNO_DICT
 
 
 class ProcessBuilder(WITNESSSubProcessBuilder):

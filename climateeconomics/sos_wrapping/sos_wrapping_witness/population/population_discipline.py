@@ -22,10 +22,10 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+import sostrades_core.tools.post_processing.post_processing_tools as ppt
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.core.core_witness.population_model import Population
 from climateeconomics.glossarycore import GlossaryCore
-import sostrades_core.tools.post_processing.post_processing_tools as ppt
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart
@@ -47,7 +47,7 @@ class PopulationDiscipline(ClimateEcoDiscipline):
         'icon': 'fas fa-users fa-fw',
         'version': '',
     }
-    years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1)
+    years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
     global_data_dir = join(Path(__file__).parents[3], 'data')
     pop_init_df = pd.read_csv(
         join(global_data_dir, 'population_by_age_2020.csv'))

@@ -34,7 +34,7 @@ EXPORT_CSV = FunctionManagerDisc.EXPORT_CSV
 
 class Study(ClimateEconomicsStudyManager):
 
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1, bspline=False, run_usecase=False,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1, bspline=False, run_usecase=False,
                  execution_engine=None,
                  invest_discipline=INVEST_DISCIPLINE_OPTIONS[2], techno_dict=DEFAULT_COARSE_TECHNO_DICT):
         super().__init__(__file__, run_usecase=run_usecase, execution_engine=execution_engine)

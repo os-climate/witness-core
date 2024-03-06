@@ -13,10 +13,11 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
-from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc import RenewableSimpleTechnoDiscipline
 from copy import deepcopy
 
+from energy_models.models.renewable.renewable_simple_techno.renewable_simple_techno_disc import \
+    RenewableSimpleTechnoDiscipline
+from sostrades_core.execution_engine.sos_wrapp import SoSWrapp
 
 RENEWABLE_DEFAULT_TECHNO_DICT = RenewableSimpleTechnoDiscipline.techno_infos_dict_default
 

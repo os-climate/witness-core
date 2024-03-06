@@ -14,13 +14,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-import copy
 from copy import deepcopy
 
+from climateeconomics.charts_tools import graph_gross_and_net_output
 from climateeconomics.core.core_sectorization.macroeconomics_sectorization_model import MacroeconomicsModel
 from climateeconomics.core.core_witness.climateeco_discipline import ClimateEcoDiscipline
 from climateeconomics.glossarycore import GlossaryCore
-from climateeconomics.charts_tools import graph_gross_and_net_output
 from sostrades_core.tools.post_processing.charts.chart_filter import ChartFilter
 from sostrades_core.tools.post_processing.charts.two_axes_instanciated_chart import InstanciatedSeries, \
     TwoAxesInstanciatedChart

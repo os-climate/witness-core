@@ -17,7 +17,6 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
-import copy
 
 from climateeconomics.glossarycore import GlossaryCore
 

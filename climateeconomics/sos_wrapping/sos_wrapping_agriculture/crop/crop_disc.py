@@ -82,8 +82,8 @@ class CropDiscipline(ClimateEcoDiscipline):
         'version': '',
     }
     techno_name = 'CropEnergy'
-    default_year_start = GlossaryCore.YeartStartDefault
-    default_year_end = GlossaryCore.YeartEndDefault
+    default_year_start = GlossaryCore.YearStartDefault
+    default_year_end = GlossaryCore.YearEndDefault
     default_years = np.arange(default_year_start, default_year_end + 1, 1)
     '''
     Sources:
@@ -400,7 +400,7 @@ class CropDiscipline(ClimateEcoDiscipline):
         'param_a': {'type': 'float', 'default': -0.00833, 'unit': '-', 'user_level': 3},
         'param_b': {'type': 'float', 'default': -0.04167, 'unit': '-', 'user_level': 3},
         'crop_investment': {'type': 'dataframe', 'unit': 'G$',
-                            'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YeartEndDefault], False),
+                            'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YearEndDefault], False),
                                                      GlossaryCore.InvestmentsValue: ('float', None, True)},
                             'dataframe_edition_locked': False, 'visibility': 'Shared', 'namespace': 'ns_crop',
                             'default': crop_investment_default},
@@ -417,12 +417,12 @@ class CropDiscipline(ClimateEcoDiscipline):
                                             'margin': ('float', None, True)}},
         'transport_cost': {'type': 'dataframe', 'unit': '$/t', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                            'namespace': GlossaryCore.NS_WITNESS,
-                           'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YeartEndDefault], False),
+                           'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YearEndDefault], False),
                                                     'transport': ('float', None, True)},
                            'dataframe_edition_locked': False},
         'transport_margin': {'type': 'dataframe', 'unit': '%', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,
                              'namespace': GlossaryCore.NS_WITNESS,
-                             'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YeartEndDefault], False),
+                             'dataframe_descriptor': {GlossaryCore.Years: ('int', [1900, GlossaryCore.YearEndDefault], False),
                                                       'margin': ('float', None, True)},
                              'dataframe_edition_locked': False},
         'data_fuel_dict': {'type': 'dict', 'visibility': ClimateEcoDiscipline.SHARED_VISIBILITY,

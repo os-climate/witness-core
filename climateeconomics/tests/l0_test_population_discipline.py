@@ -54,8 +54,8 @@ class PopDiscTest(unittest.TestCase):
         data_dir = join(dirname(__file__), 'data')
 
         # Test With a GDP that grows at 2%
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-        nb_per = GlossaryCore.YeartEndDefault + 1 - GlossaryCore.YeartStartDefault
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
+        nb_per = GlossaryCore.YearEndDefault + 1 - GlossaryCore.YearStartDefault
         gdp_year_start = 130.187
         gdp_serie = []
         gdp_serie.append(gdp_year_start)
@@ -68,8 +68,8 @@ class PopDiscTest(unittest.TestCase):
         temperature_df_all = read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df_all,
                        f'{self.name}.{self.model_name}.{GlossaryCore.CheckRangeBeforeRunBoolName}': False,
@@ -100,8 +100,8 @@ class PopDiscTest(unittest.TestCase):
         data_dir = join(dirname(__file__), 'data')
 
         # Test With a GDP that grows at 2%
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-        nb_per = GlossaryCore.YeartEndDefault + 1 - GlossaryCore.YeartStartDefault
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
+        nb_per = GlossaryCore.YearEndDefault + 1 - GlossaryCore.YearStartDefault
         gdp_year_start = 130.187
         gdp_serie = []
         temp_serie = []
@@ -118,8 +118,8 @@ class PopDiscTest(unittest.TestCase):
             {GlossaryCore.Years: years, GlossaryCore.TempAtmo: temp_serie})
         temperature_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df
                        }
@@ -141,8 +141,8 @@ class PopDiscTest(unittest.TestCase):
     def test_kcaldegrowth(self):
 
         # Test With a GDP that grows at 2%
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-        nb_per = GlossaryCore.YeartEndDefault + 1 - GlossaryCore.YeartStartDefault
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
+        nb_per = GlossaryCore.YearEndDefault + 1 - GlossaryCore.YearStartDefault
         gdp_year_start = 130.187
         gdp_serie = []
         temp_serie = []
@@ -163,8 +163,8 @@ class PopDiscTest(unittest.TestCase):
             {GlossaryCore.Years: years, 'kcal_pc': np.linspace(2000,2000,len(years))})
         calories_pc_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc_df
@@ -186,8 +186,8 @@ class PopDiscTest(unittest.TestCase):
 
     def test_deactivate_climate_effect_flag(self):
 
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-        nb_per = GlossaryCore.YeartEndDefault + 1 - GlossaryCore.YeartStartDefault
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
+        nb_per = GlossaryCore.YearEndDefault + 1 - GlossaryCore.YearStartDefault
         gdp_year_start = 130.187
         gdp_serie = []
         temp_serie = []
@@ -211,8 +211,8 @@ class PopDiscTest(unittest.TestCase):
         assumptions_dict = ClimateEcoDiscipline.assumptions_dict_default
         assumptions_dict['activate_climate_effect_population'] = False
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.EconomicsDfValue}': economics_df_y,
                        f'{self.name}.{GlossaryCore.TemperatureDfValue}': temperature_df,
                        f'{self.name}.{GlossaryCore.CaloriesPerCapitaValue}': calories_pc_df,

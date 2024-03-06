@@ -18,24 +18,8 @@ from os.path import join, dirname
 import pandas as pd
 
 from climateeconomics.core.tools.ClimateEconomicsStudyManager import ClimateEconomicsStudyManager
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2_witness_coarse_mda_gdp_model_wo_damage_wo_co2_tax import \
-    Study as usecase2
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_2b_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
-    Study as usecase2b
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_3_witness_coarse_mda_gdp_model_wo_damage_w_co2_tax import \
-    Study as usecase3
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_4_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
-    Study as usecase4
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_5_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
-    Study as usecase5
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_6_witness_coarse_mda_gdp_model_w_damage_wo_co2_tax import \
-    Study as usecase6
 from climateeconomics.sos_processes.iam.witness.witness_coarse_dev_story_telling.usecase_7_witness_coarse_mda_gdp_model_w_damage_w_co2_tax import \
     Study as usecase7
-from climateeconomics.sos_processes.iam.witness.witness_coarse_dev.usecase_witness_coarse_new import \
-    Study as usecase_witness_mda
-from sostrades_core.tools.post_processing.post_processing_factory import PostProcessingFactory
-from climateeconomics.glossarycore import GlossaryCore
 
 
 class Study(ClimateEconomicsStudyManager):
@@ -61,7 +45,7 @@ class Study(ClimateEconomicsStudyManager):
         '''
 
         input_selection = {
-            "selected_input": [True, True, True, True, True, True, True],
+            "selected_input": [True, True, True, True, True, True, True, True, True],
             "full_name": [
                 f"{self.USECASE7}.RenewableTechnoInfo.Opex_percentage",
                 f"{self.USECASE7}.RenewableTechnoInfo.Initial_capex",
@@ -70,6 +54,8 @@ class Study(ClimateEconomicsStudyManager):
                 f"{self.USECASE7}.FossilTechnoInfo.Initial_capex",
                 f"{self.USECASE7}.FossilTechnoInfo.Energy_costs",
                 f"{self.USECASE7}.FossilTechnoInfo.CO2_from_production",
+                f"{self.USECASE7}.Damage.tp_a3",
+                f"{self.USECASE7}.Temperature_change.init_temp_atmo",
                           ],
         }
         input_selection = pd.DataFrame(input_selection)
@@ -100,8 +86,9 @@ class Study(ClimateEconomicsStudyManager):
         return values_dict
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
-    uc_cls.test()
+    uc_cls = Study()
+    uc_cls.load_data()
+    # uc_cls.test()
     # post_processing_factory = PostProcessingFactory()
     # post_processing_factory.get_post_processing_by_namespace(
     #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])

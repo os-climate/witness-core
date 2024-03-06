@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from copy import deepcopy, copy
+
 from climateeconomics.database import DatabaseWitnessCore
 
 
@@ -45,12 +46,12 @@ class GlossaryCore:
 
     Years = "years"
     YearStart = "year_start"
-    YeartStartDefault = 2020
+    YearStartDefault = 2020
     YearEnd = "year_end"
-    YeartEndDefault = 2100
+    YearEndDefault = 2100
     YearEndVar = {
         "type": "int",
-        "default": YeartEndDefault,
+        "default": YearEndDefault,
         "unit": "year",
         "visibility": "Shared",
         "namespace": "ns_public",
@@ -212,7 +213,7 @@ class GlossaryCore:
     df_descriptor_section_df = {
         section: ("float", [0.0, 100.0], True) for section in SectionsPossibleValues
     }
-    df_descriptor_section_df.update({Years: ("int", [1900, YeartEndDefault], False)})
+    df_descriptor_section_df.update({Years: ("int", [1900, YearEndDefault], False)})
     SectionGdpPercentageDf = {
         "var_name": SectionGdpPercentageDfValue,
         "type": "dataframe",
@@ -295,7 +296,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             "atmo_conc": ("float", [0, 1e30], False),
             "lower_ocean_conc": ("float", [0, 1e30], False),
             "shallow_ocean_conc": ("float", [0, 1e30], False),
@@ -313,7 +314,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "$/tCO2Eq",
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             CO2DamagePrice: ("float", [0, 1e30], False),
         },
     }
@@ -334,7 +335,7 @@ class GlossaryCore:
         "description": "Damage of an extra (wrt pre-industria levels) ton of CO2 equivalent"
         " in the atmosphere on the economy",
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             ExtraCO2tDamagePrice: ("float", [0, 1e30], False),
         },
     }
@@ -348,7 +349,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             "sigma": ("float", [0, 1e30], False),
             "gr_sigma": ("float", None, False),
             "land_emissions": ("float", [0, 1e30], False),
@@ -367,7 +368,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             "total_emissions": ("float", [-1.0e9, 1.0e9], False),
             "cum_total_emissions": ("float", [-1.0e9, 1.0e9], False),
         },
@@ -381,7 +382,7 @@ class GlossaryCore:
         "namespace": NS_ENERGY_MIX,
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             TotalCO2Emissions: ("float", None, False),
         },
     }
@@ -390,7 +391,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "%",
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             CO2TaxEfficiencyValue: ("float", [0.0, 100.0], False),
         },
     }
@@ -403,7 +404,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             CO2Tax: ("float", None, True),
         },
         "dataframe_edition_locked": False,
@@ -419,7 +420,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "unit": "GtCO2Eq",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             ExtraCO2EqSincePreIndustrialValue: ("float", [0, 1e30], False),
         },
     }
@@ -440,7 +441,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "unit": "GtCO2Eq",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             ExtraCO2EqSincePreIndustrial2OYbasisValue: ("float", [0, 1e30], False),
             ExtraCO2EqSincePreIndustrial10OYbasisValue: ("float", [0, 1e30], False),
         },
@@ -459,7 +460,7 @@ class GlossaryCore:
         "description": "Global warming potential in gigatons of  CO2 Eq",
         "unit": "GtCO2Eq",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             f"{CO2} {YearBasis20}": ("float", [0, 1e30], False),
             f"{CH4} {YearBasis20}": ("float", [0, 1e30], False),
             f"{N2O} {YearBasis20}": ("float", [0, 1e30], False),
@@ -493,7 +494,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "-",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             DamageFractionOutput: ("float", [0.0, 1.0], False),
             BaseCarbonPrice: ("float", [0, 1e30], False),
         },
@@ -510,7 +511,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "G$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             Damages: ("float", [0, 1e30], False),
             EstimatedDamages: ("float", [0, 1e30], False),
         },
@@ -528,7 +529,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "unit": "T$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             Damages: ("float", [0, 1e30], False),  # G$
             DamagesFromClimate: ("float", [0, 1e30], False),  # G$
             DamagesFromProductivityLoss: ("float", [0, 1e30], False),  # G$
@@ -565,7 +566,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "G$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
         },
     }
 
@@ -576,7 +577,7 @@ class GlossaryCore:
         "description": "",
         "unit": "T$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
         },
     }
 
@@ -658,7 +659,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "-",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),
             OutputNetOfDamage: ("float", [0, 1e30], False),
             PerCapitaConsumption: ("float", [0, 1e30], False),
@@ -681,7 +682,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "-",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),  # G$
             OutputNetOfDamage: ("float", [0, 1e30], False),  # G$
             Productivity: ("float", [0, 1e30], False),
@@ -710,7 +711,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             PopulationValue: ("float", None, False),
         },
     }
@@ -740,7 +741,7 @@ class GlossaryCore:
         "namespace": NS_ENERGY_MIX,
         "unit": "$/MWh",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             EnergyPriceValue: ("float", [0, 1e30], True),
         },
     }
@@ -760,7 +761,7 @@ class GlossaryCore:
         "unit": "PWh",
         "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             TotalProductionValue: ("float", [0, 1e30], False),
         },
     }
@@ -772,7 +773,7 @@ class GlossaryCore:
         "unit": "PWh",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             TotalProductionValue: ("float", [0, 1e30], False),
         },
     }
@@ -786,7 +787,7 @@ class GlossaryCore:
         "unit": "PWh",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             TotalProductionValue: ("float", [0, 1e30], False),
         },
     }
@@ -796,7 +797,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "100G$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             EnergyInvestmentsValue: ("float", [0.0, 1e30], True),
         },
         "dataframe_edition_locked": False,
@@ -811,7 +812,7 @@ class GlossaryCore:
             "type": "dataframe",
             "unit": "T$",
             "dataframe_descriptor": {
-                Years: ("int", [1900, YeartEndDefault], False),
+                Years: ("int", [1900, YearEndDefault], False),
                 EnergyInvestmentsWoTaxValue: ("float", [0.0, 1e30], True),
             },
             "dataframe_edition_locked": False,
@@ -825,7 +826,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "%",
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             FoodWastePercentageValue: ("float", [0.0, 100.0], False),
         },
     }
@@ -839,7 +840,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "Gt",
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             TotalCO2Emissions: ("float", [0, 1e30], False),
             TotalN2OEmissions: ("float", [0, 1e30], False),
             TotalCH4Emissions: ("float", [0, 1e30], False),
@@ -856,7 +857,7 @@ class GlossaryCore:
         "description": f"Concentrations forecasts of the three main green house gases : {GreenHouseGases}",
         "unit": "ppm",
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             CO2Concentration: ("float", [0.0, 1e6], True),
             CH4Concentration: ("float", [0.0, 1e6], True),
             N2OConcentration: ("float", [0.0, 1e6], True),
@@ -871,7 +872,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "type": "dataframe",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             InvestmentsValue: ("float", [0.0, 1e30], True),
         },
         "unit": "100G$",
@@ -881,7 +882,7 @@ class GlossaryCore:
         "var_name": EnergyInvestmentsWoRenewableValue,
         "type": "dataframe",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             EnergyInvestmentsWoRenewableValue: ("float", [0.0, 1e30], True),
         },
         "unit": "100G$",
@@ -892,7 +893,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "%",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             ShareNonEnergyInvestmentsValue: ("float", [0.0, 100.0], True),
         },
         "dataframe_edition_locked": False,
@@ -911,7 +912,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "°C",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             ExoGForcing: ("float", None, False),
             Forcing: ("float", None, False),
             TempAtmo: ("float", None, False),
@@ -931,7 +932,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             UtilityDiscountRate: ("float", [0, 100], False),
             PeriodUtilityPerCapita: ("float", None, False),
             DiscountedUtility: ("float", None, False),
@@ -971,7 +972,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "G$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),
             OutputNetOfDamage: ("float", [0, 1e30], False),
         },
@@ -989,7 +990,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "G$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
             UsableCapital: ("float", [0, 1e30], False),
         },
@@ -1002,7 +1003,7 @@ class GlossaryCore:
         "unit": "G$",
         "description": "Capital of energy in G$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
         },
         "visibility": "Shared",
@@ -1019,7 +1020,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "G$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             Capital: ("float", [0, 1e30], False),
             UsableCapital: ("float", [0, 1e30], False),
             Emax: ("float", [0, 1e30], False),
@@ -1034,7 +1035,7 @@ class GlossaryCore:
         "namespace": NS_WITNESS,
         "unit": "G$",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),
             OutputNetOfDamage: ("float", [0, 1e30], False),
             Capital: ("float", [0, 1e30], False),
@@ -1046,7 +1047,7 @@ class GlossaryCore:
         "type": "dataframe",
         "unit": "-",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             GrossOutput: ("float", [0, 1e30], False),
             OutputNetOfDamage: ("float", [0, 1e30], False),
             Capital: ("float", [0, 1e30], False),
@@ -1064,7 +1065,7 @@ class GlossaryCore:
         "unit": "-",
         "description": "productivity levels through years, applied, with damage, and without wamage.",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             Productivity: ("float", [0, 1e30], False),
             ProductivityGrowthRate: ("float", None, False),
             ProductivityWithoutDamage: ("float", [0, 1e30], False),
@@ -1113,7 +1114,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             ShareInvestment: ("float", [0.0, 100.0], False),
         },
     }
@@ -1127,7 +1128,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
@@ -1140,7 +1141,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
@@ -1152,7 +1153,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             TotalProductionValue: ("float", None, False),
         },
     }
@@ -1164,7 +1165,7 @@ class GlossaryCore:
         "unit": "%",
         "description": "Amount of the total energy production attributed to other category",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             ShareSectorEnergy: ("float", [0.0, 100.0], False),
         },
     }
@@ -1201,7 +1202,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             Population1570: ("float", [0, 1e30], False),
         },
     }
@@ -1214,7 +1215,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             InvestmentsValue: ("float", [0, 1e30], False),
         },
     }
@@ -1228,7 +1229,7 @@ class GlossaryCore:
         "namespace": NS_SECTORS,
         "description": "Sector demand per person per year [$/year]",
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             SectorDemandPerCapitaDfValue: ("float", [0, 1e30], False),
         },
     }
@@ -1241,7 +1242,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_SECTORS,
         "dataframe_descriptor": {
-            Years: ("int", [1900, YeartEndDefault], False),
+            Years: ("int", [1900, YearEndDefault], False),
             SectorGDPDemandDfValue: ("float", [0, 1e30], False),
         },
     }
@@ -1311,7 +1312,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             MaxBudgetValue: ("float", [0.0, 1e12], True),
         },
     }
@@ -1360,7 +1361,7 @@ class GlossaryCore:
         "visibility": "Shared",
         "namespace": NS_ENERGY_MIX,
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
+            Years: ("float", [1900, YearEndDefault], False),
             TargetEnergyProductionValue: ("float", [0.0, 1e30], True),
         },
     }
@@ -1419,16 +1420,16 @@ class GlossaryCore:
         "dynamic_dataframe_columns": True,
     }
 
-    TotalEnergyCO2eqEmissionsDfValue = "total_energy_co2eq_emissions_df"
+    TotalEnergyEmissions = "Total Energy emissions"
     TotalEnergyCO2eqEmissionsDf = {
-        "var_name": TotalEnergyCO2eqEmissionsDfValue,
+        "var_name": TotalEnergyEmissions,
         'type': 'dataframe',
-        'unit': 'Gt',
+        'unit': 'GtCO2Eq',
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
-            Years: ("float", [1900, YeartEndDefault], False),
-            TotalEnergyCO2eqEmissionsDfValue: ("float", [0.0, 1e30], True),
+            Years: ("float", [1900, YearEndDefault], False),
+            TotalEnergyEmissions: ("float", [0.0, 1e30], True),
         },
     }
 

@@ -14,7 +14,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 '''
-from scipy.interpolate.interpolate import interp1d
 
 from climateeconomics.glossarycore import GlossaryCore
 
@@ -51,6 +50,12 @@ class TestScatter(unittest.TestCase):
         self.namespace = 'MyCase'
         self.study_name = f'{self.namespace}'
 
+        self.years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1)
+        self.energy_supply_df_all = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalCO2Emissions: np.linspace(35, 0, len(self.years))
+        })
+
     def tearDown(self):
 
         for dir_to_del in self.dirs_to_del:
@@ -60,13 +65,6 @@ class TestScatter(unittest.TestCase):
         sleep(0.5)
 
     def test_01_witness_perfos_execute(self):
-
-        cumtime_gems_list = []
-        cumtime_configure_list = []
-        cumtime_build_list = []
-        cumtime_treeview_list = []
-        cumtime_execute_list = []
-        cumtime_total_configure_list = []
 
         self.name = 'Test'
         self.ee = ExecutionEngine(self.name)
@@ -85,36 +83,19 @@ class TestScatter(unittest.TestCase):
         for uc_d in values_dict:
             input_dict_to_load.update(uc_d)
 
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
-
-        data_dir = join(dirname(dirname(__file__)), 'data')
-        energy_supply_df_all = pd.read_csv(
-            join(data_dir, 'energy_supply_data_onestep.csv'))
-        energy_supply_df_y = energy_supply_df_all[energy_supply_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
-            GlossaryCore.Years, 'total_CO2_emitted']]
-        energy_supply_df_y[GlossaryCore.Years] = energy_supply_df_all[GlossaryCore.Years]
-        co2_emissions_gt = energy_supply_df_y.rename(
-            columns={'total_CO2_emitted': GlossaryCore.TotalCO2Emissions})
-        co2_emissions_gt.index = years
-
-        energy_outlook = pd.DataFrame({
-            GlossaryCore.Years: [2010, 2017, 2018, 2019, 2020, 2025, 2030, 2040, 2050, 2060, 2100],
-            'energy_demand': [141057, 153513, 157366, 158839, 158839 * 0.94, 174058 * 0.91, 183234.136 * 0.91,
-                              198699.708 * 0.91, 220000 * 0.91, 250000 * 0.91, 300000 * 0.91]})
-        f2 = interp1d(energy_outlook[GlossaryCore.Years], energy_outlook['energy_demand'])
-        energy_supply = f2(years)
-        energy_supply_df = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.TotalProductionValue: energy_supply})
-        energy_supply_df.index = years
+        self.energy_supply_df = pd.DataFrame({
+            GlossaryCore.Years: self.years,
+            GlossaryCore.TotalProductionValue: np.linspace(43, 76, len(self.years))
+        })
 
         CCS_price = pd.DataFrame(
-            {GlossaryCore.Years: years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(years))})
-        energy_price = np.arange(200, 200 + len(years))
+            {GlossaryCore.Years: self.years, 'ccs_price_per_tCO2': np.linspace(311, 515, len(self.years))})
+        energy_price = np.arange(200, 200 + len(self.years))
         energy_mean_price = pd.DataFrame(
-            {GlossaryCore.Years: years, GlossaryCore.EnergyPriceValue: energy_price})
+            {GlossaryCore.Years: self.years, GlossaryCore.EnergyPriceValue: energy_price})
 
-        input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = energy_supply_df
-        input_dict_to_load[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = co2_emissions_gt
+        input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyProductionValue}'] = self.energy_supply_df
+        input_dict_to_load[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}'] = self.co2_emissions_gt
         input_dict_to_load[f'{self.name}.{GlossaryCore.EnergyPriceValue}'] = energy_mean_price
         input_dict_to_load[f'{self.name}.CCS_price'] = CCS_price
         input_dict_to_load[f'{self.name}.sub_mda_class'] = "MDANewtonRaphson"

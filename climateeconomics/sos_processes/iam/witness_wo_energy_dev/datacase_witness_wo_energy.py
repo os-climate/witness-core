@@ -43,7 +43,7 @@ AGGR_TYPE_LIN_TO_QUAD = FunctionManager.AGGR_TYPE_LIN_TO_QUAD
 
 
 class DataStudy():
-    def __init__(self, year_start=GlossaryCore.YeartStartDefault, year_end=GlossaryCore.YeartEndDefault, time_step=1,
+    def __init__(self, year_start=GlossaryCore.YearStartDefault, year_end=GlossaryCore.YearEndDefault, time_step=1,
                  agri_techno_list=AGRI_MIX_TECHNOLOGIES_LIST_FOR_OPT):
         self.study_name = 'default_name'
         self.year_start = year_start
@@ -85,7 +85,7 @@ class DataStudy():
         global_data_dir = join(Path(__file__).parents[3], 'data')
         population_df = pd.read_csv(
             join(global_data_dir, 'population_df.csv'))
-        population_df.index = years
+        #population_df.index = years
         witness_input[self.study_name + f'.{GlossaryCore.PopulationDfValue}'] = population_df
         working_age_population_df = pd.DataFrame(
             {GlossaryCore.Years: years, GlossaryCore.Population1570: 6300}, index=years)
@@ -230,8 +230,16 @@ class DataStudy():
                                                    GlossaryCore.TotalCH4Emissions: np.linspace(0.17, 0.01, len(years))})
         witness_input[f'{self.study_name}.GHG_total_energy_emissions'] = GHG_total_energy_emissions
 
-        data_dir = join(dirname(dirname(dirname(dirname(__file__)))), 'data')
-        section_gdp_df = pd.read_csv(join(data_dir, 'weighted_average_percentage_per_sector.csv'))
+        global_data_dir = join(dirname(dirname(dirname(dirname(__file__)))), 'data')
+        weighted_average_percentage_per_sector_df = pd.read_csv(
+            join(global_data_dir, 'weighted_average_percentage_per_sector.csv'))
+
+        subsector_share_dict = {
+            **{GlossaryCore.Years: np.arange(self.year_start, self.year_end + 1), },
+            **dict(zip(weighted_average_percentage_per_sector_df.columns[1:],
+                       weighted_average_percentage_per_sector_df.values[0, 1:]))
+        }
+        section_gdp_df = pd.DataFrame(subsector_share_dict)
         witness_input[f'{self.study_name}.{GlossaryCore.SectionGdpPercentageDfValue}'] = section_gdp_df
 
         setup_data_list.append(witness_input)

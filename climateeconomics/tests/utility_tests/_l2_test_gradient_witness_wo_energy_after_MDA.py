@@ -61,8 +61,8 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         for dict_item in dc_witness.setup_usecase():
             values_dict.update(dict_item)
 
-        year_start = GlossaryCore.YeartStartDefault
-        year_end = GlossaryCore.YeartEndDefault
+        year_start = GlossaryCore.YearStartDefault
+        year_end = GlossaryCore.YearEndDefault
         years = np.arange(year_start, year_end + 1)
 
         # energy simple outputs
@@ -78,10 +78,10 @@ class WitnessWONRJsimpleTestCase(AbstractJacobianUnittest):
         temperature_df_all = pd.read_csv(
             join(data_dir, 'temperature_data_onestep.csv'))
 
-        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault][[
+        temperature_df_y = temperature_df_all[temperature_df_all[GlossaryCore.Years] >= GlossaryCore.YearStartDefault][[
             GlossaryCore.Years, GlossaryCore.TempAtmo]]
 
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         temperature_df_y.index = years
 
         values_dict[f'{self.name}.linearization_mode'] = 'adjoint'

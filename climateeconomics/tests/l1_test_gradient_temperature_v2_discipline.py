@@ -62,7 +62,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -70,11 +70,11 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
@@ -121,7 +121,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -129,11 +129,11 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
@@ -181,7 +181,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -189,11 +189,11 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
@@ -241,7 +241,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -249,11 +249,11 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
@@ -300,7 +300,7 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_ally = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
         # Take only from year start value
-        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        ghg_cycle_df = carboncycle_df_ally[carboncycle_df_ally[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
 
         ghg_cycle_df[GlossaryCore.CO2Concentration] = ghg_cycle_df['ppm']
         ghg_cycle_df[GlossaryCore.CH4Concentration] = ghg_cycle_df['ppm'] * 1222/296
@@ -308,11 +308,11 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         ghg_cycle_df = ghg_cycle_df[[GlossaryCore.Years, GlossaryCore.CO2Concentration, GlossaryCore.CH4Concentration, GlossaryCore.N2OConcentration]]
 
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         ghg_cycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.GHGCycleDfValue}': ghg_cycle_df,
                        f'{self.name}.alpha': 0.5,
@@ -358,14 +358,14 @@ class TemperatureJacobianDiscTest(AbstractJacobianUnittest):
         carboncycle_df_all = read_csv(
             join(data_dir, 'carbon_cycle_data_onestep.csv'))
 
-        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all[GlossaryCore.Years] >= GlossaryCore.YeartStartDefault]
+        carboncycle_df_y = carboncycle_df_all[carboncycle_df_all[GlossaryCore.Years] >= GlossaryCore.YearStartDefault]
         carboncycle_df = carboncycle_df_y[[GlossaryCore.Years, 'atmo_conc']]
         # put manually the index
-        years = np.arange(GlossaryCore.YeartStartDefault, GlossaryCore.YeartEndDefault +1, 1)
+        years = np.arange(GlossaryCore.YearStartDefault, GlossaryCore.YearEndDefault + 1, 1)
         carboncycle_df.index = years
 
-        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YeartStartDefault,
-                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YeartEndDefault,
+        values_dict = {f'{self.name}.{GlossaryCore.YearStart}': GlossaryCore.YearStartDefault,
+                       f'{self.name}.{GlossaryCore.YearEnd}': GlossaryCore.YearEndDefault,
                        f'{self.name}.{GlossaryCore.TimeStep}': 1,
                        f'{self.name}.{GlossaryCore.CarbonCycleDfValue}': carboncycle_df,
                        f'{self.name}.alpha': 0.5,
