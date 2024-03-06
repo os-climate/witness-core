@@ -472,6 +472,28 @@ class SectorModel():
         self.section_emission_df[self.section_list] = self.section_emission_df[self.section_list].multiply(
             energy_emission_df_copy.reset_index(drop=True)[GlossaryCore.TotalEnergyEmissions], axis='index') / 100.
 
+    def compute_non_energy_emission_per_section(self):
+        """
+        Computing the energy emission for each section of the sector
+        """
+        self.section_non_energy_emission_df = self.section_non_energy_emission_gdp_df.copy(deep=True)
+        self.section_non_energy_emission_df[self.section_list] *= self.section_gdp_df[self.section_list] / 1000.
+
+    def compute_total_emission_per_section(self):
+        """
+        Computing the total emission for each section of the sector
+        """
+        self.section_emission_df = self.section_energy_emission_df.copy(deep=True)
+        self.section_emission_df[self.section_list] += self.section_non_energy_emission_df[self.section_list]
+
+    def compute_total_emission(self):
+        """
+        Computing the total emissions of the sector
+        """
+        self.emission_df[GlossaryCore.TotalEmissions] = self.section_emission_df.sum(axis=1)
+        self.emission_df[GlossaryCore.EnergyEmissions] = self.section_energy_emission_df.sum(axis=1)
+        self.emission_df[GlossaryCore.NonEnergyEmissions] = self.section_non_energy_emission_df.sum(axis=1)
+
     # RUN
     def compute(self, inputs):
         """
@@ -505,7 +527,11 @@ class SectorModel():
             self.compute_energy_eff_constraints()
 
         self.compute_output_net_of_damage_per_section()
-        # self.compute_section_emission()
+
+        self.compute_energy_emission_per_section()
+        self.compute_non_energy_emission_per_section()
+        self.compute_total_emission_per_section()
+        self.compute_total_emission()
 
         self.compute_energy_usage()
         self.compute_energy_wasted_objective()
