@@ -33,6 +33,7 @@ class GHGEmissions():
         """
         self.affine_co2_objective: bool = False
         self.co2_emissions_objective = None
+        self.total_energy_co2eq_emissions = None
         self.param = param
         self.configure_parameters()
         self.create_dataframe()
@@ -167,6 +168,17 @@ class GHGEmissions():
         return d_CO2_emissions_objective_d_total_co2_emissions
 
 
+    def compute_total_co2_eq_energy_emissions(self):
+        columns_to_sum = [f"Total {ghg} emissions" for ghg in self.gwp_100.keys()]
+        self.total_energy_co2eq_emissions = pd.DataFrame({
+            GlossaryCore.Years: self.years_range,
+            GlossaryCore.TotalEnergyEmissions: self.GHG_total_energy_emissions[columns_to_sum].multiply(self.gwp_100.values()).sum(axis=1)
+        })
+
+    def d_total_co2_eq_energy_emissions(self, d_ghg_total_emissions, ghg: str):
+        return d_ghg_total_emissions * self.gwp_100[ghg]
+
+
     def compute(self):
         """
         Compute outputs of the pyworld3
@@ -176,5 +188,4 @@ class GHGEmissions():
         self.compute_total_emissions()
         self.compute_gwp()
         self.compute_CO2_emissions_objective()
-
-
+        self.compute_total_co2_eq_energy_emissions()
