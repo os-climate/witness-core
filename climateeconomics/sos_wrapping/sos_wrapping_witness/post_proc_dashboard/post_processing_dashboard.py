@@ -130,7 +130,7 @@ def post_processings(execution_engine, namespace, chart_filters=None):
         fig.add_trace(go.Scatter(
             x=years,
             y=graph_gross_co2,
-            name='Gross CO2 emissions',
+            name='Total CO2 emissions',
         ), secondary_y=False)
 
         fig.update_yaxes(title_text='Temperature evolution (degrees Celsius above preindustrial)',secondary_y=True, rangemode="tozero")
