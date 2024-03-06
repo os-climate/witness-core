@@ -247,7 +247,8 @@ class DataStudy():
                 GlossaryCore.LastYearDiscountedUtilityObjective,
                 'gwp20_objective',
                 'gwp100_objective',
-                GlossaryCore.EnergyWastedObjective
+                GlossaryCore.EnergyWastedObjective,
+                GlossaryCore.ConsumptionObjective,
 
             ],
             'parent': [
@@ -257,11 +258,12 @@ class DataStudy():
                 'GWP_short_term_obj',
                 'GWP_long_term_obj',
                 'invest_objective',
+                'invest_objective',
             ],
-            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
-            'weight': [5e-4, 1.0, 1.0, 0.0, 0.0, 1.0],
-            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
-            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS]
+            'ftype': [OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE, OBJECTIVE],
+            'weight': [5e-4, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+            AGGR_TYPE: [AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM, AGGR_TYPE_SUM],
+            'namespace': [GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS, ]
         }
 
         func_df = DataFrame(data)
@@ -284,7 +286,7 @@ class DataStudy():
         list_parent.extend(['CO2 ppm', 'CO2 ppm'])
         list_ns.extend([GlossaryCore.NS_FUNCTIONS, GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend([INEQ_CONSTRAINT, INEQ_CONSTRAINT])
-        list_weight.extend([0.0, -1.0])
+        list_weight.extend([0.0, -0.0])
         list_aggr_type.extend(
             [AGGR_TYPE_SMAX, AGGR_TYPE_SMAX])
 
@@ -294,7 +296,7 @@ class DataStudy():
         list_parent.append('agriculture_constraints')
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
+        list_weight.append(-0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 
@@ -304,7 +306,7 @@ class DataStudy():
         list_parent.extend(['invests_constraints'])
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.extend([INEQ_CONSTRAINT])
-        list_weight.extend([-1.0])
+        list_weight.extend([-0.0])
         list_aggr_type.extend([
             AGGR_TYPE_SMAX])
 
@@ -312,7 +314,7 @@ class DataStudy():
         list_parent.append('invests_constraints')
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
+        list_weight.append(-0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 
@@ -320,7 +322,7 @@ class DataStudy():
         list_parent.append('agriculture_constraint')
         list_ns.extend([GlossaryCore.NS_FUNCTIONS])
         list_ftype.append(INEQ_CONSTRAINT)
-        list_weight.append(-1.0)
+        list_weight.append(-0.0)
         list_aggr_type.append(
             AGGR_TYPE_SMAX)
 

@@ -394,7 +394,7 @@ class Population:
         self.economics_df.index = self.economics_df[GlossaryCore.Years].values
         self.temperature_df = in_dict[GlossaryCore.TemperatureDfValue]
         self.temperature_df.index = self.temperature_df[GlossaryCore.Years].values
-        self.calories_pc_df = in_dict['calories_pc_df']
+        self.calories_pc_df = in_dict[GlossaryCore.CaloriesPerCapitaValue]
         self.calories_pc_df.index = self.calories_pc_df[GlossaryCore.Years].values
         self.compute_knowledge()
         init_disability_pandemic_df = in_dict['pandemic_param_df']
