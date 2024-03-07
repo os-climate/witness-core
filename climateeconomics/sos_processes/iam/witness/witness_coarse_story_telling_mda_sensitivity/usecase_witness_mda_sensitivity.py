@@ -86,8 +86,8 @@ class Study(ClimateEconomicsStudyManager):
         return values_dict
 
 if '__main__' == __name__:
-    uc_cls = Study()
-    uc_cls.load_data()
+    uc_cls = Study(run_usecase=False)
+    uc_cls.test()
     # uc_cls.test()
     # post_processing_factory = PostProcessingFactory()
     # post_processing_factory.get_post_processing_by_namespace(
