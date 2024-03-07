@@ -45,7 +45,7 @@ class Study(ClimateEconomicsStudyManager):
         '''
 
         input_selection = {
-            "selected_input": [True, True, True, True, True, True, True, True, True],
+            "selected_input": [False, False, False, False, False, False, False, False, True],
             "full_name": [
                 f"{self.USECASE7}.RenewableTechnoInfo.Opex_percentage",
                 f"{self.USECASE7}.RenewableTechnoInfo.Initial_capex",
@@ -86,8 +86,9 @@ class Study(ClimateEconomicsStudyManager):
         return values_dict
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=False)
-    uc_cls.test()
+    uc_cls = Study(run_usecase=True)
+    uc_cls.load_data()
+    uc_cls.run()
     # uc_cls.test()
     # post_processing_factory = PostProcessingFactory()
     # post_processing_factory.get_post_processing_by_namespace(
