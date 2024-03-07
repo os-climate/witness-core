@@ -106,6 +106,7 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.GHG_total_energy_emissions'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
                                      f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}',
+                                     f'{self.name}.{GlossaryCore.TotalEnergyEmissions}',
                                      f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}"])
 
     def test_carbon_emissions_analytic_grad_affine_co2_objective(self):
@@ -176,4 +177,5 @@ class GHGEmissionsJacobianDiscTest(AbstractJacobianUnittest):
                                     f'{self.name}.GHG_total_energy_emissions'],
                             outputs=[f'{self.name}.{GlossaryCore.CO2EmissionsGtValue}',
                                      f'{self.name}.{GlossaryCore.GHGEmissionsDfValue}',
+                                     f'{self.name}.{GlossaryCore.TotalEnergyEmissions}',
                                      f"{self.name}.{GlossaryCore.CO2EmissionsObjectiveValue}"])

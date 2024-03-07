@@ -1336,16 +1336,16 @@ class GlossaryCore:
         "dynamic_dataframe_columns": True,
     }
 
-    TotalEnergyCO2eqEmissionsDfValue = "total_energy_co2eq_emissions_df"
+    TotalEnergyEmissions = "Total Energy emissions"
     TotalEnergyCO2eqEmissionsDf = {
-        "var_name": TotalEnergyCO2eqEmissionsDfValue,
+        "var_name": TotalEnergyEmissions,
         'type': 'dataframe',
-        'unit': 'Gt',
+        'unit': 'GtCO2Eq',
         "visibility": "Shared",
         "namespace": NS_WITNESS,
         "dataframe_descriptor": {
             Years: ("float", [1900, YearEndDefault], False),
-            TotalEnergyCO2eqEmissionsDfValue: ("float", [0.0, 1e30], True),
+            TotalEnergyEmissions: ("float", [0.0, 1e30], True),
         },
     }
 
