@@ -1,6 +1,6 @@
 '''
 Copyright 2022 Airbus SAS
-Modifications on 2023/04/21-2023/11/09 Copyright 2023 Capgemini
+Modifications on 2023/04/21-2024/03/08 Copyright 2023 Capgemini
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -149,7 +149,7 @@ class DataStudy():
                                                            index=[2017, 2018, 2019])
 
 
-        CO2_emitted_land = pd.DataFrame()
+        CO2_emitted_land = pd.DataFrame({GlossaryCore.Years: years})
         # GtCO2
         emission_forest = np.linspace(0.04, 0.04, len(years))
         cum_emission = np.cumsum(emission_forest)

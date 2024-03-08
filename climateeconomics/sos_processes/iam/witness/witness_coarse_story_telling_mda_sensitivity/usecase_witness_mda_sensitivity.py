@@ -78,18 +78,22 @@ class Study(ClimateEconomicsStudyManager):
         values_dict[f'{self.study_name}.SampleGenerator.eval_inputs'] = input_selection
         values_dict[f'{self.study_name}.{self.driver_name}.gather_outputs'] = output_selection
 
+
         # setup each scenario (mda settings ignored)
         for scenario, uc in scenario_dict.items():
             uc.study_name = f'{self.study_name}.{self.driver_name}.{scenario}'
             for dict_data in uc.setup_usecase():
                 values_dict.update(dict_data)
+            # NB: switch to MDAGaussSeidel so it won't crash with the l1 tests, GSNewton diverges.
+            values_dict[f'{self.study_name}.{self.driver_name}.{scenario}.sub_mda_class'] = 'MDAGaussSeidel'
+            values_dict[f'{self.study_name}.{self.driver_name}.{scenario}.max_mda_iter'] = 2
         return values_dict
 
 if '__main__' == __name__:
-    uc_cls = Study(run_usecase=True)
-    uc_cls.load_data()
-    uc_cls.run()
-    # uc_cls.test()
+    uc_cls = Study()
+    # uc_cls.load_data()
+    # uc_cls.run()
+    uc_cls.test()
     # post_processing_factory = PostProcessingFactory()
     # post_processing_factory.get_post_processing_by_namespace(
     #     uc_cls.execution_engine, f'{uc_cls.study_name}.Post-processing', [])
